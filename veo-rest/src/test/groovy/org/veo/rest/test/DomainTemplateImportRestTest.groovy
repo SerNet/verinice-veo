@@ -59,9 +59,9 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def catalogItems = getCatalogItems(domain.id)
 
         then: "they are connected by a tailoring reference"
-        catalogItems*.namespace.sort() == ["TOM.c-1", "VT.p-1"]
-        def tom = catalogItems.find { it.namespace == "TOM.c-1" }
-        def vt = catalogItems.find { it.namespace == "VT.p-1" }
+        catalogItems*.name ==~ ["Control-1", "Test process-1"]
+        def tom = catalogItems.find { it.name == "Control-1" }
+        def vt = catalogItems.find { it.name == "Test process-1" }
         tom.tailoringReferences.first().catalogItem.targetUri == vt._self
 
         when: "fetching the catalog item elements"
@@ -163,7 +163,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item attribute"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()
-        def vtElement = template.catalogItems.find { it.namespace == "VT.p-1" }
+        def vtElement = template.catalogItems.find { it.name == "Test process-1" }
         vtElement.customAspects.process_accessAuthorization = [
             process_accessAuthorization_description: 1
         ]
@@ -184,7 +184,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog link"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()
-        def vtItem = template.catalogItems.find { it.namespace == "VT.p-1" }
+        def vtItem = template.catalogItems.find { it.name == "Test process-1" }
         vtItem.tailoringReferences.add(
                 [
                     catalogItem: [targetUri: '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40'],
@@ -203,7 +203,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item sub type"() {
         given: "a template with an invalid sub type"
         var template = getTemplateBody()
-        def vtElement = template.catalogItems.find { it.namespace == "VT.p-1" }
+        def vtElement = template.catalogItems.find { it.name == "Test process-1" }
         vtElement.subType = "PRO_fit"
 
         when: "trying to create the template"
@@ -216,7 +216,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with sub-type-less catalog item"() {
         given: "a template with a catalog item that has no sup type"
         var template = getTemplateBody()
-        def vtItem = template.catalogItems.find { it.namespace == "VT.p-1" }
+        def vtItem = template.catalogItems.find { it.name == "Test process-1" }
         vtItem.subType = null
 
         when: "trying to create the template"
@@ -262,7 +262,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"
         var template = getTemplateBody()
-        def vtItem = template.catalogItems.find{it.namespace == "VT.p-1"}
+        def vtItem = template.catalogItems.find{it.name == "Test process-1"}
         vtItem.domains = [
             (UUID.randomUUID()): [
                 riskValues: [
@@ -311,7 +311,6 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     'name': 'Test process-1',
                     'elementType': 'process',
                     'id': 'f55a860f-3bf0-4f63-9c8c-1c2a82762e40',
-                    'namespace': 'VT.p-1',
                     'tailoringReferences': []],
                 [
                     'abbreviation': 'c-1',
@@ -322,7 +321,6 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     'subType': 'CTL_TOM',
                     'status': 'IN_PROGRESS',
                     'id': 'dc46afdd-c957-4957-99da-f0a5f32dc457',
-                    'namespace': 'TOM.c-1',
                     'tailoringReferences': [
                         [
                             'catalogItem': [

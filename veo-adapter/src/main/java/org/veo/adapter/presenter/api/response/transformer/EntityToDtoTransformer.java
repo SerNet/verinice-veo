@@ -472,8 +472,6 @@ public final class EntityToDtoTransformer {
     source
         .getTailoringReferences()
         .forEach(tailoringReference -> target.add(tailoringReference, referenceAssembler));
-    // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
   }
 
   private <T extends TemplateItem<T>> void mapTemplateItem(
@@ -491,7 +489,6 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId().uuidValue());
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
-    target.setNamespace(source.getNamespace());
     if (includeDescriptionFromElement) {
       target.setDescription(source.getDescription());
     }

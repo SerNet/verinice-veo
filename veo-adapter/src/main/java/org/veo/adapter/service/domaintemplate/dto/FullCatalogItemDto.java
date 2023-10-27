@@ -77,10 +77,4 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem>
       @NonNull ReferenceAssembler referenceAssembler) {
     tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
   }
-
-  @Deprecated // TODO #2301 remove
-  @ToString.Include
-  @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
-  @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
-  private String namespace;
 }

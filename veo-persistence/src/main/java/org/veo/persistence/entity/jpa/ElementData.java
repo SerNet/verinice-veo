@@ -363,7 +363,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.setElementType(getModelType());
     item.setStatus(getStatus(domain));
     item.setSubType(getSubType(domain));
-    item.setNamespace(getSubType(domain) + "." + getAbbreviation());
     item.setCustomAspects(
         getCustomAspects(domain).stream()
             .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));

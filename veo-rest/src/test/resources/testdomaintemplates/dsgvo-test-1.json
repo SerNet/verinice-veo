@@ -19,7 +19,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.c-3",
       "subType": "CTL_TOM",
       "status": "NEW",
       "customAspects": {},
@@ -40,7 +39,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.c-1",
       "subType": "CTL_TOM",
       "status": "NEW",
       "customAspects": {},
@@ -61,7 +59,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.cc-1",
       "subType": "CTL_TOM",
       "status": "NEW",
       "customAspects": {},
@@ -82,7 +79,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.cc-2",
       "subType": "CTL_TOM",
       "status": "NEW",
       "customAspects": {},
@@ -92,7 +88,6 @@
     {
       "name": "Test process-1",
       "tailoringReferences": [],
-      "namespace": "VT.p-1",
       "subType": "PRO_DataProcessing",
       "status": "NEW",
       "customAspects": {},
@@ -104,7 +99,6 @@
       "abbreviation": "c-2",
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
       "tailoringReferences": [],
-      "namespace": "TOM.c-2",
       "subType": "CTL_TOM",
       "status": "NEW",
       "customAspects": {},

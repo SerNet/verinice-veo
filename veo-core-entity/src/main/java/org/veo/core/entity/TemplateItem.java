@@ -30,12 +30,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 
 public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable, Versioned {
 
-  @Deprecated // TODO #2301 remove
-  String getNamespace();
-
-  @Deprecated // TODO #2301 remove
-  void setNamespace(String aNamespace);
-
   @NotNull
   String getElementType();
 

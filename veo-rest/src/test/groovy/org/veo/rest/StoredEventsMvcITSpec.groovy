@@ -486,7 +486,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         domainTemplate.tap {
             templateVersion = '1'
             catalogItems.first().tap {
-                namespace = 'my namespace'
                 description = 'Ignore this!'
             }
             catalogItems[1].tap {

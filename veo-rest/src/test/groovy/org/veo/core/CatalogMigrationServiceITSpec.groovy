@@ -97,7 +97,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             elementType = Document.SINGULAR_TERM
             subType = "Manual"
             status = "NEW"
-            namespace = "routerManual"
+            name = "router manual"
             customAspects = [
                 "file": [
                     "extension": "pdf",
@@ -120,7 +120,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         }
 
         then:
-        with(catalogItems.find{it.namespace == "routerManual"}) {
+        with(catalogItems.find{it.name == "router manual"}) {
             def attributes = customAspects.file
             attributes.extension == "pdf"
             attributes.size == null
@@ -131,19 +131,19 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         given:
         def manualAuthor = newCatalogItem(domain, {
             elementType = Person.SINGULAR_TERM
-            namespace = "manualAuthor"
+            name = "manual author"
             subType = "author"
             status = "NEW"
         })
         def randomAsset = newCatalogItem(domain, {
             elementType = Asset.SINGULAR_TERM
-            namespace = "randomAsset"
+            name = "random asset"
             subType = "asset"
             status = "NEW"
         })
         newCatalogItem(domain, {
             elementType = Document.SINGULAR_TERM
-            namespace = "routerManual"
+            name = "router manual"
             subType = "Manual"
             status = "NEW"
             tailoringReferences = [
@@ -170,21 +170,21 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         }
 
         then:
-        with(domain.catalogItems.find{it.namespace == "routerManual"}) {
-            it.tailoringReferences*.target*.namespace == ["manualAuthor"]
+        with(domain.catalogItems.find{it.name == "router manual"}) {
+            it.tailoringReferences*.target*.name == ["manual author"]
         }
     }
 
     def "invalid attribute on internal and external link references is removed"() {
         given: "a catalog with two links that have some invalid attributes"
         def routerManual = newCatalogItem(domain, {
-            namespace = "routerManual"
+            name = "router manual"
             elementType = Document.SINGULAR_TERM
             subType = "Manual"
             status = "NEW"
         })
         def manualAuthor = newCatalogItem(domain, {
-            namespace = "manualAuthor"
+            name = "manual author"
             elementType = Person.SINGULAR_TERM
             subType = "author"
             status = "NEW"
@@ -197,7 +197,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             ]
         })
         newCatalogItem(domain,{
-            namespace = "thermometerManual"
+            name = "thermometer manual"
             elementType = Document.SINGULAR_TERM
             subType = "Manual"
             status = "NEW"
@@ -224,14 +224,14 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         }
 
         then: "only the valid attributes remain"
-        with(domain.catalogItems.find{it.namespace == "manualAuthor"}) {
-            with(it.tailoringReferences.find{it.target.namespace == "routerManual"}) {
+        with(domain.catalogItems.find{it.name == "manual author"}) {
+            with(it.tailoringReferences.find{it.target.name == "router manual"}) {
                 attributes.copyrightYear == 2019
                 attributes.placeOfAuthoring == null
             }
         }
-        with(domain.catalogItems.find{it.namespace == "thermometerManual"}) {
-            with(it.tailoringReferences.find{it.target.namespace == "manualAuthor"}) {
+        with(domain.catalogItems.find{it.name == "thermometer manual"}) {
+            with(it.tailoringReferences.find{it.target.name == "manual author"}) {
                 attributes.copyrightYear == null
                 attributes.placeOfAuthoring == "She wrote it in her armchair"
             }

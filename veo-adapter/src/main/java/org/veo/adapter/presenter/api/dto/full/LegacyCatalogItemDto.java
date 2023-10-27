@@ -22,7 +22,6 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -66,11 +65,6 @@ public class LegacyCatalogItemDto extends AbstractVersionedSelfReferencingDto
 
   @Schema(description = "The actual element's description", accessMode = AccessMode.READ_ONLY)
   private String description;
-
-  @ToString.Include
-  @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
-  @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
-  private String namespace;
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

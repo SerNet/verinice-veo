@@ -49,7 +49,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         then: "catalog items are present"
         domainDto.catalogItems.size() == 65
         with (vvt) {
-            namespace == "TOM.VVT"
+            name == "VVT"
             tailoringReferences.size() == 8
             description == "VVT-Prozess"
             subType == "PRO_DataProcessing"

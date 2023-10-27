@@ -135,7 +135,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         and: "a catalog item that conforms to the element type definition"
         executeInTransaction {
             catalogItemRepository.save(newCatalogItem(domain) {
-                namespace = "tte1"
                 name = "my little catalog asset"
                 status = "NEW"
                 elementType = "asset"

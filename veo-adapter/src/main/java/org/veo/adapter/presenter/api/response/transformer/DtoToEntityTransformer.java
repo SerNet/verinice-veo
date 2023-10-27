@@ -303,8 +303,6 @@ public final class DtoToEntityTransformer {
         source.getCustomAspects().getValue().entrySet().stream()
             .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
     source.getTailoringReferences().forEach(tr -> addTailoringReference(tr, target, idRefResolver));
-    // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
   }
 
   private <T extends Identifiable> T createIdentifiable(Class<T> type, Object source) {

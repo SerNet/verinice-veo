@@ -10,7 +10,6 @@
       "abbreviation": "c-2",
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
       "tailoringReferences": [],
-      "namespace": "TOM.c-2",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -22,7 +21,6 @@
       "abbreviation": "c-1",
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
       "tailoringReferences": [],
-      "namespace": "TOM.c-1",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -43,7 +41,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.c-4",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -64,7 +61,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.cc-1",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -85,7 +81,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.c-3",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -106,7 +101,6 @@
           "attributes": {}
         }
       ],
-      "namespace": "TOM.cc-2",
       "subType": "TOM",
       "status": "NEW",
       "customAspects": {},
@@ -118,7 +112,6 @@
       "abbreviation": "aa-1",
       "description": "Generally speaking, a server's purpose is to serve man.",
       "tailoringReferences": [],
-      "namespace": "Server.aa-1",
       "subType": "Server",
       "status": "RUNNING",
       "customAspects": {},

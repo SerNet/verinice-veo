@@ -139,7 +139,7 @@ public class CatalogController extends AbstractEntityController {
     }
 
     final GetCatalogItemsUseCase.InputData inputData =
-        new GetCatalogItemsUseCase.InputData(Optional.empty(), Key.uuidFrom(id), client);
+        new GetCatalogItemsUseCase.InputData(Key.uuidFrom(id), client);
 
     return useCaseInteractor.execute(
         getCatalogItemsUseCase,

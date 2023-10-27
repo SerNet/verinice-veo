@@ -166,7 +166,6 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
                     'name': 'Test process-1',
                     'elementType': 'process',
                     'id': 'f55a860f-3bf0-4f63-9c8c-1c2a82762e40',
-                    'namespace': 'VT.p-1',
                     'tailoringReferences': []],
                 [
                     'abbreviation': 'c-1',
@@ -177,7 +176,6 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
                     'subType': 'CTL_TOM',
                     'status': 'IN_PROGRESS',
                     'id': 'dc46afdd-c957-4957-99da-f0a5f32dc457',
-                    'namespace': 'TOM.c-1',
                     'tailoringReferences': [
                         [
                             'catalogItem': [

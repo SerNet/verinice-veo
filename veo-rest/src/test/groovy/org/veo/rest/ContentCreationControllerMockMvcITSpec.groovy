@@ -451,7 +451,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
             tailoringReferences[0].linkType == "process_requiredApplications"
@@ -462,7 +461,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "SCN_Scenario"
             abbreviation == "Cont"
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
@@ -472,7 +470,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "SCP_Scope"
             abbreviation == "Cont"
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.MEMBER
         }
@@ -843,7 +840,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 2
             with(tailoringReferences.sort {it.referenceType}) {
                 it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
@@ -856,7 +852,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "SCN_Scenario"
             abbreviation == "Cont"
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 2
             tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
@@ -971,7 +966,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
-            namespace == subType+ "."+abbreviation
             tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
             tailoringReferences[0].linkType == "process_requiredApplications"
@@ -1032,7 +1026,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
-            namespace == subType+ "."+abbreviation
             appliedCatalogItem.name == "asset"
             tailoringReferences.size() == 2
             with(tailoringReferences.sort {it.referenceType}) {

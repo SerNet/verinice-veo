@@ -18,7 +18,6 @@
 package org.veo.core.usecase.catalogitem;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -48,18 +47,12 @@ public class GetCatalogItemsUseCase
             .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class))
             .getCatalogItems()
             .stream()
-            .filter(
-                input
-                    .namespace
-                    .map(EntitySpecifications::hasNamespace)
-                    .orElse(EntitySpecifications.matchAll()))
             .toList());
   }
 
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
-    Optional<String> namespace;
     Key<UUID> domainId;
     Client authenticatedClient;
   }

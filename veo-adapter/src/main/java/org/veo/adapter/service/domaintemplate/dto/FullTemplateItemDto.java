@@ -43,15 +43,11 @@ public interface FullTemplateItemDto<T extends TemplateItem<T>> extends Nameable
 
   CustomAspectMapDto getCustomAspects();
 
-  String getNamespace();
-
   void setId(String id);
 
   void setStatus(String status);
 
   void setCustomAspects(CustomAspectMapDto customAspects);
-
-  void setNamespace(String namespace);
 
   String getElementType();
 

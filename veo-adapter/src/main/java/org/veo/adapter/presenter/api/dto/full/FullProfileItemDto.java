@@ -23,7 +23,6 @@ import java.util.Set;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -32,7 +31,6 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.VeoConstants;
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
@@ -71,10 +69,4 @@ public class FullProfileItemDto extends AbstractProfileItemDto
       @NonNull ReferenceAssembler referenceAssembler) {
     tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
   }
-
-  @Deprecated // TODO #2301 remove
-  @ToString.Include
-  @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
-  @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
-  private String namespace;
 }

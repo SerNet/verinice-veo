@@ -19,7 +19,6 @@ package org.veo.core.entity.specification;
 
 import java.util.UUID;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
@@ -38,10 +37,6 @@ public final class EntitySpecifications {
 
   public static EntitySpecification<Identifiable> hasId(Key<UUID> id) {
     return o -> o.getId().equals(id);
-  }
-
-  public static EntitySpecification<CatalogItem> hasNamespace(String namespace) {
-    return catalogItem -> namespace.equals(catalogItem.getNamespace());
   }
 
   public static SameClientSpecification hasSameClient(Client client) {

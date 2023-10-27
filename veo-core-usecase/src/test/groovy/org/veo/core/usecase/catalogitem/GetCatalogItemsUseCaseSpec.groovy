@@ -34,11 +34,8 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
         existingDomain.active >> true
 
         CatalogItem ci1 = Mock()
-        ci1.namespace >> 'A.B.C'
         CatalogItem ci2 = Mock()
-        ci2.namespace >> 'A.B.C.D'
         CatalogItem ci3 = Mock()
-        ci3.namespace >> 'A.B.C.D'
 
         existingDomain.catalogItems >> [ci1, ci2, ci3]
 
@@ -47,7 +44,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all catalog items for an unknown domain"() {
         when:
-        usecase.execute(new InputData(Optional.empty(), Key.newUuid(), anotherClient))
+        usecase.execute(new InputData(Key.newUuid(), anotherClient))
 
         then:
         thrown(NotFoundException)
@@ -55,29 +52,9 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all catalog items for a domain"() {
         when:
-        def output = usecase.execute(new InputData(Optional.empty(), existingDomainId, anotherClient))
+        def output = usecase.execute(new InputData(existingDomainId, anotherClient))
 
         then:
         output.catalogItems.size() == 3
-    }
-
-    def "retrieve all catalog items for a namespace"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.of('A.B.C.D'), existingDomainId, anotherClient))
-
-        then:
-        output.catalogItems.size() == 2
-
-        when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C'), existingDomainId, anotherClient))
-
-        then:
-        output.catalogItems.size() == 1
-
-        when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C.LL'), existingDomainId, anotherClient))
-
-        then:
-        output.catalogItems.size() == 0
     }
 }

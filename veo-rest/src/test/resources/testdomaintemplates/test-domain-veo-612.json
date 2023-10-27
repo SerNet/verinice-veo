@@ -25,7 +25,6 @@
           "id": "fe238479-eb41-4479-a778-91bedc756051"
         }
       ],
-      "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",
       "customAspects": {},
@@ -45,7 +44,6 @@
           "id": "fe638479-eb41-4479-a778-91bedc756051"
         }
       ],
-      "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",
       "customAspects": {},
@@ -65,7 +63,6 @@
           "id": "fe638479-eb41-4479-a778-91bedc756051"
         }
       ],
-      "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",
       "customAspects": {},
