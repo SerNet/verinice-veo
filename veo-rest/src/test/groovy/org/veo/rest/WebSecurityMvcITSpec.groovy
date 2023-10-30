@@ -264,7 +264,6 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 break
             case [
                 "/translations",
-                "/catalogs",
                 "/types"
             ]:
                 assert mvc.perform(MockMvcRequestBuilders.post(entity))

@@ -283,9 +283,7 @@ export function loadDashboard() {
   loadElementsAndSleep("/types", 0);
   loadReports();
   loadElementAndSleep("/units/", unitId, 0);
-  loadCatalogs();
   loadElementAndSleep("/domains/", domainId, 0);
-  loadCatalogs();
   loadForms();
   loadForms();
   loadSchema("asset");
@@ -634,44 +632,6 @@ export function loadHistory(unitId) {
   var json = result.json();
   check(result, {
     "Get history returned an entry": (r) => json.length > 0
-  });
-
-  return result;
-}
-
-export function loadCatalogs() {
-  check(domainId, {
-    "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
-  });
-
-  if(!checkIfValidUUID(domainId)) {
-    console.error("Domain ID is not a valid UUID: " + domainId);
-  }
-
-  var url = new URL(VEO_BASE_URL + "/catalogs");
-  var params = {
-    headers: {
-      Authorization: TOKEN,
-    },
-    tags: { 
-      name: 'GET /catalogs'
-    },
-    timeout: REQUEST_TIMEOUT
-  };
-  url.searchParams.append('domain', domainId);
-  var result = http.get(url.toString(), params);
-
-  check(result, {
-    "Get catalogs result is status 200": (r) => r.status === 200
-  });
-  if (result.status != 200) {
-    console.error("GET catalogs status: " + result.status);
-    console.error("GET catalogs URL: " + url);
-  }
-
-  var json = result.json();
-  check(result, {
-    "Get catalogs returned a catalog": (r) => json.length > 0
   });
 
   return result;

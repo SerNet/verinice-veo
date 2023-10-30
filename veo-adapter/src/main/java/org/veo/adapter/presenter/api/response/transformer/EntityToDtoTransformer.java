@@ -60,11 +60,9 @@ import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
-import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -83,8 +81,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
-import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
-import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -109,7 +105,6 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -120,7 +115,6 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
-import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
@@ -162,10 +156,7 @@ public final class EntityToDtoTransformer {
       return transformProfileItem2Dto(profileitem);
     }
     if (source instanceof CatalogItem catalogItem) {
-      return transformCatalogItem2Dto(catalogItem, false);
-    }
-    if (source instanceof TailoringReference tailoringReference) {
-      return transformTailoringReference2Dto(tailoringReference);
+      return transformCatalogItem2Dto(catalogItem);
     }
     throw new IllegalArgumentException(
         "No transform method defined for " + source.getClass().getSimpleName());
@@ -480,62 +471,6 @@ public final class EntityToDtoTransformer {
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setSubType(source.getSubType());
-  }
-
-  @Deprecated // TODO #2301 remove
-  public LegacyCatalogItemDto transformCatalogItem2Dto(
-      @Valid CatalogItem source, boolean includeDescriptionFromElement) {
-    LegacyCatalogItemDto target = new LegacyCatalogItemDto();
-    target.setId(source.getId().uuidValue());
-    mapVersionedSelfReferencingProperties(source, target);
-    mapNameableProperties(source, target);
-    if (includeDescriptionFromElement) {
-      target.setDescription(source.getDescription());
-    }
-    target.setTailoringReferences(
-        source.getTailoringReferences().stream()
-            .map(this::transformTailoringReference2Dto)
-            .collect(toSet()));
-    return target;
-  }
-
-  @Deprecated() // TODO #2301 remove
-  public FullCatalogDto transformCatalog2Dto(@Valid Domain source) {
-    FullCatalogDto target = new FullCatalogDto();
-
-    target.setId(source.getId().uuidValue());
-    target.setDomainTemplate(IdRef.from(source, referenceAssembler));
-    mapNameableProperties(source, target);
-    mapVersionedSelfReferencingProperties(source, target);
-
-    if (source.getDomainTemplate() != null) {
-      target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
-    }
-    target.setCatalogItems(convertReferenceSet(source.getCatalogItems()));
-
-    return target;
-  }
-
-  @Deprecated // TODO #2301 remove
-  public TailoringReferenceDto<CatalogItem> transformTailoringReference2Dto(
-      @Valid TailoringReference<CatalogItem> source) {
-    TailoringReferenceDto<CatalogItem> target = null;
-    if (source.isLinkTailoringReferences()) {
-      LinkTailoringReference linkRef = (LinkTailoringReference) source;
-      target =
-          new LinkTailoringReferenceDto<CatalogItem>(
-              linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
-    } else {
-      target = new TailoringReferenceDto<>();
-    }
-
-    target.setId(source.getIdAsString());
-    target.setReferenceType(source.getReferenceType());
-
-    if (source.getTarget() != null) {
-      target.setLegacyTarget(IdRef.from(source.getTarget(), referenceAssembler));
-    }
-    return target;
   }
 
   public FullUnitDto transformUnit2Dto(@Valid Unit source) {

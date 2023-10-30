@@ -42,7 +42,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.veo.core.entity.EntityType;
-import org.veo.rest.CatalogController;
 import org.veo.rest.DomainController;
 import org.veo.rest.TypeDefinitionsController;
 import org.veo.rest.UnitController;
@@ -77,7 +76,6 @@ public class WebSecurity {
   private static final String[] DOMAIN_RESOURCE_PATHS = {
     EntitySchemaResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     TranslationsResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
-    CatalogController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     TypeDefinitionsController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES
   };
 
