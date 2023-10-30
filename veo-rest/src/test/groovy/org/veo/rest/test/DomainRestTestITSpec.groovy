@@ -333,7 +333,7 @@ class DomainRestTestITSpec extends DomainRestTest {
             parts.first().displayName.endsWith("example person 1")
         }
 
-        when: "create new catatlog items from the unit"
+        when: "creating new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=$unitId",
                 [:], null, 204, CONTENT_CREATOR)
 
@@ -354,14 +354,14 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         then:
         exportedDomain !=null
-        with(exportedDomain) {
-            catalogItems.size() == 4
-            with(catalogItems.find { it.name == "example person 2" }) {
+        with(exportedDomain.catalogItems) {
+            size() == 4
+            with(it.find { it.name == "example person 2" }) {
                 tailoringReferences.size() == 1
                 tailoringReferences[0].referenceType == "PART"
                 tailoringReferences[0].catalogItem.displayName == "example person 1"
             }
-            with(catalogItems.find { it.name == "example person 1" }) {
+            with(it.find { it.name == "example person 1" }) {
                 tailoringReferences.size() == 1
                 tailoringReferences[0].referenceType == "COMPOSITE"
                 tailoringReferences[0].catalogItem.displayName == "example person 2"
