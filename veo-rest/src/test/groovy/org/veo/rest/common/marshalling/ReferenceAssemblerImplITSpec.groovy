@@ -23,6 +23,7 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
+import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
 import org.veo.rest.configuration.TypeExtractor
 
@@ -55,16 +56,19 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
         type << EntityType.TYPES
     }
 
-    def createEntity(type) {
+    def createEntity(Class<Identifiable> type) {
         def entity = Stub(type) {
-            getId () >> Key.newUuid()
+            def key = Key.newUuid()
+            getId () >> key
+            getIdAsString() >> key.uuidValue()
             getModelInterface() >> type
         }
         if (type == CatalogItem) {
-            def domain = Stub(Domain) {
-                getId() >> Key.newUuid()
+            entity.domainBase >> Stub(Domain) {
+                def key = Key.newUuid()
+                getId() >> key
+                getIdAsString() >> key.uuidValue()
             }
-            entity.domainBase >> domain
         }
         entity
     }

@@ -21,13 +21,14 @@ import static java.util.UUID.randomUUID
 
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
-import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto
+import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
@@ -117,10 +118,13 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.parseType(url) == type
 
         where:
-        url                                                                                                              | type        | dtoType
+        url                                                                                                                    | type        | dtoType
         // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
-        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | LegacyCatalogItemDto
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'         | Asset       | FullAssetDto
+        'http://localhost:9000/domains/37dccbdc-7d58-4929-9d96-df8c533ea5a5/catalo-items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | ShortCatalogItemDto
+        // TODO #2504 remove legacy URL support
+        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a'       | CatalogItem | FullCatalogItemDto
+        'http://localhost:9000/catalogitems/47799d6d-7887-48d5-9cd2-1af23e0b467a'                                              | CatalogItem | FullCatalogItemDto
     }
 
     def "target reference for #type and #id is #reference"() {
@@ -165,19 +169,19 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create target URI for catalog item"() {
         given:
-        def catalogId = '371c5f43-cd7c-4e4f-b45b-59a7337bf489'
+        def domainId = '371c5f43-cd7c-4e4f-b45b-59a7337bf489'
         def itemId = 'ccf66944-e782-4221-8e2a-65209d2826f1'
         Domain domain = Stub {
-            getId () >> Key.uuidFrom(catalogId)
+            idAsString >> domainId
         }
         CatalogItem catalogItem = Stub {
-            getId () >> Key.uuidFrom(itemId)
-            getDomainBase()  >> domain
-            getModelInterface() >> CatalogItem
+            idAsString >> itemId
+            domainBase >> domain
+            modelInterface >> CatalogItem
         }
 
         expect:
-        referenceAssembler.targetReferenceOf(catalogItem) == "/catalogs/${catalogId}/items/${itemId}"
+        referenceAssembler.targetReferenceOf(catalogItem) == "/domains/${domainId}/catalog-items/${itemId}"
     }
 
     def "resources reference for #type is #reference"() {

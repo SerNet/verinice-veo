@@ -19,6 +19,7 @@ package org.veo.rest.common
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
@@ -30,7 +31,7 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
-import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto
+import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.rest.configuration.TypeExtractor
@@ -54,23 +55,25 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         typeExtractor.parseDtoType("http://localhost:9000/apps/veo" + uri).get() == dtoType
 
         where:
-        uri                                                                                         | dtoType
-        '/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | FullAssetDto
-        '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | AssetRiskDto
-        '/assets/40331ed5-be07-4c69-bf99-553811ce5454?foo=bar'                                      | FullAssetDto
-        '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | FullControlDto
-        '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | FullScopeDto
-        '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | FullScenarioDto
-        '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | FullIncidentDto
-        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
-        '/controls/28df429d-da5e-431a-a2d8-488c0741fb9f'                                            | FullControlDto
-        '/documents/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | FullDocumentDto
-        '/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | FullProcessDto
-        '/persons/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullPersonDto
-        '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                               | FullUnitDto
-        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
-        '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | LegacyCatalogItemDto
-        '/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                        | LegacyCatalogItemDto
+        uri                                                                                                | dtoType
+        '/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                                     | FullAssetDto
+        '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'          | AssetRiskDto
+        '/assets/40331ed5-be07-4c69-bf99-553811ce5454?foo=bar'                                             | FullAssetDto
+        '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                                   | FullControlDto
+        '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                                     | FullScopeDto
+        '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                                  | FullScenarioDto
+        '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                                  | FullIncidentDto
+        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                    | FullDomainDto
+        '/controls/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                   | FullControlDto
+        '/documents/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                  | FullDocumentDto
+        '/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                  | FullProcessDto
+        '/persons/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                    | FullPersonDto
+        '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                      | FullUnitDto
+        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                    | FullDomainDto
+        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f/catalog-items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | ShortCatalogItemDto
+        // TODO #2504 remove legacy catalog URL parsing
+        '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'        | FullCatalogItemDto
+        '/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                               | FullCatalogItemDto
     }
 
     def "The invalid URI #uri is rejected"() {

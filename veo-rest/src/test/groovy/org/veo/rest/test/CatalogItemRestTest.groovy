@@ -32,6 +32,7 @@ class CatalogItemRestTest extends VeoRestTest{
                 description ==~ /Lorem ipsum .*/
                 elementType == "control"
                 subType == "TOM"
+                owner.owner.get(_self).body == it
             }
         }
 

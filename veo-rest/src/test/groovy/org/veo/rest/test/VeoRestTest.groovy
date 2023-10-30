@@ -284,7 +284,7 @@ class VeoRestTest extends Specification {
     }
 
     Collection<Object> getCatalogItems(String domainId) {
-        get("/catalogs/$domainId/items").body
+        get("/domains/$domainId/catalog-items?size=9000").body.items
     }
 
     def getControl(id) {

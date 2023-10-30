@@ -36,6 +36,8 @@ public interface CatalogItemRepository
         AbstractTemplateItemRepository<CatalogItem> {
   Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids, Client client);
 
+  CatalogItem getByIdInDomain(Key<UUID> catalogItemId, Domain domain);
+
   Set<CatalogItem> findAllByDomain(Domain domain);
 
   Set<SubTypeCount> getCountsBySubType(Domain domain);

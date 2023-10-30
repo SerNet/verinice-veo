@@ -55,22 +55,8 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         then: "it contains a type definition from our template"
         processSchema.properties.customAspects.properties.process_processing.properties.attributes.properties.process_processing_asProcessor.type == "boolean"
 
-        when: "fetching the catalog items"
-        def catalogItems = getCatalogItems(domain.id)
-
-        then: "they are connected by a tailoring reference"
-        catalogItems*.name ==~ ["Control-1", "Test process-1"]
-        def tom = catalogItems.find { it.name == "Control-1" }
-        def vt = catalogItems.find { it.name == "Test process-1" }
-        tom.tailoringReferences.first().catalogItem.targetUri == vt._self
-
-        when: "fetching the catalog item elements"
-        def catalogItemElements = catalogItems.collect { ci ->
-            get(ci._self).body
-        }
-
-        then: "their names are set"
-        catalogItemElements*.name.sort() == ["Control-1", "Test process-1"]
+        and: "catalog items are present"
+        getCatalogItems(domain.id)*.name ==~ ["Control-1", "Test process-1"]
 
         expect: "updating to fail"
         post("/content-creation/domain-templates", template, 409)

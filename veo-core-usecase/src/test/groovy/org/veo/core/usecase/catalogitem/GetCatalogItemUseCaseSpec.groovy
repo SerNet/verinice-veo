@@ -18,62 +18,60 @@
 package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.CatalogItemRepository
+import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCaseSpec
 
 class GetCatalogItemUseCaseSpec extends UseCaseSpec {
-
     CatalogItem catalogItem = Mock()
-
+    Client existingClient = Mock {
+        id >> Key.newUuid()
+    }
     Key existingDomainId = Key.newUuid()
-    Key catalogId = Key.newUuid()
     Key catalogItemId = Key.newUuid()
 
-    GetCatalogItemUseCase usecase = new GetCatalogItemUseCase()
+    DomainRepository domainRepository = Mock()
+    CatalogItemRepository catalogItemRepository = Mock()
+    GetCatalogItemUseCase usecase = new GetCatalogItemUseCase(domainRepository, catalogItemRepository)
 
     def setup() {
-        existingDomain.getId() >> existingDomainId
-        existingDomain.owner >> existingClient
+        domainRepository.getActiveById(existingDomainId, existingClient.id) >> existingDomain
+        domainRepository.getActiveById(_, _) >> { throw new NotFoundException("domain not found") }
 
-        catalogItem.getId() >> catalogItemId
-        catalogItem.getDomainBase() >> existingDomain
-        existingDomain.getCatalogItems() >> [catalogItem]
-        anotherClient.getDomains() >> []
+        catalogItemRepository.getByIdInDomain(catalogItemId, existingDomain) >> catalogItem
+        catalogItemRepository.getByIdInDomain(_, _) >> { throw new NotFoundException("item not found") }
     }
 
-    def "retrieve a catalogitem"() {
+    def "retrieve a catalog item"() {
         when:
-        existingDomain.isActive() >> true
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.of(existingDomainId), existingClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, existingClient))
 
         then:
-        output.catalogItem != null
-        output.catalogItem.id == catalogItemId
+        output.catalogItem == catalogItem
     }
 
-    def "retrieve a catalogitem for a deleted domain"() {
+    def "delegates item not found exception"() {
         when:
-        existingDomain.isActive() >> false
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.of(existingDomainId), existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), existingDomainId, existingClient))
 
         then:
         thrown(NotFoundException)
     }
 
-    def "retrieve a catalogitem for another client"() {
+    def "delegates domain not found exception"() {
         when:
-        existingDomain.isActive() >> true
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.empty(), anotherClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Key.newUuid(), existingClient))
 
         then:
         thrown(NotFoundException)
     }
 
-    def "retrieve an unknown catalogitem"() {
+    def "delegates not found exception for wrong client"() {
         when:
-        existingDomain.isActive() >> true
-        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), Optional.of(existingDomainId), existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, Mock(Client) { id >> Key.newUuid() }))
 
         then:
         thrown(NotFoundException)

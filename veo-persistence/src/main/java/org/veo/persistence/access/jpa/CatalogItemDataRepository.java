@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.annotation.Nonnull;
@@ -36,6 +37,9 @@ import org.veo.persistence.entity.jpa.DomainData;
 
 public interface CatalogItemDataRepository
     extends IdentifiableVersionedDataRepository<CatalogItemData> {
+
+  @Query("select e from #{#entityName} e where e.dbId = ?1 and e.domain = ?2")
+  Optional<CatalogItem> findByIdInDomain(String id, DomainData domain);
 
   @Query(
       """

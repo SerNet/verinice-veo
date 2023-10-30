@@ -29,6 +29,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogItemQuery;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.SubTypeCount;
@@ -62,6 +63,17 @@ public class CatalogItemRepositoryImpl
             false)
         .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public CatalogItem getByIdInDomain(Key<UUID> catalogItemId, Domain domain) {
+    return catalogItemDataRepository
+        .findByIdInDomain(catalogItemId.uuidValue(), (DomainData) domain)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Catalog item %s not found in domain %s"
+                        .formatted(catalogItemId.uuidValue(), domain.getIdAsString())));
   }
 
   @Override

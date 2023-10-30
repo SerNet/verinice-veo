@@ -709,8 +709,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetCatalogItemUseCase getCatalogItemUseCase() {
-    return new GetCatalogItemUseCase();
+  public GetCatalogItemUseCase getCatalogItemUseCase(
+      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
+    return new GetCatalogItemUseCase(domainRepository, catalogItemRepository);
   }
 
   @Bean

@@ -294,10 +294,10 @@ class DomainRestTestITSpec extends DomainRestTest {
             owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"]
         ])
 
-        and: "create new catatlog items from the unit"
+        and: "create new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=$catalogSourceUnitId",
                 [:], null, 204, CONTENT_CREATOR)
-        def catalogItems = get("/catalogs/${domainId}/items").body
+        def catalogItems = get("/domains/${domainId}/catalog-items").body.items
 
         then:
         catalogItems.size() == 4
@@ -338,7 +338,7 @@ class DomainRestTestITSpec extends DomainRestTest {
                 [:], null, 204, CONTENT_CREATOR)
 
         and:
-        catalogItems = get("/catalogs/${domainId}/items").body
+        catalogItems = get("/domains/${domainId}/catalog-items").body.items
 
         then:
         catalogItems != null
@@ -359,12 +359,12 @@ class DomainRestTestITSpec extends DomainRestTest {
             with(it.find { it.name == "example person 2" }) {
                 tailoringReferences.size() == 1
                 tailoringReferences[0].referenceType == "PART"
-                tailoringReferences[0].catalogItem.displayName == "example person 1"
+                tailoringReferences[0].target.displayName == "example person 1"
             }
             with(it.find { it.name == "example person 1" }) {
                 tailoringReferences.size() == 1
                 tailoringReferences[0].referenceType == "COMPOSITE"
-                tailoringReferences[0].catalogItem.displayName == "example person 2"
+                tailoringReferences[0].target.displayName == "example person 2"
             }
         }
     }

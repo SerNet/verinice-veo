@@ -73,7 +73,6 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
-import org.veo.rest.CatalogController;
 import org.veo.rest.ContentCreationController;
 import org.veo.rest.ControlController;
 import org.veo.rest.ControlInDomainController;
@@ -183,14 +182,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (CatalogItem.class.isAssignableFrom(type)) {
       CatalogItem catalogItem = (CatalogItem) identifiable;
       return linkTo(
-              methodOn(CatalogController.class)
+              methodOn(DomainController.class)
                   .getCatalogItem(
                       ANY_AUTH,
-                      catalogItem.getDomainBase().getId().uuidValue(),
-                      id,
-                      null,
+                      catalogItem.getDomainBase().getIdAsString(),
+                      catalogItem.getIdAsString(),
                       ANY_REQUEST))
-          .withRel(CatalogController.URL_BASE_PATH)
+          .withRel(DomainController.URL_BASE_PATH)
           .expand()
           .getHref();
     }

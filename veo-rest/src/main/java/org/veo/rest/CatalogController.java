@@ -177,8 +177,7 @@ public class CatalogController extends AbstractEntityController {
     CompletableFuture<LegacyCatalogItemDto> catalogitemFuture =
         useCaseInteractor.execute(
             getCatalogItemUseCase,
-            new GetCatalogItemUseCase.InputData(
-                Key.uuidFrom(itemId), Optional.of(Key.uuidFrom(id)), client),
+            new GetCatalogItemUseCase.InputData(Key.uuidFrom(itemId), Key.uuidFrom(id), client),
             output ->
                 entityToDtoTransformer.transformCatalogItem2Dto(output.getCatalogItem(), false));
     return catalogitemFuture.thenApply(

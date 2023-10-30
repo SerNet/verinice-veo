@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -25,42 +24,34 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.EntitySpecifications;
+import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+@RequiredArgsConstructor
 public class GetCatalogItemUseCase
     implements TransactionalUseCase<
         GetCatalogItemUseCase.InputData, GetCatalogItemUseCase.OutputData> {
+  private final DomainRepository domainRepository;
+  private final CatalogItemRepository catalogItemRepository;
 
   @Override
   public OutputData execute(InputData input) {
-
-    CatalogItem catalogItem =
-        input.getAuthenticatedClient().getDomains().stream()
-            .filter(EntitySpecifications.isActive())
-            .filter(
-                input
-                    .domainId
-                    .map(EntitySpecifications::hasId)
-                    .orElse(EntitySpecifications.matchAll()))
-            .flatMap(d -> d.getCatalogItems().stream())
-            .filter(item -> item.getId().equals(input.itemId))
-            .findFirst()
-            .orElseThrow(() -> new NotFoundException(input.itemId, CatalogItem.class));
-
-    return new OutputData(catalogItem);
+    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    return new OutputData(catalogItemRepository.getByIdInDomain(input.itemId, domain));
   }
 
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
-    Key<UUID> itemId;
-    Optional<Key<UUID>> domainId;
-    Client authenticatedClient;
+    @NonNull Key<UUID> itemId;
+    @NonNull Key<UUID> domainId;
+    @NonNull Client authenticatedClient;
   }
 
   @Valid

@@ -18,14 +18,20 @@
 package org.veo.rest.common;
 
 import java.net.URI;
+import java.util.function.Function;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Versioned;
+import org.veo.core.usecase.common.ETag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -44,6 +50,16 @@ public class RestApiResponse {
     URI location = URI.create(urlBasePath + "/" + resourceId);
     BodyBuilder bodyBuilder = ResponseEntity.created(location);
     return bodyBuilder.body(body);
+  }
+
+  public static <TEntity extends Identifiable & Versioned, TDto>
+      ResponseEntity<TDto> okOrNotModified(
+          TEntity entity, Function<TEntity, TDto> transformer, WebRequest webRequest) {
+    var etag = ETag.from(entity);
+    if (webRequest.checkNotModified(etag)) {
+      return ResponseEntity.status(HttpStatus.NOT_MODIFIED.value()).build();
+    }
+    return ResponseEntity.ok().eTag(etag).body(transformer.apply(entity));
   }
 
   public static ResponseEntity<ApiResponseBody> created(String location, String message) {

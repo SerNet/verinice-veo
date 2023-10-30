@@ -123,7 +123,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         }
         catalogItems.size() > 0
         catalogItems.forEach({ item ->
-            def itemMessages = messages.findAll { it.uri?.contains("/items/$item.idAsString") }
+            def itemMessages = messages.findAll { it.uri?.contains("/catalog-items/$item.idAsString") }
             assert itemMessages.size() == 1
 
             with(itemMessages.first()) {

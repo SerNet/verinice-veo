@@ -197,7 +197,7 @@ class UnitImportRestTest extends VeoRestTest {
     def "incarnated catalog items are tolerated"() {
         given: "an incarnated catalog item"
         def oldUnitUri = "/units/" + postNewUnit().resourceId
-        def catalogItemId = get("/catalogs/$dsgvoDomainId/items").body.find { it.namespace == "TOM.DS-G.38" }.id
+        def catalogItemId = get("/domains/$dsgvoDomainId/catalog-items?size=100").body.items.find { it.abbreviation == "DS-G.38" }.id
         def incarnationDescriptions = get("$oldUnitUri/incarnations?itemIds=$catalogItemId").body
         post("$oldUnitUri/incarnations", incarnationDescriptions)
 

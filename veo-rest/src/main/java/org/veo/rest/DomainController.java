@@ -84,6 +84,7 @@ import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
@@ -101,6 +102,7 @@ import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.core.usecase.service.TypedId;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.RestApiResponse;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -133,6 +135,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetDomainsUseCase getDomainsUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
+  private final GetCatalogItemUseCase getCatalogItemUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final ApplyJsonProfileUseCase applyJsonProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
@@ -351,6 +354,32 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         out ->
             PagingMapper.toPage(
                 out.getPage(), entityToDtoTransformer::transformShortCatalogItem2Dto));
+  }
+
+  @GetMapping("/{domainId}/catalog-items/{itemId}")
+  @Operation(summary = "Loads a catalog item in a domain")
+  @ApiResponse(responseCode = "200", description = "Catalog item found")
+  @ApiResponse(responseCode = "304", description = "Not modified")
+  @ApiResponse(responseCode = "404", description = "Catalog item not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public @Valid Future<ResponseEntity<ShortCatalogItemDto>> getCatalogItem(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String itemId,
+      WebRequest request) {
+    return useCaseInteractor.execute(
+        getCatalogItemUseCase,
+        new GetCatalogItemUseCase.InputData(
+            Key.uuidFrom(itemId), Key.uuidFrom(domainId), getAuthenticatedClient(auth)),
+        out ->
+            RestApiResponse.okOrNotModified(
+                out.getCatalogItem(),
+                entityToDtoTransformer::transformShortCatalogItem2Dto,
+                request));
   }
 
   @Override
