@@ -26,17 +26,20 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Data
@@ -61,6 +64,12 @@ public class FullProfileItemDto extends AbstractProfileItemDto
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
   private Set<TailoringReferenceDto<ProfileItem>> tailoringReferences = new HashSet<>();
+
+  public void add(
+      @NonNull TailoringReference<ProfileItem> source,
+      @NonNull ReferenceAssembler referenceAssembler) {
+    tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
+  }
 
   @Deprecated // TODO #2301 remove
   @ToString.Include

@@ -17,11 +17,21 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.Optional;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.RiskTailoringReference;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,8 +40,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractTemplateItemDto extends AbstractVersionedSelfReferencingDto
-    implements NameableDto {
+public abstract class AbstractTemplateItemDto<T extends TemplateItem<T>>
+    extends AbstractVersionedSelfReferencingDto implements NameableDto {
   @NotNull private String name;
 
   private String abbreviation;
@@ -51,5 +61,34 @@ public abstract class AbstractTemplateItemDto extends AbstractVersionedSelfRefer
   @Override
   public Class<? extends Identifiable> getModelInterface() {
     return CatalogItem.class;
+  }
+
+  protected TailoringReferenceDto<T> createTailoringReferenceDto(
+      TailoringReference<T> source, ReferenceAssembler referenceAssembler) {
+    var target = supplyDto(source, referenceAssembler);
+    target.setId(source.getIdAsString());
+    target.setReferenceType(source.getReferenceType());
+    target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
+    return target;
+  }
+
+  private TailoringReferenceDto<T> supplyDto(
+      TailoringReference<T> source, ReferenceAssembler uriAssembler) {
+    if (source instanceof LinkTailoringReference<T> linkSource) {
+      var linkRefDto = new LinkTailoringReferenceDto<T>();
+      linkRefDto.setLinkType(linkSource.getLinkType());
+      linkRefDto.setAttributes(linkSource.getAttributes());
+      return linkRefDto;
+    } else if (source instanceof RiskTailoringReference<T> riskSource) {
+      var riskRefDto = new RiskTailoringReferenceDto<T>();
+      Optional.ofNullable(riskSource.getMitigation())
+          .map(m -> IdRef.from(m, uriAssembler))
+          .ifPresent(riskRefDto::setMitigation);
+      Optional.ofNullable(riskSource.getRiskOwner())
+          .map(p -> IdRef.from(p, uriAssembler))
+          .ifPresent(riskRefDto::setRiskOwner);
+      return riskRefDto;
+    }
+    return new TailoringReferenceDto<>();
   }
 }

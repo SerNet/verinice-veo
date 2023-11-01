@@ -19,17 +19,22 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
 
+import jakarta.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NonNull;
 
 public interface FullTemplateItemDto<T extends TemplateItem<T>> extends NameableDto {
   String getId();
@@ -73,4 +78,8 @@ public interface FullTemplateItemDto<T extends TemplateItem<T>> extends Nameable
   })
   @Schema(description = "References to other catalog items in the same domain")
   Set<TailoringReferenceDto<T>> getTailoringReferences();
+
+  void setTailoringReferences(Set<TailoringReferenceDto<T>> tailoringReferences);
+
+  void add(@Valid @NonNull TailoringReference<T> source, @NonNull ReferenceAssembler uriAssembler);
 }

@@ -26,23 +26,26 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogItemDto extends AbstractTemplateItemDto
+public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem>
     implements IdentifiableDto, FullTemplateItemDto<CatalogItem> {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
@@ -67,6 +70,12 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
   private Set<TailoringReferenceDto<CatalogItem>> tailoringReferences = new HashSet<>();
+
+  public void add(
+      @NonNull TailoringReference<CatalogItem> source,
+      @NonNull ReferenceAssembler referenceAssembler) {
+    tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
+  }
 
   @Deprecated // TODO #2301 remove
   @ToString.Include

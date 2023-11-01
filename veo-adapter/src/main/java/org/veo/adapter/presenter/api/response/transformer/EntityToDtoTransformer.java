@@ -203,45 +203,16 @@ public final class EntityToDtoTransformer {
 
   public FullProfileItemDto transformProfileItem2Dto(ProfileItem source) {
     FullProfileItemDto target = new FullProfileItemDto();
-    mapFullProfileItem(source, target);
+    mapFullTemplateItem(source, target);
     return target;
   }
 
   private ExportProfileItemDto transformProfileItem2ExportDto(ProfileItem source) {
     var target = new ExportProfileItemDto();
-    mapFullProfileItem(source, target);
+    mapFullTemplateItem(source, target);
     Optional.ofNullable(source.getAppliedCatalogItem())
         .map(ci -> IdRef.from(ci, referenceAssembler))
         .ifPresent(target::setAppliedCatalogItem);
-    return target;
-  }
-
-  private void mapFullProfileItem(ProfileItem source, FullProfileItemDto target) {
-    mapVersionedSelfReferencingProperties(source, target);
-    mapFullTemplateItem(source, target);
-    target.setTailoringReferences(
-        source.getTailoringReferences().stream()
-            .map(this::transformProfileTailoringReference2Dto)
-            .collect(toSet()));
-  }
-
-  public TailoringReferenceDto<ProfileItem> transformProfileTailoringReference2Dto(
-      @Valid TailoringReference<ProfileItem> source) {
-    TailoringReferenceDto<ProfileItem> target;
-    if (source instanceof LinkTailoringReference<ProfileItem> linkRef) {
-      target =
-          new LinkTailoringReferenceDto<>(
-              linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
-    } else {
-      target = new TailoringReferenceDto<>();
-      target.setId(source.getId().uuidValue());
-    }
-    // TODO: handle risk ref
-    target.setReferenceType(source.getReferenceType());
-
-    if (source.getTarget() != null) {
-      target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
-    }
     return target;
   }
 
@@ -467,11 +438,6 @@ public final class EntityToDtoTransformer {
   public ExportCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
     var target = new ExportCatalogItemDto();
     mapFullTemplateItem(source, target);
-    target.setTailoringReferences(
-        source.getTailoringReferences().stream()
-            .map(this::transformTailoringReference2Dto)
-            .collect(toSet()));
-    // TODO #2301 remove
     return target;
   }
 
@@ -490,8 +456,11 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  private <T extends AbstractTemplateItemDto & FullTemplateItemDto> void mapFullTemplateItem(
-      TemplateItem<?> source, T target) {
+  private <
+          TEntity extends TemplateItem<TEntity>,
+          TDto extends AbstractTemplateItemDto<TEntity> & FullTemplateItemDto<TEntity>>
+      void mapFullTemplateItem(TEntity source, TDto target) {
+    mapVersionedSelfReferencingProperties(source, target);
     mapTemplateItem(source, target);
     target.setId(source.getIdAsString());
     target.setStatus(source.getStatus());
@@ -501,11 +470,15 @@ public final class EntityToDtoTransformer {
             source.getCustomAspects().entrySet().stream()
                 .collect(
                     Collectors.toMap(Map.Entry::getKey, e -> new AttributesDto(e.getValue())))));
+    source
+        .getTailoringReferences()
+        .forEach(tailoringReference -> target.add(tailoringReference, referenceAssembler));
     // TODO #2301 remove
     target.setNamespace(source.getNamespace());
   }
 
-  private void mapTemplateItem(TemplateItem<?> source, AbstractTemplateItemDto target) {
+  private <T extends TemplateItem<T>> void mapTemplateItem(
+      T source, AbstractTemplateItemDto<T> target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
@@ -547,6 +520,7 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
+  @Deprecated // TODO #2301 remove
   public TailoringReferenceDto<CatalogItem> transformTailoringReference2Dto(
       @Valid TailoringReference<CatalogItem> source) {
     TailoringReferenceDto<CatalogItem> target = null;

@@ -38,6 +38,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 
@@ -120,5 +121,22 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
     element.apply(this);
     element.getAppliedCatalogItems().add(this);
     return element;
+  }
+
+  @Override
+  public TailoringReference<CatalogItem> addTailoringReference(
+      TailoringReferenceType referenceType, CatalogItem referenceTarget) {
+    var reference =
+        switch (referenceType) {
+          case LINK, LINK_EXTERNAL -> new LinkTailoringReferenceData();
+          case RISK -> throw new UnsupportedOperationException(
+              "Risks currently not supported for catalog items");
+          default -> new CatalogTailoringReferenceData();
+        };
+    reference.setReferenceType(referenceType);
+    reference.setOwner(this);
+    reference.setTarget(referenceTarget);
+    this.tailoringReferences.add(reference);
+    return reference;
   }
 }

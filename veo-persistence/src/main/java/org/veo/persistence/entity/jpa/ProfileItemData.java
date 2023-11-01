@@ -36,6 +36,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 
 import lombok.Data;
@@ -82,5 +83,21 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
       element.getAppliedCatalogItems().add(getAppliedCatalogItem());
     }
     return element;
+  }
+
+  @Override
+  public TailoringReference<ProfileItem> addTailoringReference(
+      TailoringReferenceType referenceType, ProfileItem referenceTarget) {
+    var reference =
+        switch (referenceType) {
+          case LINK, LINK_EXTERNAL -> new ProfileLinkTailoringReferenceData();
+          case RISK -> new ProfileRiskTailoringReferenceData();
+          default -> new ProfileTailoringReferenceData();
+        };
+    reference.setReferenceType(referenceType);
+    reference.setOwner(this);
+    reference.setTarget(referenceTarget);
+    this.tailoringReferences.add(reference);
+    return reference;
   }
 }

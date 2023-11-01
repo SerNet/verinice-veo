@@ -47,6 +47,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
+import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -62,8 +63,8 @@ import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.ScopeRisk;
-import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -232,51 +233,24 @@ public final class DtoToEntityTransformer {
     return target;
   }
 
-  public TailoringReference transformDto2TailoringReference(
-      TailoringReferenceDto<CatalogItem> source, CatalogItem owner, IdRefResolver idRefResolver) {
+  private <T extends TemplateItem<T>> void addTailoringReference(
+      TailoringReferenceDto<T> source, T owner, IdRefResolver idRefResolver) {
     var target =
-        source.isLinkTailoringReferences()
-            ? createIdentifiable(LinkTailoringReference.class, source)
-            : createIdentifiable(TailoringReference.class, source);
-    target.setOwner(owner);
-    target.setReferenceType(source.getReferenceType());
-    if (source.getTarget() != null) {
-      CatalogItem resolve = idRefResolver.resolve(source.getTarget());
-      target.setTarget(resolve);
+        owner.addTailoringReference(
+            source.getReferenceType(), idRefResolver.resolve(source.getTarget()));
+    if (source instanceof LinkTailoringReferenceDto<T> linkDto
+        && target instanceof LinkTailoringReference<T> linkRef) {
+      linkRef.setAttributes(linkDto.getAttributes());
+      linkRef.setLinkType(linkDto.getLinkType());
+    } else if (source instanceof RiskTailoringReferenceDto<T> riskDto
+        && target instanceof RiskTailoringReference<T> riskRef) {
+      Optional.ofNullable(riskDto.getRiskOwner())
+          .map(idRefResolver::resolve)
+          .ifPresent(riskRef::setRiskOwner);
+      Optional.ofNullable(riskDto.getMitigation())
+          .map(idRefResolver::resolve)
+          .ifPresent(riskRef::setMitigation);
     }
-
-    if (source.isLinkTailoringReferences()) {
-      LinkTailoringReferenceDto tailoringReferenceDto = (LinkTailoringReferenceDto) source;
-      LinkTailoringReference tailoringReference = (LinkTailoringReference) target;
-      tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
-      tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
-    }
-
-    return target;
-  }
-
-  private TailoringReference<ProfileItem> transformDto2ProfileTailoringReference(
-      TailoringReferenceDto<ProfileItem> source, ProfileItem owner, IdRefResolver idRefResolver) {
-
-    TailoringReference<ProfileItem> target =
-        source.isLinkTailoringReferences()
-            ? createIdentifiable(LinkTailoringReference.class, source)
-            : createIdentifiable(TailoringReference.class, source);
-    target.setOwner(owner);
-    target.setReferenceType(source.getReferenceType());
-    if (source.getTarget() != null) {
-      ProfileItem resolve = idRefResolver.resolve(source.getTarget());
-      target.setTarget(resolve);
-    }
-
-    if (source.isLinkTailoringReferences()) {
-      LinkTailoringReferenceDto tailoringReferenceDto = (LinkTailoringReferenceDto) source;
-      LinkTailoringReference<ProfileItem> tailoringReference = (LinkTailoringReference) target;
-      tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
-      tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
-    }
-
-    return target;
   }
 
   public <T extends Element> T transformDto2Element(
@@ -303,29 +277,22 @@ public final class DtoToEntityTransformer {
   public CatalogItem transformDto2CatalogItem(
       ExportCatalogItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(CatalogItem.class, source);
-    mapTemplateItem(source, target);
-    target.setTailoringReferences(
-        convertSet(
-            source.getTailoringReferences(),
-            tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
+    mapTemplateItem(source, target, idRefResolver);
     return target;
   }
 
   public ProfileItem transformDto2ProfileItem(
       ExportProfileItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(ProfileItem.class, source);
-    mapTemplateItem(source, target);
-    target.setTailoringReferences(
-        convertSet(
-            source.getTailoringReferences(),
-            tr -> transformDto2ProfileTailoringReference(tr, target, idRefResolver)));
+    mapTemplateItem(source, target, idRefResolver);
     Optional.ofNullable(source.getAppliedCatalogItem())
         .map(idRefResolver::resolve)
         .ifPresent(target::setAppliedCatalogItem);
     return target;
   }
 
-  private void mapTemplateItem(FullTemplateItemDto source, TemplateItem<?> target) {
+  private <T extends TemplateItem<T>> void mapTemplateItem(
+      FullTemplateItemDto<T> source, T target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
@@ -334,6 +301,7 @@ public final class DtoToEntityTransformer {
     target.setCustomAspects(
         source.getCustomAspects().getValue().entrySet().stream()
             .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
+    source.getTailoringReferences().forEach(tr -> addTailoringReference(tr, target, idRefResolver));
     // TODO #2301 remove
     target.setNamespace(source.getNamespace());
   }

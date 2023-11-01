@@ -80,4 +80,7 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
   }
 
   DomainBase getDomainBase();
+
+  TailoringReference<T> addTailoringReference(
+      TailoringReferenceType referenceType, T referenceTarget);
 }
