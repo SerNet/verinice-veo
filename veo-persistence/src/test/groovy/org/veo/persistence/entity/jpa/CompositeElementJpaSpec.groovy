@@ -138,6 +138,6 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
 
         then:
         JpaSystemException ex = thrown()
-        ex.mostSpecificCause.message == "Can not set final java.util.Set field org.veo.persistence.entity.jpa.AssetData.parts to org.veo.persistence.entity.jpa.ProcessData"
+        ex.mostSpecificCause.message == "Can not get final java.util.Set field org.veo.persistence.entity.jpa.AssetData.parts on org.veo.persistence.entity.jpa.ProcessData"
     }
 }

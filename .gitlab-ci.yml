@@ -1,4 +1,4 @@
-image: eclipse-temurin:17-jdk
+image: eclipse-temurin:21-jdk
 
 variables:
   ORG_GRADLE_PROJECT_ci: 'true'
