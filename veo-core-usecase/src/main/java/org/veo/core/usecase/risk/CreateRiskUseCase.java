@@ -27,7 +27,9 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
+import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.specification.RiskOnlyReferencesItsOwnersUnitSpecification;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
@@ -80,6 +82,9 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
     risk.defineRiskValues(input.getRiskValues());
     publishEvents(riskAffected, risk);
+    if (!new RiskOnlyReferencesItsOwnersUnitSpecification().test(risk)) {
+      throw new CrossUnitReferenceException();
+    }
     return new OutputData<>(risk, newRiskCreated);
   }
 

@@ -84,4 +84,84 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         then: "the risk has an owner"
         get("/assets/$assetId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/
     }
+
+    def "cannot add risk for scenario in another unit"() {
+        given: "an asset and a scenario in different units"
+        def assetId = post("/domains/$testDomainId/assets", [
+            name: "asset in main unit",
+            subType: "Server",
+            status: "RUNNING",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def otherUnitId = postNewUnit().resourceId
+        def scenarioId = post("/domains/$testDomainId/scenarios", [
+            name: "scenario in other unit",
+            subType: "Attack",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$otherUnitId"]
+        ]).body.resourceId
+
+        expect: "risk creation to fail"
+        post("/assets/$assetId/risks", [
+            domains: [
+                (testDomainId): [
+                    reference: [targetUri: "$baseUrl/domains/$testDomainId"]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ], 422).body.message == "Elements in other units must not be referenced"
+    }
+
+    def "cannot assign risk owner or mitigation from another unit"() {
+        given: "a risk"
+        def assetId = post("/domains/$testDomainId/assets", [
+            name: "asset in main unit",
+            subType: "Server",
+            status: "RUNNING",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def scenarioId = post("/domains/$testDomainId/scenarios", [
+            name: "scenario in main unit",
+            subType: "Attack",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        post("/assets/$assetId/risks", [
+            domains: [
+                (testDomainId): [
+                    reference: [targetUri: "$baseUrl/domains/$testDomainId"]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ])
+
+        when: "a person is created in another unit"
+        def otherUnitId = postNewUnit().resourceId
+        def personId = post("/domains/$testDomainId/persons", [
+            name: "person in another unit",
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
+            owner: [targetUri: "$baseUrl/units/$otherUnitId"]
+        ]).body.resourceId
+
+        then: "it cannot be assigned as a risk owner"
+        get("/assets/$assetId/risks/$scenarioId").with{
+            body.riskOwner = [targetUri: "/persons/$personId"]
+            put(body._self, body, getETag(), 422)
+        }.body.message == "Elements in other units must not be referenced"
+
+        when: "a control is created in another unit"
+        def controlId = post("/domains/$testDomainId/controls", [
+            name: "control in another unit",
+            subType: "TOM",
+            status: "OLD",
+            owner: [targetUri: "$baseUrl/units/$otherUnitId"]
+        ]).body.resourceId
+
+        then: "it cannot be used to mitigate the risk"
+        get("/assets/$assetId/risks/$scenarioId").with{
+            body.mitigation = [targetUri: "/controls/$controlId"]
+            put(body._self, body, getETag(), 422)
+        }.body.message == "Elements in other units must not be referenced"
+    }
 }

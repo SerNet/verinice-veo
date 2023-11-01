@@ -27,6 +27,8 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
+import org.veo.core.entity.exception.CrossUnitReferenceException;
+import org.veo.core.entity.specification.RiskOnlyReferencesItsOwnersUnitSpecification;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.ETag;
@@ -73,6 +75,9 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     R result =
         riskAffected.updateRisk(
             risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.getRiskValues());
+    if (!new RiskOnlyReferencesItsOwnersUnitSpecification().test(risk)) {
+      throw new CrossUnitReferenceException();
+    }
     publishEvents(riskAffected, result);
     return new OutputData<>(result);
   }
