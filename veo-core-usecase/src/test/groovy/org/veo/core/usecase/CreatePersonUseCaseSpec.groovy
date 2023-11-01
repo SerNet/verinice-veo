@@ -42,7 +42,12 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
     ScopeRepository scopeRepository = Mock()
     PersonRepository personRepository = Mock()
     ElementState personState
-    Person person = Mock()
+    Person person = Mock {
+        links >> []
+        scopes >> []
+        parts >> []
+        composites >> []
+    }
 
     CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
@@ -70,7 +75,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         1 * person.getOwner() >> existingUnit
         4 * person.getDomains() >> []
         2 * person.getCustomAspects() >> []
-        2 * person.getLinks() >> []
+        3 * person.getLinks() >> []
         output.entity == person
     }
 
@@ -89,7 +94,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         1 * person.getOwner() >> existingUnit
         3 * person.getDomains() >> []
         2 * person.getCustomAspects() >> []
-        2 * person.getLinks() >> []
+        3 * person.getLinks() >> []
 
         thrown(ClientBoundaryViolationException)
     }

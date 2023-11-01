@@ -588,13 +588,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         references.size() == 2
         references*.referenceType ==~ ["PART", "COMPOSITE"]
 
-        when: "we link the composite to an existing scenario "
-        references[0].put("referencedElement", ["targetUri": "/scenarios/$scenarioId"])
-        references[1].put("referencedElement", ["targetUri": "/scenarios/$scenarioId"])
+        when: "we link the composite to an existing scenario"
+        def existingScenarioInNewUnitId = parseJson(post("/domains/$domainId/scenarios", [
+            name: "existing scenario in new unit",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ],201)).resourceId
+        references[0].put("referencedElement", ["targetUri": "/scenarios/$existingScenarioInNewUnitId"])
+        references[1].put("referencedElement", ["targetUri": "/scenarios/$existingScenarioInNewUnitId"])
         elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         def modifiedScenario = txTemplate.execute {
-            scenarioDataRepository.findById(scenarioId).get().tap {
+            scenarioDataRepository.findById(existingScenarioInNewUnitId).get().tap {
                 parts.collect { it.parts.size() }
                 composites.collect { it.composites.size() }
             }

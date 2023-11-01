@@ -20,6 +20,7 @@ package org.veo.core.entity
 import org.veo.core.entity.code.EntityValidationException
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.specification.EntityValidator
+import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.test.VeoSpec
 
 class EntityValidatorSpec extends VeoSpec {
@@ -285,6 +286,19 @@ class EntityValidatorSpec extends VeoSpec {
 
         when:
         validator.validate(unit)
+
+        then:
+        thrown(EntityValidationException)
+    }
+
+    def "element with part in other unit does not pass validation"() {
+        given:
+        def composite = newDocument(unit) {
+            parts = [newDocument(newUnit(client))]
+        }
+
+        when:
+        validator.validate(composite)
 
         then:
         thrown(EntityValidationException)

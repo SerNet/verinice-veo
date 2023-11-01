@@ -574,4 +574,30 @@ class BasicCrudRestTest extends VeoRestTest {
             put(body._self, body, getETag(), 422)
         }.body.message == "Elements cannot be moved between units"
     }
+
+    def "linking an element in another unit is forbidden"() {
+        given: "a person in main unit"
+        def personUri = post("/domains/$testDomainId/persons", [
+            name: "mod",
+            subType: "MasterOfDisaster",
+            status: "CAUSING_REAL_DISASTERS",
+            owner: [targetUri: "/units/$unitId"]
+        ]).location
+        def otherUnitId = postNewUnit().resourceId
+
+        expect: "that the person cannot be linked from another unit"
+        post("/domains/$testDomainId/assets", [
+            name: "sneaky asset",
+            subType: "Server",
+            status: "RUNNING",
+            owner: [targetUri: "/units/$otherUnitId"],
+            links: [
+                admin: [
+                    [
+                        target: [targetUri: personUri]
+                    ]
+                ]
+            ]
+        ], 422).body.message == "Elements in other units must not be referenced"
+    }
 }

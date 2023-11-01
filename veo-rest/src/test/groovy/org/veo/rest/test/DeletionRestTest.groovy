@@ -83,25 +83,6 @@ class DeletionRestTest extends VeoRestTest {
             owner: [targetUri: unitUri]
         ]).body.resourceId
 
-        and: "a process in another unit that is linked to the scenario"
-        def otherUnitUri = "$baseUrl/units/" + postNewUnit().resourceId
-        def processId = post("/processes", [
-            name: "process in other unit",
-            owner: [targetUri: otherUnitUri],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
-            links: [
-                process_PIAScenario: [
-                    [target: [targetUri: "$baseUrl/scenarios/$scenarioId"]]
-                ]
-            ]
-        ]).body.resourceId
-        def processETag = get("/processes/$processId").getETag()
-
         when: "deleting the unit"
         delete(unitUri)
 
@@ -109,11 +90,5 @@ class DeletionRestTest extends VeoRestTest {
         get(unitUri, 404)
         get("/documents/$documentId", 404)
         get("/scenarios/$scenarioId", 404)
-
-        and: "the link has been removed from the process"
-        with(get("/processes/$processId")) {
-            body.links.size() == 0
-            getETag() != processETag
-        }
     }
 }

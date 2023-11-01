@@ -26,15 +26,20 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 import org.veo.core.entity.specification.ElementIsAssociatedWithCustomAspectAndLinkDomains;
+import org.veo.core.entity.specification.ElementOnlyReferencesItsOwnUnitSpecification;
 
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
 public class DomainSensitiveElementValidator {
 
   public static void validate(Element element) {
+    if (!new ElementOnlyReferencesItsOwnUnitSpecification().test(element)) {
+      throw new CrossUnitReferenceException();
+    }
     if (!new ElementDomainsAreSubsetOfUnitDomains().test(element)) {
       throw new UnprocessableDataException(
           "Element can only be associated with its unit's domains");

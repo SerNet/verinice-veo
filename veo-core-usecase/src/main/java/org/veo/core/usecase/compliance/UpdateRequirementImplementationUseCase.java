@@ -26,6 +26,7 @@ import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
+import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
@@ -59,6 +60,7 @@ public class UpdateRequirementImplementationUseCase
     var idRefResolver = new DbIdRefResolver(repositoryProvider, input.authenticatedClient);
     entityStateMapper.mapState(input.state, requirementImplementation, idRefResolver);
     origin.setUpdatedAt(Instant.now());
+    DomainSensitiveElementValidator.validate(origin);
     return new OutputData(ETag.from(getEntity(input.origin, input.authenticatedClient)));
   }
 

@@ -47,7 +47,14 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     ProcessRepository processRepository = Mock()
 
     ProcessState processState = Mock()
-    Process process = Mock()
+    Process process = Mock{
+        controlImplementations >> []
+        requirementImplementations >> []
+        links >> []
+        parts >> []
+        composites >> []
+        scopes >> []
+    }
 
     CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
@@ -72,7 +79,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * process.getOwner() >> existingUnit
         4 * process.getDomains() >> []
         2 * process.getCustomAspects() >> []
-        2 * process.getLinks() >> []
+        3 * process.getLinks() >> []
         1 * process.owningClient >> Optional.of(existingClient)
         1 * process.modelInterface >> Process
         1 * processRepository.save(process) >> process
@@ -99,7 +106,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * process.getOwner() >> existingUnit
         3 * process.getDomains() >> []
         2 * process.getCustomAspects() >> []
-        2 * process.getLinks() >> []
+        3 * process.getLinks() >> []
 
         thrown(ClientBoundaryViolationException)
     }

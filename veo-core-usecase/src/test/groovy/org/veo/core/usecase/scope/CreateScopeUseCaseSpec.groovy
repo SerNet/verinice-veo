@@ -42,7 +42,13 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
 
     Decider decider = Mock()
     ElementState scopeState = Mock()
-    Scope scope = Mock()
+    Scope scope = Mock{
+        controlImplementations >> []
+        requirementImplementations >> []
+        links >> []
+        members >> []
+        scopes >> []
+    }
 
     CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
@@ -69,7 +75,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         1 * scope.getOwner() >> existingUnit
         4 * scope.getDomains() >> []
         2 * scope.getCustomAspects() >> []
-        2 * scope.getLinks() >> []
+        3 * scope.getLinks() >> []
 
         when:
         def scope1 = output.entity
@@ -95,7 +101,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         1 * scope.getOwner() >> existingUnit
         3 * scope.getDomains() >> []
         2 * scope.getCustomAspects() >> []
-        2 * scope.getLinks() >> []
+        3 * scope.getLinks() >> []
         thrown(ClientBoundaryViolationException)
     }
 }

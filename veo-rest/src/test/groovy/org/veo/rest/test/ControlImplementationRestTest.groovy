@@ -373,6 +373,78 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
+    def "cannot create control implementation for control from another unit"() {
+        given: "another unit"
+        def otherUnitId = postNewUnit().resourceId
+
+        expect: "that a control implementation cannot be created there referencing a control in the main unit"
+        post("/$elementType.pluralTerm", [
+            name: "risk influencer",
+            owner: [targetUri: "http://localhost/units/$otherUnitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"]
+                ]
+            ]
+        ], 422).body.message == "Elements in other units must not be referenced"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "cannot assign person from another unit as responsible for control implementation"() {
+        given: "a person in another unit"
+        def otherUnitId = postNewUnit().resourceId
+        def personId = post("/persons", [
+            name: "person in other unit",
+            owner: [targetUri: "/units/$otherUnitId"]
+        ]).body.resourceId
+
+        expect: "that it cannot be assigned as a responsible person in this unit"
+        post("/$elementType.pluralTerm", [
+            name: "risk influencer",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"],
+                    responsible: [targetUri: "/persons/$personId"],
+                ]
+            ]
+        ], 422).body.message == "Elements in other units must not be referenced"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "cannot assign person from another unit as responsible for requirement implementation"() {
+        given: "a control implementation"
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "risk influencer",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        and: "a person in another unit"
+        def otherUnitId = postNewUnit().resourceId
+        def personId = post("/persons", [
+            name: "person in other unit",
+            owner: [targetUri: "/units/$otherUnitId"]
+        ]).body.resourceId
+
+        expect: "that the person cannot be added as an RI responsible"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").with{
+            body.responsible = [targetUri: "/persons/$personId"]
+            put(body._self, body, getETag(), 422)
+        }.body.message == "Elements in other units must not be referenced"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
     def "missing resources are handled for #elementType.pluralTerm"() {
         given:
         var randomUuid = UUID.randomUUID().toString()

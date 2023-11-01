@@ -54,7 +54,11 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
             it.domains >> []
             it.customAspects >> []
             it.controlImplementations >> []
+            it.requirementImplementations >> []
             it.links >> []
+            it.parts >> []
+            it.composites >> []
+            it.scopes >> []
             it.domainTemplates >> []
             it.modelInterface >> Process
             it.version >> 0
