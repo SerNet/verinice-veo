@@ -2568,7 +2568,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-61. Group: io.swagger.core.v3  Name: swagger-annotations-jakarta  Version: 2.2.17
+61. Group: io.swagger.core.v3  Name: swagger-annotations-jakarta  Version: 2.2.18
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-annotations
 
@@ -2792,7 +2792,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-62. Group: io.swagger.core.v3  Name: swagger-core-jakarta  Version: 2.2.17
+62. Group: io.swagger.core.v3  Name: swagger-core-jakarta  Version: 2.2.18
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
@@ -3016,7 +3016,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-63. Group: io.swagger.core.v3  Name: swagger-models-jakarta  Version: 2.2.17
+63. Group: io.swagger.core.v3  Name: swagger-models-jakarta  Version: 2.2.18
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-models
 
@@ -22871,5 +22871,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Oct 30 07:26:37 UTC 2023.
+This report was generated at Wed Nov 01 13:26:42 UTC 2023.
 
