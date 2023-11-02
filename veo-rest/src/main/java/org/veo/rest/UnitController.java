@@ -21,6 +21,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
@@ -330,7 +332,8 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<FullUnitDto> updateUnit(
       @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
+          String eTag,
       @PathVariable String id,
       @Valid @RequestBody FullUnitDto unitDto) {
     unitDto.applyResourceId(id);

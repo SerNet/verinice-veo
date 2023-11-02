@@ -70,6 +70,8 @@ public final class ControllerConstants {
   static final String SORT_ORDER_DEFAULT_VALUE = "asc";
   static final String SORT_ORDER_PATTERN = "asc|desc|ASC|DESC";
   static final String IF_MATCH_HEADER = "If-Match";
+  public static final String IF_MATCH_HEADER_NOT_BLANK_MESSAGE =
+      IF_MATCH_HEADER + " header must not be blank";
 
   static final String UUID_DESCRIPTION =
       "A UUID conforming to RFC4122 in canonical textual representation.";

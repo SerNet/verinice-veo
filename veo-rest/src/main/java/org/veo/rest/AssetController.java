@@ -31,6 +31,8 @@ import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
@@ -345,7 +347,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @ApiResponse(responseCode = "404", description = "Asset not found")
   public CompletableFuture<ResponseEntity<FullAssetDto>> updateAsset(
       @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
+          String eTag,
       @PathVariable String id,
       @Valid @NotNull @RequestBody FullAssetDto assetDto) {
     assetDto.applyResourceId(id);

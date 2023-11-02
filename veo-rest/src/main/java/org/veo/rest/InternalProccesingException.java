@@ -23,4 +23,8 @@ public class InternalProccesingException extends RuntimeException {
   public InternalProccesingException(String cause, InterruptedException ex) {
     super(cause, ex);
   }
+
+  public InternalProccesingException(Exception ex) {
+    super(ex);
+  }
 }

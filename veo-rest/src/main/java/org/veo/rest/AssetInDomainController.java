@@ -23,6 +23,8 @@ import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
@@ -327,7 +329,8 @@ public class AssetInDomainController implements ElementInDomainResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String domainId,
-      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
+          String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,

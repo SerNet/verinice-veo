@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import jakarta.validation.ConstraintViolationException;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,6 +134,12 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler(DomainInUseException.class)
   public ResponseEntity<ApiResponseBody> handleDomainInUseExceptions(DomainInUseException ex) {
     return handle(ex, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<ApiResponseBody> handleConstraintViolationException(
+      ConstraintViolationException ex) {
+    return handle(ex, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

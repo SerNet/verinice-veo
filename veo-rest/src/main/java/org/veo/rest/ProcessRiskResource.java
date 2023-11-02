@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -110,7 +113,8 @@ public interface ProcessRiskResource {
       @PathVariable String processId,
       @PathVariable String scenarioId,
       @Valid @NotNull @RequestBody ProcessRiskDto processDto,
-      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag);
+      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
+          String eTag);
 
   @DeleteMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Removes a risk")

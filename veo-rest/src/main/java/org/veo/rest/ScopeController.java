@@ -31,6 +31,8 @@ import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
@@ -371,7 +373,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public CompletableFuture<ResponseEntity<FullScopeDto>> updateScope(
       @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
+          String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,

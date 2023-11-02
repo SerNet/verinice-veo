@@ -21,6 +21,8 @@ import static java.util.UUID.randomUUID
 
 import org.veo.core.entity.EntityType
 
+import jakarta.servlet.ServletException
+
 class MultiDomainElementRestTest extends VeoRestTest {
 
     private String domainIdA
@@ -389,6 +391,25 @@ class MultiDomainElementRestTest extends VeoRestTest {
             subType: "STA",
             status: "OLD",
         ], 409).body.message == "$type.singularTerm $elementId is already associated with domain $domainIdA"
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
+    def "blank If-Match header is handled for #type.pluralTerm"() {
+        given: "an element"
+        putElementTypeDefinitions(type)
+        def element = [
+            name: "Some element",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STA",
+            status: "NEW"
+        ]
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", element).body.resourceId
+
+        expect: "trying update it with a blank ETag"
+        put("/domains/$domainIdA/$type.pluralTerm/$elementId", element, "", 400)
+                .body.message == "updateElement.eTag: If-Match header must not be blank"
 
         where:
         type << EntityType.ELEMENT_TYPES
