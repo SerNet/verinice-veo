@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import javax.annotation.Nullable;
+
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -616,22 +618,28 @@ public final class EntityToDtoTransformer {
   private <T extends RiskAffected<T, ?>> void mapRiskAffected(T source, RiskAffectedDto<T> target) {
     target.setControlImplementations(
         source.getControlImplementations().stream()
-            .map(ci -> mapControlImplementation(source, ci))
+            .map(ci -> mapControlImplementation(source, ci, null))
             .collect(toSet()));
   }
 
   private ControlImplementationDto mapControlImplementation(
-      RiskAffected<?, ?> riskAffected, ControlImplementation source) {
+      RiskAffected<?, ?> riskAffected, ControlImplementation source, @Nullable Domain domain) {
     return new ControlImplementationDto(
-        IdRef.from(source.getControl(), referenceAssembler),
+        ref(source.getControl(), domain),
         riskAffected.getRequirementImplementations().stream()
             .filter(ri -> ri.getControl().equals(source.getControl()))
             .findAny()
             .get()
             .getStatus(),
         source.getDescription(),
-        IdRef.from(source.getResponsible(), referenceAssembler),
+        ref(source.getResponsible(), domain),
         RequirementImplementationsRef.from(source, referenceAssembler));
+  }
+
+  private <T extends Element> IdRef<T> ref(T element, @Nullable Domain domain) {
+    return domain != null
+        ? ElementInDomainIdRef.from(element, domain, referenceAssembler)
+        : IdRef.from(element, referenceAssembler);
   }
 
   private <TEntity extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
@@ -729,7 +737,7 @@ public final class EntityToDtoTransformer {
   public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
     var target = new FullAssetInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);
-    mapRiskAffectedProperties(source, target);
+    mapRiskAffectedProperties(source, target, domain);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
@@ -762,7 +770,7 @@ public final class EntityToDtoTransformer {
   public FullProcessInDomainDto transformProcess2Dto(Process source, Domain domain) {
     var target = new FullProcessInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);
-    mapRiskAffectedProperties(source, target);
+    mapRiskAffectedProperties(source, target, domain);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
@@ -777,7 +785,7 @@ public final class EntityToDtoTransformer {
   public FullScopeInDomainDto transformScope2Dto(Scope source, Domain domain) {
     var target = new FullScopeInDomainDto(source.getIdAsString());
     mapElementProperties(source, target, domain);
-    mapRiskAffectedProperties(source, target);
+    mapRiskAffectedProperties(source, target, domain);
     target.setMembers(
         source.getMembers().stream()
             .map(m -> ElementInDomainIdRef.from(m, domain, referenceAssembler))
@@ -788,10 +796,10 @@ public final class EntityToDtoTransformer {
   }
 
   private <TElement extends RiskAffected<TElement, ?>> void mapRiskAffectedProperties(
-      TElement source, RiskAffectedDto<TElement> target) {
+      TElement source, RiskAffectedDto<TElement> target, Domain domain) {
     target.setControlImplementations(
         source.getControlImplementations().stream()
-            .map(ci -> mapControlImplementation(source, ci))
+            .map(ci -> mapControlImplementation(source, ci, domain))
             .collect(toSet()));
   }
 

@@ -204,17 +204,19 @@ class ControlImplementationRestTest extends VeoRestTest {
                 ],
             ]
         ]).body.resourceId
-        def retrievedElement = get("/$elementType.pluralTerm/$elementId").body
+        def retrievedElement = get("/domains/$domainId/$elementType.pluralTerm/$elementId").body
 
         then: "CIs for both controls are present"
         retrievedElement.controlImplementations.size() == 2
         with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
             implementationStatus == "UNKNOWN"
             description == "I have my reasons"
+            control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl1Id")
         }
         with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 2") }) {
             implementationStatus == "UNKNOWN"
             responsible.displayName.endsWith("person 1")
+            control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl2Id")
         }
 
         when: "modifying CIs"
