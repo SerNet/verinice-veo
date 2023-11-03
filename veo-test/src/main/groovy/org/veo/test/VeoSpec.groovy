@@ -87,6 +87,7 @@ import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ProfileData
 import org.veo.persistence.entity.jpa.ProfileItemData
+import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.UnitData
@@ -246,6 +247,14 @@ abstract class VeoSpec extends Specification {
             if(target != null) {
                 it.target = target
             }
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static ProfileTailoringReferenceData newTailoringReference(ProfileItem owner, ProfileItem target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
+        return factory.createTailoringReference(owner, type).tap {
+            it.target = target
             VeoSpec.execute(it, init)
         }
     }
