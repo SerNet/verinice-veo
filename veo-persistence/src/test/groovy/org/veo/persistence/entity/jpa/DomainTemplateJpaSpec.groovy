@@ -184,8 +184,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             elementType = "control"
         })
 
-        newLinkTailoringReference(ci, LINK) {
-            target = itemP1
+        newLinkTailoringReference(ci, itemP1, LINK) {
             linkType = "p2->p1"
         }
 

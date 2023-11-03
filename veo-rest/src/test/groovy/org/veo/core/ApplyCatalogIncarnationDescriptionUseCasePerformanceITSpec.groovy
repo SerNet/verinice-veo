@@ -183,9 +183,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
                 status = "NEW"
             })
 
-            newTailoringReference(item3, TailoringReferenceType.COPY) {
-                target = item2
-            }
+            newTailoringReference(item3, item2, TailoringReferenceType.COPY)
 
             CatalogItem item4 = newCatalogItem(domain, {
                 elementType = Asset.SINGULAR_TERM
@@ -201,12 +199,9 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
                 status = "NEW"
             })
 
-            newTailoringReference(item5, TailoringReferenceType.COPY) {
-                target = item2
-            }
+            newTailoringReference(item5, item2, TailoringReferenceType.COPY)
 
-            newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
-                target = item3
+            newLinkTailoringReference(item5, item3, TailoringReferenceType.LINK) {
                 linkType = "aLink"
             }
 
@@ -217,8 +212,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
                 status = "NEW"
             })
 
-            newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
-                target = item2
+            newLinkTailoringReference(item6, item2, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = 'externallinktest'
             }
 

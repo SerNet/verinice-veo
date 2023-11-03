@@ -370,9 +370,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 subType = "CTL_TOM"
                 status = "NEW"
             })
-            newTailoringReference(item2, TailoringReferenceType.COPY) {
-                target = item1
-            }
+            newTailoringReference(item2, item1, TailoringReferenceType.COPY)
         })
 
         then: "no event is stored"

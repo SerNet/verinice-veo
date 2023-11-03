@@ -104,7 +104,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         when:
         catalogItemRepository.save(newCatalogItem(domain, {
             newUpdateReference(it, null)
-            newTailoringReference(it, null)
+            newTailoringReference(it, null, null)
         }))
 
         then:

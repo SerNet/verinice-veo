@@ -147,13 +147,11 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             subType = "Manual"
             status = "NEW"
             tailoringReferences = [
-                newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                newLinkTailoringReference(it, manualAuthor, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.target = manualAuthor
                 },
-                newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                newLinkTailoringReference(it, randomAsset, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.target = randomAsset
                 },
             ]
         })
@@ -191,23 +189,21 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             subType = "author"
             status = "NEW"
             tailoringReferences = [
-                newLinkTailoringReference(it, TailoringReferenceType.LINK_EXTERNAL) {
+                newLinkTailoringReference(it, routerManual, TailoringReferenceType.LINK_EXTERNAL) {
                     it.linkType = "author"
-                    it.target = routerManual
                     it.attributes.copyrightYear = 2019
                     it.attributes.placeOfAuthoring = 22
                 }
             ]
         })
-        def thermometerManual = newCatalogItem(domain,{
+        newCatalogItem(domain,{
             namespace = "thermometerManual"
             elementType = Document.SINGULAR_TERM
             subType = "Manual"
             status = "NEW"
             tailoringReferences = [
-                newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                newLinkTailoringReference(it, manualAuthor, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.target = manualAuthor
                     it.attributes.copyrightYear = "2019"
                     it.attributes.placeOfAuthoring = "She wrote it in her armchair"
                 },

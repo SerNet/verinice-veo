@@ -153,9 +153,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             elementType = "control"
             name = 'c3'
         })
-        newTailoringReference(item3, TailoringReferenceType.COPY) {
-            target = item2
-        }
+        newTailoringReference(item3, item2, TailoringReferenceType.COPY)
 
         when: "saving"
         domain0 = repository.save(domain0)
@@ -213,9 +211,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             subType = "ctl"
             status = "NEW"
         })
-        newTailoringReference(item3, TailoringReferenceType.COPY) {
-            target = item2
-        }
+        newTailoringReference(item3, item2, TailoringReferenceType.COPY)
         CatalogItem item4 = newCatalogItem(domain0, {
             elementType = "asset"
             name = 'd1'
@@ -228,11 +224,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
             subType = "Test"
             status = "NEW"
         })
-        newTailoringReference(item5, TailoringReferenceType.COPY) {
-            target = item2
-        }
-        newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
-            target = item3
+        newTailoringReference(item5, item2, TailoringReferenceType.COPY)
+        newLinkTailoringReference(item5, item3, TailoringReferenceType.LINK) {
             linkType = 'linktest'
         }
 
@@ -242,8 +235,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             subType = "ctl"
             status = "NEW"
         })
-        newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
-            target = item2
+        newLinkTailoringReference(item6, item2, TailoringReferenceType.LINK_EXTERNAL) {
             linkType = 'externallinktest'
         }
 

@@ -240,9 +240,12 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogTailoringReferenceData newTailoringReference(CatalogItem catalogItem, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogTailoringReferenceData  newTailoringReference(CatalogItem owner, CatalogItem target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
-        return factory.createTailoringReference(catalogItem, type).tap {
+        return factory.createTailoringReference(owner, type).tap {
+            if(target != null) {
+                it.target = target
+            }
             VeoSpec.execute(it, init)
         }
     }
@@ -254,11 +257,16 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static LinkTailoringReferenceData newLinkTailoringReference(CatalogItem catalogItem,
+    static LinkTailoringReferenceData newLinkTailoringReference(
+            CatalogItem owner,
+            CatalogItem target,
             TailoringReferenceType referenceType,
             @DelegatesTo(value = LinkTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.LinkTailoringReference") Closure init = null) {
-        return factory.createLinkTailoringReference(catalogItem, referenceType).tap {
+        return factory.createLinkTailoringReference(owner, referenceType).tap {
+            if (target != null) {
+                it.target = target;
+            }
             VeoSpec.execute(it, init)
         }
     }

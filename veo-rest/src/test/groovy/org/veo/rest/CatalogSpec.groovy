@@ -163,12 +163,8 @@ class CatalogSpec extends VeoMvcSpec {
                 status = "NEW"
                 name = 'c3'
             })
-            newTailoringReference(item3, TailoringReferenceType.COPY) {
-                target = item2
-            }
-            newTailoringReference(item3, TailoringReferenceType.COPY_ALWAYS) {
-                target = item1
-            }
+            newTailoringReference(item3, item2, TailoringReferenceType.COPY)
+            newTailoringReference(item3, item1, TailoringReferenceType.COPY_ALWAYS)
 
             item4 = newCatalogItem(domain, {
                 elementType = "process"
@@ -177,12 +173,10 @@ class CatalogSpec extends VeoMvcSpec {
                 name = 'p1'
             })
 
-            newLinkTailoringReference(item4, TailoringReferenceType.LINK) {
-                target = item1
+            newLinkTailoringReference(item4, item1, TailoringReferenceType.LINK) {
                 linkType = "link_to_item_1"
             }
-            newLinkTailoringReference(item4, TailoringReferenceType.LINK) {
-                target = item2
+            newLinkTailoringReference(item4, item2, TailoringReferenceType.LINK) {
                 linkType = "link_to_item_2"
             }
 
@@ -212,8 +206,7 @@ class CatalogSpec extends VeoMvcSpec {
                 ]
             })
 
-            newLinkTailoringReference(item6, TailoringReferenceType.LINK) {
-                target = item1
+            newLinkTailoringReference(item6, item1, TailoringReferenceType.LINK) {
                 linkType = 'link_to_item_1'
             }
 
@@ -225,8 +218,7 @@ class CatalogSpec extends VeoMvcSpec {
                 description = "a control with external tailorref"
             })
 
-            newLinkTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {
-                target = item4
+            newLinkTailoringReference(item7, item4, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = 'externallinktest'
             }
 
@@ -244,16 +236,14 @@ class CatalogSpec extends VeoMvcSpec {
                 name = 'zz2'
             })
 
-            newLinkTailoringReference(zz1, TailoringReferenceType.LINK) {
-                target = zz2
+            newLinkTailoringReference(zz1, zz2, TailoringReferenceType.LINK) {
                 linkType = "link_to_zz2"
                 attributes = [
                     "control_comment":"another comment",
                     "control_operatingStage":"Updated"
                 ]
             }
-            newLinkTailoringReference(zz2, TailoringReferenceType.LINK) {
-                target = zz1
+            newLinkTailoringReference(zz2, zz1, TailoringReferenceType.LINK) {
                 linkType = "link_to_zz1"
                 attributes = [
                     "control_comment":"comment of the link to zz1",
@@ -323,12 +313,8 @@ class CatalogSpec extends VeoMvcSpec {
                 name = 'zzzzzPart'
             })
 
-            newTailoringReference(itemComposite, TailoringReferenceType.PART) {
-                target = itemPart
-            }
-            newTailoringReference(itemPart, TailoringReferenceType.COMPOSITE) {
-                target = itemComposite
-            }
+            newTailoringReference(itemComposite, itemPart, TailoringReferenceType.PART)
+            newTailoringReference(itemPart, itemComposite, TailoringReferenceType.COMPOSITE)
 
             domain1 = newDomain (client) {
                 description = "ISO/IEC2"
