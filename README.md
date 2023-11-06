@@ -9,7 +9,7 @@ verinice.veo is a cloud-native application for managing information security and
 ## Build
 
 ### Prerequisite:
-* Install Java 11.
+* Install Java 17.
 * If you are using an IDE (Eclipse, IntelliJ, VSCode,...) you need to run it with the lombok compile time preprocessor. Simply download lombok.jar (i.e. from Maven Central) and run the helper: "java -jar lombok.jar". This will add the required parameter to your eclipse.ini or other configuration.  If you want to do it by hand, add the following parameter at the end of your eclipse.ini:
 
 ```
@@ -27,7 +27,7 @@ cd verinice-veo
 ### Build project:
 
 ```bash
-export JAVA_HOME=/path/to/jdk-11
+export JAVA_HOME=/path/to/jdk-17
 ./gradlew build [-x test]
 ```
 
@@ -231,7 +231,7 @@ while the application is running:
 ## Run
 
 ### Prerequisite:
-* Install Java 11.
+* Install Java 17.
 * Install PostgreSQL
 * Create an empty database _v2020_
 
