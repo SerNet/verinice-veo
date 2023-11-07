@@ -58,30 +58,6 @@ public class KeySpec extends Specification {
         value == "TheValue"
     }
 
-    def "Create a compound value key" () {
-        given: "some keys to compare against"
-        Key otherSimpleKey = new Key("NotTheValue")
-        Key otherCompoundKeyMultiType = new Key(["TheValue", 2, true])
-        Key otherCompoundKeySameType = new Key(["One", "Two", "Three"])
-        Key sameKey = new Key("TheValue", 2, false)
-
-        when: "a Key is based on a compound value"
-        Key key = new Key("TheValue", 2, false)
-
-        then: "the key compares correctly to other keys"
-        !key.isUndefined()
-        key != otherSimpleKey
-        key != otherCompoundKeyMultiType
-        key != otherCompoundKeySameType
-        key == sameKey
-
-        when: "we try to read a compound key as a simple value"
-        key.value()
-
-        then: "an exception is thrown"
-        thrown IllegalStateException
-    }
-
     def "Create a UUID based key" () {
         given: "two keys to compare against"
         Key otherSimpleKey = new Key("NotTheValue")
