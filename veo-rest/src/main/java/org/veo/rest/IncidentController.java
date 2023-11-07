@@ -166,7 +166,6 @@ public class IncidentController
               required = false,
               defaultValue = PAGE_SIZE_DEFAULT_VALUE)
           @Min(1)
-          @Min(1)
           Integer pageSize,
       @RequestParam(
               value = PAGE_NUMBER_PARAM,
