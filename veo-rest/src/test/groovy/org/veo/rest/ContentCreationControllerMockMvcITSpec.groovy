@@ -574,7 +574,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "the applied item is gone"
         asset.appliedCatalogItems.size() == 0
 
-        when: "we incarnate secanrio 1 and link the composite feature to the first scenario"
+        when: "we incarnate scenario 1 and link the composite feature to the first scenario"
         catalogItems = txTemplate.execute {
             domainDataRepository.findById(domainId).get().catalogItems.each {
                 it.tailoringReferences.size()
@@ -615,7 +615,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     }
         }
 
-        then: "the existing scenarion has the new as part and the new scenario a composite"
+        then: "the existing scenario has the new as part and the new scenario a composite"
         elementList.size() == 1
         modifiedScenario.parts.size() == 1
         modifiedScenario.parts[0] == newScenario1
