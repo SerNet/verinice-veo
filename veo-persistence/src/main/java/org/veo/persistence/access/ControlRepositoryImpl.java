@@ -29,12 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ControlData;
@@ -84,14 +86,9 @@ public class ControlRepositoryImpl
   }
 
   private void removeFromRisks(Set<ControlData> controls) {
-    // remove association to control from risks:
-    assetDataRepository.findDistinctByRisks_Mitigation_In(controls).stream()
-        .flatMap(assetData -> assetData.getRisks().stream())
-        .filter(risk -> controls.contains(risk.getMitigation()))
-        .forEach(risk -> risk.mitigate(null));
-
-    processDataRepository.findDistinctByRisks_Mitigation_In(controls).stream()
-        .flatMap(processData -> processData.getRisks().stream())
+    getRiskAffectedRepos().stream()
+        .flatMap(repo -> repo.findDistinctByRisks_Mitigation_In(controls).stream())
+        .flatMap(riskAffected -> riskAffected.getRisks().stream())
         .filter(risk -> controls.contains(risk.getMitigation()))
         .forEach(risk -> risk.mitigate(null));
   }
@@ -101,5 +98,9 @@ public class ControlRepositoryImpl
   public void deleteAll(Set<Control> elements) {
     removeFromRisks(elements.stream().map(ControlData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
+  }
+
+  private Set<RiskAffectedDataRepository<? extends RiskAffected<?, ?>>> getRiskAffectedRepos() {
+    return Set.of(assetDataRepository, processDataRepository, scopeDataRepository);
   }
 }
