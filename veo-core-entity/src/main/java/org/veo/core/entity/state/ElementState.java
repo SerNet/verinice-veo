@@ -23,6 +23,9 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.ITypedId;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface ElementState<T extends Element> extends EntityState {
 
   Set<DomainAssociationState> getDomainAssociationStates();

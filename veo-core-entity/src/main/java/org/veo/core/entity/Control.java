@@ -22,6 +22,9 @@ import java.util.Map;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 /** A control represents something with can be applied to an entity. */
 public interface Control extends CompositeElement<Control>, RiskRelated {
 

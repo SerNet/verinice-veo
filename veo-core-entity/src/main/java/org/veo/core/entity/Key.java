@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.ToString;
 
 /**
@@ -31,6 +32,7 @@ import lombok.ToString;
  *
  * <p>For more information on the key pattern see the description in M.Fowler's PoEAA.
  */
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 @ToString(onlyExplicitlyIncluded = true)
 public class Key<T> {
 

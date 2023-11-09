@@ -374,7 +374,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     try {
       var dto = SearchQueryDto.decodeFromSearchId(searchId);
       // TODO VEO-425 Apply all unit id values (as IN condition).
-      if (dto.getUnitId() != null && !dto.getUnitId().values.isEmpty()) {
+      if (dto.getUnitId() != null && !dto.getUnitId().getValues().isEmpty()) {
         return getUnits(auth, dto.getUnitId().getValues().iterator().next(), null);
       }
       return getUnits(auth, null, null);

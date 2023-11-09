@@ -9,7 +9,9 @@
     <!-- they produce a lot of false positives because the heuristics that detect immutable classes are 
         not very good yet. -->
     <!-- https://github.com/spotbugs/spotbugs/issues?q=is%3Aissue+EI_EXPOSE_REP+is%3Aopen -->
+    <!-- CT_CONSTRUCTOR_THROW is supposed to prevent finalizer attacks, but we decided that this threat is negligible in veo,
+        and we'd rather have strict constructors for better data integrity. -->
     <Match>
-        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,CT_CONSTRUCTOR_THROW" />
     </Match>
 </FindBugsFilter>

@@ -28,5 +28,5 @@ import lombok.Data;
         "A condition for a search query with a set of values. Search results match if their tested property is equal to one of the values in this search condition.")
 public class QueryConditionDto<T> {
   @Schema(description = "Search results must match any of these values.")
-  public Set<T> values;
+  private Set<T> values;
 }

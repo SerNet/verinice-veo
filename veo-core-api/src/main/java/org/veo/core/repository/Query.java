@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 interface Query<T> {
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

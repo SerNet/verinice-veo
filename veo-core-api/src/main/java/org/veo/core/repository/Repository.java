@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /*
  * The repository provides access to business entities through a well-known interface.
  *
@@ -32,6 +34,7 @@ import java.util.Set;
  * the repository does not just offer CRUD operations but
  * uses factories and builders to build entities to specification.
  * */
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Repository<T, K> {
 
   T save(T entity);

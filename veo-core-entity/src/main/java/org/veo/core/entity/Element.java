@@ -31,11 +31,14 @@ import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Base type for entities that belong to a unit (a.k.a domain objects). Element instances may be
  * assigned to a set of domains and may hold aspects, custom aspects & links within certain domains.
  * They can also be of a domain-specific sub type.
  */
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Element
     extends Nameable, Identifiable, ClientOwned, Designated, Versioned, Displayable {
 

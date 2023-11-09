@@ -110,7 +110,7 @@ public class QueryInputMapper {
 
   static <T> SingleValueQueryCondition<T> transformCondition(SingleValueQueryConditionDto<T> dto) {
     if (dto != null) {
-      return new SingleValueQueryCondition<>(dto.value);
+      return new SingleValueQueryCondition<>(dto.getValue());
     }
     return null;
   }
@@ -118,7 +118,7 @@ public class QueryInputMapper {
   static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
     if (filterDto != null) {
       return new QueryCondition<>(
-          filterDto.values.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+          filterDto.getValues().stream().map(Key::uuidFrom).collect(Collectors.toSet()));
     }
     return null;
   }
@@ -128,12 +128,12 @@ public class QueryInputMapper {
       return null;
     }
     return new QueryCondition<>(
-        condition.values.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+        condition.getValues().stream().map(Key::uuidFrom).collect(Collectors.toSet()));
   }
 
   static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
     if (filterDto != null) {
-      return new QueryCondition<>(filterDto.values);
+      return new QueryCondition<>(filterDto.getValues());
     }
     return null;
   }

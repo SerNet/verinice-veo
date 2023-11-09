@@ -26,5 +26,5 @@ import lombok.Data;
         "A condition for a search query with a single value. Search results match if their tested property is equal to the value in this search condition.")
 public class SingleValueQueryConditionDto<T> {
   @Schema(description = "Search results must match any of these values.")
-  public T value;
+  private T value;
 }

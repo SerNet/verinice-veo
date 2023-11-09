@@ -38,6 +38,7 @@ import org.veo.core.entity.definitions.SubTypeDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -62,6 +63,7 @@ public class TranslationValidator {
 
   public record Violation(Locale language, Reason reason, String key) {}
 
+  @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
   public enum Reason {
     MISSING,
     SUPERFLUOUS,

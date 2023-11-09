@@ -20,11 +20,14 @@ package org.veo.core.entity.inspection;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /** Suggests a user action that would fix a {@link Finding} yielded by an {@link Inspection}. */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = AddPartSuggestion.class, name = AddPartSuggestion.NAME),
 })
+@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class Suggestion {
   protected Suggestion() {}
 }
