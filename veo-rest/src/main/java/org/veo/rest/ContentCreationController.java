@@ -49,8 +49,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -132,6 +134,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final CreateProfileFromUnitUseCase createProfileFromUnitUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
+
   public static final String URL_BASE_PATH = "/content-creation";
 
   private final CreateDomainUseCase createDomainUseCase;
@@ -489,12 +492,30 @@ public class ContentCreationController extends AbstractVeoController {
             domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));
   }
 
-  @PostMapping("/domain-templates")
+  @PostMapping(value = "/domain-templates", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Creates domain template")
   @ApiResponse(responseCode = "201", description = "Domain template created")
   @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
       @Valid @NotNull @RequestBody ExportDomainTemplateDto domainTemplateDto) {
+    return doCreateDomainTemplate(domainTemplateDto);
+  }
+
+  @PostMapping(value = "/domain-templates", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = "Creates domain template")
+  @ApiResponse(responseCode = "201", description = "Domain template created")
+  @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
+  @ApiResponse(
+      responseCode = "400",
+      description = "The content of the domain template is not valid")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
+      @NotNull @RequestPart MultipartFile file) {
+    ExportDomainTemplateDto domainTemplateDto = parse(file, ExportDomainTemplateDto.class);
+    return doCreateDomainTemplate(domainTemplateDto);
+  }
+
+  private CompletableFuture<ResponseEntity<ApiResponseBody>> doCreateDomainTemplate(
+      ExportDomainTemplateDto domainTemplateDto) {
     var input =
         CreateDomainTemplateInputMapper.map(
             domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);

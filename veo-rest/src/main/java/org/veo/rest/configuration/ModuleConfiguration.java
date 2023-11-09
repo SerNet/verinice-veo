@@ -20,6 +20,10 @@ package org.veo.rest.configuration;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -1180,5 +1184,12 @@ public class ModuleConfiguration {
   DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase(
       DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
     return new DeleteRiskDefinitionUseCase(domainRepository, repositoryProvider);
+  }
+
+  @Bean
+  public Validator validator() {
+    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+      return factory.getValidator();
+    }
   }
 }
