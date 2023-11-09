@@ -113,6 +113,12 @@ spring:
           issuer-uri: http://<AUTHSERVER>/auth/realms/<REALM>
           ## Auth Server private key location, i.e.: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
           jwk-set-uri: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
