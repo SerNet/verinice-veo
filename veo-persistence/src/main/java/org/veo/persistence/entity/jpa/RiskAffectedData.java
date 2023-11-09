@@ -171,6 +171,16 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
         .stream().filter(ci -> ci.getControl().equals(control)).forEach(this::remove);
   }
 
+  @Override
+  public void removeRequirementImplementation(Control control) {
+    findRequirementImplementation(control)
+        .ifPresent(
+            ri -> {
+              controlImplementations.forEach(ci -> ci.remove(ri));
+              requirementImplementations.remove(ri);
+            });
+  }
+
   private void add(ControlImplementationData ci) {
     this.controlImplementations.add(ci);
     ci.setOwner(this);

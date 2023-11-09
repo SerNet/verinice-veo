@@ -67,4 +67,17 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>> {
     where e.dbId in ?1
     """)
   Set<T> findAllWithCIsAndRIs(Iterable<String> ids);
+
+  // RIs must be joined twice, because the non-matching RIs would be missing from the returned
+  // elements if the join-fetched RIs were used in the `where` clause.
+  // https://stackoverflow.com/questions/5816417/how-to-properly-express-jpql-join-fetch-with-where-clause-as-jpa-2-criteriaq
+  @Query(
+      """
+        select distinct e from #{#entityName} e
+        left join fetch e.controlImplementations
+        left join fetch e.requirementImplementations
+        left join e.requirementImplementations ri
+        where ri.control in ?1
+        """)
+  Set<T> findAllByRequirementImplementationControls(Iterable<ControlData> controls);
 }

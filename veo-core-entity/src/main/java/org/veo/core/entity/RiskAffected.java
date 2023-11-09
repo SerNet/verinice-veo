@@ -159,6 +159,8 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
   /** Specify that a control is no longer being implemented by this element. */
   void disassociateControl(Control control);
 
+  void removeRequirementImplementation(Control control);
+
   Set<ControlImplementation> getControlImplementations();
 
   Set<RequirementImplementation> getRequirementImplementations();
@@ -180,13 +182,17 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
   ControlImplementation getImplementationFor(Control control);
 
   default RequirementImplementation getRequirementImplementation(Control control) {
-    return getRequirementImplementations().stream()
-        .filter(ri -> ri.getControl().equals(control))
-        .findAny()
+    return findRequirementImplementation(control)
         .orElseThrow(
             () ->
                 new NotFoundException(
                     "%s %s contains no requirement implementation for control %s"
                         .formatted(getModelType(), getIdAsString(), control.getIdAsString())));
+  }
+
+  default Optional<RequirementImplementation> findRequirementImplementation(Control control) {
+    return getRequirementImplementations().stream()
+        .filter(ri -> ri.getControl().equals(control))
+        .findAny();
   }
 }

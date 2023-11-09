@@ -239,7 +239,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
-    def "responsible person of #elementType.singularTerm CIs & RIs can be deleted"() {
+    def "elements used by #elementType.singularTerm CIs & RIs can be deleted"() {
         when: "creating and fetching an element with one CIs and a responsible person"
         def personId = post("/persons", [
             name: "person will be removed",
@@ -279,6 +279,20 @@ class ControlImplementationRestTest extends VeoRestTest {
         retrievedElement.controlImplementations[0].responsible == null
 
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").body.responsible == null
+
+        when: "deleting a sub control"
+        delete("/controls/$subControl1Id")
+
+        then: "its RI is gone"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl1Id", 404)
+
+        when: "deleting the root control"
+        delete("/controls/$rootControl1Id")
+
+        then: "its CI and all of the RIs are gone"
+        get("/$elementType.pluralTerm/$elementId").body.controlImplementations == []
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id", 404)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id", 404)
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES

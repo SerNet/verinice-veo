@@ -82,6 +82,7 @@ public class ControlRepositoryImpl
   @Override
   public void delete(Control control) {
     removeFromRisks(singleton((ControlData) control));
+    removeImplementations(singleton((ControlData) control));
     super.deleteById(control.getId());
   }
 
@@ -93,10 +94,24 @@ public class ControlRepositoryImpl
         .forEach(risk -> risk.mitigate(null));
   }
 
+  private void removeImplementations(Iterable<ControlData> controls) {
+    getRiskAffectedRepos().stream()
+        .flatMap(r -> r.findAllByRequirementImplementationControls(controls).stream())
+        .forEach(
+            ra ->
+                controls.forEach(
+                    control -> {
+                      ra.disassociateControl(control);
+                      ra.removeRequirementImplementation(control);
+                    }));
+  }
+
   @Override
   @Transactional
   public void deleteAll(Set<Control> elements) {
-    removeFromRisks(elements.stream().map(ControlData.class::cast).collect(Collectors.toSet()));
+    var controls = elements.stream().map(ControlData.class::cast).collect(Collectors.toSet());
+    removeFromRisks(controls);
+    removeImplementations(controls);
     super.deleteAll(elements);
   }
 
