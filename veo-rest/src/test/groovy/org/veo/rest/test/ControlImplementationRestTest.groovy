@@ -278,7 +278,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         retrievedElement.controlImplementations.size() == 1
         retrievedElement.controlImplementations[0].responsible == null
 
-        get("/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations").body.responsible == null
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").body.responsible == null
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
