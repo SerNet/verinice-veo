@@ -20,15 +20,20 @@ package org.veo.core.usecase.domain;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.GenericElementRepository;
@@ -76,6 +81,34 @@ public class ElementBatchCreator {
               e.getRisks().clear();
             });
 
+    // save scope memberships after the elements
+    Map<Scope, Set<Element>> scopeMemberships =
+        elements.stream()
+            .filter(Scope.class::isInstance)
+            .map(Scope.class::cast)
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    comp -> {
+                      var members = new HashSet<>(comp.getMembers());
+                      comp.getMembers().clear();
+                      return members;
+                    }));
+
+    // save composite relations after the elements
+    Map<CompositeElement<?>, Set<CompositeElement<?>>> compositeRelations =
+        elements.stream()
+            .filter(CompositeElement.class::isInstance)
+            .map(e -> (CompositeElement<?>) e)
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    comp -> {
+                      var parts = new HashSet<CompositeElement<?>>(comp.getParts());
+                      comp.getParts().clear();
+                      return parts;
+                    }));
+
     elements.stream()
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(Identifiable::getModelType))
@@ -96,6 +129,13 @@ public class ElementBatchCreator {
                 }
                 element.addRisk(r);
               });
+        });
+
+    scopeMemberships.forEach(Scope::addMembers);
+
+    compositeRelations.forEach(
+        (composite, parts) -> {
+          composite.addParts((Set) parts);
         });
 
     elements.forEach(
