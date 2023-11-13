@@ -33,16 +33,12 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -86,25 +82,11 @@ public interface EntityFactory {
 
   CatalogItem createCatalogItem(DomainBase domain);
 
-  TailoringReference<CatalogItem> createTailoringReference(
-      CatalogItem catalogItem, TailoringReferenceType referenceType);
-
   UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
-
-  LinkTailoringReference<CatalogItem> createLinkTailoringReference(
-      CatalogItem catalogItem, TailoringReferenceType referenceType);
 
   ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner);
 
   ProfileItem createProfileItem(Profile profile);
 
   Profile createProfile(DomainBase domainTemplate);
-
-  TailoringReference<ProfileItem> createTailoringReference(
-      ProfileItem profileItem, TailoringReferenceType referenceType);
-
-  LinkTailoringReference<ProfileItem> createLinkTailoringReference(
-      ProfileItem profileItem, TailoringReferenceType referenceType);
-
-  RiskTailoringReference createProfileRiskTailoringreference(ProfileItem profileItem);
 }

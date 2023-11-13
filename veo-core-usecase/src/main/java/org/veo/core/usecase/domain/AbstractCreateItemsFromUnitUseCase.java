@@ -18,12 +18,12 @@
 package org.veo.core.usecase.domain;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
@@ -42,11 +42,6 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
   protected final GenericElementRepository genericElementRepository;
   protected final UnitRepository unitRepository;
 
-  protected abstract void createTailoringReference(T source, T target, TailoringReferenceType type);
-
-  protected abstract LinkTailoringReference<T> createLinkReference(
-      CustomLink link, T source, T target, TailoringReferenceType type);
-
   protected void createTailorreferences(Map<Element, T> elementsToCatalogItems, Domain domain) {
     elementsToCatalogItems.values().forEach(TemplateItem::clearTailoringReferences);
     elementsToCatalogItems.forEach(
@@ -60,16 +55,18 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
         .getLinks(domain)
         .forEach(
             link -> {
-              createLinkReference(
-                  link,
-                  item,
+              item.addLinkTailoringReference(
+                  TailoringReferenceType.LINK,
                   elementsToCatalogItems.get(link.getTarget()),
-                  TailoringReferenceType.LINK);
-              createLinkReference(
-                  link,
-                  elementsToCatalogItems.get(link.getTarget()),
-                  item,
-                  TailoringReferenceType.LINK_EXTERNAL);
+                  link.getType(),
+                  link.getAttributes());
+              elementsToCatalogItems
+                  .get(link.getTarget())
+                  .addLinkTailoringReference(
+                      TailoringReferenceType.LINK_EXTERNAL,
+                      item,
+                      link.getType(),
+                      link.getAttributes());
             });
 
     if (element instanceof CompositeElement<?> composite) {
@@ -78,14 +75,14 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
           .forEach(
               target -> {
                 T partCatalogItem = elementsToCatalogItems.get(target);
-                createTailoringReference(partCatalogItem, item, TailoringReferenceType.COMPOSITE);
+                partCatalogItem.addTailoringReference(TailoringReferenceType.COMPOSITE, item);
               });
       composite
           .getComposites()
           .forEach(
               target -> {
                 T compositeCatalogItem = elementsToCatalogItems.get(target);
-                createTailoringReference(compositeCatalogItem, item, TailoringReferenceType.PART);
+                compositeCatalogItem.addTailoringReference(TailoringReferenceType.PART, item);
               });
     } else if (element instanceof Scope scope) {
       scope
@@ -93,9 +90,25 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
           .forEach(
               member -> {
                 T memberAsCatalogItem = elementsToCatalogItems.get(member);
-                createTailoringReference(memberAsCatalogItem, item, TailoringReferenceType.SCOPE);
-                createTailoringReference(item, memberAsCatalogItem, TailoringReferenceType.MEMBER);
+                memberAsCatalogItem.addTailoringReference(TailoringReferenceType.SCOPE, item);
+                item.addTailoringReference(TailoringReferenceType.MEMBER, memberAsCatalogItem);
               });
+    }
+
+    if (element instanceof RiskAffected<?, ?> risky) {
+      risky
+          .getRisks()
+          .forEach(
+              r ->
+                  item.addRiskTailoringReference(
+                      TailoringReferenceType.RISK,
+                      elementsToCatalogItems.get(r.getScenario()),
+                      Optional.ofNullable(r.getRiskOwner())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      Optional.ofNullable(r.getMitigation())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null)));
     }
   }
 }

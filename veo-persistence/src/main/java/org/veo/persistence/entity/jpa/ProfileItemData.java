@@ -33,8 +33,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
@@ -86,18 +88,24 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
   }
 
   @Override
-  public TailoringReference<ProfileItem> addTailoringReference(
-      TailoringReferenceType referenceType, ProfileItem referenceTarget) {
-    var reference =
-        switch (referenceType) {
-          case LINK, LINK_EXTERNAL -> new ProfileLinkTailoringReferenceData();
-          case RISK -> new ProfileRiskTailoringReferenceData();
-          default -> new ProfileTailoringReferenceData();
-        };
-    reference.setReferenceType(referenceType);
-    reference.setOwner(this);
-    reference.setTarget(referenceTarget);
+  protected void add(
+      TailoringReference<ProfileItem> reference, TailoringReferenceType type, ProfileItem target) {
+    super.add(reference, type, target);
     this.tailoringReferences.add(reference);
-    return reference;
+  }
+
+  @Override
+  protected TailoringReference<ProfileItem> createTailoringReference() {
+    return new ProfileTailoringReferenceData();
+  }
+
+  @Override
+  protected LinkTailoringReference<ProfileItem> createLinkTailoringReference() {
+    return new ProfileLinkTailoringReferenceData();
+  }
+
+  @Override
+  protected RiskTailoringReference<ProfileItem> createRiskTailoringReference() {
+    return new ProfileRiskTailoringReferenceData();
   }
 }

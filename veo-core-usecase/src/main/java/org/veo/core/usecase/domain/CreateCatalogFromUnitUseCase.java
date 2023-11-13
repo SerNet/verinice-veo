@@ -29,13 +29,9 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -121,23 +117,6 @@ public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     log.info("removing {} obsolete catalog items", obsoleteItems.size());
     obsoleteItems.forEach(TemplateItem::clearTailoringReferences);
     domain.getCatalogItems().removeAll(obsoleteItems);
-  }
-
-  protected void createTailoringReference(
-      CatalogItem source, CatalogItem target, TailoringReferenceType type) {
-    TailoringReference<CatalogItem> tailoringReference =
-        factory.createTailoringReference(source, type);
-    tailoringReference.setTarget(target);
-  }
-
-  protected LinkTailoringReference<CatalogItem> createLinkReference(
-      CustomLink link, CatalogItem source, CatalogItem target, TailoringReferenceType type) {
-    LinkTailoringReference<CatalogItem> reference =
-        factory.createLinkTailoringReference(source, type);
-    reference.setAttributes(link.getAttributes());
-    reference.setTarget(target);
-    reference.setLinkType(link.getType());
-    return reference;
   }
 
   @Valid

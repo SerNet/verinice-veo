@@ -37,6 +37,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
@@ -124,19 +126,24 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
   }
 
   @Override
-  public TailoringReference<CatalogItem> addTailoringReference(
-      TailoringReferenceType referenceType, CatalogItem referenceTarget) {
-    var reference =
-        switch (referenceType) {
-          case LINK, LINK_EXTERNAL -> new LinkTailoringReferenceData();
-          case RISK -> throw new UnsupportedOperationException(
-              "Risks currently not supported for catalog items");
-          default -> new CatalogTailoringReferenceData();
-        };
-    reference.setReferenceType(referenceType);
-    reference.setOwner(this);
-    reference.setTarget(referenceTarget);
-    this.tailoringReferences.add(reference);
-    return reference;
+  protected void add(
+      TailoringReference<CatalogItem> reference, TailoringReferenceType type, CatalogItem target) {
+    super.add(reference, type, target);
+    tailoringReferences.add(reference);
+  }
+
+  @Override
+  protected TailoringReference<CatalogItem> createTailoringReference() {
+    return new CatalogTailoringReferenceData();
+  }
+
+  @Override
+  protected LinkTailoringReference<CatalogItem> createLinkTailoringReference() {
+    return new LinkTailoringReferenceData();
+  }
+
+  @Override
+  protected RiskTailoringReference<CatalogItem> createRiskTailoringReference() {
+    throw new UnsupportedOperationException("Risks currently not supported for catalog items");
   }
 }

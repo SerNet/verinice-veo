@@ -26,19 +26,12 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.RiskTailoringReference;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.transform.EntityFactory;
@@ -125,61 +118,6 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
   @Override
   public boolean isReadOnly() {
     return false;
-  }
-
-  @Override
-  protected void createTailoringReferences(
-      Map<Element, ProfileItem> elementsToCatalogItems,
-      Domain domain,
-      Element element,
-      ProfileItem item) {
-    super.createTailoringReferences(elementsToCatalogItems, domain, element, item);
-    if (element instanceof RiskAffected<?, ?> risky) {
-      risky
-          .getRisks()
-          .forEach(r -> createRiskReference(item, elementsToCatalogItems, risky, r, domain));
-    }
-  }
-
-  private void createRiskReference(
-      ProfileItem source,
-      Map<Element, ProfileItem> elementsToCatalogItems,
-      RiskAffected<?, ?> risky,
-      AbstractRisk<?, ?> r,
-      Domain domain) {
-    log.info(
-        "create risk reference for {} mitigation: {}, riskOwner: {}, scenario: {}",
-        risky.getName(),
-        r.getMitigation(),
-        r.getRiskOwner(),
-        r.getScenario());
-
-    RiskTailoringReference riskTailoringreference =
-        factory.createProfileRiskTailoringreference(source);
-    riskTailoringreference.setMitigation(elementsToCatalogItems.get(r.getMitigation()));
-    riskTailoringreference.setRiskOwner(elementsToCatalogItems.get(r.getRiskOwner()));
-    riskTailoringreference.setTarget(elementsToCatalogItems.get(r.getScenario()));
-
-    // TODO: #2387 store the risk data
-    log.info("create risk for {} -> {}", source.getName(), riskTailoringreference);
-  }
-
-  protected void createTailoringReference(
-      ProfileItem source, ProfileItem target, TailoringReferenceType type) {
-    TailoringReference<ProfileItem> tailoringReference =
-        factory.createTailoringReference(source, type);
-    tailoringReference.setTarget(target);
-  }
-
-  @Override
-  protected LinkTailoringReference<ProfileItem> createLinkReference(
-      CustomLink link, ProfileItem source, ProfileItem target, TailoringReferenceType type) {
-    LinkTailoringReference<ProfileItem> reference =
-        factory.createLinkTailoringReference(source, type);
-    reference.setAttributes(link.getAttributes());
-    reference.setTarget(target);
-    reference.setLinkType(link.getType());
-    return reference;
   }
 
   @Valid

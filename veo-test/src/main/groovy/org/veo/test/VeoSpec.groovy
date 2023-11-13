@@ -45,6 +45,7 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.TemplateItem
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
@@ -242,20 +243,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogTailoringReferenceData  newTailoringReference(CatalogItem owner, CatalogItem target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static <T extends TemplateItem<T>> TailoringReference<T> newTailoringReference(T owner, T target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
-        return factory.createTailoringReference(owner, type).tap {
-            if(target != null) {
-                it.target = target
-            }
-            VeoSpec.execute(it, init)
-        }
-    }
-
-    static ProfileTailoringReferenceData newTailoringReference(ProfileItem owner, ProfileItem target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
-        return factory.createTailoringReference(owner, type).tap {
-            it.target = target
+        return owner.addTailoringReference(type, target).tap {
             VeoSpec.execute(it, init)
         }
     }
@@ -267,16 +257,13 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static LinkTailoringReferenceData newLinkTailoringReference(
-            CatalogItem owner,
-            CatalogItem target,
+    static <T extends TemplateItem<T>> LinkTailoringReference<T> newLinkTailoringReference(
+            T owner,
+            T target,
             TailoringReferenceType referenceType,
             @DelegatesTo(value = LinkTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.LinkTailoringReference") Closure init = null) {
-        return factory.createLinkTailoringReference(owner, referenceType).tap {
-            if (target != null) {
-                it.target = target;
-            }
+        return owner.addLinkTailoringReference(referenceType, target, null, [:]).tap {
             VeoSpec.execute(it, init)
         }
     }

@@ -57,13 +57,11 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
@@ -234,23 +232,24 @@ public final class DtoToEntityTransformer {
     return target;
   }
 
+  /**
+   * Adds a tailoring reference to the given template item based on the given tailoring reference
+   * DTO.
+   */
   private <T extends TemplateItem<T>> void addTailoringReference(
       TailoringReferenceDto<T> source, T owner, IdRefResolver idRefResolver) {
-    var target =
-        owner.addTailoringReference(
-            source.getReferenceType(), idRefResolver.resolve(source.getTarget()));
-    if (source instanceof LinkTailoringReferenceDto<T> linkDto
-        && target instanceof LinkTailoringReference<T> linkRef) {
-      linkRef.setAttributes(linkDto.getAttributes());
-      linkRef.setLinkType(linkDto.getLinkType());
-    } else if (source instanceof RiskTailoringReferenceDto<T> riskDto
-        && target instanceof RiskTailoringReference<T> riskRef) {
-      Optional.ofNullable(riskDto.getRiskOwner())
-          .map(idRefResolver::resolve)
-          .ifPresent(riskRef::setRiskOwner);
-      Optional.ofNullable(riskDto.getMitigation())
-          .map(idRefResolver::resolve)
-          .ifPresent(riskRef::setMitigation);
+    T targetItem = idRefResolver.resolve(source.getTarget());
+    if (source instanceof LinkTailoringReferenceDto<T> linkDto) {
+      owner.addLinkTailoringReference(
+          source.getReferenceType(), targetItem, linkDto.getLinkType(), linkDto.getAttributes());
+    } else if (source instanceof RiskTailoringReferenceDto<T> riskDto) {
+      owner.addRiskTailoringReference(
+          source.getReferenceType(),
+          targetItem,
+          Optional.ofNullable(riskDto.getRiskOwner()).map(idRefResolver::resolve).orElse(null),
+          Optional.ofNullable(riskDto.getMitigation()).map(idRefResolver::resolve).orElse(null));
+    } else {
+      owner.addTailoringReference(source.getReferenceType(), targetItem);
     }
   }
 

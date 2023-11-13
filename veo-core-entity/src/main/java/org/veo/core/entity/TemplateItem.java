@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.exception.UnprocessableDataException;
 
 public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable, Versioned {
@@ -81,6 +83,31 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
 
   DomainBase getDomainBase();
 
+  /**
+   * Adds a new {@link TailoringReference} to this item. Use this method for reference types that
+   * don't require additional data. For other types see {@link
+   * TemplateItem#addLinkTailoringReference} & {@link TemplateItem#addRiskTailoringReference}
+   */
   TailoringReference<T> addTailoringReference(
       TailoringReferenceType referenceType, T referenceTarget);
+
+  /**
+   * Adds a new {@link LinkTailoringReference} to this item. Use this method for {@link
+   * TailoringReferenceType#LINK} & {@link TailoringReferenceType#LINK_EXTERNAL} only.
+   */
+  LinkTailoringReference<T> addLinkTailoringReference(
+      TailoringReferenceType tailoringReferenceType,
+      T target,
+      String linkType,
+      Map<String, Object> attributes);
+
+  /**
+   * Adds a new {@link RiskTailoringReference} to this item. Use this method for {@link
+   * TailoringReferenceType#RISK} only.
+   */
+  RiskTailoringReference<T> addRiskTailoringReference(
+      TailoringReferenceType referenceType,
+      T target,
+      @Nullable T riskOwner,
+      @Nullable T mitigation);
 }

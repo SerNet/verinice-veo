@@ -38,23 +38,18 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
-import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.CustomAspectData;
@@ -64,14 +59,10 @@ import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
 import org.veo.persistence.entity.jpa.ElementTypeDefinitionData;
 import org.veo.persistence.entity.jpa.IncidentData;
-import org.veo.persistence.entity.jpa.LinkTailoringReferenceData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ProfileData;
 import org.veo.persistence.entity.jpa.ProfileItemData;
-import org.veo.persistence.entity.jpa.ProfileLinkTailoringReferenceData;
-import org.veo.persistence.entity.jpa.ProfileRiskTailoringReferenceData;
-import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.UnitData;
@@ -211,26 +202,6 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public TailoringReference<CatalogItem> createTailoringReference(
-      CatalogItem catalogItem, TailoringReferenceType referenceType) {
-    CatalogTailoringReferenceData tailoringReference = new CatalogTailoringReferenceData();
-    tailoringReference.setOwner(catalogItem);
-    tailoringReference.setReferenceType(referenceType);
-    catalogItem.getTailoringReferences().add(tailoringReference);
-    return tailoringReference;
-  }
-
-  @Override
-  public LinkTailoringReference<CatalogItem> createLinkTailoringReference(
-      CatalogItem catalogItem, TailoringReferenceType referenceType) {
-    LinkTailoringReference<CatalogItem> tailoringReference = new LinkTailoringReferenceData();
-    tailoringReference.setOwner(catalogItem);
-    tailoringReference.setReferenceType(referenceType);
-    catalogItem.getTailoringReferences().add(tailoringReference);
-    return tailoringReference;
-  }
-
-  @Override
   public ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner) {
     var definition = new ElementTypeDefinitionData();
     definition.setElementType(elementType);
@@ -268,36 +239,5 @@ public class EntityDataFactory implements EntityFactory {
     profile.setOwner(domainTemplate);
     domainTemplate.getProfiles().add(profile);
     return profile;
-  }
-
-  @Override
-  public TailoringReference<ProfileItem> createTailoringReference(
-      ProfileItem profileItem, TailoringReferenceType referenceType) {
-    ProfileTailoringReferenceData tailoringReference = new ProfileTailoringReferenceData();
-    tailoringReference.setOwner(profileItem);
-    tailoringReference.setReferenceType(referenceType);
-    profileItem.getTailoringReferences().add(tailoringReference);
-    return tailoringReference;
-  }
-
-  @Override
-  public LinkTailoringReference<ProfileItem> createLinkTailoringReference(
-      ProfileItem profileItem, TailoringReferenceType referenceType) {
-    LinkTailoringReference<ProfileItem> tailoringReference =
-        new ProfileLinkTailoringReferenceData();
-    tailoringReference.setOwner(profileItem);
-    tailoringReference.setReferenceType(referenceType);
-    profileItem.getTailoringReferences().add(tailoringReference);
-    return tailoringReference;
-  }
-
-  @Override
-  public RiskTailoringReference createProfileRiskTailoringreference(ProfileItem profileItem) {
-    ProfileRiskTailoringReferenceData riskTailoringReferenceData =
-        new ProfileRiskTailoringReferenceData();
-    riskTailoringReferenceData.setOwner(profileItem);
-    riskTailoringReferenceData.setReferenceType(TailoringReferenceType.RISK);
-    profileItem.getTailoringReferences().add(riskTailoringReferenceData);
-    return riskTailoringReferenceData;
   }
 }

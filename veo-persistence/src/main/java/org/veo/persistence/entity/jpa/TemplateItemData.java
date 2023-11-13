@@ -24,11 +24,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.RiskTailoringReference;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
@@ -93,6 +99,52 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     getTailoringReferences().forEach(tr -> tr.setOwner(null));
     getTailoringReferences().clear();
   }
+
+  @Override
+  public TailoringReference<T> addTailoringReference(
+      TailoringReferenceType referenceType, T target) {
+    var ref = createTailoringReference();
+    add(ref, referenceType, target);
+    return ref;
+  }
+
+  @Override
+  public LinkTailoringReference<T> addLinkTailoringReference(
+      TailoringReferenceType tailoringReferenceType,
+      T target,
+      String linkType,
+      Map<String, Object> attributes) {
+    var ref = createLinkTailoringReference();
+    add(ref, tailoringReferenceType, target);
+    ref.setLinkType(linkType);
+    ref.setAttributes(attributes);
+    return ref;
+  }
+
+  @Override
+  public RiskTailoringReference<T> addRiskTailoringReference(
+      TailoringReferenceType referenceType,
+      T target,
+      @Nullable T riskOwner,
+      @Nullable T mitigation) {
+    var ref = createRiskTailoringReference();
+    add(ref, referenceType, target);
+    ref.setRiskOwner(riskOwner);
+    ref.setMitigation(mitigation);
+    return ref;
+  }
+
+  protected void add(TailoringReference<T> reference, TailoringReferenceType type, T target) {
+    reference.setReferenceType(type);
+    reference.setOwner((T) this);
+    reference.setTarget(target);
+  }
+
+  protected abstract TailoringReference<T> createTailoringReference();
+
+  protected abstract LinkTailoringReference<T> createLinkTailoringReference();
+
+  protected abstract RiskTailoringReference<T> createRiskTailoringReference();
 
   protected Element createElement(Unit owner) {
     TemplateItem.checkValidElementType(getElementType());
