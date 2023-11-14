@@ -804,7 +804,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "create profile in a domain from a unit"() {
         given: "a domain and a unit with elements"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         post("/domains/${domainId}/processes/${processId}/links", [
             process_requiredApplications: [
@@ -1077,7 +1077,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString, true)
 
         given: "a number of existing templates"
         def initialTemplateCount = txTemplate.execute {

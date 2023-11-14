@@ -19,14 +19,11 @@ package org.veo.rest
 
 import org.veo.core.VeoMvcSpec
 
-import groovy.util.logging.Slf4j
-
-@Slf4j
 class ContentSpec extends VeoMvcSpec {
     public static final String PROBLEM = "In computer science, there are only three hard problems: " +
     "Cache invalidation, naming things, and off-by-one errors."
 
-    protected createUnitWithElements(String domainId) {
+    protected createUnitWithElements(String domainId, boolean addRisks = false, boolean addRiskValues = false) {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
@@ -40,6 +37,14 @@ class ContentSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "AST_Application",
                     status: "NEW",
+                    riskValues: addRiskValues ? [
+                        DSRA: [
+                            potentialImpacts: [
+                                "C": 0,
+                                "I": 0
+                            ]
+                        ]
+                    ] : [:]
                 ]
             ],
             name   : "asset",
@@ -90,6 +95,14 @@ class ContentSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW",
+                    riskValues: addRiskValues ? [
+                        DSRA: [
+                            potentialImpacts: [
+                                "C": 0,
+                                "I": 1
+                            ]
+                        ]
+                    ] : [:]
                 ]
             ],
             name   : "process",
@@ -101,6 +114,11 @@ class ContentSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "SCN_Scenario",
                     status: "NEW",
+                    riskValues: addRiskValues ? [
+                        DSRA: [
+                            potentialProbability: 2
+                        ]
+                    ] : [:]
                 ]
             ],
             owner  : owner
@@ -111,182 +129,47 @@ class ContentSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "SCP_Scope",
                     status: "NEW",
+                    riskDefinition: addRiskValues ? "DSRA": null,
                 ]
             ],
             owner  : owner
         ])
 
-        post("/assets/$assetId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        post("/processes/$processId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        [
-            unitId,
-            assetId,
-            scenarioId,
-            processId
-        ]
-    }
-
-    protected createUnitWithRiskyElements(String domainId) {
-        def unitId = parseJson(post("/units", [
-            name   : "you knit",
-            domains: [
-                [targetUri: "http://localhost/domains/$domainId"]
-            ]
-        ])).resourceId
-        def owner = [targetUri: "http://localhost/units/$unitId"]
-
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 0
-                            ]
-                        ]
+        if (addRisks) {
+            post("/assets/$assetId/risks", [
+                domains: [
+                    (domainId): [
+                        reference: [targetUri: "http://localhost/domains/$domainId"]
                     ]
-                ]
-            ],
-            name   : "asset",
-            owner  : owner
-        ])).resourceId
-        post("/controls", [
-            name   : "control",
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/documents", [
-            name   : "document",
-            domains: [
-                (domainId): [
-                    subType: "DOC_Document",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/incidents", [
-            name   : "incident",
-            domains: [
-                (domainId): [
-                    subType: "INC_Incident",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/persons", [
-            name   : "person",
-            domains: [
-                (domainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-
-        def scopeId = parseJson(post("/scopes", [
-            name: "DSRA scope",
-            domains: [
-                (domainId): [
-                    subType: "SCP_Scope",
-                    status: "NEW",
-                    riskDefinition: "DSRA",
-                ]
-            ],
-            owner: owner
-        ])).resourceId
-
-        def processId = parseJson(post("/processes?scopes=$scopeId", [
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            name   : "updated process",
-            owner  : owner
-        ])).resourceId
-
-        def scenarioId = parseJson(post("/scenarios", [
-            name   : "scenario",
-            domains: [
-                (domainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialProbability: 2
-                        ]
-                    ]
-                ]
-            ],
-            owner  : owner
-        ])).resourceId
-        post("/assets/$assetId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        post("/processes/$processId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
-                    riskDefinitions: [
-                        DSRA: [
-                            impactValues: [
-                                [
-                                    category: "A",
-                                    specificImpact: 1
-                                ]
-                            ],
-                            riskValues: [
-                                [
-                                    category: "A",
-                                    residualRiskExplanation: PROBLEM,
-                                    riskTreatments: ["RISK_TREATMENT_REDUCTION"]
+                ],
+                scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+            ])
+            post("/processes/$processId/risks", [
+                domains: [
+                    (domainId): [
+                        reference: [targetUri: "http://localhost/domains/$domainId"],
+                        riskDefinitions: addRiskValues ? [
+                            DSRA: [
+                                impactValues: [
+                                    [
+                                        category: "A",
+                                        specificImpact: 1
+                                    ]
+                                ],
+                                riskValues: [
+                                    [
+                                        category: "A",
+                                        residualRiskExplanation: PROBLEM,
+                                        riskTreatments: ["RISK_TREATMENT_REDUCTION"]
+                                    ]
                                 ]
                             ]
-                        ]
+                        ] : [:]
                     ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
+                ],
+                scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+            ])
+        }
         [
             unitId,
             assetId,

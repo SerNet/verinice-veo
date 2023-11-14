@@ -61,7 +61,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def domainId = parseJson(get("/domains")).find{it.name == "DSGVO-test"}.id
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         when: "requesting a unit dump"
         def dump = parseJson(get("/admin/unit-dump/$unitId"))
@@ -93,7 +93,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
         def domainId = parseJson(get("/domains")).find{it.templateVersion=="1.4.0"}.id
-        def (unitId, assetId, scenarioId, processId) = createUnitWithRiskyElements(domainId)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
 
         when: "the process risk values are preserved before migration"
         def json = parseJson(get("/admin/unit-dump/$unitId"))
@@ -130,7 +130,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
                 }
                 // process is present with risk values:
                 with(elements.find { it.id == processId }) {
-                    name == "updated process"
+                    name == "process"
                     domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
                     domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == 0
                     domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == 1
