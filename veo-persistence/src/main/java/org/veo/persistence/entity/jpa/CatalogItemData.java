@@ -43,6 +43,7 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -144,6 +145,6 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
 
   @Override
   protected RiskTailoringReference<CatalogItem> createRiskTailoringReference() {
-    throw new UnsupportedOperationException("Risks currently not supported for catalog items");
+    throw new UnprocessableDataException("Risks currently not supported for catalog items");
   }
 }

@@ -1075,6 +1075,20 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "risks are not supported for catalog items"() {
+        given: "a unit with risks"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
+
+        when: "trying to create catalog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}", [:], 422)
+
+        then: "it fails"
+        UnprocessableDataException ex = thrown()
+        ex.message == "Risks currently not supported for catalog items"
+    }
+
+    @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString, true)
