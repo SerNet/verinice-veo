@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +51,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -111,6 +114,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
+
+  private static final String IMPORT_UNIT_DESCRIPTION =
+      "Imports a previously exported unit. The unit, elements & risks in the request body are created as new resources. The domains in the request body are only used to find the equivalent existing domains. If the domains have been updated since the export, the exported elements or risks may have become incompatible and cannot be imported.";
 
   private final UnitImportMapper unitImportMapper;
   private final CreateUnitUseCase createUnitUseCase;
@@ -283,17 +289,27 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
-  @PostMapping(value = "/import")
-  @Operation(
-      summary =
-          "Imports a previously exported unit. The unit, elements & risks in the request body are created as new "
-              + "resources. The domains in the request body are only used to find the equivalent existing domains. "
-              + "If the domains have been updated since the export, the exported elements or risks may have become "
-              + "incompatible and cannot be imported.")
+  @PostMapping(value = "/import", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = IMPORT_UNIT_DESCRIPTION)
   @ApiResponse(responseCode = "201", description = "Unit imported")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> importUnit(
       @Parameter(hidden = true) ApplicationUser user, @RequestBody @Valid UnitDumpDto dto) {
+    return doImportUnit(user, dto);
+  }
+
+  @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = IMPORT_UNIT_DESCRIPTION)
+  @ApiResponse(responseCode = "201", description = "Unit imported")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> importUnitMultipart(
+      @Parameter(hidden = true) ApplicationUser user, @NotNull @RequestPart MultipartFile file) {
+    UnitDumpDto dto = parse(file, UnitDumpDto.class);
+    return doImportUnit(user, dto);
+  }
+
+  private CompletableFuture<ResponseEntity<ApiResponseBody>> doImportUnit(
+      ApplicationUser user, UnitDumpDto dto) {
     return useCaseInteractor.execute(
         unitImportUseCase,
         (Supplier<UnitImportUseCase.InputData>)
