@@ -25,11 +25,11 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
-import org.veo.core.entity.condition.DecisionResultValueProvider;
+import org.veo.core.entity.condition.DecisionResultValueExpression;
 import org.veo.core.entity.condition.EqualsMatcher;
 import org.veo.core.entity.condition.InputMatcher;
-import org.veo.core.entity.condition.InputProvider;
-import org.veo.core.entity.condition.PartCountProvider;
+import org.veo.core.entity.condition.PartCountExpression;
+import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.decision.DecisionRef;
 
 import lombok.Data;
@@ -73,17 +73,17 @@ public class Inspection {
     return Optional.empty();
   }
 
-  public Inspection addCondition(InputProvider provider, InputMatcher matcher) {
+  public Inspection addCondition(VeoExpression provider, InputMatcher matcher) {
     conditions.add(new Condition(provider, matcher));
     return this;
   }
 
   public Inspection ifDecisionResultEquals(Boolean result, DecisionRef decision) {
-    return addCondition(new DecisionResultValueProvider(decision), new EqualsMatcher(result));
+    return addCondition(new DecisionResultValueExpression(decision), new EqualsMatcher(result));
   }
 
   public Inspection ifPartAbsent(String subType) {
-    return addCondition(new PartCountProvider(subType), new EqualsMatcher(0));
+    return addCondition(new PartCountExpression(subType), new EqualsMatcher(0));
   }
 
   public Inspection suggestAddingPart(String subType) {

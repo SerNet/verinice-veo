@@ -36,7 +36,7 @@ import lombok.Data;
  * not affected by any risks or if none of the risks have a residual risk value.
  */
 @Data
-public class MaxRiskProvider implements InputProvider {
+public class MaxRiskExpression implements VeoExpression {
   @Override
   public Object getValue(Element element, Domain domain) {
     if (element instanceof RiskAffected) {

@@ -22,31 +22,44 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.decision.DecisionRef;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Provides the element's result value of a certain type of decision. */
+/** Provides the value for a certain custom aspect attribute on an element. */
+@Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@Data
-public class DecisionResultValueProvider implements InputProvider {
-  @NotNull DecisionRef decision;
+public class CustomAspectAttributeValueExpression implements VeoExpression {
+  private @NotNull String customAspect;
+  private @NotNull String attribute;
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    var result = element.getDecisionResults(domain).get(decision);
-    if (result == null) {
-      return null;
-    }
-    return result.getValue();
+    return element.getCustomAspects().stream()
+        .filter(ca -> ca.getType().equals(customAspect))
+        .findFirst()
+        .map(ca -> ca.getAttributes().get(attribute))
+        .orElse(null);
+  }
+
+  @Override
+  public void selfValidate(DomainBase domain, String elementType) {
+    getAttributeDefinition(domain, elementType);
   }
 
   @Override
   public Class<?> getValueType(DomainBase domain, String elementType) {
-    return Boolean.class;
+    return getAttributeDefinition(domain, elementType).getValueType();
+  }
+
+  private AttributeDefinition getAttributeDefinition(DomainBase domain, String elementType) {
+    return domain
+        .getElementTypeDefinition(elementType)
+        .getCustomAspectDefinition(customAspect)
+        .getAttributeDefinition(attribute);
   }
 }

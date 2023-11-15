@@ -32,13 +32,13 @@ import org.veo.core.entity.event.ElementEvent;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-  @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
-  @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
-  @Type(value = DecisionResultValueProvider.class, name = "decisionResultValue"),
-  @Type(value = MaxRiskProvider.class, name = "maxRisk"),
-  @Type(value = PartCountProvider.class, name = "partCount"),
+  @Type(value = CustomAspectAttributeSizeExpression.class, name = "customAspectAttributeSize"),
+  @Type(value = CustomAspectAttributeValueExpression.class, name = "customAspectAttributeValue"),
+  @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
+  @Type(value = MaxRiskExpression.class, name = "maxRisk"),
+  @Type(value = PartCountExpression.class, name = "partCount"),
 })
-public interface InputProvider {
+public interface VeoExpression {
   public Object getValue(Element element, Domain domain);
 
   /** Determines whether this provider may yield a different value after given event. */

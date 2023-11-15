@@ -17,65 +17,36 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
-import java.util.Collection;
-
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.decision.DecisionRef;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Provides the size/length of a collection value for a certain custom aspect attribute on an
- * element.
- */
-@Data
+/** Provides the element's result value of a certain type of decision. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class CustomAspectAttributeSizeProvider implements InputProvider {
-  private @NotNull String customAspectType;
-  private @NotNull String attributeType;
+@Data
+public class DecisionResultValueExpression implements VeoExpression {
+  @NotNull DecisionRef decision;
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    var value =
-        new CustomAspectAttributeValueProvider(customAspectType, attributeType)
-            .getValue(element, domain);
-
-    if (value == null) {
-      return 0;
+    var result = element.getDecisionResults(domain).get(decision);
+    if (result == null) {
+      return null;
     }
-    if (value instanceof Collection<?>) {
-      return ((Collection) value).size();
-    }
-    throw new IllegalArgumentException(
-        String.format(
-            "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
-            customAspectType, attributeType));
-  }
-
-  @Override
-  public void selfValidate(DomainBase domain, String elementType) {
-    var type =
-        domain
-            .getElementTypeDefinition(elementType)
-            .getCustomAspectDefinition(customAspectType)
-            .getAttributeDefinition(attributeType)
-            .getValueType();
-    if (!Collection.class.isAssignableFrom(type)) {
-      throw new IllegalArgumentException(
-          "Cannot get size of %s attribute '%s', expected list attribute"
-              .formatted(type.getSimpleName(), attributeType));
-    }
+    return result.getValue();
   }
 
   @Override
   public Class<?> getValueType(DomainBase domain, String elementType) {
-    return Integer.class;
+    return Boolean.class;
   }
 }

@@ -25,7 +25,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
-import org.veo.core.entity.condition.PartCountProvider
+import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -67,7 +67,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     it.rules.add(newRule(true) {
                         description = newTranslatedText("Team has more than 10 members")
                         conditions.add(new Condition(
-                                new PartCountProvider("Employee"),
+                                new PartCountExpression("Employee"),
                                 new GreaterThanMatcher(BigDecimal.valueOf(10))
                                 ))
                     })

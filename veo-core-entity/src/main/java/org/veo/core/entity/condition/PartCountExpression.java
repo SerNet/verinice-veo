@@ -17,49 +17,55 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.stream.Collectors;
+
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Provides the value for a certain custom aspect attribute on an element. */
-@Data
+/** Provides the amount of a composite element's parts. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class CustomAspectAttributeValueProvider implements InputProvider {
-  private @NotNull String customAspect;
-  private @NotNull String attribute;
+@Data
+public class PartCountExpression implements VeoExpression {
+  /** Define this to only count parts of a certain subtype */
+  private @NotNull String partSubType;
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    return element.getCustomAspects().stream()
-        .filter(ca -> ca.getType().equals(customAspect))
-        .findFirst()
-        .map(ca -> ca.getAttributes().get(attribute))
-        .orElse(null);
+    if (element instanceof CompositeElement) {
+      var parts = ((CompositeElement<?>) element).getParts();
+      if (partSubType != null) {
+        parts =
+            parts.stream()
+                .filter(
+                    c ->
+                        partSubType.equals(
+                            // TODO VEO-1569: this fails if the part's subtypeAspects are a
+                            // hibernate proxy
+                            c.findSubType(domain).orElse(null)))
+                .collect(Collectors.toSet());
+      }
+      return parts.size();
+    }
+    return 0;
   }
 
   @Override
   public void selfValidate(DomainBase domain, String elementType) {
-    getAttributeDefinition(domain, elementType);
+    domain.getElementTypeDefinition(elementType).getSubTypeDefinition(getPartSubType());
   }
 
   @Override
   public Class<?> getValueType(DomainBase domain, String elementType) {
-    return getAttributeDefinition(domain, elementType).getValueType();
-  }
-
-  private AttributeDefinition getAttributeDefinition(DomainBase domain, String elementType) {
-    return domain
-        .getElementTypeDefinition(elementType)
-        .getCustomAspectDefinition(customAspect)
-        .getAttributeDefinition(attribute);
+    return Integer.class;
   }
 }

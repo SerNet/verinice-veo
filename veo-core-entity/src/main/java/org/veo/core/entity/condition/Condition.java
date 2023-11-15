@@ -38,11 +38,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class Condition {
-  @Valid @NotNull private InputProvider inputProvider;
+  @Valid @NotNull private VeoExpression inputProvider;
   @Valid @NotNull private InputMatcher inputMatcher;
 
   /**
-   * Determines whether the data provided by the {@link InputProvider} for the given element is
+   * Determines whether the data provided by the {@link VeoExpression} for the given element is
    * matched by the {@link InputMatcher}.
    */
   public boolean matches(Element element, Domain domain) {

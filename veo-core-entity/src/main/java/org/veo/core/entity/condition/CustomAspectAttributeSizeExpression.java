@@ -17,11 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -31,37 +30,48 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Provides the amount of a composite element's parts. */
+/**
+ * Provides the size/length of a collection value for a certain custom aspect attribute on an
+ * element.
+ */
+@Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@Data
-public class PartCountProvider implements InputProvider {
-  /** Define this to only count parts of a certain subtype */
-  private @NotNull String partSubType;
+public class CustomAspectAttributeSizeExpression implements VeoExpression {
+  private @NotNull String customAspectType;
+  private @NotNull String attributeType;
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    if (element instanceof CompositeElement) {
-      var parts = ((CompositeElement<?>) element).getParts();
-      if (partSubType != null) {
-        parts =
-            parts.stream()
-                .filter(
-                    c ->
-                        partSubType.equals(
-                            // TODO VEO-1569: this fails if the part's subtypeAspects are a
-                            // hibernate proxy
-                            c.findSubType(domain).orElse(null)))
-                .collect(Collectors.toSet());
-      }
-      return parts.size();
+    var value =
+        new CustomAspectAttributeValueExpression(customAspectType, attributeType)
+            .getValue(element, domain);
+
+    if (value == null) {
+      return 0;
     }
-    return 0;
+    if (value instanceof Collection<?>) {
+      return ((Collection) value).size();
+    }
+    throw new IllegalArgumentException(
+        String.format(
+            "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
+            customAspectType, attributeType));
   }
 
   @Override
   public void selfValidate(DomainBase domain, String elementType) {
-    domain.getElementTypeDefinition(elementType).getSubTypeDefinition(getPartSubType());
+    var type =
+        domain
+            .getElementTypeDefinition(elementType)
+            .getCustomAspectDefinition(customAspectType)
+            .getAttributeDefinition(attributeType)
+            .getValueType();
+    if (!Collection.class.isAssignableFrom(type)) {
+      throw new IllegalArgumentException(
+          "Cannot get size of %s attribute '%s', expected list attribute"
+              .formatted(type.getSimpleName(), attributeType));
+    }
   }
 
   @Override
