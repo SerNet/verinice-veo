@@ -54,9 +54,10 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
       """
         select d from #{#entityName} d
           join fetch d.decisionSet
+          join fetch d.inspectionSet
           where d.dbId = ?1 and d.owner.dbId = ?2
     """)
-  Optional<DomainData> findByIdWithDecisions(String domainId, String clientId);
+  Optional<DomainData> findByIdWithDecisionsAndInspections(String domainId, String clientId);
 
   @Query(
       """

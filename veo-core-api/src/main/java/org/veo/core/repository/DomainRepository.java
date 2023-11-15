@@ -68,7 +68,7 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   boolean nameExistsInClient(String name, Client client);
 
-  Domain getByIdWithDecisions(Key<UUID> domainId, Key<UUID> clientId);
+  Domain getByIdWithDecisionsAndInspections(Key<UUID> domainId, Key<UUID> clientId);
 
   default Domain getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
       Key<UUID> domainId, Key<UUID> clientId) {

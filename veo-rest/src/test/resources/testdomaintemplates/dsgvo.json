@@ -4423,6 +4423,43 @@
       "defaultResultValue": false
     }
   },
+  "inspections": {
+    "dpiaMissing": {
+      "severity": "WARNING",
+      "description": {
+        "de": "Datenschutz-Folgenabschätzung wurde nicht durchgeführt, sie ist aber erforderlich.",
+        "en": "Data Protection Impact Assessment was not carried out, but it is mandatory."
+      },
+      "elementType": "process",
+      "elementSubType": "PRO_DataProcessing",
+      "condition": {
+        "type": "and",
+        "operands": [
+          {
+            "type": "decisionResultValue",
+            "decision": "piaMandatory"
+          },
+          {
+            "type": "equals",
+            "left": {
+              "type": "partCount",
+              "partSubType": "PRO_DPIA"
+            },
+            "right": {
+              "type": "constant",
+              "value": 0
+            }
+          }
+        ]
+      },
+      "suggestions": [
+        {
+          "type": "addPart",
+          "partSubType": "PRO_DPIA"
+        }
+      ]
+    }
+  },
   "profiles": {
     "exampleOrganization": {
       "name": "Beispieldaten",

@@ -198,6 +198,7 @@ public final class DtoToEntityTransformer {
             .map(entry -> mapElementTypeDefinition(entry.getKey(), entry.getValue(), target))
             .collect(Collectors.toSet()));
     target.setDecisions(source.getDecisions());
+    target.setInspections(source.getInspections());
     target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
     target.setCatalogItems(
         source.getCatalogItems().stream()

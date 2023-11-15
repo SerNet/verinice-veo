@@ -40,6 +40,7 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
@@ -90,6 +91,10 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @JoinColumn(name = "decision_set_id")
   protected DecisionSetData decisionSet = new DecisionSetData();
 
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "inspection_set_id")
+  protected InspectionSetData inspectionSet = new InspectionSetData();
+
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {
     return riskDefinitionSet.getRiskDefinitions();
@@ -119,6 +124,16 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   public void setDecisions(Map<String, Decision> decisions) {
     decisions.forEach(this::validate);
     this.decisionSet.setDecisions(decisions);
+  }
+
+  @Override
+  public Map<String, Inspection> getInspections() {
+    return inspectionSet.getInspections();
+  }
+
+  @Override
+  public void setInspections(Map<String, Inspection> inspections) {
+    inspectionSet.setInspections(inspections);
   }
 
   private void validate(String key, Decision decision) {

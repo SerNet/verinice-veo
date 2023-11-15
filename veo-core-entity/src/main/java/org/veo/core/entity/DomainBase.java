@@ -17,29 +17,17 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import static java.util.Locale.ENGLISH;
-import static java.util.Locale.GERMAN;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.condition.AndExpression;
-import org.veo.core.entity.condition.ConstantExpression;
-import org.veo.core.entity.condition.DecisionResultValueExpression;
-import org.veo.core.entity.condition.EqualsExpression;
-import org.veo.core.entity.condition.PartCountExpression;
 import org.veo.core.entity.decision.Decision;
-import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
-import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.profile.ProfileRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -140,33 +128,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
                         .formatted(decisionKey, getIdAsString())));
   }
 
-  default Map<String, Inspection> getInspections() {
-    // TODO VEO-1355 use configurable persisted inspections
-    if (!getName().equals("DS-GVO")) {
-      return new HashMap<>();
-    }
-    return Map.of(
-        "dpiaMissing",
-        new Inspection(
-                Severity.WARNING,
-                TranslatedText.builder()
-                    .translation(
-                        GERMAN,
-                        "Datenschutz-Folgenabschätzung wurde nicht durchgeführt, sie ist aber "
-                            + "erforderlich.")
-                    .translation(
-                        ENGLISH,
-                        "Data Protection Impact Assessment was not carried out, but it is mandatory.")
-                    .build(),
-                Process.SINGULAR_TERM,
-                "PRO_DataProcessing",
-                new AndExpression(
-                    List.of(
-                        new DecisionResultValueExpression(new DecisionRef("piaMandatory", this)),
-                        new EqualsExpression(
-                            new PartCountExpression("PRO_DPIA"), new ConstantExpression(0)))))
-            .suggestAddingPart("PRO_DPIA"));
-  }
+  Map<String, Inspection> getInspections();
 
   /**
    * @return {@code true} if this domain contains a definition for given custom aspect type that is
@@ -190,4 +152,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
                 new NotFoundException(
                     "Domain %s does not contain inspection '%s'", getIdAsString(), inspectionId));
   }
+
+  void setInspections(Map<String, Inspection> inspections);
 }

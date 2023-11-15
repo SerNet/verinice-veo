@@ -60,7 +60,8 @@ public class EvaluateElementUseCase
   @Transactional(NEVER)
   public OutputData execute(InputData input) {
     var domain =
-        domainRepository.getByIdWithDecisions(input.domainId, input.authenticatedClient.getId());
+        domainRepository.getByIdWithDecisionsAndInspections(
+            input.domainId, input.authenticatedClient.getId());
     // FIXME VEO-209 support risk values on all risk affected types
     if (input.element.getId() != null && input.element instanceof Process process) {
       loadRisks(process);

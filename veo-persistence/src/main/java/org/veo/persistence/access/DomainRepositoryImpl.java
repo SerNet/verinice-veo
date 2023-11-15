@@ -156,9 +156,9 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Domain getByIdWithDecisions(Key<UUID> domainId, Key<UUID> clientId) {
+  public Domain getByIdWithDecisionsAndInspections(Key<UUID> domainId, Key<UUID> clientId) {
     return dataRepository
-        .findByIdWithDecisions(domainId.uuidValue(), clientId.uuidValue())
+        .findByIdWithDecisionsAndInspections(domainId.uuidValue(), clientId.uuidValue())
         .map(Domain.class::cast)
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }
