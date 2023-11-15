@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** Suggests adding a part to the inspected composite element. */
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 public class AddPartSuggestion extends Suggestion {
   public static final String NAME = "addPart";

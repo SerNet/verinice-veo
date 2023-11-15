@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         "Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.")
 public abstract class InspectionSchema extends Inspection {
   public InspectionSchema() {
-    super(null, null, null);
+    super(null, null, null, null, null);
   }
 
   @Override

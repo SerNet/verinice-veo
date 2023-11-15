@@ -33,10 +33,11 @@ import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable check that can be performed on an {@link Element}. If all {@link Condition}s match
@@ -45,11 +46,11 @@ import lombok.RequiredArgsConstructor;
  */
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Inspection {
 
   @NonNull Severity severity;
-  final TranslatedText description;
+  TranslatedText description;
 
   @Nullable
   @Size(min = 1, max = 32)

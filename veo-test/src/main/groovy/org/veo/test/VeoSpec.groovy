@@ -476,7 +476,10 @@ abstract class VeoSpec extends Specification {
 
     static Inspection newInspection(@DelegatesTo(value = Inspection.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.inspection.Inspection") Closure init = null) {
-        return new Inspection(Severity.HINT, TranslatedText.empty(), new ConstantExpression(false)).tap {
+        return new Inspection().tap {
+            severity = Severity.HINT
+            description = TranslatedText.empty()
+            condition = new ConstantExpression(false)
             VeoSpec.execute(it, init)
         }
     }
