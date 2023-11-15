@@ -21,12 +21,18 @@ import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.condition.AndExpression;
+import org.veo.core.entity.condition.ConstantExpression;
+import org.veo.core.entity.condition.DecisionResultValueExpression;
+import org.veo.core.entity.condition.EqualsExpression;
+import org.veo.core.entity.condition.PartCountExpression;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -151,9 +157,12 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
                         "Data Protection Impact Assessment was not carried out, but it is mandatory.")
                     .build(),
                 Process.SINGULAR_TERM,
-                "PRO_DataProcessing")
-            .ifDecisionResultEquals(true, new DecisionRef("piaMandatory", this))
-            .ifPartAbsent("PRO_DPIA")
+                "PRO_DataProcessing",
+                new AndExpression(
+                    List.of(
+                        new DecisionResultValueExpression(new DecisionRef("piaMandatory", this)),
+                        new EqualsExpression(
+                            new PartCountExpression("PRO_DPIA"), new ConstantExpression(0)))))
             .suggestAddingPart("PRO_DPIA"));
   }
 

@@ -20,7 +20,10 @@ package org.veo.core.entity.inspection
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.condition.AndExpression
+import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.condition.EqualsExpression
 import org.veo.core.entity.condition.EqualsMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.test.VeoSpec
@@ -42,8 +45,16 @@ class InspectionITSpec extends VeoSpec {
             description.translations.(Locale.ENGLISH) = "Every computer running linux needs a tux sticker"
             elementType = Asset.SINGULAR_TERM
             elementSubType = "computer"
-            addCondition(new CustomAspectAttributeValueExpression("software", "os"), new EqualsMatcher("linux"))
-            addCondition(new PartCountExpression("tuxSticker"), new EqualsMatcher(0))
+            condition = new AndExpression([
+                new EqualsExpression(
+                new CustomAspectAttributeValueExpression("software", "os"),
+                new ConstantExpression("linux")
+                ),
+                new EqualsExpression(
+                new PartCountExpression("tuxSticker"),
+                new ConstantExpression(0)
+                )
+            ])
             suggestAddingPart("tuxSticker")
         }
 

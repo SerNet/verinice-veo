@@ -32,8 +32,11 @@ import org.veo.core.entity.event.ElementEvent;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+  @Type(value = AndExpression.class, name = "and"),
+  @Type(value = ConstantExpression.class, name = "constant"),
   @Type(value = CustomAspectAttributeSizeExpression.class, name = "customAspectAttributeSize"),
   @Type(value = CustomAspectAttributeValueExpression.class, name = "customAspectAttributeValue"),
+  @Type(value = EqualsExpression.class, name = "equals"),
   @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),

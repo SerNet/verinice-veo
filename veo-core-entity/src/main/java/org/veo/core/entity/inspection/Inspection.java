@@ -19,19 +19,16 @@ package org.veo.core.entity.inspection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
-import org.veo.core.entity.condition.DecisionResultValueExpression;
-import org.veo.core.entity.condition.EqualsMatcher;
-import org.veo.core.entity.condition.InputMatcher;
-import org.veo.core.entity.condition.PartCountExpression;
 import org.veo.core.entity.condition.VeoExpression;
-import org.veo.core.entity.decision.DecisionRef;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -42,21 +39,15 @@ import lombok.RequiredArgsConstructor;
  * {@link Severity} & {@link Suggestion}s.
  */
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class Inspection {
-  public Inspection(
-      Severity severity, TranslatedText description, String elementType, String elementSubType) {
-    this(severity, description);
-    this.elementType = elementType;
-    this.elementSubType = elementSubType;
-  }
-
   @NonNull Severity severity;
   final TranslatedText description;
   String elementType;
   String elementSubType;
-  final List<Condition> conditions = new ArrayList<>();
+
+  @NonNull VeoExpression condition;
   final List<Suggestion> suggestions = new ArrayList<>();
 
   public Optional<Finding> run(Element element, Domain domain) {
@@ -67,23 +58,10 @@ public class Inspection {
         && !elementSubType.equals(element.findSubType(domain).orElse(null))) {
       return Optional.empty();
     }
-    if (conditions.stream().allMatch(c -> c.matches(element, domain))) {
+    if (Objects.equals(condition.getValue(element, domain), true)) {
       return Optional.of(new Finding(severity, description, suggestions));
     }
     return Optional.empty();
-  }
-
-  public Inspection addCondition(VeoExpression provider, InputMatcher matcher) {
-    conditions.add(new Condition(provider, matcher));
-    return this;
-  }
-
-  public Inspection ifDecisionResultEquals(Boolean result, DecisionRef decision) {
-    return addCondition(new DecisionResultValueExpression(decision), new EqualsMatcher(result));
-  }
-
-  public Inspection ifPartAbsent(String subType) {
-    return addCondition(new PartCountExpression(subType), new EqualsMatcher(0));
   }
 
   public Inspection suggestAddingPart(String subType) {

@@ -50,6 +50,7 @@ import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
+import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.decision.Decision
 import org.veo.core.entity.decision.Rule
 import org.veo.core.entity.definitions.CustomAspectDefinition
@@ -475,7 +476,7 @@ abstract class VeoSpec extends Specification {
 
     static Inspection newInspection(@DelegatesTo(value = Inspection.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.inspection.Inspection") Closure init = null) {
-        return new Inspection(Severity.HINT, TranslatedText.empty()).tap {
+        return new Inspection(Severity.HINT, TranslatedText.empty(), new ConstantExpression(false)).tap {
             VeoSpec.execute(it, init)
         }
     }
