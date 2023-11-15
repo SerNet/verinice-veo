@@ -690,6 +690,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             description == "All the good stuff, but better."
             language == "de_DE"
         }
+
+        when: "deleting the profile"
+        delete("/content-creation/domains/$domainId/profiles/$profileId")
+
+        then: "it is gone"
+        txTemplate.execute {
+            domainDataRepository.findById(domainId).get().profiles.empty
+        }
     }
 
     @WithUserDetails("content-creator")

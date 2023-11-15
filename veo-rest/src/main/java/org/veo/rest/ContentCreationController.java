@@ -91,6 +91,7 @@ import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
@@ -132,6 +133,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final CreateCatalogFromUnitUseCase createCatalogForDomainUseCase;
   private final CreateProfileFromUnitUseCase createProfileFromUnitUseCase;
+  private final DeleteProfileUseCase deleteProfileUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
 
@@ -436,6 +438,31 @@ public class ContentCreationController extends AbstractVeoController {
                 createParameter.getLanguage(),
                 null,
                 null)),
+        out -> RestApiResponse.noContent());
+  }
+
+  @DeleteMapping(value = "/domains/{domainId}/profiles/{profileId}")
+  @Operation(summary = "Delete a profile")
+  @ApiResponse(responseCode = "204", description = "Profile deleted")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Profile not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProfile(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          String domainId,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          @NotNull
+          String profileId) {
+    return useCaseInteractor.execute(
+        deleteProfileUseCase,
+        new DeleteProfileUseCase.InputData(
+            Key.uuidFrom(domainId), Key.uuidFrom(profileId), getAuthenticatedClient(auth)),
         out -> RestApiResponse.noContent());
   }
 
