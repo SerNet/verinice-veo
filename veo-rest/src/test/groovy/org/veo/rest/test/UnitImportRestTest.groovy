@@ -128,6 +128,41 @@ class UnitImportRestTest extends VeoRestTest {
         }
     }
 
+    def "export, delete and import a unit with content type multipart"() {
+        given:
+        def name = "Lost Multipart Unit"
+        def abbreviation = "LMPU"
+        def unitUri = post("/units", [
+            name: "$name",
+            abbreviation: "$abbreviation",
+            description: "It used to be a flourishing unit inhabited by beautiful elements, until it was deleted by a great disaster",
+            domains: [
+                [targetUri: "/domains/$testDomainId"],
+                [targetUri: "/domains/$dsgvoDomainId"],
+            ]
+        ]).location
+
+        when: "exporting the unit as a backup"
+        def unitBackup = get("$unitUri/export").body
+
+        and: "deleting the unit"
+        delete(unitUri)
+
+        and: "reviving the unit by importing the backup with content type multipart"
+        unitUri = postMultipart("/units/import", unitBackup).location
+        def unitId = (unitUri =~ /\/units\/(.+)/)[0][1]
+
+        then: "it's back"
+        with(get(unitUri).body) {
+            name == "$name"
+            abbreviation == "$abbreviation"
+            description =~ /It used to be a .*/
+            domains.size() == 2
+            domains.any { it.targetUri.endsWith("/domains/$owner.owner.dsgvoDomainId") }
+            domains.any { it.targetUri.endsWith("/domains/$owner.owner.testDomainId") }
+        }
+    }
+
     def "existing resources are not modified"() {
         given: "a unit with a document"
         def oldUnitUri = post("/units", [
