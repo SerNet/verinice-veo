@@ -75,6 +75,23 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         post("/content-creation/domain-templates", template, 409)
     }
 
+    def "import domain template with content type multipart"() {
+        given: "a test template body"
+        def template = getTemplateBody()
+
+        when: "importing the domain template with content type multipart"
+        def templateId = postMultipart("/content-creation/domain-templates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
+
+        and: "creating and fetching a new domain based on the template"
+        post("/domain-templates/$templateId/createdomains", null, 204, UserType.ADMIN)
+        def domain = get("/domains").body.find { it.name == template.name }
+
+        then: "the domain contains metadata from the template"
+        domain.abbreviation == template.abbreviation
+        domain.authority == template.authority
+        domain.templateVersion == template.templateVersion
+    }
+
     def "cannot import template with identical name & version twice"() {
         given: "a unique template name for this test run"
         def name = "import test template ${UUID.randomUUID()}"
@@ -140,6 +157,12 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         when: "trying to create the template"
         def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")
+
+        when: "trying to create the template with content type multipart"
+        response = postMultipart("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")

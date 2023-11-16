@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
@@ -90,9 +91,13 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders
                 .get("/domain-templates")).andReturn().response.status == 200
 
-        and: "domain template import to be allowed"
+        and: "domain template import with json content type to be allowed"
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domain-templates")).andReturn().response.status == 400
+                .post("/content-creation/domain-templates").contentType(MediaType.APPLICATION_JSON)).andReturn().response.status == 400
+
+        and: "domain template import with multipart content type to be allowed"
+        mvc.perform(MockMvcRequestBuilders
+                .post("/content-creation/domain-templates").contentType(MediaType.MULTIPART_FORM_DATA)).andReturn().response.status == 400
     }
 
     @WithUserDetails("user@domain.example")
