@@ -22,11 +22,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
@@ -36,6 +41,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 /**
@@ -69,6 +75,12 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
         return asyncActions.andExpect(status().is4xxClientError())
+    }
+
+    ResultActions multipart(String url, Map content, int expectedStatusCode = 201) {
+        doRequest(MockMvcRequestBuilders.multipart(url)
+                .file(toFile(content)),
+                expectedStatusCode)
     }
 
     ResultActions post(String url, Map content, int expectedStatusCode = 201) {
@@ -158,5 +170,10 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
 
     String getETag(ResultActions resultActions) {
         resultActions.andReturn().response.getHeader("ETag")
+    }
+
+    MockMultipartFile toFile(Map json) {
+        def jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+        return new MockMultipartFile("file", "", "application/json", jsonString.getBytes(StandardCharsets.UTF_8));
     }
 }

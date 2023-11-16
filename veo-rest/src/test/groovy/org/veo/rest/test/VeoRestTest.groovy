@@ -23,6 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 
 import org.apache.http.HttpHost
@@ -33,12 +34,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.ClassPathResource
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
 
 import org.veo.core.entity.event.ClientEvent.ClientChangeType
 import org.veo.core.entity.transform.EntityFactory
@@ -203,8 +209,24 @@ class VeoRestTest extends Specification {
     Response post(String uri, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
+        post(uri, headers, requestBody, assertStatusCode, userType)
+    }
 
-        def resp = exchange(uri, HttpMethod.POST, headers, requestBody, userType)
+    Response postMultipart(String uri, Map<String, Object> requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA)
+        def resp = exchange(uri, HttpMethod.POST, headers, getMultipartBody(requestBody), userType)
+        assertStatusCode?.tap{
+            assert resp.statusCodeValue == it
+        }
+        new Response(
+                headers: resp.headers,
+                body: jsonSlurper.parseText(resp.body.toString()),
+                statusCode: resp.statusCodeValue)
+    }
+
+    Response post(String uri, HttpHeaders headers, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
+        def resp = exchange(uri, HttpMethod.POST, headers, requestBody?.with { toJson(it) }, userType)
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
@@ -219,7 +241,7 @@ class VeoRestTest extends Specification {
         etag?.with { headers.setIfMatch(it) }
         headers.setContentType(MediaType.APPLICATION_JSON)
 
-        def resp = exchange(uri, HttpMethod.PUT, headers, requestBody, userType)
+        def resp = exchange(uri, HttpMethod.PUT, headers, requestBody?.with { toJson(it) }, userType)
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
@@ -274,7 +296,7 @@ class VeoRestTest extends Specification {
             "Bearer " + getToken(userType)
         ])
         def absoluteUri = uri.startsWith('http') ? uri : baseUrl + uri
-        return restTemplate.exchange(absoluteUri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
+        return restTemplate.exchange(absoluteUri, httpMethod, new HttpEntity(requestBody, headers), String.class)
     }
 
     ResponseEntity<String> exchange(URI uri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
@@ -334,5 +356,21 @@ class VeoRestTest extends Specification {
 
     protected uriToId(String targetUri) {
         targetUri.split('/').last()
+    }
+
+    protected MultiValueMap<String, Object> getMultipartBody(Map json) {
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>()
+        body.add("file", getResource(json))
+        return body
+    }
+
+    protected Resource getResource(Map json) {
+        def jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+        return new ByteArrayResource(jsonString.getBytes(StandardCharsets.UTF_8)) {
+                    @Override
+                    public String getFilename() {
+                        return "file"; // Filename has to be returned in order to be able to post.
+                    }
+                };
     }
 }
