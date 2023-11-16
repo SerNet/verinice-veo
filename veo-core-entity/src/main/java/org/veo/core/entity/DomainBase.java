@@ -154,4 +154,8 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
   }
 
   void setInspections(Map<String, Inspection> inspections);
+
+  boolean applyInspection(String inspectionId, Inspection inspection);
+
+  void removeInspection(String inspectionId);
 }

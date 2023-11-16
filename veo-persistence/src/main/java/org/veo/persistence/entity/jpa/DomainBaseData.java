@@ -136,6 +136,16 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     inspectionSet.setInspections(inspections);
   }
 
+  @Override
+  public boolean applyInspection(String inspectionId, Inspection inspection) {
+    return inspectionSet.apply(inspectionId, inspection);
+  }
+
+  @Override
+  public void removeInspection(String inspectionId) {
+    inspectionSet.remove(inspectionId);
+  }
+
   private void validate(String key, Decision decision) {
     try {
       decision.selfValidate(this);

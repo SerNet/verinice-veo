@@ -37,8 +37,9 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         domain.authority == template.authority
         domain.templateVersion == template.templateVersion
 
-        and: "the domain contains the decision"
+        and: "the domain contains the decision and inspection"
         domain.decisions.negativeDecision.elementSubType == "AST_Application"
+        get("/domains/${domain.id}/inspections/conceptWithoutDescription").body.elementType == "process"
 
         and: "the domain contains the risk definition"
         with(domain.riskDefinitions.RD1) {
@@ -462,6 +463,35 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     'rules': [],
                     'defaultResultValue': false
                 ]
+            ],
+            'inspections': [
+                'conceptWithoutDescription': [
+                    'description': ['en': 'Each process with a concept should have a description'],
+                    'severity': 'HINT',
+                    'elementType': 'process',
+                    'condition': [
+                        'type': 'and',
+                        'operands': [
+                            [
+                                'type': 'customAspectAttributeValue',
+                                'customAspect': 'process_accessAuthorization',
+                                'attribute': 'process_accessAuthorization_concept'
+                            ],
+                            [
+                                'type': 'equals',
+                                'left': [
+                                    'type': 'customAspectAttributeValue',
+                                    'customAspect': 'process_accessAuthorization',
+                                    'attribute': 'process_accessAuthorization_description'
+                                ],
+                                'right': [
+                                    'type': 'constant',
+                                    'value': null
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
             ],
             'riskDefinitions': [
                 'RD1': [

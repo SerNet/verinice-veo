@@ -49,13 +49,26 @@ class DomainCreationRestTest extends DomainRestTest {
             domainTemplate == null
         }
 
-        when: "defining an element type and decision in the domain"
+        when: "defining an element type, decision & inspection in the domain"
         postAssetObjectSchema(domainId)
         put("/content-creation/domains/${domainId}/decisions/truthy", [
             name: [en: "Decision that always outputs true"],
             elementType: "asset",
             elementSubType: "server",
             defaultResultValue: true,
+        ], null, 201, CONTENT_CREATOR)
+        put("/content-creation/domains/${domainId}/inspections/alwaysAddPart", [
+            description: [en: "You should always add a part, no matter what"],
+            severity: "HINT",
+            elementType: "asset",
+            elementSubType: "server",
+            condition: [
+                type: "constant",
+                value: true
+            ],
+            suggestions: [
+                [type: "addPart"]
+            ]
         ], null, 201, CONTENT_CREATOR)
 
         and: "adding the domain to the unit"
@@ -92,8 +105,11 @@ class DomainCreationRestTest extends DomainRestTest {
         secondaryClientDomain.authority == "JJ"
         secondaryClientDomain.templateVersion == "1.0.0"
 
-        and: "it contains the decision"
+        and: "it contains the decision & inspection"
         secondaryClientDomain.decisions.truthy.elementSubType == "server"
+        with(get("/domains/${secondaryClientDomain.id}/inspections/alwaysAddPart", 200, SECONDARY_CLIENT_USER).body) {
+            condition.type == "constant"
+        }
 
         and: "an element can be created in the domain"
         def secondaryClientUnitId = post("/units", [

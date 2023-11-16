@@ -138,6 +138,7 @@ import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.DeleteInspectionUseCase;
 import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
@@ -150,6 +151,7 @@ import org.veo.core.usecase.domain.GetInspectionUseCase;
 import org.veo.core.usecase.domain.GetInspectionsUseCase;
 import org.veo.core.usecase.domain.ProfileApplier;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
@@ -973,6 +975,16 @@ public class ModuleConfiguration {
   @Bean
   public GetInspectionsUseCase getInspectionsUseCase(DomainRepository domainRepository) {
     return new GetInspectionsUseCase(domainRepository);
+  }
+
+  @Bean
+  public SaveInspectionUseCase saveInspectionUseCase(DomainRepository domainRepository) {
+    return new SaveInspectionUseCase(domainRepository);
+  }
+
+  @Bean
+  public DeleteInspectionUseCase deleteInspectionUseCase(DomainRepository domainRepository) {
+    return new DeleteInspectionUseCase(domainRepository);
   }
 
   @Bean

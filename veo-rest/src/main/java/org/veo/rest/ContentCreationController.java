@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
+import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.rest.ControllerConstants.DEFAULT_CACHE_CONTROL;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
@@ -35,6 +36,7 @@ import java.util.function.Supplier;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +84,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.transform.EntityFactory;
@@ -92,9 +95,11 @@ import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.DeleteInspectionUseCase;
 import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -128,8 +133,10 @@ public class ContentCreationController extends AbstractVeoController {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
+  private final SaveInspectionUseCase saveInspectionUseCase;
   private final SaveRiskDefinitionUseCase saveRiskDefinitionUseCase;
   private final DeleteDecisionUseCase deleteDecisionUseCase;
+  private final DeleteInspectionUseCase deleteInspectionUseCase;
   private final DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final CreateCatalogFromUnitUseCase createCatalogForDomainUseCase;
@@ -275,6 +282,59 @@ public class ContentCreationController extends AbstractVeoController {
         deleteDecisionUseCase,
         new DeleteDecisionUseCase.InputData(
             Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey),
+        out -> RestApiResponse.noContent());
+  }
+
+  @PutMapping("/domains/{domainId}/inspections/{inspectionId}")
+  @Operation(summary = "Create or update inspection with given key")
+  @ApiResponse(responseCode = "201", description = "Inspection created")
+  @ApiResponse(responseCode = "200", description = "Inspection updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDecision(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(hidden = true) ServletWebRequest request,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "dpiaMandatory",
+              description = "Inspection identifier - unique within this domain")
+          @PathVariable
+          @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH)
+          String inspectionId,
+      @RequestBody Inspection inspection) {
+    return useCaseInteractor.execute(
+        saveInspectionUseCase,
+        new SaveInspectionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), inspectionId, inspection),
+        out ->
+            out.isNewInspection()
+                ? RestApiResponse.created(
+                    request.getRequest().getRequestURI(), "Inspection created")
+                : RestApiResponse.ok("Inspection updated"));
+  }
+
+  @DeleteMapping("/domains/{domainId}/inspections/{inspectionId}")
+  @Operation(summary = "Delete inspection with given key")
+  @ApiResponse(responseCode = "204", description = "Inspection deleted")
+  @ApiResponse(responseCode = "404", description = "Inspection not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteInspection(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "dpiaMandatory",
+              description = "Inspection identifier - unique within this domain")
+          @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH)
+          @PathVariable
+          String inspectionId) {
+    return useCaseInteractor.execute(
+        deleteInspectionUseCase,
+        new DeleteInspectionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), inspectionId),
         out -> RestApiResponse.noContent());
   }
 
