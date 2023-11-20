@@ -148,6 +148,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         response.message == "Validation error in decision 'negativeDecision': Sub type sillySub is not defined"
     }
 
+    def "cannot import template with invalid expression in inspection"() {
+        given: "a template where an inspection uses a string attribute in an AND expression"
+        var template = getTemplateBody()
+        template.inspections.conceptWithoutDescription.condition.operands[0].attribute = "process_accessAuthorization_document"
+
+        when: "trying to create the template"
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message == "Validation error in inspection 'conceptWithoutDescription': Only boolean values can be used in an AND expression"
+    }
+
     def "cannot import template with invalid catalog item attribute"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()

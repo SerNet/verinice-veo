@@ -27,11 +27,13 @@ import jakarta.validation.constraints.Size;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
+import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -80,5 +82,16 @@ public class Inspection {
   public Inspection suggestAddingPart(String subType) {
     suggestions.add(new AddPartSuggestion(subType));
     return this;
+  }
+
+  /**
+   * @throws IllegalArgumentException If the condition is an invalid expression
+   * @throws NotFoundException If this inspection's element type or subtype, or any domain contents
+   *     referenced by its condition cannot be found
+   */
+  public void selfValidate(DomainBase domain) {
+    var etd = domain.getElementTypeDefinition(getElementType());
+    Optional.ofNullable(getElementSubType()).ifPresent(etd::getSubTypeDefinition);
+    condition.selfValidate(domain, getElementType());
   }
 }

@@ -133,17 +133,28 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public void setInspections(Map<String, Inspection> inspections) {
+    inspections.forEach(this::validate);
     inspectionSet.setInspections(inspections);
   }
 
   @Override
   public boolean applyInspection(String inspectionId, Inspection inspection) {
+    validate(inspectionId, inspection);
     return inspectionSet.apply(inspectionId, inspection);
   }
 
   @Override
   public void removeInspection(String inspectionId) {
     inspectionSet.remove(inspectionId);
+  }
+
+  private void validate(String id, Inspection inspection) {
+    try {
+      inspection.selfValidate(this);
+    } catch (IllegalArgumentException | NotFoundException ex) {
+      throw new UnprocessableDataException(
+          "Validation error in inspection '%s': %s".formatted(id, ex.getMessage()));
+    }
   }
 
   private void validate(String key, Decision decision) {
