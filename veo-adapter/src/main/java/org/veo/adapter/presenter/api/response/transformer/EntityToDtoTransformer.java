@@ -56,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
@@ -125,6 +126,7 @@ import org.veo.core.entity.Versioned;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.inspection.Inspection;
 
 /** A collection of transform functions to transform entities to Dto back and forth. */
 public final class EntityToDtoTransformer {
@@ -790,5 +792,23 @@ public final class EntityToDtoTransformer {
     target.setLinks(LinkMapDto.from(source, domain, referenceAssembler));
     target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
     target.setDecisionResults(source.getDecisionResults(domain));
+  }
+
+  public List<ShortInspectionDto> transformInspections2ShortDtos(
+      Map<String, Inspection> inspections, Domain domain) {
+    return inspections.entrySet().stream()
+        .map(entry -> transformInspection2ShortDto(entry.getKey(), entry.getValue(), domain))
+        .toList();
+  }
+
+  private ShortInspectionDto transformInspection2ShortDto(
+      String id, Inspection source, Domain domain) {
+    var target = new ShortInspectionDto();
+    target.setId(id);
+    target.setDescription(source.getDescription());
+    target.setElementType(source.getElementType());
+    target.setSeverity(source.getSeverity());
+    target.setSelfRef(() -> referenceAssembler.inspectionReferenceOf(id, domain));
+    return target;
   }
 }

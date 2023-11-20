@@ -48,6 +48,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
   int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int TEMPLATE_VERSION_MAX_LENGTH = 10;
   int DECISION_ID_MAX_LENGTH = 256;
+  int INSPECTION_ID_MAX_LENGTH = 256;
 
   /** The authority of this domaintemplate. */
   @NotNull
@@ -180,5 +181,13 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
       String elementType, String caType) {
     return Optional.ofNullable(
         getElementTypeDefinition(elementType).getCustomAspects().get(caType));
+  }
+
+  default Inspection getInspection(String inspectionId) {
+    return Optional.ofNullable(getInspections().get(inspectionId))
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Domain %s does not contain inspection '%s'", getIdAsString(), inspectionId));
   }
 }

@@ -394,4 +394,32 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             CTL_TOM == 8
         }
     }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve inspections"() {
+        given:
+        def client = testDomain.owner
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+
+        when:
+        def inspections = parseJson(get("/domains/${domain.idAsString}/inspections"))
+
+        then:
+        inspections.size() == 1
+        inspections[0].id == "dpiaMissing"
+        inspections[0].severity == "WARNING"
+        inspections[0]._self != null
+        inspections[0].condition == null
+        inspections[0].suggestions == null
+
+        when:
+        def dpiaMissing = parseJson(get(inspections[0]._self))
+
+        then:
+        dpiaMissing.severity == "WARNING"
+        dpiaMissing.description.en ==~ /Data Protection Impact Assessment was .+/
+        dpiaMissing.condition.type == "and"
+        dpiaMissing.condition.operands[1].type == "equals"
+        dpiaMissing.suggestions[0].type == "addPart"
+    }
 }

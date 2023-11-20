@@ -111,4 +111,6 @@ public interface ReferenceAssembler {
   String targetReferenceOf(RequirementImplementation requirementImplementation);
 
   String requirementImplementationsOf(ControlImplementation controlImplementation);
+
+  String inspectionReferenceOf(String id, Domain domain);
 }

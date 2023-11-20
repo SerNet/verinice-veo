@@ -339,6 +339,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         });
   }
 
+  @Override
+  public String inspectionReferenceOf(String id, Domain domain) {
+    return linkTo(
+            methodOn(DomainController.class).getInspection(ANY_AUTH, domain.getIdAsString(), id))
+        .withRel(DomainController.URL_BASE_PATH)
+        .getHref();
+  }
+
   private WebMvcLinkBuilder linkToRequirementImplementation(
       Class<? extends RiskAffectedResource> controller,
       RequirementImplementation requirementImplementation) {

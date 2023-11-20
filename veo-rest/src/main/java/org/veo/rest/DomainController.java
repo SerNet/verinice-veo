@@ -19,6 +19,7 @@ package org.veo.rest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ELEMENT_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
@@ -44,6 +45,7 @@ import java.util.concurrent.Future;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +64,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
@@ -75,6 +78,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
@@ -88,6 +92,8 @@ import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
+import org.veo.core.usecase.domain.GetInspectionUseCase;
+import org.veo.core.usecase.domain.GetInspectionsUseCase;
 import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
@@ -134,6 +140,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetProfileItemUseCase getProfileItemUseCase;
   private final GetProfilesUseCase getProfilesUseCase;
   private final GetProfileUseCase getProfileUseCase;
+  private final GetInspectionUseCase getInspectionUseCase;
+  private final GetInspectionsUseCase getInspectionsUseCase;
 
   private final ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase;
   private final GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase;
@@ -389,6 +397,43 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 Key.uuidFrom(unitId), Key.uuidFrom(id), client),
             GetElementStatusCountUseCase.OutputData::getResult)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
+  }
+
+  @GetMapping(value = "/{domainId}/inspections")
+  @Operation(summary = "Retrieve inspections")
+  @ApiResponse(responseCode = "200", description = "Inspections found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public @Valid Future<ResponseEntity<List<ShortInspectionDto>>> getInspections(
+      @Parameter(hidden = true) Authentication auth, @PathVariable String domainId) {
+    return useCaseInteractor
+        .execute(
+            getInspectionsUseCase,
+            new GetInspectionsUseCase.InputData(
+                getAuthenticatedClient(auth).getId(), Key.uuidFrom(domainId)),
+            out ->
+                entityToDtoTransformer.transformInspections2ShortDtos(
+                    out.inspections(), out.domain()))
+        .thenApply(
+            inspections -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(inspections));
+  }
+
+  @GetMapping(value = "/{domainId}/inspections/{inspectionId}")
+  @Operation(summary = "Retrieve inspection")
+  @ApiResponse(responseCode = "200", description = "Inspection found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Inspection not found")
+  public @Valid Future<ResponseEntity<Inspection>> getInspection(
+      @Parameter(hidden = true) Authentication auth,
+      @PathVariable String domainId,
+      @PathVariable @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH) String inspectionId) {
+    return useCaseInteractor
+        .execute(
+            getInspectionUseCase,
+            new GetInspectionUseCase.InputData(
+                getAuthenticatedClient(auth).getId(), Key.uuidFrom(domainId), inspectionId),
+            GetInspectionUseCase.OutputData::inspection)
+        .thenApply(
+            inspection -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(inspection));
   }
 
   @GetMapping(value = "/{id}/catalog-items/type-count")

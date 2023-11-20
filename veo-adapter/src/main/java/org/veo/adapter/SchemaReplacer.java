@@ -25,12 +25,14 @@ import org.veo.adapter.presenter.api.openapi.CatalogItemsTypeCountSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionResultsSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionRuleRefSchema;
 import org.veo.adapter.presenter.api.openapi.FindingSchema;
+import org.veo.adapter.presenter.api.openapi.InspectionSchema;
 import org.veo.adapter.presenter.api.openapi.SuggestionSchema;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.decision.DecisionRuleRef;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.inspection.AddPartSuggestion;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.inspection.Suggestion;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 
@@ -40,6 +42,7 @@ public class SchemaReplacer {
     replaceWithClass(AttributeDefinition.class, AttributeDefinitionSchema.class);
     replaceWithClass(DecisionResult.class, DecisionResultsSchema.class);
     replaceWithClass(DecisionRuleRef.class, DecisionRuleRefSchema.class);
+    replaceWithClass(Inspection.class, InspectionSchema.class);
     replaceWithClass(Finding.class, FindingSchema.class);
     replaceWithClass(Suggestion.class, SuggestionSchema.class);
     replaceWithClass(AddPartSuggestion.class, AddPartSuggestionSchema.class);

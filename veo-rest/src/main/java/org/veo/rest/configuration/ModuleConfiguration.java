@@ -146,6 +146,8 @@ import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
+import org.veo.core.usecase.domain.GetInspectionUseCase;
+import org.veo.core.usecase.domain.GetInspectionsUseCase;
 import org.veo.core.usecase.domain.ProfileApplier;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
@@ -961,6 +963,16 @@ public class ModuleConfiguration {
   public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
       DomainRepository domainRepository, MigrateDomainUseCase migrateDomainUseCase) {
     return new UpdateAllClientDomainsUseCase(domainRepository, migrateDomainUseCase);
+  }
+
+  @Bean
+  public GetInspectionUseCase getInspectionUseCase(DomainRepository domainRepository) {
+    return new GetInspectionUseCase(domainRepository);
+  }
+
+  @Bean
+  public GetInspectionsUseCase getInspectionsUseCase(DomainRepository domainRepository) {
+    return new GetInspectionsUseCase(domainRepository);
   }
 
   @Bean
