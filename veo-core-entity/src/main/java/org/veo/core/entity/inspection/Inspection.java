@@ -22,9 +22,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.validation.constraints.Size;
+
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
+import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
 
@@ -42,9 +47,16 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Inspection {
+
   @NonNull Severity severity;
   final TranslatedText description;
+
+  @Nullable
+  @Size(min = 1, max = 32)
   String elementType;
+
+  @Nullable
+  @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
   String elementSubType;
 
   @NonNull VeoExpression condition;

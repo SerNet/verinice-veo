@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import jakarta.validation.constraints.Size;
+
 import org.veo.core.entity.DomainBase;
 
 import lombok.AccessLevel;
@@ -33,7 +35,9 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
 public class DecisionRef {
-  @Getter String keyRef;
+  @Getter
+  @Size(min = 1, max = DomainBase.DECISION_ID_MAX_LENGTH)
+  String keyRef;
 
   public DecisionRef(String keyRef, DomainBase domain) {
     this(keyRef);
