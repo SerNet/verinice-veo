@@ -150,7 +150,6 @@ class UnitImportRestTest extends VeoRestTest {
 
         and: "reviving the unit by importing the backup with content type multipart"
         unitUri = postMultipart("/units/import", unitBackup).location
-        def unitId = (unitUri =~ /\/units\/(.+)/)[0][1]
 
         then: "it's back"
         with(get(unitUri).body) {

@@ -176,9 +176,9 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "get translations without an active client"() {
         when: "a request for translations"
-        def translations = parseJson(get('/translations?languages=de', 403))
+        get('/translations?languages=de', 403)
 
         then: "no translations are returned"
-        ClientNotActiveException e = thrown()
+        thrown(ClientNotActiveException)
     }
 }

@@ -741,7 +741,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "A list of risks can be retrieved for a process"() {
         given: "a process with multiple risks"
-        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+        Process process = createRisk().first()
         createTwoRisks(process)
 
         when: "the risks are queried"
@@ -784,7 +784,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "An embedded list of risks can be retrieved for a process"() {
         given: "a process with multiple risks"
-        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+        Process process = createRisk().first()
         createTwoRisks(process)
 
         when: "the embedded risks are queried"

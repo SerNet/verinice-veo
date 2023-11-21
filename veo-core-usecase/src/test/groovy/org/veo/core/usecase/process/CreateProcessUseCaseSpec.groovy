@@ -59,7 +59,6 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
-        def id = Key.newUuid()
         processState.name >> "John's process"
         processState.modelInterface >> Process
         processState.owner >> TypedId.from(existingUnit.idAsString, Unit)

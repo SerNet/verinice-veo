@@ -141,7 +141,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             subType = "asset"
             status = "NEW"
         })
-        def routerManual = newCatalogItem(domain, {
+        newCatalogItem(domain, {
             elementType = Document.SINGULAR_TERM
             namespace = "routerManual"
             subType = "Manual"

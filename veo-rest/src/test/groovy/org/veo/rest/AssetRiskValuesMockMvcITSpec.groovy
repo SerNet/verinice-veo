@@ -112,9 +112,6 @@ class AssetRiskValuesMockMvcITSpec extends VeoMvcSpec {
         unit = newUnit(client)
         unitId = unitRepository.save(unit).idAsString
 
-        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("r1d1")
-        DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(domain)
-
         asset = newAsset(unit) {
             associateWithDomain(domain, "DifficultAsset", "NEW")
         }

@@ -748,7 +748,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "A list of risks can be retrieved for an asset"() {
         given: "An asset with multiple risks"
-        def (Asset asset, ScenarioData scenario, Object postResult) = createRisk()
+        Asset asset = createRisk().first()
         def scenario2 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
                 associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")

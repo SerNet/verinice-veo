@@ -153,7 +153,6 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             ]
         ], ['If-Match': scopeETag])
         retrieveScopeResponse = get("/scopes/$scopeId")
-        scopeETag = getETag(retrieveScopeResponse)
 
         then: "it is persisted"
         parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == "risk-definition-for-projects"

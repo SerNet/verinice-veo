@@ -163,13 +163,13 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             processes.first().risks.forEach{
                 it.getRiskProvider(rd, domain)
                         .getCategorizedRisks().size() == 4
-                def prob = it.getProbabilityProvider(rd, domain).effectiveProbability
+                it.getProbabilityProvider(rd, domain).effectiveProbability
                 def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
-                def risk = it.getRiskProvider(rd, domain).getInherentRisk(cat)
-                def scenario = it.getScenario().getDisplayName()
-                def person = it.getRiskOwner().getDisplayName()
-                def mitigation = it.getMitigation().getDisplayName()
-                def customAttributes = process.customAspects.first().attributes
+                it.getRiskProvider(rd, domain).getInherentRisk(cat)
+                it.getScenario().getDisplayName()
+                it.getRiskOwner().getDisplayName()
+                it.getMitigation().getDisplayName()
+                process.customAspects.first().attributes
             }
         }
 
@@ -186,13 +186,13 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             processes.first().risks.forEach{
                 it.getRiskProvider(rd, domain)
                         .getCategorizedRisks().size() == 4
-                def prob = it.getProbabilityProvider(rd, domain).effectiveProbability
+                it.getProbabilityProvider(rd, domain).effectiveProbability
                 def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
-                def risk = it.getRiskProvider(rd, domain).getInherentRisk(cat)
-                def scenario = it.getScenario().getDisplayName()
-                def person = it.getRiskOwner().getDisplayName()
-                def mitigation = it.getMitigation().getDisplayName()
-                def customAttributes = process.customAspects.first().attributes
+                it.getRiskProvider(rd, domain).getInherentRisk(cat)
+                it.getScenario().getDisplayName()
+                it.getRiskOwner().getDisplayName()
+                it.getMitigation().getDisplayName()
+                process.customAspects.first().attributes
             }
         }
 

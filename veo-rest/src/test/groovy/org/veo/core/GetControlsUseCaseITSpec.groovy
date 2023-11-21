@@ -68,7 +68,6 @@ class GetControlsUseCaseITSpec extends AbstractPerformanceITSpec {
         }
 
         QueryCountHolder.clear()
-        def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
 
         when:
         def output = executeInTransaction {

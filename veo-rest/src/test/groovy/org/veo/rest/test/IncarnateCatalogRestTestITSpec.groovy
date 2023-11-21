@@ -166,50 +166,49 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Vertraulichkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==1
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Verfügbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==2
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Wiederherstellbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==3
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Verschlüsselung"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==4
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==5
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Integrität"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==6
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Pseudonymisierung"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==7
 
-        elementResults = applyCatalogItems(dsgvoDomainId, [
+        applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Belastbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==8
 
-        elementResults = applyCatalogItems(dsgvoDomainId, ["VVT"], null)
-        def processVVT = elementResults.first()
+        def processVVT = applyCatalogItems(dsgvoDomainId, ["VVT"], null).first()
 
-        then:"The process is linked with the controlls"
+        then:"The process is linked with the controls"
         processVVT.links.size() == 1
         processVVT.links.process_tom.size() == 8
     }

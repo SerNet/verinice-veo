@@ -41,14 +41,14 @@ class SearchRestTest extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def developmentTeamId = post("/persons", [
+        post("/persons", [
             name: "development team",
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$developerId"],
                 [targetUri: "$baseUrl/persons/$designingDeveloperId"],
             ]
-        ]).body.resourceId
+        ])
         def designTeamId = post("/persons", [
             name: "design team",
             owner: [targetUri: "$baseUrl/units/$unitId"],

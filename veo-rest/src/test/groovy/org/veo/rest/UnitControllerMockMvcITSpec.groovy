@@ -697,7 +697,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when:
-        def results = post('/units', request, 422)
+        post('/units', request, 422)
 
         then:
         thrown(ReferenceTargetNotFoundException)
@@ -717,7 +717,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when:
-        def results = post('/units', request, 422)
+        post('/units', request, 422)
 
         then:
         thrown(ReferenceTargetNotFoundException)
@@ -748,7 +748,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when:
-        def results = post('/units/import', request, 400)
+        post('/units/import', request, 400)
 
         then:
         MethodArgumentNotValidException e = thrown()

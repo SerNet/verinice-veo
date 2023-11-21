@@ -321,7 +321,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         }
 
         when:
-        def elements = post("/units/${unitId}/incarnations", incarnationDescription).body
+        post("/units/${unitId}/incarnations", incarnationDescription)
         def persons = get("/persons?unit=${unitId}").body
 
         then: "the part relation is added"

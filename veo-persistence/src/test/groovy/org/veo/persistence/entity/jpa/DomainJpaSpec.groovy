@@ -212,7 +212,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             status = "NEW"
         })
         newTailoringReference(item3, item2, TailoringReferenceType.COPY)
-        CatalogItem item4 = newCatalogItem(domain0, {
+        newCatalogItem(domain0, {
             elementType = "asset"
             name = 'd1'
             subType = "asset"

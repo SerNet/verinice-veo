@@ -251,8 +251,6 @@ class CatalogSpec extends VeoMvcSpec {
                 ]
             }
 
-            def riskDefinitionRef = new RiskDefinitionRef(RISK_DEF_ID)
-
             processImpactExample = newCatalogItem(domain, {
                 elementType = "process"
                 subType = "PRO_DataProcessing"

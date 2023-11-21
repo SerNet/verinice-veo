@@ -100,7 +100,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [existingDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).getUnit()
+        usecase.execute(input)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -129,14 +129,14 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId.uuidValue()] as Set)
 
         when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).getUnit()
+        usecase.execute(input)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
         1 * domainRepository.getByIds([randomDomainId.uuidValue()] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
-        ReferenceTargetNotFoundException e = thrown()
+        thrown(ReferenceTargetNotFoundException)
     }
 
     def "Create a unit with another client's domain" () {
@@ -158,13 +158,13 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [anotherDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).getUnit()
+        usecase.execute(input)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
         1 * domainRepository.getByIds([anotherDomain.id] as Set, existingClient.id) >> { throw new NotFoundException(anotherDomain.id, Domain) }
-        ReferenceTargetNotFoundException e = thrown()
+        thrown(ReferenceTargetNotFoundException)
     }
 }

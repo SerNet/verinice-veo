@@ -117,8 +117,8 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
                     }
                 }
             })
-            def scopes = scopeDataRepository.saveAll((0..99).collect{ i->
-                newScope(unit).tap {
+            scopeDataRepository.saveAll((0..99).collect{ i->
+                newScope(unit) {
                     addMember(assets[i])
                     addMember(documents[i])
                     addMember(incidents[i])

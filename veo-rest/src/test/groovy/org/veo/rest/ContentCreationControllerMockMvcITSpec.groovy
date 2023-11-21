@@ -199,7 +199,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def schemaJson = [:]
 
         when:
-        def result = post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 400)
+        post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 400)
 
         then:
         thrown(IllegalArgumentException)
@@ -240,7 +240,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ]
 
         when: "updating the scope definition"
-        def result = put("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
+        put("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
 
         and: 'reloading the updated domain from the database'
         def updatedDomain = txTemplate.execute {
@@ -422,7 +422,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             owner: [targetUri: "/units/$unitId"],
         ],201)).resourceId
 
-        def scopeId = parseJson(post("/domains/$domainId/scopes", [
+        post("/domains/$domainId/scopes", [
             name: "example scope",
             abbreviation: "Cont",
             subType: "SCP_Scope",
@@ -431,7 +431,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             members: [
                 [targetInDomainUri: "/domains/$domainId/assets/$scopeMember1Id"]
             ]
-        ],201)).resourceId
+        ],201)
 
         when: "we create new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
@@ -676,7 +676,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "update a profile in a domain"() {
         given: "a domain and a unit"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+        def unitId = createUnitWithElements(domainId).first()
 
         when: "we create a new profile"
         post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
@@ -1063,7 +1063,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString, true)
+        def unitId = createUnitWithElements(domain.idAsString, true).first()
 
         given: "a number of existing templates"
         def initialTemplateCount = txTemplate.execute {
@@ -1171,17 +1171,17 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "Profile metadata are optional"() {
         given:
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
+        def unitId = createUnitWithElements(domain.idAsString).first()
 
         when: "a template is created"
-        def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
+        post("/content-creation/domains/${domain.id.uuidValue()}/template", [
             version : "1.2.3",
             profiles: [
                 exampleOrganization: [
                     unitId: unitId
                 ]
             ]
-        ]))
+        ])
 
         then: "a result is returned"
         noExceptionThrown()

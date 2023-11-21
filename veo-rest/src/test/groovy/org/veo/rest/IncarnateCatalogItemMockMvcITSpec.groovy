@@ -378,7 +378,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we get zz1 in resolve manual mode"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.id.uuidValue()}&mode=MANUAL"))
-        def a = result.parameters[0].references.first()
 
         then: "only zz1 is included and the reference ist set to the corresponding element in the unit."
         result.parameters.size() == 1

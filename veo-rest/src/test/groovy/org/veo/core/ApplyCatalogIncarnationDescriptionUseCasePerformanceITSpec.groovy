@@ -160,7 +160,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     Domain createCatalogItems() {
         executeInTransaction {
             def domain = client.domains.first()
-            CatalogItem item1 = newCatalogItem(domain, {
+            newCatalogItem(domain, {
                 elementType = Control.SINGULAR_TERM
                 subType = "Test"
                 status = "NEW"
@@ -185,7 +185,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
 
             newTailoringReference(item3, item2, TailoringReferenceType.COPY)
 
-            CatalogItem item4 = newCatalogItem(domain, {
+            newCatalogItem(domain, {
                 elementType = Asset.SINGULAR_TERM
                 name = 'd1'
                 subType = "Test"

@@ -42,7 +42,7 @@ class DeleteClientUseCaseITSpec extends VeoSpringSpec {
         given:
         def client = createTestClient()
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        def unit = unitRepository.save(newUnit(client).tap{
+        unitRepository.save(newUnit(client) {
             addToDomains(domain)
         })
 
@@ -60,7 +60,7 @@ class DeleteClientUseCaseITSpec extends VeoSpringSpec {
             active = false
             domainDataRepository.save(it)
         }
-        def unit = unitRepository.save(newUnit(client).tap{
+        unitRepository.save(newUnit(client) {
             addToDomains(domain)
         })
 

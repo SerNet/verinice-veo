@@ -261,9 +261,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         Client client = repository.save(newClient {
             state = startState
         })
-
         def cId = client.getIdAsString()
-        def unit = unitRepository.save(newUnit(client))
 
         when:"we send the event"
         def eContent = """{
