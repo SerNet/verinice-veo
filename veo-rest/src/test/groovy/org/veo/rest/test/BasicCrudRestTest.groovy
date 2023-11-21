@@ -234,8 +234,9 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Changing the name of the person'
         def newPersonName = 'Person with Mohammed Api'
-        def putBody = [id: personId, name: personName, owner: [displayName: unitName, targetUri: targetUri]]
+        def putBody = [id: personId, name: newPersonName, owner: [displayName: unitName, targetUri: targetUri]]
         put("$baseUrl/persons/$personId", putBody, personEtag, 200, UserType.DEFAULT)
+        get("$baseUrl/persons/$personId").body.name == newPersonName
 
         and: 'Updating person concurrently'
         put("$baseUrl/persons/$personId", putBody, personEtag, 412, UserType.DEFAULT)
