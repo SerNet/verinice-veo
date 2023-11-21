@@ -186,11 +186,11 @@ class ReferenceAssemblerImplSpec extends Specification {
 
         where:
         type           | reference
-        Asset          | '/assets{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
-        Control        | '/controls{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
-        Scenario       | '/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
-        Incident       | '/incidents{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
-        Scope          | '/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
+        Asset          | '/assets{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
+        Control        | '/controls{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
+        Scenario       | '/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
+        Incident       | '/incidents{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
+        Scope          | '/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
         Domain         | '/domains'
         DomainTemplate | '/domain-templates'
     }

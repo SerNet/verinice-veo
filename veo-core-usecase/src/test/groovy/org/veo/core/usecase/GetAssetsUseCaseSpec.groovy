@@ -49,7 +49,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new GetElementsUseCase.RiskAffectedInputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false))
+        def output = usecase.execute(new GetElementsUseCase.RiskAffectedInputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false))
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
@@ -66,7 +66,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         }
         def input = new GetElementsUseCase.RiskAffectedInputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false)
+        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false)
 
         when:
         def output = usecase.execute(input)

@@ -52,6 +52,7 @@ public class QueryInputMapper {
       String description,
       String designator,
       String name,
+      String abbreviation,
       String updatedBy,
       PagingConfiguration pagingConfiguration) {
     return new GetElementsUseCase.InputData(
@@ -69,6 +70,7 @@ public class QueryInputMapper {
         createStringFilter(description),
         createStringFilter(designator),
         createStringFilter(name),
+        createStringFilter(abbreviation),
         createStringFilter(updatedBy),
         pagingConfiguration);
   }
@@ -90,6 +92,7 @@ public class QueryInputMapper {
         transformCondition(searchQuery.getDescription()),
         transformCondition(searchQuery.getDesignator()),
         transformCondition(searchQuery.getName()),
+        null,
         transformCondition(searchQuery.getUpdatedBy()),
         pagingConfiguration);
   }

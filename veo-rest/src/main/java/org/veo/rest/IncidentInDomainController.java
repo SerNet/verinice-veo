@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
@@ -161,6 +162,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           String domainId,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
       @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
@@ -210,6 +212,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             description,
             designator,
             name,
+            abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformIncident2Dto);
@@ -273,6 +276,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

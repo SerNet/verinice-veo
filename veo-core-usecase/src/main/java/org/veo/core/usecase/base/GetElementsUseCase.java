@@ -105,6 +105,8 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     Optional.ofNullable(input.getDescription()).ifPresent(query::whereDescriptionMatchesIgnoreCase);
     Optional.ofNullable(input.getDesignator()).ifPresent(query::whereDesignatorMatchesIgnoreCase);
     Optional.ofNullable(input.getName()).ifPresent(query::whereNameMatchesIgnoreCase);
+    Optional.ofNullable(input.getAbbreviation())
+        .ifPresent(query::whereAbbreviationMatchesIgnoreCase);
     Optional.ofNullable(input.getUpdatedBy()).ifPresent(query::whereUpdatedByContainsIgnoreCase);
     Optional.ofNullable(input.getChildElementIds()).ifPresent(query::whereChildElementIn);
     Optional.ofNullable(input.getHasChildElements())
@@ -145,6 +147,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     QueryCondition<String> description;
     QueryCondition<String> designator;
     QueryCondition<String> name;
+    QueryCondition<String> abbreviation;
     QueryCondition<String> updatedBy;
     PagingConfiguration pagingConfiguration;
   }
@@ -170,6 +173,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         QueryCondition<String> description,
         QueryCondition<String> designator,
         QueryCondition<String> name,
+        QueryCondition<String> abbreviation,
         QueryCondition<String> updatedBy,
         PagingConfiguration pagingConfiguration,
         boolean embedRisks) {
@@ -188,6 +192,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
           description,
           designator,
           name,
+          abbreviation,
           updatedBy,
           pagingConfiguration);
       this.embedRisks = embedRisks;

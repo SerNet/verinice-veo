@@ -49,6 +49,7 @@ public class GetRiskAffectedInputMapper {
       String description,
       String designator,
       String name,
+      String abbreviation,
       String updatedBy,
       PagingConfiguration pagingConfiguration,
       boolean embedRisks) {
@@ -67,6 +68,7 @@ public class GetRiskAffectedInputMapper {
         createStringFilter(description),
         createStringFilter(designator),
         createStringFilter(name),
+        createStringFilter(abbreviation),
         createStringFilter(updatedBy),
         pagingConfiguration,
         embedRisks);
@@ -92,6 +94,7 @@ public class GetRiskAffectedInputMapper {
         transformCondition(searchQuery.getDescription()),
         transformCondition(searchQuery.getDesignator()),
         transformCondition(searchQuery.getName()),
+        null,
         transformCondition(searchQuery.getUpdatedBy()),
         pagingConfiguration,
         embedRisks);

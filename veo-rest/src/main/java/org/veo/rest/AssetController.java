@@ -19,6 +19,7 @@ package org.veo.rest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
@@ -208,6 +209,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
       @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
       @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
       @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
@@ -253,6 +255,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
             description,
             designator,
             name,
+            abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
             embedRisks));

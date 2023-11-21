@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
@@ -167,6 +168,7 @@ public class AssetInDomainController implements ElementInDomainResource {
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
       @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
       @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
       @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
@@ -208,6 +210,7 @@ public class AssetInDomainController implements ElementInDomainResource {
             description,
             designator,
             name,
+            abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
             false),
@@ -271,6 +274,7 @@ public class AssetInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,
