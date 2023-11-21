@@ -107,50 +107,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
     @WithUserDetails("content-creator")
     def "create and delete a domain"() {
-        when: "a request is made to the server"
-        def result = post("/content-creation/domains", [name:'myd1',authority:"myAuthority"], 201)
-
-        then:
-        result.andReturn().response.status == 201
-
-        when:"get the domains"
-        def domainId = parseJson(result).resourceId
-        result = get("/domains/${domainId}")
-
-        then:
-        with(parseJson(result)) {
-            name == 'myd1'
-            authority == 'myAuthority'
-        }
-
-        when:
-        result = delete("/content-creation/domains/${domainId}", 204)
-
-        then:
-        result.andReturn().response.status == 204
-
-        when:
-        def client = txTemplate.execute {
-            clientRepository.findById(client.id).get()
-        }
-
-        then:
-        client.getDomains().size() == 3
-
-        when:"get the domains"
-        result = get("/domains/${domainId}",404)
-
-        then:
-        thrown(NotFoundException)
-
         when: "a domain is created"
-        result = post("/content-creation/domains", [name:'myd1',authority:"myAuthority"], 201)
-        domainId = parseJson(result).resourceId
+        def domainId = parseJson(post("/content-creation/domains", [
+            name:'myd1',
+            authority:"myAuthority"
+        ], 201)).resourceId
 
-        then:
-        result.andReturn().response.status == 201
+        then: "it can be retrieved"
+        with(parseJson(get("/domains/$domainId"))) {
+            name == "myd1"
+            authority == "myAuthority"
+        }
 
-        when: "create a unit using the the domain"
+        when: "creating a unit using the domain"
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
@@ -158,21 +127,24 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ])).resourceId
 
-        and:
+        and: "trying to delete the domain"
         delete("/content-creation/domains/${domainId}", 409)
 
         then:
         thrown(DomainInUseException)
 
-        when:
+        when: "deleting the unit before deleting the domain"
         delete("/units/${unitId}")
-
-        and:
         delete("/content-creation/domains/${domainId}", 204)
         get("/domains/${domainId}",404)
 
         then:
         thrown(NotFoundException)
+
+        and: "only three domains remain"
+        txTemplate.execute {
+            clientRepository.findById(client.id).get()
+        }.domains.size() == 3
     }
 
     @WithUserDetails("content-creator")
