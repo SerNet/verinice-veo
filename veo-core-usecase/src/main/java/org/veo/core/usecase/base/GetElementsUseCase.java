@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -79,70 +80,50 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
   }
 
   protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
-    if (input.getUnitUuid() != null) {
-      query.whereUnitIn(
-          input.getUnitUuid().getValues().stream()
-              .flatMap(
-                  (Key<UUID> rootUnitId) ->
-                      unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
-              .collect(Collectors.toSet()));
-    }
-    if (input.getDomainId() != null) {
-      query.whereDomainsContain(
-          input.getAuthenticatedClient().getDomains().stream()
-              .filter(d -> d.getId().equals(input.getDomainId().getValue()))
-              .findFirst()
-              .orElseThrow(
-                  () -> new NotFoundException(input.getDomainId().getValue(), Domain.class)));
-    }
-    if (input.getSubType() != null) {
-      query.whereSubTypeMatches(input.getSubType());
-    }
-
-    if (input.getStatus() != null) {
-      query.whereStatusMatches(input.getStatus());
-    }
-
-    if (input.getDisplayName() != null) {
-      query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
-    }
-    if (input.getDescription() != null) {
-      query.whereDescriptionMatchesIgnoreCase(input.getDescription());
-    }
-
-    if (input.getDesignator() != null) {
-      query.whereDesignatorMatchesIgnoreCase(input.getDesignator());
-    }
-
-    if (input.getName() != null) {
-      query.whereNameMatchesIgnoreCase(input.getName());
-    }
-
-    if (input.getUpdatedBy() != null) {
-      query.whereUpdatedByContainsIgnoreCase(input.getUpdatedBy());
-    }
-
-    if (input.getChildElementIds() != null) {
-      query.whereChildElementIn(input.getChildElementIds());
-    }
-
-    if (input.getHasChildElements() != null) {
-      query.whereChildElementsPresent(input.getHasChildElements().getValue().booleanValue());
-    }
-
-    if (input.getHasParentElements() != null) {
-      query.whereParentElementPresent(input.getHasParentElements().getValue().booleanValue());
-    }
-    if (input.getCompositeId() != null) {
-      if (query instanceof CompositeElementQuery<?> c) {
-        c.whereCompositesContain(input.getCompositeId());
-      } else {
-        throw new IllegalArgumentException("Composite filter not compatible with query type");
-      }
-    }
-    if (input.getScopeId() != null) {
-      query.whereScopesContain(input.getScopeId());
-    }
+    Optional.ofNullable(input.getUnitUuid())
+        .map(
+            condition ->
+                condition.getValues().stream()
+                    .flatMap(
+                        (Key<UUID> rootUnitId) ->
+                            unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
+                    .collect(Collectors.toSet()))
+        .ifPresent(query::whereUnitIn);
+    Optional.ofNullable(input.getDomainId())
+        .map(
+            condition ->
+                input.getAuthenticatedClient().getDomains().stream()
+                    .filter(d -> d.getId().equals(condition.getValue()))
+                    .findFirst()
+                    .orElseThrow(
+                        () -> new NotFoundException(input.getDomainId().getValue(), Domain.class)))
+        .ifPresent(query::whereDomainsContain);
+    Optional.ofNullable(input.getSubType()).ifPresent(query::whereSubTypeMatches);
+    Optional.ofNullable(input.getStatus()).ifPresent(query::whereStatusMatches);
+    Optional.ofNullable(input.getDisplayName())
+        .ifPresent(query::whereDisplayNameMatchesIgnoringCase);
+    Optional.ofNullable(input.getDescription()).ifPresent(query::whereDescriptionMatchesIgnoreCase);
+    Optional.ofNullable(input.getDesignator()).ifPresent(query::whereDesignatorMatchesIgnoreCase);
+    Optional.ofNullable(input.getName()).ifPresent(query::whereNameMatchesIgnoreCase);
+    Optional.ofNullable(input.getUpdatedBy()).ifPresent(query::whereUpdatedByContainsIgnoreCase);
+    Optional.ofNullable(input.getChildElementIds()).ifPresent(query::whereChildElementIn);
+    Optional.ofNullable(input.getHasChildElements())
+        .map(SingleValueQueryCondition::getValue)
+        .ifPresent(query::whereChildElementsPresent);
+    Optional.ofNullable(input.getHasParentElements())
+        .map(SingleValueQueryCondition::getValue)
+        .ifPresent(query::whereParentElementPresent);
+    Optional.ofNullable(input.getCompositeId())
+        .ifPresent(
+            condition -> {
+              if (query instanceof CompositeElementQuery<?> c) {
+                c.whereCompositesContain(condition);
+              } else {
+                throw new IllegalArgumentException(
+                    "Composite filter not compatible with query type");
+              }
+            });
+    Optional.ofNullable(input.getScopeId()).ifPresent(query::whereScopesContain);
     query.fetchChildren();
   }
 
