@@ -238,6 +238,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
+  public void whereAbbreviationMatchesIgnoreCase(QueryCondition<String> condition) {
+    inIgnoringCase(condition, "abbreviation");
+  }
+
+  @Override
   public void whereUpdatedByContainsIgnoreCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "updatedBy");
   }

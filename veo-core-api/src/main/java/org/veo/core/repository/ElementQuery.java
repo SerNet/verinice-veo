@@ -99,4 +99,6 @@ public interface ElementQuery<T extends Element> extends Query<T> {
   void fetchControlImplementations();
 
   void fetchRequirementImplementations();
+
+  void whereAbbreviationMatchesIgnoreCase(QueryCondition<String> abbreviation);
 }
