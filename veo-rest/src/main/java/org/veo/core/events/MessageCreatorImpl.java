@@ -137,7 +137,8 @@ public class MessageCreatorImpl implements MessageCreator {
     tree.put("time", time.toString());
     tree.put("author", author);
     tree.put("clientId", entity.getOwningClient().get().getId().uuidValue());
-    tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
+    tree.set(
+        "content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity, true)));
     return tree;
   }
 

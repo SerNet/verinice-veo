@@ -88,7 +88,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         compositeAsset.getUpdatedAt() >> Instant.now()
 
         when: "the composite element is transformed into a DTO"
-        def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
+        def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset, false)
 
         then: "The DTO contains all required data"
         dto.name == compositeAsset.name
@@ -124,7 +124,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         }
 
         when: "the composite element is transformed to a DTO"
-        def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
+        def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset, false)
 
         then: "the DTO contains references to both parts"
         compositeAssetDto.parts.size() == 2
@@ -151,7 +151,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         compositeAsset.updatedAt >> Instant.now()
 
         when: "the composite element is transformed"
-        def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
+        def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset, false)
 
         then: "The composite element contains itself as it is not forbidden"
         dto.parts == [

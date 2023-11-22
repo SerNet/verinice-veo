@@ -215,7 +215,8 @@ public class ControlController extends AbstractCompositeElementController<Contro
         inputData,
         output ->
             PagingMapper.toPage(
-                output.getElements(), entityToDtoTransformer::transformControl2Dto));
+                output.getElements(),
+                source -> entityToDtoTransformer.transformControl2Dto(source, false)));
   }
 
   @Override
@@ -400,6 +401,6 @@ public class ControlController extends AbstractCompositeElementController<Contro
 
   @Override
   protected FullControlDto entity2Dto(Control entity) {
-    return entityToDtoTransformer.transformControl2Dto(entity);
+    return entityToDtoTransformer.transformControl2Dto(entity, false);
   }
 }

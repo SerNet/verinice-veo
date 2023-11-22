@@ -17,13 +17,17 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CustomAspect
+import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.aspects.SubTypeAspect
 import org.veo.core.entity.decision.DecisionResult
@@ -34,10 +38,15 @@ class DomainAssociationTransformerSpec extends Specification {
 
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
-    DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer()
+    ReferenceAssembler referenceAssembler = Mock()
+    DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer(referenceAssembler)
 
     def "maps sub types from entity to DTO"() {
         given: "a process with different sub types in two domains"
+        Person linkTargetPerson = Mock(Person) {
+            findSubType(domain1) >> Optional.of("SuperOverseer")
+        }
+        referenceAssembler.targetReferenceOf(linkTargetPerson) >> "/persons/123"
         AbstractProcessDto dto = Mock()
         Process entity = Mock()
         entity.getImpactValues(_) >> [:]
@@ -55,6 +64,25 @@ class DomainAssociationTransformerSpec extends Specification {
                 status >> "NEW_BAR"
             }
         ]
+        entity.getCustomAspects(domain0) >> [
+            Mock(CustomAspect) {
+                type >> "relevance"
+                attributes >> [
+                    importance: 10000
+                ]
+            }
+        ]
+        entity.getCustomAspects(domain1) >> []
+        entity.getLinks(domain0) >> []
+        entity.getLinks(domain1) >> [
+            Mock(CustomLink) {
+                type >> "overseer"
+                target >> linkTargetPerson
+                attributes >> [
+                    qualified: true
+                ]
+            }
+        ]
         def decisionResults0 = ["decision0": Mock(DecisionResult)]
         def decisionResults1 = ["decision1": Mock(DecisionResult)]
 
@@ -66,7 +94,7 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getDecisionResults(domain1) >> decisionResults1
 
         when: "the sub types are mapped"
-        domainAssociationTransformer.mapDomainsToDto(entity, dto)
+        domainAssociationTransformer.mapDomainsToDto(entity, dto, true)
 
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
@@ -74,11 +102,17 @@ class DomainAssociationTransformerSpec extends Specification {
         with(capturedDomainMap[domain0.id.uuidValue()]) {
             subType == "foo"
             status == "NEW_FOO"
+            customAspects.value.relevance.value.importance == 10000
+            links.value.isEmpty()
             decisionResults == decisionResults0
         }
         with(capturedDomainMap[domain1.id.uuidValue()]) {
             subType == "bar"
             status == "NEW_BAR"
+            customAspects.value.isEmpty()
+            links.value.overseer[0].target.targetUri == "/persons/123"
+            links.value.overseer[0].target.subType == "SuperOverseer"
+            links.value.overseer[0].attributes.value.qualified
             decisionResults == decisionResults1
         }
     }
@@ -107,9 +141,11 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getStatus(domain0) >> "NEW_FOO"
         entity.getSubType(domain1) >> "bar"
         entity.getStatus(domain1) >> "NEW_BAR"
+        entity.getCustomAspects(_) >> []
+        entity.getLinks(_) >> []
 
         when: "the sub types are mapped"
-        domainAssociationTransformer.mapDomainsToDto(entity, dto)
+        domainAssociationTransformer.mapDomainsToDto(entity, dto, true)
 
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}

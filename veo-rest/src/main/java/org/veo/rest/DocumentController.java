@@ -215,7 +215,8 @@ public class DocumentController
         inputData,
         output ->
             PagingMapper.toPage(
-                output.getElements(), entityToDtoTransformer::transformDocument2Dto));
+                output.getElements(),
+                source -> entityToDtoTransformer.transformDocument2Dto(source, false)));
   }
 
   @Override
@@ -398,6 +399,6 @@ public class DocumentController
 
   @Override
   protected FullDocumentDto entity2Dto(Document entity) {
-    return entityToDtoTransformer.transformDocument2Dto(entity);
+    return entityToDtoTransformer.transformDocument2Dto(entity, false);
   }
 }

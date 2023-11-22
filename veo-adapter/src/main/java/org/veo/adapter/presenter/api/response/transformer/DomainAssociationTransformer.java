@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
@@ -35,8 +36,10 @@ import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
@@ -58,13 +61,17 @@ import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and DTOs. See {@link
  * DomainAssociationDto}.
  */
+@RequiredArgsConstructor
 public class DomainAssociationTransformer {
+  private final ReferenceAssembler referenceAssembler;
 
-  public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
+  public void mapDomainsToDto(Asset source, AbstractAssetDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -72,10 +79,11 @@ public class DomainAssociationTransformer {
               var associationDto = new AssetDomainAssociationDto();
               associationDto.setRiskValues(mapRiskValues(source, domain));
               return associationDto;
-            }));
+            },
+            newStructure));
   }
 
-  public void mapDomainsToDto(Control source, AbstractControlDto target) {
+  public void mapDomainsToDto(Control source, AbstractControlDto target, boolean newStructure) {
     Map<String, ControlDomainAssociationDto> extractDomainAssociations =
         extractDomainAssociations(
             source,
@@ -83,7 +91,8 @@ public class DomainAssociationTransformer {
               var associationDto = new ControlDomainAssociationDto();
               associationDto.setRiskValues(mapRiskValues(source, domain));
               return associationDto;
-            });
+            },
+            newStructure);
     target.setDomains(extractDomainAssociations);
   }
 
@@ -111,19 +120,19 @@ public class DomainAssociationTransformer {
     return riskValuesDto;
   }
 
-  public void mapDomainsToDto(Document source, AbstractDocumentDto target) {
-    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+  public void mapDomainsToDto(Document source, AbstractDocumentDto target, boolean newStructure) {
+    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Incident source, AbstractIncidentDto target) {
-    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+  public void mapDomainsToDto(Incident source, AbstractIncidentDto target, boolean newStructure) {
+    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Person source, AbstractPersonDto target) {
-    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+  public void mapDomainsToDto(Person source, AbstractPersonDto target, boolean newStructure) {
+    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Process source, AbstractProcessDto target) {
+  public void mapDomainsToDto(Process source, AbstractProcessDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -131,7 +140,8 @@ public class DomainAssociationTransformer {
               var associationDto = new ProcessDomainAssociationDto();
               associationDto.setRiskValues(mapRiskValues(source, domain));
               return associationDto;
-            }));
+            },
+            newStructure));
   }
 
   public Map<String, ImpactRiskValuesDto> mapRiskValues(Process source, Domain domain) {
@@ -149,7 +159,7 @@ public class DomainAssociationTransformer {
         .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
   }
 
-  public void mapDomainsToDto(Scenario source, AbstractScenarioDto target) {
+  public void mapDomainsToDto(Scenario source, AbstractScenarioDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -157,7 +167,8 @@ public class DomainAssociationTransformer {
               var associationDto = new ScenarioDomainAssociationDto();
               associationDto.setRiskValues(mapRiskValues(source, domain));
               return associationDto;
-            }));
+            },
+            newStructure));
   }
 
   public Map<String, ScenarioRiskValuesDto> mapRiskValues(Scenario source, Domain domain) {
@@ -177,7 +188,7 @@ public class DomainAssociationTransformer {
     return riskValuesDto;
   }
 
-  public void mapDomainsToDto(Scope source, AbstractScopeDto target) {
+  public void mapDomainsToDto(Scope source, AbstractScopeDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -186,7 +197,8 @@ public class DomainAssociationTransformer {
               associationDto.setRiskDefinition(mapRiskDefinition(source, domain));
               associationDto.setRiskValues(mapRiskValues(source, domain));
               return associationDto;
-            }));
+            },
+            newStructure));
   }
 
   public String mapRiskDefinition(Scope source, Domain domain) {
@@ -194,12 +206,12 @@ public class DomainAssociationTransformer {
   }
 
   private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
-      Element source, Supplier<T> supplier) {
-    return extractDomainAssociations(source, domain -> supplier.get());
+      Element source, Supplier<T> supplier, boolean newStructure) {
+    return extractDomainAssociations(source, domain -> supplier.get(), newStructure);
   }
 
   private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
-      Element source, Function<Domain, T> supplier) {
+      Element source, Function<Domain, T> supplier, boolean newStructure) {
     return source.getDomains().stream()
         .collect(
             Collectors.toMap(
@@ -209,6 +221,10 @@ public class DomainAssociationTransformer {
                   association.setSubType(source.getSubType(domain));
                   association.setStatus(source.getStatus(domain));
                   association.setDecisionResults(source.getDecisionResults(domain));
+                  if (newStructure) {
+                    association.setCustomAspects(CustomAspectMapDto.from(source, domain));
+                    association.setLinks(LinkMapDto.from(source, domain, referenceAssembler));
+                  }
                   return association;
                 }));
   }

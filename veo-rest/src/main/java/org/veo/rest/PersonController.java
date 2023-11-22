@@ -213,7 +213,9 @@ public class PersonController extends AbstractCompositeElementController<Person,
         getPersonsUseCase,
         inputData,
         output ->
-            PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformPerson2Dto));
+            PagingMapper.toPage(
+                output.getElements(),
+                source -> entityToDtoTransformer.transformPerson2Dto(source, false)));
   }
 
   @Override
@@ -398,6 +400,6 @@ public class PersonController extends AbstractCompositeElementController<Person,
 
   @Override
   protected FullPersonDto entity2Dto(Person entity) {
-    return entityToDtoTransformer.transformPerson2Dto(entity);
+    return entityToDtoTransformer.transformPerson2Dto(entity, false);
   }
 }

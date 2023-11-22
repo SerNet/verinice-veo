@@ -607,8 +607,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public DomainAssociationTransformer domainAssociationTransformer() {
-    return new DomainAssociationTransformer();
+  public DomainAssociationTransformer domainAssociationTransformer(
+      ReferenceAssembler referenceAssembler) {
+    return new DomainAssociationTransformer(referenceAssembler);
   }
 
   @Bean

@@ -26,6 +26,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.DocumentRepository
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -73,6 +74,22 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                         EventfulAsset: newSubTypeDefinition()
                     ]
                 })
+                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                    subTypes = [
+                        EventfulDocument: newSubTypeDefinition()
+                    ]
+                    customAspects = [
+                        size: newCustomAspectDefinition {
+                            attributeDefinitions = [
+                                widthInMm: new IntegerAttributeDefinition(),
+                                heightInMm: new IntegerAttributeDefinition(),
+                            ]
+                        }
+                    ]
+                    links = [
+                        systems: newLinkDefinition("asset", "EventfulAsset")
+                    ]
+                })
                 applyElementTypeDefinition(newElementTypeDefinition("process", it) {
                     subTypes = [
                         EventfulProcess: newSubTypeDefinition()
@@ -107,11 +124,35 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "document events are generated"() {
-        when: "creating a document"
-        String documentId = parseJson(post("/documents", [
-            name: "doc",
+        when: "creating a document linked with an asset"
+        def domainId = domain.idAsString
+        String assetId = parseJson(post("/domains/$domainId/assets", [
+            name: "ast",
+            subType: "EventfulAsset",
+            status: "NEW",
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
+            ]
+        ])).resourceId
+        String documentId = parseJson(post("/domains/$domainId/documents", [
+            name: "doc",
+            subType: "EventfulDocument",
+            status: "NEW",
+            customAspects: [
+                size: [
+                    widthInMm: 210,
+                    heightInMm: 297,
+                ],
+            ],
+            links: [
+                systems: [
+                    [
+                        target: [targetUri: "/assets/$assetId"]
+                    ]
+                ]
+            ],
+            owner: [
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ]
         ])).resourceId
 
@@ -124,6 +165,12 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             with(content) {
                 id == documentId
                 name == "doc"
+                domains[domainId].subType == "EventfulDocument"
+                domains[domainId].status == "NEW"
+                domains[domainId].customAspects.size.heightInMm == 297
+                domains[domainId].links.systems.first().target.name == "ast"
+                customAspects == null
+                links == null
             }
         }
 

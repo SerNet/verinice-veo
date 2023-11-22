@@ -124,6 +124,21 @@ class SwaggerSpec extends VeoSpringSpec {
         !partReferenceSchema.required.contains('displayName')
     }
 
+    def "domain association schemas contain the expected fields"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect:
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        def domainAssociationSchema = schemas.DomainAssociationDto
+        domainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults'
+        ]
+    }
+
     def "control risk values are mapped correctly"() {
         given:
         def schemas = parsedApiDocs.components.schemas
@@ -134,6 +149,15 @@ class SwaggerSpec extends VeoSpringSpec {
 
         def controlDomainAssociationSchema = schemas.ControlDomainAssociationDto
         controlDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ControlRiskValuesDto"
+
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        controlDomainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults',
+            'riskValues',
+        ]
 
         def controlRiskValuesSchema = schemas.ControlRiskValuesDto
         controlRiskValuesSchema.properties.implementationStatus.type == "integer"
@@ -150,6 +174,15 @@ class SwaggerSpec extends VeoSpringSpec {
         def scenarioDomainAssociationSchema = schemas.ScenarioDomainAssociationDto
         scenarioDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ScenarioRiskValuesDto"
 
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        scenarioDomainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults',
+            'riskValues',
+        ]
+
         def scenarioRiskValuesSchema = schemas.ScenarioRiskValuesDto
         scenarioRiskValuesSchema.properties.potentialProbability.type == "number"
     }
@@ -164,6 +197,16 @@ class SwaggerSpec extends VeoSpringSpec {
 
         def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
         scopeDomainAssociationSchema.properties.riskDefinition.type == "string"
+
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        scopeDomainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults',
+            'riskDefinition',
+            'riskValues',
+        ]
     }
 
     def "process risk values are mapped correctly"() {
@@ -177,6 +220,15 @@ class SwaggerSpec extends VeoSpringSpec {
         def processDomainAssociationSchema = schemas.ProcessDomainAssociationDto
         processDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
         processDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactRiskValuesDto"
+
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        processDomainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults',
+            'riskValues',
+        ]
 
         def processRiskValuesSchema = schemas.ImpactRiskValuesDto
         processRiskValuesSchema.description == '''Key is risk definition ID, value contains risk values in the context of that risk definition.'''
@@ -197,6 +249,15 @@ class SwaggerSpec extends VeoSpringSpec {
         def assetDomainAssociationSchema = schemas.AssetDomainAssociationDto
         assetDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
         assetDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactRiskValuesDto"
+
+        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+        //  'links' must also be present
+        assetDomainAssociationSchema.properties.keySet() ==~ [
+            'subType',
+            'status',
+            'decisionResults',
+            'riskValues',
+        ]
 
         def assetRiskValuesSchema = schemas.ImpactRiskValuesDto
         assetRiskValuesSchema.description == '''Key is risk definition ID, value contains risk values in the context of that risk definition.'''

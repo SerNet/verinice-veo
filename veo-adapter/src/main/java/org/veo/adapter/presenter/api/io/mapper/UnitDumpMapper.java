@@ -43,7 +43,7 @@ public class UnitDumpMapper {
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
     var elementDtos =
         useCaseOutput.getElements().stream()
-            .map(entityToDtoTransformer::transform2Dto)
+            .map(it -> entityToDtoTransformer.transform2Dto(it, false))
             .collect(Collectors.toSet());
     return new UnitDumpDto(
         entityToDtoTransformer.transformUnit2Dto(useCaseOutput.getUnit()),

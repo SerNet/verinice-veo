@@ -77,10 +77,14 @@ public abstract class AbstractElementDto<T extends Element>
   @Schema(requiredMode = REQUIRED, implementation = IdRefOwner.class)
   private IdRef<Unit> owner;
 
+  // TODO #2542 remove from OpenApi docs, but not for legacy endpoints
+  // TODO #2543 remove
   @Valid
   @Schema(description = "Custom relations which do not affect the behavior.", title = "CustomLink")
   private Map<String, List<@Valid CustomLinkDto>> links = Collections.emptyMap();
 
+  // TODO #2542 remove from OpenApi docs, but not for legacy endpoints
+  // TODO #2543 remove
   @Valid
   @Schema(
       description = "Groups of customizable attributes - see '/schemas'",

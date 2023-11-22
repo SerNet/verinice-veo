@@ -53,10 +53,21 @@ public class DomainAssociationDto {
       accessMode = Schema.AccessMode.READ_ONLY)
   private Map<DecisionRef, DecisionResult> decisionResults;
 
+  // TODO #2542 expose in OpenApi docs, but not for legacy endpoints
+  @Schema(hidden = true)
+  CustomAspectMapDto customAspects;
+
+  // TODO #2542 expose in OpenApi docs, but not for legacy endpoints
+  @Schema(hidden = true)
+  LinkMapDto links;
+
   public DomainAssociationState getDomainAssociationState(
       ITypedId<Domain> domain,
+      // TODO #2543 remove
       Set<CustomAspectState> customAspectStates,
+      // TODO #2543 remove
       Set<CustomLinkState> customLinkStates) {
+    // TODO #2542 use new customAspects & links fields if they are set
     return new DomainAssociationStateImpl(
         domain, subType, status, customAspectStates, customLinkStates);
   }

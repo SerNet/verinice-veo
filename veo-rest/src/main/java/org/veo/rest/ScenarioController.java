@@ -215,7 +215,8 @@ public class ScenarioController
         inputData,
         output ->
             PagingMapper.toPage(
-                output.getElements(), entityToDtoTransformer::transformScenario2Dto));
+                output.getElements(),
+                source -> entityToDtoTransformer.transformScenario2Dto(source, false)));
   }
 
   @Override
@@ -398,6 +399,6 @@ public class ScenarioController
 
   @Override
   protected FullScenarioDto entity2Dto(Scenario entity) {
-    return entityToDtoTransformer.transformScenario2Dto(entity);
+    return entityToDtoTransformer.transformScenario2Dto(entity, false);
   }
 }

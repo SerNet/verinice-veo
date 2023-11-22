@@ -139,9 +139,9 @@ public final class EntityToDtoTransformer {
     this.domainAssociationTransformer = domainAssociationTransformer;
   }
 
-  public AbstractVersionedDto transform2Dto(Versioned source) {
+  public AbstractVersionedDto transform2Dto(Versioned source, boolean newStructure) {
     if (source instanceof Element element) {
-      return transform2Dto(element);
+      return transform2Dto(element, newStructure);
     }
     if (source instanceof Domain domain) {
       return transformDomain2Dto(domain);
@@ -212,31 +212,31 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public AbstractElementDto transform2Dto(@Valid Element source) {
+  public AbstractElementDto transform2Dto(@Valid Element source, boolean newStructure) {
 
     if (source instanceof Person person) {
-      return transformPerson2Dto(person);
+      return transformPerson2Dto(person, newStructure);
     }
     if (source instanceof Asset asset) {
-      return transformAsset2Dto(asset);
+      return transformAsset2Dto(asset, newStructure);
     }
     if (source instanceof Process process) {
-      return transformProcess2Dto(process);
+      return transformProcess2Dto(process, newStructure);
     }
     if (source instanceof Document document) {
-      return transformDocument2Dto(document);
+      return transformDocument2Dto(document, newStructure);
     }
     if (source instanceof Control control) {
-      return transformControl2Dto(control);
+      return transformControl2Dto(control, newStructure);
     }
     if (source instanceof Incident incident) {
-      return transformIncident2Dto(incident);
+      return transformIncident2Dto(incident, newStructure);
     }
     if (source instanceof Scenario scenario) {
-      return transformScenario2Dto(scenario);
+      return transformScenario2Dto(scenario, newStructure);
     }
     if (source instanceof Scope scope) {
-      return transformScope2Dto(scope);
+      return transformScope2Dto(scope, newStructure);
     }
     throw new IllegalArgumentException(
         "No transform method defined for " + source.getClass().getSimpleName());
@@ -256,22 +256,23 @@ public final class EntityToDtoTransformer {
         "No transform method defined for risk type " + source.getClass().getSimpleName());
   }
 
-  public FullPersonDto transformPerson2Dto(@Valid Person source) {
+  public FullPersonDto transformPerson2Dto(@Valid Person source, boolean newStructure) {
     FullPersonDto target = new FullPersonDto();
-    mapCompositeEntity(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    mapCompositeEntity(source, target, newStructure);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     return target;
   }
 
-  public FullAssetDto transformAsset2Dto(@Valid Asset source) {
-    return transformAsset2Dto(source, false);
+  public FullAssetDto transformAsset2Dto(@Valid Asset source, boolean newStructure) {
+    return transformAsset2Dto(source, newStructure, false);
   }
 
-  public FullAssetDto transformAsset2Dto(@Valid Asset source, boolean embedRisks) {
+  public FullAssetDto transformAsset2Dto(
+      @Valid Asset source, boolean newStructure, boolean embedRisks) {
     FullAssetDto target = new FullAssetDto();
-    mapCompositeEntity(source, target);
+    mapCompositeEntity(source, target, newStructure);
     mapRiskAffected(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
 
     if (embedRisks) {
       target.setRisks(
@@ -284,15 +285,16 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public FullProcessDto transformProcess2Dto(@Valid Process source) {
-    return transformProcess2Dto(source, false);
+  public FullProcessDto transformProcess2Dto(@Valid Process source, boolean newStructure) {
+    return transformProcess2Dto(source, newStructure, false);
   }
 
-  public FullProcessDto transformProcess2Dto(@Valid Process source, boolean embedRisks) {
+  public FullProcessDto transformProcess2Dto(
+      @Valid Process source, boolean newStructure, boolean embedRisks) {
     FullProcessDto target = new FullProcessDto();
-    mapCompositeEntity(source, target);
+    mapCompositeEntity(source, target, newStructure);
     mapRiskAffected(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
 
     if (embedRisks) {
       target.setRisks(
@@ -305,43 +307,44 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public FullDocumentDto transformDocument2Dto(@Valid Document source) {
+  public FullDocumentDto transformDocument2Dto(@Valid Document source, boolean newStructure) {
     FullDocumentDto target = new FullDocumentDto();
-    mapCompositeEntity(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    mapCompositeEntity(source, target, newStructure);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     return target;
   }
 
-  public FullControlDto transformControl2Dto(@Valid Control source) {
+  public FullControlDto transformControl2Dto(@Valid Control source, boolean newStructure) {
     FullControlDto target = new FullControlDto();
-    mapCompositeEntity(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    mapCompositeEntity(source, target, newStructure);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     return target;
   }
 
-  public FullIncidentDto transformIncident2Dto(@Valid Incident source) {
+  public FullIncidentDto transformIncident2Dto(@Valid Incident source, boolean newStructure) {
     FullIncidentDto target = new FullIncidentDto();
-    mapCompositeEntity(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    mapCompositeEntity(source, target, newStructure);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     return target;
   }
 
-  public FullScenarioDto transformScenario2Dto(@Valid Scenario source) {
+  public FullScenarioDto transformScenario2Dto(@Valid Scenario source, boolean newStructure) {
     FullScenarioDto target = new FullScenarioDto();
-    mapCompositeEntity(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    mapCompositeEntity(source, target, newStructure);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     return target;
   }
 
-  public FullScopeDto transformScope2Dto(@Valid Scope source) {
-    return transformScope2Dto(source, false);
+  public FullScopeDto transformScope2Dto(@Valid Scope source, boolean newStructure) {
+    return transformScope2Dto(source, newStructure, false);
   }
 
-  public FullScopeDto transformScope2Dto(@Valid Scope source, boolean embedRisks) {
+  public FullScopeDto transformScope2Dto(
+      @Valid Scope source, boolean newStructure, boolean embedRisks) {
     FullScopeDto target = new FullScopeDto();
-    mapElement(source, target);
+    mapElement(source, target, newStructure);
     mapRiskAffected(source, target);
-    domainAssociationTransformer.mapDomainsToDto(source, target);
+    domainAssociationTransformer.mapDomainsToDto(source, target, newStructure);
     target.setMembers(convertReferenceSet(source.getMembers()));
     if (embedRisks) {
       target.setRisks(
@@ -563,15 +566,14 @@ public final class EntityToDtoTransformer {
   }
 
   private <TDto extends AbstractElementDto & IdentifiableDto> void mapElement(
-      Element source, TDto target) {
+      Element source, TDto target, boolean newStructure) {
     target.setId(source.getId().uuidValue());
     target.setDesignator(source.getDesignator());
     target.setVersion(source.getVersion());
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
-
-    target.setLinks(mapLinks(source.getLinks()));
-    target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
+    target.setLinks(newStructure ? null : mapLinks(source.getLinks()));
+    target.setCustomAspects(newStructure ? null : mapCustomAspects(source.getCustomAspects()));
     target.setType(source.getModelType());
 
     if (source.getOwner() != null) {
@@ -615,8 +617,8 @@ public final class EntityToDtoTransformer {
   private <
           TEntity extends CompositeElement<TEntity>,
           TDto extends CompositeEntityDto<TEntity> & IdentifiableDto>
-      void mapCompositeEntity(CompositeElement<TEntity> source, TDto target) {
-    mapElement(source, target);
+      void mapCompositeEntity(CompositeElement<TEntity> source, TDto target, boolean newStructure) {
+    mapElement(source, target, newStructure);
     target.setParts(convertReferenceSet(source.getParts()));
   }
 

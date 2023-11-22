@@ -648,10 +648,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   protected FullAssetDto entity2Dto(Asset entity) {
-    return entityToDtoTransformer.transformAsset2Dto(entity);
+    return entityToDtoTransformer.transformAsset2Dto(entity, false);
   }
 
   private FullAssetDto entity2Dto(Asset entity, boolean embedRisks) {
-    return entityToDtoTransformer.transformAsset2Dto(entity, embedRisks);
+    return entityToDtoTransformer.transformAsset2Dto(entity, false, embedRisks);
   }
 }

@@ -215,7 +215,8 @@ public class IncidentController
         inputData,
         output ->
             PagingMapper.toPage(
-                output.getElements(), entityToDtoTransformer::transformIncident2Dto));
+                output.getElements(),
+                source -> entityToDtoTransformer.transformIncident2Dto(source, false)));
   }
 
   @Override
@@ -398,6 +399,6 @@ public class IncidentController
 
   @Override
   protected FullIncidentDto entity2Dto(Incident entity) {
-    return entityToDtoTransformer.transformIncident2Dto(entity);
+    return entityToDtoTransformer.transformIncident2Dto(entity, false);
   }
 }

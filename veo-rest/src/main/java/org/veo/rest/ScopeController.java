@@ -306,7 +306,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
         useCaseInteractor.execute(
             getElementUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
-            output -> entityToDtoTransformer.transformScope2Dto(output.getElement(), embedRisks));
+            output ->
+                entityToDtoTransformer.transformScope2Dto(output.getElement(), false, embedRisks));
     return scopeFuture.thenApply(
         scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
   }
@@ -340,7 +341,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
               .cacheControl(defaultCacheControl)
               .body(
                   scope.getMembers().stream()
-                      .map(member -> entityToDtoTransformer.transform2Dto(member))
+                      .map(member -> entityToDtoTransformer.transform2Dto(member, false))
                       .toList());
         });
   }
@@ -390,7 +391,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
           var scope = output.getEntity();
           return ResponseEntity.ok()
               .eTag(ETag.from(uuid, scope.getVersion()))
-              .body(entityToDtoTransformer.transformScope2Dto(scope));
+              .body(entityToDtoTransformer.transformScope2Dto(scope, false));
         });
   }
 
@@ -679,10 +680,10 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   }
 
   protected FullScopeDto entity2Dto(Scope entity) {
-    return entityToDtoTransformer.transformScope2Dto(entity);
+    return entityToDtoTransformer.transformScope2Dto(entity, false);
   }
 
   private FullScopeDto entity2Dto(Scope entity, boolean embedRisks) {
-    return entityToDtoTransformer.transformScope2Dto(entity, embedRisks);
+    return entityToDtoTransformer.transformScope2Dto(entity, false, embedRisks);
   }
 }

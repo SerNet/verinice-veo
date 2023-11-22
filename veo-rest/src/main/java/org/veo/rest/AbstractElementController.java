@@ -116,7 +116,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   protected ResponseEntity<E> toResponseEntity(T entity) {
     return ResponseEntity.ok()
         .eTag(ETag.from(entity.getIdAsString(), entity.getVersion()))
-        .body((E) entityToDtoTransformer.transform2Dto(entity));
+        .body((E) entityToDtoTransformer.transform2Dto(entity, false));
   }
 
   protected abstract E entity2Dto(T entity);

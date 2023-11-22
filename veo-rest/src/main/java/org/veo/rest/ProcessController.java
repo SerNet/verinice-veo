@@ -654,6 +654,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   private FullProcessDto entity2Dto(Process entity, boolean embedRisks) {
-    return entityToDtoTransformer.transformProcess2Dto(entity, embedRisks);
+    return entityToDtoTransformer.transformProcess2Dto(entity, false, embedRisks);
   }
 }

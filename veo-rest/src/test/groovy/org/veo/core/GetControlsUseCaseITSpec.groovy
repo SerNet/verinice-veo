@@ -74,7 +74,7 @@ class GetControlsUseCaseITSpec extends AbstractPerformanceITSpec {
         def output = executeInTransaction {
             getControlsUseCase.execute(new GetElementsUseCase.InputData(client, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new PagingConfiguration(numberOfControlsToRetrieve, 0, 'name', PagingConfiguration.SortOrder.ASCENDING))).tap {
                 elements.resultPage.each {
-                    entityToDtoTransformer.transform2Dto(it)
+                    entityToDtoTransformer.transform2Dto(it, false)
                 }
             }
         }
