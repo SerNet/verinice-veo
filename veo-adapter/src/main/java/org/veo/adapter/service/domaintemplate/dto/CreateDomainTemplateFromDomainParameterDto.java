@@ -25,6 +25,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.Constraints;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,10 +52,10 @@ public class CreateDomainTemplateFromDomainParameterDto {
 
   @Data
   public static class ProfileCreationParameters {
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+    @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
     @NotNull
     @Schema(
-        description = "ID must be a valid UUID string following RFC 4122.",
+        description = VeoConstants.UUID_MESSAGE,
         example = "adf037f1-0089-48ad-9177-92269918758b",
         format = "uuid")
     private String unitId;

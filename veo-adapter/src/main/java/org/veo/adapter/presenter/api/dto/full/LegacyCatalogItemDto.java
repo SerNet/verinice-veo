@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemElement;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -48,9 +49,9 @@ import lombok.ToString;
 public class LegacyCatalogItemDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto, IdentifiableDto {
 
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
-      description = "ID must be a valid UUID string following RFC 4122.",
+      description = VeoConstants.UUID_MESSAGE,
       example = "adf037f1-0089-48ad-9177-92269918758b",
       format = "uuid")
   @ToString.Include

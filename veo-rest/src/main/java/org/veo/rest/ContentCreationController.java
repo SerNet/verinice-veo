@@ -74,6 +74,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
@@ -151,11 +152,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "409", description = "Templates with name already exist")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
       Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @Valid
-          @RequestBody
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @Valid @RequestBody
           CreateDomainDto domainDto) {
     return useCaseInteractor.execute(
         createDomainUseCase,
@@ -347,10 +344,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createCatalogForDomain(
       Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
           String domainId,
       @Parameter(description = "The id of the unit containing the catalog elements.")
           @RequestParam(name = UNIT_PARAM)
@@ -368,10 +362,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Profile created")
   public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomain(
       Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
           String domainId,
       @Pattern(
               regexp = Patterns.UUID,
@@ -404,16 +395,9 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Profile updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateProfileForDomain(
       Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
           String domainId,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
-          @NotNull
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable @NotNull
           String profileId,
       @Pattern(
               regexp = Patterns.UUID,
@@ -474,11 +458,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "422", description = "Version is lower than current template version")
   public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
       Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
-          String id,
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
       @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
     Client client = getAuthenticatedClient(auth);
     if (createParameter == null) {

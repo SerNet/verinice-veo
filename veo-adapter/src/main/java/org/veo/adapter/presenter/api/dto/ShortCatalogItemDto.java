@@ -20,6 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,9 +32,9 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem> {
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
-      description = "ID must be a valid UUID string following RFC 4122.",
+      description = VeoConstants.UUID_MESSAGE,
       example = "adf037f1-0089-48ad-9177-92269918758b",
       format = "uuid")
   @ToString.Include

@@ -22,6 +22,7 @@ import jakarta.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractAssetInDomainDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.VeoConstants;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,9 @@ import lombok.ToString;
 @Data
 public class FullAssetInDomainDto extends AbstractAssetInDomainDto implements IdentifiableDto {
 
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
-      description = "ID must be a valid UUID string following RFC 4122.",
+      description = VeoConstants.UUID_MESSAGE,
       example = "adf037f1-0089-48ad-9177-92269918758b",
       format = "uuid")
   @ToString.Include

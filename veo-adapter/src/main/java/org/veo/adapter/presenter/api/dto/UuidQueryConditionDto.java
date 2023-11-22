@@ -22,11 +22,12 @@ import java.util.Set;
 import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.core.VeoConstants;
 
 public class UuidQueryConditionDto extends QueryConditionDto<String> {
 
   @Override
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   public Set<String> getValues() {
     return super.getValues();
   }

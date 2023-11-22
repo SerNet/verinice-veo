@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
@@ -47,9 +48,9 @@ import lombok.ToString;
 public class FullProfileItemDto extends AbstractProfileItemDto
     implements FullTemplateItemDto<ProfileItem> {
 
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
-      description = "ID must be a valid UUID string following RFC 4122.",
+      description = VeoConstants.UUID_MESSAGE,
       example = "adf037f1-0089-48ad-9177-92269918758b",
       format = "uuid")
   @ToString.Include

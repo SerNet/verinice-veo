@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.TemplateItem;
@@ -46,9 +47,9 @@ import lombok.ToString;
 @JsonIgnoreProperties("linkTailoringReferences")
 public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto
     implements TailoringReferenceTyped {
-  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
-      description = "ID must be a valid UUID string following RFC 4122.",
+      description = VeoConstants.UUID_MESSAGE,
       example = "adf037f1-0089-48ad-9177-92269918758b",
       format = "uuid")
   @ToString.Include
