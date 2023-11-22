@@ -17,11 +17,17 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import org.veo.core.entity.CustomAspect;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,4 +41,16 @@ public class CustomAspectMapDto {
   }
 
   @JsonValue private Map<String, AttributesDto> value = Collections.emptyMap();
+
+  public static CustomAspectMapDto from(Map<String, Map<String, Object>> customAspects) {
+    return new CustomAspectMapDto(
+        customAspects.entrySet().stream()
+            .collect(toMap(Map.Entry::getKey, e -> new AttributesDto(e.getValue()))));
+  }
+
+  public static CustomAspectMapDto from(Element source, Domain domain) {
+    return new CustomAspectMapDto(
+        source.getCustomAspects(domain).stream()
+            .collect(toMap(CustomAspect::getType, ca -> new AttributesDto(ca.getAttributes()))));
+  }
 }

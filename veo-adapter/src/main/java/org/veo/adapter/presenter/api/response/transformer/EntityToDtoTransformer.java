@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -45,7 +44,6 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
-import org.veo.adapter.presenter.api.dto.AttributesDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
@@ -53,7 +51,6 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
-import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
@@ -102,7 +99,6 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -465,11 +461,7 @@ public final class EntityToDtoTransformer {
     target.setId(source.getIdAsString());
     target.setStatus(source.getStatus());
     target.setAspects(source.getAspects());
-    target.setCustomAspects(
-        new CustomAspectMapDto(
-            source.getCustomAspects().entrySet().stream()
-                .collect(
-                    Collectors.toMap(Map.Entry::getKey, e -> new AttributesDto(e.getValue())))));
+    target.setCustomAspects(CustomAspectMapDto.from(source.getCustomAspects()));
     source
         .getTailoringReferences()
         .forEach(tailoringReference -> target.add(tailoringReference, referenceAssembler));
@@ -792,37 +784,9 @@ public final class EntityToDtoTransformer {
     target.setDesignator(source.getDesignator());
     target.setSubType(source.getSubType(domain));
     target.setStatus(source.getStatus(domain));
-    target.setCustomAspects(mapCustomAspects(source, domain));
-    target.setLinks(mapLinks(source, domain));
+    target.setCustomAspects(CustomAspectMapDto.from(source, domain));
+    target.setLinks(LinkMapDto.from(source, domain, referenceAssembler));
     target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
     target.setDecisionResults(source.getDecisionResults(domain));
-  }
-
-  private LinkMapDto mapLinks(Element source, Domain domain) {
-    return new LinkMapDto(
-        source.getLinks(domain).stream()
-            .collect(groupingBy(CustomLink::getType))
-            .entrySet()
-            .stream()
-            .collect(
-                toMap(
-                    Map.Entry::getKey,
-                    kv -> kv.getValue().stream().map(l -> mapLink(l, domain)).toList())));
-  }
-
-  private CustomAspectMapDto mapCustomAspects(Element source, Domain domain) {
-    return new CustomAspectMapDto(
-        source.getCustomAspects(domain).stream()
-            .collect(toMap(CustomAspect::getType, this::mapCustomAttributeContainer)));
-  }
-
-  private AttributesDto mapCustomAttributeContainer(CustomAttributeContainer source) {
-    return new AttributesDto(source.getAttributes());
-  }
-
-  private LinkDto mapLink(CustomLink source, Domain domain) {
-    return new LinkDto(
-        ElementInDomainIdRef.from(source.getTarget(), domain, referenceAssembler),
-        mapCustomAttributeContainer(source));
   }
 }

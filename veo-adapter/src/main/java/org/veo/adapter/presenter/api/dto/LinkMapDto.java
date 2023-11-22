@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.state.CustomLinkState;
 
 import lombok.Data;
@@ -56,5 +64,28 @@ public class LinkMapDto {
                             new CustomLinkState.CustomLinkStateImpl(
                                 e.getKey(), l.getAttributes().getValue(), l.getTarget())))
         .collect(Collectors.toSet());
+  }
+
+  public static LinkMapDto from(
+      Element source, Domain domain, ReferenceAssembler referenceAssembler) {
+    return new LinkMapDto(
+        source.getLinks(domain).stream()
+            .collect(groupingBy(CustomLink::getType))
+            .entrySet()
+            .stream()
+            .collect(
+                toMap(
+                    Map.Entry::getKey,
+                    kv ->
+                        kv.getValue().stream()
+                            .map(l -> mapLink(l, domain, referenceAssembler))
+                            .toList())));
+  }
+
+  private static LinkDto mapLink(
+      CustomLink source, Domain domain, ReferenceAssembler referenceAssembler) {
+    return new LinkDto(
+        ElementInDomainIdRef.from(source.getTarget(), domain, referenceAssembler),
+        new AttributesDto(source.getAttributes()));
   }
 }
