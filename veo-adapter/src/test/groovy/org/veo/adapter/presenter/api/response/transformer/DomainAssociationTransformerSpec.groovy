@@ -27,8 +27,6 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.aspects.SubTypeAspect
 import org.veo.core.entity.decision.DecisionResult
-import org.veo.core.usecase.service.IdRefResolver
-import org.veo.core.usecase.service.TypedId
 
 import spock.lang.Specification
 
@@ -36,10 +34,6 @@ class DomainAssociationTransformerSpec extends Specification {
 
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
-    IdRefResolver idRefResolver = Mock() {
-        resolve(TypedId.from(domain0.id.uuidValue(), Domain)) >> domain0
-        resolve(TypedId.from(domain1.id.uuidValue(), Domain)) >> domain1
-    }
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer()
 
     def "maps sub types from entity to DTO"() {
