@@ -31,6 +31,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -318,63 +319,71 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   private void fullyLoadItems(List<String> ids) {
-    var items = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(ids);
-    dataRepository.findAllWithCustomAspectsByDbIdIn(ids);
-    dataRepository.findAllWithSubtypeAspectsByDbIdIn(ids);
+    var items =
+        ListUtils.partition(ids, 10000).stream()
+            .flatMap(
+                batch -> {
+                  var chunk = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(batch);
+                  dataRepository.findAllWithCustomAspectsByDbIdIn(batch);
+                  dataRepository.findAllWithSubtypeAspectsByDbIdIn(batch);
 
-    if (fetchAppliedCatalogItems) {
-      dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
-    }
-    if (fetchScopesAndScopeMembers) {
-      dataRepository.findAllWithScopesAndScopeMembersByDbIdIn(ids);
-    }
-    items.stream()
-        .collect(Collectors.groupingBy(Element::getModelInterface))
-        .forEach(this::fullyLoadItems);
+                  if (fetchAppliedCatalogItems) {
+                    dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(batch);
+                  }
+                  if (fetchScopesAndScopeMembers) {
+                    dataRepository.findAllWithScopesAndScopeMembersByDbIdIn(batch);
+                  }
+                  return chunk.stream();
+                });
+    items.collect(Collectors.groupingBy(Element::getModelInterface)).forEach(this::fullyLoadItems);
   }
 
   private void fullyLoadItems(Class<? extends Identifiable> type, List<TDataClass> items) {
     var ids = items.stream().map(Element::getIdAsString).toList();
-    if (type.equals(Asset.class)) {
-      fetchCompositeRiskAffected(ids, assetDataRepository);
-      if (fetchRiskValuesAspects) {
-        assetDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-      }
-    } else if (type.equals(Control.class)) {
-      fetchComposites(ids, controlDataRepository);
-      if (fetchRiskValuesAspects) {
-        controlDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-      }
-    } else if (type.equals(Document.class)) {
-      fetchComposites(ids, documentDataRepository);
-    } else if (type.equals(Incident.class)) {
-      fetchComposites(ids, incidentDataRepository);
-    } else if (type.equals(Process.class)) {
-      fetchCompositeRiskAffected(ids, processDataRepository);
-      if (fetchRiskValuesAspects) {
-        processDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-      }
-    } else if (type.equals(Person.class)) {
-      fetchComposites(ids, personDataRepository);
-    } else if (type.equals(Scenario.class)) {
-      fetchComposites(ids, scenarioDataRepository);
-      if (fetchRiskValuesAspects) {
-        scenarioDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-      }
-    } else if (type.equals(Scope.class)) {
-      if (fetchMembers) {
-        scopeDataRepository.findAllWithMembersByDbIdIn(ids);
-      }
-      if (fetchRiskValuesAspects) {
-        scopeDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-      }
-      if (fetchRisks) {
-        scopeDataRepository.findAllWithRisksByDbIdIn(ids);
-      }
-      if (fetchRequirementImplementations || fetchControlImplementations) {
-        scopeDataRepository.findAllWithCIsAndRIs(ids);
-      }
-    }
+    ListUtils.partition(ids, 10000)
+        .forEach(
+            batch -> {
+              if (type.equals(Asset.class)) {
+                fetchCompositeRiskAffected(batch, assetDataRepository);
+                if (fetchRiskValuesAspects) {
+                  assetDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                }
+              } else if (type.equals(Control.class)) {
+                fetchComposites(batch, controlDataRepository);
+                if (fetchRiskValuesAspects) {
+                  controlDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                }
+              } else if (type.equals(Document.class)) {
+                fetchComposites(batch, documentDataRepository);
+              } else if (type.equals(Incident.class)) {
+                fetchComposites(batch, incidentDataRepository);
+              } else if (type.equals(Process.class)) {
+                fetchCompositeRiskAffected(batch, processDataRepository);
+                if (fetchRiskValuesAspects) {
+                  processDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                }
+              } else if (type.equals(Person.class)) {
+                fetchComposites(batch, personDataRepository);
+              } else if (type.equals(Scenario.class)) {
+                fetchComposites(batch, scenarioDataRepository);
+                if (fetchRiskValuesAspects) {
+                  scenarioDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                }
+              } else if (type.equals(Scope.class)) {
+                if (fetchMembers) {
+                  scopeDataRepository.findAllWithMembersByDbIdIn(batch);
+                }
+                if (fetchRiskValuesAspects) {
+                  scopeDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                }
+                if (fetchRisks) {
+                  scopeDataRepository.findAllWithRisksByDbIdIn(batch);
+                }
+                if (fetchRequirementImplementations || fetchControlImplementations) {
+                  scopeDataRepository.findAllWithCIsAndRIs(batch);
+                }
+              }
+            });
   }
 
   private <

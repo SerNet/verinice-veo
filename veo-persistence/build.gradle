@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'io.hypersistence:hypersistence-utils-hibernate-62'
     implementation 'com.github.zafarkhaja:java-semver'
+    implementation 'org.apache.commons:commons-collections4'
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

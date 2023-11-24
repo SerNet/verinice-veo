@@ -98,7 +98,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
 
         then:
         dto.parameters.size() == 6
-        queryCounts.select == 7
+        queryCounts.select == 3
 
         when: "simulating the POST"
         QueryCountHolder.clear()
