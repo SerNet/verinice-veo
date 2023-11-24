@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest
 
+import static org.veo.core.entity.TailoringReferenceType.RISK
+
 import java.nio.charset.StandardCharsets
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -913,7 +915,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             with(tailoringReferences.sort {it.referenceType}) {
                 it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it[0].linkType == "process_requiredApplications"
-                it[1].referenceType == TailoringReferenceType.RISK
+                it[1].referenceType == RISK
             }
         }
         with(domain1.profiles[0].items.find{it.name == "example scenario Container" }) {
@@ -1100,7 +1102,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             with(tailoringReferences.sort {it.referenceType}) {
                 it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it[0].linkType == "process_requiredApplications"
-                it[1].referenceType == TailoringReferenceType.RISK
+                it[1].referenceType == RISK
                 it[1].mitigation.name == "control"
                 it[1].riskOwner.name == "person"
                 it[1].target.name == "scenario"
@@ -1132,17 +1134,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             domainTemplateDataRepository.count()
         }
 
-        when: "a template is created"
+        when: "a profile and template are created"
+        post("/content-creation/domains/$domain.idAsString/profiles?unit=$unitId", [
+            name: 'Example elements',
+            description: 'All the good stuff',
+            language: 'de_DE',
+        ])
         def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
-            version : "1.2.3",
-            profiles: [
-                exampleOrganization: [
-                    unitId: unitId,
-                    name: 'Example elements',
-                    description: 'All the good stuff',
-                    language: 'de_DE'
-                ]
-            ]
+            version : "1.2.3"
         ]))
 
         then: "a result is returned"
@@ -1156,7 +1155,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             domainTemplateRepository.findAll()
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
                     .tap{
-                        it.profileSet.profiles.size()
+                        it.profiles*.items*.tailoringReferences*.id
                     } // init proxy
         }
 
@@ -1164,15 +1163,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         dt.templateVersion == "1.2.3"
 
         and: "the example profile exists"
-        with(dt.jsonProfiles.exampleOrganization) {
-            name == 'Example elements'
+        with(dt.profiles.find { it.name == "Example elements" }) {
             description == 'All the good stuff'
             language == 'de_DE'
 
-            elements != null
-            risks != null
-
-            elements*.type.sort() == [
+            items*.elementType ==~ [
                 "asset",
                 "control",
                 "document",
@@ -1182,7 +1177,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 "scenario",
                 "scope"
             ]
-            risks*._self.size() == 2
+            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
         }
 
         when: "creating and exporting the domain"
@@ -1192,17 +1187,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:" the export file contains the profile data"
         exportedDomain.name == newDomain.name
-        exportedDomain.profiles.exampleOrganization.elements*.type ==~ [
-            "asset",
-            "control",
-            "document",
-            "incident",
-            "person",
-            "process",
-            "scenario",
-            "scope"
-        ]
-        exportedDomain.profiles.exampleOrganization.risks.size() == 2
+        with(exportedDomain.profiles_v2.find { it.name == "Example elements" }) {
+            items*.elementType ==~ [
+                "asset",
+                "control",
+                "document",
+                "incident",
+                "person",
+                "process",
+                "scenario",
+                "scope"
+            ]
+            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == "RISK" }.size() == 2
+        }
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"
@@ -1216,17 +1213,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the domain contains the profiles"
         newDomain.name == "DSGVO-test"
-        newDomain.jsonProfiles.exampleOrganization.elements*.type ==~ [
-            "asset",
-            "control",
-            "document",
-            "incident",
-            "person",
-            "process",
-            "scenario",
-            "scope"
-        ]
-        newDomain.jsonProfiles.exampleOrganization.risks.size() == 2
+        with(newDomain.profiles.find { it.name == "Example elements" }) {
+            items*.elementType ==~ [
+                "asset",
+                "control",
+                "document",
+                "incident",
+                "person",
+                "process",
+                "scenario",
+                "scope"
+            ]
+            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
+        }
     }
 
     @WithUserDetails("content-creator")

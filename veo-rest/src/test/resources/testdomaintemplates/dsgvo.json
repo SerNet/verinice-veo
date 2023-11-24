@@ -4401,526 +4401,563 @@
       ]
     }
   },
-  "profiles": {
-    "exampleOrganization": {
-      "name": "Beispieldaten",
-      "description": "Beispieldaten für den Datenschutz",
+  "profiles_v2": [
+    {
+      "name": "Beispielorganisation",
+      "description": "So wird's gemacht",
       "language": "de_DE",
-      "elements": [
+      "id": "ace1182e-2c93-4309-95e8-e16386e51bbd",
+      "items": [
         {
-          "name": "Data GmbH",
-          "designator": "DMO-63",
-          "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit.",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {
-            "scope_informationSecurityOfficer": [
-              {
-                "domains": [],
-                "attributes": {},
-                "target": {
-                  "targetUri": "http://localhost/persons/69ef9c7e-7306-404e-8907-a69e2dd02e07"
-                }
-              }
-            ],
-            "scope_headOfDataProcessing": [
-              {
-                "domains": [],
-                "attributes": {},
-                "target": {
-                  "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
-                }
-              }
-            ]
-          },
-          "customAspects": {
-            "scope_thirdCountry": {
-              "domains": [],
-              "attributes": {
-                "scope_thirdCountry_status": false
-              }
-            },
-            "scope_address": {
-              "domains": [],
-              "attributes": {
-                "scope_address_city": "Göttingen",
-                "scope_address_state": "Niedersachsen",
-                "scope_address_country": "Deutschland",
-                "scope_address_address1": "Bahnhofsplatz 1",
-                "scope_address_postcode": "56081"
-              }
-            },
-            "scope_regulatoryAuthority": {
-              "domains": [],
-              "attributes": {
-                "scope_regulatoryAuthority_fax": "0511120 45 99",
-                "scope_regulatoryAuthority_city": "Hannover",
-                "scope_regulatoryAuthority_name": "Die Landesbeauftragte für den Datenschutz Niedersachsen",
-                "scope_regulatoryAuthority_email": "poststelle@lfd.niedersachsen.de",
-                "scope_regulatoryAuthority_phone": "0511 120 45 00",
-                "scope_regulatoryAuthority_website": "https://lfd.niedersachsen.de/startseite/",
-                "scope_regulatoryAuthority_address1": "Prinzenstraße 5",
-                "scope_regulatoryAuthority_postcode": "30159 ",
-                "scope_regulatoryAuthority_description": "Frau Barbara Thiel"
-              }
-            },
-            "scope_contactInformation": {
-              "domains": [],
-              "attributes": {
-                "scope_contactInformation_email": "kontakt@data.de",
-                "scope_contactInformation_phone": "0523 7006000",
-                "scope_contactInformation_website": "www.data.de"
-              }
-            }
-          },
-          "type": "scope",
-          "members": [
-            {
-              "targetUri": "http://localhost/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
-            }
-          ],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "SCP_Scope",
-              "status": "IN_PROGRESS",
-              "decisionResults": {},
-              "riskDefinition": "DSRA"
-            }
-          },
-          "id": "8c98ee3f-7402-4399-bf85-905abc92f17f"
-        },
-        {
-          "name": "Durchführung Befragungen",
-          "designator": "DMO-65",
-          "abbreviation": "",
-          "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgeführt.",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {
-            "process_PIAProcessOwner": [
-              {
-                "target": {
-                  "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
-                }
-              }
-            ],
-            "process_PIAOOtherOrganisationsInvolved": [
-              {
-                "target": {
-                  "targetUri": "http://localhost/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
-                }
-              }
-            ]
-          },
-          "customAspects": {
-            "process_processingDetails": {
-              "domains": [],
-              "attributes": {
-                "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-                "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-                "process_processingDetails_surveyConductedOn": "2021-09-27",
-                "process_processingDetails_responsibleDepartment": "Marketing "
-              }
-            },
-            "process_accessAuthorization": {
-              "domains": [],
-              "attributes": {
-                "process_accessAuthorization_concept": false,
-                "process_accessAuthorization_description": "Kein Berechtigungskonzept"
-              }
-            },
-            "process_processing": {
-              "domains": [],
-              "attributes": {
-                "process_processing_asProcessor": true
-              }
-            },
-            "process_dataProcessing": {
-              "domains": [],
-              "attributes": {
-                "process_dataProcessing_legalBasis": [
-                  "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
-                  "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
-                ]
-              }
-            },
-            "process_opinionDPO": {
-              "domains": [],
-              "attributes": {
-                "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
-                "process_opinionDPO_recommendations": "Überprüfung durch Rechtsabteilung erforderlich\n",
-                "process_opinionDPO_consultationRequired": false,
-                "process_opinionDPO_consultationConducted": false
-              }
-            },
-            "process_dataSubjects": {
-              "domains": [],
-              "attributes": {
-                "process_dataSubjects_dataSubjects": [
-                  "process_dataSubjects_dataSubjects_controllers",
-                  "process_dataSubjects_dataSubjects_customers"
-                ]
-              }
-            },
-            "process_intendedPurpose": {
-              "domains": [],
-              "attributes": {
-                "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit"
-              }
-            },
-            "process_informationsObligations": {
-              "domains": [],
-              "attributes": {
-                "process_informationsObligations_status": true,
-                "process_informationsObligations_explanation": "Siehe Webseite"
-              }
-            }
-          },
-          "type": "process",
-          "parts": [],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PRO_DataProcessing",
-              "status": "NEW",
-              "decisionResults": {
-                "piaMandatory": {
-                  "decisiveRule": 0,
-                  "matchingRules": [
-                    0
-                  ],
-                  "agreeingRules": [
-                    0
-                  ]
-                }
-              },
-              "riskValues": {
-                "DSRA": {
-                  "potentialImpacts": {
-                    "A": 2,
-                    "R": 0,
-                    "C": 2,
-                    "I": 1
-                  }
-                }
-              }
-            }
-          },
-          "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b"
-        },
-        {
-          "name": "Personal",
-          "designator": "DMO-3000",
-          "description": "Das ganze Personal",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {},
-          "customAspects": {},
-          "type": "person",
-          "parts": [
-            {
-              "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
-            },
-            {
-              "targetUri": "http://localhost/persons/69ef9c7e-7306-404e-8907-a69e2dd02e07"
-            },
-            {
-              "targetUri": "http://localhost/persons/ba5f7302-b380-43c7-9a43-21a03bc80bdb"
-            }
-          ],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PER_Person",
-              "status": "NEW",
-              "decisionResults": {}
-            }
-          },
-          "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
-        },
-        {
-          "name": "Jürgen Toast",
-          "designator": "DMO-42",
-          "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {
-            "person_favoriteScope": [
-              {
-                "target": {
-                  "targetUri": "http://localhost/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
-                }
-              }
-            ]
-          },
-          "customAspects": {},
-          "type": "person",
-          "parts": [],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PER_Person",
-              "status": "NEW",
-              "decisionResults": {}
-            }
-          },
-          "id": "69ef9c7e-7306-404e-8907-a69e2dd02e07"
-        },
-        {
-          "name": "IT-Team",
-          "designator": "DMO-49",
-          "description": "Hans Meisers Team",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {},
-          "customAspects": {},
-          "type": "person",
-          "parts": [
-            {
-              "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
-            }
-          ],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PER_Person",
-              "status": "NEW",
-              "decisionResults": {}
-            }
-          },
-          "id": "10b0e22c-0e09-4148-904c-b4545ea4ce0c"
-        },
-        {
+          "createdAt": "2023-11-23T14:39:51.303639Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.303639Z",
+          "updatedBy": "content-creator",
           "name": "Hans Meiser",
-          "designator": "DMO-48",
           "description": "Der IT-Leiter der Data GmbH.",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {},
+          "elementType": "person",
+          "subType": "PER_Person",
+          "status": "NEW",
+          "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+          "aspects": {},
           "customAspects": {
             "person_generalInformation": {
-              "domains": [
-                {
-                  "targetUri": "http://localhost/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083"
-                }
-              ],
-              "attributes": {
-                "person_generalInformation_givenName": "Hans",
-                "person_generalInformation_familyName": "Meiser",
-                "person_generalInformation_salutation": "Herr "
-              }
+              "person_generalInformation_givenName": "Hans",
+              "person_generalInformation_familyName": "Meiser",
+              "person_generalInformation_salutation": "Herr "
             },
             "person_address": {
-              "domains": [
-                {
-                  "targetUri": "http://localhost/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083"
-                }
-              ],
-              "attributes": {
-                "person_address_city": "Göttingen",
-                "person_address_state": "Niedersachsen",
-                "person_address_country": "D",
-                "person_address_address1": "Bahnhofsallee 1b",
-                "person_address_postcode": "37081"
-              }
+              "person_address_city": "Göttingen",
+              "person_address_state": "Niedersachsen",
+              "person_address_country": "D",
+              "person_address_address1": "Bahnhofsallee 1b",
+              "person_address_postcode": "37081"
             },
             "person_contactInformation": {
-              "domains": [
-                {
-                  "targetUri": "http://localhost/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083"
-                }
-              ],
-              "attributes": {
-                "person_contactInformation_email": "hm@data.de",
-                "person_contactInformation_mobile": "0551 370000-9",
-                "person_contactInformation_office": "0551 370000-0"
-              }
+              "person_contactInformation_email": "hm@data.de",
+              "person_contactInformation_mobile": "0551 370000-9",
+              "person_contactInformation_office": "0551 370000-0"
             }
           },
-          "type": "person",
-          "parts": [
+          "tailoringReferences": [
             {
-              "targetUri": "http://localhost/persons/ba5f7302-b380-43c7-9a43-21a03bc80bdb"
+              "id": "7ff88dce-4895-41ab-8ad4-e15a06bb2463",
+              "referenceType": "COMPOSITE",
+              "target": {
+                "id": "8aa685d5-091f-4ac0-87d4-89ed05219bb6",
+                "displayName": "IT-Team",
+                "name": "IT-Team",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/8aa685d5-091f-4ac0-87d4-89ed05219bb6"
+              }
+            },
+            {
+              "id": "ddf77e22-5822-4311-999c-876ef17dc514",
+              "referenceType": "PART",
+              "target": {
+                "id": "7f30b66a-8174-49b3-bf03-c01781bf3a11",
+                "displayName": "Harald Wald",
+                "name": "Harald Wald",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/7f30b66a-8174-49b3-bf03-c01781bf3a11"
+              }
+            },
+            {
+              "id": "b4b809a4-8855-4874-8044-6da4f21bc184",
+              "referenceType": "LINK_EXTERNAL",
+              "target": {
+                "id": "b21e577e-06c0-457b-9af4-20b1feffa4a0",
+                "displayName": " Durchführung Befragungen",
+                "name": "Durchführung Befragungen",
+                "abbreviation": "",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/b21e577e-06c0-457b-9af4-20b1feffa4a0"
+              },
+              "linkType": "process_PIAProcessOwner",
+              "attributes": {}
+            },
+            {
+              "id": "b3665af0-b483-41d0-8013-15487309e602",
+              "referenceType": "COMPOSITE",
+              "target": {
+                "id": "5ccc40c6-7cbb-4652-8952-0dbd9e1d361b",
+                "displayName": "Personal",
+                "name": "Personal",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/5ccc40c6-7cbb-4652-8952-0dbd9e1d361b"
+              }
+            },
+            {
+              "id": "e23d6716-c6d7-43b0-803b-8e4e7f4534af",
+              "referenceType": "LINK_EXTERNAL",
+              "target": {
+                "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+                "displayName": "Data GmbH",
+                "name": "Data GmbH",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+              },
+              "linkType": "scope_headOfDataProcessing",
+              "attributes": {}
             }
           ],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PER_Person",
-              "status": "NEW",
-              "decisionResults": {}
-            }
-          },
-          "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
         },
         {
-          "name": "Harald Wald",
-          "designator": "DMO-50",
-          "description": "Hans Meisers rechte Hand",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {},
+          "createdAt": "2023-11-23T14:39:51.309849Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.309849Z",
+          "updatedBy": "content-creator",
+          "name": "IT-Team",
+          "description": "Hans Meisers Team",
+          "elementType": "person",
+          "subType": "PER_Person",
+          "status": "NEW",
+          "id": "8aa685d5-091f-4ac0-87d4-89ed05219bb6",
+          "aspects": {},
           "customAspects": {},
-          "type": "person",
-          "parts": [],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "PER_Person",
-              "status": "NEW",
-              "decisionResults": {}
+          "tailoringReferences": [
+            {
+              "id": "18d14341-8919-4cc3-9714-1b3269e67e32",
+              "referenceType": "PART",
+              "target": {
+                "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+                "displayName": "Hans Meiser",
+                "name": "Hans Meiser",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
+              }
             }
-          },
-          "id": "ba5f7302-b380-43c7-9a43-21a03bc80bdb"
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/8aa685d5-091f-4ac0-87d4-89ed05219bb6"
         },
         {
-          "name": "TOM 1",
-          "designator": "DMO-33",
-          "abbreviation": "TOM-A",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+          "createdAt": "2023-11-23T14:39:51.284644Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.284644Z",
+          "updatedBy": "content-creator",
+          "name": "Durchführung Befragungen",
+          "abbreviation": "",
+          "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgeführt.",
+          "elementType": "process",
+          "subType": "PRO_DataProcessing",
+          "status": "NEW",
+          "id": "b21e577e-06c0-457b-9af4-20b1feffa4a0",
+          "aspects": {
+            "impactValues": {
+              "DSRA": {
+                "potentialImpacts": {
+                  "R": 0,
+                  "C": 2,
+                  "I": 1,
+                  "A": 2
+                }
+              }
+            }
           },
-          "links": {},
           "customAspects": {
-            "control_dataProtection": {
-              "domains": [
-                {
-                  "targetUri": "http://localhost/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083"
-                }
-              ],
-              "attributes": {
-                "control_dataProtection_objectives": [
-                  "control_dataProtection_objectives_availability"
-                ]
-              }
+            "process_processing": {
+              "process_processing_asProcessor": true
+            },
+            "process_processingDetails": {
+              "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+              "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+              "process_processingDetails_surveyConductedOn": "2021-09-27",
+              "process_processingDetails_responsibleDepartment": "Marketing "
+            },
+            "process_accessAuthorization": {
+              "process_accessAuthorization_concept": false,
+              "process_accessAuthorization_description": "Kein Berechtigungskonzept"
+            },
+            "process_dataProcessing": {
+              "process_dataProcessing_legalBasis": [
+                "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+                "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
+              ]
+            },
+            "process_opinionDPO": {
+              "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
+              "process_opinionDPO_recommendations": "Überprüfung durch Rechtsabteilung erforderlich\n",
+              "process_opinionDPO_consultationRequired": false,
+              "process_opinionDPO_consultationConducted": false
+            },
+            "process_dataSubjects": {
+              "process_dataSubjects_dataSubjects": [
+                "process_dataSubjects_dataSubjects_controllers",
+                "process_dataSubjects_dataSubjects_customers"
+              ]
+            },
+            "process_intendedPurpose": {
+              "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit"
+            },
+            "process_informationsObligations": {
+              "process_informationsObligations_status": true,
+              "process_informationsObligations_explanation": "Siehe Webseite"
             }
           },
-          "type": "control",
-          "parts": [],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "CTL_TOM",
-              "status": "NEW",
-              "riskValues": {
-                "DSRA": {
-                  "implementationStatus": 2
-                }
-              }
-            }
-          },
-          "id": "6843842a-fe71-4012-86c4-e598e27e11f7"
-        },
-        {
-          "name": "Gefährdung 1",
-          "designator": "SCN-2",
-          "owner": {
-            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
-          },
-          "links": {},
-          "customAspects": {},
-          "type": "scenario",
-          "parts": [],
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "subType": "SCN_Scenario",
-              "status": "NEW",
-              "riskValues": {
-                "DSRA": {
-                  "potentialProbability": 1
-                }
-              }
-            }
-          },
-          "id": "7453d163-fc86-4e3d-9f96-07658e9df2e5"
-        }
-      ],
-      "risks": [
-        {
-          "designator": "RSK-28",
-          "scenario": {
-            "targetUri": "/scenarios/7453d163-fc86-4e3d-9f96-07658e9df2e5"
-          },
-          "process": {
-            "targetUri": "/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
-          },
-          "mitigation": {
-            "targetUri": "/controls/6843842a-fe71-4012-86c4-e598e27e11f7"
-          },
-          "domains": {
-            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
-              "reference": {
-                "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083"
+          "tailoringReferences": [
+            {
+              "id": "59732cb5-5685-4d12-b51f-733cceab7b8e",
+              "referenceType": "RISK",
+              "target": {
+                "id": "2c41b8fe-37cc-4763-8521-1eac8e6da580",
+                "displayName": "GefÃ¤hrdung 1",
+                "name": "GefÃ¤hrdung 1",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/2c41b8fe-37cc-4763-8521-1eac8e6da580"
+              },
+              "mitigation": {
+                "id": "03f19b05-d6c1-435a-9261-3accdf10f0cf",
+                "displayName": "TOM-A TOM 1",
+                "name": "TOM 1",
+                "abbreviation": "TOM-A",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/03f19b05-d6c1-435a-9261-3accdf10f0cf"
               },
               "riskDefinitions": {
                 "DSRA": {
-                  "probability": {
-                    "potentialProbability": 1,
-                    "specificProbability": 2,
-                    "effectiveProbability": 2
-                  },
-                  "impactValues": [
-                    {
-                      "category": "I",
-                      "potentialImpact": 1,
+                  "specificProbability": 2,
+                  "categories": {
+                    "I": {
                       "specificImpact": 0,
-                      "effectiveImpact": 0
+                      "userDefinedResidualRisk": 0
                     },
-                    {
-                      "category": "A",
-                      "potentialImpact": 2,
+                    "A": {
                       "specificImpact": 1,
-                      "effectiveImpact": 1
+                      "userDefinedResidualRisk": 1
                     },
-                    {
-                      "category": "R",
-                      "potentialImpact": 0,
+                    "R": {
                       "specificImpact": 1,
-                      "effectiveImpact": 1
+                      "userDefinedResidualRisk": 0
                     },
-                    {
-                      "category": "C",
-                      "potentialImpact": 2,
+                    "C": {
                       "specificImpact": 2,
-                      "effectiveImpact": 2
+                      "userDefinedResidualRisk": 2
                     }
-                  ],
-                  "riskValues": [
-                    {
-                      "category": "I",
-                      "inherentRisk": 0,
-                      "userDefinedResidualRisk": 0,
-                      "riskTreatments": [],
-                      "residualRisk": 0
-                    },
-                    {
-                      "category": "A",
-                      "inherentRisk": 1,
-                      "userDefinedResidualRisk": 1,
-                      "riskTreatments": [],
-                      "residualRisk": 1
-                    },
-                    {
-                      "category": "R",
-                      "inherentRisk": 1,
-                      "userDefinedResidualRisk": 0,
-                      "riskTreatments": [],
-                      "residualRisk": 0
-                    },
-                    {
-                      "category": "C",
-                      "inherentRisk": 2,
-                      "userDefinedResidualRisk": 2,
-                      "riskTreatments": [],
-                      "residualRisk": 2
-                    }
-                  ]
+                  }
                 }
               }
+            },
+            {
+              "id": "93b7ff78-224b-4211-8877-829f120d2232",
+              "referenceType": "SCOPE",
+              "target": {
+                "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+                "displayName": "Data GmbH",
+                "name": "Data GmbH",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+              }
+            },
+            {
+              "id": "a4ca0e40-e0f3-4048-9c77-1f46120db45c",
+              "referenceType": "LINK",
+              "target": {
+                "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+                "displayName": "Hans Meiser",
+                "name": "Hans Meiser",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
+              },
+              "linkType": "process_PIAProcessOwner",
+              "attributes": {}
+            },
+            {
+              "id": "bacc701e-d307-4277-ba77-60d2e0834131",
+              "referenceType": "LINK",
+              "target": {
+                "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+                "displayName": "Data GmbH",
+                "name": "Data GmbH",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+              },
+              "linkType": "process_PIAOOtherOrganisationsInvolved",
+              "attributes": {}
             }
-          }
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/b21e577e-06c0-457b-9af4-20b1feffa4a0"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.311495Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.311495Z",
+          "updatedBy": "content-creator",
+          "name": "Jürgen Toast",
+          "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
+          "elementType": "person",
+          "subType": "PER_Person",
+          "status": "NEW",
+          "id": "588ab97d-cc62-4ca4-9115-81276cab4a25",
+          "aspects": {},
+          "customAspects": {},
+          "tailoringReferences": [
+            {
+              "id": "10cf9552-cfa0-43e9-97e9-a2fa1c4aa9a0",
+              "referenceType": "LINK_EXTERNAL",
+              "target": {
+                "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+                "displayName": "Data GmbH",
+                "name": "Data GmbH",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+              },
+              "linkType": "scope_informationSecurityOfficer",
+              "attributes": {}
+            },
+            {
+              "id": "adfaec7e-2e46-4bd1-9d2b-f5d7db62afde",
+              "referenceType": "COMPOSITE",
+              "target": {
+                "id": "5ccc40c6-7cbb-4652-8952-0dbd9e1d361b",
+                "displayName": "Personal",
+                "name": "Personal",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/5ccc40c6-7cbb-4652-8952-0dbd9e1d361b"
+              }
+            },
+            {
+              "id": "af6cfcf7-9b58-40da-9276-73117d14004c",
+              "referenceType": "LINK",
+              "target": {
+                "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+                "displayName": "Data GmbH",
+                "name": "Data GmbH",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+              },
+              "linkType": "person_favoriteScope",
+              "attributes": {}
+            }
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/588ab97d-cc62-4ca4-9115-81276cab4a25"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.314013Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.314013Z",
+          "updatedBy": "content-creator",
+          "name": "Personal",
+          "description": "Das ganze Personal",
+          "elementType": "person",
+          "subType": "PER_Person",
+          "status": "NEW",
+          "id": "5ccc40c6-7cbb-4652-8952-0dbd9e1d361b",
+          "aspects": {},
+          "customAspects": {},
+          "tailoringReferences": [
+            {
+              "id": "4382524f-8f83-4949-ae0a-29a9abfbc508",
+              "referenceType": "PART",
+              "target": {
+                "id": "588ab97d-cc62-4ca4-9115-81276cab4a25",
+                "displayName": "Jürgen Toast",
+                "name": "Jürgen Toast",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/588ab97d-cc62-4ca4-9115-81276cab4a25"
+              }
+            },
+            {
+              "id": "504551b2-bc38-4eaa-8e21-83cc20f34b35",
+              "referenceType": "PART",
+              "target": {
+                "id": "7f30b66a-8174-49b3-bf03-c01781bf3a11",
+                "displayName": "Harald Wald",
+                "name": "Harald Wald",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/7f30b66a-8174-49b3-bf03-c01781bf3a11"
+              }
+            },
+            {
+              "id": "35a751cc-3e24-481e-b415-bba53c3e360f",
+              "referenceType": "PART",
+              "target": {
+                "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+                "displayName": "Hans Meiser",
+                "name": "Hans Meiser",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
+              }
+            }
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/5ccc40c6-7cbb-4652-8952-0dbd9e1d361b"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.296432Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.296432Z",
+          "updatedBy": "content-creator",
+          "name": "TOM 1",
+          "abbreviation": "TOM-A",
+          "elementType": "control",
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "id": "03f19b05-d6c1-435a-9261-3accdf10f0cf",
+          "aspects": {
+            "controlRiskValues": {
+              "DSRA": {
+                "implementationStatus": 2
+              }
+            }
+          },
+          "customAspects": {
+            "control_dataProtection": {
+              "control_dataProtection_objectives": [
+                "control_dataProtection_objectives_availability"
+              ]
+            }
+          },
+          "tailoringReferences": [],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/03f19b05-d6c1-435a-9261-3accdf10f0cf"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.299564Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.299564Z",
+          "updatedBy": "content-creator",
+          "name": "Data GmbH",
+          "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit.",
+          "elementType": "scope",
+          "subType": "SCP_Scope",
+          "status": "IN_PROGRESS",
+          "id": "c89fba00-f19d-4c59-919e-aad5f62d8186",
+          "aspects": {
+            "impactValues": {}
+          },
+          "customAspects": {
+            "scope_thirdCountry": {
+              "scope_thirdCountry_status": false
+            },
+            "scope_address": {
+              "scope_address_city": "Göttingen",
+              "scope_address_state": "Niedersachsen",
+              "scope_address_country": "Deutschland",
+              "scope_address_address1": "Bahnhofsplatz 1",
+              "scope_address_postcode": "56081"
+            },
+            "scope_regulatoryAuthority": {
+              "scope_regulatoryAuthority_fax": "0511120 45 99",
+              "scope_regulatoryAuthority_city": "Hannover",
+              "scope_regulatoryAuthority_name": "Die Landesbeauftragte für den Datenschutz Niedersachsen",
+              "scope_regulatoryAuthority_email": "poststelle@lfd.niedersachsen.de",
+              "scope_regulatoryAuthority_phone": "0511 120 45 00",
+              "scope_regulatoryAuthority_website": "https://lfd.niedersachsen.de/startseite/",
+              "scope_regulatoryAuthority_address1": "PrinzenstraÃe 5",
+              "scope_regulatoryAuthority_postcode": "30159 ",
+              "scope_regulatoryAuthority_description": "Frau Barbara Thiel"
+            },
+            "scope_contactInformation": {
+              "scope_contactInformation_email": "kontakt@data.de",
+              "scope_contactInformation_phone": "0523 7006000",
+              "scope_contactInformation_website": "www.data.de"
+            }
+          },
+          "tailoringReferences": [
+            {
+              "id": "f2fd0d54-456e-41f6-9cad-1e31adb2b3eb",
+              "referenceType": "LINK_EXTERNAL",
+              "target": {
+                "id": "588ab97d-cc62-4ca4-9115-81276cab4a25",
+                "displayName": "Jürgen Toast",
+                "name": "Jürgen Toast",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/588ab97d-cc62-4ca4-9115-81276cab4a25"
+              },
+              "linkType": "person_favoriteScope",
+              "attributes": {}
+            },
+            {
+              "id": "d38b5821-3d3a-4492-885b-e5e3c58be7e2",
+              "referenceType": "LINK",
+              "target": {
+                "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+                "displayName": "Hans Meiser",
+                "name": "Hans Meiser",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
+              },
+              "linkType": "scope_headOfDataProcessing",
+              "attributes": {}
+            },
+            {
+              "id": "4300ceff-a990-41a2-aac1-39780722cbf9",
+              "referenceType": "MEMBER",
+              "target": {
+                "id": "b21e577e-06c0-457b-9af4-20b1feffa4a0",
+                "displayName": " Durchführung Befragungen",
+                "name": "Durchführung Befragungen",
+                "abbreviation": "",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/b21e577e-06c0-457b-9af4-20b1feffa4a0"
+              }
+            },
+            {
+              "id": "2a777047-bdfa-47b4-b519-e9cc09910a1e",
+              "referenceType": "LINK",
+              "target": {
+                "id": "588ab97d-cc62-4ca4-9115-81276cab4a25",
+                "displayName": "Jürgen Toast",
+                "name": "Jürgen Toast",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/588ab97d-cc62-4ca4-9115-81276cab4a25"
+              },
+              "linkType": "scope_informationSecurityOfficer",
+              "attributes": {}
+            },
+            {
+              "id": "6be72f46-5a38-48f2-b3c0-f59a79889fac",
+              "referenceType": "LINK_EXTERNAL",
+              "target": {
+                "id": "b21e577e-06c0-457b-9af4-20b1feffa4a0",
+                "displayName": " Durchführung Befragungen",
+                "name": "Durchführung Befragungen",
+                "abbreviation": "",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/b21e577e-06c0-457b-9af4-20b1feffa4a0"
+              },
+              "linkType": "process_PIAOOtherOrganisationsInvolved",
+              "attributes": {}
+            }
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/c89fba00-f19d-4c59-919e-aad5f62d8186"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.307643Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.307643Z",
+          "updatedBy": "content-creator",
+          "name": "Harald Wald",
+          "description": "Hans Meisers rechte Hand",
+          "elementType": "person",
+          "subType": "PER_Person",
+          "status": "NEW",
+          "id": "7f30b66a-8174-49b3-bf03-c01781bf3a11",
+          "aspects": {},
+          "customAspects": {},
+          "tailoringReferences": [
+            {
+              "id": "86711447-43ed-467a-80a8-04a67df422a8",
+              "referenceType": "COMPOSITE",
+              "target": {
+                "id": "5ccc40c6-7cbb-4652-8952-0dbd9e1d361b",
+                "displayName": "Personal",
+                "name": "Personal",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/5ccc40c6-7cbb-4652-8952-0dbd9e1d361b"
+              }
+            },
+            {
+              "id": "852686df-69b5-4758-b220-181caac0aafc",
+              "referenceType": "COMPOSITE",
+              "target": {
+                "id": "ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551",
+                "displayName": "Hans Meiser",
+                "name": "Hans Meiser",
+                "targetUri": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/ccb4cb86-ea7e-4de1-9e9f-7b3a6dee8551"
+              }
+            }
+          ],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/7f30b66a-8174-49b3-bf03-c01781bf3a11"
+        },
+        {
+          "createdAt": "2023-11-23T14:39:51.292896Z",
+          "createdBy": "content-creator",
+          "updatedAt": "2023-11-23T14:39:51.292896Z",
+          "updatedBy": "content-creator",
+          "name": "GefÃ¤hrdung 1",
+          "elementType": "scenario",
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "id": "2c41b8fe-37cc-4763-8521-1eac8e6da580",
+          "aspects": {
+            "scenarioRiskValues": {
+              "DSRA": {
+                "potentialProbability": 1
+              }
+            }
+          },
+          "customAspects": {},
+          "tailoringReferences": [],
+          "_self": "http://localhost/domains/a462af8d-8b28-4c5c-a5cc-e8e0f94b908c/profiles/ace1182e-2c93-4309-95e8-e16386e51bbd/items/2c41b8fe-37cc-4763-8521-1eac8e6da580"
         }
       ]
     }
-  }
+  ]
 }

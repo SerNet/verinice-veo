@@ -35,9 +35,9 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.GetUnitsUseCase
 import org.veo.jobs.MessageDeletionJob
@@ -114,7 +114,10 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     GetUnitsUseCase getUnitsUseCase
 
     @Autowired
-    ApplyJsonProfileUseCase applyProfileUseCase
+    private GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase
+
+    @Autowired
+    private ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase
 
     @Autowired
     DeleteUnitUseCase deleteUnitUseCase
@@ -181,15 +184,25 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         eventDispatcher.addAckCallback { confirmationLatch.countDown() }
 
         when: "The profile is applied to a unit"
-        def dsgvoTestDomain
-        executeInTransaction {
+        def dsgvoTestDomain = executeInTransaction {
             client = newClient()
-            dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            client = clientRepository.save(client)
+            domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID).tap{
+                client = clientRepository.save(client)
+            }
+            client.domains.find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
         }
         executeInTransaction {
             def unit = unitRepository.save(newUnit(client))
-            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), unit.id))
+
+            def profileId = dsgvoTestDomain.profiles.first().id
+            var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoTestDomain.id, null, profileId)
+                    ).references
+            applyProfileIncarnationDescriptionUseCase.execute(new ApplyProfileIncarnationDescriptionUseCase.InputData(
+                    client,
+                    unit.id,
+                    incarnationDescriptions
+                    ))
         }
 
         and: "the event table has been completely cleared by the deletion job"

@@ -29,7 +29,6 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
-import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactValues
@@ -41,7 +40,8 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -68,7 +68,10 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     private UpdateAllClientDomainsUseCase useCase
 
     @Autowired
-    private ApplyJsonProfileUseCase applyProfileUseCase
+    private GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase
+
+    @Autowired
+    private ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase
 
     @Autowired
     ScopeRepositoryImpl scopeRepository
@@ -106,6 +109,8 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)
+            dsgvoDomain = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
+            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_V2_UUID }
         }
     }
 
@@ -372,8 +377,14 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     def "Migrate a client with elements from a profile"() {
         given: 'a profile applied in a unit'
         def unit = executeInTransaction {
-            unitRepository.save(newUnit(client)).tap{
-                applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvoDomain.id, new ProfileRef("exampleOrganization"), it.id))
+            unitRepository.save(newUnit(client)).tap{unit ->
+                def profileId = dsgvoDomain.profiles.find { it.name == "Beispielorganisation" }.id
+                var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
+                        new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoDomain.id, null, profileId)
+                        ).references
+                applyProfileIncarnationDescriptionUseCase.execute(
+                        new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions)
+                        )
             }
         }
 

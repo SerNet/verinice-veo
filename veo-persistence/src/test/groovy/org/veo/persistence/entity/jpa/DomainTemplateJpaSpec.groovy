@@ -24,7 +24,6 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
-import org.veo.core.entity.profile.ProfileDefinition
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -50,30 +49,26 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def 'domainTemplate is inserted'() {
         given: "the domain template"
-        Map data = [name: "Meeting-Metadaten",
-            id: "40cd6764-830c-4af2-b88d-4bf02c9018e5",
-            description: "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
-            links:[],
-            customAspects:[],
-            type:"asset",
-            parts: [],
-            domains:[
-                "7de19fda-73dc-42b8-ab85-56bc04d27460" : [
-                    subType: "AST_Datatype",
-                    status: "FOR_REVIEW",
-                    decisionResults :[],
-                ]
-            ]
-        ]
-
         domain0 = newDomainTemplate() {
             riskDefinitions = ["id1":
                 createRiskDefinition("id1"),
                 "id2":createRiskDefinition("id2")
             ]
             profiles = [
-                "exampleOrganization": new ProfileDefinition("Beispieldaten", "So wird's gemacht ", "de_DE",
-                Collections.singleton(data), Collections.emptySet())
+                newProfile(it) {
+                    name = "Beispieldaten"
+                    description = "So wird's gemacht"
+                    language = "de_DE"
+                    items = [
+                        newProfileItem(it) {
+                            name = "Meeting-Metadaten"
+                            description = "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse"
+                            elementType ="asset"
+                            subType = "AST_Datatype"
+                            status = "FOR_REVIEW"
+                        }
+                    ]
+                }
             ]
         }
 
@@ -90,7 +85,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.riskDefinitions == domain0.riskDefinitions
-        d.jsonProfiles == domain0.jsonProfiles
+        d.profiles.first().items.first().name == "Meeting-Metadaten"
     }
 
     def 'domainTemplate with items'() {

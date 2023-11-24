@@ -22,13 +22,13 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 
 class VersioningMessageITSpec extends VeoSpringSpec {
@@ -37,7 +37,10 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     }
 
     @Autowired
-    ApplyJsonProfileUseCase applyProfileUseCase
+    GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase
+
+    @Autowired
+    ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase
 
     @Autowired
     StoredEventDataRepository storedEventRepository
@@ -63,7 +66,13 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             client = clientRepository.save(client)
             var dsgvo = client.domains.find { it.name == "DS-GVO" }
             def unit = unitDataRepository.save(newUnit(client))
-            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvo.id, new ProfileRef("exampleOrganization"), unit.id))
+            def profileId = dsgvo.profiles.find { it.name == "Beispielorganisation" }.id
+            var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId)
+                    ).references
+            applyProfileIncarnationDescriptionUseCase.execute(
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions)
+                    )
         }
 
         and: "fetching all messages"

@@ -362,14 +362,13 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
 
         when:
-        def result = parseJson(get("/domains/${domain.idAsString}"))
+        def result = parseJson(get("/domains/${domain.idAsString}/profiles"))
 
         then:
-        result.profiles.size() == 1
-        with(result.profiles.exampleOrganization) {
-            name == 'Beispieldaten'
-            description == 'Beispieldaten für den Datenschutz'
-            language == 'de_DE'
+        result.size() == 1
+        with(result.find { it.name == "Beispielorganisation" }) {
+            description == "So wird's gemacht"
+            language == "de_DE"
         }
     }
 

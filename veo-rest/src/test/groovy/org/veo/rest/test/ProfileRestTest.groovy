@@ -113,13 +113,13 @@ class ProfileRestTest extends VeoRestTest {
         ])
 
         when: "creating a domain template with a profile based on the unit"
+        post("/content-creation/domains/$newDomainId/profiles?unit=$unitId", [
+            name: "To serve man",
+            description: "It's a cookbook!",
+            language: "en_us",
+        ])
         def templateUri = post("/content-creation/domains/$newDomainId/template", [
             version: "1.0.0",
-            profiles: [
-                servers: [
-                    unitId: unitId
-                ]
-            ]
         ], 201, CONTENT_CREATOR).body.targetUri
         post("/domain-templates/"+uriToId(templateUri)+"/createdomains", null, 204, ADMIN)
 
@@ -127,13 +127,14 @@ class ProfileRestTest extends VeoRestTest {
         def secondaryClientDomainId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find {
             it.name == newDomainName
         }.id
+        def profileId = get("/domains/$secondaryClientDomainId/profiles", 200, SECONDARY_CLIENT_USER).body[0].id
         def targetUnitId = post("/units", [
             name: "profile target unit",
             domains: [
                 [targetUri: "/domains/$secondaryClientDomainId"]
             ],
         ], 201, SECONDARY_CLIENT_USER).body.resourceId
-        post("/domains/$secondaryClientDomainId/profiles/servers/units/$targetUnitId", null, 204, SECONDARY_CLIENT_USER)
+        post("/domains/$secondaryClientDomainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204, SECONDARY_CLIENT_USER)
         def appliedAssets = get("/assets?unit=$targetUnitId", 200,
                 SECONDARY_CLIENT_USER).body.items
 
@@ -171,9 +172,12 @@ class ProfileRestTest extends VeoRestTest {
     }
 
     def "applying absent profile yields error"() {
+        given:
+        def randomId = randomUUID().toString()
+
         expect:
-        post("/domains/$testDomainId/profiles/absent/units/$unitId", null, 404)
-                .body.message == "Profile 'absent' not found"
+        post("/domains/$testDomainId/profiles/$randomId/incarnation?unit=$unitId", null, 404)
+                .body.message == "Profile with ID $randomId not found"
     }
 
     def putElementTypeDefinitions(String domainId) {

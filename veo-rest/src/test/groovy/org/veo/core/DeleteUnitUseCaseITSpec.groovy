@@ -23,10 +23,11 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -41,7 +42,10 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     private ClientRepositoryImpl clientRepository
 
     @Autowired
-    private ApplyJsonProfileUseCase applyProfileUseCase
+    private GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase
+
+    @Autowired
+    private ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase
 
     @Autowired
     private UnitRepository unitRepository
@@ -58,9 +62,15 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         given: 'a unit with example elements'
         def client = createTestClient()
         var domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        client = clientRepository.getById(client.id)
         def unit = unitRepository.save(newUnit(client))
         executeInTransaction {
-            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, domain.id, new ProfileRef("exampleOrganization"), unit.id))
+            def profileId = domain.profiles.first().id
+            var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId)
+                    ).references
+            applyProfileIncarnationDescriptionUseCase.execute(
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions))
         }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
@@ -74,7 +84,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 32
             queryCounts.insert == 2
             queryCounts.update == 1
-            queryCounts.delete == 42
+            queryCounts.delete == 41
             queryCounts.time < 1000
             // 115 is the currently observed count of 105 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 115
