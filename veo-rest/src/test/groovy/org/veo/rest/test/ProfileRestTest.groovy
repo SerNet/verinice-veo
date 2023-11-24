@@ -128,7 +128,10 @@ class ProfileRestTest extends VeoRestTest {
             it.name == newDomainName
         }.id
         def targetUnitId = post("/units", [
-            name: "profile target unit"
+            name: "profile target unit",
+            domains: [
+                [targetUri: "/domains/$secondaryClientDomainId"]
+            ],
         ], 201, SECONDARY_CLIENT_USER).body.resourceId
         post("/domains/$secondaryClientDomainId/profiles/servers/units/$targetUnitId", null, 204, SECONDARY_CLIENT_USER)
         def appliedAssets = get("/assets?unit=$targetUnitId", 200,
