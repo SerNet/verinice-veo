@@ -62,7 +62,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
   @Query(
       """
         select d from #{#entityName} d
-          join fetch d.profileSet
+          left join fetch d.profiles
           join fetch d.riskDefinitionSet
           where d.owner.dbId = ?1 and d.active = true
       """)
@@ -71,7 +71,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
   @Query(
       """
         select d from #{#entityName} d
-          join fetch d.profileSet
+          left join fetch d.profiles
           join fetch d.riskDefinitionSet
           where d.dbId = ?1 and d.owner.dbId = ?2
       """)

@@ -88,7 +88,6 @@ import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCas
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
@@ -102,7 +101,6 @@ import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.core.usecase.service.TypedId;
-import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 
@@ -139,7 +137,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemUseCase getCatalogItemUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
-  private final ApplyJsonProfileUseCase applyJsonProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
   private final GetIncarnationConfigurationUseCase getIncarnationConfigurationUseCase;
   private final GetProfileItemsUseCase getProfileItemsUseCase;
@@ -501,32 +498,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             new GetCatalogItemsTypeCountUseCase.InputData(Key.uuidFrom(id), client),
             GetCatalogItemsTypeCountUseCase.OutputData::getResult)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
-  }
-
-  @PostMapping("/{id}/profiles/{profileKey}/units/{unitId}")
-  @Operation(
-      summary =
-          "Apply a profile to a unit. Adds all profile elements & risks to the unit. DEPRECATED: use POST "
-              + URL_BASE_PATH
-              + "/{domainId}/profiles/{profileId}/incarnation",
-      deprecated = true)
-  @ApiResponse(responseCode = "204", description = "Profile applied")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Unit not found")
-  @Deprecated
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyJsonProfile(
-      @Parameter(required = true, hidden = true) Authentication auth,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
-      @PathVariable String profileKey,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
-    return useCaseInteractor.execute(
-        applyJsonProfileUseCase,
-        new ApplyJsonProfileUseCase.InputData(
-            getAuthenticatedClient(auth).getId(),
-            Key.uuidFrom(id),
-            ProfileReferenceFactoryImpl.getInstance().createProfileRef(profileKey),
-            Key.uuidFrom(unitId)),
-        out -> ResponseEntity.noContent().build());
   }
 
   @PostMapping("/{id}/profiles/{profileId}/incarnation")

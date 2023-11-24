@@ -203,7 +203,6 @@ public final class DtoToEntityTransformer {
         source.getCatalogItems().stream()
             .map(c -> transformDto2CatalogItem(c, idRefResolver))
             .collect(Collectors.toSet()));
-    target.setProfiles(copyOf(source.getJsonProfiles()));
     target.setProfiles(
         source.getProfilesNew().stream()
             .map(profileDto -> mapProfile(profileDto, target, idRefResolver))

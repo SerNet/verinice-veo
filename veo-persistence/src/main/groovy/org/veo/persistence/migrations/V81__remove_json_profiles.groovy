@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Urs Zeidler
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,35 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.profile;
+package org.veo.persistence.migrations
 
-import java.util.Set;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import jakarta.validation.constraints.Size;
+import groovy.sql.Sql
 
-import org.veo.core.entity.Constraints;
+class V81__remove_json_profiles extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        alter table domain
+            drop column profile_set_id;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+        alter table domaintemplate
+            drop column profile_set_id;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProfileDefinition {
-  static final int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-  static final int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
-  static final int LANGUAGE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
-
-  @Size(max = DESCRIPTION_MAX_LENGTH)
-  private String description;
-
-  @Size(max = LANGUAGE_MAX_LENGTH)
-  private String language;
-
-  private Set<?> elements;
-  private Set<?> risks;
+        drop table profile_set;
+""")
+    }
 }

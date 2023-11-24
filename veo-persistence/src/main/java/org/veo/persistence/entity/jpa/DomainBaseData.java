@@ -45,7 +45,6 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.inspection.Inspection;
-import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 
@@ -173,21 +172,6 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       throw new UnprocessableDataException(
           "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
     }
-  }
-
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "profile_set_id")
-  @Valid
-  private ProfileSetData profileSet = new ProfileSetData();
-
-  @Override
-  public Map<String, ProfileDefinition> getJsonProfiles() {
-    return profileSet.getProfiles();
-  }
-
-  @Override
-  public void setProfiles(Map<String, ProfileDefinition> profiles) {
-    profileSet.setProfiles(profiles);
   }
 
   public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {

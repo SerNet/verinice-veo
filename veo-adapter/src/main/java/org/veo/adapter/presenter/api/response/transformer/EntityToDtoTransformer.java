@@ -373,7 +373,6 @@ public final class EntityToDtoTransformer {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setDecisions(source.getDecisions());
-    target.setJsonProfiles(Map.copyOf(source.getJsonProfiles()));
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
@@ -403,7 +402,6 @@ public final class EntityToDtoTransformer {
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
-    target.setJsonProfiles(Map.copyOf(source.getJsonProfiles()));
     target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
 
     mapVersionedSelfReferencingProperties(source, target);

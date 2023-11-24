@@ -44,7 +44,7 @@ public interface DomainTemplateDataRepository
   @Query(
       """
         select dt from #{#entityName} dt
-          join fetch dt.profileSet
+          left join fetch dt.profiles
           join fetch dt.riskDefinitionSet
           where dt.dbId = ?1
       """)

@@ -24,14 +24,8 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -62,15 +56,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
-import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
@@ -86,7 +76,6 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.inspection.Inspection;
-import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -460,12 +449,9 @@ public class ContentCreationController extends AbstractVeoController {
                 client,
                 Key.uuidFrom(unitId),
                 null,
-                new ProfileDefinition(
-                    createParameter.getName(),
-                    createParameter.getDescription(),
-                    createParameter.getLanguage(),
-                    null,
-                    null)),
+                createParameter.getName(),
+                createParameter.getDescription(),
+                createParameter.getLanguage()),
             out -> IdRef.from(out.getProfile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -496,12 +482,9 @@ public class ContentCreationController extends AbstractVeoController {
             client,
             Key.uuidFrom(unitId),
             Key.uuidFrom(profileId),
-            new ProfileDefinition(
-                createParameter.getName(),
-                createParameter.getDescription(),
-                createParameter.getLanguage(),
-                null,
-                null)),
+            createParameter.getName(),
+            createParameter.getDescription(),
+            createParameter.getLanguage()),
         out -> RestApiResponse.noContent());
   }
 
@@ -548,10 +531,7 @@ public class ContentCreationController extends AbstractVeoController {
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id),
-                parseVersion(createParameter.getVersion()),
-                client,
-                domainTemplateId -> buildProfiles(createParameter, id, domainTemplateId)),
+                Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -613,54 +593,6 @@ public class ContentCreationController extends AbstractVeoController {
           var body = CreateOutputMapper.map(out.getDomainTemplate());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
-  }
-
-  // TODO VEO-2010 this is all so hideous
-  private Map<String, ProfileDefinition> buildProfiles(
-      CreateDomainTemplateFromDomainParameterDto createParameter,
-      String domainId,
-      Key<UUID> domainTemplateId) {
-    Map<String, ProfileDefinition> profiles = new HashMap<>();
-
-    createParameter
-        .getProfiles()
-        .forEach(
-            (name, creationParameters) -> {
-              try {
-                UnitDumpDto dump =
-                    useCaseInteractor
-                        .execute(
-                            getUnitDumpUseCase,
-                            (Supplier<GetUnitDumpUseCase.InputData>)
-                                () ->
-                                    UnitDumpMapper.mapInput(
-                                        creationParameters.getUnitId(), domainId),
-                            out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
-                        .get();
-                Set<AbstractElementDto> elements = dump.getElements();
-                elements.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
-                Set<AbstractRiskDto> risks = dump.getRisks();
-                risks.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
-
-                log.info(
-                    "dump size, elements:{} risks:{}",
-                    dump.getElements().size(),
-                    dump.getRisks().size());
-                profiles.put(
-                    name,
-                    new ProfileDefinition(
-                        creationParameters.getName(),
-                        creationParameters.getDescription(),
-                        creationParameters.getLanguage(),
-                        elements,
-                        risks));
-              } catch (InterruptedException ex) {
-                throw new InternalProccesingException("Internal error", ex);
-              } catch (ExecutionException ex) {
-                if (ex.getCause() instanceof RuntimeException c) throw c;
-              }
-            });
-    return profiles;
   }
 
   @InitBinder

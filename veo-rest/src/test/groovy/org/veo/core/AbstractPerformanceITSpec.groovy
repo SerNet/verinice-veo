@@ -20,7 +20,6 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 
-import org.veo.persistence.entity.jpa.ProfileSetData
 import org.veo.persistence.entity.jpa.RiskDefinitionSetData
 import org.veo.persistence.entity.jpa.StoredEventData
 
@@ -43,7 +42,6 @@ abstract class AbstractPerformanceITSpec extends VeoSpringSpec {
      */
     def setup() {
         executeInTransaction {
-            resetSequence(ProfileSetData)
             resetSequence(RiskDefinitionSetData)
             resetSequence(StoredEventData)
         }

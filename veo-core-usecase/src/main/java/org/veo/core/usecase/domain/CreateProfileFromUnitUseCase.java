@@ -33,7 +33,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
@@ -76,9 +75,9 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
-    profile.setName(input.profileDefinition.getName());
-    profile.setDescription(input.getProfileDefinition().getDescription());
-    profile.setLanguage(input.profileDefinition.getLanguage());
+    profile.setName(input.getName());
+    profile.setDescription(input.getDescription());
+    profile.setLanguage(input.getLanguage());
 
     if (input.unitId != null) {
       cleanProfile(profile);
@@ -127,7 +126,9 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     Client authenticatedClient;
     Key<UUID> unitId;
     Key<UUID> profileId;
-    ProfileDefinition profileDefinition;
+    String name;
+    String description;
+    String language;
   }
 
   @Valid

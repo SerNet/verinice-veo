@@ -26,14 +26,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
-import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -81,14 +78,6 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
 
   @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
-
-  @Schema(
-      description =
-          "The profiles that belong to this domain template keyed by their symbolic names.",
-      requiredMode = REQUIRED)
-  @JsonProperty("profiles")
-  @Deprecated
-  private Map<String, ProfileDefinition> jsonProfiles = new HashMap<>();
 
   @Schema(
       description = "The definitions of domain-specific element properties",

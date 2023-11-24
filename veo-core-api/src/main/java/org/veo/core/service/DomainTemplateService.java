@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,11 +25,8 @@ import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.profile.ProfileRef;
 
 /**
  * A {@link DomainTemplate} exist in the system space and is not directly bound to any client. This
@@ -49,8 +45,6 @@ public interface DomainTemplateService {
    * @throws NotFoundException when the template doesn't exist
    */
   Domain createDomain(Client client, String templateId);
-
-  Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey, Unit unit);
 
   ExportDto exportDomain(Domain domain);
 

@@ -28,8 +28,6 @@ import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
-import org.veo.core.entity.profile.ProfileDefinition;
-import org.veo.core.entity.profile.ProfileRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface DomainBase extends Nameable, Identifiable, Versioned {
@@ -88,16 +86,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
   default Optional<RiskDefinition> getRiskDefinition(Key<String> riskDefinitionId) {
     return getRiskDefinition(riskDefinitionId.value());
   }
-
-  @Deprecated
-  Map<String, ProfileDefinition> getJsonProfiles();
-
-  default Optional<ProfileDefinition> findProfile(ProfileRef ref) {
-    return Optional.ofNullable(getJsonProfiles().get(ref.getKeyRef()));
-  }
-
-  @Deprecated
-  void setProfiles(Map<String, ProfileDefinition> profiles);
 
   Set<Profile> getProfiles();
 

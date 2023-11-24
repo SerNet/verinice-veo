@@ -17,38 +17,24 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.IdRefResolvingFactory;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.service.InternalDataCorruptionException;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.profile.ProfileDefinition;
-import org.veo.core.entity.profile.ProfileRef;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -63,11 +49,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private final DomainTemplateRepository domainTemplateRepository;
   private final EntityToDtoTransformer dtoTransformer;
-  private final EntityFactory factory;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
-
-  private final ReferenceAssembler assembler;
-  private final ObjectMapper objectMapper;
   private final IdentifiableFactory identifiableFactory;
   private final EntityFactory entityFactory;
   private final EntityStateMapper entityStateMapper;
@@ -79,17 +61,13 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       IdentifiableFactory identifiableFactory,
       DomainTemplateIdGenerator domainTemplateIdGenerator,
       ReferenceAssembler referenceAssembler,
-      ObjectMapper objectMapper,
       EntityStateMapper entityStateMapper) {
     this.domainTemplateRepository = domainTemplateRepository;
-    this.factory = factory;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
     this.identifiableFactory = identifiableFactory;
     this.entityFactory = factory;
     this.entityStateMapper = entityStateMapper;
-    assembler = referenceAssembler;
-    dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
-    this.objectMapper = objectMapper;
+    dtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
   }
 
   @Override
@@ -132,50 +110,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   @Override
-  public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey, Unit unit) {
-    return domain
-        .findProfile(profileKey)
-        .map(profile -> createElementsFromProfile(domain, profile, unit))
-        .orElseThrow(() -> new NotFoundException("Profile '%s' not found", profileKey.getKeyRef()));
-  }
-
-  private Collection<Element> createElements(
-      Domain domain,
-      Set<AbstractElementDto> profileElements,
-      Set<AbstractRiskDto> profileRisks,
-      Unit unit) {
-    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
-    resolvingFactory.setGlobalDomain(domain);
-    resolvingFactory.setGlobalUnit(unit);
-    var transformer = new DtoToEntityTransformer(factory, resolvingFactory, entityStateMapper);
-    var elements =
-        profileElements.stream()
-            .map(e -> transformer.transformDto2Element(e, resolvingFactory))
-            .toList();
-    profileRisks.forEach(
-        r -> {
-          log.debug("Transforming risk {}", r);
-          var risk = transformer.transformDto2Risk(r, resolvingFactory);
-          log.debug("Transformed risk: {}", risk);
-        });
-    return elements;
-  }
-
-  private Collection<Element> createElementsFromProfile(
-      Domain domain, ProfileDefinition profileDefinition, Unit unit) {
-    try {
-      return createElements(
-          domain,
-          parseJsonObjects(profileDefinition.getElements(), new TypeReference<>() {}),
-          parseJsonObjects(profileDefinition.getRisks(), new TypeReference<>() {}),
-          unit);
-    } catch (IOException e) {
-      log.error("Error reading profile from domain template", e);
-      throw new InternalDataCorruptionException("Error reading profile from domain template.", e);
-    }
-  }
-
-  @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
     ExportDomainTemplateDto domainDto = dtoTransformer.transformDomainTemplate2Dto(domain);
 
@@ -193,11 +127,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     newDomainTemplate.setId(domainTemplateKey);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
-  }
-
-  private <T> Set<T> parseJsonObjects(Set<?> objects, TypeReference<Set<T>> typeRef)
-      throws JsonProcessingException {
-    return objectMapper.readValue(objectMapper.writeValueAsString(objects), typeRef);
   }
 
   private String createDomainTemplateId(Domain domain) {

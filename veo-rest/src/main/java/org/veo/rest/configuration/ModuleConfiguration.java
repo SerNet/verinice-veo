@@ -37,10 +37,8 @@ import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.SchemaReplacer;
@@ -48,19 +46,13 @@ import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
-import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
-import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
-import org.veo.adapter.service.domaintemplate.dto.ExportElementDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportRiskDto;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
@@ -132,7 +124,6 @@ import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
-import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
@@ -151,7 +142,6 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.GetInspectionUseCase;
 import org.veo.core.usecase.domain.GetInspectionsUseCase;
-import org.veo.core.usecase.domain.ProfileApplier;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
@@ -222,7 +212,6 @@ import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
-import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
@@ -822,17 +811,6 @@ public class ModuleConfiguration {
       DomainTemplateIdGenerator domainTemplateIdGenerator,
       ReferenceAssembler referenceAssembler,
       EventPublisher eventPublisher) {
-
-    ObjectMapper objectMapper =
-        new ObjectMapper()
-            .addMixIn(AbstractRiskDto.class, ExportRiskDto.class)
-            .addMixIn(AbstractElementDto.class, ExportElementDto.class)
-            .registerModule(
-                new SimpleModule()
-                    .addDeserializer(IdRef.class, new ReferenceDeserializer(referenceAssembler)))
-            .registerModule(new ReferenceSerializationModule())
-            .registerModule(blackbirdModule())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return new DomainTemplateServiceImpl(
         domainTemplateRepository,
         factory,
@@ -840,7 +818,6 @@ public class ModuleConfiguration {
         identifiableFactory,
         domainTemplateIdGenerator,
         referenceAssembler,
-        objectMapper,
         getEntityStateMapper(eventPublisher));
   }
 
@@ -1138,22 +1115,6 @@ public class ModuleConfiguration {
       UnitRepository unitRepository,
       GenericElementRepository elementRepository) {
     return new GetElementStatusCountUseCase(domainRepository, unitRepository, elementRepository);
-  }
-
-  @Bean
-  ApplyJsonProfileUseCase applyProfileUseCase(
-      DomainRepository domainRepository,
-      ProfileApplier profileApplier,
-      UnitRepository unitRepository) {
-    return new ApplyJsonProfileUseCase(domainRepository, profileApplier, unitRepository);
-  }
-
-  @Bean
-  ProfileApplier profileApplier(
-      DomainTemplateService domainTemplateService,
-      UnitRepository unitRepository,
-      ElementBatchCreator elementBatchCreator) {
-    return new ProfileApplier(domainTemplateService, unitRepository, elementBatchCreator);
   }
 
   @Bean
