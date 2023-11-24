@@ -151,9 +151,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Domain created")
   @ApiResponse(responseCode = "409", description = "Templates with name already exist")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
-      Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @Valid @RequestBody
-          CreateDomainDto domainDto) {
+      Authentication auth, @Valid @RequestBody CreateDomainDto domainDto) {
     return useCaseInteractor.execute(
         createDomainUseCase,
         new CreateDomainUseCase.InputData(
