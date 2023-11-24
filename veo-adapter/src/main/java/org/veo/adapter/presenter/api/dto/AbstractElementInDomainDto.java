@@ -83,13 +83,13 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
 
   @JsonIgnore private TypedId<Domain> domain;
 
-  @Size(min = 1, max = NAME_MAX_LENGTH)
+  @Size(max = NAME_MAX_LENGTH)
   private String name;
 
-  @Size(min = 1, max = ABBREVIATION_MAX_LENGTH)
+  @Size(max = ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
-  @Size(min = 1, max = DESCRIPTION_MAX_LENGTH)
+  @Size(max = DESCRIPTION_MAX_LENGTH)
   private String description;
 
   @JsonProperty(access = READ_ONLY)

@@ -156,4 +156,24 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         notThrown(Exception)
     }
+
+    @WithUserDetails("user@domain.example")
+    def "empty text values are ok"() {
+        when:
+        def assetId = parseJson(post("/domains/$domainId/assets", [
+            name: "",
+            description: "",
+            abbreviation: "",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ])).resourceId
+
+        then:
+        with(parseJson(get("/domains/$domainId/assets/$assetId"))) {
+            name == ""
+            description == ""
+            abbreviation == ""
+        }
+    }
 }
