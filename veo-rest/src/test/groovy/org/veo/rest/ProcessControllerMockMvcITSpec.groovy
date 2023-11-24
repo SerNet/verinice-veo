@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -933,8 +934,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "inspection for invalid process id returns 404"() {
-        expect:
+        when:
         get("/processes/helloworld/inspection?domain=${dsgvoDomain.idAsString}", 404)
+
+        then:
+        thrown(NoResourceFoundException)
     }
 
     @WithUserDetails("user@domain.example")
