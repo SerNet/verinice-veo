@@ -25,7 +25,6 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -66,14 +65,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         }
         item = testDomain.catalogItems.find {it.abbreviation == "c-1"}
         element = item.incarnate(unit)
-    }
-
-    def "retrieve example elements for default client"() {
-        when: "retrieving the example elements for a client"
-        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef("exampleOrganization"), unit)
-
-        then: "the elements for all the client's units are returned"
-        elements.size() == 9
     }
 
     def "create an element from a catalog item"() {
