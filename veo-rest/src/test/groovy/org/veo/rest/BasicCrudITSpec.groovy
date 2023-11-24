@@ -40,28 +40,23 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     Client client
     String domainId
+    String unitId
 
     def setup() {
         client = createTestClient()
         domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        unitId = parseJson(post('/units', [
+            name: 'My CRUD unit',
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ]
+        ])).resourceId
     }
 
     @WithUserDetails("user@domain.example")
     def "Basic CRUD example"() {
         when:
-        def result = parseJson(post('/units', [
-            name: 'My CRUD unit',
-            domains: [
-                [targetUri: "/domains/$domainId"]
-            ]
-        ]))
-
-        then:
-        result != null
-
-        when:
-        def unitId = result.resourceId
-        result = parseJson(post('/assets', [
+        def result = parseJson(post('/assets', [
             name : 'My CRUD asset',
             domains: [
                 (domainId): [
