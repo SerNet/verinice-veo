@@ -70,23 +70,23 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
             });
 
     if (element instanceof CompositeElement<?> composite) {
-      composite
-          .getParts()
+      composite.getParts().stream()
+          .filter(p -> p.isAssociatedWithDomain(domain))
           .forEach(
               target -> {
                 T partCatalogItem = elementsToCatalogItems.get(target);
                 partCatalogItem.addTailoringReference(TailoringReferenceType.COMPOSITE, item);
               });
-      composite
-          .getComposites()
+      composite.getComposites().stream()
+          .filter(c -> c.isAssociatedWithDomain(domain))
           .forEach(
               target -> {
                 T compositeCatalogItem = elementsToCatalogItems.get(target);
                 compositeCatalogItem.addTailoringReference(TailoringReferenceType.PART, item);
               });
     } else if (element instanceof Scope scope) {
-      scope
-          .getMembers()
+      scope.getMembers().stream()
+          .filter(m -> m.isAssociatedWithDomain(domain))
           .forEach(
               member -> {
                 T memberAsCatalogItem = elementsToCatalogItems.get(member);
@@ -96,8 +96,8 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
     }
 
     if (element instanceof RiskAffected<?, ?> risky) {
-      risky
-          .getRisks()
+      risky.getRisks().stream()
+          .filter(r -> r.getScenario().isAssociatedWithDomain(domain))
           .forEach(
               r ->
                   item.addRiskTailoringReference(
