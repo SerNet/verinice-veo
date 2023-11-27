@@ -44,6 +44,15 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         expect:
         typeExtractor.parseDtoType(uri).get() == dtoType
 
+        and:
+        typeExtractor.parseDtoType("/veo" + uri).get() == dtoType
+        typeExtractor.parseDtoType("/apps/veo" + uri).get() == dtoType
+
+        and:
+        typeExtractor.parseDtoType("http://localhost:9000" + uri).get() == dtoType
+        typeExtractor.parseDtoType("http://localhost:9000/veo" + uri).get() == dtoType
+        typeExtractor.parseDtoType("http://localhost:9000/apps/veo" + uri).get() == dtoType
+
         where:
         uri                                                                                         | dtoType
         '/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | FullAssetDto
@@ -62,7 +71,6 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
         '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | LegacyCatalogItemDto
         '/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                        | LegacyCatalogItemDto
-        '/veo/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                    | LegacyCatalogItemDto
     }
 
     def "The invalid URI #uri is rejected"() {
@@ -77,6 +85,6 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         uri                                                                                                                                       | message
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f/templates/28df429d-da5e-431a-a2d8-488c0741fb9f'                                            | '.*No mapping found for URI.*'
         '/clients/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                                                           | '.*No mapping found for URI.*'
-        'http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'  | '.*No mapping found for URI.*'
+        'http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/nothing'  | '.*No mapping found for URI.*'
     }
 }
