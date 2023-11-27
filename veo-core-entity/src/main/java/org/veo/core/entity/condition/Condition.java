@@ -28,7 +28,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +37,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class Condition {
   @Valid @NotNull private InputProvider inputProvider;
   @Valid @NotNull private InputMatcher inputMatcher;
