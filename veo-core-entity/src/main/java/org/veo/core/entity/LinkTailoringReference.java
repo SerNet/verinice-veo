@@ -20,9 +20,11 @@ package org.veo.core.entity;
 import java.util.Map;
 
 /**
- * This reference type is used to describe the {@link CustomLink} of an {@link EntityLayerSupertype}
- * which will be added to it when this {@link CatalogItem} is applied. There are currently two kinds
- * {@link TailoringReferenceType#LINK} and {@link TailoringReferenceType#LINK_EXTERNAL}.
+ * This reference type is used to describe a {@link CustomLink} on an {@link Element}. When this is
+ * applied with {@link TailoringReferenceType#LINK}, a custom link is created from the element
+ * describes by the owning template item to the element described by the target template item. When
+ * this is applied with {@link TailoringReferenceType#LINK_EXTERNAL}, a custom link is created in
+ * the opposite direction.
  */
 public interface LinkTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
 

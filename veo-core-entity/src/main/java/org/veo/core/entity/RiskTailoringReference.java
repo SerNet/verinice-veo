@@ -21,7 +21,10 @@ import java.util.Map;
 
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-/** owner is risk-affected, target is scenario * */
+/**
+ * This reference type describes an {@link AbstractRisk}. The owning template item describes the
+ * {@link RiskAffected} and the target template item describes the risk's {@link Scenario}.
+ */
 public interface RiskTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
 
   void setMitigation(T mitigation);
