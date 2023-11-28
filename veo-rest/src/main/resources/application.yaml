@@ -31,10 +31,6 @@ veo:
     consume:
       dlx: 'veo_dlx'
       autoDelete: 'false'
-  threads:
-    corePoolSize: 2
-    maxPoolSize: 4
-    queueCapacity: 500
   messages:
     deletion:
       delayMs: 500
@@ -44,10 +40,6 @@ veo:
       processingChunkSize: 5000
 
 spring:
-  task:
-    scheduling:
-      pool:
-        size: 5
   data:
     rest:
       detection-strategy: annotated
@@ -118,6 +110,9 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  threads:
+    virtual:
+      enabled: true
 
 springdoc:
   swagger-ui:

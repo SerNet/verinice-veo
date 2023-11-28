@@ -20,9 +20,8 @@ package org.veo.rest;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,7 +55,7 @@ public class AdminController {
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
-  private final TaskExecutor threadPoolTaskExecutor;
+  private final AsyncTaskExecutor taskExecutor;
 
   public static final String URL_BASE_PATH = "/admin";
 
@@ -91,15 +90,14 @@ public class AdminController {
     log.info(
         "Submit updateAllClientDomainsUseCase task for domainTemplate: {}",
         id.replaceAll("[\r\n]", ""));
-    threadPoolTaskExecutor.execute(
-        new DelegatingSecurityContextRunnable(
-            // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the task as event
-            () -> {
-              log.info("Start of updateAllClientDomainsUseCase task");
-              updateAllClientDomainsUseCase.executeAndTransformResult(
-                  new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
-              log.info("end of updateAllClientDomainsUseCase task");
-            }));
+    taskExecutor.execute(
+        // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the task as event
+        () -> {
+          log.info("Start of updateAllClientDomainsUseCase task");
+          updateAllClientDomainsUseCase.executeAndTransformResult(
+              new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
+          log.info("end of updateAllClientDomainsUseCase task");
+        });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
   }
 }

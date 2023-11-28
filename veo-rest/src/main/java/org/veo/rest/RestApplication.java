@@ -20,17 +20,16 @@ package org.veo.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import org.veo.SpringPropertyLogger;
@@ -109,21 +108,12 @@ public class RestApplication {
   }
 
   @Bean
-  public TaskExecutor threadPoolTaskExecutor(
-      @Value("${veo.threads.corePoolSize:2}") int corePoolSize,
-      @Value("${veo.threads.maxPoolSize:4}") int maxPoolSize,
-      @Value("${veo.threads.queueCapacity:500}") int queueCapacity) {
-    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(corePoolSize);
-    executor.setMaxPoolSize(maxPoolSize);
-    executor.setQueueCapacity(queueCapacity);
-    executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
-    executor.initialize();
-    return executor;
-  }
-
-  @Bean
-  public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(ThreadPoolTaskExecutor delegate) {
+  public DelegatingSecurityContextAsyncTaskExecutor taskExecutor() {
+    AsyncTaskExecutor delegate =
+        new SimpleAsyncTaskExecutorBuilder()
+            .virtualThreads(true)
+            .threadNamePrefix(THREAD_NAME_PREFIX)
+            .build();
     return new DelegatingSecurityContextAsyncTaskExecutor(delegate);
   }
 
