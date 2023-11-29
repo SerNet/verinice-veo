@@ -23,8 +23,11 @@ import static java.util.stream.Collectors.toSet;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,6 +52,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
@@ -56,6 +60,7 @@ import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategorizedRiskValueProvider;
+import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
@@ -401,5 +406,49 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     return findRiskAspectForDefinition(riskDefinition, domain)
         .map(riskAspects::remove)
         .orElse(false);
+  }
+
+  @Override
+  public Map<RiskDefinitionRef, RiskTailoringReferenceValues> getTailoringReferenceValues(
+      Domain domain) {
+    return getRiskDefinitions(domain).stream()
+        .collect(
+            Collectors.toMap(
+                Function.identity(),
+                rd -> {
+                  var probability = getProbabilityProvider(rd, domain);
+                  return new RiskTailoringReferenceValues(
+                      probability.getSpecificProbability(),
+                      probability.getSpecificProbabilityExplanation(),
+                      map(getRiskProvider(rd, domain), getImpactProvider(rd, domain)));
+                }));
+  }
+
+  @Override
+  public void setValues(
+      Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions, Domain domain) {
+    removeRiskAspects(domain);
+    riskDefinitions.forEach(
+        (rd, values) -> {
+          var aspect = new RiskValuesAspectData(domain, this, rd);
+          riskAspects.add(aspect);
+          aspect.setValues(values);
+        });
+  }
+
+  private Map<CategoryRef, RiskTailoringReferenceValues.CategoryValues> map(
+      CategorizedRiskValueProvider riskProvider, CategorizedImpactValueProvider impactProvider) {
+    return riskProvider.getAvailableCategories().stream()
+        .collect(
+            Collectors.toMap(
+                Function.identity(),
+                category ->
+                    new RiskTailoringReferenceValues.CategoryValues(
+                        impactProvider.getSpecificImpact(category),
+                        impactProvider.getSpecificImpactExplanation(category),
+                        riskProvider.getUserDefinedResidualRisk(category),
+                        riskProvider.getResidualRiskExplanation(category),
+                        riskProvider.getRiskTreatments(category),
+                        riskProvider.getRiskTreatmentExplanation(category))));
   }
 }

@@ -37,6 +37,7 @@ import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.aspects.RiskValuesAspect;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.risk.CategoryRef;
@@ -157,5 +158,21 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   @Override
   public List<DeterminedRisk> getCategorizedRisks() {
     return riskCategories.stream().map(DeterminedRisk.class::cast).toList();
+  }
+
+  public void setValues(RiskTailoringReferenceValues values) {
+    setSpecificProbability(values.specificProbability());
+    setSpecificProbabilityExplanation(values.specificProbabilityExplanation());
+    values
+        .categories()
+        .forEach(
+            (category, categoryValues) -> {
+              setSpecificImpact(category, categoryValues.specificImpact());
+              setSpecificImpactExplanation(category, categoryValues.specificImpactExplanation());
+              setUserDefinedResidualRisk(category, categoryValues.userDefinedResidualRisk());
+              setResidualRiskExplanation(category, categoryValues.residualRiskExplanation());
+              setRiskTreatments(category, categoryValues.riskTreatments());
+              setRiskTreatmentExplanation(category, categoryValues.riskTreatmentExplanation());
+            });
   }
 }

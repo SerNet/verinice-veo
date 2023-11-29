@@ -33,11 +33,13 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.RiskTailoringReference;
+import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -126,11 +128,13 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
       TailoringReferenceType referenceType,
       T target,
       @Nullable T riskOwner,
-      @Nullable T mitigation) {
+      @Nullable T mitigation,
+      Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions) {
     var ref = createRiskTailoringReference();
     add(ref, referenceType, target);
     ref.setRiskOwner(riskOwner);
     ref.setMitigation(mitigation);
+    ref.setRiskDefinitions(riskDefinitions);
     return ref;
   }
 

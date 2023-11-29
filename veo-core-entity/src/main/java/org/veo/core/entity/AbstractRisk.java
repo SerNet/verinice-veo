@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -117,4 +118,9 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
   }
 
   void transferToDomain(Domain oldDomain, Domain newDomain);
+
+  Map<RiskDefinitionRef, RiskTailoringReferenceValues> getTailoringReferenceValues(Domain domain);
+
+  void setValues(
+      Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions, Domain domain);
 }

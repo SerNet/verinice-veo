@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
+import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -39,6 +41,6 @@ public class RiskTailoringReferenceDto<T extends TemplateItem<T>> extends Tailor
   private IdRef<T> mitigation;
   private IdRef<T> riskOwner;
 
-  @Schema(description = "The properties of the risk element.", example = " name: 'value'")
-  private Map<String, Object> riskAspects = Collections.emptyMap();
+  @Schema(description = "Keys are risk definition IDs, values hold risk values")
+  private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions = new HashMap<>();
 }

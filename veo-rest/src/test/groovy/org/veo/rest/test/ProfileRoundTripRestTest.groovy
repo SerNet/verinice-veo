@@ -128,7 +128,30 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             mitigation: [targetUri: "/controls/$originalControlId"],
             domains: [
                 (copyOfTestDomainId): [
-                    reference: [targetUri: "/domains/$copyOfTestDomainId"]
+                    reference: [targetUri: "/domains/$copyOfTestDomainId"],
+                    riskDefinitions: [
+                        riskyDef: [
+                            probability: [
+                                specificProbability: 1,
+                                specificProbabilityExplanation: "The risk owner is a control freak who uses freaky controls, which mitigates the likelihood of this risk."
+                            ],
+                            impactValues: [
+                                [
+                                    category: "C",
+                                    specificImpact: 2,
+                                    specificImpactExplanation: "Because I say so."
+                                ]
+                            ],
+                            riskValues: [
+                                [
+                                    category: "C",
+                                    userDefinedResidualRisk: 3,
+                                    residualRiskExplanation: "It's gonna be terrible.",
+                                    riskTreatments: ["RISK_TREATMENT_AVOIDANCE"],
+                                ]
+                            ],
+                        ]
+                    ]
                 ]
             ]
         ])
@@ -193,6 +216,19 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 get(0).riskOwner.id != originalPersonId
                 get(0).mitigation.displayName.endsWith("freaky control")
                 get(0).mitigation.id != originalControlId
+                with(get(0).domains[newDomainInOtherClientId].riskDefinitions.riskyDef) {
+                    probability.specificProbability == 1
+                    probability.specificProbabilityExplanation == "The risk owner is a control freak who uses freaky controls, which mitigates the likelihood of this risk."
+                    with(impactValues.find { it.category == "C" }) {
+                        specificImpact == 2
+                        specificImpactExplanation == "Because I say so."
+                    }
+                    with(riskValues.find { it.category == "C" }) {
+                        userDefinedResidualRisk == 3
+                        residualRiskExplanation == "It's gonna be terrible."
+                        riskTreatments == ["RISK_TREATMENT_AVOIDANCE"]
+                    }
+                }
             }
         }
         with(get("/domains/$newDomainInOtherClientId/scenarios", 200, SECONDARY_CLIENT_USER).body.items) {

@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable, Versioned {
 
@@ -109,5 +110,6 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
       TailoringReferenceType referenceType,
       T target,
       @Nullable T riskOwner,
-      @Nullable T mitigation);
+      @Nullable T mitigation,
+      Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions);
 }

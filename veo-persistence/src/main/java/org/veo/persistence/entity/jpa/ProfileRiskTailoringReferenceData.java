@@ -17,12 +17,21 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
+import org.hibernate.annotations.Type;
+
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskTailoringReference;
+import org.veo.core.entity.RiskTailoringReferenceValues;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,4 +47,13 @@ public class ProfileRiskTailoringReferenceData extends ProfileTailoringReference
 
   @ManyToOne(targetEntity = ProfileItemData.class)
   private ProfileItem mitigation;
+
+  @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
+  private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions;
+
+  public void setRiskDefinitions(
+      Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions) {
+    this.riskDefinitions = new HashMap<>(riskDefinitions);
+  }
 }

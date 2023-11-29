@@ -87,6 +87,7 @@ public abstract class AbstractTemplateItemDto<T extends TemplateItem<T>>
       Optional.ofNullable(riskSource.getRiskOwner())
           .map(p -> IdRef.from(p, uriAssembler))
           .ifPresent(riskRefDto::setRiskOwner);
+      riskRefDto.setRiskDefinitions(riskSource.getRiskDefinitions());
       return riskRefDto;
     }
     return new TailoringReferenceDto<>();

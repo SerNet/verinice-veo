@@ -247,7 +247,8 @@ public final class DtoToEntityTransformer {
           source.getReferenceType(),
           targetItem,
           Optional.ofNullable(riskDto.getRiskOwner()).map(idRefResolver::resolve).orElse(null),
-          Optional.ofNullable(riskDto.getMitigation()).map(idRefResolver::resolve).orElse(null));
+          Optional.ofNullable(riskDto.getMitigation()).map(idRefResolver::resolve).orElse(null),
+          riskDto.getRiskDefinitions());
     } else {
       owner.addTailoringReference(source.getReferenceType(), targetItem);
     }

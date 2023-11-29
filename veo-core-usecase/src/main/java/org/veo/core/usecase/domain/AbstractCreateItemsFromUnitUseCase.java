@@ -108,7 +108,8 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
                           .orElse(null),
                       Optional.ofNullable(r.getMitigation())
                           .map(elementsToCatalogItems::get)
-                          .orElse(null)));
+                          .orElse(null),
+                      r.getTailoringReferenceValues(domain)));
     }
   }
 }

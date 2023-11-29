@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Urs Zeidler
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.migrations
 
-import java.util.Map;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.risk.RiskDefinitionRef;
+import groovy.sql.Sql
 
-/** owner is risk-affected, target is scenario * */
-public interface RiskTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
-
-  void setMitigation(T mitigation);
-
-  T getMitigation();
-
-  void setRiskOwner(T riskOwner);
-
-  T getRiskOwner();
-
-  Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();
-
-  void setRiskDefinitions(Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions);
+class V76__add_tailoring_reference_risk_values extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        alter table profile_tailoring_reference
+            add column risk_definitions jsonb not null default '{}'::jsonb;
+""")
+    }
 }

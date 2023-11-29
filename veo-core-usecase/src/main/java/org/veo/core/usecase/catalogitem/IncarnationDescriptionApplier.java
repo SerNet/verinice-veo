@@ -272,6 +272,7 @@ public class IncarnationDescriptionApplier {
             .map(elementsByItem::get)
             .map(Control.class::cast)
             .ifPresent(risk::mitigate);
+        risk.setValues(riskTailoringReference.getRiskDefinitions(), domain);
       }
     } else
       throw new ModelConsistencyException(
