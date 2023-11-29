@@ -459,6 +459,16 @@
                   "description": ""
                 }
               }
+            },
+            {
+              "ordinalValue": 2,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
             }
           ],
           "valueMatrix": [
@@ -488,6 +498,20 @@
               {
                 "ordinalValue": 2,
                 "symbolicRisk": "symbolic_risk_3"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "symbolicRisk": "symbolic_risk_4"
               }
             ]
           ],
@@ -588,6 +612,17 @@
         {
           "ordinalValue": 2,
           "symbolicRisk": "symbolic_risk_3",
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "ordinalValue": 3,
+          "symbolicRisk": "symbolic_risk_4",
           "translations": {
             "de": {
               "name": "",

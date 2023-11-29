@@ -159,7 +159,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then: "it can be retrieved"
         with(get("/domains/$newDomainId").body) {
-            riskDefinitions.simpleDef.categories.find { it.id == "C" }.potentialImpacts.size() == 2
+            riskDefinitions.simpleDef.categories.find { it.id == "C" }.potentialImpacts.size() == 3
             riskDefinitions.simpleDef.categories.find { it.id == "I" } == null
             createdAt == domainCreationTime
             updatedAt > domainCreationTime
