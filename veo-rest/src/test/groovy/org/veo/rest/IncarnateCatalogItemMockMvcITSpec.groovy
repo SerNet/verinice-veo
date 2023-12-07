@@ -36,7 +36,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,item1)
+        def result = getIncarnationDescriptions([item1], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 1
@@ -47,7 +47,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,item1, item2)
+        def result = getIncarnationDescriptions([item1, item2], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 2
@@ -80,7 +80,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,item3)
+        def result = getIncarnationDescriptions([item3], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 3
@@ -97,7 +97,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server to create a c-3 element"
-        def result = getIncarnationDescriptions(unit,item3)
+        def result = getIncarnationDescriptions([item3], "MANUAL")
 
         then: "it contains 3 elements to create, item1 item2 item3, because of the tailor references in item3"
         result.parameters.size() == 3
@@ -110,7 +110,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         postResult.size() == 3
 
         when: "we apply item4, the process links two previously created controls"
-        result = getIncarnationDescriptions(unit,item4)
+        result = getIncarnationDescriptions([item4], "MANUAL")
 
         then: "the parameter object is returned and the links are set to item1 and item2"
         result.parameters.size() == 1
@@ -140,7 +140,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item4, relink and post"() {
         given: "the created catalogitems c-1 c-2 c-3"
-        def result = getIncarnationDescriptions(unit,item3)
+        def result = getIncarnationDescriptions([item3], "MANUAL")
         def postResult = postIncarnationDescriptions(unit,result)
         def elementList = postResult.collect{it.targetUri}
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${item4.id.uuidValue()}&mode=MANUAL"))
@@ -168,7 +168,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server to create a p2 element"
-        def result = getIncarnationDescriptions(unit,item5)
+        def result = getIncarnationDescriptions([item5], "MANUAL")
 
         then: "it contains 1 elements to create, item5"
         result.parameters.size() == 1
@@ -191,11 +191,11 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item6 and post"() {
         given: "the created catalogitems and the control c1"
-        def result = getIncarnationDescriptions(unit,item1)
+        def result = getIncarnationDescriptions([item1], "MANUAL")
         postIncarnationDescriptions(unit,result)
 
         when: "a request is made to the server to create a p3-all-features element"
-        result = getIncarnationDescriptions(unit,item6)
+        result = getIncarnationDescriptions([item6], "MANUAL")
 
         then: "it contains 1 elements to create, item6"
         result.parameters.size() == 1
@@ -229,14 +229,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item7 and post"() {
         given: "the created catalogitems and the control p1, also the linked controls"
-        def incarnationDescriptions = getIncarnationDescriptions(unit,item1,item2)
+        def incarnationDescriptions = getIncarnationDescriptions([item1, item2], "MANUAL")
         postIncarnationDescriptions(unit,incarnationDescriptions)
 
-        incarnationDescriptions = getIncarnationDescriptions(unit,item4)
+        incarnationDescriptions = getIncarnationDescriptions([item4], "MANUAL")
         def processUri = postIncarnationDescriptions(unit,incarnationDescriptions)[0].targetUri
 
         when: "a request is made to the server to create a TOM1 element"
-        incarnationDescriptions = getIncarnationDescriptions(unit,item7)
+        incarnationDescriptions = getIncarnationDescriptions([item7], "MANUAL")
 
         then: "it contains 1 element to create: item7"
         incarnationDescriptions.parameters.size() == 1
@@ -269,7 +269,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.links.externallinktest.target.targetUri[0] == postResult[0].targetUri
 
         when: "we link to another created process (p3-all-features)"
-        incarnationDescriptions = getIncarnationDescriptions(unit,item6)
+        incarnationDescriptions = getIncarnationDescriptions([item6], "MANUAL")
         postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
         processUri = postResult[0].targetUri
 
@@ -280,7 +280,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.links.size() == 1
 
         when: "we get the description for the tom"
-        incarnationDescriptions = getIncarnationDescriptions(unit,item7)
+        incarnationDescriptions = getIncarnationDescriptions([item7], "MANUAL")
 
         and: "we set the link to p3"
         incarnationDescriptions.parameters[0].references[0].referencedElement.targetUri = postResult[0].targetUri
@@ -309,7 +309,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "retrieving incarnation descriptions for item 3"
-        def result = getIncarnationDescriptions(unit,item3)
+        def result = getIncarnationDescriptions([item3], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 3
@@ -326,7 +326,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,zz1,zz2)
+        def result = getIncarnationDescriptions([zz1, zz2], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 2
@@ -389,7 +389,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,zz1,item1)
+        def result = getIncarnationDescriptions([zz1, item1], "MANUAL")
 
         then: "the parameter object is returned"
         result.parameters.size() == 2
@@ -407,7 +407,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server to create a processImpactExample element"
-        def result = getIncarnationDescriptions(unit,processImpactExample)
+        def result = getIncarnationDescriptions([processImpactExample], "MANUAL")
 
         then: "it contains 1 elements to create, processImpactExample"
         result.parameters.size() == 1
@@ -433,7 +433,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server to create a controlImpactExample element"
-        def result = getIncarnationDescriptions(unit,controlImpactExample)
+        def result = getIncarnationDescriptions([controlImpactExample], "MANUAL")
 
         then: "it contains 1 elements to create, controlImpactExample"
         result.parameters.size() == 1
@@ -459,7 +459,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server to create a scenarioProbabilityExample element"
-        def result = getIncarnationDescriptions(unit,scenarioProbabilityExample)
+        def result = getIncarnationDescriptions([scenarioProbabilityExample], "MANUAL")
 
         then: "it contains 1 elements to create, scenarioProbabilityExample"
         result.parameters.size() == 1
@@ -484,7 +484,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "requesting incarnation descriptions for a composite and part"
-        def result = getIncarnationDescriptions(unit,itemComposite, itemPart)
+        def result = getIncarnationDescriptions([itemComposite, itemPart], "MANUAL")
 
         then: "it contains 2 elements to create, part and composite"
         result.parameters.size() == 2
@@ -511,7 +511,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "fetching incarnation descriptions for a part"
-        def getResult = getIncarnationDescriptions(unit, itemPart)
+        def getResult = getIncarnationDescriptions([itemPart], "MANUAL")
 
         then: "it contains 1 elements to create"
         getResult.parameters.size() == 1
@@ -524,12 +524,12 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         upEx.message == "CatalogItem zzzzzComposite not included in request but required by zzzzzPart."
 
         when: "we create a control"
-        getResult = getIncarnationDescriptions(unit, item1)
+        getResult = getIncarnationDescriptions([item1], "MANUAL")
         def postResult = postIncarnationDescriptions(unit,getResult)
         def compositeControlUri = postResult[0].targetUri
 
         and: "link the composite reference"
-        getResult = getIncarnationDescriptions(unit, itemPart)
+        getResult = getIncarnationDescriptions([itemPart], "MANUAL")
         getResult.parameters.references[0].first().put("referencedElement", ["targetUri": compositeControlUri])
         postResult = postIncarnationDescriptions(unit,getResult)
 
@@ -546,7 +546,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         composite.parts[0].targetUri == part._self
 
         when: "we create the composite and link"
-        getResult = getIncarnationDescriptions(unit, itemComposite)
+        getResult = getIncarnationDescriptions([itemComposite], "MANUAL")
         getResult.parameters.references[0].first().put("referencedElement", Map.of("targetUri", compositeControlUri))
         postResult = postIncarnationDescriptions(unit,getResult)
         def newComposite = parseJson(get(postResult[0].targetUri))
@@ -610,7 +610,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for part linked to existing composite"() {
         when: "we create the composite by removing the part reference"
-        def incarnationDescriptions = getIncarnationDescriptions(unit, itemComposite)
+        def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
         incarnationDescriptions.parameters.first().references.clear()
 
         and: "post"
@@ -620,7 +620,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         elementRefs.size() == 1
 
         when: "we create the part"
-        incarnationDescriptions = getIncarnationDescriptions(unit, itemPart)
+        incarnationDescriptions = getIncarnationDescriptions([itemPart], "MANUAL")
 
         then: "the parameter is set to the existing composite"
         incarnationDescriptions.parameters.size() == 1;
@@ -631,7 +631,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for composite linked to existing part"() {
         when: "we create the part by removing the composite reference"
-        def incarnationDescriptions = getIncarnationDescriptions(unit, itemPart)
+        def incarnationDescriptions = getIncarnationDescriptions([itemPart], "MANUAL")
         incarnationDescriptions.parameters.first().references.clear()
 
         and: "post"
@@ -641,7 +641,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         elementRef.size() == 1
 
         when: "we create the composite"
-        incarnationDescriptions = getIncarnationDescriptions(unit, itemComposite)
+        incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
 
         then: "the parameter is set to the existing part"
         incarnationDescriptions.parameters.size() == 1;
@@ -649,8 +649,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRef.targetUri.first()
     }
 
-    private getIncarnationDescriptions(Unit unit, CatalogItem... items) {
-        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=MANUAL"))
+    private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT") {
+        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=$mode"))
     }
 
     private postIncarnationDescriptions(Unit unit, incarnationDescriptions) {
