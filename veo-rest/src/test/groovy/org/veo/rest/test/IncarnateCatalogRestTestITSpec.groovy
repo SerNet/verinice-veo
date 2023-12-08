@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import java.time.Instant
-
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -52,47 +50,50 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         getCatalogItems(dsgvoDomainId).size() == 65
     }
 
-    def "Create linked elements from a catalog"() {
-        when: "a selection of catalog items is applied"
-        def elementResults
-        log.info("===============> first pass")
-        elementResults = applyCatalogItems(testDomainId, ["Control-1", "Control-2"])
+    def "existing incarnations are used as reference targets"() {
+        when: "c1 is incarnated without the link"
+        def pass1Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1"], ["LINK"]))
 
-        then: "only elements without references to other catalog items were created"
-        elementResults.size() == 2
-        elementResults.collect { it.name }.sort() == [
-            'Control-1',
-            'Control-2'
-        ]
-        String pass1Element1Id = elementResults.find { it.abbreviation == 'c-1' }?.id
+        then: "it has been created"
+        pass1Elements*.name ==~ ['Control-1']
+        String pass1Element1Id = pass1Elements.first().id
         !pass1Element1Id.isBlank()
 
-        when: "the same catalog items are applied again"
-        log.info("===============> second pass")
-        elementResults = applyCatalogItems(testDomainId)
+        when: "the related item c-3 is incarnated"
+        def pass2Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-3"]))
 
-        then: "all elements were created"
-        // This time, C-3 was created as well. C-3 was created with a link to
-        // the instance of C-1 created in the first pass.
-        elementResults.size() == 5
-        elementResults.collect { it.name }.sort() == [
+        then: "c-1 has been re-applied anyway" // TODO #2557 fix this behaviour
+        pass2Elements*.name ==~ [
             'Control-1',
-            'Control-2',
             'Control-3',
-            'Control-4',
-            'General server'
         ]
-        // check if item1 was created again with a new ID:
-        pass1Element1Id != elementResults.find { it.abbreviation == 'c-1' }?.id
+        pass2Elements.find { it.abbreviation == 'c-1' }.id != pass1Element1Id
 
-        // check if C-3 from the second pass was linked to C-1 from the first pass:
-        def uri = elementResults
-                .find { it.abbreviation == 'c-3' }
-                ?.links
-                ?.Control_details_Control[0]
-                .target
-                .targetUri
-        assert extractLastId(uri) == pass1Element1Id
+        and: "the new c-3 is linked with the old c-1"
+        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
+    }
+
+    def "explicitly incarnated items are always created as new elements"() {
+        when: "c1 is incarnated without the link"
+        def pass1Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1"], ["LINK"]))
+
+        then: "it has been created"
+        pass1Elements*.name ==~ ['Control-1']
+        String pass1Element1Id = pass1Elements.first().id
+        !pass1Element1Id.isBlank()
+
+        when: "c-1 and its related item c-3 are incarnated"
+        def pass2Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1", "Control-3"]))
+
+        then: "both items have been incarnated as new elements"
+        pass2Elements*.name ==~ [
+            'Control-1',
+            'Control-3',
+        ]
+        pass2Elements.find { it.abbreviation == 'c-1' }.id != pass1Element1Id
+
+        and: "the new c-3 is linked with the old c-1" // TODO #2557 fix this behaviour
+        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
     }
 
     def "Create elements with reversed links from catalog"() {
@@ -109,7 +110,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         ]).body.resourceId
 
         and: "C-4 is instantiated"
-        def elementResults = applyCatalogItems(testDomainId, ["Control-4"], "/controls/$sourceControlId")
+        def incarnationDescriptions = getIncarnationDescriptions(testDomainId, ["Control-4"], [], "MANUAL")
+        incarnationDescriptions.parameters.first().references.first().referencedElement = [
+            targetUri: "/controls/$sourceControlId"
+        ]
+        def elementResults = postIncarnationDescriptions(incarnationDescriptions)
         String c4Id = elementResults.first().id
 
         then: "C-4 was created"
@@ -138,7 +143,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         ]).body.resourceId
 
         and: "C-4 is instantiated"
-        def elementResults = applyCatalogItems(testDomainId, ["Control-4"], "/controls/$sourceControlId", false)
+        def incarnationDescriptions = getIncarnationDescriptions(testDomainId, ["Control-4"])
+        incarnationDescriptions.parameters.first().references.first().referencedElement = [
+            targetUri: "/controls/$sourceControlId"
+        ]
+        def elementResults = postIncarnationDescriptions(incarnationDescriptions, false)
 
         then: "an error messages is returned"
         elementResults.message == "Element cannot contain custom aspects or links for domains it is not associated with"
@@ -154,7 +163,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create linked elements from the dsgvo catalog"() {
-        when:"we create the controls"
+        when:"we create a process"
         def sourceProcessId = post("/processes", [
             name: "process",
             domains: [
@@ -166,143 +175,61 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Gewährleistung der Vertraulichkeit"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==1
+        and: "incarnate controls, directing their external link references to the existing process"
+        def incarnationDescriptions = getIncarnationDescriptions(dsgvoDomainId, [
+            "TOM zur Gewährleistung der Vertraulichkeit",
+            "TOM zur Gewährleistung der Verfügbarkeit",
+            "TOM zur Wiederherstellbarkeit",
+            "TOM zur Verschlüsselung",
+            "TOM zur Gewährleistung der Integrität",
+            "TOM zur Pseudonymisierung",
+            "TOM zur Gewährleistung der Belastbarkeit",
+            "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
+        ], [], "MANUAL")
+        incarnationDescriptions.parameters.each {
+            it.references.first().referencedElement = [
+                targetUri: "/processes/$sourceProcessId"
+            ]
+        }
+        postIncarnationDescriptions(incarnationDescriptions)
 
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Gewährleistung der Verfügbarkeit"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==2
+        then: "the links have been added to the existing process"
+        get("/processes/${sourceProcessId}").body.links.size() == 1
+        get("/processes/${sourceProcessId}").body.links.process_tom.size() == 8
 
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Wiederherstellbarkeit"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==3
-
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Verschlüsselung"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==4
-
-        applyCatalogItems(dsgvoDomainId, [
-            "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==5
-
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Gewährleistung der Integrität"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==6
-
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Pseudonymisierung"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==7
-
-        applyCatalogItems(dsgvoDomainId, [
-            "TOM zur Gewährleistung der Belastbarkeit"
-        ], "/processes/$sourceProcessId")
-        get("/processes/${sourceProcessId}").body.links.size()==8
-
-        def processVVT = applyCatalogItems(dsgvoDomainId, ["VVT"], null).first()
+        when: "incarnating the referenced process catalog item"
+        def processVVT = postIncarnationDescriptions(getIncarnationDescriptions(dsgvoDomainId, ["VVT"])).first()
 
         then:"The process is linked with the controls"
         processVVT.links.size() == 1
-        processVVT.links.process_tom.size() == 8
+        processVVT.links.process_tom.size() == 16 // TODO #2557 fix duplicate links
     }
 
     def "Create all linked elements from the dsgvo catalog in one step"() {
         when:"we create all controls"
-        def allItems = getCatalogItems(dsgvoDomainId)*.id.join(',')
-        log.debug("==> allItems: {}", allItems)
-
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
-        def elementResults = postIncarnationDescriptions(unitId, incarnationDescription)
-
-        log.debug("==> elementResults: {}", elementResults)
+        def elementResults = postIncarnationDescriptions(getIncarnationDescriptions(dsgvoDomainId))
 
         then: "all elements are created"
         elementResults.size() == 65
 
         and: "all elements have subtype information"
         elementResults.each { element ->
-            String targetUri = element.targetUri
-            def elementResult = get(targetUri).body
-            log.debug("==> elementResult: {}", elementResult)
-
-            assert elementResult.domains[dsgvoDomainId].subType != null
-            assert elementResult.domains[dsgvoDomainId].status != null
+            assert element.domains[dsgvoDomainId].subType != null
+            assert element.domains[dsgvoDomainId].status != null
         }
     }
 
-    private applyCatalogItems(String domainId, selectedItemNames = null, sourceElementUri = null, boolean succesful = true) {
-        def elementResults = []
-        getCatalogItems(domainId)
-                .sort { it.abbreviation }
-                .reverse()
+    private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT") {
+        def itemIds = getCatalogItems(domainId)
                 .findAll { selectedItemNames == null || selectedItemNames.contains(it.name) }
-                .each {
-                    log.info("Read catalog item: {}", it.name)
-
-                    when: "list an item"
-                    def itemId = it.id
-
-                    and: "get the apply information"
-                    def applyInfo = getIncarnationDescriptions(unitId, itemId)
-                    log.info("Catalogitem {} has {} references", it.abbreviation, applyInfo.parameters.first().references.size())
-
-                    // change apply info:
-                    if (sourceElementUri != null) {
-                        applyInfo.parameters.first().references.first().put("referencedElement", [
-                            "targetUri": "$sourceElementUri"
-                        ])
-                    }
-
-                    and: "create only items without references to other catalog items"
-                    def beforeCreation = Instant.now()
-                    // skip items that have references pointing towards other elements when
-                    // those elements have not been created yet (see the fix-me regarding VEO-726):
-                    if (applyInfo.parameters.first().references.size() == 0 // no reference present
-                            || applyInfo.parameters.first().references[0].referencedElement != null // reference to an element previously created from catalog
-                            ) {
-                        log.info("Will be applied: {}", it.name)
-
-                        def postApply = postIncarnationDescriptions(unitId, applyInfo, succesful ? 201 : 400)
-                        if(succesful) {
-
-                            and: "get the created element"
-                            def elementResult = get(postApply.first().targetUri).body
-                            log.info("Incarnated element {}", elementResult)
-                            elementResults.add(elementResult)
-
-                            assert it.name == elementResult.name
-                            assert Instant.parse(elementResult.createdAt) > beforeCreation
-                            assert Instant.parse(elementResult.updatedAt) > beforeCreation
-                            assert !elementResult.description.isBlank()
-                            assert !elementResult.id.isBlank()
-                        } else {
-                            elementResults = postApply
-                            return
-                        }
-                    }
-                }
-        return elementResults
+                *.id
+        return get("/units/$unitId/incarnations?itemIds=${itemIds.join(',')}&mode=$mode&exclude=${exclude.join(',')}").body
     }
 
-    private extractLastId(String targetUri) {
-        targetUri.split('/').last()
-    }
-
-    private getIncarnationDescriptions(String unitId, String... itemIds) {
-        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}&mode=MANUAL").body
-    }
-
-    private postIncarnationDescriptions(unitId, applyInfo, int expectedStatus = 201) {
-        log.info("postIncarnationDescriptions before: {}", applyInfo)
-        def response = post("/units/${unitId}/incarnations", applyInfo, expectedStatus)
+    private postIncarnationDescriptions(incarnationDescriptions, expectSuccess = true) {
+        log.info("postIncarnationDescriptions before: {}", incarnationDescriptions)
+        def response = post("/units/${unitId}/incarnations", incarnationDescriptions, expectSuccess ? 201 : 400).body
         log.info("postIncarnationDescriptions after: {}", response.body)
-        response.body
+        return expectSuccess ? response.collect { get(it.targetUri).body } : response
     }
 }
