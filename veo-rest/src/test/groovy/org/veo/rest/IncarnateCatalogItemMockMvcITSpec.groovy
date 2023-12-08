@@ -361,8 +361,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "we get zz1 in resolve all mode"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.id.uuidValue()}"))
 
-        then: "zz1 and zz2 are included"
-        result.parameters.size() == 2
+        then: "only zz1 is included and the reference ist set to the corresponding element in the unit."
+        result.parameters.size() == 1
+        result.parameters[0].item.name == 'zz1'
+        result.parameters[0].references[0].referencedElement.id == zz2Result.id
 
         when: "we get zz1 in resolve all mode but exclude links"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.id.uuidValue()}&exclude=LINK"))
@@ -559,14 +561,18 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "we get itemPart in resolve all mode"
         def result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.id.uuidValue()}"))
 
-        then: "both are included"
-        result.parameters.size() == 2
+        then: "only the part is included with a reference to the existing composite element"
+        result.parameters.size() == 1
+        result.parameters[0].item.displayName == "zzzzzPart"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzComposite/
 
         when: "we get itemPart in resolve all mode but exclude links"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.id.uuidValue()}&exclude=LINK"))
 
-        then: "both are included"
-        result.parameters.size() == 2
+        then: "only the part is included with a reference to the existing composite element"
+        result.parameters.size() == 1
+        result.parameters[0].item.displayName == "zzzzzPart"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzComposite/
 
         when: "we get itemPart in resolve all mode but exclude composite"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.id.uuidValue()}&exclude=COMPOSITE"))
@@ -587,8 +593,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "we get itemComposite in resolve all mode but exclude links"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.id.uuidValue()}&exclude=LINK"))
 
-        then: "both are included"
-        result.parameters.size() == 2
+        then: "only the composite is included with a reference to the existing part element"
+        result.parameters.size() == 1
+        result.parameters[0].item.displayName == "zzzzzComposite"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzPart/
 
         when: "we get itemComposite in resolve all mode but exclude PART"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.id.uuidValue()}&exclude=PART"))
@@ -619,7 +627,28 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the composite is created"
         elementRefs.size() == 1
 
-        when: "we create the part"
+        when: "we create the part in default mode"
+        incarnationDescriptions = getIncarnationDescriptions([itemPart])
+
+        then: "the parameter is set to the existing composite"
+        incarnationDescriptions.parameters.size() == 1
+        incarnationDescriptions.parameters.first().references.size() == 1
+        incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRefs.targetUri.first()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for part linked to existing composite in manual mode"() {
+        when: "we create the composite by removing the part reference"
+        def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
+        incarnationDescriptions.parameters.first().references.clear()
+
+        and: "post"
+        def elementRefs = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+
+        then: "the composite is created"
+        elementRefs.size() == 1
+
+        when: "we create the part in manual mode"
         incarnationDescriptions = getIncarnationDescriptions([itemPart], "MANUAL")
 
         then: "the parameter is set to the existing composite"

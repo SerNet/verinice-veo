@@ -62,12 +62,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         when: "the related item c-3 is incarnated"
         def pass2Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-3"]))
 
-        then: "c-1 has been re-applied anyway" // TODO #2557 fix this behaviour
-        pass2Elements*.name ==~ [
-            'Control-1',
-            'Control-3',
-        ]
-        pass2Elements.find { it.abbreviation == 'c-1' }.id != pass1Element1Id
+        then: "c-1 has not been re-applied"
+        pass2Elements*.name ==~ ['Control-3']
 
         and: "the new c-3 is linked with the old c-1"
         pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
@@ -92,8 +88,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         ]
         pass2Elements.find { it.abbreviation == 'c-1' }.id != pass1Element1Id
 
-        and: "the new c-3 is linked with the old c-1" // TODO #2557 fix this behaviour
-        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
+        and: "the new c-3 is linked with the new c-1"
+        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id != pass1Element1Id
     }
 
     def "Create elements with reversed links from catalog"() {
@@ -202,7 +198,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         then:"The process is linked with the controls"
         processVVT.links.size() == 1
-        processVVT.links.process_tom.size() == 16 // TODO #2557 fix duplicate links
+        processVVT.links.process_tom.size() == 8
     }
 
     def "Create all linked elements from the dsgvo catalog in one step"() {

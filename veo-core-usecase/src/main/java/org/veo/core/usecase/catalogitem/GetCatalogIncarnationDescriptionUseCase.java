@@ -18,16 +18,17 @@
 package org.veo.core.usecase.catalogitem;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +39,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
@@ -77,25 +77,20 @@ public class GetCatalogIncarnationDescriptionUseCase
     var requestedItems = loadCatalogItems(input.getCatalogItemIds(), input.authenticatedClient);
     var requestType =
         Optional.ofNullable(input.requestType).orElse(IncarnationRequestModeType.DEFAULT);
-    var itemsToCreate =
-        switch (requestType) {
-          case DEFAULT -> collectAllItems(requestedItems, tailoringReferenceFilter);
-          case MANUAL -> requestedItems;
-        };
-
-    var linkedCatalogItems =
-        itemsToCreate.stream()
-            .flatMap(
-                catalogItem ->
-                    catalogItem.getTailoringReferences().stream()
-                        .filter(tailoringReferenceFilter)
-                        .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
-                        .map(TailoringReference::getTarget))
-            .toList();
-
-    var existingIncarnationsByItem = findExistingIncarnations(unit, linkedCatalogItems);
+    var itemsToElements =
+        collectAllItems(requestedItems, tailoringReferenceFilter, requestType, unit);
     var incarnationDescriptions =
-        itemsToCreate.stream()
+        itemsToElements.entrySet().stream()
+            // Only create incarnation descriptions for items without an existing incarnation.
+            .filter(itemToElement -> itemToElement.getValue().isEmpty())
+            .map(Map.Entry::getKey)
+            // Restore the original order from the input.
+            .sorted(
+                Comparator.comparingInt(
+                    item ->
+                        input.catalogItemIds.contains(item.getId())
+                            ? input.catalogItemIds.indexOf(item.getId())
+                            : Integer.MAX_VALUE))
             .map(
                 catalogItem ->
                     new TemplateItemIncarnationDescription(
@@ -104,7 +99,7 @@ public class GetCatalogIncarnationDescriptionUseCase
                             catalogItem.getTailoringReferences().stream()
                                 .filter(tailoringReferenceFilter)
                                 .toList(),
-                            existingIncarnationsByItem)))
+                            itemsToElements)))
             .toList();
     log.info("incarnation descriptions: {}", incarnationDescriptions);
     return new OutputData(incarnationDescriptions, unit);
@@ -131,29 +126,76 @@ public class GetCatalogIncarnationDescriptionUseCase
   }
 
   /**
-   * Takes a list of origin items and finds all of their related items by recursively following
-   * tailoring references.
+   * Takes a list of origin items and determines which items should be incarnated and which items
+   * have an existing incarnation that should be used. Referenced items are also included (depending
+   * on the mode).
    *
-   * @return given origin items plus found related items
+   * @param mode In {@link IncarnationRequestModeType#DEFAULT}, directly or indirectly referenced
+   *     items are also included in the result. In {@link IncarnationRequestModeType#MANUAL}, only
+   *     directly referenced items that have an existing incarnation are included.
+   * @return A map containing all given items plus referenced items as keys. For each item, the map
+   *     value is either an existing incarnation of the item or {@link Optional#empty()} if the item
+   *     should be incarnated as a new element instead.
    */
-  private List<CatalogItem> collectAllItems(
-      List<CatalogItem> items,
-      Predicate<? super TailoringReference<CatalogItem>> tailoringReferenceFilter) {
-    List<CatalogItem> current = items;
-    List<CatalogItem> next =
-        Stream.concat(
-                items.stream(),
-                items.stream()
-                    .map(TemplateItem::getTailoringReferences)
-                    .flatMap(Collection::stream)
-                    .filter(tailoringReferenceFilter)
-                    .map(TemplateItemReference::getTarget))
-            .distinct()
-            .toList();
-    while (current.size() < next.size()) {
-      current = collectAllItems(next, tailoringReferenceFilter);
+  private Map<CatalogItem, Optional<Element>> collectAllItems(
+      List<CatalogItem> requestedItems,
+      Predicate<? super TailoringReference<CatalogItem>> tailoringReferenceFilter,
+      IncarnationRequestModeType mode,
+      Unit unit) {
+    // The requested items should always be incarnated as new elements.
+    // Therefore, don't search for existing incarnations here in the first level.
+    Map<CatalogItem, Optional<Element>> current =
+        requestedItems.stream()
+            .collect(Collectors.toMap(Function.identity(), item -> Optional.empty()));
+    var result = new HashMap<>(current);
+
+    switch (mode) {
+      case MANUAL -> {
+        // Search for existing incarnations of directly referenced items.
+        // Referenced items without an existing incarnation are not incarnated automatically, but
+        // must be handled manually by the user (hence the name "MANUAL").
+        // If the user does not manually fix those unresolved references by adding an incarnation
+        // description
+        // for the target item or by using an existing element as a reference target, applying the
+        // incarnation descriptions will fail.
+        var referencedItems =
+            current.keySet().stream()
+                .map(TemplateItem::getTailoringReferences)
+                .flatMap(Collection::stream)
+                .filter(tailoringReferenceFilter)
+                .map(TemplateItemReference::getTarget)
+                .collect(Collectors.toSet());
+        findExistingIncarnations(unit, referencedItems).entrySet().stream()
+            .filter(itemToElement -> itemToElement.getValue().isPresent())
+            .forEach(
+                itemToElement ->
+                    result.putIfAbsent(itemToElement.getKey(), itemToElement.getValue()));
+      }
+      case DEFAULT -> {
+        // Follow both direct and indirect tailoring references, walking the reference tree
+        // breadth-first.
+        // Search for existing incarnations on every level.
+        // Referenced items without an existing incarnation will be incarnated automatically.
+        while (!current.isEmpty()) {
+          var nextLevelItems =
+              current.entrySet().stream()
+                  // Only follow references of items without an existing incarnation.
+                  .filter(itemToElement -> itemToElement.getValue().isEmpty())
+                  .map(Map.Entry::getKey)
+                  .map(TemplateItem::getTailoringReferences)
+                  .flatMap(Collection::stream)
+                  .filter(tailoringReferenceFilter)
+                  .map(TemplateItemReference::getTarget)
+                  // Circular structures are handled by avoiding items that have already been
+                  // encountered.
+                  .filter(item -> !result.containsKey(item))
+                  .collect(Collectors.toSet());
+          current = findExistingIncarnations(unit, nextLevelItems);
+          result.putAll(current);
+        }
+      }
     }
-    return current;
+    return result;
   }
 
   private void validateInput(InputData input) {
@@ -162,19 +204,28 @@ public class GetCatalogIncarnationDescriptionUseCase
     }
   }
 
-  /** Searches for {@link Element}s in the unit which have the given catalogItems applied. */
-  private Map<CatalogItem, Element> findExistingIncarnations(
-      Unit unit, Collection<CatalogItem> catalogItems) {
-    var map = new HashMap<CatalogItem, Element>();
+  /**
+   * Searches for {@link Element}s in the unit which have the given catalogItems applied.
+   *
+   * @return A map containing all given items as keys. For each item, the map value is either an
+   *     existing incarnation of the item or {@link Optional#empty()} if no incarnation was found in
+   *     the unit.
+   */
+  private Map<CatalogItem, Optional<Element>> findExistingIncarnations(
+      Unit unit, Set<CatalogItem> catalogItems) {
     var query = genericElementRepository.query(unit.getClient());
     query.whereOwnerIs(unit);
     query.whereAppliedItemsContain(catalogItems);
     query.fetchAppliedCatalogItems();
-    query
-        .execute(PagingConfiguration.UNPAGED)
-        .getResultPage()
-        .forEach(e -> e.getAppliedCatalogItems().forEach(ci -> map.put(ci, e)));
-    return map;
+    var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+    return catalogItems.stream()
+        .collect(
+            Collectors.toMap(
+                Function.identity(),
+                item ->
+                    elements.stream()
+                        .filter(e -> e.getAppliedCatalogItems().contains(item))
+                        .findAny()));
   }
 
   @Valid

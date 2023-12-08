@@ -20,6 +20,8 @@ package org.veo.core.usecase.catalogitem;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.veo.core.entity.Element;
@@ -34,10 +36,16 @@ import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>> {
 
   protected List<TailoringReferenceParameter> toParameters(
-      Collection<TailoringReference<T>> catalogItem, Map<T, Element> existingIncarnationsByItem) {
+      Collection<TailoringReference<T>> catalogItem, Map<T, Optional<Element>> itemsToElements) {
     return catalogItem.stream()
         .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
-        .map(tr -> mapParameter(tr, existingIncarnationsByItem.get(tr.getTarget())))
+        .map(
+            tr ->
+                mapParameter(
+                    tr,
+                    Optional.ofNullable(itemsToElements.get(tr.getTarget()))
+                        .flatMap(Function.identity())
+                        .orElse(null)))
         .toList();
   }
 
