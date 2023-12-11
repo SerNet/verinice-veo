@@ -73,6 +73,7 @@ public class GetUnitDumpUseCase
   private Set<Element> getElements(Unit unit, Domain domain) {
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
+    query.fetchControlImplementations();
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
