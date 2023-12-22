@@ -53,7 +53,9 @@ public class AssociateElementWithDomainUseCase
     element.checkSameClient(input.authenticatedClient); // client boundary safety net
     element.associateWithDomain(domain, input.subType, input.status);
     DomainSensitiveElementValidator.validate(element);
-    return new OutputData(element, domain);
+    // re-fetch the element to make sure it is returned with updated versioning information and
+    // transaction listeners are called
+    return new OutputData(fetchElement(input), domain);
   }
 
   private Element fetchElement(InputData input) {

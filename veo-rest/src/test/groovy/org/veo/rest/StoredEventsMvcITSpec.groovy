@@ -233,6 +233,53 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         thrown(NotFoundException)
     }
 
+    @WithUserDetails("user@domain.example")
+    def "events are generated for domain associations"() {
+        given: "a second domain"
+        def domainId = domain.idAsString
+        def domain2 = newDomain(client) {
+            name = "the other one"
+            applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                subTypes = [
+                    Dogmatic: newSubTypeDefinition()
+                ]
+            })
+        }
+        client = clientRepository.save(client)
+        unit.domains.add(domain2)
+        unitRepository.save(unit)
+        def domainId2 = domain2.idAsString
+
+        and: "a document in domain 1"
+        String documentId = parseJson(post("/domains/$domainId/documents", [
+            name: "doc",
+            subType: "EventfulDocument",
+            status: "NEW",
+            owner: [
+                targetUri: "http://localhost/units/${unit.idAsString}"
+            ]
+        ])).resourceId
+
+        when: "assigning the document to the second domain"
+        post("/domains/$domainId2/documents/$documentId", [
+            subType: "Dogmatic",
+            status: "NEW",
+        ], 200)
+
+        then: "a MODIFICATION event is stored"
+        with(getLatestStoredEventContent()) {
+            type == "MODIFICATION"
+            uri == "/documents/$documentId"
+            author == "user@domain.example"
+            changeNumber == 1
+            with(content) {
+                id == documentId
+                name == "doc"
+                domains.keySet() ==~ [domainId, domainId2]
+            }
+        }
+    }
+
     @Issue('VEO-473')
     @WithUserDetails("user@domain.example")
     def "client events are ignored"() {
