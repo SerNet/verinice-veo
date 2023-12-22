@@ -49,15 +49,17 @@ public class AssociateElementWithDomainUseCase
 
   public OutputData execute(InputData input) {
     var domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
-    var element =
-        (Element)
-            repositoryProvider
-                .getElementRepositoryFor(input.elementType)
-                .getById(input.elementId, input.authenticatedClient.getId());
+    var element = fetchElement(input);
     element.checkSameClient(input.authenticatedClient); // client boundary safety net
     element.associateWithDomain(domain, input.subType, input.status);
     DomainSensitiveElementValidator.validate(element);
     return new OutputData(element, domain);
+  }
+
+  private Element fetchElement(InputData input) {
+    return repositoryProvider
+        .getElementRepositoryFor(input.elementType)
+        .getById(input.elementId, input.authenticatedClient.getId());
   }
 
   @Valid
