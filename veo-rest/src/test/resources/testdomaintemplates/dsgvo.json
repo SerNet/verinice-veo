@@ -1725,6 +1725,12 @@
       "riskMethod": {
         "impactMethod": "highwatermark",
         "description": "description"
+      },
+      "impactInheritingLinks": {
+        "process": [
+          "process_requiredApplications",
+          "process_requiredITSystems"
+        ]
       }
     }
   },

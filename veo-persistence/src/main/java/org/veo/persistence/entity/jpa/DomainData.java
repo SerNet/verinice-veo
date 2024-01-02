@@ -96,6 +96,7 @@ public class DomainData extends DomainBaseData implements Domain {
 
   @Override
   public boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition) {
+    riskDefinition.validateRiskDefinition(this);
     var isNewRiskDef = riskDefinitionSet.apply(riskDefinitionRef, riskDefinition);
     setUpdatedAt(now());
     return isNewRiskDef;

@@ -46,7 +46,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         def tomi = domainDto.catalogItems.find { it.abbreviation == "TOM-I" }
         def dsg23 = domainDto.catalogItems.find { it.abbreviation == "DS-G.23" }
 
-        then: "the domain is exported"
+        then: "catalog items are present"
         domainDto.catalogItems.size() == 65
         with (vvt) {
             namespace == "TOM.VVT"
@@ -69,6 +69,9 @@ class DomainRestTestITSpec extends DomainRestTest {
             subType == "SCN_Scenario"
             status == "NEW"
         }
+
+        and: "risk definition is present"
+        domainDto.riskDefinitions.DSRA.impactInheritingLinks.process.contains("process_requiredITSystems")
     }
 
     def "post a domain template with translation errors"() {

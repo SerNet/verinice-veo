@@ -90,7 +90,6 @@ public class RiskDefinitionSetData {
       throw new EntityAlreadyExistsException(
           "Updating an existing risk definition is not supported yet");
     }
-    riskDefinition.validateRiskDefinition();
     riskDefinitions.put(riskDefinitionRef, riskDefinition);
     return true;
   }

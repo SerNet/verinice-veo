@@ -20,7 +20,9 @@ package org.veo.core.entity.riskdefinition;
 import static org.veo.core.entity.riskdefinition.DimensionDefinition.initLevel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import jakarta.validation.Valid;
@@ -29,6 +31,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
+import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.EntityType;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -65,6 +70,15 @@ public class RiskDefinition {
   @Valid @NotNull private List<RiskValue> riskValues = new ArrayList<>();
   @Valid @NotNull private RiskMethod riskMethod;
 
+  /**
+   * Specifies which {@link org.veo.core.entity.CustomLink}s should cause inheritance of impact
+   * values.
+   *
+   * <p>In the entries of this map, the key is the element type (singular term) and the value is a
+   * list of link types.
+   */
+  @Valid @NotNull private Map<String, List<String>> impactInheritingLinks = new HashMap<>();
+
   public Optional<CategoryDefinition> getCategory(String categoryId) {
     return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();
   }
@@ -93,8 +107,21 @@ public class RiskDefinition {
    * to be unique. Each {@link CategoryDefinition} in {@link RiskDefinition#categories} need to be
    * valid.
    */
-  public void validateRiskDefinition() {
+  public void validateRiskDefinition(DomainBase domain) {
     categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+    impactInheritingLinks.forEach(
+        (elementType, links) -> {
+          var elementTypeDefinition = domain.getElementTypeDefinition(elementType);
+          links.forEach(
+              link -> {
+                if (!elementTypeDefinition.getLinks().containsKey(link)) {
+                  throw new UnprocessableDataException(
+                      "Link type '%s' does not exist for %s"
+                          .formatted(
+                              link, EntityType.getBySingularTerm(elementType).getPluralTerm()));
+                }
+              });
+        });
   }
 
   public Optional<RiskValue> getRiskValue(String symbolicRiskId) {

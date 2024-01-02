@@ -340,6 +340,16 @@ class DomainCreationRestTest extends DomainRestTest {
                 body.message == "Value matrix does not conform to probability."
             }
         }
+
+        and: "invalid impact-inheriting link to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.impactInheritingLinks.person = [
+                "myImaginaryFriend"
+            ]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)) {
+                body.message == "Link type 'myImaginaryFriend' does not exist for persons"
+            }
+        }
     }
 
     def "cannot create domain with name of existing template"() {
