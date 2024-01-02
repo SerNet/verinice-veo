@@ -130,7 +130,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ], 201, SECONDARY_CLIENT_USER)
     }
 
-    def "create risk definition"() {
+    def "CRUD risk definition"() {
         given: "a new domain"
         def domainName = "Risk definition test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
@@ -143,6 +143,12 @@ class DomainCreationRestTest extends DomainRestTest {
             subTypes: [
                 HypotheticalScenario: [
                     statuses: ["OLD", "NEW"]
+                ]
+            ],
+            links: [
+                requiredScenario: [
+                    targetType: "scenario",
+                    targetSubType: "HypotheticalScenario",
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
@@ -181,9 +187,22 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "it has been applied"
         get(scenarioInDomainUri).body.riskValues.simpleDef.potentialProbability == 1
 
-        expect: "risk definition update to fail (for now)"
-        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 409, CONTENT_CREATOR)
-                .body.message == "Updating an existing risk definition is not supported yet"
+        when: "modifying impact inheriting links"
+        definition.impactInheritingLinks.scenario = ["requiredScenario"]
+        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)
+
+        then: "the change has been applied"
+        exportDomain(newDomainId).riskDefinitions.simpleDef.impactInheritingLinks.scenario == ["requiredScenario"]
+
+        when: "making other risk definition modifications"
+        definition.categories[0].with{
+            potentialImpacts.removeLast()
+            valueMatrix.removeLast()
+        }
+
+        then: "the update should fail (for now)"
+        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)
+                .body.message ==~ /Your modifications on this existing risk definition are not supported yet.+/
 
         when: "deleting the risk definition"
         delete("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", 204, CONTENT_CREATOR)

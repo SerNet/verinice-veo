@@ -32,8 +32,8 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
-import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -85,13 +85,19 @@ public class RiskDefinitionSetData {
    *     risk definition has been updated
    */
   public boolean apply(String riskDefinitionRef, RiskDefinition riskDefinition) {
-    // TODO VEO-2258 Allow modifying existing risk definition
+    // TODO VEO-2258 Allow more modifications on an existing risk definition.
     if (riskDefinitions.containsKey(riskDefinitionRef)) {
-      throw new EntityAlreadyExistsException(
-          "Updating an existing risk definition is not supported yet");
+      var oldRiskDef = riskDefinitions.get(riskDefinitionRef);
+      if (!oldRiskDef.getCategories().equals(riskDefinition.getCategories())
+          || !oldRiskDef.getRiskValues().equals(riskDefinition.getRiskValues())
+          || !oldRiskDef
+              .getImplementationStateDefinition()
+              .equals(riskDefinition.getImplementationStateDefinition())
+          || !oldRiskDef.getProbability().equals(riskDefinition.getProbability()))
+        throw new UnprocessableDataException(
+            "Your modifications on this existing risk definition are not supported yet. Currently, only the impact-inheriting links can be modified.");
     }
-    riskDefinitions.put(riskDefinitionRef, riskDefinition);
-    return true;
+    return riskDefinitions.put(riskDefinitionRef, riskDefinition) == null;
   }
 
   public void remove(String riskDefinitionKey) {
