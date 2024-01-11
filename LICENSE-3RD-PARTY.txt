@@ -1,5 +1,5 @@
 
-Dependency License Report for verinice veo 0.42.0
+Dependency License Report for verinice veo 0.43.0-SNAPSHOT
 
 1. Group: ch.qos.logback  Name: logback-classic  Version: 1.4.14
 
@@ -23139,5 +23139,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Jan 11 13:30:59 CET 2024.
+This report was generated at Thu Jan 11 13:47:12 CET 2024.
 
