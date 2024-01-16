@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -78,7 +77,7 @@ public class GetCatalogIncarnationDescriptionUseCase
     var requestType =
         Optional.ofNullable(input.requestType).orElse(IncarnationRequestModeType.DEFAULT);
     var itemsToElements =
-        collectAllItems(requestedItems, tailoringReferenceFilter, requestType, unit);
+        collectAllItems(requestedItems, tailoringReferenceFilter, requestType, input.lookup, unit);
     var incarnationDescriptions =
         itemsToElements.entrySet().stream()
             // Only create incarnation descriptions for items without an existing incarnation.
@@ -141,23 +140,24 @@ public class GetCatalogIncarnationDescriptionUseCase
       List<CatalogItem> requestedItems,
       Predicate<? super TailoringReference<CatalogItem>> tailoringReferenceFilter,
       IncarnationRequestModeType mode,
+      IncarnationLookup lookup,
       Unit unit) {
-    // The requested items should always be incarnated as new elements.
-    // Therefore, don't search for existing incarnations here in the first level.
-    Map<CatalogItem, Optional<Element>> current =
-        requestedItems.stream()
-            .collect(Collectors.toMap(Function.identity(), item -> Optional.empty()));
+    var current = buildIncarnationMap(requestedItems, unit, lookup == IncarnationLookup.ALWAYS);
     var result = new HashMap<>(current);
 
     switch (mode) {
       case MANUAL -> {
-        // Search for existing incarnations of directly referenced items.
+        // Search for existing incarnations of directly referenced items (unless lookup behavior is
+        // NEVER).
         // Referenced items without an existing incarnation are not incarnated automatically, but
         // must be handled manually by the user (hence the name "MANUAL").
         // If the user does not manually fix those unresolved references by adding an incarnation
         // description
         // for the target item or by using an existing element as a reference target, applying the
         // incarnation descriptions will fail.
+        if (lookup == IncarnationLookup.NEVER) {
+          break;
+        }
         var referencedItems =
             current.keySet().stream()
                 .map(TemplateItem::getTailoringReferences)
@@ -165,7 +165,7 @@ public class GetCatalogIncarnationDescriptionUseCase
                 .filter(tailoringReferenceFilter)
                 .map(TemplateItemReference::getTarget)
                 .collect(Collectors.toSet());
-        findExistingIncarnations(unit, referencedItems).entrySet().stream()
+        buildIncarnationMap(referencedItems, unit, true).entrySet().stream()
             .filter(itemToElement -> itemToElement.getValue().isPresent())
             .forEach(
                 itemToElement ->
@@ -174,7 +174,7 @@ public class GetCatalogIncarnationDescriptionUseCase
       case DEFAULT -> {
         // Follow both direct and indirect tailoring references, walking the reference tree
         // breadth-first.
-        // Search for existing incarnations on every level.
+        // Search for existing incarnations on every level (unless lookup behavior is NEVER).
         // Referenced items without an existing incarnation will be incarnated automatically.
         while (!current.isEmpty()) {
           var nextLevelItems =
@@ -190,7 +190,7 @@ public class GetCatalogIncarnationDescriptionUseCase
                   // encountered.
                   .filter(item -> !result.containsKey(item))
                   .collect(Collectors.toSet());
-          current = findExistingIncarnations(unit, nextLevelItems);
+          current = buildIncarnationMap(nextLevelItems, unit, lookup != IncarnationLookup.NEVER);
           result.putAll(current);
         }
       }
@@ -205,27 +205,30 @@ public class GetCatalogIncarnationDescriptionUseCase
   }
 
   /**
-   * Searches for {@link Element}s in the unit which have the given catalogItems applied.
-   *
    * @return A map containing all given items as keys. For each item, the map value is either an
    *     existing incarnation of the item or {@link Optional#empty()} if no incarnation was found in
    *     the unit.
    */
-  private Map<CatalogItem, Optional<Element>> findExistingIncarnations(
-      Unit unit, Set<CatalogItem> catalogItems) {
-    var query = genericElementRepository.query(unit.getClient());
-    query.whereOwnerIs(unit);
-    query.whereAppliedItemsContain(catalogItems);
-    query.fetchAppliedCatalogItems();
-    var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
-    return catalogItems.stream()
-        .collect(
-            Collectors.toMap(
-                Function.identity(),
-                item ->
-                    elements.stream()
-                        .filter(e -> e.getAppliedCatalogItems().contains(item))
-                        .findAny()));
+  private Map<CatalogItem, Optional<Element>> buildIncarnationMap(
+      Collection<CatalogItem> items, Unit unit, boolean addExistingIncarnations) {
+    if (addExistingIncarnations) {
+      var query = genericElementRepository.query(unit.getClient());
+      query.whereOwnerIs(unit);
+      query.whereAppliedItemsContain(items);
+      query.fetchAppliedCatalogItems();
+      var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      return items.stream()
+          .collect(
+              Collectors.toMap(
+                  Function.identity(),
+                  item ->
+                      elements.stream()
+                          .filter(e -> e.getAppliedCatalogItems().contains(item))
+                          .findAny()));
+    } else {
+      return items.stream()
+          .collect(Collectors.toMap(Function.identity(), item -> Optional.empty()));
+    }
   }
 
   @Valid
@@ -235,6 +238,7 @@ public class GetCatalogIncarnationDescriptionUseCase
     @NotNull Key<UUID> unitId;
     @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
+    @NotNull IncarnationLookup lookup;
     List<TailoringReferenceType> include;
     List<TailoringReferenceType> exclude;
   }

@@ -69,7 +69,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
     }
 
-    def "explicitly incarnated items are always created as new elements"() {
+    def "requested items are always created as new elements by default"() {
         when: "c1 is incarnated without the link"
         def pass1Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1"], ["LINK"]))
 
@@ -90,6 +90,30 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         and: "the new c-3 is linked with the new c-1"
         pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id != pass1Element1Id
+    }
+
+    def "existing incarnations can be used for requested items"() {
+        when: "c1 is incarnated without the link"
+        def pass1Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1"], ["LINK"]))
+
+        then: "it has been created"
+        pass1Elements*.name ==~ ['Control-1']
+        String pass1Element1Id = pass1Elements.first().id
+        !pass1Element1Id.isBlank()
+
+        when: "c-1 and its related item c-3 are incarnated"
+        def pass2Elements = postIncarnationDescriptions(getIncarnationDescriptions(testDomainId, ["Control-1", "Control-3"], [], "DEFAULT", "ALWAYS"))
+
+        then: "only c-3 is returned"
+        pass2Elements*.name ==~ [
+            'Control-3',
+        ]
+
+        and: "there is no new incarnation of c-1"
+        get("/controls?abbreviation=c-1&unit=$unitId").body.totalItemCount == 1
+
+        and: "the new c-3 is linked with the old c-1"
+        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
     }
 
     def "Create elements with reversed links from catalog"() {
@@ -215,11 +239,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
     }
 
-    private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT") {
+    private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT", String useExistingIncarnations = "FOR_REFERENCED_ITEMS") {
         def itemIds = getCatalogItems(domainId)
                 .findAll { selectedItemNames == null || selectedItemNames.contains(it.name) }
                 *.id
-        return get("/units/$unitId/incarnations?itemIds=${itemIds.join(',')}&mode=$mode&exclude=${exclude.join(',')}").body
+        return get("/units/$unitId/incarnations?itemIds=${itemIds.join(',')}&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
     }
 
     private postIncarnationDescriptions(incarnationDescriptions, expectSuccess = true) {

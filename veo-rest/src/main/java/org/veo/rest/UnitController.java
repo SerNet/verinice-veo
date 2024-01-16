@@ -77,6 +77,7 @@ import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.IncarnationLookup;
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
@@ -154,6 +155,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
           IncarnationRequestModeType requestMode,
       @Parameter(
               description =
+                  "Specify when existing incarnations in the unit should be used instead of creating a new incarnation")
+          @RequestParam(required = false, defaultValue = "FOR_REFERENCED_ITEMS")
+          IncarnationLookup useExistingIncarnations,
+      @Parameter(
+              description =
                   "The request mode allows to control the included references in the incarnation description.")
           @RequestParam(name = "include", required = false)
           List<TailoringReferenceType> include,
@@ -170,7 +176,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         useCaseInteractor.execute(
             getCatalogIncarnationDescriptionUseCase,
             new GetCatalogIncarnationDescriptionUseCase.InputData(
-                client, containerId, list, requestMode, include, exclude),
+                client, containerId, list, requestMode, useExistingIncarnations, include, exclude),
             output -> new IncarnateDescriptionsDto(output.getReferences(), urlAssembler));
     return catalogFuture.thenApply(result -> ResponseEntity.ok().body(result));
   }
