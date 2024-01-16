@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -76,6 +77,15 @@ public class ClientRepositoryImpl
     return stream(clientDataRepository.findAll().spliterator(), false)
         .map(Client.class::cast)
         .toList();
+  }
+
+  @Override
+  public Set<Client> findAllWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId) {
+    return clientDataRepository
+        .findAllWhereDomainTemplateNotApplied(domainTemplateId.uuidValue())
+        .stream()
+        .map(Client.class::cast)
+        .collect(Collectors.toSet());
   }
 
   @Override

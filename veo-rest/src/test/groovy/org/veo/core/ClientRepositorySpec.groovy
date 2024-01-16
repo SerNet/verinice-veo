@@ -24,7 +24,9 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.repository.DomainTemplateRepository
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainTemplateRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 import jakarta.transaction.Transactional
@@ -38,6 +40,9 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     @Autowired
     private UnitRepositoryImpl unitRepository
+
+    @Autowired
+    private DomainTemplateRepositoryImpl domainTemplateRepository
 
     def "create a simple client and a domain together"() {
         given: "a domain and a client"
@@ -266,5 +271,53 @@ class ClientRepositorySpec extends VeoSpringSpec {
         ConstraintViolationException ex = thrown(ConstraintViolationException)
         ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogItems\[].elementType/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
+    }
+
+    def "finds clients where domain template not applied"() {
+        given:
+        def domainTemplateA = domainTemplateRepository.save(newDomainTemplate {})
+        def domainTemplateB = domainTemplateRepository.save(newDomainTemplate {})
+        clientDataRepository.saveAll ([
+            newClient {
+                name = "c0"
+                domains = []
+            },
+            newClient {
+                name = "c1"
+                domains = [
+                    newDomain(it),
+                    newDomain(it) {
+                        domainTemplate = domainTemplateB
+                    },
+                ]
+            },
+            newClient {
+                name = "c2"
+                domains = [
+                    newDomain(it) {
+                        domainTemplate = domainTemplateB
+                    },
+                    newDomain(it) {
+                        domainTemplate = domainTemplateA
+                    },
+                ]
+            },
+            newClient {
+                name = "c3"
+                domains = [
+                    newDomain(it) {
+                        domainTemplate = domainTemplateA
+                    },
+                    newDomain(it),
+                    newDomain(it),
+                ]
+            },
+        ])
+
+        when:
+        def results = clientDataRepository.findAllWhereDomainTemplateNotApplied(domainTemplateA.idAsString)
+
+        then:
+        results*.name ==~ ["c0", "c1"]
     }
 }

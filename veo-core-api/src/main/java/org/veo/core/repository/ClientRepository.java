@@ -19,6 +19,7 @@ package org.veo.core.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -65,4 +66,6 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
     }
     return Optional.empty();
   }
+
+  Set<Client> findAllWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId);
 }

@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -38,4 +39,8 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
 
   @EntityGraph(attributePaths = {"domains.elementTypeDefinitions.translations"})
   Optional<ClientData> findWithTranslationsByDbId(String id);
+
+  @Query(
+      "select c from client c where not exists (select d from domain d where d.owner = c and d.domainTemplate.dbId = ?1)")
+  Set<ClientData> findAllWhereDomainTemplateNotApplied(String domainTemplateId);
 }

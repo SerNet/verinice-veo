@@ -144,6 +144,7 @@ import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
+import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
@@ -921,6 +922,13 @@ public class ModuleConfiguration {
   public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
       DomainRepository domainRepository) {
     return new UpdateElementTypeDefinitionUseCase(domainRepository);
+  }
+
+  @Bean
+  public GetClientIdsWhereDomainTemplateNotAppliedUseCase
+      getClientIdsWhereDomainTemplateNotAppliedUseCase(
+          AccountProvider accountProvider, ClientRepository clientRepository) {
+    return new GetClientIdsWhereDomainTemplateNotAppliedUseCase(accountProvider, clientRepository);
   }
 
   @Bean

@@ -17,55 +17,56 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.AccountProvider;
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
-public class CreateDomainFromTemplateUseCase
-    implements TransactionalUseCase<CreateDomainFromTemplateUseCase.InputData, EmptyOutput> {
+@Slf4j
+public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
+    implements TransactionalUseCase<
+        GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData,
+        GetClientIdsWhereDomainTemplateNotAppliedUseCase.OutputData> {
 
   private final AccountProvider accountProvider;
   private final ClientRepository clientRepository;
-  private final DomainTemplateService domainTemplateService;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public OutputData execute(InputData input) {
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }
-    var client = clientRepository.getActiveById(Key.uuidFrom(input.clientId));
-    domainTemplateService.createDomain(client, input.domainTemplateId);
-    clientRepository.save(client);
-    return EmptyOutput.INSTANCE;
-  }
-
-  @Override
-  public boolean isReadOnly() {
-    return false;
+    return new OutputData(
+        clientRepository
+            .findAllWhereDomainTemplateNotApplied(Key.uuidFrom(input.domainTemplateId))
+            .stream()
+            .map(Identifiable::getId)
+            .collect(Collectors.toSet()));
   }
 
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
     String domainTemplateId;
-    String clientId;
   }
 
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    @Valid Domain domain;
+    @Valid Set<Key<UUID>> clientIds;
   }
 }

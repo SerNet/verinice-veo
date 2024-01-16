@@ -20,7 +20,6 @@ package org.veo.jobs;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,8 +77,7 @@ public class SpringSpecDomainTemplateCreator {
     AsSystemUser.runAsAdmin(
         () -> {
           createDomainFromTemplateUseCase.execute(
-              new CreateDomainFromTemplateUseCase.InputData(
-                  templateId, Optional.of(List.of(client.getIdAsString()))));
+              new CreateDomainFromTemplateUseCase.InputData(templateId, client.getIdAsString()));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()
         .filter(

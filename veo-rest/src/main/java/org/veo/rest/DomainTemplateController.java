@@ -18,9 +18,12 @@
 package org.veo.rest;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -37,8 +40,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
+import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +53,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage domain templates.
@@ -62,10 +68,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(DomainTemplateController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
+@Slf4j
 public class DomainTemplateController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
+  private final GetClientIdsWhereDomainTemplateNotAppliedUseCase
+      getClientIdsWhereDomainTemplateNotAppliedUseCase;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final FindDomainTemplatesUseCase findDomainTemplatesUseCase;
 
@@ -96,11 +105,40 @@ public class DomainTemplateController extends AbstractEntityController {
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
       Authentication auth,
       @PathVariable String id,
-      @RequestParam(value = "clientids", required = false) List<String> clientIds) {
-    return useCaseInteractor.execute(
-        createDomainFromTemplateUseCase,
-        new CreateDomainFromTemplateUseCase.InputData(id, Optional.ofNullable(clientIds)),
-        out -> ResponseEntity.noContent().build());
+      @RequestParam(value = "clientids", required = false) List<String> inputClientIds) {
+    return (inputClientIds != null
+            ? CompletableFuture.completedFuture(
+                inputClientIds.stream().map(Key::uuidFrom).collect(Collectors.toSet()))
+            : useCaseInteractor.execute(
+                getClientIdsWhereDomainTemplateNotAppliedUseCase,
+                new GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData(id),
+                GetClientIdsWhereDomainTemplateNotAppliedUseCase.OutputData::getClientIds))
+        .thenCompose(clientIds -> createDomains(id, clientIds))
+        .thenApply(v -> ResponseEntity.noContent().build());
+  }
+
+  private CompletableFuture<Class<Void>> createDomains(
+      String domainTemplateId, Set<Key<UUID>> clientIds) {
+    log.info("Creating domain from template {} in {} clients", domainTemplateId, clientIds.size());
+    var future = CompletableFuture.completedFuture(void.class);
+    var i = new AtomicInteger();
+    for (var clientId : clientIds) {
+      future =
+          future
+              .thenCompose(
+                  nothing ->
+                      useCaseInteractor.execute(
+                          createDomainFromTemplateUseCase,
+                          new CreateDomainFromTemplateUseCase.InputData(
+                              domainTemplateId, clientId.uuidValue()),
+                          out -> void.class))
+              .thenApply(
+                  nothing -> {
+                    log.info("{} / {} domains created", i.incrementAndGet(), clientIds.size());
+                    return void.class;
+                  });
+    }
+    return future;
   }
 
   @Override
