@@ -8,7 +8,7 @@
     }
   },
   "owner": {
-    "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+    "targetUri": "https://api.develop.verinice.com/veo/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
   "links": {
     "process_dataType": [
@@ -20,7 +20,7 @@
           "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure"
         },
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/78f1c565-329a-41d3-be72-2931964857c6"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/78f1c565-329a-41d3-be72-2931964857c6"
         }
       }
     ],
@@ -29,7 +29,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
         }
       }
     ],
@@ -38,7 +38,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/controls/2ec217e3-6792-4f7c-8f46-0e4c82d6fb95"
+          "targetUri": "https://api.develop.verinice.com/veo/controls/2ec217e3-6792-4f7c-8f46-0e4c82d6fb95"
         }
       }
     ],
@@ -47,7 +47,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
         }
       }
     ],
@@ -56,7 +56,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
+          "targetUri": "https://api.develop.verinice.com/veo/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
         }
       }
     ]

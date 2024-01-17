@@ -3,7 +3,7 @@
   "description": "Bewerbungen können postalisch und auf elektronischem Wege erfolgen. Dies ist insbesondere dann der Fall, wenn ein Bewerber entsprechende Bewerbungsunterlagen auf dem elektronischen Wege, beispielsweise per E-Mail, an den für die Verarbeitung Verantwortlichen übermittelt",
   "domains": {},
   "owner": {
-    "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+    "targetUri": "https://api.develop.verinice.com/veo/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
   "links": {
     "process_responsiblePerson": [
@@ -11,7 +11,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/persons/48cbe187-bd5f-4273-9e18-9be57e6b054d"
+          "targetUri": "https://api.develop.verinice.com/veo/persons/48cbe187-bd5f-4273-9e18-9be57e6b054d"
         }
       }
     ],
@@ -20,7 +20,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/scopes/27809ca4-4d89-4e03-b9ab-ca0d70a23c5d"
+          "targetUri": "https://api.develop.verinice.com/veo/scopes/27809ca4-4d89-4e03-b9ab-ca0d70a23c5d"
         }
       }
     ],
@@ -29,7 +29,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/scopes/9a7bfae1-b908-4b1e-bb54-cfc77b380336"
+          "targetUri": "https://api.develop.verinice.com/veo/scopes/9a7bfae1-b908-4b1e-bb54-cfc77b380336"
         }
       }
     ],
@@ -42,7 +42,7 @@
           "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure"
         },
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/78f1c565-329a-41d3-be72-2931964857c6"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/78f1c565-329a-41d3-be72-2931964857c6"
         }
       }
     ],
@@ -51,7 +51,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
         }
       }
     ],
@@ -60,7 +60,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
+          "targetUri": "https://api.develop.verinice.com/veo/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
         }
       }
     ],
@@ -69,7 +69,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://veo.develop.verinice.com/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
+          "targetUri": "https://api.develop.verinice.com/veo/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
         }
       }
     ]
