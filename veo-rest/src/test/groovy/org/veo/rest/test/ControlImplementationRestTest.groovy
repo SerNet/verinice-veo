@@ -179,6 +179,30 @@ class ControlImplementationRestTest extends VeoRestTest {
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl2Id")
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id")
 
+        when: "exporting the unit"
+        def unitExport = get("/units/$unitId/export").body
+
+        then:
+        with(unitExport.elements.find { it.name == "lame" }) {
+            requirementImplementations.size() == 4
+            with(requirementImplementations.find { it.control.name == "root control 1" }) {
+                status == "PARTIAL"
+                implementationStatement == "It's a start"
+                responsible.name == "person 2"
+            }
+            with(requirementImplementations.find { it.control.name == "sub control 2" }) {
+                status == "YES"
+                implementationStatement == "Done!"
+                responsible.name == "person 2"
+            }
+            with(requirementImplementations.find { it.control.name == "root control 2" }) {
+                status == "UNKNOWN"
+            }
+            with(requirementImplementations.find { it.control.name == "sub control 3" }) {
+                status == "UNKNOWN"
+            }
+        }
+
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
@@ -218,6 +242,9 @@ class ControlImplementationRestTest extends VeoRestTest {
             responsible.displayName.endsWith("person 1")
             control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl2Id")
         }
+
+        and: "the RIs are not part of the domain-specific element representation"
+        retrievedElement.requirementImplementations == null
 
         when: "modifying CIs"
         get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {

@@ -45,7 +45,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "process", description = "Schema for process")
 public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
-    implements ProcessState, RiskAffectedDto<Process> {
+    implements ProcessState, RiskAffectedDtoWithRIs<Process> {
 
   @Override
   @Schema(description = "The name for the process.", example = "Two-factor authentication")
@@ -101,4 +101,5 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
   private Map<String, ProcessDomainAssociationDto> domains = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<RequirementImplementationDto> requirementImplementations = new HashSet<>();
 }

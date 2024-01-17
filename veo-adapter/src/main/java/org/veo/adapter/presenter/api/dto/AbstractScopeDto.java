@@ -42,7 +42,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "scope", description = "Schema for scope")
 public abstract class AbstractScopeDto extends AbstractElementDto<Scope>
-    implements ScopeState, RiskAffectedDto<Scope> {
+    implements ScopeState, RiskAffectedDtoWithRIs<Scope> {
 
   @Schema(description = "The scope's members")
   private Set<IdRef<Element>> members = Collections.emptySet();
@@ -69,4 +69,5 @@ public abstract class AbstractScopeDto extends AbstractElementDto<Scope>
   private Map<String, ScopeDomainAssociationDto> domains = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<RequirementImplementationDto> requirementImplementations = new HashSet<>();
 }

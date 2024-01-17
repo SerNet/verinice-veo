@@ -55,6 +55,7 @@ import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
+import org.veo.adapter.presenter.api.dto.RiskAffectedDtoWithRIs;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
@@ -584,7 +585,12 @@ public final class EntityToDtoTransformer {
     }
   }
 
-  private <T extends RiskAffected<T, ?>> void mapRiskAffected(T source, RiskAffectedDto<T> target) {
+  private <T extends RiskAffected<T, ?>> void mapRiskAffected(
+      T source, RiskAffectedDtoWithRIs<T> target) {
+    target.setRequirementImplementations(
+        source.getRequirementImplementations().stream()
+            .map(this::transformRequirementImplementation2Dto)
+            .collect(toSet()));
     mapRiskAffectedProperties(source, target, null);
   }
 

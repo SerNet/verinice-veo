@@ -41,7 +41,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "asset", description = "Schema for asset")
 public abstract class AbstractAssetDto extends CompositeEntityDto<Asset>
-    implements AssetState, RiskAffectedDto<Asset> {
+    implements AssetState, RiskAffectedDtoWithRIs<Asset> {
 
   @Override
   @Schema(description = "The name for the asset.", example = "Mail Server")
@@ -95,4 +95,5 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset>
   private Map<String, AssetDomainAssociationDto> domains = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<RequirementImplementationDto> requirementImplementations = new HashSet<>();
 }
