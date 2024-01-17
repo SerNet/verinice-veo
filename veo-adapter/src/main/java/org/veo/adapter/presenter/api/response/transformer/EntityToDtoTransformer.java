@@ -585,10 +585,7 @@ public final class EntityToDtoTransformer {
   }
 
   private <T extends RiskAffected<T, ?>> void mapRiskAffected(T source, RiskAffectedDto<T> target) {
-    target.setControlImplementations(
-        source.getControlImplementations().stream()
-            .map(ci -> mapControlImplementation(source, ci, null))
-            .collect(toSet()));
+    mapRiskAffectedProperties(source, target, null);
   }
 
   private ControlImplementationDto mapControlImplementation(
