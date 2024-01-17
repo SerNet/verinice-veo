@@ -143,6 +143,11 @@ class CatalogSpec extends VeoMvcSpec {
                         }
                     ]
                 })
+                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        SCN_Scenario: newSubTypeDefinition {},
+                    ]
+                })
             }
 
             item1 = newCatalogItem(domain, {
