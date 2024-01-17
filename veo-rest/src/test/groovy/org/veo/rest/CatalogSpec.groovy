@@ -332,9 +332,6 @@ class CatalogSpec extends VeoMvcSpec {
             domain = client.domains.toList().get(0)
             domain1 = client.domains.toList().get(1)
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample,
-                    controlImpactExample, scenarioProbabilityExample, itemComposite, itemPart) = domain.catalogItems.sort{it.name}
-
             secondClient = newClient() {
                 it.name = "the other"
             }
