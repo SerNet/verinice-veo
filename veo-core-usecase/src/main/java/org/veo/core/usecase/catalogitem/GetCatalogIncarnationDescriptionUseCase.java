@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -158,18 +159,10 @@ public class GetCatalogIncarnationDescriptionUseCase
         if (lookup == IncarnationLookup.NEVER) {
           break;
         }
-        var referencedItems =
-            current.keySet().stream()
-                .map(TemplateItem::getTailoringReferences)
-                .flatMap(Collection::stream)
-                .filter(tailoringReferenceFilter)
-                .map(TemplateItemReference::getTarget)
-                .collect(Collectors.toSet());
+        var referencedItems = getReferencedItems(current, result, tailoringReferenceFilter);
         buildIncarnationMap(referencedItems, unit, true).entrySet().stream()
             .filter(itemToElement -> itemToElement.getValue().isPresent())
-            .forEach(
-                itemToElement ->
-                    result.putIfAbsent(itemToElement.getKey(), itemToElement.getValue()));
+            .forEach(itemToElement -> result.put(itemToElement.getKey(), itemToElement.getValue()));
       }
       case DEFAULT -> {
         // Follow both direct and indirect tailoring references, walking the reference tree
@@ -177,25 +170,31 @@ public class GetCatalogIncarnationDescriptionUseCase
         // Search for existing incarnations on every level (unless lookup behavior is NEVER).
         // Referenced items without an existing incarnation will be incarnated automatically.
         while (!current.isEmpty()) {
-          var nextLevelItems =
-              current.entrySet().stream()
-                  // Only follow references of items without an existing incarnation.
-                  .filter(itemToElement -> itemToElement.getValue().isEmpty())
-                  .map(Map.Entry::getKey)
-                  .map(TemplateItem::getTailoringReferences)
-                  .flatMap(Collection::stream)
-                  .filter(tailoringReferenceFilter)
-                  .map(TemplateItemReference::getTarget)
-                  // Circular structures are handled by avoiding items that have already been
-                  // encountered.
-                  .filter(item -> !result.containsKey(item))
-                  .collect(Collectors.toSet());
+          var nextLevelItems = getReferencedItems(current, result, tailoringReferenceFilter);
           current = buildIncarnationMap(nextLevelItems, unit, lookup != IncarnationLookup.NEVER);
           result.putAll(current);
         }
       }
     }
     return result;
+  }
+
+  private static Set<CatalogItem> getReferencedItems(
+      Map<CatalogItem, Optional<Element>> current,
+      HashMap<CatalogItem, Optional<Element>> encountered,
+      Predicate<? super TailoringReference<CatalogItem>> referenceFilter) {
+    return current.entrySet().stream()
+        // Only follow references of items without an existing incarnation.
+        .filter(itemToElement -> itemToElement.getValue().isEmpty())
+        .map(Map.Entry::getKey)
+        .map(TemplateItem::getTailoringReferences)
+        .flatMap(Collection::stream)
+        .filter(referenceFilter)
+        .map(TemplateItemReference::getTarget)
+        // Circular structures are handled by avoiding items that have already been
+        // encountered.
+        .filter(item -> !encountered.containsKey(item))
+        .collect(Collectors.toSet());
   }
 
   private void validateInput(InputData input) {
