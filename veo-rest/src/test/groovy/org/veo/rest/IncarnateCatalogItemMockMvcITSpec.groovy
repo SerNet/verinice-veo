@@ -677,6 +677,24 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRef.targetUri.first()
     }
 
+    @WithUserDetails("user@domain.example")
+    def "apply item with scope"() {
+        when: "applying an item that has a scope reference"
+        def memberUri = postIncarnationDescriptions(getIncarnationDescriptions([itemMember]))[0].targetUri
+
+        and: "fetching the scopes"
+        def scopes = parseJson(get("/scopes")).items
+
+        then: "the scope from the catalog has been applied"
+        scopes.size() == 1
+        scopes[0].name == "zzScope"
+
+        and: "it references the created member"
+        scopes[0].members.size() == 1
+        scopes[0].members[0].name == "zzMember"
+        scopes[0].members[0].targetUri == memberUri
+    }
+
     private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT") {
         parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=$mode"))
     }

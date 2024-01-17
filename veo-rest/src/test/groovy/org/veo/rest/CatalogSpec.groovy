@@ -74,6 +74,8 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem scenarioProbabilityExample
     CatalogItem itemComposite
     CatalogItem itemPart
+    CatalogItem itemScope
+    CatalogItem itemMember
     Client client
     Client secondClient
     Domain domain3
@@ -146,6 +148,11 @@ class CatalogSpec extends VeoMvcSpec {
                 applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
                     subTypes = [
                         SCN_Scenario: newSubTypeDefinition {},
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                    subTypes = [
+                        kaleidoscope: newSubTypeDefinition {},
                     ]
                 })
             }
@@ -318,6 +325,22 @@ class CatalogSpec extends VeoMvcSpec {
 
             newTailoringReference(itemComposite, itemPart, TailoringReferenceType.PART)
             newTailoringReference(itemPart, itemComposite, TailoringReferenceType.COMPOSITE)
+
+            itemScope = newCatalogItem(domain) {
+                elementType = "scope"
+                subType = "kaleidoscope"
+                status = "NEW"
+                name = "zzScope"
+            }
+            itemMember = newCatalogItem(domain) {
+                elementType = "process"
+                subType = "normalProcess"
+                status = "NEW"
+                name = "zzMember"
+            }
+
+            newTailoringReference(itemMember, itemScope, TailoringReferenceType.SCOPE)
+            newTailoringReference(itemScope, itemMember, TailoringReferenceType.MEMBER)
 
             domain1 = newDomain (client) {
                 description = "ISO/IEC2"
