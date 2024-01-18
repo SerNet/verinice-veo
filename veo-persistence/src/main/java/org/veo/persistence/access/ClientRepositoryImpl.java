@@ -32,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
+import org.veo.persistence.access.jpa.UserConfigurationDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -41,14 +42,17 @@ public class ClientRepositoryImpl
     implements ClientRepository {
   private final ClientDataRepository clientDataRepository;
   private final DomainDataRepository domainDataRepository;
+  private final UserConfigurationDataRepository userConfigurationDataRepository;
 
   public ClientRepositoryImpl(
       ClientDataRepository dataRepository,
       DomainDataRepository domainDataRepository,
+      UserConfigurationDataRepository userConfigurationDataRepository,
       ValidationService validator) {
     super(dataRepository, validator);
     clientDataRepository = dataRepository;
     this.domainDataRepository = domainDataRepository;
+    this.userConfigurationDataRepository = userConfigurationDataRepository;
   }
 
   @Override
@@ -90,6 +94,8 @@ public class ClientRepositoryImpl
 
   @Override
   public void delete(Client client) {
+    userConfigurationDataRepository.deleteAll(
+        userConfigurationDataRepository.findUserConfigurationsByClient(client.getIdAsString()));
     domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getIdAsString()));
     client.setDomains(Set.of());
     super.delete(client);

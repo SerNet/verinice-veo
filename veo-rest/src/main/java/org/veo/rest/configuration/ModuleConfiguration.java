@@ -81,6 +81,7 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
@@ -198,6 +199,9 @@ import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
+import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
+import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
+import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
@@ -235,6 +239,23 @@ import org.veo.service.risk.RiskService;
  */
 @Configuration
 public class ModuleConfiguration {
+  @Bean
+  public SaveUserConfigurationUseCase saveUserConfigurationUseCase(
+      UserConfigurationRepository userConfigurationRepository, EntityFactory entityFactor) {
+    return new SaveUserConfigurationUseCase(userConfigurationRepository, entityFactor);
+  }
+
+  @Bean
+  public DeleteUserConfigurationUseCase deleteUserConfigurationUseCase(
+      UserConfigurationRepository userConfigurationRepository) {
+    return new DeleteUserConfigurationUseCase(userConfigurationRepository);
+  }
+
+  @Bean
+  public GetUserConfigurationUseCase getUserConfigurationUseCase(
+      UserConfigurationRepository userConfigurationRepository) {
+    return new GetUserConfigurationUseCase(userConfigurationRepository);
+  }
 
   @Bean
   public GetProfilesUseCase getProfilesUseCase(ProfileRepository profileRepository) {

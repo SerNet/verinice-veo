@@ -46,6 +46,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
@@ -67,6 +68,7 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
+import org.veo.persistence.entity.jpa.UserConfigurationData;
 
 public class EntityDataFactory implements EntityFactory {
 
@@ -239,5 +241,15 @@ public class EntityDataFactory implements EntityFactory {
     profile.setOwner(domainTemplate);
     domainTemplate.getProfiles().add(profile);
     return profile;
+  }
+
+  @Override
+  public UserConfiguration createUserConfiguration(
+      Client client, String username, String applicationId) {
+    UserConfigurationData userConfigurationData = new UserConfigurationData();
+    userConfigurationData.setClient(client);
+    userConfigurationData.setUserName(username);
+    userConfigurationData.setApplicationId(applicationId);
+    return userConfigurationData;
   }
 }
