@@ -57,9 +57,13 @@ public class VersioningEventListener {
         event.getEntity().getClass());
     var entity = event.getEntity();
 
-    if (entity instanceof Domain domain && event.getType() == PERSIST) {
-      log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
-      messageCreator.createDomainCreationMessage(domain);
+    if (entity instanceof Domain domain) {
+      if (event.getType() == PERSIST) {
+        log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
+        messageCreator.createDomainCreationMessage(domain);
+      }
+      // Do not create entity revisions for domains (they are too large)
+      return;
     }
 
     entity
