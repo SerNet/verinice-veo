@@ -52,7 +52,7 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
     }
     return new OutputData(
         clientRepository
-            .findAllWhereDomainTemplateNotApplied(Key.uuidFrom(input.domainTemplateId))
+            .findAllActiveWhereDomainTemplateNotApplied(Key.uuidFrom(input.domainTemplateId))
             .stream()
             .map(Identifiable::getId)
             .collect(Collectors.toSet()));

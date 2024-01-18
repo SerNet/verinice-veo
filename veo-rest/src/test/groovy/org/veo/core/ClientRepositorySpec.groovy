@@ -20,11 +20,11 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.ClientState
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.repository.DomainTemplateRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -312,10 +312,14 @@ class ClientRepositorySpec extends VeoSpringSpec {
                     newDomain(it),
                 ]
             },
+            newClient {
+                name = "c4"
+                state = ClientState.DEACTIVATED
+            }
         ])
 
         when:
-        def results = clientDataRepository.findAllWhereDomainTemplateNotApplied(domainTemplateA.idAsString)
+        def results = clientDataRepository.findAllActiveWhereDomainTemplateNotApplied(domainTemplateA.idAsString)
 
         then:
         results*.name ==~ ["c0", "c1"]

@@ -41,6 +41,10 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
   Optional<ClientData> findWithTranslationsByDbId(String id);
 
   @Query(
-      "select c from client c where not exists (select d from domain d where d.owner = c and d.domainTemplate.dbId = ?1)")
-  Set<ClientData> findAllWhereDomainTemplateNotApplied(String domainTemplateId);
+      """
+                   select c from client c
+                   where c.state = org.veo.core.entity.ClientState.ACTIVATED
+                   and not exists (select d from domain d where d.owner = c and d.domainTemplate.dbId = ?1)
+          """)
+  Set<ClientData> findAllActiveWhereDomainTemplateNotApplied(String domainTemplateId);
 }

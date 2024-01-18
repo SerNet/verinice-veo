@@ -80,9 +80,9 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Set<Client> findAllWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId) {
+  public Set<Client> findAllActiveWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId) {
     return clientDataRepository
-        .findAllWhereDomainTemplateNotApplied(domainTemplateId.uuidValue())
+        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId.uuidValue())
         .stream()
         .map(Client.class::cast)
         .collect(Collectors.toSet());
