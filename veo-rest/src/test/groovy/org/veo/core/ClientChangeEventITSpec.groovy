@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.veo.core
 
-import static org.veo.core.entity.Client.ClientState.ACTIVATED
-import static org.veo.core.entity.Client.ClientState.CREATED
-import static org.veo.core.entity.Client.ClientState.DEACTIVATED
-import static org.veo.core.entity.Client.ClientState.DELETED
+import static org.veo.core.entity.ClientState.ACTIVATED
+import static org.veo.core.entity.ClientState.CREATED
+import static org.veo.core.entity.ClientState.DEACTIVATED
+import static org.veo.core.entity.ClientState.DELETED
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
@@ -34,7 +34,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Client.ClientState
+import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.message.EventDispatcher

@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientState;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -34,7 +35,7 @@ import org.veo.core.entity.exception.NotFoundException;
  * methods - i.e. queries based on particular fields.
  */
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
-  static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == Client.ClientState.ACTIVATED;
+  static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == ClientState.ACTIVATED;
 
   Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
 

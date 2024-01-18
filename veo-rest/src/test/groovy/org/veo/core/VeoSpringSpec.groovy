@@ -36,6 +36,7 @@ import com.networknt.schema.ValidationMessage
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
+import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -168,7 +169,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     Client createTestClient() {
         return clientDataRepository.save(newClient {
             id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-            state = Client.ClientState.ACTIVATED
+            state = ClientState.ACTIVATED
         })
     }
 

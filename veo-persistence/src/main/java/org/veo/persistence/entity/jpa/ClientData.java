@@ -32,6 +32,7 @@ import jakarta.validation.Valid;
 import org.hibernate.annotations.Where;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientState;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;

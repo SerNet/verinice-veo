@@ -18,7 +18,7 @@
 package org.veo.listeners;
 
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
-import static org.veo.core.entity.Client.ClientState.DELETED;
+import static org.veo.core.entity.ClientState.DELETED;
 import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
 
 import org.springframework.context.event.EventListener;

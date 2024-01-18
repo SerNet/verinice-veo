@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.veo.core.entity.Client.ClientState.ACTIVATED
-import static org.veo.core.entity.Client.ClientState.DEACTIVATED
+import static org.veo.core.entity.ClientState.ACTIVATED
+import static org.veo.core.entity.ClientState.DEACTIVATED
 import static org.veo.core.entity.event.ClientEvent.ClientChangeType.DEACTIVATION
 import static org.veo.rest.configuration.WebMvcSecurityConfiguration.TESTCLIENT_UUID
 
