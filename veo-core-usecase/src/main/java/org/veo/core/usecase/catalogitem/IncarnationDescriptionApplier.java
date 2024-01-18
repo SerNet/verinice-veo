@@ -214,9 +214,10 @@ public class IncarnationDescriptionApplier {
       case SCOPE -> addScope(origin, target);
       case MEMBER -> addScope(target, origin);
       case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItem);
-      default -> throw new IllegalArgumentException(
-          "Unexpected tailoring reference type %s"
-              .formatted(tailoringReference.getReferenceType()));
+      default ->
+          throw new IllegalArgumentException(
+              "Unexpected tailoring reference type %s"
+                  .formatted(tailoringReference.getReferenceType()));
     }
   }
 

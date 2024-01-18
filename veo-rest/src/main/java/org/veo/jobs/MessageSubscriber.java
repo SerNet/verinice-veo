@@ -85,8 +85,8 @@ public class MessageSubscriber {
       var content = objectMapper.readTree(event.getContent());
       var eventType = content.get("eventType").asText();
       switch (eventType) {
-        case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> handleElementTypeDefinitionUpdate(
-            content);
+        case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE ->
+            handleElementTypeDefinitionUpdate(content);
         default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
       }
     } catch (Exception e) {

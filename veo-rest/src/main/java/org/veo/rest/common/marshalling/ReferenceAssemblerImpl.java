@@ -303,18 +303,18 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String targetReferenceOf(RequirementImplementation requirementImplementation) {
     return trimVariables(
         switch (requirementImplementation.getOrigin().getModelType()) {
-          case Asset.SINGULAR_TERM -> linkToRequirementImplementation(
-                  AssetController.class, requirementImplementation)
-              .withRel(AssetController.URL_BASE_PATH)
-              .getHref();
-          case Process.SINGULAR_TERM -> linkToRequirementImplementation(
-                  ProcessController.class, requirementImplementation)
-              .withRel(ProcessController.URL_BASE_PATH)
-              .getHref();
-          case Scope.SINGULAR_TERM -> linkToRequirementImplementation(
-                  ScopeController.class, requirementImplementation)
-              .withRel(ScopeController.URL_BASE_PATH)
-              .getHref();
+          case Asset.SINGULAR_TERM ->
+              linkToRequirementImplementation(AssetController.class, requirementImplementation)
+                  .withRel(AssetController.URL_BASE_PATH)
+                  .getHref();
+          case Process.SINGULAR_TERM ->
+              linkToRequirementImplementation(ProcessController.class, requirementImplementation)
+                  .withRel(ProcessController.URL_BASE_PATH)
+                  .getHref();
+          case Scope.SINGULAR_TERM ->
+              linkToRequirementImplementation(ScopeController.class, requirementImplementation)
+                  .withRel(ScopeController.URL_BASE_PATH)
+                  .getHref();
           default -> throw new IllegalArgumentException();
         });
   }
@@ -323,18 +323,18 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String requirementImplementationsOf(ControlImplementation controlImplementation) {
     return trimVariables(
         switch (controlImplementation.getOwner().getModelType()) {
-          case Asset.SINGULAR_TERM -> linkToRequirementImplementations(
-                  AssetController.class, controlImplementation)
-              .withRel(AssetController.URL_BASE_PATH)
-              .getHref();
-          case Process.SINGULAR_TERM -> linkToRequirementImplementations(
-                  ProcessController.class, controlImplementation)
-              .withRel(ProcessController.URL_BASE_PATH)
-              .getHref();
-          case Scope.SINGULAR_TERM -> linkToRequirementImplementations(
-                  ScopeController.class, controlImplementation)
-              .withRel(ScopeController.URL_BASE_PATH)
-              .getHref();
+          case Asset.SINGULAR_TERM ->
+              linkToRequirementImplementations(AssetController.class, controlImplementation)
+                  .withRel(AssetController.URL_BASE_PATH)
+                  .getHref();
+          case Process.SINGULAR_TERM ->
+              linkToRequirementImplementations(ProcessController.class, controlImplementation)
+                  .withRel(ProcessController.URL_BASE_PATH)
+                  .getHref();
+          case Scope.SINGULAR_TERM ->
+              linkToRequirementImplementations(ScopeController.class, controlImplementation)
+                  .withRel(ScopeController.URL_BASE_PATH)
+                  .getHref();
           default -> throw new IllegalArgumentException();
         });
   }
