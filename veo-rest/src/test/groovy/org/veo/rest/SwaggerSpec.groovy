@@ -277,7 +277,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 }
                 with(potentialImpactReasons) {
                     type == "object"
-                    description == "An optional reason for the chosen specific potential impact in each category."
+                    description == "The reason for the chosen user-defined potential impact in each category."
                 }
                 with(potentialImpactExplanations) {
                     type == "object"

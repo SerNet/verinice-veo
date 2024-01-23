@@ -47,8 +47,8 @@ public class ImpactValuesDto implements PotentialImpactValues {
   private Map<String, ImpactRef> potentialImpactsEffective;
 
   @Schema(
-      description = "An optional reason for the chosen specific potential impact in each category.",
-      example = "{\"C\":\"MANUAL\",\n\"A\":\"DISTRIBUTION\"}")
+      description = "The reason for the chosen user-defined potential impact in each category.",
+      example = "{\"C\":\"impact_reason_manual\",\n\"A\":\"impact_reason_distributive\"}")
   private Map<String, ImpactReason> potentialImpactReasons;
 
   @Schema(
@@ -59,7 +59,7 @@ public class ImpactValuesDto implements PotentialImpactValues {
 
   @Schema(
       description =
-          "The reason for the effective impact. This is either the one chosen by the user for a specific impact, or the used calculation method if the value was determined automatically.",
-      example = "{\"C\":\"MANUAL\",\n\"A\":\"HIGH_WATER_MARK\"}")
+          "The reason for the effective impact. This is either the one chosen by the user for a specific impact, or the used calculation method if the value was determined automatically. The values are always translation keys.",
+      example = "{\"C\":\"impact_reason_manual\",\n\"A\":\"impact_method_high_water_mark\"}")
   private Map<String, String> potentialImpactEffectiveReasons;
 }
