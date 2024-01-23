@@ -287,6 +287,58 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ex.message == "Impact value 10 for category 'C' is out of range"
     }
 
+    def "can't specify a reason without a user-defined impact"() {
+        when:
+        post("/domains/$domainId/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                        "I": ImpactReason.CUMULATIVE.translationKey
+                    ]
+                ]
+            ]
+        ], 422)
+
+        then:
+        def ex = thrown(Exception)
+        ex.message == "Cannot set impact reason for category 'I' (user-defined impact value absent)"
+    }
+
+    def "can't specify an explanation without a user-defined impact"() {
+        when:
+        post("/domains/$domainId/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                    ],
+                    potentialImpactExplanations: [
+                        "I": "I don't know what I'm talking about"
+                    ]
+                ]
+            ]
+        ], 422)
+
+        then:
+        def ex = thrown(Exception)
+        ex.message == "Cannot set impact explanation for category 'I' (user-defined impact value absent)"
+    }
+
     // TODO #2585 remove (automatism is only needed until the frontend can manage the impact maps correctly)
     def "reasons and explanations are auto-removed (for legacy clients)"() {
         given:

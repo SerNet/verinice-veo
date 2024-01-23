@@ -19,6 +19,7 @@ package org.veo.core.usecase.base;
 
 import java.util.Map;
 
+import org.veo.core.entity.exception.RiskConsistencyException;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
@@ -53,6 +54,41 @@ class RiskValuesValidator {
         (riskDefRef, impact) -> {
           var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
           impact.potentialImpacts().forEach(validator::validate);
+          // TODO #2663 Add a test for this. This validation becomes relevant when the automatism
+          // that sets all missing reasons to MANUAL is removed.
+          impact
+              .potentialImpacts()
+              .keySet()
+              .forEach(
+                  cat -> {
+                    if (!impact.potentialImpactReasons().containsKey(cat)) {
+                      throw new RiskConsistencyException(
+                          "Reason missing for user-defined impact value in category '%s'"
+                              .formatted(cat.getIdRef()));
+                    }
+                  });
+          impact
+              .potentialImpactReasons()
+              .keySet()
+              .forEach(
+                  cat -> {
+                    if (!impact.potentialImpacts().containsKey(cat)) {
+                      throw new RiskConsistencyException(
+                          "Cannot set impact reason for category '%s' (user-defined impact value absent)"
+                              .formatted(cat.getIdRef()));
+                    }
+                  });
+          impact
+              .potentialImpactExplanations()
+              .keySet()
+              .forEach(
+                  cat -> {
+                    if (!impact.potentialImpacts().containsKey(cat)) {
+                      throw new RiskConsistencyException(
+                          "Cannot set impact explanation for category '%s' (user-defined impact value absent)"
+                              .formatted(cat.getIdRef()));
+                    }
+                  });
         });
   }
 }
