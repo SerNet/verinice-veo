@@ -23,7 +23,7 @@ import java.util.Map;
  * This represent an associated array of impact values, it describes one impact value. The impact
  * value is a vector with each {@link CategoryRef} as dimension index.
  */
-public interface RiskImpactValues {
+public interface PotentialImpactValues {
   /** Map of categorized {@link CategoryRef} impact values * */
   Map<String, ImpactRef> getPotentialImpacts();
 }

@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.risk.RiskImpactValues;
+import org.veo.core.entity.risk.PotentialImpactValues;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -37,7 +37,7 @@ public interface ScopeDomainAssociationState extends RiskImpactDomainAssociation
       implements ScopeDomainAssociationState {
 
     String riskDefinition;
-    Map<String, ? extends RiskImpactValues> riskValues;
+    Map<String, ? extends PotentialImpactValues> riskValues;
 
     public ScopeDomainAssociationStateImpl(
         ITypedId<Domain> domain,
@@ -46,7 +46,7 @@ public interface ScopeDomainAssociationState extends RiskImpactDomainAssociation
         Set<CustomAspectState> customAspects,
         Set<CustomLinkState> customLinks,
         String riskDefinition,
-        Map<String, ? extends RiskImpactValues> riskValues) {
+        Map<String, ? extends PotentialImpactValues> riskValues) {
       super(domain, subType, status, customAspects, customLinks);
       this.riskDefinition = riskDefinition;
       this.riskValues = riskValues;

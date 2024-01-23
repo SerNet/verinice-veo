@@ -22,31 +22,31 @@ import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.risk.RiskImpactValues;
+import org.veo.core.entity.risk.PotentialImpactValues;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 public interface RiskImpactDomainAssociationState extends DomainAssociationState {
 
-  Map<String, ? extends RiskImpactValues> getRiskValues();
+  Map<String, ? extends PotentialImpactValues> getRiskValues();
 
   @Value
   @EqualsAndHashCode(callSuper = true)
   class RiskImpactDomainAssociationStateImpl extends DomainAssociationStateImpl
       implements RiskImpactDomainAssociationState {
 
-    Map<String, ? extends RiskImpactValues> riskValues;
+    Map<String, ? extends PotentialImpactValues> riskValues;
 
     public RiskImpactDomainAssociationStateImpl(
         ITypedId<Domain> domain,
         String subType,
         String status,
-        Map<String, ? extends RiskImpactValues> riskValues,
+        Map<String, ? extends PotentialImpactValues> impactValues,
         Set<CustomAspectState> customAspects,
         Set<CustomLinkState> customLinks) {
       super(domain, subType, status, customAspects, customLinks);
-      this.riskValues = riskValues;
+      this.riskValues = impactValues;
     }
   }
 }

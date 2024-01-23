@@ -49,9 +49,9 @@ import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImpactValues;
+import org.veo.core.entity.risk.PotentialImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.entity.risk.RiskImpactValues;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
 import org.veo.core.entity.state.ControlDomainAssociationState;
@@ -377,7 +377,7 @@ public class EntityStateMapper {
   }
 
   private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
-      Map<String, ? extends RiskImpactValues> riskValues, Domain domain) {
+      Map<String, ? extends PotentialImpactValues> riskValues, Domain domain) {
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
@@ -388,7 +388,7 @@ public class EntityStateMapper {
 
   private ImpactValues mapImpactValues(
       String riskDefinitionId,
-      RiskImpactValues value,
+      PotentialImpactValues value,
       DomainRiskReferenceProvider referenceProvider) {
     return new ImpactValues(
         value.getPotentialImpacts().entrySet().stream()
