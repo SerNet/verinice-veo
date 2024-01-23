@@ -25,8 +25,8 @@ import java.util.Set;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.state.PotentialImpactDomainAssociationState;
 import org.veo.core.entity.state.ProcessState;
-import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -42,7 +42,7 @@ import lombok.ToString;
         "A series of activities that uses organization resources to transform input into results - this DTO represents a process from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractProcessInDomainDto
     extends AbstractCompositeElementInDomainDto<Process>
-    implements ProcessState, RiskImpactDomainAssociationState, RiskAffectedDto<Process> {
+    implements ProcessState, PotentialImpactDomainAssociationState, RiskAffectedDto<Process> {
 
   @Override
   @Schema(example = "External wage accounting")

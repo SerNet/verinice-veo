@@ -30,7 +30,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
-import org.veo.core.entity.state.RiskImpactDomainAssociationState
+import org.veo.core.entity.state.PotentialImpactDomainAssociationState
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.service.EntityStateMapper
@@ -63,7 +63,7 @@ class EntityStateMapperSpec extends Specification {
 
         dto.controlImplementationStates >> []
         dto.getDomainAssociationStates() >> [
-            Mock(RiskImpactDomainAssociationState) {
+            Mock(PotentialImpactDomainAssociationState) {
                 subType >> "foo"
                 status >> "NEW_FOO"
                 riskValues >> [:]
@@ -71,7 +71,7 @@ class EntityStateMapperSpec extends Specification {
                 customLinkStates >> []
                 customAspectStates >> []
             },
-            Mock(RiskImpactDomainAssociationState) {
+            Mock(PotentialImpactDomainAssociationState) {
                 subType >> "bar"
                 status >> "NEW_BAR"
                 riskValues >> [:]

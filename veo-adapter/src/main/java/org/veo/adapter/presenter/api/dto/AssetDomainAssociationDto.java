@@ -24,7 +24,7 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
-import org.veo.core.entity.state.RiskImpactDomainAssociationState.RiskImpactDomainAssociationStateImpl;
+import org.veo.core.entity.state.PotentialImpactDomainAssociationState.PotentialImpactDomainAssociationStateImpl;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,7 +37,7 @@ public class AssetDomainAssociationDto extends ImpactDomainAssociationDto {
       ITypedId<Domain> domain,
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
-    return new RiskImpactDomainAssociationStateImpl(
+    return new PotentialImpactDomainAssociationStateImpl(
         domain, subType, status, riskValues, customAspectStates, customLinkStates);
   }
 }

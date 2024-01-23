@@ -25,7 +25,7 @@ import java.util.Set;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.state.RiskImpactDomainAssociationState;
+import org.veo.core.entity.state.PotentialImpactDomainAssociationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -40,7 +40,7 @@ import lombok.ToString;
     description =
         "A material or immaterial object deemed valuable, such as a server, an application or a piece of information - this DTO represents an asset from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementInDomainDto<Asset>
-    implements RiskImpactDomainAssociationState, RiskAffectedDto<Asset> {
+    implements PotentialImpactDomainAssociationState, RiskAffectedDto<Asset> {
 
   @Override
   @Schema(example = "Email server")

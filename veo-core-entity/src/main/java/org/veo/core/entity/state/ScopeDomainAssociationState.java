@@ -27,7 +27,7 @@ import org.veo.core.entity.risk.PotentialImpactValues;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-public interface ScopeDomainAssociationState extends RiskImpactDomainAssociationState {
+public interface ScopeDomainAssociationState extends PotentialImpactDomainAssociationState {
 
   String getRiskDefinition();
 

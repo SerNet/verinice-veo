@@ -60,9 +60,9 @@ import org.veo.core.entity.state.ControlRiskValuesState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.state.PotentialImpactDomainAssociationState;
 import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.entity.state.RiskAffectedState;
-import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
@@ -255,14 +255,16 @@ public class EntityStateMapper {
               process.setImpactValues(
                   domain,
                   mapImpactValues(
-                      ((RiskImpactDomainAssociationState) association).getRiskValues(), domain));
+                      ((PotentialImpactDomainAssociationState) association).getRiskValues(),
+                      domain));
     } else if (target instanceof Asset asset) {
       customMapper =
           (domain, association) ->
               asset.setImpactValues(
                   domain,
                   mapImpactValues(
-                      ((RiskImpactDomainAssociationState) association).getRiskValues(), domain));
+                      ((PotentialImpactDomainAssociationState) association).getRiskValues(),
+                      domain));
     } else if (target instanceof Scope scope) {
       customMapper =
           (domain, association) -> {

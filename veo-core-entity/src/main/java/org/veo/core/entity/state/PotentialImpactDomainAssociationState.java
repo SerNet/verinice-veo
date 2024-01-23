@@ -27,18 +27,18 @@ import org.veo.core.entity.risk.PotentialImpactValues;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-public interface RiskImpactDomainAssociationState extends DomainAssociationState {
+public interface PotentialImpactDomainAssociationState extends DomainAssociationState {
 
   Map<String, ? extends PotentialImpactValues> getRiskValues();
 
   @Value
   @EqualsAndHashCode(callSuper = true)
-  class RiskImpactDomainAssociationStateImpl extends DomainAssociationStateImpl
-      implements RiskImpactDomainAssociationState {
+  class PotentialImpactDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements PotentialImpactDomainAssociationState {
 
     Map<String, ? extends PotentialImpactValues> riskValues;
 
-    public RiskImpactDomainAssociationStateImpl(
+    public PotentialImpactDomainAssociationStateImpl(
         ITypedId<Domain> domain,
         String subType,
         String status,
