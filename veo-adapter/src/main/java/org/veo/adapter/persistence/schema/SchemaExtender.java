@@ -36,7 +36,7 @@ import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.ImpactValuesDto;
 import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.core.entity.Asset;
@@ -69,8 +69,7 @@ public class SchemaExtender {
   private final Supplier<ObjectNode> customAspectDto = provider.schema(CustomAspectDto.class);
   private final Supplier<ObjectNode> customLinkDto = provider.schema(CustomLinkDto.class);
   private final Supplier<ObjectNode> linkDto = provider.schema(LinkDto.class);
-  private final Supplier<ObjectNode> impactRiskValuesDto =
-      provider.schema(ImpactRiskValuesDto.class);
+  private final Supplier<ObjectNode> impactValuesDto = provider.schema(ImpactValuesDto.class);
   private final Map<String, Supplier<ObjectNode>> domainAssociationDtoByElementType =
       Arrays.stream(ElementTypeDtoInfo.values())
           .collect(
@@ -300,7 +299,7 @@ public class SchemaExtender {
         .getRiskDefinitions()
         .forEach(
             (riskDefId, riskDef) -> {
-              var riskDefinitionSchema = impactRiskValuesDto.get();
+              var riskDefinitionSchema = impactValuesDto.get();
               riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
               var potentialImpactsSchema =
                   (ObjectNode) riskDefinitionSchema.get(PROPS).get("potentialImpacts");

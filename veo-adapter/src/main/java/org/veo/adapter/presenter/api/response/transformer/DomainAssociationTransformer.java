@@ -38,7 +38,7 @@ import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.ImpactValuesDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
@@ -111,9 +111,9 @@ public class DomainAssociationTransformer {
     return riskValuesDto;
   }
 
-  private ImpactRiskValuesDto mapImpactRiskValuesToDto(
+  private ImpactValuesDto mapImpactRiskValuesToDto(
       Map.Entry<RiskDefinitionRef, ImpactValues> entry) {
-    var riskValuesDto = new ImpactRiskValuesDto();
+    var riskValuesDto = new ImpactValuesDto();
     riskValuesDto.setPotentialImpacts(
         entry.getValue().potentialImpacts().entrySet().stream()
             .collect(Collectors.toMap(e -> e.getKey().getIdRef(), Entry::getValue)));
@@ -144,17 +144,17 @@ public class DomainAssociationTransformer {
             newStructure));
   }
 
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Process source, Domain domain) {
+  public Map<String, ImpactValuesDto> mapRiskValues(Process source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
         .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
   }
 
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Scope source, Domain domain) {
+  public Map<String, ImpactValuesDto> mapRiskValues(Scope source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
         .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
   }
 
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Asset source, Domain domain) {
+  public Map<String, ImpactValuesDto> mapRiskValues(Asset source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
         .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
   }

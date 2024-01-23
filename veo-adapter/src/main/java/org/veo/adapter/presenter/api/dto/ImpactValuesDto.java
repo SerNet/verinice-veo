@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ImpactRiskValuesDto implements PotentialImpactValues {
+public class ImpactValuesDto implements PotentialImpactValues {
   @Schema(
       description = "Potential impacts for a set of risk categories",
       example = "{\"C\":2,\n\"I\":3}")
