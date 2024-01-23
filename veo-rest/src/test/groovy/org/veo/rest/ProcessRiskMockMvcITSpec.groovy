@@ -277,4 +277,43 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         IllegalArgumentException ex = thrown()
         ex.message == "Impact value 10 for category 'C' is out of range"
     }
+
+    def "null values are removed from maps"() {
+        when:
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": null,
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                        "I": null,
+                    ],
+                    potentialImpactExplanations: [
+                        "C": "Nothing to say",
+                        "I": null,
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        then:
+        with(parseJson(get("/domains/$domainId/processes/$processId")).riskValues.myFirstRiskDefinition) {
+            potentialImpacts == [
+                C: 0
+            ]
+            potentialImpactReasons == [
+                C: ImpactReason.MANUAL.translationKey
+            ]
+            potentialImpactExplanations == [
+                "C": "Nothing to say"
+            ]
+        }
+    }
 }

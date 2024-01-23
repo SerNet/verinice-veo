@@ -418,6 +418,7 @@ public class EntityStateMapper {
       return newHashMap(5);
     }
     return values.entrySet().stream()
+        .filter(e -> e.getValue() != null)
         .collect(
             Collectors.toMap(
                 e -> toCategoryRef(e.getKey(), riskDefinitionId, referenceProvider),
