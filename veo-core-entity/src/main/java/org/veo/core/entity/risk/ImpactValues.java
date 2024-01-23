@@ -64,6 +64,11 @@ public record ImpactValues(
     if (potentialImpactExplanations == null) {
       potentialImpactExplanations = newHashMap(5);
     }
+    // TODO #2663 remove this automatism (the API client will have to ensure consistent impact maps)
+    // Use MANUAL as default reason
+    for (var cat : potentialImpacts.keySet()) {
+      potentialImpactReasons.putIfAbsent(cat, MANUAL);
+    }
   }
 
   public ImpactValues(Map<CategoryRef, ImpactRef> potentialImpacts) {

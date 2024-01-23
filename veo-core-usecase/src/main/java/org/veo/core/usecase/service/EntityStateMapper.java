@@ -20,6 +20,7 @@ package org.veo.core.usecase.service;
 import static java.util.HashMap.newHashMap;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -256,7 +257,8 @@ public class EntityStateMapper {
                   domain,
                   mapImpactValues(
                       ((PotentialImpactDomainAssociationState) association).getRiskValues(),
-                      domain));
+                      domain,
+                      process.getImpactValues(domain)));
     } else if (target instanceof Asset asset) {
       customMapper =
           (domain, association) ->
@@ -264,7 +266,8 @@ public class EntityStateMapper {
                   domain,
                   mapImpactValues(
                       ((PotentialImpactDomainAssociationState) association).getRiskValues(),
-                      domain));
+                      domain,
+                      asset.getImpactValues(domain)));
     } else if (target instanceof Scope scope) {
       customMapper =
           (domain, association) -> {
@@ -275,7 +278,9 @@ public class EntityStateMapper {
             scope.setImpactValues(
                 domain,
                 mapImpactValues(
-                    ((ScopeDomainAssociationState) association).getRiskValues(), domain));
+                    ((ScopeDomainAssociationState) association).getRiskValues(),
+                    domain,
+                    scope.getImpactValues(domain)));
           };
     } else if (target instanceof Control control) {
       customMapper =
@@ -379,7 +384,9 @@ public class EntityStateMapper {
   }
 
   private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
-      Map<String, ? extends PotentialImpactValues> riskValues, Domain domain) {
+      Map<String, ? extends PotentialImpactValues> riskValues,
+      Domain domain,
+      Map<RiskDefinitionRef, ImpactValues> currentImpactValues) {
     if (riskValues == null || riskValues.isEmpty()) {
       return newHashMap(5);
     }
@@ -388,13 +395,33 @@ public class EntityStateMapper {
         .collect(
             Collectors.toMap(
                 e -> referenceProvider.getRiskDefinitionRef(e.getKey()),
-                e -> mapImpactValues(e.getKey(), e.getValue(), referenceProvider)));
+                e ->
+                    mapImpactValues(
+                        e.getKey(),
+                        e.getValue(),
+                        currentImpactValues.getOrDefault(
+                            referenceProvider.getRiskDefinitionRef(e.getKey()),
+                            new ImpactValues(new HashMap<>())),
+                        referenceProvider)));
   }
 
   private ImpactValues mapImpactValues(
       String riskDefinitionId,
       PotentialImpactValues values,
+      ImpactValues currentValues, // TODO #2663 remove
       DomainRiskReferenceProvider referenceProvider) {
+    // TODO #2663 Remove this automatism (it is only needed as long as the frontend cannot manage
+    // the new impact maps correctly).
+    // For all removed potential impacts values, automatically remove the corresponding reason and
+    // explanation as well.
+    currentValues.potentialImpacts().keySet().stream()
+        .map(CategoryRef::getIdRef)
+        .filter(cat -> !values.getPotentialImpacts().containsKey(cat))
+        .forEach(
+            removedCat -> {
+              values.getPotentialImpactReasons().remove(removedCat);
+              values.getPotentialImpactExplanations().remove(removedCat);
+            });
     return new ImpactValues(
         mapToCategories(values.getPotentialImpacts(), riskDefinitionId, referenceProvider),
         mapToCategories(

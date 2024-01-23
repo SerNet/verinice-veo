@@ -139,6 +139,9 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
                 potentialImpactsEffective.size() == 1
                 potentialImpactsEffective.C == 1
+
+                potentialImpactReasons.size() == 1
+                potentialImpactReasons.C == ImpactReason.MANUAL.translationKey
             }
         }
 
@@ -175,6 +178,9 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                 potentialImpacts.C == 1
                 potentialImpacts.I == 2
 
+                potentialImpactReasons.C == ImpactReason.MANUAL.translationKey
+                potentialImpactReasons.I == ImpactReason.MANUAL.translationKey
+
                 potentialImpactsEffective.C == 1
                 potentialImpactsEffective.I == 2
             }
@@ -184,6 +190,9 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             with(myThirdRiskDefinition) {
                 potentialImpacts.C == 2
                 potentialImpacts.I == 0
+
+                potentialImpactReasons.C == ImpactReason.MANUAL.translationKey
+                potentialImpactReasons.I == ImpactReason.MANUAL.translationKey
 
                 potentialImpactsEffective.C == 2
                 potentialImpactsEffective.I == 0
@@ -276,6 +285,53 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "Impact value 10 for category 'C' is out of range"
+    }
+
+    // TODO #2585 remove (automatism is only needed until the frontend can manage the impact maps correctly)
+    def "reasons and explanations are auto-removed (for legacy clients)"() {
+        given:
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 2,
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                        "I": ImpactReason.CUMULATIVE.translationKey,
+                    ],
+                    potentialImpactExplanations: [
+                        "C": "Manual labor is tough",
+                        "I": "Isn't there some way to automate this?",
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when:
+        get("/domains/$domainId/processes/$processId").with{
+            def body = parseJson(it)
+            body.riskValues.myFirstRiskDefinition.potentialImpacts.remove("C")
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        then:
+        with(parseJson(get("/domains/$domainId/processes/$processId")).riskValues.myFirstRiskDefinition) {
+            potentialImpacts == [
+                "I": 2,
+            ]
+            potentialImpactReasons == [
+                "I": ImpactReason.CUMULATIVE.translationKey,
+            ]
+            potentialImpactExplanations == [
+                "I": "Isn't there some way to automate this?",
+            ]
+        }
     }
 
     def "null values are removed from maps"() {
