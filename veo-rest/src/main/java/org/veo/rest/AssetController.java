@@ -113,7 +113,7 @@ import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
@@ -357,8 +357,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     assetDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateAssetUseCase,
-        new ModifyElementUseCase.InputData<>(
-            id, assetDto, getClient(user), eTag, user.getUsername()),
+        new InputData<>(id, assetDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

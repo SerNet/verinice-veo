@@ -20,10 +20,21 @@ package org.veo.core.entity.risk;
 import java.util.Map;
 
 /**
- * This represent an associated array of impact values, it describes one impact value. The impact
- * value is a vector with each {@link CategoryRef} as dimension index.
+ * This represents a collection of impact values. The impact values are categorized by a {@link
+ * CategoryRef} as dimension index.
  */
 public interface PotentialImpactValues {
-  /** Map of categorized {@link CategoryRef} impact values * */
+  /** Map of categorized specific {@link CategoryRef} impact values */
   Map<String, ImpactRef> getPotentialImpacts();
+
+  /**
+   * Map of categorized {@link CategoryRef} impact values calculated by the high-water mark method.
+   */
+  Map<String, ImpactRef> getPotentialImpactsCalculated();
+
+  /** For each category, the reason for the chosen specific potential impact. */
+  Map<String, ImpactReason> getPotentialImpactReasons();
+
+  /** For each category, any optional explanations for the potential impact values. */
+  Map<String, String> getPotentialImpactExplanations();
 }

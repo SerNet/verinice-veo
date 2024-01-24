@@ -33,6 +33,7 @@ import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionRuleRef;
 import org.veo.core.entity.risk.CategoryRef;
+import org.veo.core.entity.risk.ImpactReason;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.ProbabilityRef;
@@ -312,6 +313,26 @@ public class ReferenceSerializationModule extends SimpleModule {
           @Override
           public Locale deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return Locale.forLanguageTag(p.getValueAsString());
+          }
+        });
+
+    addSerializer(
+        ImpactReason.class,
+        new JsonSerializer<>() {
+          @Override
+          public void serialize(
+              ImpactReason reason, JsonGenerator gen, SerializerProvider serializers)
+              throws IOException {
+            gen.writeString(reason.getTranslationKey());
+          }
+        });
+    addDeserializer(
+        ImpactReason.class,
+        new JsonDeserializer<>() {
+          @Override
+          public ImpactReason deserialize(JsonParser p, DeserializationContext ctxt)
+              throws IOException {
+            return ImpactReason.fromTranslationKey(p.getValueAsString());
           }
         });
   }

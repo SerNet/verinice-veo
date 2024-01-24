@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.service;
 
+import static java.util.HashMap.newHashMap;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.util.Map;
@@ -47,7 +48,6 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
-import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
@@ -380,6 +380,9 @@ public class EntityStateMapper {
 
   private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
       Map<String, ? extends PotentialImpactValues> riskValues, Domain domain) {
+    if (riskValues == null || riskValues.isEmpty()) {
+      return newHashMap(5);
+    }
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
@@ -390,23 +393,43 @@ public class EntityStateMapper {
 
   private ImpactValues mapImpactValues(
       String riskDefinitionId,
-      PotentialImpactValues value,
+      PotentialImpactValues values,
       DomainRiskReferenceProvider referenceProvider) {
     return new ImpactValues(
-        value.getPotentialImpacts().entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), Entry::getValue)));
+        mapToCategories(values.getPotentialImpacts(), riskDefinitionId, referenceProvider),
+        mapToCategories(
+            values.getPotentialImpactsCalculated(), riskDefinitionId, referenceProvider),
+        mapToCategories(values.getPotentialImpactReasons(), riskDefinitionId, referenceProvider),
+        mapToCategories(
+            values.getPotentialImpactExplanations(), riskDefinitionId, referenceProvider));
+  }
+
+  /**
+   * Maps a map of categorized values with String keys to a map of values with {@link CategoryRef}
+   * as key. Categories are defined in a particular risk definition so this method needs the risk
+   * definition ID and a reference provider to find and create the {@link CategoryRef} instances. It
+   * ensures that categories exist for the provided category IDs.
+   */
+  private <T> Map<CategoryRef, T> mapToCategories(
+      Map<String, T> values,
+      String riskDefinitionId,
+      DomainRiskReferenceProvider referenceProvider) {
+    if (values == null) {
+      return newHashMap(5);
+    }
+    return values.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                e -> toCategoryRef(e.getKey(), riskDefinitionId, referenceProvider),
+                Entry::getValue));
   }
 
   private CategoryRef toCategoryRef(
-      String riskDefinitionId,
-      DomainRiskReferenceProvider referenceProvider,
-      Entry<String, ImpactRef> e) {
-    return referenceProvider.getCategoryRef(riskDefinitionId, e.getKey());
+      String categoryKey, String riskDefinitionId, DomainRiskReferenceProvider referenceProvider) {
+    return referenceProvider.getCategoryRef(riskDefinitionId, categoryKey);
   }
 
-  RiskDefinitionRef toRiskDefinitionRef(String riskDefId, Domain domain) {
+  private RiskDefinitionRef toRiskDefinitionRef(String riskDefId, Domain domain) {
     if (riskDefId == null) {
       return null;
     }

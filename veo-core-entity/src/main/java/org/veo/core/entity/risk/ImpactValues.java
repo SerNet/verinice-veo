@@ -17,16 +17,90 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+import static java.util.HashMap.newHashMap;
+import static java.util.function.Function.identity;
+import static org.veo.core.entity.risk.ImpactMethod.HIGH_WATER_MARK;
+import static org.veo.core.entity.risk.ImpactReason.MANUAL;
+
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * Holds risk related info for an element. A {@link ImpactValues} object is only valid for a certain
- * risk definition.
+ * Holds risk-related information for an element. An {@link ImpactValues} object is only valid for a
+ * certain risk definition.
+ *
+ * <p>Contains the following information:
+ *
+ * <ul>
+ *   <li>potentialImpacts: The specific potential impact values for each category
+ *   <li>calculatedPotentialImpacts: The high-water-mark impact values for each category as
+ *       determined by the risk service
+ *   <li>effectivePotentialImpacts: The specific impact if one exists, otherwise the calculated
+ *       impact.
+ *   <li>specificPotentialImpactReason: The reason for the chosen specific impact in each category
+ *   <li>potentialImpactExplanations: An additional explanation for each category
+ *   <li>potentialImpactEffectiveReasons: The reason for the effective impact. This is either the
+ *       one chosen by the user for a specific impact, or the used calculation method if the value
+ *       was determined automatically.
+ * </ul>
  */
-public record ImpactValues(@NotNull Map<CategoryRef, ImpactRef> potentialImpacts) {
+public record ImpactValues(
+    @NotNull Map<CategoryRef, ImpactRef> potentialImpacts,
+    Map<CategoryRef, ImpactRef> potentialImpactsCalculated,
+    Map<CategoryRef, ImpactReason> potentialImpactReasons,
+    Map<CategoryRef, String> potentialImpactExplanations) {
+
   public ImpactValues {
-    potentialImpacts = Map.copyOf(potentialImpacts);
+    if (potentialImpactReasons == null) {
+      potentialImpactReasons = newHashMap(5);
+    }
+    if (potentialImpactExplanations == null) {
+      potentialImpactExplanations = newHashMap(5);
+    }
+  }
+
+  public ImpactValues(Map<CategoryRef, ImpactRef> potentialImpacts) {
+    this(potentialImpacts, newHashMap(5), newHashMap(5), newHashMap(5));
+  }
+
+  /**
+   * For each category, return the specific value if present. Otherwise, return the calculated
+   * value. The effective value is the one that should be used for any further impact calculations,
+   * i.e. during risk analysis. It allows the user to work with calculated values by default but
+   * being able to override them with specific values if necessary.
+   */
+  @JsonProperty(access = READ_ONLY)
+  public Map<CategoryRef, ImpactRef> getPotentialImpactsEffective() {
+    return Stream.of(potentialImpacts, potentialImpactsCalculated)
+        .filter(Objects::nonNull)
+        .flatMap(map -> map.keySet().stream())
+        .collect(
+            Collectors.toMap(
+                identity(),
+                key -> potentialImpacts.getOrDefault(key, potentialImpactsCalculated.get(key))));
+  }
+
+  @JsonProperty(access = READ_ONLY)
+  public Map<CategoryRef, String> getPotentialImpactEffectiveReasons() {
+    return Stream.of(potentialImpacts, potentialImpactsCalculated)
+        .filter(Objects::nonNull)
+        .flatMap(map -> map.keySet().stream())
+        .collect(Collectors.toMap(identity(), this::determineEffectiveReasonMessage));
+  }
+
+  private String determineEffectiveReasonMessage(CategoryRef cat) {
+    // If there is a specific impact, return the given reason for it.
+    // If there is no specific impact, return the method used to calculate the impact.
+    // NOTE: currently this is always the high-water-mark method
+    return potentialImpacts.containsKey(cat)
+        ? potentialImpactReasons.getOrDefault(cat, MANUAL).getTranslationKey()
+        : HIGH_WATER_MARK.getTranslationKey();
   }
 }

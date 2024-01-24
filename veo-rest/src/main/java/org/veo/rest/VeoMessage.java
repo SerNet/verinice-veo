@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.core.entity.risk.ImpactMethod.Constants.HIGH_WATER_MARK;
+import static org.veo.core.entity.risk.ImpactReason.Constants.CUMULATIVE;
+import static org.veo.core.entity.risk.ImpactReason.Constants.DISTRIBUTIVE;
+import static org.veo.core.entity.risk.ImpactReason.Constants.MANUAL;
+
 /**
  * The keys for the static veo i18n. All entries will be looked up in the application message and
  * sent to the front-end via the {@link org.veo.rest.schemas.controller.TranslationController}.
@@ -47,7 +52,17 @@ public enum VeoMessage {
   SCENARIO("scenario"),
   SCENARIOS("scenarios"),
   SCOPE("scope"),
-  SCOPES("scopes");
+  SCOPES("scopes"),
+  IMPACT_REASON_CUMULATIVE(CUMULATIVE),
+  IMPACT_REASON_DISTRIBUTION(DISTRIBUTIVE),
+  IMPACT_REASON_MANUAL(MANUAL),
+
+  IMPACT_METHOD_HIGH_WATER_MARK(HIGH_WATER_MARK),
+
+  IMPACT_METHOD_HIGH_WATER_MARK_ABBREVIATION(HIGH_WATER_MARK + Constants.ABBREVIATION_SUFFIX),
+  IMPACT_REASON_CUMULATIVE_ABBREVIATION(CUMULATIVE + Constants.ABBREVIATION_SUFFIX),
+  IMPACT_REASON_DISTRIBUTIVE_ABBREVIATION(DISTRIBUTIVE + Constants.ABBREVIATION_SUFFIX),
+  IMPACT_REASON_MANUAL_ABBREVIATION(MANUAL + Constants.ABBREVIATION_SUFFIX);
 
   private final String messageKey;
 
@@ -57,5 +72,9 @@ public enum VeoMessage {
 
   public String getMessageKey() {
     return messageKey;
+  }
+
+  private static class Constants {
+    public static final String ABBREVIATION_SUFFIX = "_abbreviation";
   }
 }

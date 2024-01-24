@@ -39,6 +39,11 @@ public interface ScopeDomainAssociationState extends PotentialImpactDomainAssoci
     String riskDefinition;
     Map<String, ? extends PotentialImpactValues> riskValues;
 
+    @Override
+    public Map<String, ? extends PotentialImpactValues> getRiskValues() {
+      return riskValues;
+    }
+
     public ScopeDomainAssociationStateImpl(
         ITypedId<Domain> domain,
         String subType,

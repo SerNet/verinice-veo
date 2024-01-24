@@ -17,12 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
@@ -54,6 +55,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.ImplementationStatusRef;
@@ -98,7 +100,7 @@ public class DomainAssociationTransformer {
 
   public Map<String, ControlRiskValuesDto> mapRiskValues(Control source, Domain domain) {
     return source.getRiskValues(domain).entrySet().stream()
-        .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapControlRiskValuesToDto));
+        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapControlRiskValuesToDto));
   }
 
   private ControlRiskValuesDto mapControlRiskValuesToDto(
@@ -111,13 +113,26 @@ public class DomainAssociationTransformer {
     return riskValuesDto;
   }
 
-  private ImpactValuesDto mapImpactRiskValuesToDto(
-      Map.Entry<RiskDefinitionRef, ImpactValues> entry) {
-    var riskValuesDto = new ImpactValuesDto();
-    riskValuesDto.setPotentialImpacts(
-        entry.getValue().potentialImpacts().entrySet().stream()
-            .collect(Collectors.toMap(e -> e.getKey().getIdRef(), Entry::getValue)));
-    return riskValuesDto;
+  private ImpactValuesDto mapImpactValuesToDto(Map.Entry<RiskDefinitionRef, ImpactValues> entry) {
+    var dto = new ImpactValuesDto();
+    var impactValue = entry.getValue();
+
+    dto.setPotentialImpacts(categoryRefToString(impactValue.potentialImpacts()));
+    dto.setPotentialImpactsCalculated(
+        categoryRefToString(impactValue.potentialImpactsCalculated()));
+    dto.setPotentialImpactsEffective(
+        categoryRefToString(impactValue.getPotentialImpactsEffective()));
+    dto.setPotentialImpactReasons(categoryRefToString(impactValue.potentialImpactReasons()));
+    dto.setPotentialImpactExplanations(
+        categoryRefToString(impactValue.potentialImpactExplanations()));
+    dto.setPotentialImpactEffectiveReasons(
+        categoryRefToString(impactValue.getPotentialImpactEffectiveReasons()));
+
+    return dto;
+  }
+
+  private <T> Map<String, T> categoryRefToString(Map<CategoryRef, T> inputMap) {
+    return inputMap.entrySet().stream().collect(toMap(e -> e.getKey().getIdRef(), Entry::getValue));
   }
 
   public void mapDomainsToDto(Document source, AbstractDocumentDto target, boolean newStructure) {
@@ -146,17 +161,17 @@ public class DomainAssociationTransformer {
 
   public Map<String, ImpactValuesDto> mapRiskValues(Process source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
-        .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
+        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapImpactValuesToDto));
   }
 
   public Map<String, ImpactValuesDto> mapRiskValues(Scope source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
-        .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
+        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapImpactValuesToDto));
   }
 
   public Map<String, ImpactValuesDto> mapRiskValues(Asset source, Domain domain) {
     return source.getImpactValues(domain).entrySet().stream()
-        .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto));
+        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapImpactValuesToDto));
   }
 
   public void mapDomainsToDto(Scenario source, AbstractScenarioDto target, boolean newStructure) {
@@ -173,7 +188,7 @@ public class DomainAssociationTransformer {
 
   public Map<String, ScenarioRiskValuesDto> mapRiskValues(Scenario source, Domain domain) {
     return source.getPotentialProbability(domain).entrySet().stream()
-        .collect(Collectors.toMap(kv -> kv.getKey().getIdRef(), this::mapScenarioRiskValuesToDto));
+        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapScenarioRiskValuesToDto));
   }
 
   private ScenarioRiskValuesDto mapScenarioRiskValuesToDto(
@@ -214,7 +229,7 @@ public class DomainAssociationTransformer {
       Element source, Function<Domain, T> supplier, boolean newStructure) {
     return source.getDomains().stream()
         .collect(
-            Collectors.toMap(
+            toMap(
                 domain -> domain.getId().uuidValue(),
                 domain -> {
                   var association = supplier.apply(domain);

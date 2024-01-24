@@ -234,7 +234,7 @@ class SwaggerSpec extends VeoSpringSpec {
         processImpactValuesSchema.description == '''Key is risk definition ID, value contains impact values in the context of that risk definition.'''
         def potentialImpactsSchema = processImpactValuesSchema.properties.potentialImpacts
         potentialImpactsSchema.type == "object"
-        potentialImpactsSchema.description == "Potential impacts for a set of risk categories"
+        potentialImpactsSchema.description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
         potentialImpactsSchema.example == [C:2, I:3]
     }
 
@@ -260,11 +260,30 @@ class SwaggerSpec extends VeoSpringSpec {
         ]
 
         with(schemas.ImpactValuesDto) {
-            description == '''Key is risk definition ID, value contains impact values in the context of that risk definition.'''
-            def potentialImpactsSchema = properties.potentialImpacts
-            potentialImpactsSchema.type == "object"
-            potentialImpactsSchema.description == "Potential impacts for a set of risk categories"
-            potentialImpactsSchema.example == [C:2, I:3]
+            description == "Key is risk definition ID, value contains impact values in the context of that risk definition."
+            with(properties) {
+                with(potentialImpacts) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
+                    example == [C:2, I:3]
+                }
+                with(potentialImpactsCalculated) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are calculated values based on the high water mark."
+                }
+                with(potentialImpactsEffective) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are either the specific or the calculated values."
+                }
+                with(potentialImpactReasons) {
+                    type == "object"
+                    description == "An optional reason for the chosen specific potential impact in each category."
+                }
+                with(potentialImpactExplanations) {
+                    type == "object"
+                    description == "An optional explanation for the user-entered specific potential impact."
+                }
+            }
         }
     }
 

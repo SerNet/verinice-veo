@@ -43,7 +43,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/** Holds risk related info for an element in a specific domain. */
+/** Holds impact related information for an element in a specific domain. */
 @Entity(name = "impact_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
@@ -60,6 +60,7 @@ class ImpactValuesAspectData extends AspectData {
   @Type(JsonType.class)
   Map<RiskDefinitionRef, ImpactValues> values;
 
+  @Deprecated()
   public void setValues(Map<RiskDefinitionRef, ImpactValues> values) {
     if (values == null) {
       throw new IllegalArgumentException("The impact values need to be set.");

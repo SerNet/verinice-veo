@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
+import org.veo.core.entity.risk.ImpactReason;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.PotentialImpactValues;
 
@@ -28,7 +29,37 @@ import lombok.Data;
 @Data
 public class ImpactValuesDto implements PotentialImpactValues {
   @Schema(
-      description = "Potential impacts for a set of risk categories",
+      description =
+          "Potential impacts for a set of risk categories. These are specific values entered by the user directly.",
       example = "{\"C\":2,\n\"I\":3}")
   private Map<String, ImpactRef> potentialImpacts;
+
+  @Schema(
+      description =
+          "Potential impacts for a set of risk categories. These are calculated values based on the high water mark.",
+      example = "{\"C\":2,\n\"A\":3}")
+  private Map<String, ImpactRef> potentialImpactsCalculated;
+
+  @Schema(
+      description =
+          "Potential impacts for a set of risk categories. These are either the specific or the calculated values.",
+      example = "{\"C\":2,\n\"A\":1}")
+  private Map<String, ImpactRef> potentialImpactsEffective;
+
+  @Schema(
+      description = "An optional reason for the chosen specific potential impact in each category.",
+      example = "{\"C\":\"MANUAL\",\n\"A\":\"DISTRIBUTION\"}")
+  private Map<String, ImpactReason> potentialImpactReasons;
+
+  @Schema(
+      description = "An optional explanation for the user-entered specific potential impact.",
+      example =
+          "{\"C\":\"Confidentiality based on processed data.\",\n\"A\":\"Availability is distributed to redundant machines and therefore lower.\"}")
+  private Map<String, String> potentialImpactExplanations;
+
+  @Schema(
+      description =
+          "The reason for the effective impact. This is either the one chosen by the user for a specific impact, or the used calculation method if the value was determined automatically.",
+      example = "{\"C\":\"MANUAL\",\n\"A\":\"HIGH_WATER_MARK\"}")
+  private Map<String, String> potentialImpactEffectiveReasons;
 }

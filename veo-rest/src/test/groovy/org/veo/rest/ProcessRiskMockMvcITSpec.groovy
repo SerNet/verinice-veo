@@ -20,10 +20,10 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.RiskConsistencyException
+import org.veo.core.entity.risk.ImpactReason
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -33,6 +33,8 @@ import org.veo.persistence.access.UnitRepositoryImpl
 @WithUserDetails("user@domain.example")
 class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
+    public static final String EVERYTHING_WRONG = "Sometimes everything is wrong Now it's time to sing along"
+    public static final String TOO_MUCH = "If you think you've had too much Of this life, well hang on"
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired
@@ -79,6 +81,14 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                             potentialImpacts: [
                                 "C": 0,
                                 "I": 1
+                            ],
+                            potentialImpactReasons: [
+                                "C": ImpactReason.MANUAL.translationKey,
+                                "I": ImpactReason.CUMULATIVE.translationKey
+                            ],
+                            potentialImpactExplanations: [
+                                "C": EVERYTHING_WRONG,
+                                "I": TOO_MUCH
                             ]
                         ],
                         mySecondRiskDefinition: [
@@ -96,11 +106,41 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         def processETag = getETag(getProcessResponse)
         def retrievedProcess = parseJson(getProcessResponse)
 
-        then: "the retrieved risk values are complete"
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.size() == 2
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == 0
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.I == 1
-        retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.potentialImpacts.C == 1
+        then: "the retrieved impact values are complete"
+        with(retrievedProcess.domains[domainId].riskValues) {
+            with(myFirstRiskDefinition) {
+                potentialImpacts.size() == 2
+                potentialImpacts.C == 0
+                potentialImpacts.I == 1
+
+                potentialImpactsCalculated.size() == 0
+
+                potentialImpactsEffective.size() == 2
+                potentialImpactsEffective.C == 0
+                potentialImpactsEffective.I == 1
+
+                potentialImpactReasons.size() == 2
+                potentialImpactReasons.C == ImpactReason.MANUAL.translationKey
+                potentialImpactReasons.I == ImpactReason.CUMULATIVE.translationKey
+
+                potentialImpactExplanations.size() == 2
+                potentialImpactExplanations.C == ProcessRiskMockMvcITSpec.EVERYTHING_WRONG
+                potentialImpactExplanations.I == ProcessRiskMockMvcITSpec.TOO_MUCH
+
+                potentialImpactEffectiveReasons.size() == 2
+                potentialImpactEffectiveReasons.C == ImpactReason.MANUAL.translationKey
+                potentialImpactEffectiveReasons.I == ImpactReason.CUMULATIVE.translationKey
+            }
+
+            with(mySecondRiskDefinition) {
+                potentialImpacts.C == 1
+
+                potentialImpactsCalculated.size() == 0
+
+                potentialImpactsEffective.size() == 1
+                potentialImpactsEffective.C == 1
+            }
+        }
 
         when: "updating the risk values on the process"
         put("/processes/$processId", [
@@ -117,8 +157,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                             ]
                         ],
                         myThirdRiskDefinition: [
-                            potentialImpacts: [ "C": 1,
-                                "I": 2
+                            potentialImpacts: [ "C": 2,
+                                "I": 0
                             ]
                         ]
                     ]
@@ -130,10 +170,25 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         def updatedProcess = parseJson(get("/processes/$processId"))
 
         then: "the changes have been applied"
-        updatedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == 1
-        updatedProcess.domains[domainId].riskValues.mySecondRiskDefinition == null
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.C == 1
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == 2
+        with(updatedProcess.domains[domainId].riskValues) {
+            with(myFirstRiskDefinition) {
+                potentialImpacts.C == 1
+                potentialImpacts.I == 2
+
+                potentialImpactsEffective.C == 1
+                potentialImpactsEffective.I == 2
+            }
+
+            mySecondRiskDefinition == null
+
+            with(myThirdRiskDefinition) {
+                potentialImpacts.C == 2
+                potentialImpacts.I == 0
+
+                potentialImpactsEffective.C == 2
+                potentialImpactsEffective.I == 0
+            }
+        }
     }
 
     def "can't create process with wrong riskdefinition id"() {
