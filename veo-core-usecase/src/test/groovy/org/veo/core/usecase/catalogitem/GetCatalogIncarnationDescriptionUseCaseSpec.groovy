@@ -18,6 +18,7 @@
 package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.Control
+import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
