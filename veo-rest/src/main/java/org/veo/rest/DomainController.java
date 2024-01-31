@@ -75,6 +75,7 @@ import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -95,6 +96,7 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.GetInspectionUseCase;
 import org.veo.core.usecase.domain.GetInspectionsUseCase;
+import org.veo.core.usecase.profile.GetIncarnationConfigurationUseCase;
 import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
@@ -139,6 +141,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final ApplyJsonProfileUseCase applyJsonProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
+  private final GetIncarnationConfigurationUseCase getIncarnationConfigurationUseCase;
   private final GetProfileItemsUseCase getProfileItemsUseCase;
   private final GetProfileItemUseCase getProfileItemUseCase;
   private final GetProfilesUseCase getProfilesUseCase;
@@ -218,6 +221,20 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             ExportDomainUseCase.OutputData::getExportDomain);
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @GetMapping("/{domainId}/incarnation-configuration")
+  @Operation(summary = "Loads the incarnation configuration for the domain")
+  public @Valid Future<IncarnationConfiguration> getIncarnationConfiguration(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId) {
+    return useCaseInteractor.execute(
+        getIncarnationConfigurationUseCase,
+        new GetIncarnationConfigurationUseCase.InputData(
+            getAuthenticatedClient(auth), Key.uuidFrom(domainId)),
+        GetIncarnationConfigurationUseCase.OutputData::getIncarnationConfiguration);
   }
 
   @GetMapping("/{domainId}/profiles")

@@ -175,10 +175,12 @@ import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
+import org.veo.core.usecase.profile.GetIncarnationConfigurationUseCase;
 import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
+import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -255,6 +257,18 @@ public class ModuleConfiguration {
   public GetUserConfigurationUseCase getUserConfigurationUseCase(
       UserConfigurationRepository userConfigurationRepository) {
     return new GetUserConfigurationUseCase(userConfigurationRepository);
+  }
+
+  @Bean
+  public GetIncarnationConfigurationUseCase getIncarnationConfigurationUseCase(
+      DomainRepository domainRepository) {
+    return new GetIncarnationConfigurationUseCase(domainRepository);
+  }
+
+  @Bean
+  public SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase(
+      DomainRepository domainRepository) {
+    return new SaveIncarnationConfigurationUseCase(domainRepository);
   }
 
   @Bean

@@ -80,6 +80,7 @@ import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.decision.Decision;
@@ -105,6 +106,7 @@ import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
+import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
@@ -132,6 +134,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
+  private final SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
   private final SaveInspectionUseCase saveInspectionUseCase;
   private final SaveRiskDefinitionUseCase saveRiskDefinitionUseCase;
@@ -233,6 +236,25 @@ public class ContentCreationController extends AbstractVeoController {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Cannot parse object schema.");
     }
+  }
+
+  @PutMapping("/domains/{domainId}/incarnation-configuration")
+  @Operation(
+      summary =
+          "Update the incarnation config for this domain. This determines the default parameters when incarnating catalog items.")
+  @ApiResponse(responseCode = "204", description = "Incarnation config updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveIncarnationConfiguration(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(hidden = true) ServletWebRequest request,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestBody IncarnationConfiguration incarnationConfiguration) {
+    return useCaseInteractor.execute(
+        saveIncarnationConfigurationUseCase,
+        new SaveIncarnationConfigurationUseCase.InputData(
+            getClient(user), Key.uuidFrom(domainId), incarnationConfiguration),
+        empty -> ResponseEntity.noContent().build());
   }
 
   @PutMapping("/domains/{domainId}/decisions/{decisionKey}")

@@ -20,6 +20,7 @@ package org.veo.rest
 import java.nio.charset.StandardCharsets
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -667,6 +668,74 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         txTemplate.execute {
             domainDataRepository.findById(domainId).get().profiles.empty
         }
+    }
+
+    @WithUserDetails("content-creator")
+    def "update incarnation config"() {
+        when:
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", [
+            mode: "MANUAL",
+            useExistingIncarnations: "NEVER",
+            include: ["LINK", "LINK_EXTERNAL"],
+        ], 204)
+
+        then:
+        with(parseJson(get("/domains/$testDomain.idAsString/incarnation-configuration"))) {
+            size() == 3
+            mode == "MANUAL"
+            useExistingIncarnations == "NEVER"
+            include ==~ ["LINK", "LINK_EXTERNAL"]
+        }
+
+        when:
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", [
+            mode: "DEFAULT",
+            useExistingIncarnations: "ALWAYS",
+            exclude: ["LINK", "LINK_EXTERNAL"],
+        ], 204)
+
+        then:
+        with(parseJson(get("/domains/$testDomain.idAsString/incarnation-configuration"))) {
+            size() == 3
+            mode == "DEFAULT"
+            useExistingIncarnations == "ALWAYS"
+            exclude ==~ ["LINK", "LINK_EXTERNAL"]
+        }
+    }
+
+    @WithUserDetails("content-creator")
+    def "incarnation config is validated"() {
+        when: "omitting useExistingIncarnations"
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", [
+            mode: "MANUAL",
+            exclude: ["LINK", "LINK_EXTERNAL"],
+        ], 400)
+
+        then:
+        def ex = thrown(HttpMessageNotReadableException)
+        ex.message.endsWith "useExistingIncarnations is marked non-null but is null"
+
+        when: "omitting mode"
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", [
+            useExistingIncarnations: "ALWAYS",
+            exclude: ["LINK", "LINK_EXTERNAL"],
+        ], 400)
+
+        then:
+        ex = thrown(HttpMessageNotReadableException)
+        ex.message.endsWith "mode is marked non-null but is null"
+
+        when: "trying to combine allow-list and deny-list"
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", [
+            mode: "MANUAL",
+            useExistingIncarnations: "NEVER",
+            include: ["LINK", "LINK_EXTERNAL"],
+            exclude: ["SCOPE"],
+        ], 422)
+
+        then:
+        ex = thrown(HttpMessageNotReadableException)
+        ex.message.endsWith "Cannot combine include and exclude lists (at least one of them must be null)"
     }
 
     @WithUserDetails("content-creator")
