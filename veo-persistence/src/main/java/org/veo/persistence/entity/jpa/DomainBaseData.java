@@ -33,8 +33,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -45,6 +49,7 @@ import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -94,6 +99,10 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "inspection_set_id")
   protected InspectionSetData inspectionSet = new InspectionSetData();
+
+  @NotNull
+  @Type(JsonType.class)
+  private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
 
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {

@@ -59,6 +59,13 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   void applyElementTypeDefinition(ElementTypeDefinition definition);
 
+  /**
+   * The default behavior when creating incarnation descriptions for catalog items from this domain
+   */
+  IncarnationConfiguration getIncarnationConfiguration();
+
+  void setIncarnationConfiguration(IncarnationConfiguration incarnationConfiguration);
+
   default Optional<ElementTypeDefinition> findElementTypeDefinition(String type) {
     return getElementTypeDefinitions().stream()
         .filter(d -> d.getElementType().equals(type))
