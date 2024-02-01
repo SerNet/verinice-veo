@@ -49,7 +49,7 @@ class DomainCreationRestTest extends DomainRestTest {
             domainTemplate == null
         }
 
-        when: "defining an element type, decision & inspection in the domain"
+        when: "defining an element type, decision, inspection & incarnation config in the domain"
         postAssetObjectSchema(domainId)
         put("/content-creation/domains/${domainId}/decisions/truthy", [
             name: [en: "Decision that always outputs true"],
@@ -70,6 +70,10 @@ class DomainCreationRestTest extends DomainRestTest {
                 [type: "addPart"]
             ]
         ], null, 201, CONTENT_CREATOR)
+        get("/domains/$domainId/incarnation-configuration").with {
+            body.exclude = ["COMPOSITE"]
+            put("/content-creation/domains/$domainId/incarnation-configuration", body, getETag(), 204, CONTENT_CREATOR)
+        }
 
         and: "adding the domain to the unit"
         get("/units/$unitId").with{
@@ -105,10 +109,13 @@ class DomainCreationRestTest extends DomainRestTest {
         secondaryClientDomain.authority == "JJ"
         secondaryClientDomain.templateVersion == "1.0.0"
 
-        and: "it contains the decision & inspection"
+        and: "it contains the decision, inspection & incarnation config"
         secondaryClientDomain.decisions.truthy.elementSubType == "server"
         with(get("/domains/${secondaryClientDomain.id}/inspections/alwaysAddPart", 200, SECONDARY_CLIENT_USER).body) {
             condition.type == "constant"
+        }
+        with(get("/domains/$secondaryClientDomain.id/incarnation-configuration", 200, SECONDARY_CLIENT_USER).body) {
+            exclude == ["COMPOSITE"]
         }
 
         and: "an element can be created in the domain"

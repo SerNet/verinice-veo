@@ -32,6 +32,7 @@ import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.VeoConstants;
+import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.inspection.Inspection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -64,4 +65,6 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implement
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 
   private Map<String, Inspection> inspections = new HashMap<>();
+
+  private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
 }

@@ -197,6 +197,7 @@ public final class DtoToEntityTransformer {
             .collect(Collectors.toSet()));
     target.setDecisions(source.getDecisions());
     target.setInspections(source.getInspections());
+    target.setIncarnationConfiguration(source.getIncarnationConfiguration());
     target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
     target.setCatalogItems(
         source.getCatalogItems().stream()
