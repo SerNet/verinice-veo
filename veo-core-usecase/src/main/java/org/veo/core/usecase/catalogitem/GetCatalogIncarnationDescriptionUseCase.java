@@ -75,12 +75,17 @@ public class GetCatalogIncarnationDescriptionUseCase
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
 
-    var tailoringReferenceFilter = createTailoringReferenceFilter(input.exclude, input.include);
     var requestedItems = loadCatalogItems(input.getCatalogItemIds(), input.authenticatedClient);
-    var requestType =
-        Optional.ofNullable(input.requestType).orElse(IncarnationRequestModeType.DEFAULT);
+    var config =
+        createConfig(requestedItems, input.requestType, input.lookup, input.exclude, input.include);
+    var tailoringReferenceFilter = config.createTailoringReferenceFilter();
     var itemsToElements =
-        collectAllItems(requestedItems, tailoringReferenceFilter, requestType, input.lookup, unit);
+        collectAllItems(
+            requestedItems,
+            tailoringReferenceFilter,
+            config.mode(),
+            config.useExistingIncarnations(),
+            unit);
     var incarnationDescriptions =
         itemsToElements.entrySet().stream()
             // Only create incarnation descriptions for items without an existing incarnation.
@@ -239,7 +244,7 @@ public class GetCatalogIncarnationDescriptionUseCase
     @NotNull Key<UUID> unitId;
     @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
-    @NotNull IncarnationLookup lookup;
+    IncarnationLookup lookup;
     Set<TailoringReferenceType> include;
     Set<TailoringReferenceType> exclude;
   }

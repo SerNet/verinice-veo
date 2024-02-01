@@ -20,8 +20,11 @@ package org.veo.core.entity;
 import static java.util.Collections.unmodifiableSet;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 import jakarta.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 
@@ -59,5 +62,15 @@ public record IncarnationConfiguration(
 
   public IncarnationConfiguration() {
     this(IncarnationRequestModeType.DEFAULT, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null);
+  }
+
+  @JsonIgnore
+  public Predicate<TailoringReferenceTyped> createTailoringReferenceFilter() {
+    if (include != null) {
+      return t -> include.contains(t.getReferenceType());
+    } else if (exclude != null) {
+      return t -> !exclude.contains(t.getReferenceType());
+    }
+    return t -> true;
   }
 }

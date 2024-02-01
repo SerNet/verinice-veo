@@ -157,7 +157,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(
               description =
                   "Specify when existing incarnations in the unit should be used instead of creating a new incarnation")
-          @RequestParam(required = false, defaultValue = "FOR_REFERENCED_ITEMS")
+          @RequestParam(required = false)
           IncarnationLookup useExistingIncarnations,
       @Parameter(
               description =

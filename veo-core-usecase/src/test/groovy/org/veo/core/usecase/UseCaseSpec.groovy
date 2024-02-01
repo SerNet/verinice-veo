@@ -19,6 +19,7 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.IncarnationConfiguration
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -49,6 +50,7 @@ abstract class UseCaseSpec extends Specification {
     def setup() {
         existingDomain = Mock()
         existingDomain.modelInterface >> Domain.class
+        existingDomain.incarnationConfiguration >> new IncarnationConfiguration()
 
         def id1 = Key.newUuid()
         Client client = Mock()

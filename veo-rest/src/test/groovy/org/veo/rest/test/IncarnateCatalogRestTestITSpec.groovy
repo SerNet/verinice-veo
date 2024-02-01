@@ -239,6 +239,27 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
     }
 
+    def "Incarnation config determines default behavior"() {
+        given: "an item with a link reference"
+        def domainId = copyDomain(testDomainId)
+        def itemIds = getCatalogItemIdsByNames(domainId, ["Control-cc-1"])
+
+        expect: "that the item and its linked item should be incarnated"
+        get("/units/$unitId/incarnations?itemIds=$itemIds").body.parameters.size() == 2
+
+        when: "excluding link references in the domain's incarnation config"
+        get("/domains/$domainId/incarnation-configuration").with{
+            body.exclude = ["LINK"]
+            put("/content-creation/domains/$domainId/incarnation-configuration", body, getETag(), 204, UserType.CONTENT_CREATOR)
+        }
+
+        then: "only the item itself would be incarnated"
+        get("/units/$unitId/incarnations?itemIds=$itemIds").body.parameters.size() == 1
+
+        and: "the default behavior can be overridden"
+        get("/units/$unitId/incarnations?itemIds=$itemIds&exclude=").body.parameters.size() == 2
+    }
+
     private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT", String useExistingIncarnations = "FOR_REFERENCED_ITEMS") {
         def itemIds = getCatalogItemIdsByNames(domainId, selectedItemNames)
         return get("/units/$unitId/incarnations?itemIds=$itemIds&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
