@@ -238,8 +238,8 @@ public class GetCatalogIncarnationDescriptionUseCase
     @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
     @NotNull IncarnationLookup lookup;
-    List<TailoringReferenceType> include;
-    List<TailoringReferenceType> exclude;
+    Set<TailoringReferenceType> include;
+    Set<TailoringReferenceType> exclude;
   }
 
   @Valid

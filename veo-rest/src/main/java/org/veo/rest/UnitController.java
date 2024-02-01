@@ -30,6 +30,7 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -162,12 +163,12 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               description =
                   "The request mode allows to control the included references in the incarnation description.")
           @RequestParam(name = "include", required = false)
-          List<TailoringReferenceType> include,
+          Set<TailoringReferenceType> include,
       @Parameter(
               description =
                   "The request mode allows to control the excluded references in the incarnation description.")
           @RequestParam(name = "exclude", required = false)
-          List<TailoringReferenceType> exclude) {
+          Set<TailoringReferenceType> exclude) {
 
     Client client = getAuthenticatedClient(auth);
     Key<UUID> containerId = Key.uuidFrom(unitId);

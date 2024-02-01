@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -85,7 +86,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
   }
 
   Predicate<TailoringReferenceTyped> createTailoringReferenceFilter(
-      List<TailoringReferenceType> exclude, List<TailoringReferenceType> include) {
+      Set<TailoringReferenceType> exclude, Set<TailoringReferenceType> include) {
     Predicate<TailoringReferenceTyped> filter = t -> true;
     if (exclude != null && !exclude.isEmpty()) {
       filter = t -> !exclude.contains(t.getReferenceType());
