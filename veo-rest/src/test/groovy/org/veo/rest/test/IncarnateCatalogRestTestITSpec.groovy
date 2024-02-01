@@ -240,10 +240,15 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT", String useExistingIncarnations = "FOR_REFERENCED_ITEMS") {
-        def itemIds = getCatalogItems(domainId)
+        def itemIds = getCatalogItemIdsByNames(domainId, selectedItemNames)
+        return get("/units/$unitId/incarnations?itemIds=$itemIds&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
+    }
+
+    private String getCatalogItemIdsByNames(String domainId, List<String> selectedItemNames) {
+        getCatalogItems(domainId)
                 .findAll { selectedItemNames == null || selectedItemNames.contains(it.name) }
                 *.id
-        return get("/units/$unitId/incarnations?itemIds=${itemIds.join(',')}&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
+                .join(",")
     }
 
     private postIncarnationDescriptions(incarnationDescriptions, expectSuccess = true) {
