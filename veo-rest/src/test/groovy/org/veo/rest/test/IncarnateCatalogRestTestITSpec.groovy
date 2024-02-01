@@ -179,7 +179,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def error = get("/units/${unitId}/incarnations?itemIds=${allItems.join(',')}&mode=TEST", 400).body
 
         then: "an error messages is returned"
-        error.message ==~/No enum constant org.veo.core.usecase.catalogitem.IncarnationRequestModeType.TEST/
+        error.message ==~/No enum constant org.veo.core.entity.IncarnationRequestModeType.TEST/
     }
 
     def "Create linked elements from the dsgvo catalog"() {

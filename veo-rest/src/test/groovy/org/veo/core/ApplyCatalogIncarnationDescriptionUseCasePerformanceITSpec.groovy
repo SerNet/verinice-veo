@@ -31,6 +31,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationLookup
+import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
@@ -38,7 +39,6 @@ import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase
-import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository

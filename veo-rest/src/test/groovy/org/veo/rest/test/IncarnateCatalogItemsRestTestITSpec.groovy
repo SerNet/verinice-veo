@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
+import org.veo.core.entity.IncarnationRequestModeType
 
 class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     final def UNIT_NAME = 'incarnate catalog item test unit'
