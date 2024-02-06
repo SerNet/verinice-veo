@@ -888,7 +888,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ])).resourceId
 
         and: "applying the profile to it"
-        post("/domains/${domain1.idAsString}/profilesnew/${domain1.profiles[0].idAsString}/units/${unitId}",[:], 204)
+        post("/domains/${domain1.idAsString}/profiles/${domain1.profiles[0].idAsString}/incarnation?unit=${unitId}",[:], 204)
 
         and: "export the unit"
         def exportedUnit = parseJson(get("/units/${unitId}/export"))
@@ -922,13 +922,13 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we applying a non existent profile to the unit"
-        post("/domains/${domain1.idAsString}/profilesnew/${UUID.randomUUID()}/units/${unitId}",[:], 404)
+        post("/domains/${domain1.idAsString}/profiles/${UUID.randomUUID()}/incarnation?unit=${unitId}",[:], 404)
 
         then: "it is not found"
         thrown(NotFoundException)
 
         when: "we applying an existent profile to the unit with random domain"
-        post("/domains/${UUID.randomUUID()}/profilesnew/${domain1.profiles[0].idAsString}/units/${unitId}",[:], 404)
+        post("/domains/${UUID.randomUUID()}/profiles/${domain1.profiles[0].idAsString}/incarnation?unit=${unitId}",[:], 404)
 
         then: "it is not found"
         thrown(NotFoundException)

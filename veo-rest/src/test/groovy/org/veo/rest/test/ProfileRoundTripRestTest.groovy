@@ -188,7 +188,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 [targetUri: "/domains/$newDomainInOtherClientId"]
             ]
         ], 201, SECONDARY_CLIENT_USER).body.resourceId
-        post("/domains/$newDomainInOtherClientId/profilesnew/$profileInOtherClientId/units/$unitInOtherClientId", null, 204, SECONDARY_CLIENT_USER)
+        post("/domains/$newDomainInOtherClientId/profiles/$profileInOtherClientId/incarnation?unit=$unitInOtherClientId", null, 204, SECONDARY_CLIENT_USER)
 
         then: "the original elements have been recreated in the other client"
         with(get("/domains/$newDomainInOtherClientId/assets", 200, SECONDARY_CLIENT_USER).body.items) {

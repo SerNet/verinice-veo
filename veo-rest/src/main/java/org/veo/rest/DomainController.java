@@ -512,8 +512,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         out -> ResponseEntity.noContent().build());
   }
 
-  @PostMapping("/{id}/profilesnew/{profileId}/units/{unitId}")
-  @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
+  @PostMapping("/{id}/profiles/{profileId}/incarnation")
+  @Operation(summary = "Incarnates all profile items in the unit.")
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "404", description = "Unit not found")
@@ -521,7 +521,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable @Pattern(regexp = UUID_REGEX) String id,
       @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
+      @RequestParam(name = UNIT_PARAM) @Pattern(regexp = UUID_REGEX) String unitId) {
     return useCaseInteractor
         .execute(
             getProfileIncarnationDescriptionUseCase,
@@ -542,6 +542,25 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(
                         getAuthenticatedClient(auth), Key.uuidFrom(unitId), references),
                     out -> ResponseEntity.noContent().build()));
+  }
+
+  @PostMapping("/{id}/profilesnew/{profileId}/units/{unitId}")
+  @Operation(
+      summary =
+          "Incarnates all profile items in the unit. DEPRECATED: use POST "
+              + URL_BASE_PATH
+              + "/{domainId}/profiles/{profileId}/incarnation",
+      deprecated = true)
+  @ApiResponse(responseCode = "204", description = "Profile applied")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Unit not found")
+  @Deprecated
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfilenew(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
+    return applyProfile(auth, id, profileId, unitId);
   }
 
   @InitBinder
