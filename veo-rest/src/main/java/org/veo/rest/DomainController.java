@@ -487,10 +487,16 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   }
 
   @PostMapping("/{id}/profiles/{profileKey}/units/{unitId}")
-  @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
+  @Operation(
+      summary =
+          "Apply a profile to a unit. Adds all profile elements & risks to the unit. DEPRECATED: use POST "
+              + URL_BASE_PATH
+              + "/{domainId}/profiles/{profileId}/incarnation",
+      deprecated = true)
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "404", description = "Unit not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyJsonProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable @Pattern(regexp = UUID_REGEX) String id,
