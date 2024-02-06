@@ -1664,7 +1664,13 @@
       "impactInheritingLinks": {
         "process": [
           "process_requiredApplications",
-          "process_requiredITSystems"
+          "process_requiredITSystems",
+          "process_PIADataProcessing"
+        ],
+        "asset": [
+          "asset_asset_app",
+          "asset_asset_dat",
+          "asset_asset_it"
         ]
       }
     }
@@ -4069,9 +4075,28 @@
           }
         }
       },
-      "links": {},
+      "links": {
+        "asset_asset_app": {
+          "attributeDefinitions": {},
+          "targetType": "asset",
+          "targetSubType": "AST_Application"
+        },
+        "asset_asset_dat": {
+          "attributeDefinitions": {},
+          "targetType": "asset",
+          "targetSubType": "AST_Datatype"
+        },
+        "asset_asset_it": {
+          "attributeDefinitions": {},
+          "targetType": "asset",
+          "targetSubType": "AST_IT-System"
+        }
+      },
       "translations": {
         "de": {
+          "asset_asset_app": "->app",
+          "asset_asset_dat": "->dat",
+          "asset_asset_it": "->it",
           "asset_generalInformation_document": "Dokument",
           "asset_details_number": "Anzahl",
           "asset_details_operatingStage": "Betriebsstadium",
@@ -4102,6 +4127,9 @@
           "asset_AST_IT-System_status_ARCHIVED": "Archiviert"
         },
         "en": {
+          "asset_asset_app": "->app",
+          "asset_asset_dat": "->dat",
+          "asset_asset_it": "->it",
           "asset_generalInformation_document": "Document",
           "asset_details_number": "Number",
           "asset_details_operatingStage": "Operating stage",

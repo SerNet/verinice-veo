@@ -1,0 +1,10 @@
+digraph G {
+  "C2";
+  "C3";
+  "C4";
+  "startC";
+  "C2" -> "startC";
+  "C3" -> "C2";
+  "C4" -> "C3";
+  "startC" -> "C4";
+}

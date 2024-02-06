@@ -52,4 +52,8 @@ public class ImpactRef {
   public static ImpactRef from(CategoryLevel cl) {
     return new ImpactRef(new BigDecimal(cl.getOrdinalValue()));
   }
+
+  public static ImpactRef from(ImpactRef ir) {
+    return new ImpactRef(new BigDecimal(ir.idRef.longValue()));
+  }
 }

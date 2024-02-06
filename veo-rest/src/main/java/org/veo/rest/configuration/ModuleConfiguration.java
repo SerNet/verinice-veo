@@ -65,6 +65,7 @@ import org.veo.core.repository.ControlImplementationRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.repository.FlyweightLinkRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.ProfileItemRepository;
@@ -221,6 +222,8 @@ import org.veo.service.ControlImplementationService;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
+import org.veo.service.risk.ImpactInheritanceCalculator;
+import org.veo.service.risk.ImpactInheritanceCalculatorHighWatermark;
 import org.veo.service.risk.RiskService;
 
 /**
@@ -1056,6 +1059,16 @@ public class ModuleConfiguration {
   public GetDomainTemplateUseCase getDomainTemplateUseCase(
       DomainTemplateService templateService, ClientRepository clientRepository) {
     return new GetDomainTemplateUseCase(templateService, clientRepository);
+  }
+
+  @Bean
+  public ImpactInheritanceCalculator impactInheritanceCalculatorHighWatermark(
+      ProcessRepository processRepository,
+      AssetRepository assetRepository,
+      ScopeRepository scopeRepository,
+      FlyweightLinkRepository linkRepo) {
+    return new ImpactInheritanceCalculatorHighWatermark(
+        processRepository, assetRepository, scopeRepository, linkRepo);
   }
 
   @Bean

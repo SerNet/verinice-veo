@@ -23,15 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import org.veo.core.entity.Element;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens to {@link RiskAffectingElementChangeEvent}s from the use-case layer and invokes the
@@ -39,9 +41,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class RiskComponentChangeListener {
   private final RiskService riskService;
+  private final ImpactInheritanceCalculator impactInheritanceCalculator;
   private final RepositoryProvider repositoryProvider;
   private final Decider decider;
 
@@ -52,6 +54,11 @@ public class RiskComponentChangeListener {
         repositoryProvider.getElementRepositoryFor(event.getEntityType());
     Element element = repository.findById(event.getEntityId()).orElseThrow();
     riskService.evaluateChangedRiskComponent(element);
+    if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
+      if (element instanceof RiskAffected<?, ?> ra) {
+        impactInheritanceCalculator.calculateImpactInheritance(ra);
+      }
+    }
   }
 
   @TransactionalEventListener

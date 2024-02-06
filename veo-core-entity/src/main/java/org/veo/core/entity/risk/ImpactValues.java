@@ -89,6 +89,7 @@ public record ImpactValues(
     return Stream.of(potentialImpacts, potentialImpactsCalculated)
         .filter(Objects::nonNull)
         .flatMap(map -> map.keySet().stream())
+        .distinct()
         .collect(
             Collectors.toMap(
                 identity(),
@@ -100,6 +101,7 @@ public record ImpactValues(
     return Stream.of(potentialImpacts, potentialImpactsCalculated)
         .filter(Objects::nonNull)
         .flatMap(map -> map.keySet().stream())
+        .distinct()
         .collect(Collectors.toMap(identity(), this::determineEffectiveReasonMessage));
   }
 
