@@ -37,6 +37,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -52,12 +53,16 @@ import lombok.extern.slf4j.Slf4j;
 public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUseCase<CatalogItem>
     implements TransactionalUseCase<CreateCatalogFromUnitUseCase.InputData, EmptyOutput> {
 
+  private final CatalogItemRepository catalogItemRepository;
+
   public CreateCatalogFromUnitUseCase(
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
       DomainRepository domainRepository,
-      EntityFactory factory) {
+      EntityFactory factory,
+      CatalogItemRepository catalogItemRepository) {
     super(factory, domainRepository, genericElementRepository, unitRepository);
+    this.catalogItemRepository = catalogItemRepository;
   }
 
   public EmptyOutput execute(InputData input) {
@@ -80,7 +85,7 @@ public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUse
             .collect(Collectors.toMap(Function.identity(), e -> e.toCatalogItem(domain)));
     createTailorreferences(elementsToCatalogItems, domain);
 
-    domainRepository.save(domain);
+    catalogItemRepository.saveAll(new HashSet<>(elementsToCatalogItems.values()));
     log.info(
         "new catalog in domain {} with {} elements created", domain.getName(), elements.size());
     return EmptyOutput.INSTANCE;

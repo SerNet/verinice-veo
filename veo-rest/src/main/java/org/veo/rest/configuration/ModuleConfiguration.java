@@ -586,9 +586,10 @@ public class ModuleConfiguration {
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
       DomainRepository domainRepository,
-      EntityFactory factory) {
+      EntityFactory factory,
+      CatalogItemRepository catalogItemRepository) {
     return new CreateCatalogFromUnitUseCase(
-        genericElementRepository, unitRepository, domainRepository, factory);
+        genericElementRepository, unitRepository, domainRepository, factory, catalogItemRepository);
   }
 
   @Bean

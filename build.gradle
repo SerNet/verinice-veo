@@ -10,6 +10,10 @@ plugins {
     id 'com.github.jk1.dependency-license-report' version '2.5'
 }
 
+// TODO #2736 unpin
+// pin the version to keep out https://hibernate.atlassian.net/browse/HHH-17699
+ext['hibernate.version'] = '6.4.3.Final'
+
 def licenseFile3rdParty = 'LICENSE-3RD-PARTY.txt'
 
 licenseReport {

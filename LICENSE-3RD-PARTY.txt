@@ -11430,7 +11430,7 @@ POM License: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - https://www.gnu.or
 
 --------------------------------------------------------------------------------
 
-100. Group: org.hibernate.orm  Name: hibernate-core  Version: 6.4.1.Final
+100. Group: org.hibernate.orm  Name: hibernate-core  Version: 6.4.3.Final
 
 Manifest Project URL: https://www.hibernate.org/orm/6.4
 
@@ -23165,5 +23165,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Feb 02 11:34:18 CET 2024.
+This report was generated at Tue Feb 06 14:25:08 CET 2024.
 

@@ -488,6 +488,56 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
+    def "can use linked person as responsible for RI"() {
+        given: "an asset that is linked with a person and has a CI"
+        post("/domains/$testDomainId/persons/$person1Id", [
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
+        ], 200)
+        def assetId = post("/domains/$testDomainId/assets", [
+            name: "silly server",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "Server",
+            status: "RUNNING",
+            links: [
+                admin: [
+                    [
+                        target: [targetUri: "/persons/$person1Id"]
+                    ]
+                ]
+            ],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "using the same person as responsible for the root control RI"
+        get("/assets/$assetId/requirement-implementations/$rootControl1Id").with{
+            body.responsible = [targetUri: "/persons/$person1Id"]
+            body.status = "YES"
+            put(body._self, body, getETag(), 204)
+        }
+
+        then: "the asset can be retrieved without an error"
+        with(get("/domains/$testDomainId/assets/$assetId").body) {
+            controlImplementations[0].implementationStatus == "YES"
+        }
+        with(get("/domains/$testDomainId/assets?unit=$unitId").body) {
+            items.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+        }
+        with(get("/assets?unit=$unitId").body) {
+            items.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+        }
+        with(get("/assets/$assetId").body) {
+            controlImplementations[0].implementationStatus == "YES"
+        }
+        with(get("/units/$unitId/export").body) {
+            elements.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+        }
+    }
+
     def "missing resources are handled for #elementType.pluralTerm"() {
         given:
         var randomUuid = UUID.randomUUID().toString()
