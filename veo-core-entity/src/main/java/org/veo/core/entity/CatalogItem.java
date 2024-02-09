@@ -71,7 +71,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
   default Set<CatalogItem> getElementsToCreate() {
     Set<CatalogItem> elementsToCreate = new HashSet<>();
     this.getTailoringReferences().stream()
-        .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+        .filter(TailoringReference::isCopyRef)
         .forEach(r -> addElementsToCopy(r, elementsToCreate));
     return elementsToCreate;
   }
@@ -80,7 +80,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
       TailoringReference<CatalogItem> reference, Set<CatalogItem> itemList) {
     itemList.add(reference.getTarget());
     reference.getTarget().getTailoringReferences().stream()
-        .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+        .filter(TailoringReference::isCopyRef)
         .forEach(rr -> addElementsToCopy(rr, itemList));
   }
 

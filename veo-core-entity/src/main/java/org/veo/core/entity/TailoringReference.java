@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
+
 /**
  * TailoringReference Refers another catalog item in this catalog which are connected and need to be
  * applied also. Like a set of controls connected to a scenario. The following constrains applies to
@@ -25,12 +29,27 @@ package org.veo.core.entity;
  * in the same catalog. 2.2. For each such reference a coresponding tailref of type LINK must exist,
  * pointing to the catalogItem which holds the refered element.
  */
-public interface TailoringReference<T extends TemplateItem<T>>
-    extends TemplateItemReference<T>, TailoringReferenceTyped {
+public interface TailoringReference<T extends TemplateItem<T>> extends TemplateItemReference<T> {
   String SINGULAR_TERM = "tailoringreference";
   String PLURAL_TERM = "tailoringreferences";
 
+  @NotNull
+  TailoringReferenceType getReferenceType();
+
   void setReferenceType(TailoringReferenceType aReferenceType);
+
+  default boolean isCopyRef() {
+    return getReferenceType() == TailoringReferenceType.COPY
+        || getReferenceType() == TailoringReferenceType.COPY_ALWAYS;
+  }
+
+  default boolean isParameterRef() {
+    return !List.of(
+            TailoringReferenceType.COPY,
+            TailoringReferenceType.COPY_ALWAYS,
+            TailoringReferenceType.OMIT)
+        .contains(getReferenceType());
+  }
 
   @Override
   default Class<? extends Identifiable> getModelInterface() {

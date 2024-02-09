@@ -26,7 +26,6 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.TemplateItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -45,8 +44,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @JsonIgnoreProperties("linkTailoringReferences")
-public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto
-    implements TailoringReferenceTyped {
+public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto {
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
       description = VeoConstants.UUID_MESSAGE,

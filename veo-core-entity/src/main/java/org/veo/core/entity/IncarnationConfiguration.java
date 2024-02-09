@@ -65,7 +65,7 @@ public record IncarnationConfiguration(
   }
 
   @JsonIgnore
-  public Predicate<TailoringReferenceTyped> createTailoringReferenceFilter() {
+  public Predicate<TailoringReference<?>> createTailoringReferenceFilter() {
     if (include != null) {
       return t -> include.contains(t.getReferenceType());
     } else if (exclude != null) {

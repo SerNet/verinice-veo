@@ -68,6 +68,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         TailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.COPY
+        tr.isCopyRef() >> true
         tr.owner >> item1
         tr.target >> item2
 
@@ -94,6 +95,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         LinkTailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK
+        tr.isParameterRef() >> true
         tr.owner >> item1
         tr.linkType >> "link.type"
         tr.target >> item2
@@ -127,6 +129,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         LinkTailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+        tr.isParameterRef() >> true
         tr.linkType >> "external.link.type"
         tr.owner >> item1
         tr.target >> item2
@@ -155,6 +158,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
+        tr.isParameterRef() >> true
         tr.owner >> item1
         tr.target >> item1
         item1.tailoringReferences >> [tr]

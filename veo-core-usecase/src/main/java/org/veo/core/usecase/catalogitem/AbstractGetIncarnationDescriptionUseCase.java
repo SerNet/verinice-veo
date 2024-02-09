@@ -32,7 +32,6 @@ import org.veo.core.entity.IncarnationRequestModeType;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -43,7 +42,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
   protected List<TailoringReferenceParameter> toParameters(
       Collection<TailoringReference<T>> catalogItem, Map<T, Optional<Element>> itemsToElements) {
     return catalogItem.stream()
-        .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
+        .filter(TailoringReference::isParameterRef)
         .map(
             tr ->
                 mapParameter(
