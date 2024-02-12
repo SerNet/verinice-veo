@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,5 +46,13 @@ public record RiskTailoringReferenceValues(
       RiskRef userDefinedResidualRisk,
       @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH) String residualRiskExplanation,
       Set<RiskTreatmentOption> riskTreatments,
-      @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation) {}
+      @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation) {
+    public CategoryValues {
+      if (riskTreatments == null) {
+        riskTreatments = Collections.emptySet();
+      } else {
+        riskTreatments = Set.copyOf(riskTreatments); // enforce immutability
+      }
+    }
+  }
 }

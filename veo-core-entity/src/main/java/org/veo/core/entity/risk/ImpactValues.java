@@ -58,6 +58,9 @@ public record ImpactValues(
     Map<CategoryRef, String> potentialImpactExplanations) {
 
   public ImpactValues {
+    if (potentialImpactsCalculated == null) {
+      potentialImpactsCalculated = newHashMap(5);
+    }
     if (potentialImpactReasons == null) {
       potentialImpactReasons = newHashMap(5);
     }
