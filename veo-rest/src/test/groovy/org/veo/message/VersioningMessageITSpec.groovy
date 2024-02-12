@@ -116,22 +116,8 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             }
         })
 
-        and: "there is one creation message for each catalog item"
-        var catalogItems = txTemplate.execute {
-            domainDataRepository.findAllActiveByClient(client.idAsString)
-                    .collectMany { it.catalogItems }
-        }
-        catalogItems.size() > 0
-        catalogItems.forEach({ item ->
-            def itemMessages = messages.findAll { it.uri?.contains("/catalog-items/$item.idAsString") }
-            assert itemMessages.size() == 1
-
-            with(itemMessages.first()) {
-                eventType == "entity_revision"
-                type == "CREATION"
-                changeNumber == 0
-                time != null
-            }
-        })
+        and: "there are no creation messages for the content"
+        def contentMessages = messages.findAll { it.uri?.contains("/domains/") }
+        assert contentMessages.size() == 0
     }
 }

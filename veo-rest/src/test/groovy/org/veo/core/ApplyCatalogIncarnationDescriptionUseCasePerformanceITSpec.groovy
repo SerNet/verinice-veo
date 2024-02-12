@@ -114,7 +114,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 12
+        queryCounts.select == 13
         queryCounts.insert == 18
         queryCounts.time < 500
     }

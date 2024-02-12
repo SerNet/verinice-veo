@@ -25,8 +25,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.StoredEvent;
@@ -57,30 +59,29 @@ public class VersioningEventListener {
         event.getEntity().getClass());
     var entity = event.getEntity();
 
-    if (entity instanceof Domain domain) {
-      if (event.getType() == PERSIST) {
-        log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
-        messageCreator.createDomainCreationMessage(domain);
-      }
-      // Do not create entity revisions for domains (they are too large)
-      return;
+    if (entity instanceof Domain domain && event.getType() == PERSIST) {
+      log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
+      messageCreator.createDomainCreationMessage(domain);
     }
 
-    entity
-        .getOwningClient()
-        .ifPresent(
-            client -> {
-              if (client.getState() == DELETED) {
+    if (entity instanceof Element || entity instanceof AbstractRisk<?, ?>) {
+      entity
+          .getOwningClient()
+          .ifPresent(
+              client -> {
+                if (client.getState() == DELETED) {
+                  log.debug(
+                      "Ignoring entity revision event for deleted client {}",
+                      client.getIdAsString());
+                  return;
+                }
                 log.debug(
-                    "Ignoring entity revision event for deleted client {}", client.getIdAsString());
-                return;
-              }
-              log.debug(
-                  "Creating entity revision message for {} event for entity {} modified by user {}",
-                  event.getType(),
-                  entity,
-                  event.getAuthor());
-              messageCreator.createEntityRevisionMessage(event);
-            });
+                    "Creating entity revision message for {} event for entity {} modified by user {}",
+                    event.getType(),
+                    entity,
+                    event.getAuthor());
+                messageCreator.createEntityRevisionMessage(event);
+              });
+    }
   }
 }
