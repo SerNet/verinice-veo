@@ -82,7 +82,7 @@ public class GetProfileIncarnationDescriptionUseCase
                         toParameters(catalogItem.getTailoringReferences(), Collections.emptyMap())))
             .toList();
 
-    log.info("IncarnationDescription: {}", incarnationDescriptions);
+    log.debug("IncarnationDescriptions: {}", incarnationDescriptions);
     return new OutputData(incarnationDescriptions, unit);
   }
 
