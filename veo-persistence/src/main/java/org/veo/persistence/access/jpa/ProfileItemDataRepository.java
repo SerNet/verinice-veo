@@ -44,4 +44,14 @@ public interface ProfileItemDataRepository
          """)
   Set<ProfileTailoringReferenceData> findTailoringReferencesByIds(
       Iterable<String> ids, Client client);
+
+  @Query(
+      """
+             select pi from #{#entityName} pi
+               left join fetch pi.tailoringReferences
+               join pi.owner as p
+               join p.domainTemplate as dt
+               where dt.dbId = ?1
+             """)
+  Set<ProfileItemData> findAllByDomainTemplateFetchTailoringReferences(String s);
 }

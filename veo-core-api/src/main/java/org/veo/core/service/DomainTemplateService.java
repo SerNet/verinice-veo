@@ -18,7 +18,6 @@
 package org.veo.core.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.ExportDto;
@@ -36,7 +35,7 @@ import org.veo.core.entity.exception.NotFoundException;
 public interface DomainTemplateService {
   List<DomainTemplate> getTemplates(Client client);
 
-  Optional<DomainTemplate> getTemplate(Client client, Key<UUID> templateId);
+  DomainTemplate getTemplate(Client client, Key<UUID> templateId);
 
   /**
    * Creates a domain from the given templateId for the given client. The client is used check the

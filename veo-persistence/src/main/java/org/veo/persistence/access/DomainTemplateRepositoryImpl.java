@@ -29,8 +29,11 @@ import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.persistence.access.jpa.CatalogItemDataRepository;
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository;
+import org.veo.persistence.access.jpa.ProfileItemDataRepository;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -40,11 +43,18 @@ public class DomainTemplateRepositoryImpl
     implements DomainTemplateRepository {
 
   private final DomainTemplateDataRepository dataRepository;
+  private final ProfileItemDataRepository profileItemDataRepository;
+  private final CatalogItemDataRepository catalogItemDataRepository;
 
   public DomainTemplateRepositoryImpl(
-      DomainTemplateDataRepository dataRepository, ValidationService validator) {
+      DomainTemplateDataRepository dataRepository,
+      ValidationService validator,
+      ProfileItemDataRepository profileItemDataRepository,
+      CatalogItemDataRepository catalogItemDataRepository) {
     super(dataRepository, validator);
     this.dataRepository = dataRepository;
+    this.profileItemDataRepository = profileItemDataRepository;
+    this.catalogItemDataRepository = catalogItemDataRepository;
   }
 
   @Override
@@ -85,5 +95,16 @@ public class DomainTemplateRepositoryImpl
     return dataRepository
         .findByIdWithProfilesAndRiskDefinitions(id.uuidValue())
         .map(DomainTemplate.class::cast);
+  }
+
+  @Override
+  public DomainTemplate getByIdWithRiskDefinitionsProfilesAndCatalogItems(Key<UUID> id) {
+    var dt =
+        dataRepository
+            .findByIdWithProfilesAndRiskDefinitions(id.uuidValue())
+            .orElseThrow(() -> new NotFoundException(id, DomainTemplate.class));
+    catalogItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.uuidValue());
+    profileItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.uuidValue());
+    return dt;
   }
 }

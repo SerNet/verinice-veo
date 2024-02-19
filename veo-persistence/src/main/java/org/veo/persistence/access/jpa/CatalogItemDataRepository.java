@@ -87,4 +87,13 @@ public interface CatalogItemDataRepository
          """)
   Set<CatalogTailoringReferenceData> findTailoringReferencesByIds(
       Iterable<String> ids, Client client);
+
+  @Query(
+      """
+                select ci from #{#entityName} ci
+                  left join fetch ci.tailoringReferences
+                  join ci.domainTemplate as dt
+                  where dt.dbId = ?1
+              """)
+  Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(String domainTemplateId);
 }

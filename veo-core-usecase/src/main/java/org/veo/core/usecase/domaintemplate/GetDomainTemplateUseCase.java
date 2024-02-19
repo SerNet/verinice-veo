@@ -21,7 +21,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -47,11 +46,7 @@ public class GetDomainTemplateUseCase
     Client client =
         UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
 
-    DomainTemplate domainTemplate =
-        templateService
-            .getTemplate(client, input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), DomainTemplate.class));
-    return new OutputData(domainTemplate);
+    return new OutputData(templateService.getTemplate(client, input.getId()));
   }
 
   @Valid

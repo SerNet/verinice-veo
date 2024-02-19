@@ -37,7 +37,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
         def id = Key.newUuid()
         DomainTemplate domaintemplate = Mock()
         domaintemplate.getId() >> id
-        templateService.getTemplate(existingClient, id) >> Optional.of(domaintemplate)
+        templateService.getTemplate(existingClient, id) >> domaintemplate
         clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
 
         when:

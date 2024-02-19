@@ -19,7 +19,6 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.adapter.IdRefResolvingFactory;
@@ -76,9 +75,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   @Override
-  public Optional<DomainTemplate> getTemplate(Client client, Key<UUID> key) {
+  public DomainTemplate getTemplate(Client client, Key<UUID> key) {
     checkClientAccess(client, key);
-    return domainTemplateRepository.findByIdWithProfilesAndRiskDefinitions(key);
+    return domainTemplateRepository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(key);
   }
 
   private void checkClientAccess(Client client, Key<UUID> key) {
