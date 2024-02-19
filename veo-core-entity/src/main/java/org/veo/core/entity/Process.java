@@ -21,8 +21,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /** A process is a series of business activities that use specific assets. */
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
-public interface Process
-    extends Element, CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
+public interface Process extends CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
 
   String SINGULAR_TERM = "process";
   String PLURAL_TERM = "processes";
