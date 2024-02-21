@@ -33,7 +33,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.ModelConsistencyException;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -86,13 +85,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public Domain createDomain(Client client, String templateId) {
-    DomainTemplate domainTemplate =
-        domainTemplateRepository
-            .findByIdWithProfilesAndRiskDefinitions(Key.uuidFrom(templateId))
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Domain template %s does not exist for client %s.", templateId, client));
+    DomainTemplate domainTemplate = getTemplate(client, Key.uuidFrom(templateId));
 
     ExportDomainTemplateDto domainTemplateDto =
         dtoTransformer.transformDomainTemplate2Dto(domainTemplate);
