@@ -58,6 +58,8 @@ import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefini
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition;
+import org.veo.core.entity.risk.ImpactMethod;
+import org.veo.core.entity.risk.ImpactReason;
 import org.veo.core.entity.riskdefinition.DiscreteValue;
 
 /** Add domain-specific sub schemas to an element schema. */
@@ -304,6 +306,15 @@ public class SchemaExtender {
               var riskDefinitionSchema = impactValuesDto.get();
               riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
               var potImpactsProps = putProps(riskDefinitionSchema, "potentialImpacts");
+              var potImpactsCalculatedProps =
+                  putProps(riskDefinitionSchema, "potentialImpactsCalculated");
+              var potImpactsEffectiveProps =
+                  putProps(riskDefinitionSchema, "potentialImpactsEffective");
+              var potImpactReasonsProps = putProps(riskDefinitionSchema, "potentialImpactReasons");
+              var potImpactEffectiveReasonsProps =
+                  putProps(riskDefinitionSchema, "potentialImpactEffectiveReasons");
+              var potImpactExplanationsProps =
+                  putProps(riskDefinitionSchema, "potentialImpactExplanations");
 
               riskDef
                   .getCategories()
@@ -319,6 +330,31 @@ public class SchemaExtender {
                                     .toList());
 
                         potImpactsProps.set(c.getId(), impactValueSchema);
+                        potImpactsCalculatedProps.set(c.getId(), impactValueSchema);
+                        potImpactsEffectiveProps.set(c.getId(), impactValueSchema);
+
+                        potImpactReasonsProps
+                            .putObject(c.getId())
+                            .putArray("enum")
+                            .addAll(
+                                Arrays.stream(ImpactReason.values())
+                                    .map(ImpactReason::getTranslationKey)
+                                    .map(TextNode::new)
+                                    .toList());
+                        potImpactEffectiveReasonsProps
+                            .putObject(c.getId())
+                            .putArray("enum")
+                            .addAll(
+                                Arrays.stream(ImpactReason.values())
+                                    .map(ImpactReason::getTranslationKey)
+                                    .map(TextNode::new)
+                                    .toList())
+                            .addAll(
+                                Arrays.stream(ImpactMethod.values())
+                                    .map(ImpactMethod::getTranslationKey)
+                                    .map(TextNode::new)
+                                    .toList());
+                        potImpactExplanationsProps.putObject(c.getId()).put(TYPE, "string");
                       });
               riskValuesProps.set(riskDefId, riskDefinitionSchema);
             });

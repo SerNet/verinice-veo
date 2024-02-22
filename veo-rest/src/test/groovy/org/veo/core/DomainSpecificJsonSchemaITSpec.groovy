@@ -179,9 +179,24 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
             owner: [targetUri: "http://localhost/units/..."],
             riskValues: [
                 noRiskNoFun: [
+                    potentialImpactsCalculated: [
+                        A: 0
+                    ],
                     potentialImpacts: [
                         A: 1
-                    ]
+                    ],
+                    potentialImpactsEffective: [
+                        A: 1,
+                    ],
+                    potentialImpactReasons: [
+                        A: "impact_reason_distributive"
+                    ],
+                    potentialImpactEffectiveReasons: [
+                        A: "impact_reason_distributive",
+                    ],
+                    potentialImpactExplanations: [
+                        A: "It's the only way"
+                    ],
                 ]
             ]
         ]
@@ -191,12 +206,32 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
 
         when:
         element.riskValues.noRiskNoFun.potentialImpacts.A = 99
+        element.riskValues.noRiskNoFun.potentialImpactsCalculated.A = 99
+        element.riskValues.noRiskNoFun.potentialImpactsEffective.A = 99
+        element.riskValues.noRiskNoFun.potentialImpactReasons.A = "wrong_reason"
+        element.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A = "wrong_reason"
+        element.riskValues.noRiskNoFun.potentialImpactExplanations.A = 42
         element.riskValues.noRiskNoFun.potentialImpacts.Z = 1
+        element.riskValues.noRiskNoFun.potentialImpactsCalculated.Z = 0
+        element.riskValues.noRiskNoFun.potentialImpactsEffective.Z = 1
+        element.riskValues.noRiskNoFun.potentialImpactReasons.Z = "impact_reason_manual"
+        element.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.Z = "impact_reason_manual"
+        element.riskValues.noRiskNoFun.potentialImpactExplanations.Z = "Manuel said so"
 
         then:
         validate(element, elementType)*.message ==~ [
             "\$.riskValues.noRiskNoFun.potentialImpacts.A: does not have a value in the enumeration [0, 1]",
+            "\$.riskValues.noRiskNoFun.potentialImpactsCalculated.A: does not have a value in the enumeration [0, 1]",
+            "\$.riskValues.noRiskNoFun.potentialImpactsEffective.A: does not have a value in the enumeration [0, 1]",
+            "\$.riskValues.noRiskNoFun.potentialImpactReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual]",
+            "\$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual, impact_method_high_water_mark]",
+            "\$.riskValues.noRiskNoFun.potentialImpactExplanations.A: integer found, string expected",
             "\$.riskValues.noRiskNoFun.potentialImpacts.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactsCalculated.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactsEffective.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactReasons.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactExplanations.Z: is not defined in the schema and the schema does not allow additional properties",
         ]
 
         where:
