@@ -114,6 +114,13 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             subType: "Company",
             status: "NEW",
             owner: [targetUri: "/units/$sourceUnitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$originalControlId"],
+                    responsible: [targetUri: "/persons/$originalPersonId"],
+                    description: "Everything is under control",
+                ]
+            ],
             riskValues: [
                 riskyDef: [
                     potentialImpacts: [
@@ -246,6 +253,12 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         with(get("/domains/$newDomainInOtherClientId/scopes", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
             get(0).name == "Can't cope with this scope"
+            get(0).controlImplementations.size() == 1
+            with(get(0).controlImplementations[0]) {
+                control.name == "freaky control"
+                responsible.name == "poster person"
+                description == "Everything is under control"
+            }
             get(0).riskValues.riskyDef.potentialImpacts.C == 1
         }
     }

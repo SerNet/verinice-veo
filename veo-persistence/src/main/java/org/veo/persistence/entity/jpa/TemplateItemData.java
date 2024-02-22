@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import org.hibernate.annotations.Type;
 
+import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
@@ -132,6 +133,16 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     return ref;
   }
 
+  @Override
+  public ControlImplementationTailoringReference<T> addControlImplementationReference(
+      T control, @Nullable T responsible, @Nullable String description) {
+    var ref = createControlImplementationTailoringReference();
+    add(ref, TailoringReferenceType.CONTROL_IMPLEMENTATION, control);
+    ref.setResponsible(responsible);
+    ref.setDescription(description);
+    return ref;
+  }
+
   protected void add(TailoringReference<T> reference, TailoringReferenceType type, T target) {
     reference.setReferenceType(type);
     reference.setOwner((T) this);
@@ -143,6 +154,9 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   protected abstract LinkTailoringReference<T> createLinkTailoringReference();
 
   protected abstract RiskTailoringReference<T> createRiskTailoringReference();
+
+  protected abstract ControlImplementationTailoringReference<T>
+      createControlImplementationTailoringReference();
 
   protected Element createElement(Unit owner) {
     TemplateItem.checkValidElementType(getElementType());

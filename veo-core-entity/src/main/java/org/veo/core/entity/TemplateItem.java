@@ -106,4 +106,7 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
       @Nullable T riskOwner,
       @Nullable T mitigation,
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions);
+
+  ControlImplementationTailoringReference<T> addControlImplementationReference(
+      T control, @Nullable T responsible, @Nullable String description);
 }

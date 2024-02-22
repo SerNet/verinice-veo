@@ -72,5 +72,11 @@ public enum TailoringReferenceType {
    * Defines this reference as part of a scope relation. The owner is the member and the {@link
    * TailoringReference#getTarget()} is the scope.
    */
-  MEMBER;
+  MEMBER,
+  /**
+   * Defines a control implementation as part of a {@link RiskAffected} in a {@link ProfileItem} and
+   * maps to a {@link ControlImplementationTailoringReference}. It targets a {@link TemplateItem}
+   * representing a {@link Control}.
+   */
+  CONTROL_IMPLEMENTATION;
 }

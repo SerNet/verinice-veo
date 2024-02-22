@@ -71,6 +71,9 @@ public interface FullTemplateItemDto<T extends TemplateItem<T>> extends Nameable
     @JsonSubTypes.Type(value = LinkTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
     @JsonSubTypes.Type(value = LinkTailoringReferenceDto.class, name = "LINK"),
     @JsonSubTypes.Type(value = RiskTailoringReferenceDto.class, name = "RISK"),
+    @JsonSubTypes.Type(
+        value = ControlImplementationTailoringReferenceDto.class,
+        name = "CONTROL_IMPLEMENTATION"),
   })
   @Schema(description = "References to other catalog items in the same domain")
   Set<TailoringReferenceDto<T>> getTailoringReferences();

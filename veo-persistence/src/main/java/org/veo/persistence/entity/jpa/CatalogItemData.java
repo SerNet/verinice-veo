@@ -33,6 +33,7 @@ import jakarta.validation.Valid;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
@@ -146,5 +147,12 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
   @Override
   protected RiskTailoringReference<CatalogItem> createRiskTailoringReference() {
     throw new UnprocessableDataException("Risks currently not supported for catalog items");
+  }
+
+  @Override
+  protected ControlImplementationTailoringReference<CatalogItem>
+      createControlImplementationTailoringReference() {
+    throw new UnprocessableDataException(
+        "Control implementations currently not supported for catalog items");
   }
 }

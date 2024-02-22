@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -214,11 +215,43 @@ public class IncarnationDescriptionApplier {
       case SCOPE -> addScope(origin, target);
       case MEMBER -> addScope(target, origin);
       case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItem);
+      case CONTROL_IMPLEMENTATION ->
+          addControlImplementation(origin, target, tailoringReference, elementsByItem);
       default ->
           throw new IllegalArgumentException(
               "Unexpected tailoring reference type %s"
                   .formatted(tailoringReference.getReferenceType()));
     }
+  }
+
+  private <T extends TemplateItem<T>> void addControlImplementation(
+      Element origin,
+      Element target,
+      TailoringReference<T> tailoringReference,
+      Map<T, Element> elementsByItem) {
+    if (origin instanceof RiskAffected<?, ?> ra
+        && target instanceof Control control
+        && tailoringReference instanceof ControlImplementationTailoringReference<T> tr) {
+      var ci = ra.implementControl(control);
+      ci.setDescription(tr.getDescription());
+      Optional.ofNullable(tr.getResponsible())
+          .map(elementsByItem::get)
+          .ifPresent(
+              responsible -> {
+                if (responsible instanceof Person person) {
+                  ci.setResponsible(person);
+                } else
+                  throw new ModelConsistencyException(
+                      "Cannot use %s as responsible for control implementation"
+                          .formatted(responsible.getModelType()));
+              });
+    } else
+      throw new ModelConsistencyException(
+          "Cannot create control implementation from %s for %s targeting %s"
+              .formatted(
+                  tailoringReference.getClass().getSimpleName(),
+                  origin.getModelType(),
+                  target.getModelType()));
   }
 
   private <T extends TemplateItem<T>> void addScope(Element origin, Element targetScope) {

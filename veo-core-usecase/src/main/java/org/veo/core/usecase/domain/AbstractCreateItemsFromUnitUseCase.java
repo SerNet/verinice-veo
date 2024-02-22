@@ -96,6 +96,16 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
     }
 
     if (element instanceof RiskAffected<?, ?> risky) {
+      risky
+          .getControlImplementations()
+          .forEach(
+              ci ->
+                  item.addControlImplementationReference(
+                      elementsToCatalogItems.get(ci.getControl()),
+                      Optional.ofNullable(ci.getResponsible())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      ci.getDescription()));
       risky.getRisks().stream()
           .filter(r -> r.getScenario().isAssociatedWithDomain(domain))
           .forEach(

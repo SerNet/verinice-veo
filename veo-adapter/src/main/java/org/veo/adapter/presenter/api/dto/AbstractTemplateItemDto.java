@@ -25,8 +25,10 @@ import jakarta.validation.constraints.Size;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
@@ -89,6 +91,13 @@ public abstract class AbstractTemplateItemDto<T extends TemplateItem<T>>
           .ifPresent(riskRefDto::setRiskOwner);
       riskRefDto.setRiskDefinitions(riskSource.getRiskDefinitions());
       return riskRefDto;
+    } else if (source instanceof ControlImplementationTailoringReference<T> ciSource) {
+      var ciRefDto = new ControlImplementationTailoringReferenceDto<T>();
+      Optional.ofNullable(ciSource.getResponsible())
+          .map(r -> IdRef.from(r, uriAssembler))
+          .ifPresent(ciRefDto::setResponsible);
+      ciRefDto.setDescription(ciSource.getDescription());
+      return ciRefDto;
     }
     return new TailoringReferenceDto<>();
   }

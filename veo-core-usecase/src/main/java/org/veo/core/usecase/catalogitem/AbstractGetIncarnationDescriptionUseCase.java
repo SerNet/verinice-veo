@@ -57,7 +57,8 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
   private TailoringReferenceParameter mapParameter(
       TailoringReference<T> reference, Element element) {
     return switch (reference.getReferenceType()) {
-      case PART, COMPOSITE, RISK, SCOPE, MEMBER -> fromReference(reference, element);
+      case PART, COMPOSITE, RISK, CONTROL_IMPLEMENTATION, SCOPE, MEMBER ->
+          fromReference(reference, element);
       case LINK, LINK_EXTERNAL -> fromLinkReference((LinkTailoringReference<T>) reference, element);
       default ->
           throw new IllegalArgumentException(

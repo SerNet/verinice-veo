@@ -32,6 +32,7 @@ import jakarta.validation.Valid;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
@@ -107,5 +108,11 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
   @Override
   protected RiskTailoringReference<ProfileItem> createRiskTailoringReference() {
     return new ProfileRiskTailoringReferenceData();
+  }
+
+  @Override
+  protected ControlImplementationTailoringReference<ProfileItem>
+      createControlImplementationTailoringReference() {
+    return new ProfileControlImplementationTailoringReferenceData();
   }
 }

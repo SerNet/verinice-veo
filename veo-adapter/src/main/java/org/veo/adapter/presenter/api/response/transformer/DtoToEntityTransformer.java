@@ -42,6 +42,7 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
@@ -249,6 +250,11 @@ public final class DtoToEntityTransformer {
           Optional.ofNullable(riskDto.getRiskOwner()).map(idRefResolver::resolve).orElse(null),
           Optional.ofNullable(riskDto.getMitigation()).map(idRefResolver::resolve).orElse(null),
           riskDto.getRiskDefinitions());
+    } else if (source instanceof ControlImplementationTailoringReferenceDto<T> ciDto) {
+      owner.addControlImplementationReference(
+          targetItem,
+          Optional.ofNullable(ciDto.getResponsible()).map(idRefResolver::resolve).orElse(null),
+          ciDto.getDescription());
     } else {
       owner.addTailoringReference(source.getReferenceType(), targetItem);
     }
