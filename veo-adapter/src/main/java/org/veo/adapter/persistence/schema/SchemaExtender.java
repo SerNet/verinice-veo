@@ -28,6 +28,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
@@ -84,6 +85,7 @@ public class SchemaExtender {
   private static final String EXTERNAL_DOCUMENT_PATTERN =
       ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
   private final ObjectMapper mapper = new ObjectMapper().registerModule(new BlackbirdModule());
+  private final JsonNodeFactory factory = JsonNodeFactory.instance;
 
   /**
    * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementDto} schema with domain-specific
@@ -301,24 +303,23 @@ public class SchemaExtender {
             (riskDefId, riskDef) -> {
               var riskDefinitionSchema = impactValuesDto.get();
               riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
-              var potentialImpactsSchema =
-                  (ObjectNode) riskDefinitionSchema.get(PROPS).get("potentialImpacts");
+              var potImpactsProps = putProps(riskDefinitionSchema, "potentialImpacts");
 
-              potentialImpactsSchema.put(ADDITIONAL_PROPERTIES, false);
-              var potentialImpactsSchemaProperties = potentialImpactsSchema.putObject(PROPS);
               riskDef
                   .getCategories()
                   .forEach(
-                      c ->
-                          potentialImpactsSchemaProperties
-                              .putObject(c.getId())
-                              .put(TYPE, "number")
-                              .putArray("enum")
-                              .addAll(
-                                  c.getPotentialImpacts().stream()
-                                      .map(DiscreteValue::getOrdinalValue)
-                                      .map(IntNode::new)
-                                      .toList()));
+                      c -> {
+                        var impactValueSchema = factory.objectNode();
+                        impactValueSchema
+                            .putArray("enum")
+                            .addAll(
+                                c.getPotentialImpacts().stream()
+                                    .map(DiscreteValue::getOrdinalValue)
+                                    .map(IntNode::new)
+                                    .toList());
+
+                        potImpactsProps.set(c.getId(), impactValueSchema);
+                      });
               riskValuesProps.set(riskDefId, riskDefinitionSchema);
             });
   }
