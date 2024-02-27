@@ -27,6 +27,8 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.specification.ContentTooLongException
+import org.veo.core.entity.specification.ExceedLimitException
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UserConfigurationRepository
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -129,5 +131,40 @@ class UserConfigurationControllerMvcITSpec extends VeoMvcSpec {
 
         then: "all configurations are gone"
         configs.empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "do not store a configuration with more than 4000 bytes"() {
+        given: "a user configuration with more than 4000 bytes"
+        Map applicationData = [
+            name: "a".repeat(4000),
+            other: 4
+        ]
+
+        when: "we create a user configuration"
+        def result = parseJson(put('/user-configurations/appId1', applicationData, 413))
+
+        then:
+        def ex = thrown(ContentTooLongException)
+        ex.message == "Exceeds the configuration size limit. (4000 bytes)"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "do not store more configurations than 10 per user"() {
+        given: "a user configuration"
+        Map applicationData = [
+            name: "a",
+            other: 4
+        ]
+
+        when: "we create a user configuration"
+        (1..10).each {index->
+            parseJson(put('/user-configurations/appId-'+index, applicationData, 201))
+        }
+        def result = parseJson(put('/user-configurations/appId-11', applicationData, 409))
+
+        then:
+        def ex = thrown(ExceedLimitException)
+        ex.message == "Exceeds the configuration per user limit. (10 allowed)"
     }
 }

@@ -34,6 +34,9 @@ public interface UserConfigurationDataRepository
   Optional<UserConfigurationData> findUserConfiguration(
       String clientId, String username, String applicationId);
 
-  @Query("select e from #{#entityName} as e " + "where e.client.dbId=?1")
+  @Query("select e from #{#entityName} as e where e.client.dbId=?1")
   Set<UserConfigurationData> findUserConfigurationsByClient(String clientId);
+
+  @Query("select count(e) from #{#entityName} as e where e.client.dbId=?1 and e.userName=?2 ")
+  int countUserConfigurations(String clientId, String username);
 }

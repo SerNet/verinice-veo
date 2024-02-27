@@ -47,4 +47,6 @@ public interface UserConfigurationRepository {
                         userName, applicationId),
                     UserConfiguration.class));
   }
+
+  int countUserConfigurations(Key<UUID> id, String userName);
 }

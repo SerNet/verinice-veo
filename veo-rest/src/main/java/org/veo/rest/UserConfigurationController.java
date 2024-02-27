@@ -83,6 +83,7 @@ public class UserConfigurationController extends AbstractVeoController {
   @Operation(summary = "creates or updates a user configuration")
   @ApiResponse(responseCode = "200", description = "Configuration updated")
   @ApiResponse(responseCode = "201", description = "Configuration created")
+  @ApiResponse(responseCode = "413", description = "Exceeds the configuration size limit.")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateUserConfiguration(
       @Parameter(required = true, hidden = true) ApplicationUser applicationUser,
       @Parameter(required = true, description = "Id of the api-client") @PathVariable String appId,

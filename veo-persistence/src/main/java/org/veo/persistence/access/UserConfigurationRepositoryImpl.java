@@ -61,4 +61,9 @@ public class UserConfigurationRepositoryImpl implements UserConfigurationReposit
         .map(UserConfiguration.class::cast)
         .collect(Collectors.toSet());
   }
+
+  @Override
+  public int countUserConfigurations(Key<UUID> clientId, String username) {
+    return dataRepository.countUserConfigurations(clientId.uuidValue(), username);
+  }
 }

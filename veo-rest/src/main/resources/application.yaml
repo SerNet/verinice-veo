@@ -18,6 +18,8 @@ veo:
   default:
     domaintemplate:
       names: 'DS-GVO'
+    user-configurations-max: 10
+    user-configuration-bytes-max: 4000
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
   message:

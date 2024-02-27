@@ -17,12 +17,15 @@
  ******************************************************************************/
 package org.veo.core.usecase.userconfiguration;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.UserConfiguration;
+import org.veo.core.entity.specification.ContentTooLongException;
+import org.veo.core.entity.specification.ExceedLimitException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -37,9 +40,16 @@ public class SaveUserConfigurationUseCase
         SaveUserConfigurationUseCase.InputData, SaveUserConfigurationUseCase.OutputData> {
   final UserConfigurationRepository userConfigurationRepository;
   final EntityFactory entityFactory;
+  private final int maxUserConfigurations;
+  private final int maxBytesPerConfiguration;
 
   @Override
   public OutputData execute(InputData input) {
+    if (input.getConfiguration().toString().getBytes(StandardCharsets.UTF_8).length
+        > maxBytesPerConfiguration) {
+      throw new ContentTooLongException(
+          "Exceeds the configuration size limit. (%d bytes)".formatted(maxBytesPerConfiguration));
+    }
     UserConfiguration userConfiguration =
         userConfigurationRepository
             .findUserConfiguration(input.client.getId(), input.userName, input.applicationId)
@@ -47,7 +57,13 @@ public class SaveUserConfigurationUseCase
                 entityFactory.createUserConfiguration(
                     input.client, input.userName, input.applicationId));
     boolean created = !userConfiguration.isPersisted();
-
+    if (created
+        && userConfigurationRepository.countUserConfigurations(input.client.getId(), input.userName)
+            >= maxUserConfigurations) {
+      throw new ExceedLimitException(
+          "Exceeds the configuration per user limit. (%d allowed)"
+              .formatted(maxUserConfigurations));
+    }
     userConfiguration.setConfiguration(input.getConfiguration());
     userConfigurationRepository.save(userConfiguration);
     return new OutputData(created, userConfiguration.getApplicationId());

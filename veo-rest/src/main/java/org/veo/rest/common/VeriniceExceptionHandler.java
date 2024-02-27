@@ -44,6 +44,8 @@ import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.RiskConsistencyException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.ContentTooLongException;
+import org.veo.core.entity.specification.ExceedLimitException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
@@ -76,6 +78,16 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({IllegalArgumentException.class})
   protected ResponseEntity<ApiResponseBody> handle(IllegalArgumentException exception) {
     return handle(exception, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({ExceedLimitException.class})
+  protected ResponseEntity<ApiResponseBody> handle(ExceedLimitException exception) {
+    return handle(exception, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler({ContentTooLongException.class})
+  protected ResponseEntity<ApiResponseBody> handle(ContentTooLongException exception) {
+    return handle(exception, HttpStatus.PAYLOAD_TOO_LARGE);
   }
 
   @ExceptionHandler({EntityAlreadyExistsException.class})

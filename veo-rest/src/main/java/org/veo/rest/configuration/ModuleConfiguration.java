@@ -232,8 +232,12 @@ import org.veo.service.risk.RiskService;
 public class ModuleConfiguration {
   @Bean
   public SaveUserConfigurationUseCase saveUserConfigurationUseCase(
-      UserConfigurationRepository userConfigurationRepository, EntityFactory entityFactor) {
-    return new SaveUserConfigurationUseCase(userConfigurationRepository, entityFactor);
+      UserConfigurationRepository userConfigurationRepository,
+      EntityFactory entityFactor,
+      @Value("${veo.default.user-configurations-max:10}") int maxConfigurations,
+      @Value("${veo.default.user-configuration-bytes-max:4000}") int maxBytesPerConfiguration) {
+    return new SaveUserConfigurationUseCase(
+        userConfigurationRepository, entityFactor, maxConfigurations, maxBytesPerConfiguration);
   }
 
   @Bean
