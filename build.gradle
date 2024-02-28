@@ -139,9 +139,9 @@ subprojects {
     dependencyManagement {
         dependencies {
             dependency 'io.hypersistence:hypersistence-utils-hibernate-62:3.7.1'
-            dependency 'io.jsonwebtoken:jjwt-api:0.12.4'
-            dependency 'io.jsonwebtoken:jjwt-impl:0.12.4'
-            dependency 'io.jsonwebtoken:jjwt-jackson:0.12.4'
+            dependency 'io.jsonwebtoken:jjwt-api:0.12.5'
+            dependency 'io.jsonwebtoken:jjwt-impl:0.12.5'
+            dependency 'io.jsonwebtoken:jjwt-jackson:0.12.5'
             // pull in fix for https://github.com/spockframework/spock/issues/1539
             dependency "org.spockframework:spock-core:2.4-M1-groovy-4.0"
             dependency "org.spockframework:spock-spring:2.4-M1-groovy-4.0"
