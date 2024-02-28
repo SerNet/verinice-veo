@@ -158,7 +158,7 @@ subprojects {
             dependency "org.testcontainers:spock:1.19.6"
             dependency "org.testcontainers:postgresql:1.19.6"
             dependency "org.keycloak:keycloak-authz-client:23.0.5"
-            dependency 'com.fasterxml.uuid:java-uuid-generator:4.3.0'
+            dependency 'com.fasterxml.uuid:java-uuid-generator:5.0.0'
             dependency 'com.github.zafarkhaja:java-semver:0.10.2'
             dependency 'org.apache.commons:commons-collections4:4.4'
         }
