@@ -127,7 +127,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         then:
         validate(element, elementType)*.message ==~ [
             "\$.customAspects.CA.foo: integer found, string expected",
-            "\$.customAspects.NA: is not defined in the schema and the schema does not allow additional properties",
+            "\$.customAspects: property 'NA' is not defined in the schema and the schema does not allow additional properties",
         ]
 
         where:
@@ -226,12 +226,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
             "\$.riskValues.noRiskNoFun.potentialImpactReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual]",
             "\$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual, impact_method_high_water_mark]",
             "\$.riskValues.noRiskNoFun.potentialImpactExplanations.A: integer found, string expected",
-            "\$.riskValues.noRiskNoFun.potentialImpacts.Z: is not defined in the schema and the schema does not allow additional properties",
-            "\$.riskValues.noRiskNoFun.potentialImpactsCalculated.Z: is not defined in the schema and the schema does not allow additional properties",
-            "\$.riskValues.noRiskNoFun.potentialImpactsEffective.Z: is not defined in the schema and the schema does not allow additional properties",
-            "\$.riskValues.noRiskNoFun.potentialImpactReasons.Z: is not defined in the schema and the schema does not allow additional properties",
-            "\$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.Z: is not defined in the schema and the schema does not allow additional properties",
-            "\$.riskValues.noRiskNoFun.potentialImpactExplanations.Z: is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpacts: property 'Z' is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactsCalculated: property 'Z' is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactsEffective: property 'Z' is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties",
+            "\$.riskValues.noRiskNoFun.potentialImpactExplanations: property 'Z' is not defined in the schema and the schema does not allow additional properties",
         ]
 
         where:

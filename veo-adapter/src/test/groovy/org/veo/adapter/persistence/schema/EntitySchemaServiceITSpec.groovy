@@ -18,9 +18,11 @@
 package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.networknt.schema.JsonMetaSchema
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SchemaId
+import com.networknt.schema.SchemaLocation
+import com.networknt.schema.SpecVersion
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
@@ -193,16 +195,15 @@ class EntitySchemaServiceITSpec extends Specification {
 
     private JsonSchema getMetaSchemaV2019_09() throws IOException {
         def cl = getClass().getClassLoader()
-        JsonMetaSchema metaSchema = JsonMetaSchema.v201909
-        return JsonSchemaFactory.builder()
-                .defaultMetaSchemaURI(metaSchema.getUri())
-                .uriFetcher({ uri->
-                    String name = uri.toString().split('/').last()
-                    cl.getResourceAsStream("schemas/meta/v2019_09/"+name)
-                }, "https")
-                .addMetaSchema(metaSchema)
-                .build()
-                .getSchema(cl.getResourceAsStream("schemas/meta/draft-2019-09.json"))
+        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909, { builder ->
+            builder.schemaMappers {
+                // Use local schema files
+                it
+                        .mapPrefix("https://json-schema.org", "classpath:")
+                        .mapPrefix("http://json-schema.org", "classpath:")
+            }
+        })
+        .getSchema(SchemaLocation.of(SchemaId.V201909))
     }
 
     private List<JsonNode> getEntitySchemas() {
