@@ -40,7 +40,7 @@ class SearchMvcITSpec extends VeoMvcSpec {
     def setup() {
         def client = createTestClient()
         domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id.uuidValue()
-        client = clientDataRepository.findById(client.idAsString).get()
+        client = clientRepository.getById(client.id)
         unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
     }
 

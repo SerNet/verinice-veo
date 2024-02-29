@@ -47,7 +47,7 @@ class GetControlsUseCaseITSpec extends AbstractPerformanceITSpec {
         client = createTestClient()
         testDomain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         dsgvoDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        client = clientDataRepository.save(client)
+        client = clientRepository.save(client)
 
         unit = unitDataRepository.save(newUnit(client) {
             domains = [testDomain, dsgvoDomain]

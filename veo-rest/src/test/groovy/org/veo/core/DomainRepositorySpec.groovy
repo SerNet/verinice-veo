@@ -87,7 +87,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
     def "getByIds throws for other client's domain"() {
         given:
         def client = createTestClient()
-        def otherClient = clientDataRepository.save(newClient())
+        def otherClient = clientRepository.save(newClient())
         def domain = domainRepository.save(newDomain(otherClient))
 
         when:

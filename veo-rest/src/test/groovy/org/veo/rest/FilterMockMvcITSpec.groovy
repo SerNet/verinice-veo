@@ -36,7 +36,7 @@ class FilterMockMvcITSpec extends VeoMvcSpec {
         def client = createTestClient()
         var domain = domainDataRepository.save(newDomain(client))
         domainId = domain.getIdAsString()
-        client = clientDataRepository.findById(client.idAsString).get()
+        client = clientRepository.getById(client.id)
         unitId = unitRepository.save(newUnit(client) {
             domains = [domain]
         }).idAsString

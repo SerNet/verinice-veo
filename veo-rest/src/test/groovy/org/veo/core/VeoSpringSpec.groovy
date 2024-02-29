@@ -40,11 +40,11 @@ import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.repository.ClientRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.jpa.AssetDataRepository
-import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -83,7 +83,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     public static final String TEST_DOMAIN_TEMPLATE_ID = "b641354b-ca8f-5d43-9e87-d3369451de89"
 
     @Autowired
-    ClientDataRepository clientDataRepository
+    ClientRepository clientRepository
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository
@@ -149,13 +149,11 @@ abstract class VeoSpringSpec extends VeoSpec {
     def setup() {
         txTemplate.execute {
             TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
-            clientDataRepository.findAll().each { client ->
+            clientRepository.findAll().each { client ->
                 unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
-                domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.idAsString))
-                client.domains = []
-                clientDataRepository.delete(client)
+                clientRepository.delete(client)
             }
             domainTemplateDataRepository.deleteAll()
             eventStoreDataRepository.deleteAll()
@@ -167,14 +165,14 @@ abstract class VeoSpringSpec extends VeoSpec {
     }
 
     Client createTestClient() {
-        return clientDataRepository.save(newClient {
+        return clientRepository.save(newClient {
             id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
             state = ClientState.ACTIVATED
         })
     }
 
     def deleteTestClient() {
-        clientDataRepository.deleteById(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+        clientRepository.deleteById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
     }
 
     Domain createTestDomain(Client client, String templateId) {

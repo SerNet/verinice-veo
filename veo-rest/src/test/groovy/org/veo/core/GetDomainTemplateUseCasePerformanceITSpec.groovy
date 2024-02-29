@@ -63,7 +63,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
 
     def "SQL performance for exporting a domain template"() {
         given: "a domain template with a risk def, linked catalog items and linked profile items"
-        def client = clientDataRepository.save(newClient {})
+        def client = clientRepository.save(newClient {})
         def domainTemplateId = domainTemplateDataRepository.save(newDomainTemplate { dt ->
             dt.riskDefinitions.someDef = newRiskDefinition("someDef") {
                 riskMethod = new RiskMethod()

@@ -277,7 +277,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given:
         def domainTemplateA = domainTemplateRepository.save(newDomainTemplate {})
         def domainTemplateB = domainTemplateRepository.save(newDomainTemplate {})
-        clientDataRepository.saveAll ([
+        clientRepository.saveAll ([
             newClient {
                 name = "c0"
                 domains = []
@@ -316,10 +316,10 @@ class ClientRepositorySpec extends VeoSpringSpec {
                 name = "c4"
                 state = ClientState.DEACTIVATED
             }
-        ])
+        ].toSet())
 
         when:
-        def results = clientDataRepository.findAllActiveWhereDomainTemplateNotApplied(domainTemplateA.idAsString)
+        def results = clientRepository.findAllActiveWhereDomainTemplateNotApplied(domainTemplateA.id)
 
         then:
         results*.name ==~ ["c0", "c1"]
