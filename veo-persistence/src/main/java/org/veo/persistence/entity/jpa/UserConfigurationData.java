@@ -24,6 +24,7 @@ import java.util.Optional;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -53,7 +54,7 @@ public class UserConfigurationData implements UserConfiguration {
   @ToString.Include private String applicationId;
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
-  @JoinColumn(name = "client_id")
+  @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "FK_client_id"))
   private Client client;
 
   @Type(JsonType.class)
