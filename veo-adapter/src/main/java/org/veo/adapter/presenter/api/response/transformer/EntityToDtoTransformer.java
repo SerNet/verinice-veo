@@ -162,7 +162,7 @@ public final class EntityToDtoTransformer {
         "No transform method defined for " + source.getClass().getSimpleName());
   }
 
-  private ExportProfileDto transformProfile2ExportDto(Profile profile) {
+  public ExportProfileDto transformProfile2ExportDto(Profile profile) {
     ExportProfileDto profileDto = new ExportProfileDto();
     profileDto.setId(profile.getIdAsString());
     profileDto.setName(profile.getName());

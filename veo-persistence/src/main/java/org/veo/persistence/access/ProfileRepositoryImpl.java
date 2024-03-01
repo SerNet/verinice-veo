@@ -49,6 +49,14 @@ public class ProfileRepositoryImpl
   }
 
   @Override
+  public Optional<Profile> findProfileByIdFetchTailoringReferences(
+      Key<UUID> profileId, Key<UUID> clientId) {
+    return profileDataRepository
+        .findProfileByIdFetchTailoringReferences(profileId.uuidValue(), clientId.uuidValue())
+        .map(Profile.class::cast);
+  }
+
+  @Override
   public Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> profileItemIds, Client client) {
     var idStrings = profileItemIds.stream().map(Key::uuidValue).toList();

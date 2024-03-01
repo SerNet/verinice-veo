@@ -72,6 +72,7 @@ import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
@@ -272,7 +273,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             new GetProfileUseCase.InputData(
                 getAuthenticatedClient(auth),
                 TypedId.from(domainId, Domain.class),
-                TypedId.from(profileId, Profile.class)),
+                TypedId.from(profileId, Profile.class),
+                false),
             t -> entityToDtoTransformer.transformProfile2Dto(t.getProfile()))
         .thenApply(
             profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
@@ -324,6 +326,31 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             ResponseEntity.ok()
                 .cacheControl(defaultCacheControl)
                 .body(entityToDtoTransformer.transformShortProfileItem2Dto(out.getProfileItems())));
+  }
+
+  @GetMapping("/{domainId}/profiles/{profileId}/export")
+  @Operation(summary = "export a profile from a domain")
+  public @Valid Future<ResponseEntity<ExportProfileDto>> exportProfile(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String profileId,
+      WebRequest request) {
+
+    return useCaseInteractor
+        .execute(
+            getProfileUseCase,
+            new GetProfileUseCase.InputData(
+                getAuthenticatedClient(auth),
+                TypedId.from(domainId, Domain.class),
+                TypedId.from(profileId, Profile.class),
+                true),
+            o -> entityToDtoTransformer.transformProfile2ExportDto(o.getProfile()))
+        .thenApply(
+            profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
   }
 
   @GetMapping("/{domainId}/catalog-items")

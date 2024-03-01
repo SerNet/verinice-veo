@@ -841,6 +841,58 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "export a profile from a domain"() {
+        given: "a domain and a unit"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
+
+        when: "we incarnate one linked catalog item"
+        def catalogItems = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().catalogItems.each {
+                it.tailoringReferences.size()
+            }
+        }
+        def catalogItemsId = catalogItems.find{it.name == "Control-2" }.getIdAsString()
+
+        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsId}"))
+        post("/units/${unitId}/incarnations", incarnationDescription)
+
+        and: "we link the process with the asset"
+        post("/domains/$domainId/processes/$processId/links", [
+            process_requiredApplications: [
+                [
+                    target: [targetUri: "/assets/$assetId"]
+                ]
+            ]
+        ], 204)
+
+        and: "we create a new profile and export"
+        def profileId = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
+                [
+                    name: 'export-test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 201)).id
+
+        def exportedProfile = parseJson(get("/domains/${domainId}/profiles/${profileId}/export"))
+
+        then: "the profile is exported"
+        with(exportedProfile) {
+            name == 'export-test'
+            description == 'All the good stuff'
+            items.size() == 9
+        }
+        with(exportedProfile.items.find{it.name == "Control-2" }) {
+            abbreviation == 'c-2'
+            appliedCatalogItem.name == 'Control-2'
+        }
+        with(exportedProfile.items.find{it.name == "process" }) {
+            tailoringReferences.size() == 2
+            tailoringReferences.referenceType ==~  ['LINK', 'RISK']
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "create profile in a domain from a unit"() {
         given: "a domain and a unit with elements"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString

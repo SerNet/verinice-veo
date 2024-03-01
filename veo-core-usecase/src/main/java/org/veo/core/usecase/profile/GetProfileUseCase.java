@@ -45,8 +45,10 @@ public class GetProfileUseCase extends AbstractProfileUseCase
   public OutputData execute(InputData input) {
     checkClientOwnsDomain(input.getAuthenticatedClient(), input.domain.getId());
     var profile =
-        profileRepo
-            .findById(input.authenticatedClient.getId(), input.profile.toKey())
+        (input.fastLoadDetails
+                ? profileRepo.findProfileByIdFetchTailoringReferences(
+                    input.profile.toKey(), input.authenticatedClient.getId())
+                : profileRepo.findById(input.authenticatedClient.getId(), input.profile.toKey()))
             .orElseThrow(
                 () -> new NotFoundException(Key.uuidFrom(input.profile.getId()), Profile.class));
     log.info("profile: {}", profile);
@@ -60,6 +62,7 @@ public class GetProfileUseCase extends AbstractProfileUseCase
     @NotNull Client authenticatedClient;
     @NotNull ITypedId<Domain> domain;
     @NotNull ITypedId<Profile> profile;
+    boolean fastLoadDetails;
   }
 
   @Valid

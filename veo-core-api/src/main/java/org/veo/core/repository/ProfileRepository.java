@@ -34,6 +34,9 @@ import org.veo.core.entity.ProfileItem;
  * methods - i.e. queries based on particular fields.
  */
 public interface ProfileRepository extends IdentifiableVersionedRepository<Profile> {
+  Optional<Profile> findProfileByIdFetchTailoringReferences(
+      Key<UUID> profileId, Key<UUID> clientId);
+
   Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> profileItemIds, Client client);
 
