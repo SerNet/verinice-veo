@@ -87,7 +87,7 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
         thrown(ConstraintViolationException)
     }
 
-    def 'user config is inserted only once'() {
+    def 'user configuration is inserted only once'() {
         when:
         def conf1 = userConfigRepository.save(factory.createUserConfiguration(client, "TestName", "TestApp"))
         entityManager.flush()
