@@ -150,6 +150,7 @@ import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.CreateProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
@@ -666,6 +667,18 @@ public class ModuleConfiguration {
       ProfileRepository profileRepository) {
     return new CreateProfileFromUnitUseCase(
         genericElementRepository, unitRepository, domainRepository, factory, profileRepository);
+  }
+
+  @Bean
+  public CreateProfileInDomainTemplateUseCase createProfileInDomainTemplateUseCase(
+      GenericElementRepository genericElementRepository,
+      UnitRepository unitRepository,
+      DomainTemplateRepository domainTemplateRepository,
+      EntityFactory factory,
+      ProfileRepository profileRepository,
+      DomainStateMapper domainStateMapper) {
+    return new CreateProfileInDomainTemplateUseCase(
+        domainTemplateRepository, profileRepository, domainStateMapper);
   }
 
   @Bean

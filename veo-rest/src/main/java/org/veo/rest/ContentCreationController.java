@@ -64,6 +64,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
@@ -90,6 +91,7 @@ import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.CreateProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
@@ -128,6 +130,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final DeleteProfileUseCase deleteProfileUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
+  private final CreateProfileInDomainTemplateUseCase createProfileInDomainTemplate;
 
   public static final String URL_BASE_PATH = "/content-creation";
 
@@ -520,6 +523,23 @@ public class ContentCreationController extends AbstractVeoController {
                 Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+  }
+
+  @PostMapping(value = "/domain-templates/{id}/profiles")
+  @Operation(summary = "Import or update a profile in a domain template")
+  @ApiResponse(responseCode = "201", description = "Profile created")
+  public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomainTemplate(
+      Authentication auth,
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
+      @Valid @NotNull @RequestBody ExportProfileDto profileDto) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor
+        .execute(
+            createProfileInDomainTemplate,
+            new CreateProfileInDomainTemplateUseCase.InputData(
+                client, Key.uuidFrom(id), profileDto),
+            out -> IdRef.from(out.getProfile(), referenceAssembler))
+        .thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
   @GetMapping(value = "/domain-templates/{id}")

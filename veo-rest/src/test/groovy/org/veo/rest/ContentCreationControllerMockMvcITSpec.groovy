@@ -20,6 +20,7 @@ package org.veo.rest
 import static org.veo.core.entity.TailoringReferenceType.RISK
 
 import java.nio.charset.StandardCharsets
+import java.util.UUID
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -891,7 +892,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "export a profile from a domain"() {
+    def "export and import a profile from a domain"() {
         given: "a domain and a unit"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
@@ -935,11 +936,143 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(exportedProfile.items.find{it.name == "Control-2" }) {
             abbreviation == 'c-2'
             appliedCatalogItem.name == 'Control-2'
+            appliedCatalogItem.namespaceId == domainId
         }
         with(exportedProfile.items.find{it.name == "process" }) {
             tailoringReferences.size() == 2
             tailoringReferences.referenceType ==~  ['LINK', 'RISK']
         }
+
+        when: "we post the exported profile to the domain template"
+        exportedProfile.name = 'export-test1'
+        def result = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
+                exportedProfile))
+
+        def dt = txTemplate.execute {
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
+                dt1.profiles.size()
+                dt1.profiles[0].items.size()
+                dt1.profiles[0].items.size()
+                dt1.profiles[0].items.each{
+                    it.name
+                    it.tailoringReferences.size()
+                    it.appliedCatalogItem?.getName()
+                    it.appliedCatalogItem?.getNamespace()
+                }
+            }
+        }
+
+        then:
+        result !=null
+        dt.profiles.size() == 1
+        dt.profiles[0].name == 'export-test1'
+        dt.profiles[0].items.size() == 9
+
+        with(dt.profiles[0].items.find{it.name == "Control-2" }) {
+            abbreviation == 'c-2'
+            appliedCatalogItem.name == 'Control-2'
+            appliedCatalogItem.getNamespace() == dt
+        }
+
+        when: "post the exported profile again to override"
+        exportedProfile.description = 'a new description'
+        result = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
+                exportedProfile))
+        dt = txTemplate.execute {
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
+                dt1.profiles.size()
+                dt1.profiles[0].items.size()
+                dt1.profiles[0].items.each{
+                    it.name
+                    it.tailoringReferences.size()
+                    if(it.appliedCatalogItem != null) {
+                        it.appliedCatalogItem.getName()
+                        it.appliedCatalogItem.getNamespace()
+                    }
+                }
+            }
+        }
+
+        then:
+        result !=null
+        dt.profiles.size() == 1
+        dt.profiles[0].name == 'export-test1'
+        dt.profiles[0].description == 'a new description'
+        dt.profiles[0].items.size() == 9
+
+        with(dt.profiles[0].items.find{it.name == "Control-2" }) {
+            abbreviation == 'c-2'
+            appliedCatalogItem.name == 'Control-2'
+            appliedCatalogItem.getNamespace() == dt
+        }
+    }
+
+    @WithUserDetails("content-creator")
+    def "import a profile into a domain template"() {
+        given: "an empty domain template"
+        def domainTemplate = parseJson(post("/content-creation/domains/${testDomain.id.uuidValue()}/template",[version : "1.0.0"]))
+
+        when: "we add a profile"
+        def result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles",
+                [ "name" : "export-test",
+                    "id": "${UUID.randomUUID()}",
+                    "description" : "All the good stuff",
+                    "language" : "de_DE",
+                    "items" : []
+                ]))
+
+        then:
+        result != null
+
+        when: "loading the domain templates from the database"
+        def dt = txTemplate.execute {
+            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }.tap{
+                profiles.size()
+            }
+        }
+
+        then: "the profile exist"
+        dt.profiles.size() == 1
+
+        when: "we add a profile"
+        result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles",
+                [ "name" : "export-test",
+                    "id": "${UUID.randomUUID()}",
+                    "description" : "All the good stuff",
+                    "language" : "de_DE",
+                    "items" : [
+                        [
+                            "name" : "asset1",
+                            "id": "${UUID.randomUUID()}",
+                            "elementType" : "asset",
+                            "subType" : "AST_Application",
+                            "status" : "NEW",
+                        ],
+                        [
+                            "name" : "asset2",
+                            "id": "${UUID.randomUUID()}",
+                            "elementType" : "asset",
+                            "subType" : "AST_Application",
+                            "status" : "NEW",
+                        ],
+                    ]
+                ]))
+
+        then:
+        result != null
+
+        when: "loading the domain templates from the database"
+        dt = txTemplate.execute {
+            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }.tap{
+                it.profiles.size()
+                it.profiles[0].items.size()
+            }
+        }
+
+        then: "the profile exist"
+        dt.profiles.size() == 1
+        dt.profiles[0].items.size() == 2
+        dt.profiles[0].items.name ==~ ['asset1', 'asset2']
     }
 
     @WithUserDetails("content-creator")
@@ -991,14 +1124,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we select the data in the db"
         def domain1 = txTemplate.execute {
-            def d = domainDataRepository.findById(domainId).get()
-            d.profiles.each {
-                it.items.size()
-                it.items.each{
-                    it.tailoringReferences.size()
+            domainDataRepository.findById(domainId).get().tap{d->
+                d.profiles.each {
+                    it.items.size()
+                    it.items.each{
+                        it.tailoringReferences.size()
+                    }
                 }
             }
-            d
         }
 
         and: "we export the original unit to compare later"

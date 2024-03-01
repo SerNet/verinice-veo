@@ -65,6 +65,17 @@ public class LocalRefResolver implements IdRefResolver {
 
   public <T extends Entity> T injectNewEntity(IEntityRef<T> ref) {
     var entity = factory.create(ref.getType());
+    inject(entity, ref);
+    return entity;
+  }
+
+  public <T extends Entity> T injectEntity(T entity) {
+    IEntityRef<T> ref = IEntityRef.from(entity);
+    inject(entity, ref);
+    return entity;
+  }
+
+  public <T extends Entity> void inject(T entity, IEntityRef<T> ref) {
     if (cache.containsKey(ref)) {
       throw new UnprocessableDataException("Duplicate key: %s".formatted(ref));
     }
@@ -88,6 +99,5 @@ public class LocalRefResolver implements IdRefResolver {
             entity);
       }
     }
-    return entity;
   }
 }

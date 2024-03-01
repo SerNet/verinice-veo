@@ -28,6 +28,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
@@ -49,6 +50,7 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.core.repository.IncidentRepository;
@@ -84,6 +86,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
   @Autowired private ClientRepository clientRepository;
 
   @Autowired private DomainRepository domainRepository;
+  @Autowired private DomainTemplateRepository domainTemplateRepository;
 
   @Autowired private UnitRepository unitRepository;
 
@@ -105,6 +108,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (Domain.class.isAssignableFrom(entityType)) {
       return (Repository<T>) domainRepository;
+    }
+    if (DomainTemplate.class.isAssignableFrom(entityType)) {
+      return (Repository<T>) domainTemplateRepository;
     }
     if (Unit.class.isAssignableFrom(entityType)) {
       return (Repository<T>) unitRepository;

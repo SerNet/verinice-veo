@@ -19,6 +19,7 @@ package org.veo.core.usecase.service;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
@@ -130,7 +132,20 @@ public class DomainStateMapper {
   }
 
   public Profile toProfile(ProfileState source, DomainBase owner) {
-    return toProfile(source, refResolverFactory.local(), owner);
+    var resolver = refResolverFactory.local();
+    source.getItemStates().stream()
+        .map(ProfileItemState::getAppliedCatalogItemRef)
+        .filter(Objects::nonNull)
+        .forEach(
+            ciRef ->
+                resolver.inject(
+                    owner.getCatalogItems().stream()
+                        .filter(ci -> ci.getSymbolicIdAsString().equals(ciRef.getSymbolicId()))
+                        .findFirst()
+                        .orElseThrow(
+                            () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
+                    ciRef));
+    return toProfile(source, resolver, owner);
   }
 
   private Profile toProfile(ProfileState source, LocalRefResolver resolver, DomainBase owner) {
