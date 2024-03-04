@@ -6,6 +6,16 @@ variables:
   PROXY: $HTTPS_PROXY_HOST
   AUTH_URL: $OIDC_URL_DEV/realms/$OIDC_REALM_DEV
 
+# Verification (tests and code analysis) is unnecessary on 'develop' &
+# 'master', because only verified MRs can be merged into those branches.
+.verification:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: never
+    - when: on_success
+
 stages:
   - build
   - check
@@ -19,6 +29,8 @@ before_script:
 
 build:
   stage: build
+  rules:
+    - when: on_success
   script:
     - env
     - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME build -x check
@@ -41,6 +53,8 @@ build:
 
 test:
   stage: check
+  rules:
+    - !reference [.verification, rules]
   script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   interruptible: true
   services:
@@ -74,6 +88,8 @@ test:
 
 check:
   stage: check
+  rules:
+    - !reference [ .verification, rules ]
   script:
     - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i check -x test
   interruptible: true
@@ -89,6 +105,8 @@ check:
 
 check_license:
   stage: check
+  rules:
+    - !reference [.verification, rules]
   script:
     - cp LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
     - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i generateLicenseReport
@@ -109,6 +127,8 @@ docker_image:
   stage: docker_image
   needs:
    - build
+  rules:
+    - when: on_success
   image:
     name: gcr.io/kaniko-project/executor:v1.21.0-debug
     entrypoint: [""]
@@ -143,6 +163,8 @@ http_rest_tests:
   needs:
   - docker_image
   stage: integration_test
+  rules:
+    - !reference [ .verification, rules ]
   services:
   - name: postgres:13.9-alpine
     alias: db
