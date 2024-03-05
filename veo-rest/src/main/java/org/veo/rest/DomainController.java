@@ -71,7 +71,7 @@ import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.core.ExportDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
@@ -208,16 +208,16 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
-  public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
+  public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(
       @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
-    CompletableFuture<ExportDto> domainFuture =
-        useCaseInteractor.execute(
+    return useCaseInteractor
+        .execute(
             exportDomainUseCase,
             new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            ExportDomainUseCase.OutputData::getExportDomain);
-    return domainFuture.thenApply(
-        domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+            o -> entityToDtoTransformer.transformDomain2ExportDto(o.getExportDomain()))
+        .thenApply(
+            domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
 
   @GetMapping("/{domainId}/incarnation-configuration")

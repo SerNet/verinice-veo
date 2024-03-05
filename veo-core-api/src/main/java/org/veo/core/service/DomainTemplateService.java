@@ -20,7 +20,6 @@ package org.veo.core.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -44,8 +43,6 @@ public interface DomainTemplateService {
    * @throws NotFoundException when the template doesn't exist
    */
   Domain createDomain(Client client, String templateId);
-
-  ExportDto exportDomain(Domain domain);
 
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
 }

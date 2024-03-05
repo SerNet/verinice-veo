@@ -711,9 +711,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public ExportDomainUseCase exportDomainUseCase(
-      DomainRepository domainRepository, DomainTemplateService domainTemplateService) {
-    return new ExportDomainUseCase(domainRepository, domainTemplateService);
+  public ExportDomainUseCase exportDomainUseCase(DomainRepository domainRepository) {
+    return new ExportDomainUseCase(domainRepository);
   }
 
   @Bean

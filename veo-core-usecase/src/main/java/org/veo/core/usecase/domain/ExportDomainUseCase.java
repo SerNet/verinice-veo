@@ -19,13 +19,11 @@ package org.veo.core.usecase.domain;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.IdAndClient;
@@ -37,7 +35,6 @@ import lombok.Value;
 public class ExportDomainUseCase
     implements TransactionalUseCase<IdAndClient, ExportDomainUseCase.OutputData> {
   private final DomainRepository repository;
-  private final DomainTemplateService templateService;
 
   @Override
   public OutputData execute(IdAndClient input) {
@@ -50,12 +47,12 @@ public class ExportDomainUseCase
       throw new NotFoundException("Domain is inactive.");
     }
 
-    return new OutputData(templateService.exportDomain(domain));
+    return new OutputData(domain);
   }
 
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    @Valid ExportDto exportDomain;
+    @Valid Domain exportDomain;
   }
 }

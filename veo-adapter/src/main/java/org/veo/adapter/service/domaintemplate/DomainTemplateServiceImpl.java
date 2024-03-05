@@ -27,7 +27,6 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -124,10 +123,5 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private String createDomainTemplateId(Domain domain) {
     return domainTemplateIdGenerator.createDomainTemplateId(
         domain.getName(), domain.getTemplateVersion());
-  }
-
-  @Override
-  public ExportDto exportDomain(Domain domain) {
-    return dtoTransformer.transformDomain2ExportDto(domain);
   }
 }
