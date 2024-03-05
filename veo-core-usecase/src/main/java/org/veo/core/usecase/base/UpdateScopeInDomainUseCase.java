@@ -21,10 +21,13 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.RetryableUseCase;
+import org.veo.core.usecase.TransactionalUseCase.Isolation;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 
-public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Scope> {
+public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Scope>
+    implements RetryableUseCase {
   private final EventPublisher eventPublisher;
 
   public UpdateScopeInDomainUseCase(
@@ -45,5 +48,15 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
     OutputData<Scope> result = super.execute(input);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.SERIALIZABLE;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 }

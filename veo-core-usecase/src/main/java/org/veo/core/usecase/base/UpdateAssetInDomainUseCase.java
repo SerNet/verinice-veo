@@ -21,12 +21,15 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.RetryableUseCase;
+import org.veo.core.usecase.TransactionalUseCase.Isolation;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase.InputData;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase.OutputData;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 
-public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset> {
+public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset>
+    implements RetryableUseCase {
   private final EventPublisher eventPublisher;
 
   public UpdateAssetInDomainUseCase(
@@ -47,5 +50,15 @@ public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Ass
     var result = super.execute(input); // TODO:VEO-2219 move to update element
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.SERIALIZABLE;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 }

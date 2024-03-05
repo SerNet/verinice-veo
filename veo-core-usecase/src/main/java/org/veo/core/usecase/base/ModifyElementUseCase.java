@@ -28,6 +28,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
@@ -41,7 +42,8 @@ import lombok.Value;
 @RequiredArgsConstructor
 public abstract class ModifyElementUseCase<T extends Element>
     implements TransactionalUseCase<
-        ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
+            ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>>,
+        RetryableUseCase {
 
   private final Class<T> elementClass;
   private final RepositoryProvider repositoryProvider;
@@ -75,6 +77,16 @@ public abstract class ModifyElementUseCase<T extends Element>
     entity
         .getDomains()
         .forEach(domain -> entity.setDecisionResults(decider.decide(entity, domain), domain));
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.SERIALIZABLE;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 
   protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {

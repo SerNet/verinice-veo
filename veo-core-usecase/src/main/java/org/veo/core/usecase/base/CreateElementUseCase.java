@@ -35,6 +35,7 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.decision.Decider;
@@ -47,7 +48,8 @@ import lombok.Value;
 @AllArgsConstructor
 public class CreateElementUseCase<TEntity extends Element>
     implements TransactionalUseCase<
-        CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>> {
+            CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>>,
+        RetryableUseCase {
   private final RepositoryProvider repositoryProvider;
   private final DesignatorService designatorService;
   private final EventPublisher eventPublisher;
@@ -97,6 +99,16 @@ public class CreateElementUseCase<TEntity extends Element>
   @Override
   public boolean isReadOnly() {
     return false;
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.SERIALIZABLE;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 
   @Valid
