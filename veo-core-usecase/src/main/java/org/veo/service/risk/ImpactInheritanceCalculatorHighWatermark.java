@@ -84,12 +84,13 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         affectedElement.getName(),
         domain.getName(),
         riskDefinitionId);
-    RiskDefinition riskDefinition = domain.getRiskDefinition(riskDefinitionId).get();
-    if (riskDefinition == null) {
+    Optional<RiskDefinition> ro = domain.getRiskDefinition(riskDefinitionId);
+    if (ro.isEmpty()) {
       log.debug(
           "No risk definition for id: {} in domain {}", riskDefinitionId, domain.getDisplayName());
       return Collections.emptyList();
     }
+    RiskDefinition riskDefinition = ro.get();
     Set<String> inheritanceLinkTypes = riskLinks(riskDefinition);
     if (inheritanceLinkTypes.isEmpty()) {
       log.debug(
