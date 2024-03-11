@@ -63,7 +63,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
     def setup() {
         txTemplate.execute {
-            def rd = createRiskDefinition("id1")
+            def rd = createRiskDefinition("id")
 
             this.client = createTestClient()
             newDomain(client) {
