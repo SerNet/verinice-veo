@@ -147,7 +147,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
           "{} is direct part of a cycle: {}", affectedElement.getName(), listNodes(allCycles));
       Set<Element> elementsInCycle = cycleDetector.findCyclesContainingVertex(affectedElement);
       clearCalculatedImpactsInCycle(elementsInCycle, domain, definitionRef);
-      throw new ImpactInheritanceCircleException(affectedElement, elementsInCycle);
+      return Collections.emptyList();
     }
     Set<Element> elementsPartOfCycle = cycleDetector.findCycles();
 
@@ -219,7 +219,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
           listNodes(elementsPartOfCycle));
       clearCalculatedImpactsInCycle(elementsPartOfCycle, domain, riskDefinitionRef);
       // TODO: #2588 we could also return the already affected elements
-      throw new ImpactInheritanceCircleException(affectedElement, elementsPartOfCycle);
+      return;
     }
 
     // walk the graph down in a predictable manner
