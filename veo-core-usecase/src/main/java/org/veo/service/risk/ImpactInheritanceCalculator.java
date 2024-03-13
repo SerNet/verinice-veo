@@ -18,12 +18,14 @@
 package org.veo.service.risk;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface ImpactInheritanceCalculator {
 
@@ -34,17 +36,56 @@ public interface ImpactInheritanceCalculator {
   Collection<Element> calculateImpactInheritance(
       Unit unit, Domain domain, String riskDefinitionId, RiskAffected<?, ?> affectedElement);
 
+  default void calculateImpactInheritance(RiskAffected<?, ?> element, Domain domain) {
+    Unit owner = element.getOwner();
+    domain.getRiskDefinitions().values().stream()
+        .filter(hasInheritingLinks())
+        .forEach(
+            rd -> {
+              calculateImpactInheritance(owner, domain, rd.getId(), element);
+            });
+  }
+
+  default void calculateImpactInheritance(
+      RiskAffected<?, ?> element, Domain domain, String linkType) {
+    Unit owner = element.getOwner();
+    domain.getRiskDefinitions().values().stream()
+        .filter(hasInheritingLinks())
+        .filter(isInheritingLinkType(linkType))
+        .forEach(
+            rd -> {
+              calculateImpactInheritance(owner, domain, rd.getId(), element);
+            });
+  }
+
   default void calculateImpactInheritance(RiskAffected<?, ?> element) {
     Unit owner = element.getOwner();
     Client client = owner.getClient();
     client.getDomains().stream()
+        .filter(hasRiskDefinition())
         .forEach(
             domain -> {
-              domain.getRiskDefinitions().entrySet().stream()
+              domain.getRiskDefinitions().values().stream()
+                  .filter(hasInheritingLinks())
                   .forEach(
                       rd -> {
-                        calculateImpactInheritance(owner, domain, rd.getValue().getId(), element);
+                        calculateImpactInheritance(owner, domain, rd.getId(), element);
                       });
             });
+  }
+
+  default Predicate<? super Domain> hasRiskDefinition() {
+    return d -> !d.getRiskDefinitions().isEmpty();
+  }
+
+  default Predicate<? super RiskDefinition> isInheritingLinkType(String linkType) {
+    return rd ->
+        rd.getImpactInheritingLinks().values().stream()
+            .flatMap(Collection::stream)
+            .anyMatch(l -> l.equals(linkType));
+  }
+
+  default Predicate<? super RiskDefinition> hasInheritingLinks() {
+    return rd -> !rd.getImpactInheritingLinks().isEmpty();
   }
 }

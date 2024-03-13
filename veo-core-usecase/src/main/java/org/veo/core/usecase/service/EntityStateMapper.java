@@ -18,6 +18,9 @@
 package org.veo.core.usecase.service;
 
 import static java.util.HashMap.newHashMap;
+import static org.veo.core.entity.EntityType.RISK_AFFECTED_TYPES;
+import static org.veo.core.entity.EntityType.getBySingularTerm;
+import static org.veo.core.entity.EntityType.getSingularTermByType;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.util.HashMap;
@@ -45,6 +48,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.event.ControlPartsChangedEvent;
+import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
@@ -145,6 +149,14 @@ public class EntityStateMapper {
     }
   }
 
+  private void publishLinkRemoved(Domain domain, Element target, String type) {
+    if (target.getOwningClient().isPresent()
+        && RISK_AFFECTED_TYPES.contains(
+            getBySingularTerm(getSingularTermByType(target.getModelInterface())))) {
+      eventPublisher.publish(new RiskAffectedLinkDeletedEvent(target, domain, type, this));
+    }
+  }
+
   /** Maps link state to link entity (without adding the link to the source element). */
   public CustomLink mapLink(
       CustomLinkState link, Element source, Domain domain, IdRefResolver idRefResolver) {
@@ -203,24 +215,28 @@ public class EntityStateMapper {
       DomainAssociationState source, T target, IdRefResolver idRefResolver, Domain domain) {
     var newLinks = source.getCustomLinkStates();
     // Remove old links that are absent in new links
-    Set.copyOf(target.getLinks(domain)).stream()
-        .filter(
-            oldLink ->
-                newLinks.stream()
-                    .noneMatch(
-                        newLink ->
-                            newLink.getType().equals(oldLink.getType())
-                                && oldLink
-                                    .getTarget()
-                                    .getIdAsString()
-                                    .equals(newLink.getTarget().getId())))
-        .forEach(target::removeLink);
+    Set<CustomLink> removedLinks =
+        Set.copyOf(target.getLinks(domain)).stream()
+            .filter(
+                oldLink ->
+                    newLinks.stream()
+                        .noneMatch(
+                            newLink ->
+                                newLink.getType().equals(oldLink.getType())
+                                    && oldLink
+                                        .getTarget()
+                                        .getIdAsString()
+                                        .equals(newLink.getTarget().getId())))
+            .collect(Collectors.toSet());
+    removedLinks.forEach(target::removeLink);
     // Apply new links
     newLinks.forEach(
         link -> {
           CustomLink newLink = mapLink(link, target, domain, idRefResolver);
           target.applyLink(newLink);
         });
+
+    removedLinks.forEach(rl -> publishLinkRemoved(domain, rl.getTarget(), rl.getType()));
   }
 
   private <T extends Element> void applyCustomAspects(

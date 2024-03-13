@@ -18,7 +18,6 @@
 package org.veo.rest.test
 
 import groovy.util.logging.Slf4j
-import spock.lang.IgnoreRest
 
 @Slf4j
 class RiskValuesRestTestITSpec extends VeoRestTest{
@@ -828,11 +827,10 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         }
     }
 
-    @IgnoreRest
-    def "create asset risk values"() {
+    def "calculate impact inheritance for asset"() {
         when: "we build a chain from 0-2"
-        def asset0Id = post("/domains/$dsgvoDomainId/assets", [
-            name: "asset-0",
+        def asset2Id = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-2",
             subType: "AST_Datatype",
             status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -846,14 +844,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             links: [
                 asset_asset_dat: [
                     [
-                        target: [targetUri: "$baseUrl/assets/$asset0Id"]
+                        target: [targetUri: "$baseUrl/assets/$asset2Id"]
                     ]
                 ]
             ]
         ]).body.resourceId
 
-        def asset2Id = post("/domains/$dsgvoDomainId/assets", [
-            name: "asset-2",
+        def assetWithImpactId = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-0",
             subType: "AST_Datatype",
             status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -875,7 +873,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
 
         then: "the values of the dependents are set"
-        with(get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 1
             potentialImpactsEffective.I == 2
             potentialImpactsCalculated.C == 1
@@ -887,7 +885,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.C == 1
             potentialImpactsCalculated.I == 2
         }
-        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 1
             potentialImpactsEffective.I == 2
             potentialImpactsCalculated == [:]
@@ -895,7 +893,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
         when: "set the leaf to a new value"
         log.debug("--------------------------------------")
-        get("/domains/$dsgvoDomainId/assets/$asset2Id").with{
+        get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").with{
             body.riskValues.DSRA.potentialImpacts.C = 0
             body.riskValues.DSRA.potentialImpacts.I = 0
             body.riskValues.DSRA.potentialImpacts.A = 0
@@ -909,16 +907,16 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.C == 0
             potentialImpactsCalculated.I == 0
         }
-        get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA.with{
+        get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA.with{
             potentialImpactsEffective.C == 0
             potentialImpactsEffective.I == 0
             potentialImpactsCalculated.C == 0
             potentialImpactsCalculated.I == 0
         }
 
-        when: "we update again"
+        when: "we update again and add a category"
         log.debug("--------------------------------------")
-        get("/domains/$dsgvoDomainId/assets/$asset2Id").with{
+        get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").with{
             body.riskValues.DSRA.potentialImpacts.C = 0
             body.riskValues.DSRA.potentialImpacts.I = 1
             body.riskValues.DSRA.potentialImpacts.A = 0
@@ -935,7 +933,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.A == 0
         }
 
-        with(get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 0
             potentialImpactsEffective.I == 1
             potentialImpactsEffective.A == 0
@@ -946,7 +944,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
         when: "we update again"
         log.debug("--------------------------------------")
-        get("/domains/$dsgvoDomainId/assets/$asset2Id").with{
+        get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").with{
             body.riskValues.DSRA.potentialImpacts.C = 2
             body.riskValues.DSRA.potentialImpacts.I = 2
             body.riskValues.DSRA.potentialImpacts.A = 2
@@ -963,7 +961,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.A == 2
         }
 
-        with(get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 2
             potentialImpactsEffective.I == 2
             potentialImpactsEffective.A == 2
@@ -972,7 +970,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.A == 2
         }
 
-        when: "we add a new root element in the chain"
+        when: "we add a new leaf element in the chain"
         log.debug("--------------------------------------")
         def asset3Id = post("/domains/$dsgvoDomainId/assets", [
             name: "asset-3",
@@ -981,7 +979,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
-        get("/domains/$dsgvoDomainId/assets/$asset0Id").with{
+        get("/domains/$dsgvoDomainId/assets/$asset2Id").with{
             body.links = [
                 asset_asset_dat: [
                     [
@@ -1010,7 +1008,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             body.links = [
                 asset_asset_dat: [
                     [
-                        target: [targetUri: "$baseUrl/assets/$asset2Id"]
+                        target: [targetUri: "$baseUrl/assets/$assetWithImpactId"]
                     ]
                 ]
 
@@ -1022,7 +1020,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         with(get("/domains/$dsgvoDomainId/assets/$asset3Id").body.riskValues.DSRA) {
             potentialImpactsCalculated == [:]
         }
-        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 2
             potentialImpactsEffective.I == 2
             potentialImpactsEffective.A == 2
@@ -1032,47 +1030,151 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         with(get("/domains/$dsgvoDomainId/assets/$asset1Id").body.riskValues.DSRA) {
             potentialImpactsCalculated == [:]
         }
-        with(get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
             potentialImpactsCalculated == [:]
         }
 
         when: "we remove the circle"
-        log.debug("--------------------------------------")
-        get("/domains/$dsgvoDomainId/assets/$asset2Id").with{
+        log.debug("remove link--------------------------------------")
+        get("/domains/$dsgvoDomainId/assets/$asset3Id").with{
             body.links = [:]
             put(body._self, body, getETag())
         }
 
         then: "the values are updated"
-        with(get("/domains/$dsgvoDomainId/assets/$asset0Id").body.riskValues.DSRA) {
-            //            potentialImpactsEffective.C == 2
-            //            potentialImpactsEffective.I == 2
-            //            potentialImpactsEffective.A == 2
-            potentialImpactsCalculated == [:]
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsEffective.A == 2
+            potentialImpactsCalculated.C == 2
+            potentialImpactsCalculated.I == 2
+            potentialImpactsCalculated.A == 2
         }
         with(get("/domains/$dsgvoDomainId/assets/$asset1Id").body.riskValues.DSRA) {
-            potentialImpactsCalculated == [:]
-            //            potentialImpactsEffective.C == 2
-            //            potentialImpactsEffective.I == 2
-            //            potentialImpactsEffective.A == 2
-            //            potentialImpactsCalculated.C == 2
-            //            potentialImpactsCalculated.I == 2
-            //            potentialImpactsCalculated.A == 2
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsEffective.A == 2
+            potentialImpactsCalculated.C == 2
+            potentialImpactsCalculated.I == 2
+            potentialImpactsCalculated.A == 2
         }
-        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
+        with(get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 2
             potentialImpactsEffective.I == 2
             potentialImpactsEffective.A == 2
             potentialImpactsCalculated == [:]
         }
         with(get("/domains/$dsgvoDomainId/assets/$asset3Id").body.riskValues.DSRA) {
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsEffective.A == 2
+            potentialImpactsCalculated.C == 2
+            potentialImpactsCalculated.I == 2
+            potentialImpactsCalculated.A == 2
+        }
+    }
+
+    def "calculate impact when deleting element in circle"() {
+        given: "we build a chain from 0-3"
+        def asset3Id = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-3",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+        ]).body.resourceId
+
+        def asset2Id = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-0",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            links: [
+                asset_asset_dat: [
+                    [
+                        target: [targetUri: "$baseUrl/assets/$asset3Id"]
+                    ]
+                ]
+            ]
+
+        ]).body.resourceId
+
+        def asset1Id = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-1",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            links: [
+                asset_asset_dat: [
+                    [
+                        target: [targetUri: "$baseUrl/assets/$asset2Id"]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        def assetWithImpactId = post("/domains/$dsgvoDomainId/assets", [
+            name: "asset-0",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 2,
+                        "I": 2
+                    ]
+                ]
+            ],
+            links: [
+                asset_asset_dat: [
+                    [
+                        target: [targetUri: "$baseUrl/assets/$asset1Id"]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "we add a circle in the chain by linking asset-3 to asset-withImpact"
+        log.debug("circle--------------------------------------")
+        get("/domains/$dsgvoDomainId/assets/$asset3Id").with{
+
+            body.links = [
+                asset_asset_dat: [
+                    [
+                        target: [targetUri: "$baseUrl/assets/$assetWithImpactId"]
+                    ]
+                ]
+
+            ]
+            put(body._self, body, getETag())
+        }
+
+        then: "no updates were made"
+        with(get("/domains/$dsgvoDomainId/assets/$asset3Id").body.riskValues.DSRA) {
             potentialImpactsCalculated == [:]
-            //            potentialImpactsEffective.C == 2
-            //            potentialImpactsEffective.I == 2
-            //            potentialImpactsEffective.A == 2
-            //            potentialImpactsCalculated.C == 2
-            //            potentialImpactsCalculated.I == 2
-            //            potentialImpactsCalculated.A == 2
+        }
+
+        when: "we remove the circle by deleting asset-3"
+        log.debug("remove asset-3--------------------------------------")
+        delete("/assets/$asset3Id")
+
+        then: "the values are updated"
+        with(get("/domains/$dsgvoDomainId/assets/$asset2Id").body.riskValues.DSRA) {
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsCalculated.C == 2
+            potentialImpactsCalculated.I == 2
+        }
+        with(get("/domains/$dsgvoDomainId/assets/$asset1Id").body.riskValues.DSRA) {
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsCalculated.C == 2
+            potentialImpactsCalculated.I == 2
+        }
+        with(get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").body.riskValues.DSRA) {
+            potentialImpactsEffective.C == 2
+            potentialImpactsEffective.I == 2
+            potentialImpactsCalculated == [:]
         }
     }
 }

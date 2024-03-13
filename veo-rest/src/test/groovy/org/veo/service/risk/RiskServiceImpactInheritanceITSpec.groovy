@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.service.risk
 
-import static org.assertj.core.api.Assertions.assertThat
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -322,14 +320,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         then: "the root element is set to impactValues2 as all others are"
-        def ex = thrown(ImpactInheritanceCircleException.class)
         def queryCounts = QueryCountHolder.grandTotal
-
-        and:
         verifyAll {
-            queryCounts.select == 17
+            queryCounts.select == 19
             queryCounts.insert == 0
-            queryCounts.update == 0
+            queryCounts.update == 1
             queryCounts.delete == 0
             queryCounts.time < 40
         }
@@ -349,7 +344,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def listasset4 = buildAssetList(listassetCircle, unit, domain,"l4")
         def listasset5 = buildAssetList(listasset4, unit, domain,"l5")
         listassetCircle.applyLink(newCustomLink( listasset5, "asset_asset_app", domain))
-        assetDataRepository.save(listassetCircle)
+        listassetCircle = assetDataRepository.save(listassetCircle)
         def listasset6 = buildAssetList(listasset5, unit, domain,"l6")
 
         when: "we change the l3 element"
@@ -360,7 +355,6 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         then: "the l3 is part of a circle"
-        def ex = thrown(ImpactInheritanceCircleException.class)
         def queryCounts = QueryCountHolder.grandTotal
 
         and:
@@ -406,17 +400,13 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, listasset6)
         }
 
-        then: "l6 is part of a later circle"
-        ex = thrown(ImpactInheritanceCircleException.class)
-
-        when:
         queryCounts = QueryCountHolder.grandTotal
 
         then:
         verifyAll {
             queryCounts.select == 13
-            queryCounts.insert == 0
-            queryCounts.update == 0
+            queryCounts.insert == 1
+            queryCounts.update == 1
             queryCounts.delete == 0
             queryCounts.time < 40
         }
@@ -809,7 +799,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         })
 
         Asset simpleAsset = a0
-        List<Asset> assets = new ArrayList<>(100);
+        List<Asset> assets = new ArrayList<>(100)
         (1..100).each { index ->
             simpleAsset = buildAssetList(simpleAsset, unit, domain, "A-"+index)
             assets.add(simpleAsset)
@@ -833,8 +823,8 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             buildAssetList(c0, unit, domain, "C-1-"+index)
         }
         Process process
-        List<Process> processes = new ArrayList<>(100);
-        List<Process> processes1 = new ArrayList<>(100);
+        List<Process> processes = new ArrayList<>(100)
+        List<Process> processes1 = new ArrayList<>(100)
         (1..100).each { index ->
             process = processDataRepository.save( newProcess(unit) {
                 name = "p-"+index

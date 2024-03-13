@@ -25,6 +25,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.repository.ElementRepository;
@@ -58,6 +59,19 @@ public class RiskComponentChangeListener {
       if (element instanceof RiskAffected<?, ?> ra) {
         impactInheritanceCalculator.calculateImpactInheritance(ra);
       }
+    }
+  }
+
+  @TransactionalEventListener(condition = "#event.source != @riskService")
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void handle(RiskAffectedLinkDeletedEvent event) {
+    ElementRepository<? extends Element> repository =
+        repositoryProvider.getElementRepositoryFor(event.getEntityType());
+    Element element = repository.findById(event.getEntityId()).orElseThrow();
+
+    if (element instanceof RiskAffected<?, ?> ra) {
+      impactInheritanceCalculator.calculateImpactInheritance(
+          ra, event.getDomain(), event.getLinkType());
     }
   }
 
