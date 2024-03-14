@@ -36,6 +36,13 @@ public interface ImpactInheritanceCalculator {
   Collection<Element> calculateImpactInheritance(
       Unit unit, Domain domain, String riskDefinitionId, RiskAffected<?, ?> affectedElement);
 
+  /**
+   * Calculates the Impact Inheritance for all elements in the unit for a risk definition. Returns
+   * the changed elements.
+   */
+  Collection<? extends Element> updateAllRootNodes(
+      Unit unit, Domain domain, String riskDefinitionId);
+
   default void calculateImpactInheritance(RiskAffected<?, ?> element, Domain domain) {
     Unit owner = element.getOwner();
     domain.getRiskDefinitions().values().stream()

@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.service.risk
 
+import java.util.function.Function
+import java.util.stream.Collectors
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -37,6 +40,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
+import org.veo.persistence.access.jpa.AssetDataRepository
 
 import groovy.util.logging.Slf4j
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -55,6 +59,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
     Client client
     Domain domain
+    Domain secondDomain
     String riskDefinitionId
     RiskDefinition riskDefinition
     Unit unit
@@ -96,9 +101,13 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
     def setup() {
         client = createTestClient()
         domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        secondDomain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         riskDefinitionId = 'DSRA'
         riskDefinition = domain.riskDefinitions.get(riskDefinitionId)
-        unit = unitDataRepository.save(newUnit(client))
+        unit = unitDataRepository.save(newUnit(client).tap{
+            addToDomains(domain)
+            addToDomains(secondDomain)
+        })
 
         confidentiality = riskDefinition.getCategory('C').orElseThrow()
         confidentialityRef = CategoryRef.from(confidentiality)
@@ -965,7 +974,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         Asset c0 = assetDataRepository.save(newAsset(unit) {
-            name = "C-0"
+            name = "C-NOT-CONNECTED"
             associateWithDomain(domain, "AST_Application", "NEW")
         })
         Asset currentCAsset = c0
@@ -975,7 +984,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
                 name = "C-"+index
                 associateWithDomain(domain, "AST_Application", "NEW")
             })
-            currentCAsset = buildAssetList(c0, unit, domain, "C-"+index)
+            currentCAsset = buildAssetList(c0, unit, domain, "C-1-"+index)
             assetsC.add(currentCAsset)
         }
 
@@ -985,6 +994,8 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetsB[88].applyLink(newCustomLink(assetsA[87], "asset_asset_app", domain))
         assetDataRepository.save(assetsA[48])
         assetDataRepository.save(assetsB[88])
+
+        log.info("all saved elements {}", assetDataRepository.count())
 
         when: "recalculate the impact of a A-50"
         def asset50 = executeInTransaction {
@@ -1013,6 +1024,39 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.update == 0
             queryCounts.delete == 0
             queryCounts.time < 400
+        }
+
+        when: "recalculate for whole unit"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+        def map = result.stream().collect(Collectors.groupingBy(Function.identity()))
+        def elementByCount = map.values().stream().collect(Collectors.toMap({
+            it.first()
+        }, {
+            it.size()
+        }))
+
+        def summary = elementByCount.entrySet().stream().collect(Collectors.summarizingInt({ it.getValue() }))
+        log.info("summary {}",summary)
+
+        //402 relvant assets
+        //B-48 -- B-0 3 times
+
+        then: "402 unique assets where changed"
+        elementByCount.entrySet().size() == 402
+        summary.count == 402
+
+        and:
+        verifyAll {
+            queryCounts.select == 1630
+            queryCounts.insert == 11
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 1500
         }
     }
 
@@ -1221,6 +1265,324 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         1          | 3           |  0           | 1            | 2          | null        | "loop was detected"
         0          | 3           |  0           | 1            | 3          | null        | "loop was detected"
         1          | 3           |  0           | 1            | 3          | null        | "loop was detected"
+    }
+
+    def "determine the value in a simple list for complete unit"() {
+        given: "A chain of asset with an impact at the leaf"
+        def a1 = assetDataRepository.save(newAsset(unit) {
+            name = "a1"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues0)
+        })
+        def a2 = buildAssetListOpposite(a1, unit, domain,"a2",impactValuesEmpty)
+        def a3 = buildAssetListOpposite(a2, unit, domain,"a3",impactValuesEmpty)
+        def a4 = buildAssetListOpposite(a3, unit, domain,"a4",impactValuesEmpty)
+        def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
+
+        when: "we calculate for all roots"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        def result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then:"all impacts are changed in the chain"
+        result.size() == 5
+        result[0] == a1
+        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
+        result[2].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
+        result[3].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
+        result[4].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
+        result[4] == a5
+
+        and:
+        verifyAll {
+            queryCounts.select == 24
+            queryCounts.insert == 0
+            queryCounts.update == 1
+            queryCounts.delete == 0
+            queryCounts.time < 45
+        }
+    }
+
+    def "determine the value of a single element for complete unit"() {
+        def a1 = assetDataRepository.save(newAsset(unit) {
+            name = "a1"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues0)
+        })
+        assetDataRepository.save(a1)
+
+        when: "we calculate for all roots"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        def result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then:"no impacts are changed"
+        result.size() == 0
+    }
+
+    def "determine the value in a simple circle for complete unit"() {
+        def a1 = assetDataRepository.save(newAsset(unit) {
+            name = "a1"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues0)
+        })
+        def a2 = assetDataRepository.save(newAsset(unit) {
+            name = "a2"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues0)
+        })
+        def a3 = assetDataRepository.save(newAsset(unit) {
+            name = "a3"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues0)
+        })
+
+        a1.setLinks([
+            newCustomLink(a2, "asset_asset_app", domain)
+        ] as Set)
+        a2.setLinks([
+            newCustomLink(a3, "asset_asset_app", domain)
+        ] as Set)
+        a3.setLinks([
+            newCustomLink(a1, "asset_asset_app", domain)
+        ] as Set)
+
+        assetDataRepository.save(a1)
+        assetDataRepository.save(a2)
+        assetDataRepository.save(a3)
+
+        when: "we calculate for all roots"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        def result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then:"all impacts are changed in the circle"
+        result.size() == 3
+
+        when: "we add to roots"
+        def r1 = assetDataRepository.save(newAsset(unit) {
+            name = "r1"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues1)
+        })
+        def r2 = assetDataRepository.save(newAsset(unit) {
+            name = "r2"
+            associateWithDomain(domain, "AST_Application", "NEW")
+            setImpactValues(domain, impactValues2)
+        })
+        r1.setLinks([
+            newCustomLink(a1, "asset_asset_app", domain)
+        ] as Set)
+        r2.setLinks([
+            newCustomLink(a3, "asset_asset_app", domain)
+        ] as Set)
+        assetDataRepository.save(r1)
+        assetDataRepository.save(r2)
+
+        and: "we calculate all roots in the unit"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+
+        then:"the roots and their paths are returned"
+        result.size() == 4
+        result[0] == r1
+        result[1] == a1
+        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == [:]
+        result[2] == r2
+        result[3] == a3
+        result[3].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == [:]
+
+        and:
+        verifyAll {
+            queryCounts.select == 33
+            queryCounts.insert == 0
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 45
+        }
+    }
+
+    def "determine the values in in two simple lines for the complete unit"() {
+        given: "Independent lines"
+        def line1 = [] as List
+        (0..9).each { i ->
+            line1 << newAsset(unit) {
+                associateWithDomain(domain, "AST_Application", "NEW")
+                id = Key.newUuid()
+                name = "Line1-${i}"
+            }
+        }
+        line1 = line1.collect { assetDataRepository.save(it) }
+        (0..8).each { i ->
+            line1[i].setLinks([
+                newCustomLink(line1[i+1], "asset_asset_app", domain)
+            ] as Set)
+        }
+        line1 = line1.collect { assetDataRepository.save(it) }
+
+        line1[0].setImpactValues(domain, impactValues2)
+        assetDataRepository.save(line1[0])
+
+        def line2 = [] as List
+        (0..9).each { i ->
+            line2 << newAsset(unit) {
+                associateWithDomain(domain, "AST_Application", "NEW")
+                id = Key.newUuid()
+                name = "Line2-${i}"
+            }
+        }
+        line2 = line2.collect { assetDataRepository.save(it) }
+        (0..8).each { i ->
+            line2[i].setLinks([
+                newCustomLink(line2[i+1], "asset_asset_app", domain)
+            ] as Set)
+        }
+        line2 = line2.collect { assetDataRepository.save(it) }
+        line2[0].setImpactValues(domain, impactValues3)
+        assetDataRepository.save(line2[0])
+
+        when: "we calculate for all roots in unit"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        def result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then: "the roots and their path are returned"
+        result.size() == 20
+        result[0] == line1[0]
+        result[10] == line2[0]
+        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues2.get(riskDefinitionRef).potentialImpacts
+        result[9].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues2.get(riskDefinitionRef).potentialImpacts
+        result[11].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
+        result[19].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
+
+        and:
+        verifyAll {
+            queryCounts.select == 51
+            queryCounts.insert == 1
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 100
+        }
+
+        when: "we calculate all roots for a unit"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+
+        then:"no result is returned"
+        verifyAll {
+            queryCounts.select == 51
+            queryCounts.insert == 0
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 100
+        }
+
+        when: "we calculate all roots for a second domain with no risk definition"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, secondDomain)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+
+        then:"no result is returned"
+        verifyAll {
+            queryCounts.select == 0
+            queryCounts.insert == 0
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 20
+        }
+    }
+
+    def "determine the value for single element in a unit"() {
+        given: "a single asset"
+        def asset = newAsset(unit) {
+            associateWithDomain(domain, "AST_Application", "NEW")
+            id = Key.newUuid()
+            name = "single asset"
+        }
+        asset.setImpactValues(domain, impactValues3)
+        asset = assetDataRepository.save(asset)
+
+        when: "we calculate for an element"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        def result = executeInTransaction {
+            impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, asset)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then:"no result is returned"
+        result.size() == 0
+
+        and:
+        verifyAll {
+            queryCounts.select == 14
+            queryCounts.insert == 0
+            queryCounts.update == 1
+            queryCounts.delete == 0
+            queryCounts.time < 10
+        }
+
+        when: "we calculate for all roots in domain and riskdefinition"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        result = executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+
+        then:"no result is returned"
+        result.size() == 0
+
+        and:
+        verifyAll {
+            queryCounts.select == 1
+            queryCounts.insert == 0
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 10
+        }
+
+        when: "we calculate for all roots in the unit"
+        log.info("---------------------------------------------")
+        QueryCountHolder.clear()
+        executeInTransaction {
+            impactInheritanceCalculator.updateAllRootNodes(unit)
+        }
+        queryCounts = QueryCountHolder.grandTotal
+
+        then:"no result is returned"
+
+        and:
+        verifyAll {
+            queryCounts.select == 1
+            queryCounts.insert == 0
+            queryCounts.update == 0
+            queryCounts.delete == 0
+            queryCounts.time < 10
+        }
     }
 
     private void listLinks(Element a) {
