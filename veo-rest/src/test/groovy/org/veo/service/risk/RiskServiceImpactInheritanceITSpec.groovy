@@ -531,12 +531,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         result.size() == 9
         result[0] == c2
         result[1] == b3
-        //        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[2] == b4
         result[3] == b5
 
         result[4] == c4
-        //        result[1].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[5] == c5
         result[6] == c3
         result[7] == c4
