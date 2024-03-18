@@ -49,6 +49,9 @@ public class DeleteElementUseCase
   private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK =
       Set.of(Process.class, Asset.class, Scope.class, Scenario.class, Control.class);
 
+  private static final Set<Class<?>> RISK_AFFECTED_CLASSES =
+      Set.of(Process.class, Asset.class, Scope.class);
+
   public DeleteElementUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
     this.repositoryProvider = repositoryProvider;
@@ -68,8 +71,8 @@ public class DeleteElementUseCase
     repository.deleteById(entity.getId());
     if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
       eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
-      // notify link targets
-      if (entity.getLinks() != null) {
+      if (RISK_AFFECTED_CLASSES.contains(input.getEntityClass()) && entity.getLinks() != null) {
+        // notify link targets
         entity
             .getLinks()
             .forEach(
