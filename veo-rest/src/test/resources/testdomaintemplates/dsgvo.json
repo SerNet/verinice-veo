@@ -4090,6 +4090,11 @@
           "attributeDefinitions": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
+        },
+        "asset_asset_noninheriting": {
+          "attributeDefinitions": {},
+          "targetType": "asset",
+          "targetSubType": "AST_Datatype"
         }
       },
       "translations": {
@@ -4097,6 +4102,7 @@
           "asset_asset_app": "->app",
           "asset_asset_dat": "->dat",
           "asset_asset_it": "->it",
+          "asset_asset_noninheriting": "->noninheriting",
           "asset_generalInformation_document": "Dokument",
           "asset_details_number": "Anzahl",
           "asset_details_operatingStage": "Betriebsstadium",
@@ -4130,6 +4136,7 @@
           "asset_asset_app": "->app",
           "asset_asset_dat": "->dat",
           "asset_asset_it": "->it",
+          "asset_asset_noninheriting": "->noninheriting",
           "asset_generalInformation_document": "Document",
           "asset_details_number": "Number",
           "asset_details_operatingStage": "Operating stage",
