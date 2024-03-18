@@ -350,11 +350,12 @@ public class ContentCreationController extends AbstractVeoController {
   }
 
   @PutMapping("/domains/{domainId}/risk-definitions/{riskDefinitionId}")
-  @Operation(summary = "Create a risk definition with given ID")
+  @Operation(summary = "Create or update a risk definition with given ID")
+  @ApiResponse(responseCode = "200", description = "Risk definition updated")
   @ApiResponse(responseCode = "201", description = "Risk definition created")
   @ApiResponse(
-      responseCode = "409",
-      description = "Risk definition already exists and update is not implemented yet")
+      responseCode = "422",
+      description = "Requested risk definition modification is not supported yet")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveRiskDefinition(
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(hidden = true) ServletWebRequest request,
