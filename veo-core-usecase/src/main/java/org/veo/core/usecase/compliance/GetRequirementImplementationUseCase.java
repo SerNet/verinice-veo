@@ -21,11 +21,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.service.TypedId;
 
 import lombok.Value;
 

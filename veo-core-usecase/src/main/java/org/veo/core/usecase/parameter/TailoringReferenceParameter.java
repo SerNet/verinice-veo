@@ -22,8 +22,8 @@ import java.util.Optional;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.TailoringReferenceParameterState;
-import org.veo.core.usecase.service.TypedId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

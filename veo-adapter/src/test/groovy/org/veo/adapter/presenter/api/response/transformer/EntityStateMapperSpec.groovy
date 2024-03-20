@@ -30,12 +30,12 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
+import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.state.PotentialImpactDomainAssociationState
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.service.IdRefResolver
-import org.veo.core.usecase.service.TypedId
 
 import spock.lang.Specification
 

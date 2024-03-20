@@ -81,6 +81,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.inspection.Inspection;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
@@ -101,7 +102,6 @@ import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
-import org.veo.core.usecase.service.TypedId;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 

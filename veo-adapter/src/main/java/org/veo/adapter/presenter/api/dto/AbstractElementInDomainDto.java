@@ -46,11 +46,11 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
-import org.veo.core.usecase.service.TypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

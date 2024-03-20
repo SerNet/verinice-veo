@@ -36,11 +36,11 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
-import org.veo.core.usecase.service.TypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

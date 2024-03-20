@@ -22,6 +22,7 @@ import java.util.Set;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 
 /**
  * Resolves references to {@link Identifiable} entities ({@link ITypedId}s) by returning the target

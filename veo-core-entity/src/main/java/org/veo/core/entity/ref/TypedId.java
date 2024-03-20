@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.service;
+package org.veo.core.entity.ref;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.ref.ITypedId;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

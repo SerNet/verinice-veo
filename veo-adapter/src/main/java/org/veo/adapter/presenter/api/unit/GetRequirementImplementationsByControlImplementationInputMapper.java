@@ -21,8 +21,8 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
-import org.veo.core.usecase.service.TypedId;
 
 public class GetRequirementImplementationsByControlImplementationInputMapper {
   public static GetRequirementImplementationsByControlImplementationUseCase.InputData map(

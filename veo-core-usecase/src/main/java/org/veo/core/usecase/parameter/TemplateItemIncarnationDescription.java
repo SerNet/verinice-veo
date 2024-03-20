@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.TailoringReferenceParameterState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
-import org.veo.core.usecase.service.TypedId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

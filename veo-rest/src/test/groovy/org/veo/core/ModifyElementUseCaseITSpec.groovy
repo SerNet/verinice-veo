@@ -24,13 +24,13 @@ import org.springframework.test.context.DynamicPropertySource
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.state.CompositeElementState
 import org.veo.core.entity.state.CustomAspectState
 import org.veo.core.entity.state.DomainAssociationState
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.person.UpdatePersonUseCase
-import org.veo.core.usecase.service.TypedId
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 

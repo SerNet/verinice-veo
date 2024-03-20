@@ -22,6 +22,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.state.ProcessState
 import org.veo.core.entity.transform.IdentifiableFactory
@@ -33,7 +34,6 @@ import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.service.EntityStateMapper
-import org.veo.core.usecase.service.TypedId
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 

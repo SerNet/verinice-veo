@@ -102,6 +102,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
@@ -120,7 +121,6 @@ import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImp
 import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
-import org.veo.core.usecase.service.TypedId;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;

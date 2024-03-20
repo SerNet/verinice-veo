@@ -22,6 +22,7 @@ import java.time.Instant;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCase;
@@ -30,7 +31,6 @@ import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
-import org.veo.core.usecase.service.TypedId;
 
 import lombok.Value;
 

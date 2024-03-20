@@ -32,9 +32,9 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.service.IdRefResolver;
-import org.veo.core.usecase.service.TypedId;
 
 import lombok.RequiredArgsConstructor;
 

@@ -21,6 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.state.ElementState
 import org.veo.core.entity.transform.IdentifiableFactory
@@ -30,7 +31,6 @@ import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.service.EntityStateMapper
-import org.veo.core.usecase.service.TypedId
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
     DesignatorService designatorService = Mock()
