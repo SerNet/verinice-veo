@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.service.risk;
 
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.jgrapht.Graph;
@@ -44,6 +48,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.FlyweightElement;
 import org.veo.core.entity.FlyweightLink;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
@@ -100,7 +106,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       return Collections.emptyList();
     }
     List<CategoryRef> catRefs =
-        riskDefinition.getCategories().stream().map(c -> CategoryRef.from(c)).toList();
+        riskDefinition.getCategories().stream().map(CategoryRef::from).toList();
     if (catRefs.isEmpty()) {
       log.debug("no Categories defined in {}", riskDefinitionId);
       return Collections.emptyList();
@@ -112,6 +118,9 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       log.debug("Not a connected Graph");
       return Collections.emptyList();
     }
+
+    RiskDefinitionRef definitionRef = RiskDefinitionRef.from(riskDefinition);
+
     // get the affected flyweightElement
     FlyweightElement flyweightElement =
         flyweightGraphElements.stream()
@@ -120,6 +129,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
             .orElse(null);
     if (flyweightElement == null) {
       log.debug("affected element '{}' not in Graph", affectedElement.getName());
+      affectedElement
+          .getImpactValues(domain, definitionRef)
+          .ifPresent(clearCalculatedValues(affectedElement));
+
       return Collections.emptyList();
     }
 
@@ -140,7 +153,6 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     // test for direct cycles
     CycleDetector<Element, CustomLink> cycleDetector = new CycleDetector<>(affectedGraph);
-    RiskDefinitionRef definitionRef = RiskDefinitionRef.from(riskDefinition);
     if (cycleDetector.detectCyclesContainingVertex(affectedElement)) {
       Set<Element> allCycles = cycleDetector.findCycles();
       log.debug(
@@ -164,6 +176,13 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     long timeNeeded = System.currentTimeMillis() - startTime;
     log.debug("calculateImpactInheritance took {} ms", timeNeeded);
     return changedElements;
+  }
+
+  private Consumer<ImpactValues> clearCalculatedValues(RiskAffected<?, ?> affectedElement) {
+    return iv -> {
+      iv.potentialImpactsCalculated().clear();
+      saveAffectedElement(affectedElement);
+    };
   }
 
   /**
@@ -193,24 +212,9 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     Optional<ImpactValues> impactValues =
         affectedElement.getImpactValues(domain, riskDefinitionRef);
     impactValues.ifPresentOrElse(
-        iv -> {
-          log.debug(
-              "{} set calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
-          iv.potentialImpactsCalculated().clear();
-          iv.potentialImpactsCalculated().putAll(maxImpactPerCategorie);
-          changedElements.add(saveAffectedElement(affectedElement));
-        },
-        () -> {
-          log.debug(
-              "{} create calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
-
-          affectedElement.setImpactValues(
-              domain,
-              Map.of(
-                  riskDefinitionRef,
-                  new ImpactValues(new HashMap<>(), maxImpactPerCategorie, null, null)));
-          changedElements.add(saveAffectedElement(affectedElement));
-        });
+        fillCalculatedImpacts(affectedElement, changedElements, maxImpactPerCategorie),
+        initializeCalculatedImpacts(
+            affectedElement, domain, riskDefinitionRef, changedElements, maxImpactPerCategorie));
 
     if (elementsPartOfCycle.contains(affectedElement)) {
       log.debug(
@@ -224,9 +228,9 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     // walk the graph down in a predictable manner
     outgoingEdges.stream()
-        .map(e -> elementGraph.getEdgeTarget(e))
+        .map(elementGraph::getEdgeTarget)
         .map(RiskAffected.class::cast)
-        .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+        .sorted(comparing(Nameable::getName))
         .forEach(
             e ->
                 updateAffectedGraph(
@@ -237,6 +241,36 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
                     cats,
                     elementsPartOfCycle,
                     changedElements));
+  }
+
+  private Runnable initializeCalculatedImpacts(
+      RiskAffected<?, ?> affectedElement,
+      Domain domain,
+      RiskDefinitionRef riskDefinitionRef,
+      List<Element> changedElements,
+      Map<CategoryRef, ImpactRef> maxImpactPerCategorie) {
+    return () -> {
+      log.debug("{} create calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
+
+      affectedElement.setImpactValues(
+          domain,
+          Map.of(
+              riskDefinitionRef,
+              new ImpactValues(new HashMap<>(), maxImpactPerCategorie, null, null)));
+      changedElements.add(saveAffectedElement(affectedElement));
+    };
+  }
+
+  private Consumer<ImpactValues> fillCalculatedImpacts(
+      RiskAffected<?, ?> affectedElement,
+      List<Element> changedElements,
+      Map<CategoryRef, ImpactRef> maxImpactPerCategorie) {
+    return iv -> {
+      log.debug("{} set calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
+      iv.potentialImpactsCalculated().clear();
+      iv.potentialImpactsCalculated().putAll(maxImpactPerCategorie);
+      changedElements.add(saveAffectedElement(affectedElement));
+    };
   }
 
   /**
@@ -257,14 +291,13 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
             unit,
             domain,
             elementSubGraph.vertexSet().stream()
-                .map(v -> v.sourceId())
+                .map(FlyweightElement::sourceId)
                 .collect(Collectors.toSet()));
     Map<String, RiskAffected<?, ?>> elementById =
-        riskAffectedElements.stream()
-            .collect(Collectors.toMap(k -> k.getIdAsString(), Function.identity()));
+        riskAffectedElements.stream().collect(toMap(Identifiable::getIdAsString, identity()));
 
     DirectedPseudograph<Element, CustomLink> graph = new DirectedPseudograph<>(null, null, true);
-    riskAffectedElements.forEach(ra -> graph.addVertex(ra));
+    riskAffectedElements.forEach(graph::addVertex);
     riskAffectedElements.stream()
         .flatMap(
             ra ->
@@ -285,10 +318,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       Set<FlyweightElement> flyweightGraphElements) {
 
     Map<String, FlyweightElement> elementById =
-        flyweightGraphElements.stream().collect(Collectors.toMap(t -> t.sourceId(), u -> u));
+        flyweightGraphElements.stream().collect(toMap(FlyweightElement::sourceId, identity()));
     DirectedPseudograph<FlyweightElement, FlyweightLink> graph =
         new DirectedPseudograph<>(null, null, true);
-    flyweightGraphElements.forEach(ra -> graph.addVertex(ra));
+    flyweightGraphElements.forEach(graph::addVertex);
     flyweightGraphElements.stream()
         .flatMap(e -> e.links().stream())
         .forEach(
@@ -312,20 +345,20 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     Map<CategoryRef, List<Entry<CategoryRef, ImpactRef>>> incomingValues =
         incomingEdges.stream()
-            .map(l -> maskSubgraph.getEdgeSource(l))
+            .map(maskSubgraph::getEdgeSource)
             .map(RiskAffected.class::cast)
             .map(ra -> ra.getImpactValues(domain, riskDefinitionRef))
-            .filter(o -> o.isPresent())
-            .map(o -> o.get())
-            .map(iv -> iv.getPotentialImpactsEffective())
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(ImpactValues::getPotentialImpactsEffective)
             .flatMap(m -> m.entrySet().stream())
-            .collect(Collectors.groupingBy(e -> e.getKey()));
+            .collect(Collectors.groupingBy(Entry::getKey));
 
     Map<CategoryRef, ImpactRef> maxImpacts = new HashMap<>();
     for (CategoryRef categoryRef : catRefs) {
       incomingValues.getOrDefault(categoryRef, Collections.emptyList()).stream()
-          .map(a -> a.getValue())
-          .collect(Collectors.maxBy((o1, o2) -> o1.getIdRef().compareTo(o2.getIdRef())))
+          .map(Entry::getValue)
+          .max(comparing(ImpactRef::getIdRef))
           .ifPresent(i -> maxImpacts.put(categoryRef, ImpactRef.from(i)));
     }
     return maxImpacts;
@@ -392,23 +425,17 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     elementsInCycle.stream()
         .map(RiskAffected.class::cast)
         .forEach(
-            e ->
-                e.getImpactValues(domain, riskDefinitionRef)
-                    .ifPresent(
-                        iv -> {
-                          iv.potentialImpactsCalculated().clear();
-                          saveAffectedElement(e);
-                        }));
+            e -> e.getImpactValues(domain, riskDefinitionRef).ifPresent(clearCalculatedValues(e)));
   }
 
   private Set<String> riskLinks(RiskDefinition riskDefinition) {
     return riskDefinition.getImpactInheritingLinks().values().stream()
-        .flatMap(e -> e.stream())
+        .flatMap(Collection::stream)
         .collect(Collectors.toSet());
   }
 
   private String listNodes(Set<Element> allCycles) {
-    return allCycles.stream().map(e -> e.getName()).collect(Collectors.joining(", "));
+    return allCycles.stream().map(Nameable::getName).collect(Collectors.joining(", "));
   }
 
   private String toLinkName(CustomLink l) {
