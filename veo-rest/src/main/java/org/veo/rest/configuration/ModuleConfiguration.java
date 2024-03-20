@@ -874,21 +874,8 @@ public class ModuleConfiguration {
 
   @Bean
   public DomainTemplateServiceImpl domainTemplateService(
-      DomainTemplateRepository domainTemplateRepository,
-      EntityFactory factory,
-      IdentifiableFactory identifiableFactory,
-      DomainAssociationTransformer domainAssociationTransformer,
-      DomainTemplateIdGenerator domainTemplateIdGenerator,
-      ReferenceAssembler referenceAssembler,
-      EventPublisher eventPublisher) {
-    return new DomainTemplateServiceImpl(
-        domainTemplateRepository,
-        factory,
-        domainAssociationTransformer,
-        identifiableFactory,
-        domainTemplateIdGenerator,
-        referenceAssembler,
-        getEntityStateMapper(eventPublisher));
+      DomainTemplateRepository domainTemplateRepository, DomainStateMapper domainStateMapper) {
+    return new DomainTemplateServiceImpl(domainTemplateRepository, domainStateMapper);
   }
 
   @Bean

@@ -21,51 +21,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.veo.adapter.IdRefResolvingFactory;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.ModelConsistencyException;
-import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
-import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.DomainStateMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @Slf4j
 public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private final DomainTemplateRepository domainTemplateRepository;
-  private final EntityToDtoTransformer dtoTransformer;
-  private final DomainTemplateIdGenerator domainTemplateIdGenerator;
-  private final IdentifiableFactory identifiableFactory;
-  private final EntityFactory entityFactory;
-  private final EntityStateMapper entityStateMapper;
-
-  public DomainTemplateServiceImpl(
-      DomainTemplateRepository domainTemplateRepository,
-      EntityFactory factory,
-      DomainAssociationTransformer domainAssociationTransformer,
-      IdentifiableFactory identifiableFactory,
-      DomainTemplateIdGenerator domainTemplateIdGenerator,
-      ReferenceAssembler referenceAssembler,
-      EntityStateMapper entityStateMapper) {
-    this.domainTemplateRepository = domainTemplateRepository;
-    this.domainTemplateIdGenerator = domainTemplateIdGenerator;
-    this.identifiableFactory = identifiableFactory;
-    this.entityFactory = factory;
-    this.entityStateMapper = entityStateMapper;
-    dtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
-  }
+  private final DomainStateMapper domainStateMapper;
 
   @Override
   public List<DomainTemplate> getTemplates(Client client) {
@@ -86,14 +59,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   public Domain createDomain(Client client, String templateId) {
     DomainTemplate domainTemplate = getTemplate(client, Key.uuidFrom(templateId));
 
-    ExportDomainTemplateDto domainTemplateDto =
-        dtoTransformer.transformDomainTemplate2Dto(domainTemplate);
-
-    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
-    resolvingFactory.setGlobalDomain(identifiableFactory.create(Domain.class, Key.newUuid()));
-    var domain =
-        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper)
-            .transformTransformDomainTemplateDto2Domain(domainTemplateDto, resolvingFactory);
+    var domain = domainStateMapper.toDomain(domainTemplate);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);
@@ -102,26 +68,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
-    ExportDomainTemplateDto domainDto = dtoTransformer.transformDomainTemplate2Dto(domain);
-
-    String domainTemplateId = createDomainTemplateId(domain);
-    Key<UUID> domainTemplateKey = Key.uuidFrom(domainTemplateId);
-    if (domainTemplateRepository.exists(domainTemplateKey)) {
-      throw new ModelConsistencyException("The UUID %s is already used.", domainTemplateId);
+    var newDomainTemplate = domainStateMapper.toTemplate(domain);
+    if (domainTemplateRepository.exists(newDomainTemplate.getId())) {
+      throw new ModelConsistencyException(
+          "The UUID %s is already used.", newDomainTemplate.getIdAsString());
     }
-    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
-    resolvingFactory.setGlobalDomainTemplateId(domainTemplateId);
-    var transformer =
-        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper);
-    var newDomainTemplate =
-        transformer.transformTransformDomainTemplateDto2DomainTemplate(domainDto, resolvingFactory);
-    newDomainTemplate.setId(domainTemplateKey);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
-  }
-
-  private String createDomainTemplateId(Domain domain) {
-    return domainTemplateIdGenerator.createDomainTemplateId(
-        domain.getName(), domain.getTemplateVersion());
   }
 }

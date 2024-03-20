@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
@@ -51,6 +52,14 @@ public class DomainStateMapper {
   private final RefResolverFactory refResolverFactory;
   private final EntityFactory entityFactory;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
+
+  public Domain toDomain(DomainBaseState source) {
+    var target =
+        entityFactory.createDomain(
+            source.getName(), source.getAuthority(), source.getTemplateVersion());
+    map(source, target);
+    return target;
+  }
 
   public DomainTemplate toTemplate(DomainBaseState source) {
     var target =
