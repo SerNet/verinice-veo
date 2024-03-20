@@ -678,6 +678,57 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "reapply in normal mode"() {
+        when: "creating incarnation descriptions for a composite with part"
+        def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "DEFAULT", "ALWAYS")
+
+        and: "post"
+        def elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+
+        then: "the part is created"
+        elementRef.size() == 2
+
+        when: "we delete the composite part"
+        def compositeUri = elementRef[0].targetUri
+        delete(elementRef[1].targetUri)
+
+        then: "the part is gone"
+        with(parseJson(get(compositeUri))) {
+            name == 'zzzzzComposite'
+            parts.size() == 0
+        }
+
+        when:"creating incarnation descriptions using existing incarnations"
+        incarnationDescriptions = getIncarnationDescriptions([itemComposite], "DEFAULT", "ALWAYS")
+
+        then: "the parameter is set to the existing part"
+        incarnationDescriptions.parameters.size() == 1
+        incarnationDescriptions.parameters.first().references.size() == 1
+
+        when: "incarnating"
+        elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+
+        then: "the part is created"
+        with(parseJson(get(elementRef[0].targetUri))) {
+            elementRef.size() == 1
+            name == 'zzzzzPart'
+        }
+
+        and: "the reference is restored"
+        with(parseJson(get(compositeUri))) {
+            name == 'zzzzzComposite'
+            parts.size() == 1
+            parts[0].name == 'zzzzzPart'
+        }
+
+        when:"all parts are present and we create incarnation descriptions using existing incarnations"
+        incarnationDescriptions = getIncarnationDescriptions([itemComposite], "DEFAULT", "ALWAYS")
+
+        then: "nothing would be incarnated"
+        incarnationDescriptions.parameters.size() == 0;
+    }
+
+    @WithUserDetails("user@domain.example")
     def "apply item with scope"() {
         when: "applying an item that has a scope reference"
         def memberUri = postIncarnationDescriptions(getIncarnationDescriptions([itemMember]))[0].targetUri
@@ -695,8 +746,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         scopes[0].members[0].targetUri == memberUri
     }
 
-    private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT") {
-        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=$mode"))
+    private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT",  String useExistingIncarnations="FOR_REFERENCED_ITEMS") {
+        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=$mode&useExistingIncarnations=$useExistingIncarnations"))
     }
 
     private postIncarnationDescriptions(incarnationDescriptions) {
