@@ -183,6 +183,7 @@ import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
+import org.veo.core.usecase.service.DomainStateMapper;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -1106,10 +1107,17 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public CreateDomainTemplateUseCase createDomainTemplateUseCase(
-      DomainTemplateRepository domainTemplateRepository,
+  public DomainStateMapper domainStateMapper(
+      RefResolverFactory refResolvingFactory,
+      EntityFactory entityFactory,
       DomainTemplateIdGenerator domainTemplateIdGenerator) {
-    return new CreateDomainTemplateUseCase(domainTemplateRepository, domainTemplateIdGenerator);
+    return new DomainStateMapper(refResolvingFactory, entityFactory, domainTemplateIdGenerator);
+  }
+
+  @Bean
+  public CreateDomainTemplateUseCase createDomainTemplateUseCase(
+      DomainTemplateRepository domainTemplateRepository, DomainStateMapper domainStateMapper) {
+    return new CreateDomainTemplateUseCase(domainStateMapper, domainTemplateRepository);
   }
 
   @Bean

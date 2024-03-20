@@ -22,14 +22,14 @@ import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.valida
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
+import org.veo.core.entity.state.DomainBaseState;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.TemplateItemValidator;
+import org.veo.core.usecase.service.DomainStateMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -39,19 +39,13 @@ import lombok.Value;
 public class CreateDomainTemplateUseCase
     implements TransactionalUseCase<
         CreateDomainTemplateUseCase.InputData, CreateDomainTemplateUseCase.OutputData> {
+  private final DomainStateMapper mapper;
   private final DomainTemplateRepository domainTemplateRepository;
-  private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
   @Override
   public OutputData execute(InputData input) {
-    var domainTemplate = input.domainTemplate;
-
-    // Generate domain template UUID (ID from input is ignored).
-    domainTemplate.setId(
-        Key.uuidFrom(
-            domainTemplateIdGenerator.createDomainTemplateId(
-                domainTemplate.getName(), domainTemplate.getTemplateVersion())));
-
+    var state = input.domainTemplate;
+    var domainTemplate = mapper.toTemplate(state);
     validateVersion(input.domainTemplate.getTemplateVersion());
     if (domainTemplateRepository.exists(domainTemplate.getId())) {
       throw new EntityAlreadyExistsException(domainTemplate);
@@ -75,7 +69,7 @@ public class CreateDomainTemplateUseCase
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
-    DomainTemplate domainTemplate;
+    DomainBaseState domainTemplate;
   }
 
   @Valid

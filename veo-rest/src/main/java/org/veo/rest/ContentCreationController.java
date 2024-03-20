@@ -59,7 +59,6 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProfileDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -584,12 +583,9 @@ public class ContentCreationController extends AbstractVeoController {
 
   private CompletableFuture<ResponseEntity<ApiResponseBody>> doCreateDomainTemplate(
       ExportDomainTemplateDto domainTemplateDto) {
-    var input =
-        CreateDomainTemplateInputMapper.map(
-            domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);
     return useCaseInteractor.execute(
         createDomainTemplatesUseCase,
-        input,
+        new CreateDomainTemplateUseCase.InputData(domainTemplateDto),
         out -> {
           var body = CreateOutputMapper.map(out.getDomainTemplate());
           return RestApiResponse.created(URL_BASE_PATH, body);

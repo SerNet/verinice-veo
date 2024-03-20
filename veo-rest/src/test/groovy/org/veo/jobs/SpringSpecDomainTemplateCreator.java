@@ -30,19 +30,15 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
-import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,9 +54,6 @@ public class SpringSpecDomainTemplateCreator {
   private final ObjectMapper objectMapper;
   private final DomainTemplateRepository domainTemplateRepository;
   private Map<String, ExportDomainTemplateDto> domainTemplateDtos;
-  private final IdentifiableFactory identifiableFactory;
-  private final EntityFactory entityFactory;
-  private final EntityStateMapper entityStateMapper;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final DomainRepository domainRepository;
@@ -99,10 +92,7 @@ public class SpringSpecDomainTemplateCreator {
     var dto = getTestTemplateDto(templateId);
     AsSystemUser.runAsContentCreator(
         () -> {
-          var input =
-              CreateDomainTemplateInputMapper.map(
-                  dto, identifiableFactory, entityFactory, entityStateMapper);
-          createDomainTemplateUseCase.execute(input);
+          createDomainTemplateUseCase.execute(new CreateDomainTemplateUseCase.InputData(dto));
         });
   }
 

@@ -97,7 +97,7 @@ public class EntityStateMapper {
         Optional.ofNullable(source.getParent()).map(idRefResolver::resolve).orElse(null));
   }
 
-  private static void mapNameableProperties(Nameable source, Nameable target) {
+  public static void mapNameableProperties(Nameable source, Nameable target) {
     target.setName(source.getName());
     target.setAbbreviation(source.getAbbreviation());
     target.setDescription(source.getDescription());
