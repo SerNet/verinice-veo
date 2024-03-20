@@ -17,7 +17,16 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.TailoringReferenceState;
+import org.veo.core.entity.state.TemplateItemState;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,4 +34,29 @@ import lombok.EqualsAndHashCode;
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ExportCatalogItemDto extends FullCatalogItemDto implements IdentifiableDto {}
+public class ExportCatalogItemDto extends FullCatalogItemDto
+    implements TemplateItemState<CatalogItem>, IdentifiableDto {
+  @Override
+  @JsonIgnore
+  public String getSelfId() {
+    return getId();
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<CustomAspectState> getCustomAspectStates() {
+    return getCustomAspects().getValue().entrySet().stream()
+        .map(
+            kv ->
+                new CustomAspectState.CustomAspectStateImpl(kv.getKey(), kv.getValue().getValue()))
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<TailoringReferenceState<CatalogItem>> getTailoringReferenceStates() {
+    return getTailoringReferences().stream()
+        .map(tr -> (TailoringReferenceState<CatalogItem>) tr)
+        .collect(Collectors.toSet());
+  }
+}

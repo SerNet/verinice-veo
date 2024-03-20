@@ -19,13 +19,18 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractProfileDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.VeoConstants;
+import org.veo.core.entity.ProfileState;
+import org.veo.core.entity.state.ProfileItemState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -34,7 +39,7 @@ import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ExportProfileDto extends AbstractProfileDto implements IdentifiableDto {
+public class ExportProfileDto extends AbstractProfileDto implements IdentifiableDto, ProfileState {
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
       description = VeoConstants.UUID_MESSAGE,
@@ -45,4 +50,10 @@ public class ExportProfileDto extends AbstractProfileDto implements Identifiable
 
   @Schema(description = "The profile-items for the Profile.")
   private Set<ExportProfileItemDto> items = new HashSet<>();
+
+  @Override
+  @JsonIgnore
+  public Set<ProfileItemState> getItemStates() {
+    return items.stream().map(pi -> (ProfileItemState) pi).collect(Collectors.toSet());
+  }
 }

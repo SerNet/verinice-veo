@@ -20,11 +20,15 @@ package org.veo.adapter.service.domaintemplate.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.state.RiskTailoringReferenceState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -37,10 +41,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RiskTailoringReferenceDto<T extends TemplateItem<T>> extends TailoringReferenceDto<T> {
+public class RiskTailoringReferenceDto<T extends TemplateItem<T>> extends TailoringReferenceDto<T>
+    implements RiskTailoringReferenceState<T> {
   private IdRef<T> mitigation;
   private IdRef<T> riskOwner;
 
   @Schema(description = "Keys are risk definition IDs, values hold risk values")
   private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions = new HashMap<>();
+
+  @Override
+  @JsonIgnore
+  public ITypedId<T> getMitigationRef() {
+    return mitigation;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedId<T> getRiskOwnerRef() {
+    return riskOwner;
+  }
 }

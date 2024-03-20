@@ -26,11 +26,12 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.state.ElementTypeDefinitionState;
 
 import lombok.Data;
 
 @Data
-public class ElementTypeDefinitionDto {
+public class ElementTypeDefinitionDto implements ElementTypeDefinitionState {
   @Valid Map<String, SubTypeDefinition> subTypes = new HashMap<>();
   @Valid Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
   @Valid Map<String, LinkDefinition> links = new HashMap<>();

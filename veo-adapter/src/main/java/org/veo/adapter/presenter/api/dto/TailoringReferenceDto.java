@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import jakarta.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.adapter.presenter.api.Patterns;
@@ -26,6 +27,8 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.TailoringReferenceState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,7 +44,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @JsonIgnoreProperties("linkTailoringReferences")
-public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto {
+public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto
+    implements TailoringReferenceState<T> {
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
       description = VeoConstants.UUID_MESSAGE,
@@ -53,4 +57,10 @@ public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVe
   private TailoringReferenceType referenceType;
 
   private IdRef<T> target;
+
+  @Override
+  @JsonIgnore
+  public ITypedId<T> getTargetRef() {
+    return target;
+  }
 }

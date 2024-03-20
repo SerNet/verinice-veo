@@ -17,9 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +36,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ControlImplementationTailoringReferenceDto<T extends TemplateItem<T>>
-    extends TailoringReferenceDto<T> {
+    extends TailoringReferenceDto<T> implements ControlImplementationTailoringReferenceState<T> {
   private IdRef<T> responsible;
   private String description;
+
+  @Override
+  @JsonIgnore
+  public ITypedId<T> getResponsibleRef() {
+    return responsible;
+  }
 }

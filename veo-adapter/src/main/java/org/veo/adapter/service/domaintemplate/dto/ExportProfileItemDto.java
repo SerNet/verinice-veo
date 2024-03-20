@@ -17,23 +17,66 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.ProfileItemState;
+import org.veo.core.entity.state.TailoringReferenceState;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ExportProfileItemDto extends FullProfileItemDto implements IdentifiableDto {
+public class ExportProfileItemDto extends FullProfileItemDto
+    implements IdentifiableDto, ProfileItemState {
   private IdRef<CatalogItem> appliedCatalogItem;
+
+  @Nullable
+  @Override
+  @JsonIgnore
+  public ITypedId<CatalogItem> getAppliedCatalogItemRef() {
+    return appliedCatalogItem;
+  }
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {
     return ProfileItem.class;
+  }
+
+  @Override
+  @JsonIgnore
+  public String getSelfId() {
+    return getId();
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<CustomAspectState> getCustomAspectStates() {
+    return getCustomAspects().getValue().entrySet().stream()
+        .map(
+            kv ->
+                new CustomAspectState.CustomAspectStateImpl(kv.getKey(), kv.getValue().getValue()))
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<TailoringReferenceState<ProfileItem>> getTailoringReferenceStates() {
+    return getTailoringReferences().stream()
+        .map(tr -> (TailoringReferenceState<ProfileItem>) tr)
+        .collect(Collectors.toSet());
   }
 }

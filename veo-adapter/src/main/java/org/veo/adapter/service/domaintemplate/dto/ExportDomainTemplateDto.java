@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,8 +34,13 @@ import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.VeoConstants;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.IncarnationConfiguration;
+import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.inspection.Inspection;
+import org.veo.core.entity.state.DomainBaseState;
+import org.veo.core.entity.state.ElementTypeDefinitionState;
+import org.veo.core.entity.state.TemplateItemState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -45,7 +52,8 @@ import lombok.ToString;
 @JsonIgnoreProperties("domainTemplate")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implements IdentifiableDto {
+public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
+    implements DomainBaseState, IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
@@ -67,4 +75,23 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implement
   private Map<String, Inspection> inspections = new HashMap<>();
 
   private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
+
+  @Override
+  @JsonIgnore
+  public Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
+    return elementTypeDefinitions.entrySet().stream()
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<TemplateItemState<CatalogItem>> getCatalogItemStates() {
+    return new HashSet<>(catalogItems);
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<ProfileState> getProfileStates() {
+    return new HashSet<>(profilesNew);
+  }
 }
