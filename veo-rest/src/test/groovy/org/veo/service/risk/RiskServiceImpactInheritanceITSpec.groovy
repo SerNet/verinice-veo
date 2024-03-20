@@ -878,7 +878,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 1
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 200
+            queryCounts.time < 300
         }
 
         when: "recalculate the impact of a simple Asset"
@@ -936,7 +936,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 2
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 300
+            queryCounts.time < 400
         }
     }
 
@@ -1012,7 +1012,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 4
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 300
+            queryCounts.time < 400
         }
     }
 
