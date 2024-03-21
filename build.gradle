@@ -139,8 +139,8 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-impl:0.12.5'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.12.5'
             // pull in fix for https://github.com/spockframework/spock/issues/1539
-            dependency "org.spockframework:spock-core:2.4-M2-groovy-4.0"
-            dependency "org.spockframework:spock-spring:2.4-M2-groovy-4.0"
+            dependency "org.spockframework:spock-core:2.4-M3-groovy-4.0"
+            dependency "org.spockframework:spock-spring:2.4-M3-groovy-4.0"
             dependency 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
             dependency 'org.springdoc:springdoc-openapi-starter-common:2.4.0'
             dependency 'io.swagger.core.v3:swagger-core-jakarta:2.2.21'
