@@ -19,6 +19,9 @@ package org.veo.rest.test
 
 import org.veo.core.entity.EntityType
 
+import spock.lang.Issue
+import spock.lang.Unroll
+
 class ControlImplementationRestTest extends VeoRestTest {
     private String domainId
     private String unitId
@@ -323,6 +326,99 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    @Issue("#2815")
+    // Test removing the person from this graph:
+    //```mermaid
+    //graph TD
+    //    P1[PER-1]:::person
+    //    A1[AST-1]:::asset
+    //    A2[AST-2]:::asset
+    //    INF.11:::control
+    //    SYS.4.4:::control
+    //    A1 --> P1
+    //    A1 --> A2
+    //    A2 --> P1
+    //    A1 -- CI --> SYS.4.4
+    //    A2 -- CI --> INF.11
+    //```
+    def "delete person when assets own CIs and also link to person"() {
+        given: "an asset that is linked with a person and has a CI"
+        post("/domains/$testDomainId/persons/$person1Id", [
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
+        ], 200)
+
+        def controlInf11Id = post("/controls", [
+            name: "INF.11",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+
+        def controlSys44Id = post("/controls", [
+            name: "SYS.4.4",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+
+        def asset2Id = post("/domains/$testDomainId/assets", [
+            name: "AST-2",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "Server",
+            status: "RUNNING",
+            riskValues: [
+                riskyDef: [potentialImpacts: [:]]
+            ],
+            links: [
+                admin: [
+                    [
+                        target: [targetUri: "/persons/$person1Id"]
+                    ]
+                ]
+            ],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$controlInf11Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        def asset1Id = post("/domains/$testDomainId/assets", [
+            name: "AST-1",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "Server",
+            status: "RUNNING",
+            riskValues: [
+                riskyDef: [potentialImpacts: [:]]
+            ],
+            links: [
+                admin: [
+                    [
+                        target: [targetUri: "/persons/$person1Id"]
+                    ]
+                ],
+                requires: [
+                    [
+                        target: [targetUri: "/assets/$asset2Id"]
+                    ]
+                ]
+            ],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$controlSys44Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "delete the person"
+        delete("/persons/$person1Id")
+
+        then: "the asset can be retrieved without an error"
+        with(get("/domains/$testDomainId/assets/$asset2Id").body) {
+            name == "AST-2"
+        }
+        with(get("/domains/$testDomainId/assets/$asset1Id").body) {
+            name == "AST-1"
+        }
     }
 
     def "concurrent requirement implementation changes on #elementType.singularTerm are detected"() {

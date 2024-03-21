@@ -158,6 +158,20 @@
               ]
             }
           }
+        },
+        "requires": {
+          "targetType": "asset",
+          "targetSubType": "Server",
+          "attributeDefinitions": {
+            "howBadly": {
+              "type": "enum",
+              "allowedValues": [
+                "musthave",
+                "wouldbenice",
+                "ifnothingelseisavailable"
+              ]
+            }
+          }
         }
       }
     },
