@@ -48,7 +48,6 @@ import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
@@ -821,15 +820,6 @@ public class ModuleConfiguration {
       ReferenceAssembler referenceAssembler,
       DomainAssociationTransformer domainAssociationTransformer) {
     return new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
-  }
-
-  @Bean
-  public DtoToEntityTransformer dtoToEntityTransformer(
-      EntityFactory entityFactory,
-      IdentifiableFactory identifiableFactory,
-      EventPublisher eventPublisher) {
-    return new DtoToEntityTransformer(
-        entityFactory, identifiableFactory, getEntityStateMapper(eventPublisher));
   }
 
   @Primary

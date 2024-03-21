@@ -28,14 +28,9 @@ import org.springframework.http.ResponseEntity;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.service.IdRefResolver;
-import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.rest.common.SearchResponse;
 import org.veo.service.EtagService;
 
@@ -44,24 +39,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractEntityController extends AbstractVeoController {
 
-  @Autowired private RepositoryProvider repositoryProvider;
-
   @Autowired EntityToDtoTransformer entityToDtoTransformer;
-
-  @Autowired DtoToEntityTransformer dtoToEntityTransformer;
 
   @Autowired ReferenceAssembler urlAssembler;
 
   @Autowired protected EtagService etagService;
-  @Autowired private RefResolverFactory refResolverFactory;
 
   protected AbstractEntityController() {}
 
   protected CacheControl defaultCacheControl = CacheControl.noCache();
-
-  protected IdRefResolver createIdRefResolver(Client client) {
-    return refResolverFactory.db(client);
-  }
 
   protected abstract String buildSearchUri(String searchId);
 
