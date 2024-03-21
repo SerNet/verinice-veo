@@ -166,7 +166,7 @@ public class GetCatalogIncarnationDescriptionUseCase
         if (lookup == IncarnationLookup.NEVER) {
           break;
         }
-        var referencedItems = getReferencedItems(current, result, tailoringReferenceFilter);
+        var referencedItems = getReferencedItems(current, result, tailoringReferenceFilter, false);
         buildIncarnationMap(referencedItems, unit, true).entrySet().stream()
             .filter(itemToElement -> itemToElement.getValue().isPresent())
             .forEach(itemToElement -> result.put(itemToElement.getKey(), itemToElement.getValue()));
@@ -177,7 +177,9 @@ public class GetCatalogIncarnationDescriptionUseCase
         // Search for existing incarnations on every level (unless lookup behavior is NEVER).
         // Referenced items without an existing incarnation will be incarnated automatically.
         while (!current.isEmpty()) {
-          var nextLevelItems = getReferencedItems(current, result, tailoringReferenceFilter);
+          var nextLevelItems =
+              getReferencedItems(
+                  current, result, tailoringReferenceFilter, lookup == IncarnationLookup.ALWAYS);
           current = buildIncarnationMap(nextLevelItems, unit, lookup != IncarnationLookup.NEVER);
           result.putAll(current);
         }
@@ -189,10 +191,13 @@ public class GetCatalogIncarnationDescriptionUseCase
   private static Set<CatalogItem> getReferencedItems(
       Map<CatalogItem, Optional<Element>> current,
       HashMap<CatalogItem, Optional<Element>> encountered,
-      Predicate<? super TailoringReference<CatalogItem>> referenceFilter) {
+      Predicate<? super TailoringReference<CatalogItem>> referenceFilter,
+      boolean followReferencesOfExistingIncarnations) {
     return current.entrySet().stream()
         // Only follow references of items without an existing incarnation.
-        .filter(itemToElement -> itemToElement.getValue().isEmpty())
+        .filter(
+            itemToElement ->
+                itemToElement.getValue().isEmpty() || followReferencesOfExistingIncarnations)
         .map(Map.Entry::getKey)
         .map(TemplateItem::getTailoringReferences)
         .flatMap(Collection::stream)
