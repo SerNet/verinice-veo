@@ -136,4 +136,14 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
     }
     return null;
   }
+
+  @Override
+  public boolean equals(Object other) {
+    return ITypedId.equals(this, other);
+  }
+
+  @Override
+  public int hashCode() {
+    return ITypedId.hashCode(this);
+  }
 }

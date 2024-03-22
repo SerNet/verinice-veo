@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,5 +35,15 @@ public interface ITypedId<T extends Identifiable> {
 
   default Key<UUID> toKey() {
     return Key.uuidFrom(getId());
+  }
+
+  static <T extends Identifiable> boolean equals(ITypedId<?> a, Object other) {
+    return other instanceof ITypedId b
+        && a.getId().equals(b.getId())
+        && a.getType().equals(b.getType());
+  }
+
+  static <T extends Identifiable> int hashCode(ITypedId<?> typedId) {
+    return Objects.hash(typedId.getId(), typedId.getType());
   }
 }

@@ -32,6 +32,16 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
   @NonNull private final Class<T> type;
 
   public static <T extends Identifiable> TypedId<T> from(T entity) {
-    return new TypedId<T>(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
+    return new TypedId<>(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return ITypedId.equals(this, other);
+  }
+
+  @Override
+  public int hashCode() {
+    return ITypedId.hashCode(this);
   }
 }
