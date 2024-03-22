@@ -1183,8 +1183,10 @@ public class ModuleConfiguration {
   @Bean
   CatalogMigrationService catalogItemMigrationService(
       ElementMigrationService elementMigrationService,
-      CatalogItemRepository catalogItemRepository) {
-    return new CatalogMigrationService(elementMigrationService, catalogItemRepository);
+      CatalogItemRepository catalogItemRepository,
+      ProfileItemRepository profileItemRepository) {
+    return new CatalogMigrationService(
+        elementMigrationService, catalogItemRepository, profileItemRepository);
   }
 
   @Bean

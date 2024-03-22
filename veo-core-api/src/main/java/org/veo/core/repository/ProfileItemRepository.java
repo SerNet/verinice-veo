@@ -17,8 +17,14 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Set;
+
+import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
 public interface ProfileItemRepository
     extends IdentifiableVersionedRepository<ProfileItem>,
-        AbstractTemplateItemRepository<ProfileItem> {}
+        AbstractTemplateItemRepository<ProfileItem> {
+  Set<ProfileItem> findAllByProfile(Profile profile, EntityType type);
+}

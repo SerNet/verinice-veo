@@ -24,7 +24,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.repository.ProfileItemRepository;
@@ -62,6 +64,13 @@ public class ProfileItemRepositoryImpl
             ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
         .stream()
         .map(tr -> (TailoringReference<ProfileItem>) tr)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<ProfileItem> findAllByProfile(Profile profile, EntityType type) {
+    return profileItemDataRepository.findAllByProfile(profile, type.getSingularTerm()).stream()
+        .map(ProfileItem.class::cast)
         .collect(Collectors.toSet());
   }
 }

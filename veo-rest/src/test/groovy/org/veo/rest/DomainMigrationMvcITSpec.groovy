@@ -33,6 +33,8 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.ProfileItemRepository
+import org.veo.core.repository.ProfileRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.jobs.MessagingJob
 import org.veo.message.TestContainersUtil
@@ -65,6 +67,10 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     MessagingJob messagingJob
+    @Autowired
+    ProfileItemRepository profileItemRepository
+    @Autowired
+    ProfileRepository profileRepository
 
     Domain domain
     String domainId
@@ -104,6 +110,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         unitId = unitRepo.save(newUnit(client)).id.uuidValue()
     }
 
+    @WithUserDetails("content-creator")
     def 'data is migrated when element type definition is changed'() {
         given: "an asset that conforms to the element type definition"
         def assetId = parseJson(post("/assets", [
@@ -148,6 +155,14 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
             })
         }
 
+        and: "a profile with the element"
+        def profile = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=$unitId",
+                [
+                    name: 'test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 201))
+
         when: "removing one custom aspect type and one custom aspect attribute from the element type definition"
         def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
         etd.customAspects.remove("aspectTwo")
@@ -184,6 +199,18 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
         and: "the obsolete content has been removed from the catalog item"
         catalogItem.customAspects.aspectOne.attrTwo == null
+
+        when:
+        def profileItem = executeInTransaction {
+            profileRepository.findAllByDomain(domain).first().getItems().first()
+        }
+
+        then:"the content of the profile item that still conforms to the current element type definition is still there"
+        profileItem.customAspects.aspectOne != null
+        profileItem.customAspects.aspectOne.attrOne != null
+
+        and: "the obsolete content has been removed from the profile item"
+        profileItem.customAspects.aspectOne.attrTwo == null
     }
 
     def cleanup() {
