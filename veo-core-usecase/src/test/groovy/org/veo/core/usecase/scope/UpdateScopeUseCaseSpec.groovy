@@ -37,7 +37,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
     EntityStateMapper entityStateMapper = new EntityStateMapper()
     EventPublisher eventPublisher = Mock()
 
-    UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper, eventPublisher)
+    UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper, eventPublisher, refResolverFactory)
     def "update a scope"() {
         given:
         def scopeId = Key.newUuid()

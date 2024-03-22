@@ -22,11 +22,9 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.RetryableUseCase;
-import org.veo.core.usecase.TransactionalUseCase.Isolation;
-import org.veo.core.usecase.base.UpdateElementInDomainUseCase.InputData;
-import org.veo.core.usecase.base.UpdateElementInDomainUseCase.OutputData;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset>
     implements RetryableUseCase {
@@ -36,10 +34,11 @@ public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Ass
       RepositoryProvider repositoryProvider,
       Decider decider,
       EntityStateMapper entityStateMapper,
-      EventPublisher eventPublisher) {
+      EventPublisher eventPublisher,
+      RefResolverFactory refResolverFactory) {
     super(
         repositoryProvider.getElementRepositoryFor(Asset.class),
-        repositoryProvider,
+        refResolverFactory,
         decider,
         entityStateMapper);
     this.eventPublisher = eventPublisher;

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2024  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.base;
+package org.veo.core.usecase.service;
 
-import org.veo.core.entity.Control;
+import org.veo.core.entity.Client;
 import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.service.EntityStateMapper;
-import org.veo.core.usecase.service.RefResolverFactory;
 
-public class UpdateControlInDomainUseCase extends UpdateElementInDomainUseCase<Control> {
+import lombok.AllArgsConstructor;
 
-  public UpdateControlInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
-    super(
-        repositoryProvider.getElementRepositoryFor(Control.class),
-        refResolverFactory,
-        decider,
-        entityStateMapper);
+@AllArgsConstructor
+public class RefResolverFactory {
+  private final RepositoryProvider repositoryProvider;
+
+  public DbIdRefResolver db(Client client) {
+    return new DbIdRefResolver(repositoryProvider, client);
   }
 }

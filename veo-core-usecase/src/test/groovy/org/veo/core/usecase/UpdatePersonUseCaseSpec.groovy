@@ -32,7 +32,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
     PersonRepository personRepository = Mock()
     Decider decider = Mock()
     EntityStateMapper entityStateMapper = new EntityStateMapper()
-    UpdatePersonUseCase usecase = new UpdatePersonUseCase(repositoryProvider, decider, entityStateMapper)
+    UpdatePersonUseCase usecase = new UpdatePersonUseCase(repositoryProvider, decider, entityStateMapper, refResolverFactory)
 
     def "update a person"() {
         given:

@@ -24,6 +24,7 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
   private final EventPublisher eventPublisher;
@@ -32,8 +33,9 @@ public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
       Decider decider,
-      EntityStateMapper entityStateMapper) {
-    super(Control.class, repositoryProvider, decider, entityStateMapper);
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
+    super(Control.class, repositoryProvider, refResolverFactory, decider, entityStateMapper);
     this.eventPublisher = eventPublisher;
   }
 

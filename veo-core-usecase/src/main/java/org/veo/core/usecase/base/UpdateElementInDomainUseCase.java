@@ -29,13 +29,12 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
-import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -46,13 +45,13 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
         UpdateElementInDomainUseCase.InputData<T>, UpdateElementInDomainUseCase.OutputData<T>> {
 
   private final ElementRepository<T> repo;
-  private final RepositoryProvider repositoryProvider;
+  private final RefResolverFactory refResolverFactory;
   private final Decider decider;
   private final EntityStateMapper entityStateMapper;
 
   @Override
   public OutputData<T> execute(InputData<T> input) {
-    var idRefResolver = new DbIdRefResolver(repositoryProvider, input.authenticatedClient);
+    var idRefResolver = refResolverFactory.db(input.authenticatedClient);
 
     var domain = idRefResolver.resolve(input.getDomainId().uuidValue(), Domain.class);
     var inputElement = input.getElement();

@@ -33,8 +33,8 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -44,6 +44,7 @@ public class AddLinksUseCase
     implements TransactionalUseCase<AddLinksUseCase.InputData, AddLinksUseCase.OutputData> {
   private final DomainRepository domainRepository;
   private final RepositoryProvider repositoryProvider;
+  private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
 
   @Override
@@ -72,7 +73,7 @@ public class AddLinksUseCase
           "%s %s is not associated with domain %s"
               .formatted(element.getModelType(), element.getIdAsString(), domain.getIdAsString()));
     }
-    var resolver = new DbIdRefResolver(repositoryProvider, client);
+    var resolver = refResolverFactory.db(client);
     links.stream()
         .map(linkState -> entityStateMapper.mapLink(linkState, element, domain, resolver))
         .forEach(element::addLink);

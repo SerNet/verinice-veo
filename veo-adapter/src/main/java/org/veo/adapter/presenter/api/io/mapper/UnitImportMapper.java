@@ -28,9 +28,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UnitImportMapper {
   private final IdentifiableFactory identifiableFactory;
-  private final RepositoryProvider repositoryProvider;
+  private final RefResolverFactory refResolverFactory;
   private final EntityFactory entityFactory;
   private final EntityStateMapper entityStateMapper;
 
@@ -66,7 +65,7 @@ public class UnitImportMapper {
   private IdRefResolvingFactory createResolvingFactory(UnitDumpDto dto, Client client) {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     // Resolve domains using the DB (all other references must be resolved locally).
-    var dbResolver = new DbIdRefResolver(repositoryProvider, client);
+    var dbResolver = refResolverFactory.db(client);
     dto.getDomains().stream()
         .map(d -> dbResolver.resolve(d.getId(), Domain.class))
         .forEach(resolvingFactory::register);

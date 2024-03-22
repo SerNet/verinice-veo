@@ -22,11 +22,15 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdatePersonUseCase extends ModifyElementUseCase<Person> {
 
   public UpdatePersonUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
-    super(Person.class, repositoryProvider, decider, entityStateMapper);
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
+    super(Person.class, repositoryProvider, refResolverFactory, decider, entityStateMapper);
   }
 }

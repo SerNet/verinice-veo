@@ -49,7 +49,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         composites >> []
     }
 
-    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
+    CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
         personState = Mock() {

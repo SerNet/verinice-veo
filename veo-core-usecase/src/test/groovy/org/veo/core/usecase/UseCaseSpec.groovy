@@ -23,11 +23,13 @@ import org.veo.core.entity.IncarnationConfiguration
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.base.UnitHierarchyProvider
+import org.veo.core.usecase.service.RefResolverFactory
 
 import spock.lang.Specification
 
@@ -46,6 +48,8 @@ abstract class UseCaseSpec extends Specification {
     UnitRepository unitRepository = Mock()
     RepositoryProvider repositoryProvider = Mock()
     EntityFactory entityFactory = Mock()
+    IdentifiableFactory identifiableFactory = Mock()
+    RefResolverFactory refResolverFactory = new RefResolverFactory(repositoryProvider, identifiableFactory)
 
     def setup() {
         existingDomain = Mock()

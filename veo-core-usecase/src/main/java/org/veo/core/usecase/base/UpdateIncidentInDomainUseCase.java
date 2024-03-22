@@ -21,14 +21,18 @@ import org.veo.core.entity.Incident;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdateIncidentInDomainUseCase extends UpdateElementInDomainUseCase<Incident> {
 
   public UpdateIncidentInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
     super(
         repositoryProvider.getElementRepositoryFor(Incident.class),
-        repositoryProvider,
+        refResolverFactory,
         decider,
         entityStateMapper);
   }

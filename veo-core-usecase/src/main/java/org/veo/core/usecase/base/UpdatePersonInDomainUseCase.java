@@ -21,14 +21,18 @@ import org.veo.core.entity.Person;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdatePersonInDomainUseCase extends UpdateElementInDomainUseCase<Person> {
 
   public UpdatePersonInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
     super(
         repositoryProvider.getElementRepositoryFor(Person.class),
-        repositoryProvider,
+        refResolverFactory,
         decider,
         entityStateMapper);
   }

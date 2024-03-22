@@ -18,10 +18,9 @@
 package org.veo.core.usecase.unit;
 
 import org.veo.core.entity.Unit;
-import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdateUnitUseCase extends ChangeUnitUseCase {
 
@@ -29,21 +28,19 @@ public class UpdateUnitUseCase extends ChangeUnitUseCase {
       UnitRepository repository,
       UnitValidator unitValidator,
       EntityStateMapper entityStateMapper,
-      RepositoryProvider repositoryProvider) {
+      RefResolverFactory refResolverFactory) {
     super(repository, unitValidator);
     this.entityStateMapper = entityStateMapper;
-    this.repositoryProvider = repositoryProvider;
+    this.refResolverFactory = refResolverFactory;
   }
 
+  private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
-  private final RepositoryProvider repositoryProvider;
 
   @Override
   protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
     entityStateMapper.mapState(
-        input.getChangedUnit(),
-        storedUnit,
-        new DbIdRefResolver(repositoryProvider, input.getAuthenticatedClient()));
+        input.getChangedUnit(), storedUnit, refResolverFactory.db(input.getAuthenticatedClient()));
     return storedUnit;
   }
 }

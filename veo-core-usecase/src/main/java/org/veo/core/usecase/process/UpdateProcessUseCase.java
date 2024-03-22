@@ -24,6 +24,7 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 /** Update a persisted process object. */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
@@ -33,8 +34,9 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
       Decider decider,
-      EntityStateMapper entityStateMapper) {
-    super(Process.class, repositoryProvider, decider, entityStateMapper);
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
+    super(Process.class, repositoryProvider, refResolverFactory, decider, entityStateMapper);
     this.eventPublisher = eventPublisher;
   }
 

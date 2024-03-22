@@ -28,6 +28,7 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.service.EntityStateMapper
+import org.veo.core.usecase.service.RefResolverFactory
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
@@ -36,7 +37,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
     Decider decider = Mock()
     EntityStateMapper entityStateMapper = new EntityStateMapper()
 
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(repositoryProvider, eventPublisher, decider, entityStateMapper)
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(repositoryProvider, eventPublisher, decider, entityStateMapper, refResolverFactory)
     def "update a process"() {
         given:
         def id = Key.newUuid()

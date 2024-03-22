@@ -39,8 +39,8 @@ import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -50,6 +50,7 @@ public class CreateElementUseCase<TEntity extends Element>
     implements TransactionalUseCase<
             CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>>,
         RetryableUseCase {
+  private final RefResolverFactory refResolverFactory;
   private final RepositoryProvider repositoryProvider;
   private final DesignatorService designatorService;
   private final EventPublisher eventPublisher;
@@ -65,7 +66,7 @@ public class CreateElementUseCase<TEntity extends Element>
     Class<TEntity> entityType = state.getModelInterface();
     var entity = identifiableFactory.create(entityType, null);
     entityStateMapper.mapState(
-        state, entity, false, new DbIdRefResolver(repositoryProvider, input.authenticatedClient));
+        state, entity, false, refResolverFactory.db(input.authenticatedClient));
     DomainSensitiveElementValidator.validate(entity);
     designatorService.assignDesignator(entity, input.authenticatedClient);
     addToScopes(entity, input.scopeIds, input.authenticatedClient);

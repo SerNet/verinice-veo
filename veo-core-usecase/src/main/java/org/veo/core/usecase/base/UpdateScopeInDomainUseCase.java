@@ -22,9 +22,9 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.RetryableUseCase;
-import org.veo.core.usecase.TransactionalUseCase.Isolation;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Scope>
     implements RetryableUseCase {
@@ -34,10 +34,11 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
       RepositoryProvider repositoryProvider,
       Decider decider,
       EntityStateMapper entityStateMapper,
-      EventPublisher eventPublisher) {
+      EventPublisher eventPublisher,
+      RefResolverFactory refResolverFactory) {
     super(
         repositoryProvider.getElementRepositoryFor(Scope.class),
-        repositoryProvider,
+        refResolverFactory,
         decider,
         entityStateMapper);
     this.eventPublisher = eventPublisher;

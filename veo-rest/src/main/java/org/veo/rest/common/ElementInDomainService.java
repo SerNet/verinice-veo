@@ -48,7 +48,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.AddLinksUseCase;
@@ -59,8 +58,8 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
@@ -71,7 +70,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ElementInDomainService {
   private final ClientLookup clientLookup;
-  private final RepositoryProvider repositoryProvider;
+  private final RefResolverFactory refResolverFactory;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
   private final AssociateElementWithDomainUseCase associateUseCase;
@@ -217,7 +216,7 @@ public class ElementInDomainService {
     var element =
         runner.run(
             () -> {
-              var e = toEntityMapper.apply(dto, new DbIdRefResolver(repositoryProvider, client));
+              var e = toEntityMapper.apply(dto, refResolverFactory.db(client));
               if (e instanceof CompositeElement) {
                 // initialize subtypeAspects field for PartCountProvider
                 // TODO VEO-1569: remove this when the PartCountProvider uses a repository method

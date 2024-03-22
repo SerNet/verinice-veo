@@ -31,7 +31,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     static final String USER_NAME = "john"
     UnitValidator unitValidator = Mock()
     EntityStateMapper entityStateMapper = new EntityStateMapper()
-    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator, entityStateMapper, repositoryProvider)
+    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator, entityStateMapper, refResolverFactory)
 
     def "Update an existing unit" () {
         given: "starting values for a unit"

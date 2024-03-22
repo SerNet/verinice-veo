@@ -56,7 +56,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         scopes >> []
     }
 
-    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
+    CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
         processState.name >> "John's process"

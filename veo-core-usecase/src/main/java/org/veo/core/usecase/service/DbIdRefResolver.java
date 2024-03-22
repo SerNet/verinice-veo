@@ -52,7 +52,7 @@ public class DbIdRefResolver implements IdRefResolver {
   private final Client client;
   private final Map<ITypedId<?>, Identifiable> cache = new HashMap<>();
 
-  public DbIdRefResolver(RepositoryProvider repositoryProvider, Client client) {
+  DbIdRefResolver(RepositoryProvider repositoryProvider, Client client) {
     this.repositoryProvider = repositoryProvider;
     this.client = client;
   }

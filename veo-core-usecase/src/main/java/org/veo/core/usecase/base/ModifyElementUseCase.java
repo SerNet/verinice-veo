@@ -33,8 +33,8 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -47,6 +47,7 @@ public abstract class ModifyElementUseCase<T extends Element>
 
   private final Class<T> elementClass;
   private final RepositoryProvider repositoryProvider;
+  private final RefResolverFactory refResolverFactory;
   private final Decider decider;
   private final EntityStateMapper entityStateMapper;
 
@@ -60,10 +61,7 @@ public abstract class ModifyElementUseCase<T extends Element>
     ETag.validate(input.eTag, storedEntity);
     checkClientBoundaries(input, storedEntity);
     entityStateMapper.mapState(
-        entity,
-        storedEntity,
-        true,
-        new DbIdRefResolver(repositoryProvider, input.getAuthenticatedClient()));
+        entity, storedEntity, true, refResolverFactory.db(input.getAuthenticatedClient()));
     evaluateDecisions(storedEntity);
     DomainSensitiveElementValidator.validate(storedEntity);
 

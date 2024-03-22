@@ -29,8 +29,8 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.Value;
 
@@ -38,11 +38,15 @@ public class UpdateRequirementImplementationUseCase
     extends AbstractUseCase<
         UpdateRequirementImplementationUseCase.InputData,
         UpdateRequirementImplementationUseCase.OutputData> {
+  private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
 
   public UpdateRequirementImplementationUseCase(
-      RepositoryProvider repositoryProvider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      RefResolverFactory refResolverFactory,
+      EntityStateMapper entityStateMapper) {
     super(repositoryProvider);
+    this.refResolverFactory = refResolverFactory;
     this.entityStateMapper = entityStateMapper;
   }
 
@@ -57,7 +61,7 @@ public class UpdateRequirementImplementationUseCase
     var control = getEntity(input.control, input.authenticatedClient);
     var requirementImplementation = origin.getRequirementImplementation(control);
     ETag.validate(input.eTag, origin);
-    var idRefResolver = new DbIdRefResolver(repositoryProvider, input.authenticatedClient);
+    var idRefResolver = refResolverFactory.db(input.authenticatedClient);
     entityStateMapper.mapState(input.state, requirementImplementation, idRefResolver);
     origin.setUpdatedAt(Instant.now());
     DomainSensitiveElementValidator.validate(origin);

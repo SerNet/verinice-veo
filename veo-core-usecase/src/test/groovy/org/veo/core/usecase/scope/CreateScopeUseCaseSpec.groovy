@@ -50,7 +50,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scopes >> []
     }
 
-    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
+    CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
         scope.getOwningClient() >> Optional.of(existingClient)

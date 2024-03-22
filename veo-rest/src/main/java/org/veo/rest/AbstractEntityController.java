@@ -34,8 +34,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.rest.common.SearchResponse;
 import org.veo.service.EtagService;
 
@@ -53,13 +53,14 @@ public abstract class AbstractEntityController extends AbstractVeoController {
   @Autowired ReferenceAssembler urlAssembler;
 
   @Autowired protected EtagService etagService;
+  @Autowired private RefResolverFactory refResolverFactory;
 
   protected AbstractEntityController() {}
 
   protected CacheControl defaultCacheControl = CacheControl.noCache();
 
   protected IdRefResolver createIdRefResolver(Client client) {
-    return new DbIdRefResolver(repositoryProvider, client);
+    return refResolverFactory.db(client);
   }
 
   protected abstract String buildSearchUri(String searchId);
