@@ -67,7 +67,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new CreateElementUseCase.InputData( scopeState, existingClient, [] as Set))
 
         then:
-        1 * identifiableFactory.create(Scope, _) >> scope
+        1 * identifiableFactory.create(Scope) >> scope
         1 * entityStateMapper.mapState(scopeState, scope, false, _)
         1 * designatorService.assignDesignator(scope, existingClient)
         1 * scopeRepository.save(_) >> { it[0] }
@@ -96,7 +96,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         usecase.execute(new CreateElementUseCase.InputData(scopeState, existingClient, [superScope.id] as Set))
 
         then: "an exception is thrown"
-        1 * identifiableFactory.create(Scope, _) >> scope
+        1 * identifiableFactory.create(Scope) >> scope
         1 * scope.getOwner() >> existingUnit
         3 * scope.getDomains() >> []
         2 * scope.getCustomAspects() >> []

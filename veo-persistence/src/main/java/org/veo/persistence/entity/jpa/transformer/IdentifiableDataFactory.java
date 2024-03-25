@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.transformer;
 
-import java.util.UUID;
-
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -28,7 +26,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -61,13 +58,7 @@ import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
 public class IdentifiableDataFactory implements IdentifiableFactory {
   @Override
-  public <T extends Identifiable> T create(Class<T> type, Key<UUID> id) {
-    var entity = create(type);
-    entity.setId(id);
-    return entity;
-  }
-
-  private <T extends Identifiable> T create(Class<T> type) {
+  public <T extends Identifiable> T create(Class<T> type) {
     if (type == Person.class) {
       return (T) new PersonData();
     }

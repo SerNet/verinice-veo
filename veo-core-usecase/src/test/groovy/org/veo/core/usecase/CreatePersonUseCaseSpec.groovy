@@ -67,7 +67,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new CreateElementUseCase.InputData(personState, existingClient, [] as Set))
 
         then:
-        1 * identifiableFactory.create(Person, _) >> person
+        1 * identifiableFactory.create(Person) >> person
         1 * entityStateMapper.mapState(personState, person, false, _)
         1 * personRepository.save(person) >> person
         1 * designatorService.assignDesignator(person, existingClient)
@@ -89,7 +89,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         usecase.execute(new CreateElementUseCase.InputData(personState, existingClient, [scope.id] as Set))
 
         then: "an exception is thrown"
-        1 * identifiableFactory.create(Person, _) >> person
+        1 * identifiableFactory.create(Person) >> person
         1 * person.getOwner() >> existingUnit
         3 * person.getDomains() >> []
         2 * person.getCustomAspects() >> []

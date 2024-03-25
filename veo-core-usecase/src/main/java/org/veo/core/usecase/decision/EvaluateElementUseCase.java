@@ -80,7 +80,7 @@ public class EvaluateElementUseCase
                     repositoryProvider
                         .getElementRepositoryFor(source.getModelInterface())
                         .getById(id, client.getId()))
-            .orElseGet(() -> identifiableFactory.create(source.getModelInterface(), null));
+            .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
     entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
     return element;
   }

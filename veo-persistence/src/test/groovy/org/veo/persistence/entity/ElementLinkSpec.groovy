@@ -63,13 +63,13 @@ class ElementLinkSpec extends Specification {
         }
 
         and: "an element associated with both domains"
-        def element = identifiableFactory.create(entityType.type, null) as Element
+        def element = identifiableFactory.create(entityType.type) as Element
         element.associateWithDomain(domainA, "STA", "NEW")
         element.associateWithDomain(domainB, "STB", "NEW")
 
         and: "two target elements"
-        def targetElementA = identifiableFactory.create(Asset.class, null)
-        def targetElementB = identifiableFactory.create(Asset.class, null)
+        def targetElementA = identifiableFactory.create(Asset.class)
+        def targetElementB = identifiableFactory.create(Asset.class)
 
         when: "applying a link in both domains independently"
         element.applyLink(new CustomLinkData().tap {

@@ -162,8 +162,7 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     TemplateItem.checkValidElementType(getElementType());
     var element =
         new IdentifiableDataFactory()
-            .create(
-                (Class<Element>) EntityType.getBySingularTerm(getElementType()).getType(), null);
+            .create((Class<Element>) EntityType.getBySingularTerm(getElementType()).getType());
     element.setOwner(owner);
     return element;
   }

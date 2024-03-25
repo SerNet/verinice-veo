@@ -64,7 +64,7 @@ public class CreateElementUseCase<TEntity extends Element>
       CreateElementUseCase.InputData<TEntity> input) {
     var state = input.getNewEntity();
     Class<TEntity> entityType = state.getModelInterface();
-    var entity = identifiableFactory.create(entityType, null);
+    var entity = identifiableFactory.create(entityType);
     entityStateMapper.mapState(
         state, entity, false, refResolverFactory.db(input.authenticatedClient));
     DomainSensitiveElementValidator.validate(entity);

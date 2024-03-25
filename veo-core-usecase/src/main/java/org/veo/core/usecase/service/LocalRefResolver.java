@@ -58,7 +58,7 @@ public class LocalRefResolver implements IdRefResolver {
   }
 
   public <T extends Identifiable> T injectNewEntity(ITypedId<T> ref) {
-    var entity = factory.create(ref.getType(), null);
+    var entity = factory.create(ref.getType());
     cache.put(ref, entity);
     return entity;
   }

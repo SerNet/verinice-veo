@@ -70,7 +70,7 @@ class ElementCustomAspectSpec extends Specification {
         }
 
         and: "an element associated with both domains"
-        def element = identifiableFactory.create(entityType.type, null) as Element
+        def element = identifiableFactory.create(entityType.type) as Element
         element.associateWithDomain(domainA, "STA", "NEW")
         element.associateWithDomain(domainB, "STB", "NEW")
 

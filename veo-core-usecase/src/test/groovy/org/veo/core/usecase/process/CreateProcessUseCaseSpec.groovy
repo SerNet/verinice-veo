@@ -72,7 +72,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new CreateElementUseCase.InputData(processState, existingClient, [] as Set))
 
         then:
-        1 * identifiableFactory.create(Process, _) >> process
+        1 * identifiableFactory.create(Process) >> process
         1 * entityStateMapper.mapState(processState, process, false, _)
         1 * process.getOwner() >> existingUnit
         4 * process.getDomains() >> []
@@ -100,7 +100,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         usecase.execute(new CreateElementUseCase.InputData(processState, existingClient, [scope.id] as Set))
 
         then: "an exception is thrown"
-        1 * identifiableFactory.create(Process, _) >> process
+        1 * identifiableFactory.create(Process) >> process
         1 * process.getOwner() >> existingUnit
         3 * process.getDomains() >> []
         2 * process.getCustomAspects() >> []
