@@ -1160,11 +1160,21 @@ public class ModuleConfiguration {
 
   @Bean
   public EvaluateElementUseCase evaluateElementUseCase(
+      RefResolverFactory refResolverFactory,
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       Decider decider,
-      Inspector inspector) {
-    return new EvaluateElementUseCase(domainRepository, repositoryProvider, decider, inspector);
+      Inspector inspector,
+      IdentifiableFactory identifiableFactory,
+      EntityStateMapper entityStateMapper) {
+    return new EvaluateElementUseCase(
+        refResolverFactory,
+        identifiableFactory,
+        entityStateMapper,
+        domainRepository,
+        repositoryProvider,
+        decider,
+        inspector);
   }
 
   @Bean

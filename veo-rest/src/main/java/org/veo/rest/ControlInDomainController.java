@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -117,7 +116,6 @@ public class ControlInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Control> createUseCase;
   private final UpdateControlInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a control from the viewpoint of a domain")
@@ -386,8 +384,7 @@ public class ControlInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullControlInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific control JSON schema")

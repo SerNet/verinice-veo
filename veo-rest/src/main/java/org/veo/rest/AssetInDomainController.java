@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
@@ -117,7 +116,6 @@ public class AssetInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Asset> createUseCase;
   private final UpdateAssetInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads an asset from the viewpoint of a domain")
@@ -381,8 +379,7 @@ public class AssetInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullAssetInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific asset JSON schema")

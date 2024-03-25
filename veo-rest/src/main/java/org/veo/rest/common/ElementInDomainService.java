@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 
-import org.hibernate.Hibernate;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -42,7 +41,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
@@ -58,7 +56,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
@@ -207,28 +204,12 @@ public class ElementInDomainService {
 
   public @Valid <TElement extends Element, TDto extends AbstractElementInDomainDto<TElement>>
       CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-          Authentication auth,
-          @Valid TDto dto,
-          String domainId,
-          BiFunction<TDto, IdRefResolver, TElement> toEntityMapper) {
-    var client = clientLookup.getClient(auth);
+          Authentication auth, @Valid TDto dto, String domainId) {
     dto.setDomain(TypedId.from(domainId, Domain.class));
-    var element =
-        runner.run(
-            () -> {
-              var e = toEntityMapper.apply(dto, refResolverFactory.db(client));
-              if (e instanceof CompositeElement) {
-                // initialize subtypeAspects field for PartCountProvider
-                // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
-                var ce = (CompositeElement) e;
-                ce.getParts()
-                    .forEach(p -> Hibernate.initialize(((CompositeElement) p).getSubTypeAspects()));
-              }
-              return e;
-            });
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        new EvaluateElementUseCase.InputData(
+            clientLookup.getClient(auth), Key.uuidFrom(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 

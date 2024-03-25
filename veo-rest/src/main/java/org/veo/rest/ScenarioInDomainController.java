@@ -79,7 +79,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
@@ -116,7 +115,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Scenario> createUseCase;
   private final UpdateScenarioInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a scenario from the viewpoint of a domain")
@@ -385,8 +383,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullScenarioInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific scenario JSON schema")

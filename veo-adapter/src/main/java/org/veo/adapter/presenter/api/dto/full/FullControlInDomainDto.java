@@ -44,4 +44,9 @@ public class FullControlInDomainDto extends AbstractControlInDomainDto implement
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

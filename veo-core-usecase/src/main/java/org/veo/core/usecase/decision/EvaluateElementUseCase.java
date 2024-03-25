@@ -17,68 +17,72 @@
  ******************************************************************************/
 package org.veo.core.usecase.decision;
 
-import static jakarta.transaction.Transactional.TxType.NEVER;
-
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Process;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.inspection.Inspector;
+import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
  * Evaluates decisions and inspections for a transient element and returns the results. Does not
- * persist any changes. This must NOT run in a transaction, so JPA does not automatically persist
- * anything. Therefore, it does not implement {@link TransactionalUseCase}
+ * persist any changes. This must NOT run in a read-write transaction, so JPA does not automatically
+ * persist anything.
  */
 @RequiredArgsConstructor
 public class EvaluateElementUseCase
-    implements UseCase<EvaluateElementUseCase.InputData, EvaluateElementUseCase.OutputData> {
+    implements TransactionalUseCase<
+        EvaluateElementUseCase.InputData, EvaluateElementUseCase.OutputData> {
+  private final RefResolverFactory refResolverFactory;
+  private final IdentifiableFactory identifiableFactory;
+  private final EntityStateMapper entityStateMapper;
   private final DomainRepository domainRepository;
   private final RepositoryProvider repositoryProvider;
   private final Decider decider;
   private final Inspector inspector;
 
   @Override
-  @Transactional(NEVER)
   public OutputData execute(InputData input) {
     var domain =
         domainRepository.getByIdWithDecisionsAndInspections(
             input.domainId, input.authenticatedClient.getId());
-    // FIXME VEO-209 support risk values on all risk affected types
-    if (input.element.getId() != null && input.element instanceof Process process) {
-      loadRisks(process);
-    }
-    input.element.setDecisionResults(decider.decide(input.element, domain), domain);
-    var findings = inspector.inspect(input.element, domain);
-
-    return new OutputData(input.element.getDecisionResults(domain), findings);
+    var element = fetchOrCreateElement(input.element, input.authenticatedClient);
+    element.setDecisionResults(decider.decide(element, domain), domain);
+    var findings = inspector.inspect(element, domain);
+    return new OutputData(element.getDecisionResults(domain), findings);
   }
 
-  /** Load persisted risks and add them to element */
-  private void loadRisks(Process element) {
-    var repo = repositoryProvider.getRepositoryFor(element.getModelInterface());
-    if (repo instanceof ProcessRepository riskAffectedRepo) {
-      var storedElement = riskAffectedRepo.findByIdWithRiskValues(element.getId()).get();
-      element.setRisks(storedElement.getRisks());
-    }
+  private <T extends Element> T fetchOrCreateElement(ElementState<T> source, Client client) {
+    var element =
+        Optional.ofNullable(source.getSelfId())
+            .map(Key::uuidFrom)
+            .map(
+                id ->
+                    repositoryProvider
+                        .getElementRepositoryFor(source.getModelInterface())
+                        .getById(id, client.getId()))
+            .orElseGet(() -> identifiableFactory.create(source.getModelInterface(), null));
+    entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
+    return element;
   }
 
   @Valid
@@ -86,7 +90,7 @@ public class EvaluateElementUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     Key<UUID> domainId;
-    Element element;
+    ElementState<?> element;
   }
 
   @Valid

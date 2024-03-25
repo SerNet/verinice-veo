@@ -45,4 +45,9 @@ public class FullScenarioInDomainDto extends AbstractScenarioInDomainDto
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

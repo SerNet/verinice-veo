@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -117,7 +116,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Document> createUseCase;
   private final UpdateDocumentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a document from the viewpoint of a domain")
@@ -386,8 +384,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullDocumentInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific document JSON schema")

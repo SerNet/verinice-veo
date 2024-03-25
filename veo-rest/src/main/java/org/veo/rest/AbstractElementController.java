@@ -23,7 +23,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,7 +30,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
@@ -82,23 +80,10 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       Authentication auth, @Valid E dto, String domainId) {
-    var client = getAuthenticatedClient(auth);
-    var element =
-        runner.run(
-            () -> {
-              var e = dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
-              if (e instanceof CompositeElement) {
-                // initialize subtypeAspects field for PartCountProvider
-                // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
-                @SuppressWarnings({"unchecked", "rawtypes"})
-                var ce = (CompositeElement<?>) e;
-                ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
-              }
-              return e;
-            });
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        new EvaluateElementUseCase.InputData(
+            getAuthenticatedClient(auth), Key.uuidFrom(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 

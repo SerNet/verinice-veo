@@ -83,7 +83,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -125,7 +124,6 @@ public class ScopeInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Scope> createUseCase;
   private final UpdateScopeInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a scope from the viewpoint of a domain")
@@ -321,8 +319,7 @@ public class ScopeInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullScopeInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Loads the members of a scope in a domain")

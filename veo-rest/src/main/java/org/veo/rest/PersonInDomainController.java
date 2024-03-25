@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.dto.create.CreatePersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
@@ -117,7 +116,6 @@ public class PersonInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Person> createUseCase;
   private final UpdatePersonInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a person from the viewpoint of a domain")
@@ -385,8 +383,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullPersonInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific person JSON schema")

@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
@@ -117,7 +116,6 @@ public class ProcessInDomainController implements ElementInDomainResource {
   private final CreateElementUseCase<Process> createUseCase;
   private final UpdateProcessInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a process from the viewpoint of a domain")
@@ -388,8 +386,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullProcessInDomainDto dto) {
-    return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+    return elementService.evaluate(auth, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific process JSON schema")
