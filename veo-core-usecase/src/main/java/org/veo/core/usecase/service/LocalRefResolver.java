@@ -28,9 +28,14 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.transform.IdentifiableFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /** Resolves {@link ITypedId}s from an in-memory registry of entities. */
+@RequiredArgsConstructor
 public class LocalRefResolver implements IdRefResolver {
+  private final IdentifiableFactory factory;
   protected final Map<ITypedId<?>, Identifiable> cache = new HashMap<>();
 
   public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
@@ -50,5 +55,11 @@ public class LocalRefResolver implements IdRefResolver {
                             new UnprocessableDataException(
                                 "%s not found".formatted(ref.toString()))))
         .collect(Collectors.toSet());
+  }
+
+  public <T extends Identifiable> T injectNewEntity(ITypedId<T> ref) {
+    var entity = factory.create(ref.getType(), null);
+    cache.put(ref, entity);
+    return entity;
   }
 }

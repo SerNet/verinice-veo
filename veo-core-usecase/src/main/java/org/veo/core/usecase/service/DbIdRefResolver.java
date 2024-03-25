@@ -39,6 +39,7 @@ import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
 
@@ -50,7 +51,9 @@ public class DbIdRefResolver extends LocalRefResolver {
   private final RepositoryProvider repositoryProvider;
   private final Client client;
 
-  DbIdRefResolver(RepositoryProvider repositoryProvider, Client client) {
+  DbIdRefResolver(
+      RepositoryProvider repositoryProvider, IdentifiableFactory factory, Client client) {
+    super(factory);
     this.repositoryProvider = repositoryProvider;
     this.client = client;
   }

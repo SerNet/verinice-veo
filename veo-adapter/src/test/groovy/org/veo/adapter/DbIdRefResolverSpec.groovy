@@ -23,6 +23,7 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.Repository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.service.DbIdRefResolver
@@ -33,8 +34,9 @@ import spock.lang.Specification
 class DbIdRefResolverSpec extends Specification {
 
     RepositoryProvider repositoryProvider = Mock()
+    IdentifiableFactory identifiableFactory = Mock()
     Client client = Mock()
-    IdRefResolver referenceResolver = new DbIdRefResolver(repositoryProvider, client)
+    IdRefResolver referenceResolver = new DbIdRefResolver(repositoryProvider, identifiableFactory, client)
 
     Repository<Asset, Key<UUID>> assetRepo = Mock()
     Repository<Person, Key<UUID>> personRepo = Mock()

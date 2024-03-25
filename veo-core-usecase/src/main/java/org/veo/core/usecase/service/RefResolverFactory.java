@@ -18,6 +18,7 @@
 package org.veo.core.usecase.service;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.RepositoryProvider;
 
 import lombok.AllArgsConstructor;
@@ -25,12 +26,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RefResolverFactory {
   private final RepositoryProvider repositoryProvider;
+  private final IdentifiableFactory identifiableFactory;
 
   public DbIdRefResolver db(Client client) {
-    return new DbIdRefResolver(repositoryProvider, client);
+    return new DbIdRefResolver(repositoryProvider, identifiableFactory, client);
   }
 
   public LocalRefResolver local() {
-    return new LocalRefResolver();
+    return new LocalRefResolver(identifiableFactory);
   }
 }

@@ -683,8 +683,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public RefResolverFactory refResolverFactory(RepositoryProvider repositoryProvider) {
-    return new RefResolverFactory(repositoryProvider);
+  public RefResolverFactory refResolverFactory(
+      RepositoryProvider repositoryProvider, IdentifiableFactory identifiableFactory) {
+    return new RefResolverFactory(repositoryProvider, identifiableFactory);
   }
 
   @Bean
