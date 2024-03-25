@@ -20,7 +20,6 @@ package org.veo.core.usecase.service;
 import static java.lang.String.format;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,27 +46,13 @@ import org.veo.core.repository.RepositoryProvider;
  * Resolves {@link ITypedId}s by fetching the target entity from a repository. Instances of this
  * class should NOT be long-lived, because it uses an entity cache.
  */
-public class DbIdRefResolver implements IdRefResolver {
+public class DbIdRefResolver extends LocalRefResolver {
   private final RepositoryProvider repositoryProvider;
   private final Client client;
-  private final Map<ITypedId<?>, Identifiable> cache = new HashMap<>();
 
   DbIdRefResolver(RepositoryProvider repositoryProvider, Client client) {
     this.repositoryProvider = repositoryProvider;
     this.client = client;
-  }
-
-  /**
-   * Resolves the given reference by fetching the target entity from a cache or a repository.
-   *
-   * @param objectReference referencing the desired entity
-   * @param <TEntity> target entity type
-   * @throws NotFoundException when entity does not exist in the repository.
-   * @throws ClientBoundaryViolationException when entity does not belong to this resolver's client.
-   */
-  public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
-      throws NotFoundException {
-    return resolve(Collections.singleton(objectReference)).iterator().next();
   }
 
   /**

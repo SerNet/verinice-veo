@@ -29,4 +29,8 @@ public class RefResolverFactory {
   public DbIdRefResolver db(Client client) {
     return new DbIdRefResolver(repositoryProvider, client);
   }
+
+  public LocalRefResolver local() {
+    return new LocalRefResolver();
+  }
 }
