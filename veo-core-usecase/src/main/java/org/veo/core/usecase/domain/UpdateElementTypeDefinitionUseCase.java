@@ -25,24 +25,24 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.state.ElementTypeDefinitionState;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
+import org.veo.core.usecase.service.DomainStateMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+@RequiredArgsConstructor
 public class UpdateElementTypeDefinitionUseCase
     implements TransactionalUseCase<UpdateElementTypeDefinitionUseCase.InputData, EmptyOutput> {
 
+  private final DomainStateMapper domainStateMapper;
   private final DomainRepository repository;
-
-  public UpdateElementTypeDefinitionUseCase(DomainRepository repository) {
-    this.repository = repository;
-  }
 
   @Override
   public EmptyOutput execute(InputData input) {
@@ -57,7 +57,10 @@ public class UpdateElementTypeDefinitionUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    domain.applyElementTypeDefinition(input.elementTypeDefinition);
+    var elementTypeDefinition =
+        domainStateMapper.toElementTypeDefinition(
+            input.entityType.getSingularTerm(), input.elementTypeDefinition, domain);
+    domain.applyElementTypeDefinition(elementTypeDefinition);
     return EmptyOutput.INSTANCE;
   }
 
@@ -76,6 +79,6 @@ public class UpdateElementTypeDefinitionUseCase
 
     EntityType entityType;
 
-    ElementTypeDefinition elementTypeDefinition;
+    ElementTypeDefinitionState elementTypeDefinition;
   }
 }

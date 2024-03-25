@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
@@ -118,7 +117,6 @@ import lombok.extern.slf4j.Slf4j;
 @ApiResponse(responseCode = "401", description = "Content creator role required")
 public class ContentCreationController extends AbstractVeoController {
   private final ObjectSchemaParser objectSchemaParser;
-  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
@@ -192,11 +190,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,
         new UpdateElementTypeDefinitionUseCase.InputData(
-            client,
-            Key.uuidFrom(id),
-            type,
-            dtoToEntityTransformer.mapElementTypeDefinition(
-                type.getSingularTerm(), elementTypeDefinitionDto, null)),
+            client, Key.uuidFrom(id), type, elementTypeDefinitionDto),
         out -> ResponseEntity.noContent().build());
   }
 

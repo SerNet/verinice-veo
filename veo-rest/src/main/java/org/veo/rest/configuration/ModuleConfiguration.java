@@ -995,8 +995,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
-      DomainRepository domainRepository) {
-    return new UpdateElementTypeDefinitionUseCase(domainRepository);
+      DomainStateMapper domainStateMapper, DomainRepository domainRepository) {
+    return new UpdateElementTypeDefinitionUseCase(domainStateMapper, domainRepository);
   }
 
   @Bean
