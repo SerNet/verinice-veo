@@ -567,14 +567,14 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         and:
         put("/$elementType.pluralTerm/$elementId/requirement-implementations/$randomUuid", [
-            origination: [targetUri: "/$elementType.pluralTerm/$elementId"],
+            origin: [targetUri: "/$elementType.pluralTerm/$elementId"],
             control: [targetUri: "/controls/$subControl2Id"],
             status: "YES",
             origination: "SYSTEM_SPECIFIC",
         ], "", 404)
         .body.message == "Control with ID $randomUuid not found"
         put("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", [
-            origination: [targetUri: "/$elementType.pluralTerm/$elementId"],
+            origin: [targetUri: "/$elementType.pluralTerm/$elementId"],
             control: [targetUri: "/controls/$subControl2Id"],
             status: "YES",
             origination: "SYSTEM_SPECIFIC",
