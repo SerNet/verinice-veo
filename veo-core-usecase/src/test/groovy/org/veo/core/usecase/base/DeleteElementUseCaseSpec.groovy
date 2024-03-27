@@ -35,7 +35,7 @@ import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.DeleteElementUseCase.InputData
 
-public class DeleteElementUseCaseSpec extends UseCaseSpec {
+class DeleteElementUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
     ControlRepository controlRepository = Mock()
@@ -63,6 +63,8 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getId() >> id
             getModelInterface() >> Process
             getOwningClient() >> Optional.of(existingClient)
+            getRequirementImplementations() >> []
+            getControlImplementations() >> []
         }
 
         when:
@@ -100,6 +102,8 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getId() >> scopeId
             getOwningClient() >> Optional.of(existingClient)
             getModelInterface() >> Scope
+            getRequirementImplementations() >> []
+            getControlImplementations() >> []
         }
 
         when:
