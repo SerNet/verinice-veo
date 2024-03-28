@@ -30,7 +30,6 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
@@ -87,13 +86,6 @@ public class DomainRepositoryImpl
     return dataRepository.findIdsByDomainTemplateId(domainTemplateId.uuidValue()).stream()
         .map(Key::uuidFrom)
         .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Optional<Domain> findByCatalogItem(CatalogItem catalogItem) {
-    return dataRepository
-        .findByCatalogsCatalogItemsId(catalogItem.getId().uuidValue())
-        .map(Domain.class::cast);
   }
 
   @Override

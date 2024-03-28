@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
@@ -47,8 +46,6 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
       Collection<Key<UUID>> domainIds, Key<UUID> clientId);
 
   Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId);
-
-  Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 
   Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
 

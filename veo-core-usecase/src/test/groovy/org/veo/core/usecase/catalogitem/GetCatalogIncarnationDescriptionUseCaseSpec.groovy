@@ -38,9 +38,6 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
 
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.id] as Set, existingClient) >> [item1]
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(_, existingClient) >> []
-
-        domainRepository
-                .findByCatalogItem(item1) >> Optional.of(existingDomain)
     }
 
     def "get the apply information for a catalog-item without tailorref"() {
