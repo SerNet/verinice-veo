@@ -130,7 +130,7 @@ docker_image:
   rules:
     - when: on_success
   image:
-    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    name: gcr.io/kaniko-project/executor:v1.22.0-debug
     entrypoint: [""]
 
   variables:
