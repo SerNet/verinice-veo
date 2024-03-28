@@ -20,7 +20,6 @@ package org.veo.rest.configuration;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +33,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
 import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AllArgsConstructor;
@@ -79,13 +77,6 @@ public class TypeExtractor {
 
   private Optional<Class<? extends ModelDto>> findDtoType(PathContainer pathContainer) {
     log.debug("Searching for matching endpoint for path {}", pathContainer.value());
-    // TODO #2504 remove legacy catalog URL parsing
-    if (Pattern.matches("/catalogitems/.+", pathContainer.value())) {
-      return Optional.of(FullCatalogItemDto.class);
-    }
-    if (Pattern.matches("/catalogs/.+/items/.+", pathContainer.value())) {
-      return Optional.of(FullCatalogItemDto.class);
-    }
 
     if (pathContainer.value().startsWith("/domain-templates")) {
       return Optional.of(ExportDomainTemplateDto.class);

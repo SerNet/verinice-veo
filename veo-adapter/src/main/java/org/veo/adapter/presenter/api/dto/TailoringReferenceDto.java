@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.dto;
 import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -29,10 +28,8 @@ import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -55,23 +52,5 @@ public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVe
 
   private TailoringReferenceType referenceType;
 
-  public IdRef<T> getTarget() {
-    return legacyTarget != null ? legacyTarget : target;
-  }
-
   private IdRef<T> target;
-
-  // TODO #2504 remove
-  /**
-   * Legacy target reference, so old domain template DTOs can still be imported and the {@link
-   * org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto} stays the same).
-   */
-  @Deprecated
-  @Getter(AccessLevel.PRIVATE)
-  @JsonProperty(value = "catalogItem")
-  @Schema(
-      description =
-          "References target catalog item. This legacy property is replaced by the newer \"target\" property. If both properties are defined in a request body, this legacy property takes precedence.",
-      deprecated = true)
-  private IdRef<T> legacyTarget;
 }

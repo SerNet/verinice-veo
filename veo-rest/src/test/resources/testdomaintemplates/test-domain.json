@@ -33,8 +33,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
+          "target": {
+            "targetUri": "/domains/b641354b-ca8f-5d43-9e87-d3369451de89/catalog-items/6796b233-03de-4acd-812e-de4d27c6e0cb"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "Control_details_Control",
@@ -53,8 +53,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+          "target": {
+            "targetUri": "/domains/b641354b-ca8f-5d43-9e87-d3369451de89/catalog-items/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",
@@ -73,8 +73,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/a82b9bce-2732-48a1-abda-e5a157abfcb5"
+          "target": {
+            "targetUri": "/domains/b641354b-ca8f-5d43-9e87-d3369451de89/catalog-items/a82b9bce-2732-48a1-abda-e5a157abfcb5"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",
@@ -93,8 +93,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
+          "target": {
+            "targetUri": "/domains/b641354b-ca8f-5d43-9e87-d3369451de89/catalog-items/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",

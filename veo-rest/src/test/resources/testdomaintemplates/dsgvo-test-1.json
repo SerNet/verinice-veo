@@ -11,8 +11,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/387b0990-10f7-4ef2-8ee5-13579f2cfe84"
+          "target": {
+            "targetUri": "/domains/fece7858-8da5-59a3-b34a-6f8f831a256f/catalog-items/387b0990-10f7-4ef2-8ee5-13579f2cfe84"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",
@@ -31,8 +31,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/005ed626-1de1-4ff1-bb1a-eb741a64a87c"
+          "target": {
+            "targetUri": "/domains/fece7858-8da5-59a3-b34a-6f8f831a256f/catalog-items/005ed626-1de1-4ff1-bb1a-eb741a64a87c"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -51,8 +51,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/fdc7b58d-700c-48f2-a1ba-87816334a00d"
+          "target": {
+            "targetUri": "/domains/fece7858-8da5-59a3-b34a-6f8f831a256f/catalog-items/fdc7b58d-700c-48f2-a1ba-87816334a00d"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",
@@ -71,8 +71,8 @@
       "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/af1b9aaf-faf3-4539-9193-22a94b211bfa"
+          "target": {
+            "targetUri": "/domains/fece7858-8da5-59a3-b34a-6f8f831a256f/catalog-items/af1b9aaf-faf3-4539-9193-22a94b211bfa"
           },
           "referenceType": "LINK",
           "linkType": "Control_details_Control",

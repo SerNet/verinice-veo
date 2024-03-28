@@ -11,8 +11,8 @@
       "description": "Verschlüsselung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -77,8 +77,8 @@
       "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -183,8 +183,8 @@
       "description": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -289,8 +289,8 @@
       "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -365,8 +365,8 @@
       "description": "Gewährleistung der Belastbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -421,64 +421,64 @@
       "description": "VVT-Prozess",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/1a3f8704-4eee-45ed-b818-410fad32e412"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/c4f39b57-acc3-4edf-9a0b-7d8595607424"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/01f07484-ef75-445e-aeeb-8013bb34c8a9"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/971b5250-3673-4c80-8343-7aec2f5980ae"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/7a60f2cc-fb20-4669-9eda-d76863a29602"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/e40d750a-24f3-40ac-84a7-746ac13f64d4"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/545aa1a7-984d-42ab-a7d0-55682153b3b0"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
           "attributes": {}
         },
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/f78f6d65-2e36-4598-9628-76f0433742e0"
           },
           "referenceType": "LINK",
           "linkType": "process_tom",
@@ -567,8 +567,8 @@
       "description": "Gewährleistung der Verfügbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -803,8 +803,8 @@
       "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",
@@ -829,8 +829,8 @@
       "description": "Pseudonymisierung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
       "tailoringReferences": [
         {
-          "catalogItem": {
-            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          "target": {
+            "targetUri": "/domains/dbbf0dbd-073f-51fc-86d2-d890169a3083/catalog-items/44501434-1c5f-4ea2-92a1-56f8bb21d034"
           },
           "referenceType": "LINK_EXTERNAL",
           "linkType": "process_tom",

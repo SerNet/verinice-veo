@@ -20,10 +20,7 @@ package org.veo.rest.test
 import static java.util.UUID.randomUUID
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
-import org.apache.http.HttpStatus
 import org.springframework.security.test.context.support.WithUserDetails
-
-import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 
 import groovy.util.logging.Slf4j
 
@@ -81,10 +78,6 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         modifiedDomain.name = "Broken DSGVO_${UUID.randomUUID()}"
         modifiedDomain.templateVersion = '6.6.6'
-        modifiedDomain.id = (new DomainTemplateIdGeneratorImpl()).createDomainTemplateId(
-                modifiedDomain.name,
-                modifiedDomain.templateVersion
-                )
         modifiedDomain.elementTypeDefinitions.process.translations.de.remove('process_controller')
         modifiedDomain.elementTypeDefinitions.process.translations.de.superfluous_key = "I'm not even supposed to be here today!"
 

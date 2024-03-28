@@ -31,7 +31,6 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
-import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.rest.configuration.TypeExtractor
@@ -71,9 +70,6 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                      | FullUnitDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                                    | FullDomainDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f/catalog-items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | ShortCatalogItemDto
-        // TODO #2504 remove legacy catalog URL parsing
-        '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'        | FullCatalogItemDto
-        '/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                               | FullCatalogItemDto
     }
 
     def "The invalid URI #uri is rejected"() {
