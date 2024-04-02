@@ -31,7 +31,6 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -41,7 +40,6 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
-import org.veo.persistence.entity.jpa.CustomLinkData;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
@@ -126,20 +124,17 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   private void deleteLinksByTargets(Set<String> targetElementIds) {
-    // using deleteAll() to utilize batching and optimistic locking:
-    var links = linkDataRepository.findLinksFromOtherElementsByTargetIds(targetElementIds);
+    // Workaround for #2815, initialize proxies on RiskAffected entities:
+    var links =
+        linkDataRepository.findLinksFromRiskAffectedElementsByTargetIdsWithCIOwners(
+            targetElementIds);
+    var loadedIDs =
+        links.stream().map(link -> link.getTarget().getIdAsString()).collect(Collectors.toSet());
+    Set<String> remainingIDs =
+        targetElementIds.stream().filter(id -> !loadedIDs.contains(id)).collect(Collectors.toSet());
+    links.addAll(linkDataRepository.findLinksFromOtherElementsByTargetIds(remainingIDs));
 
-    // workaround for #2815: initialize owner and origin on elements linking to this element
-    links.stream()
-        .map(CustomLinkData::getSource)
-        .filter(s -> s instanceof RiskAffected<?, ?>)
-        .map(s -> (RiskAffected<?, ?>) s)
-        .forEach(
-            ra -> {
-              ra.getControlImplementations().forEach(ci -> ci.getOwner().getIdAsString());
-              ra.getRequirementImplementations().forEach(ri -> ri.getOrigin().getIdAsString());
-            });
-
+    // Using deleteAll() to utilize batching and optimistic locking.
     linkDataRepository.deleteAll(links);
     links.forEach(CustomLink::remove);
   }

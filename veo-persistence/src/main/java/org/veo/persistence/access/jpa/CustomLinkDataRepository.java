@@ -34,4 +34,19 @@ public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, 
           + "and s.dbId not in ?1")
   @Transactional(readOnly = true)
   Set<CustomLinkData> findLinksFromOtherElementsByTargetIds(Set<String> targetIDs);
+
+  @Query(
+      "SELECT l FROM customlink l "
+          + "join fetch l.source as s "
+          + "join fetch s.links "
+          + "join fetch s.controlImplementations as ci "
+          + "join fetch ci.owner as cio "
+          + "join fetch s.requirementImplementations as ri "
+          + "join fetch ri.origin as rio "
+          + "where l.target.dbId IN ?1 "
+          + "and s.dbId not in ?1"
+          + "and TYPE(s) = RiskAffectedData")
+  @Transactional(readOnly = true)
+  Set<CustomLinkData> findLinksFromRiskAffectedElementsByTargetIdsWithCIOwners(
+      Set<String> targetIDs);
 }

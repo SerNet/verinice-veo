@@ -412,12 +412,15 @@ class ControlImplementationRestTest extends VeoRestTest {
         when: "delete the person"
         delete("/persons/$person1Id")
 
-        then: "the asset can be retrieved without an error"
-        with(get("/domains/$testDomainId/assets/$asset2Id").body) {
-            name == "AST-2"
-        }
+        then: "the person was removed"
+        get("/domains/$testDomainId/persons/$person1Id", 404)
+
+        and: "the assets can be retrieved without an error"
         with(get("/domains/$testDomainId/assets/$asset1Id").body) {
             name == "AST-1"
+        }
+        with(get("/domains/$testDomainId/assets/$asset2Id").body) {
+            name == "AST-2"
         }
     }
 
