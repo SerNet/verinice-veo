@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Client;
 import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
+import org.veo.core.usecase.userconfiguration.GetAllUserConfigurationKeysUseCase;
 import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
@@ -55,9 +57,28 @@ import lombok.RequiredArgsConstructor;
 public class UserConfigurationController extends AbstractVeoController {
 
   public static final String URL_BASE_PATH = "/user-configurations";
+  private final GetAllUserConfigurationKeysUseCase getAllUserConfigurationKeysUseCase;
   private final GetUserConfigurationUseCase getUserConfigurationUseCase;
   private final SaveUserConfigurationUseCase saveUserConfigurationUseCase;
   private final DeleteUserConfigurationUseCase deleteUserConfigurationUseCase;
+
+  @GetMapping()
+  @Operation(summary = "Loads the user configuration keys")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Configuration template loaded",
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+  @ApiResponse(responseCode = "404", description = "User configuration not found")
+  @ApiResponse(responseCode = "400", description = "Bad request")
+  public @Valid Future<Set<String>> getUserConfiguration(
+      @Parameter(required = true, hidden = true) ApplicationUser applicationUser) {
+    Client authenticatedClient = getClient(applicationUser);
+    return useCaseInteractor.execute(
+        getAllUserConfigurationKeysUseCase,
+        new GetAllUserConfigurationKeysUseCase.InputData(
+            authenticatedClient.getId(), applicationUser.getUsername()),
+        output -> output.getKeys());
+  }
 
   @GetMapping(value = "/{appId}")
   @Operation(summary = "Loads the user configuration")

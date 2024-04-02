@@ -96,6 +96,37 @@ class UserConfigurationControllerMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "get a list of user configuration keys"() {
+        given: "a user configuration"
+        Map applicationData = [
+            name: 'New Document',
+            other: 4
+        ]
+
+        when: "we create some user configurations"
+        (1..10).each { index ->
+            parseJson(put("/user-configurations/App-$index", applicationData, 201))
+        }
+
+        and:
+        def result = parseJson(get('/user-configurations'))
+
+        then:
+        result ==~ [
+            'App-1',
+            'App-2',
+            'App-3',
+            'App-4',
+            'App-5',
+            'App-6',
+            'App-7',
+            'App-8',
+            'App-9',
+            'App-10'
+        ]
+    }
+
+    @WithUserDetails("user@domain.example")
     def "delete client delete all configuration of the client users"() {
         given: "a user configuration"
         Map applicationData = [

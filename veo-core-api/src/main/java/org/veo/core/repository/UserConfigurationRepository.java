@@ -33,6 +33,8 @@ public interface UserConfigurationRepository {
 
   Set<UserConfiguration> findAllByClient(Key<UUID> clientId);
 
+  Set<String> findAllKeysByUser(Key<UUID> clientId, String userName);
+
   Optional<UserConfiguration> findUserConfiguration(
       Key<UUID> clientId, String userName, String applicationId);
 

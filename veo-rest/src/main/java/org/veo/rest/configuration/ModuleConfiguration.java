@@ -193,6 +193,7 @@ import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
+import org.veo.core.usecase.userconfiguration.GetAllUserConfigurationKeysUseCase;
 import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 import org.veo.persistence.CurrentUserProvider;
@@ -241,6 +242,12 @@ public class ModuleConfiguration {
       @Value("${veo.default.user-configuration-bytes-max:4000}") int maxBytesPerConfiguration) {
     return new SaveUserConfigurationUseCase(
         userConfigurationRepository, entityFactor, maxConfigurations, maxBytesPerConfiguration);
+  }
+
+  @Bean
+  public GetAllUserConfigurationKeysUseCase getAllUserConfigurationKeysUseCase(
+      UserConfigurationRepository userConfigurationRepository) {
+    return new GetAllUserConfigurationKeysUseCase(userConfigurationRepository);
   }
 
   @Bean

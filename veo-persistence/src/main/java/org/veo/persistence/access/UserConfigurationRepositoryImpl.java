@@ -48,6 +48,11 @@ public class UserConfigurationRepositoryImpl implements UserConfigurationReposit
   }
 
   @Override
+  public Set<String> findAllKeysByUser(Key<UUID> clientId, String userName) {
+    return dataRepository.findAllKeysByUser(clientId.uuidValue(), userName);
+  }
+
+  @Override
   public Optional<UserConfiguration> findUserConfiguration(
       Key<UUID> clientId, String username, String applicationId) {
     return dataRepository
