@@ -24,6 +24,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.NotFoundException;
 
 /**
@@ -45,4 +46,6 @@ public interface DomainTemplateService {
   Domain createDomain(Client client, String templateId);
 
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
+
+  void copyProfileToDomain(Profile profile, Domain domain);
 }

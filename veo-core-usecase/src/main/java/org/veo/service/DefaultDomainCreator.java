@@ -20,6 +20,8 @@ package org.veo.service;
 import java.util.Set;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Profile;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateService;
 
@@ -41,22 +43,27 @@ public class DefaultDomainCreator {
     if (!client.getDomains().isEmpty()) {
       throw new IllegalArgumentException("The client already owns domains.");
     }
-    defaultDomainTemplateNames.forEach(
-        name -> {
-          domainTemplateRepository
-              .getLatestDomainTemplateId(name)
-              .ifPresentOrElse(
-                  templateId -> {
-                    log.debug(
-                        "Adding default domain {} ({}) to client {}",
-                        templateId,
-                        name,
-                        client.getIdAsString());
-                    client.addToDomains(domainService.createDomain(client, templateId.uuidValue()));
-                  },
-                  () -> {
-                    log.warn("Default domain template {} not found.", name);
-                  });
-        });
+    defaultDomainTemplateNames.forEach(name -> addDomain(client, name));
+  }
+
+  public void addDomain(Client client, String templateName) {
+    domainTemplateRepository
+        .getLatestDomainTemplateId(templateName)
+        .ifPresentOrElse(
+            templateId -> {
+              log.debug(
+                  "Adding default domain {} ({}) to client {}",
+                  templateId,
+                  templateName,
+                  client.getIdAsString());
+              client.addToDomains(domainService.createDomain(client, templateId.uuidValue()));
+            },
+            () -> {
+              log.warn("Default domain template {} not found.", templateName);
+            });
+  }
+
+  public void copyProfileToDomain(Profile profile, Domain domain) {
+    domainService.copyProfileToDomain(profile, domain);
   }
 }

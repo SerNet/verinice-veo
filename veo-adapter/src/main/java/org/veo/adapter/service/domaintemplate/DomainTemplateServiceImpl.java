@@ -25,6 +25,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateService;
@@ -64,6 +65,24 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);
     return domain;
+  }
+
+  @Override
+  public void copyProfileToDomain(Profile profile, Domain domain) {
+    log.info(
+        "create profile {} in domain {}:{}",
+        profile.getName(),
+        domain.getName(),
+        domain.getTemplateVersion());
+
+    if (domain.getProfiles().stream().anyMatch(pr -> pr.getName().equals(profile.getName()))) {
+      log.info(
+          "Profile {} already present in domain {}, skip", profile.getName(), domain.getName());
+      return;
+    }
+
+    Profile profileCopy = domainStateMapper.toProfile(profile, domain);
+    domain.getProfiles().add(profileCopy);
   }
 
   @Override

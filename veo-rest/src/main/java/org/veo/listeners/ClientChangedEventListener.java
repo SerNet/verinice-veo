@@ -19,7 +19,11 @@ package org.veo.listeners;
 
 import static org.veo.core.usecase.unit.CreateUnitUseCase.DEFAULT_MAX_UNITS;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -29,7 +33,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.transform.EntityFactory;
@@ -98,6 +104,8 @@ public class ClientChangedEventListener {
     }
     client.updateState(ClientChangeType.ACTIVATION);
     defaultDomainCreator.addDefaultDomains(client);
+    addDomains(client, event.getDomainProducts(), false);
+    addProfiles(client, event.getDomainProducts(), false);
     new CreateClientUnitsJob(createUnitUseCase) {}.createUnitsForClient(repository.save(client));
   }
 
@@ -106,6 +114,51 @@ public class ClientChangedEventListener {
     if (maxUnits != null) {
       log.info("Modify max units for client {} {}", client, maxUnits);
       client.setMaxUnits(maxUnits);
+    }
+    addDomains(client, event.getDomainProducts(), true);
+    addProfiles(client, event.getDomainProducts(), true);
+  }
+
+  private void addDomains(Client client, Map<String, List<String>> domainProducts, boolean save) {
+    if (domainProducts != null && !domainProducts.isEmpty()) {
+      domainProducts
+          .keySet()
+          .forEach(
+              dn -> {
+                if (client.getDomains().stream().noneMatch(referenceDomainTemplate(dn))) {
+                  log.info("create Domain {} for client {}", dn, client.getName());
+                  defaultDomainCreator.addDomain(client, dn);
+                  if (save) {
+                    repository.save(client);
+                  }
+                }
+              });
+    }
+  }
+
+  private void addProfiles(Client client, Map<String, List<String>> products, boolean save) {
+    if (products != null && !products.isEmpty()) {
+      client
+          .getDomains()
+          .forEach(
+              domain -> {
+                products.getOrDefault(domain.getName(), Collections.emptyList()).stream()
+                    .distinct()
+                    .forEach(
+                        profileName -> {
+                          domain.getDomainTemplate().getProfiles().stream()
+                              .filter(isProfile(profileName))
+                              .findAny()
+                              .ifPresent(profile -> copyProfileToDomain(save, profile, domain));
+                        });
+              });
+    }
+  }
+
+  private void copyProfileToDomain(boolean save, Profile profile, Domain domain) {
+    defaultDomainCreator.copyProfileToDomain(profile, domain);
+    if (save) {
+      domainRepository.save(domain);
     }
   }
 
@@ -125,5 +178,13 @@ public class ClientChangedEventListener {
               client.removeFromDomains(domain);
             });
     repository.delete(client);
+  }
+
+  private Predicate<? super Domain> referenceDomainTemplate(String templateName) {
+    return domain -> domain.getDomainTemplate().getName().equals(templateName);
+  }
+
+  private Predicate<? super Profile> isProfile(String profileName) {
+    return profile -> profile.getName().equals(profileName);
   }
 }

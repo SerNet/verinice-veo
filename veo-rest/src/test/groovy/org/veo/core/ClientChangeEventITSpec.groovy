@@ -44,6 +44,7 @@ import org.veo.message.TestContainersUtil
 import org.veo.message.TestEventSubscriber
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
+import org.veo.persistence.access.DomainTemplateRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 import groovy.util.logging.Slf4j
@@ -71,6 +72,8 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     private UnitRepositoryImpl unitRepository
     @Autowired
     private DomainRepositoryImpl domainRepository
+    @Autowired
+    private DomainTemplateRepositoryImpl domainTemplateRepository
 
     @Value('${veo.message.routing-key-prefix}')
     String routingKeyPrefix
@@ -101,7 +104,11 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "eventType": "$messageType",
             "clientId": "${cId.uuidValue()}",
             "type": "CREATION",
-            "name": "${clientName}"
+            "name": "${clientName}",
+            "domainProducts": {
+                "DS-GVO" : ["Beispielorganisation"],
+                "test-domain": []
+            }
         }""", 1, Instant.now()))
 
         then: "the client is created, activated, the initial unit and domains exist"
@@ -127,6 +134,107 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                     }
                 }
             }
+        }
+
+        when:"we send a change -> add a domain"
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
+            "eventType": "$messageType",
+            "clientId": "${cId.uuidValue()}",
+            "type": "MODIFICATION",
+            "domainProducts": {
+                "DSGVO-test" : []
+            }
+        }""",2,Instant.now()))
+
+        then: "the event is sent and the domain is added"
+        defaultPolling.eventually {
+
+            def client = executeInTransaction {
+                repository.findById(cId).get().tap {
+                    domains.collect { it.profiles.size() }
+                    domains*.profiles.collect{ it.name }
+                }
+            }
+            with(client.domains.find { it.name == 'DS-GVO' }) {
+                profiles.size() == 1
+                profiles[0].name ==  'Beispielorganisation'
+            }
+            client.domains.size() == 3
+            client.domains*.name ==~ [
+                'DS-GVO',
+                'DSGVO-test',
+                'test-domain'
+            ]
+        }
+
+        when: "we add a profile to a template and add this profile"
+        def dt = domainTemplateDataRepository
+                .findByIdWithProfilesAndRiskDefinitions(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get()
+
+        dt.profiles.add(newProfile(dt) {
+            name = 'the new profile'
+            language = 'DE_de'
+        })
+        domainTemplateDataRepository.save(dt)
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
+            "eventType": "$messageType",
+            "clientId": "${cId.uuidValue()}",
+            "type": "MODIFICATION",
+            "domainProducts": {
+                "DSGVO-test" : ["the new profile"]
+            }
+        }""",3,Instant.now()))
+
+        then: "the event is sent and the domain is added"
+        defaultPolling.eventually {
+
+            def client = executeInTransaction {
+                repository.findById(cId).get().tap {
+                    domains.collect { it.profiles.size() }
+                    domains*.profiles.collect{ it.name }
+                }
+            }
+            with(client.domains.find { it.name == 'DSGVO-test' }) {
+                profiles.size() == 1
+                profiles[0].name ==  'the new profile'
+            }
+            client.domains.size() == 3
+            client.domains*.name ==~ [
+                'DS-GVO',
+                'DSGVO-test',
+                'test-domain'
+            ]
+        }
+
+        when:"we send a change -> add a non existing domain/profiles"
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
+            "eventType": "$messageType",
+            "clientId": "${cId.uuidValue()}",
+            "type": "MODIFICATION",
+            "domainProducts": {
+                "DSGVO-test1" : ["dontExist1","dontExist2"]
+            }
+        }""",4,Instant.now()))
+
+        then: "the event is sent and no domain is added"
+        defaultPolling.eventually {
+
+            def client = executeInTransaction {
+                repository.findById(cId).get().tap {
+                    domains.collect { it.profiles.size() }
+                    domains*.profiles.collect{ it.name }
+                }
+            }
+            with(client.domains.find { it.name == 'DS-GVO' }) {
+                profiles.size() == 1
+                profiles[0].name ==  'Beispielorganisation'
+            }
+            client.domains.size() == 3
+            client.domains*.name ==~ [
+                'DS-GVO',
+                'DSGVO-test',
+                'test-domain'
+            ]
         }
     }
 
@@ -185,7 +293,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "MODIFICATION",
             "maxUnits": 15
-        }""", 1, Instant.now()))
+        }""", 2, Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
         defaultPolling.eventually {
@@ -198,7 +306,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "MODIFICATION",
             "maxUnits": 1
-        }""",1,Instant.now()))
+        }""",3,Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
         defaultPolling.eventually {

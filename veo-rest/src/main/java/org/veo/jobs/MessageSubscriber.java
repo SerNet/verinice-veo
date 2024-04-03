@@ -21,6 +21,8 @@ import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE;
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
+import java.util.Map;
+
 import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -150,6 +152,10 @@ public class MessageSubscriber {
     var clientState = ClientChangeType.valueOf(content.get("type").asText());
     var maxUnits = content.has("maxUnits") ? content.get("maxUnits").asInt() : null;
     var clientName = content.has("name") ? content.get("name").asText() : null;
+    var domainProducts =
+        content.has("domainProducts")
+            ? objectMapper.convertValue(content.get("domainProducts"), Map.class)
+            : null;
     log.info(
         "Received {} message for clientstate {} message type: {}",
         EVENT_TYPE_CLIENT_CHANGE,
@@ -158,6 +164,7 @@ public class MessageSubscriber {
     AsSystemUser.runAsAdmin(
         () ->
             publisher.publishEvent(
-                new ClientChangedEvent(clientId, clientState, maxUnits, clientName)));
+                new ClientChangedEvent(
+                    clientId, clientState, maxUnits, clientName, domainProducts)));
   }
 }

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
@@ -34,4 +36,6 @@ public class ClientChangedEvent implements ClientEvent {
   @NotNull private final ClientChangeType type;
   private final Integer maxUnits;
   private final String name;
+  // a list of domain names and profiles of these domains to add to the client
+  private Map<String, List<String>> domainProducts;
 }

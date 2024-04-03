@@ -121,6 +121,10 @@ public class DomainStateMapper {
             .collect(Collectors.toSet()));
   }
 
+  public Profile toProfile(ProfileState source, DomainBase owner) {
+    return toProfile(source, refResolverFactory.local(), owner);
+  }
+
   private Profile toProfile(ProfileState source, LocalRefResolver resolver, DomainBase owner) {
     var target = entityFactory.createProfile(owner);
     target.setName(source.getName());
