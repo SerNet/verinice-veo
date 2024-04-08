@@ -85,11 +85,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         expect: "posting different version numbers to succeed"
         post("/content-creation/domain-templates", [
+            id: UUID.randomUUID(),
             name: name,
             templateVersion: "2.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
         post("/content-creation/domain-templates", [
+            id: UUID.randomUUID(),
             name: name,
             templateVersion: "2.1.0",
             authority: "me"
@@ -97,6 +99,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         and: "posting a previous version number again to cause a conflict"
         post("/content-creation/domain-templates", [
+            id: UUID.randomUUID(),
             name: name,
             templateVersion: "2.1.0",
             authority: "me"
@@ -109,6 +112,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         expect: "posting a valid version number to succeed"
         post("/content-creation/domain-templates", [
+            id: UUID.randomUUID(),
             name: name,
             templateVersion: "1.0.0",
             authority: "me"
@@ -116,6 +120,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         and: "posting an invalid version to fail"
         post("/content-creation/domain-templates", [
+            id: UUID.randomUUID(),
             name: name,
             templateVersion: "1.1",
             authority: "me"

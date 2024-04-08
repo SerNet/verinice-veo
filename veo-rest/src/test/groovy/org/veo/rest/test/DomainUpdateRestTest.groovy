@@ -141,6 +141,7 @@ class DomainUpdateRestTest extends VeoRestTest {
 
     private LinkedHashMap<String, Serializable> getTemplate() {
         [
+            id: UUID.randomUUID(),
             name: templateName,
             templateVersion: "1.0.0",
             authority: "jj",
