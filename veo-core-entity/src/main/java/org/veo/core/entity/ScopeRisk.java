@@ -29,4 +29,17 @@ package org.veo.core.entity;
  * <p>The process may be representing a single scope or a group of scopes to facilitate modelling
  * subscope affected by the observed risk.
  */
-public interface ScopeRisk extends AbstractRisk<Scope, ScopeRisk> {}
+public interface ScopeRisk extends AbstractRisk<Scope, ScopeRisk> {
+  String SINGULAR_TERM = Scope.SINGULAR_TERM + "-risk";
+  String PLURAL_TERM = Scope.SINGULAR_TERM + "-risks";
+
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
+
+  @Override
+  default Class<ScopeRisk> getModelInterface() {
+    return ScopeRisk.class;
+  }
+}

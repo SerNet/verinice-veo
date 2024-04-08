@@ -71,7 +71,7 @@ import lombok.ToString;
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
-    implements RiskState {
+    implements RiskState, ModelDto {
 
   @Schema(
       description = "Compact human-readable identifier that is unique within the client.",

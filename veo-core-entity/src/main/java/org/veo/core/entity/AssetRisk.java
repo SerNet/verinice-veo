@@ -29,4 +29,18 @@ package org.veo.core.entity;
  * <p>The asset may be representing a single asset or a group of assets to facilitate modelling the
  * system-of-systems / system-of-interest (SoI) for the observed risk.
  */
-public interface AssetRisk extends AbstractRisk<Asset, AssetRisk> {}
+public interface AssetRisk extends AbstractRisk<Asset, AssetRisk> {
+
+  String SINGULAR_TERM = Asset.SINGULAR_TERM + "-risk";
+  String PLURAL_TERM = Asset.SINGULAR_TERM + "-risks";
+
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
+
+  @Override
+  default Class<AssetRisk> getModelInterface() {
+    return AssetRisk.class;
+  }
+}

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.UserConfiguration;
 import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.GetAllUserConfigurationKeysUseCase;
 import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
@@ -56,7 +57,7 @@ import lombok.RequiredArgsConstructor;
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class UserConfigurationController extends AbstractVeoController {
 
-  public static final String URL_BASE_PATH = "/user-configurations";
+  public static final String URL_BASE_PATH = "/" + UserConfiguration.PLURAL_TERM;
   private final GetAllUserConfigurationKeysUseCase getAllUserConfigurationKeysUseCase;
   private final GetUserConfigurationUseCase getUserConfigurationUseCase;
   private final SaveUserConfigurationUseCase saveUserConfigurationUseCase;

@@ -29,4 +29,17 @@ package org.veo.core.entity;
  * <p>The process may be representing a single process or a group of processes to facilitate
  * modelling subprocesses affected by the observed risk.
  */
-public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {}
+public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
+  String SINGULAR_TERM = Process.SINGULAR_TERM + "-risk";
+  String PLURAL_TERM = Process.SINGULAR_TERM + "-risks";
+
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
+
+  @Override
+  default Class<ProcessRisk> getModelInterface() {
+    return ProcessRisk.class;
+  }
+}

@@ -20,6 +20,8 @@ package org.veo.core.entity;
 import java.util.Map;
 
 public interface UserConfiguration extends ClientOwned {
+  String SINGULAR_TERM = "user-configuration";
+  String PLURAL_TERM = "user-configurations";
 
   void setClient(Client client);
 
@@ -38,4 +40,14 @@ public interface UserConfiguration extends ClientOwned {
   String getUserName();
 
   boolean isPersisted();
+
+  @Override
+  default Class<? extends Entity> getModelInterface() {
+    return UserConfiguration.class;
+  }
+
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 }

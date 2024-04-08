@@ -68,6 +68,7 @@ import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -96,6 +97,7 @@ import org.veo.rest.ScopeController;
 import org.veo.rest.ScopeInDomainController;
 import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
+import org.veo.rest.UserConfigurationController;
 import org.veo.rest.configuration.TypeExtractor;
 import org.veo.rest.schemas.controller.EntitySchemaController;
 
@@ -372,6 +374,17 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     throw new NotImplementedException();
   }
 
+  @SuppressFBWarnings
+  @Override
+  public String targetReferenceOf(UserConfiguration userConfiguration) {
+    return linkTo(
+            methodOn(UserConfigurationController.class)
+                .getUserConfiguration(ANY_USER, userConfiguration.getApplicationId()))
+        .withRel(UserConfigurationController.URL_BASE_PATH)
+        .expand()
+        .getHref();
+  }
+
   private WebMvcLinkBuilder linkToRequirementImplementation(
       Class<? extends RiskAffectedResource> controller,
       RequirementImplementation requirementImplementation) {
@@ -492,7 +505,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         || CatalogItem.class.isAssignableFrom(type)
         || DomainTemplate.class.isAssignableFrom(type)
         || Profile.class.isAssignableFrom(type)
-        || ProfileItem.class.isAssignableFrom(type)) {
+        || ProfileItem.class.isAssignableFrom(type)
+        || AbstractRisk.class.isAssignableFrom(type)
+        || UserConfiguration.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported search reference type " + type.getSimpleName());
@@ -709,11 +724,18 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .withSelfRel()
           .getHref();
     }
+    if (UserConfiguration.class.isAssignableFrom(type)) {
+      return linkTo(methodOn(UserConfigurationController.class).getUserConfiguration(ANY_USER))
+          .withSelfRel()
+          .expand()
+          .getHref();
+    }
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type)
         || CatalogItem.class.isAssignableFrom(type)
         || Profile.class.isAssignableFrom(type)
-        || ProfileItem.class.isAssignableFrom(type)) {
+        || ProfileItem.class.isAssignableFrom(type)
+        || AbstractRisk.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported collection reference type " + type);
@@ -729,6 +751,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
    */
   @Override
   public Class<? extends Entity> parseType(String uriString) {
+    if (uriString.contains("/" + UserConfiguration.PLURAL_TERM)) {
+      return UserConfiguration.class;
+    }
     Class<? extends ModelDto> modelType =
         typeExtractor
             .parseDtoType(uriString)

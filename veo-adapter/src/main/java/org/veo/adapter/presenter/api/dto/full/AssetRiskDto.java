@@ -40,7 +40,6 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ref.ITypedId;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,7 +48,7 @@ import lombok.Singular;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class AssetRiskDto extends AbstractRiskDto {
 
   @Valid private IdRef<Asset> asset;
@@ -102,5 +101,10 @@ public class AssetRiskDto extends AbstractRiskDto {
   @JsonIgnore
   public ITypedId<Asset> getOwnerRef() {
     return asset;
+  }
+
+  @Override
+  public Class<AssetRisk> getModelInterface() {
+    return AssetRisk.class;
   }
 }

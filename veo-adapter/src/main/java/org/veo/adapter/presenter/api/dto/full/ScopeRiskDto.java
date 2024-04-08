@@ -41,7 +41,6 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.ref.ITypedId;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,7 +49,7 @@ import lombok.Singular;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class ScopeRiskDto extends AbstractRiskDto {
 
   @Valid private IdRef<Scope> scope;
@@ -106,5 +105,10 @@ public class ScopeRiskDto extends AbstractRiskDto {
   @JsonIgnore
   public ITypedId<Scope> getOwnerRef() {
     return scope;
+  }
+
+  @Override
+  public Class<ScopeRisk> getModelInterface() {
+    return ScopeRisk.class;
   }
 }

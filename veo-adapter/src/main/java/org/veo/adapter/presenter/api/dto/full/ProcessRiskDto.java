@@ -40,7 +40,6 @@ import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ref.ITypedId;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,7 +48,7 @@ import lombok.Singular;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class ProcessRiskDto extends AbstractRiskDto {
 
   @Valid private IdRef<Process> process;
@@ -103,5 +102,10 @@ public class ProcessRiskDto extends AbstractRiskDto {
   @JsonIgnore
   public ITypedId<Process> getOwnerRef() {
     return process;
+  }
+
+  @Override
+  public Class<ProcessRisk> getModelInterface() {
+    return ProcessRisk.class;
   }
 }

@@ -20,6 +20,6 @@ package org.veo.core.entity;
 import java.util.Optional;
 
 /** Something that can be owned by a specific client. */
-public interface ClientOwned {
+public interface ClientOwned extends Entity {
   Optional<Client> getOwningClient();
 }

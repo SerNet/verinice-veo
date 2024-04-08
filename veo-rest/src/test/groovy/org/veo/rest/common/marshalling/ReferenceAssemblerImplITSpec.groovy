@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.AbstractRisk
+import org.veo.core.entity.Asset
+import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
@@ -28,9 +31,15 @@ import org.veo.core.entity.Entity
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
+import org.veo.core.entity.Process
+import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Profile
 import org.veo.core.entity.ProfileItem
+import org.veo.core.entity.Scenario
+import org.veo.core.entity.Scope
+import org.veo.core.entity.ScopeRisk
 import org.veo.core.entity.SymIdentifiable
+import org.veo.core.entity.UserConfiguration
 import org.veo.rest.configuration.TypeExtractor
 
 class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
@@ -109,6 +118,33 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
                     id >> Key.newUuid()
                     idAsString >> it.id.uuidValue()
                 }
+            }
+            if(it instanceof AbstractRisk) {
+                if(it instanceof AssetRisk) {
+                    entity >> Stub(Asset) {
+                        id >> Key.newUuid()
+                        idAsString >> it.id.uuidValue()
+                    }
+                }
+                if(it instanceof ProcessRisk) {
+                    entity >> Stub(Process) {
+                        id >> Key.newUuid()
+                        idAsString >> it.id.uuidValue()
+                    }
+                }
+                if(it instanceof ScopeRisk) {
+                    entity >> Stub(Scope) {
+                        id >> Key.newUuid()
+                        idAsString >> it.id.uuidValue()
+                    }
+                }
+                scenario >> Stub(Scenario) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+            if(it instanceof UserConfiguration) {
+                applicationId >> "foo"
             }
         }
     }
