@@ -450,8 +450,11 @@ public final class EntityToDtoTransformer {
   }
 
   private <
-          TEntity extends TemplateItem<TEntity>,
-          TDto extends AbstractTemplateItemDto<TEntity> & FullTemplateItemDto<TEntity>>
+          TEntity extends TemplateItem<TEntity, TNamespace>,
+          TNamespace extends Identifiable,
+          TDto extends
+              AbstractTemplateItemDto<TEntity, TNamespace>
+                  & FullTemplateItemDto<TEntity, TNamespace>>
       void mapFullTemplateItem(TEntity source, TDto target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapTemplateItem(source, target);
@@ -464,8 +467,8 @@ public final class EntityToDtoTransformer {
         .forEach(tailoringReference -> target.add(tailoringReference, referenceAssembler));
   }
 
-  private <T extends TemplateItem<T>> void mapTemplateItem(
-      T source, AbstractTemplateItemDto<T> target) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void mapTemplateItem(T source, AbstractTemplateItemDto<T, TNamespace> target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());

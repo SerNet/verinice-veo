@@ -23,6 +23,7 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.decision.Decision;
@@ -49,7 +50,7 @@ public interface DomainBaseState extends EntityState {
 
   String getTemplateVersion();
 
-  Set<TemplateItemState<CatalogItem>> getCatalogItemStates();
+  Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates();
 
   Set<ProfileState> getProfileStates();
 }

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.VeoConstants;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
@@ -44,8 +45,9 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @JsonIgnoreProperties("linkTailoringReferences")
-public class TailoringReferenceDto<T extends TemplateItem<T>> extends AbstractVersionedDto
-    implements TailoringReferenceState<T> {
+public class TailoringReferenceDto<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends AbstractVersionedDto implements TailoringReferenceState<T, TNamespace> {
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
       description = VeoConstants.UUID_MESSAGE,

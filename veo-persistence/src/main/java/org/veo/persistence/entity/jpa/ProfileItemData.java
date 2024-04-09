@@ -50,7 +50,7 @@ import lombok.ToString;
 @Entity(name = "profile_item")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProfileItemData extends TemplateItemData<ProfileItem> implements ProfileItem {
+public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> implements ProfileItem {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
@@ -70,7 +70,7 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  private Set<TailoringReference<ProfileItem>> tailoringReferences = new HashSet<>();
+  private Set<TailoringReference<ProfileItem, Profile>> tailoringReferences = new HashSet<>();
 
   /** create an instance of the described element* */
   @Override
@@ -90,28 +90,30 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
 
   @Override
   protected void add(
-      TailoringReference<ProfileItem> reference, TailoringReferenceType type, ProfileItem target) {
+      TailoringReference<ProfileItem, Profile> reference,
+      TailoringReferenceType type,
+      ProfileItem target) {
     super.add(reference, type, target);
     this.tailoringReferences.add(reference);
   }
 
   @Override
-  protected TailoringReference<ProfileItem> createTailoringReference() {
+  protected TailoringReference<ProfileItem, Profile> createTailoringReference() {
     return new ProfileTailoringReferenceData();
   }
 
   @Override
-  protected LinkTailoringReference<ProfileItem> createLinkTailoringReference() {
+  protected LinkTailoringReference<ProfileItem, Profile> createLinkTailoringReference() {
     return new ProfileLinkTailoringReferenceData();
   }
 
   @Override
-  protected RiskTailoringReference<ProfileItem> createRiskTailoringReference() {
+  protected RiskTailoringReference<ProfileItem, Profile> createRiskTailoringReference() {
     return new ProfileRiskTailoringReferenceData();
   }
 
   @Override
-  protected ControlImplementationTailoringReference<ProfileItem>
+  protected ControlImplementationTailoringReference<ProfileItem, Profile>
       createControlImplementationTailoringReference() {
     return new ProfileControlImplementationTailoringReferenceData();
   }

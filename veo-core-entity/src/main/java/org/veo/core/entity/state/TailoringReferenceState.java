@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
 
-public interface TailoringReferenceState<T extends TemplateItem<T>> {
+public interface TailoringReferenceState<
+    T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
   TailoringReferenceType getReferenceType();
 
   ITypedId<T> getTargetRef();

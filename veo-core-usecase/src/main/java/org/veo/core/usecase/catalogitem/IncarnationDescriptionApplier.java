@@ -69,11 +69,12 @@ public class IncarnationDescriptionApplier {
   private final ElementBatchCreator elementBatchCreator;
   private final RepositoryProvider repositoryProvider;
 
-  public <T extends TemplateItem<T>> List<Element> incarnate(
-      Key<UUID> unitId,
-      List<TemplateItemIncarnationDescriptionState> descriptions,
-      AbstractTemplateItemRepository<T> repository,
-      Client client) {
+  public <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      List<Element> incarnate(
+          Key<UUID> unitId,
+          List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
+          AbstractTemplateItemRepository<T, TNamespace> repository,
+          Client client) {
     log.info("Incarnating {} template items", descriptions.size());
     var unit = unitRepository.getByIdFetchClient(unitId);
     unit.checkSameClient(client);
@@ -87,10 +88,11 @@ public class IncarnationDescriptionApplier {
     return newElements;
   }
 
-  private static <T extends TemplateItem<T>> Map<String, T> loadItems(
-      List<TemplateItemIncarnationDescriptionState> descriptions,
-      AbstractTemplateItemRepository<T> repository,
-      Client client) {
+  private static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      Map<String, T> loadItems(
+          List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
+          AbstractTemplateItemRepository<T, TNamespace> repository,
+          Client client) {
     return repository
         .findAllByIdsFetchDomain(
             descriptions.stream()
@@ -103,10 +105,11 @@ public class IncarnationDescriptionApplier {
         .collect(Collectors.toMap(Identifiable::getIdAsString, identity()));
   }
 
-  private <T extends TemplateItem<T>> Map<String, TailoringReference<T>> loadTailoringReferences(
-      List<TemplateItemIncarnationDescriptionState> descriptions,
-      AbstractTemplateItemRepository<T> repo,
-      Client client) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      Map<String, TailoringReference<T, TNamespace>> loadTailoringReferences(
+          List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
+          AbstractTemplateItemRepository<T, TNamespace> repo,
+          Client client) {
     return repo
         .findTailoringReferencesByIds(
             descriptions.stream()
@@ -119,8 +122,10 @@ public class IncarnationDescriptionApplier {
         .collect(Collectors.toMap(Identifiable::getIdAsString, identity()));
   }
 
-  private Map<String, Element> loadReferencedElements(
-      List<TemplateItemIncarnationDescriptionState> descriptions, Client client) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      Map<String, Element> loadReferencedElements(
+          List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
+          Client client) {
     return descriptions.stream()
         .flatMap(r -> r.getParameterStates().stream())
         .map(TailoringReferenceParameterState::getReferencedElementRef)
@@ -135,12 +140,13 @@ public class IncarnationDescriptionApplier {
         .collect(Collectors.toMap(Element::getIdAsString, identity()));
   }
 
-  private <T extends TemplateItem<T>> List<Element> incarnate(
-      List<TemplateItemIncarnationDescriptionState> descriptions,
-      Unit unit,
-      Map<String, T> itemsById,
-      Map<String, Element> referencedElementsById,
-      Map<String, TailoringReference<T>> tailoringReferencesById) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      List<Element> incarnate(
+          List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
+          Unit unit,
+          Map<String, T> itemsById,
+          Map<String, Element> referencedElementsById,
+          Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     var elementsByItem =
         itemsById.values().stream().collect(Collectors.toMap(identity(), i -> i.incarnate(unit)));
     var sortedElements =
@@ -163,13 +169,14 @@ public class IncarnationDescriptionApplier {
     return sortedElements;
   }
 
-  private <T extends TemplateItem<T>> void applyTailoringReferences(
-      TemplateItem<T> item,
-      Element element,
-      List<TailoringReferenceParameterState> parameters,
-      Map<String, Element> referencedElementsById,
-      Map<T, Element> elementsByItem,
-      Map<String, TailoringReference<T>> tailoringReferencesById) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void applyTailoringReferences(
+          TemplateItem<T, TNamespace> item,
+          Element element,
+          List<TailoringReferenceParameterState> parameters,
+          Map<String, Element> referencedElementsById,
+          Map<T, Element> elementsByItem,
+          Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     parameters.forEach(
         parameter -> {
           var tailoringReference = tailoringReferencesById.get(parameter.getId());
@@ -196,12 +203,13 @@ public class IncarnationDescriptionApplier {
         });
   }
 
-  private <T extends TemplateItem<T>> void applyTailoringReference(
-      TailoringReference<T> tailoringReference,
-      Element origin,
-      Element target,
-      Domain domain,
-      Map<T, Element> elementsByItem) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void applyTailoringReference(
+          TailoringReference<T, TNamespace> tailoringReference,
+          Element origin,
+          Element target,
+          Domain domain,
+          Map<T, Element> elementsByItem) {
     log.debug(
         "Applying {} tailoring reference {} with target {}",
         tailoringReference.getReferenceType(),
@@ -224,14 +232,16 @@ public class IncarnationDescriptionApplier {
     }
   }
 
-  private <T extends TemplateItem<T>> void addControlImplementation(
-      Element origin,
-      Element target,
-      TailoringReference<T> tailoringReference,
-      Map<T, Element> elementsByItem) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void addControlImplementation(
+          Element origin,
+          Element target,
+          TailoringReference<T, TNamespace> tailoringReference,
+          Map<T, Element> elementsByItem) {
     if (origin instanceof RiskAffected<?, ?> ra
         && target instanceof Control control
-        && tailoringReference instanceof ControlImplementationTailoringReference<T> tr) {
+        && tailoringReference
+            instanceof ControlImplementationTailoringReference<T, TNamespace> tr) {
       var ci = ra.implementControl(control);
       ci.setDescription(tr.getDescription());
       Optional.ofNullable(tr.getResponsible())
@@ -254,16 +264,19 @@ public class IncarnationDescriptionApplier {
                   target.getModelType()));
   }
 
-  private <T extends TemplateItem<T>> void addScope(Element origin, Element targetScope) {
+  private void addScope(Element origin, Element targetScope) {
     if (targetScope instanceof Scope scope) {
       scope.addMember(origin);
       handleModification(scope);
     }
   }
 
-  private <T extends TemplateItem<T>> void addLink(
-      Element source, Element target, Domain domain, TailoringReference<T> tailoringReference) {
-    if (tailoringReference instanceof LinkTailoringReference<T> linkRef) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> void addLink(
+      Element source,
+      Element target,
+      Domain domain,
+      TailoringReference<T, TNamespace> tailoringReference) {
+    if (tailoringReference instanceof LinkTailoringReference<T, TNamespace> linkRef) {
       var link = factory.createCustomLink(target, source, linkRef.getLinkType(), domain);
       link.setAttributes(linkRef.getAttributes());
       if (source.applyLink(link)) {
@@ -289,15 +302,17 @@ public class IncarnationDescriptionApplier {
     }
   }
 
-  private static <T extends TemplateItem<T>> void addRisk(
-      Element source,
-      Element target,
-      Domain domain,
-      TailoringReference<T> tailoringReference,
-      Map<T, Element> elementsByItem) {
+  private static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void addRisk(
+          Element source,
+          Element target,
+          Domain domain,
+          TailoringReference<T, TNamespace> tailoringReference,
+          Map<T, Element> elementsByItem) {
     if (source instanceof RiskAffected<?, ?> riskAffected && target instanceof Scenario scenario) {
       var risk = riskAffected.obtainRisk(scenario, domain);
-      if (tailoringReference instanceof RiskTailoringReference<T> riskTailoringReference) {
+      if (tailoringReference
+          instanceof RiskTailoringReference<T, TNamespace> riskTailoringReference) {
         Optional.ofNullable(riskTailoringReference.getRiskOwner())
             .map(elementsByItem::get)
             .map(Person.class::cast)

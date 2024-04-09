@@ -35,6 +35,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
@@ -60,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class GetCatalogIncarnationDescriptionUseCase
-    extends AbstractGetIncarnationDescriptionUseCase<CatalogItem>
+    extends AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
     implements TransactionalUseCase<
         GetCatalogIncarnationDescriptionUseCase.InputData,
         GetCatalogIncarnationDescriptionUseCase.OutputData> {
@@ -100,7 +101,7 @@ public class GetCatalogIncarnationDescriptionUseCase
                             : Integer.MAX_VALUE))
             .map(
                 catalogItem ->
-                    new TemplateItemIncarnationDescription(
+                    new TemplateItemIncarnationDescription<>(
                         catalogItem,
                         toParameters(
                             catalogItem.getTailoringReferences().stream()
@@ -146,7 +147,7 @@ public class GetCatalogIncarnationDescriptionUseCase
    */
   private Map<CatalogItem, Optional<Element>> collectAllItems(
       List<CatalogItem> requestedItems,
-      Predicate<? super TailoringReference<CatalogItem>> tailoringReferenceFilter,
+      Predicate<? super TailoringReference<?, ?>> tailoringReferenceFilter,
       IncarnationRequestModeType mode,
       IncarnationLookup lookup,
       Unit unit) {
@@ -191,7 +192,7 @@ public class GetCatalogIncarnationDescriptionUseCase
   private static Set<CatalogItem> getReferencedItems(
       Map<CatalogItem, Optional<Element>> current,
       HashMap<CatalogItem, Optional<Element>> encountered,
-      Predicate<? super TailoringReference<CatalogItem>> referenceFilter,
+      Predicate<? super TailoringReference<?, ?>> referenceFilter,
       boolean followReferencesOfExistingIncarnations) {
     return current.entrySet().stream()
         // Only follow references of items without an existing incarnation.
@@ -257,7 +258,7 @@ public class GetCatalogIncarnationDescriptionUseCase
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    @Valid List<TemplateItemIncarnationDescription> references;
+    @Valid List<TemplateItemIncarnationDescription<CatalogItem, DomainBase>> references;
     Unit container;
   }
 }

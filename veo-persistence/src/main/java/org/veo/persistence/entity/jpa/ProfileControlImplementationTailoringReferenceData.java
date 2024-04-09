@@ -21,6 +21,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
 import org.veo.core.entity.ControlImplementationTailoringReference;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
 import lombok.Data;
@@ -32,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProfileControlImplementationTailoringReferenceData
     extends ProfileTailoringReferenceData
-    implements ControlImplementationTailoringReference<ProfileItem> {
+    implements ControlImplementationTailoringReference<ProfileItem, Profile> {
 
   @ManyToOne(targetEntity = ProfileItemData.class)
   private ProfileItem responsible;

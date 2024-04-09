@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.state.LinkTailoringReferenceState;
 
@@ -35,8 +36,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LinkTailoringReferenceDto<T extends TemplateItem<T>> extends TailoringReferenceDto<T>
-    implements LinkTailoringReferenceState<T> {
+public class LinkTailoringReferenceDto<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReferenceDto<T, TNamespace>
+    implements LinkTailoringReferenceState<T, TNamespace> {
 
   private String linkType;
 

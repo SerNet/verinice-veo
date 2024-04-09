@@ -47,7 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /** Create or update a profile in a domain. */
 @Slf4j
-public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUseCase<ProfileItem>
+public class CreateProfileFromUnitUseCase
+    extends AbstractCreateItemsFromUnitUseCase<ProfileItem, Profile>
     implements TransactionalUseCase<
         CreateProfileFromUnitUseCase.InputData, CreateProfileFromUnitUseCase.OutputData> {
 

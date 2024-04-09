@@ -20,6 +20,7 @@ package org.veo.core.usecase.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.TypedId;
@@ -34,12 +35,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 /** Contains the element together with the relevant tailoringreferences. */
-public class TemplateItemIncarnationDescription implements TemplateItemIncarnationDescriptionState {
-  private TemplateItem<?> item;
+public class TemplateItemIncarnationDescription<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    implements TemplateItemIncarnationDescriptionState<T, TNamespace> {
+  private T item;
   private List<TailoringReferenceParameter> references = new ArrayList<>();
 
   @Override
-  public ITypedId<TemplateItem<?>> getItemRef() {
+  public ITypedId<TemplateItem<?, ?>> getItemRef() {
     return TypedId.from(item);
   }
 

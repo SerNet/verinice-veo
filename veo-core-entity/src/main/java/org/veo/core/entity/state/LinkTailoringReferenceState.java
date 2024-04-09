@@ -19,10 +19,12 @@ package org.veo.core.entity.state;
 
 import java.util.Map;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 
-public interface LinkTailoringReferenceState<T extends TemplateItem<T>>
-    extends TailoringReferenceState<T> {
+public interface LinkTailoringReferenceState<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReferenceState<T, TNamespace> {
   String getLinkType();
 
   Map<String, Object> getAttributes();

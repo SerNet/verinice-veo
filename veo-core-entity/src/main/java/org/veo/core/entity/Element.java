@@ -153,7 +153,7 @@ public interface Element
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
   /** Applies the properties of the template item to the element. */
-  void apply(TemplateItem<?> item);
+  void apply(TemplateItem<?, ?> item);
 
   Unit getOwner();
 

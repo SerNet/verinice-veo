@@ -29,8 +29,9 @@ import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.TailoringReferenceState;
 import org.veo.core.entity.state.TemplateItemState;
 
-public interface TemplateItem<T extends TemplateItem<T>>
-    extends TemplateItemState<T>, Identifiable, Versioned {
+public interface TemplateItem<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TemplateItemState<T, TNamespace>, Identifiable, Versioned {
   void setElementType(String aType);
 
   void setSubType(String subType);
@@ -58,14 +59,14 @@ public interface TemplateItem<T extends TemplateItem<T>>
   Element incarnate(Unit owner);
 
   @Override
-  default Set<TailoringReferenceState<T>> getTailoringReferenceStates() {
+  default Set<TailoringReferenceState<T, TNamespace>> getTailoringReferenceStates() {
     return getTailoringReferences().stream()
-        .map(tr -> (TailoringReferenceState<T>) tr)
+        .map(tr -> (TailoringReferenceState<T, TNamespace>) tr)
         .collect(Collectors.toSet());
   }
 
   /** All the tailoring references for this template item. */
-  Set<TailoringReference<T>> getTailoringReferences();
+  Set<TailoringReference<T, TNamespace>> getTailoringReferences();
 
   void clearTailoringReferences();
 
@@ -94,14 +95,14 @@ public interface TemplateItem<T extends TemplateItem<T>>
    * don't require additional data. For other types see {@link
    * TemplateItem#addLinkTailoringReference} & {@link TemplateItem#addRiskTailoringReference}
    */
-  TailoringReference<T> addTailoringReference(
+  TailoringReference<T, TNamespace> addTailoringReference(
       TailoringReferenceType referenceType, T referenceTarget);
 
   /**
    * Adds a new {@link LinkTailoringReference} to this item. Use this method for {@link
    * TailoringReferenceType#LINK} & {@link TailoringReferenceType#LINK_EXTERNAL} only.
    */
-  LinkTailoringReference<T> addLinkTailoringReference(
+  LinkTailoringReference<T, TNamespace> addLinkTailoringReference(
       TailoringReferenceType tailoringReferenceType,
       T target,
       String linkType,
@@ -111,13 +112,13 @@ public interface TemplateItem<T extends TemplateItem<T>>
    * Adds a new {@link RiskTailoringReference} to this item. Use this method for {@link
    * TailoringReferenceType#RISK} only.
    */
-  RiskTailoringReference<T> addRiskTailoringReference(
+  RiskTailoringReference<T, TNamespace> addRiskTailoringReference(
       TailoringReferenceType referenceType,
       T target,
       @Nullable T riskOwner,
       @Nullable T mitigation,
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions);
 
-  ControlImplementationTailoringReference<T> addControlImplementationReference(
+  ControlImplementationTailoringReference<T, TNamespace> addControlImplementationReference(
       T control, @Nullable T responsible, @Nullable String description);
 }

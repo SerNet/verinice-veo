@@ -30,6 +30,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TemplateItemReference;
 
@@ -40,7 +41,7 @@ import lombok.ToString;
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ProfileReferenceData
-    implements Identifiable, TemplateItemReference<ProfileItem> {
+    implements Identifiable, TemplateItemReference<ProfileItem, Profile> {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")

@@ -57,13 +57,13 @@ public class ProfileItemRepositoryImpl
   }
 
   @Override
-  public Set<TailoringReference<ProfileItem>> findTailoringReferencesByIds(
+  public Set<TailoringReference<ProfileItem, Profile>> findTailoringReferencesByIds(
       Set<Key<UUID>> ids, Client client) {
     return profileItemDataRepository
         .findTailoringReferencesByIds(
             ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
         .stream()
-        .map(tr -> (TailoringReference<ProfileItem>) tr)
+        .map(tr -> (TailoringReference<ProfileItem, Profile>) tr)
         .collect(Collectors.toSet());
   }
 

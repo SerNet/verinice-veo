@@ -29,8 +29,9 @@ import org.veo.core.entity.state.RiskTailoringReferenceState;
  * This reference type describes an {@link AbstractRisk}. The owning template item describes the
  * {@link RiskAffected} and the target template item describes the risk's {@link Scenario}.
  */
-public interface RiskTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, RiskTailoringReferenceState<T> {
+public interface RiskTailoringReference<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReference<T, TNamespace>, RiskTailoringReferenceState<T, TNamespace> {
   void setMitigation(T mitigation);
 
   T getMitigation();

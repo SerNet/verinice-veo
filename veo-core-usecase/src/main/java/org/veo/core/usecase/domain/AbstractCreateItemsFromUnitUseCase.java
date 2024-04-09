@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReferenceType;
@@ -35,7 +36,8 @@ import org.veo.core.repository.UnitRepository;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<T>> {
+public abstract class AbstractCreateItemsFromUnitUseCase<
+    T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
 
   protected final EntityFactory factory;
   protected final DomainRepository domainRepository;

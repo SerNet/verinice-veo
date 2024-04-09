@@ -49,9 +49,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   Set<CatalogItem> getCatalogItems();
 
   @Override
-  default Set<TemplateItemState<CatalogItem>> getCatalogItemStates() {
+  default Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates() {
     return getCatalogItems().stream()
-        .map(ci -> (TemplateItemState<CatalogItem>) ci)
+        .map(ci -> (TemplateItemState<CatalogItem, DomainBase>) ci)
         .collect(Collectors.toSet());
   }
 

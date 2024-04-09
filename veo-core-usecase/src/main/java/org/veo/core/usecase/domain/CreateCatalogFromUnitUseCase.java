@@ -30,6 +30,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TemplateItem;
@@ -50,7 +51,8 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUseCase<CatalogItem>
+public class CreateCatalogFromUnitUseCase
+    extends AbstractCreateItemsFromUnitUseCase<CatalogItem, DomainBase>
     implements TransactionalUseCase<CreateCatalogFromUnitUseCase.InputData, EmptyOutput> {
 
   private final CatalogItemRepository catalogItemRepository;

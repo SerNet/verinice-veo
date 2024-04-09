@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.VeoConstants;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
@@ -44,7 +45,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FullProfileItemDto extends AbstractProfileItemDto
-    implements FullTemplateItemDto<ProfileItem> {
+    implements FullTemplateItemDto<ProfileItem, Profile> {
 
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
@@ -62,10 +63,10 @@ public class FullProfileItemDto extends AbstractProfileItemDto
       title = "CustomAspect")
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
-  private Set<TailoringReferenceDto<ProfileItem>> tailoringReferences = new HashSet<>();
+  private Set<TailoringReferenceDto<ProfileItem, Profile>> tailoringReferences = new HashSet<>();
 
   public void add(
-      @NonNull TailoringReference<ProfileItem> source,
+      @NonNull TailoringReference<ProfileItem, Profile> source,
       @NonNull ReferenceAssembler referenceAssembler) {
     tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
   }

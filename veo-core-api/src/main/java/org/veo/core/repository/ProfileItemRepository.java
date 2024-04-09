@@ -24,7 +24,6 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
 public interface ProfileItemRepository
-    extends IdentifiableVersionedRepository<ProfileItem>,
-        AbstractTemplateItemRepository<ProfileItem> {
+    extends AbstractTemplateItemRepository<ProfileItem, Profile> {
   Set<ProfileItem> findAllByProfile(Profile profile, EntityType type);
 }

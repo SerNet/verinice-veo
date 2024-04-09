@@ -69,7 +69,9 @@ import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
@@ -218,7 +220,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                         client,
                         Key.uuidFrom(unitId),
                         applyInformation.getParameters().stream()
-                            .map(TemplateItemIncarnationDescriptionState.class::cast)
+                            .map(
+                                d ->
+                                    (TemplateItemIncarnationDescriptionState<
+                                            CatalogItem, DomainBase>)
+                                        d)
                             .toList()),
             output ->
                 output.getNewElements().stream()

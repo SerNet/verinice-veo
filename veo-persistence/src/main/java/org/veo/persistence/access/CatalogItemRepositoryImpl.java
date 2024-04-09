@@ -27,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.exception.NotFoundException;
@@ -86,13 +87,13 @@ public class CatalogItemRepositoryImpl
   }
 
   @Override
-  public Set<TailoringReference<CatalogItem>> findTailoringReferencesByIds(
+  public Set<TailoringReference<CatalogItem, DomainBase>> findTailoringReferencesByIds(
       Set<Key<UUID>> ids, Client client) {
     return catalogItemDataRepository
         .findTailoringReferencesByIds(
             ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
         .stream()
-        .map(tr -> (TailoringReference<CatalogItem>) tr)
+        .map(tr -> (TailoringReference<CatalogItem, DomainBase>) tr)
         .collect(Collectors.toSet());
   }
 

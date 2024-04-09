@@ -296,7 +296,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public void apply(TemplateItem<?> item) {
+  public void apply(TemplateItem<?, ?> item) {
     var domain = item.requireDomainMembership();
     associateWithDomain(domain, item.getSubType(), item.getStatus());
     item.getCustomAspects().entrySet().stream()
@@ -356,7 +356,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return item;
   }
 
-  private void toItem(Domain domain, TemplateItem item) {
+  private void toItem(Domain domain, TemplateItem<?, ?> item) {
     item.setName(getName());
     item.setAbbreviation(getAbbreviation());
     item.setDescription(getDescription());

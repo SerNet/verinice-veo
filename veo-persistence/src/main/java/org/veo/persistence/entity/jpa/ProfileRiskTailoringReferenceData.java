@@ -26,6 +26,7 @@ import jakarta.persistence.ManyToOne;
 
 import org.hibernate.annotations.Type;
 
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
@@ -40,7 +41,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileRiskTailoringReferenceData extends ProfileTailoringReferenceData
-    implements RiskTailoringReference<ProfileItem> {
+    implements RiskTailoringReference<ProfileItem, Profile> {
 
   @ManyToOne(targetEntity = ProfileItemData.class)
   private ProfileItem riskOwner;

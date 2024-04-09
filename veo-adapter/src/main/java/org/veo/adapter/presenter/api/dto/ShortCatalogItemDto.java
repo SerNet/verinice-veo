@@ -22,6 +22,7 @@ import jakarta.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -31,7 +32,7 @@ import lombok.ToString;
 /** Partial catalog item */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem> {
+public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase> {
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
       description = VeoConstants.UUID_MESSAGE,

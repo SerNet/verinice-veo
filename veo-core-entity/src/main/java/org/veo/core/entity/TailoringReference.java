@@ -33,8 +33,9 @@ import org.veo.core.entity.state.TailoringReferenceState;
  * in the same catalog. 2.2. For each such reference a coresponding tailref of type LINK must exist,
  * pointing to the catalogItem which holds the refered element.
  */
-public interface TailoringReference<T extends TemplateItem<T>>
-    extends TailoringReferenceState<T>, TemplateItemReference<T> {
+public interface TailoringReference<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReferenceState<T, TNamespace>, TemplateItemReference<T, TNamespace> {
   String SINGULAR_TERM = "tailoringreference";
   String PLURAL_TERM = "tailoringreferences";
 

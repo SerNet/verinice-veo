@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.IdRefTemplateItem;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.state.TailoringReferenceParameterState;
@@ -42,14 +43,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Describes the incarnation parameters of one template item.")
-public class IncarnateTemplateItemDescriptionDto
-    implements TemplateItemIncarnationDescriptionState {
+public class IncarnateTemplateItemDescriptionDto<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    implements TemplateItemIncarnationDescriptionState<T, TNamespace> {
 
   @Schema(
       title = "Reference the template item to be incarnated.",
       requiredMode = REQUIRED,
       implementation = IdRefTemplateItem.class)
-  private IdRef<TemplateItem<?>> item;
+  private IdRef<TemplateItem<?, ?>> item;
 
   @ArraySchema(
       schema =
@@ -59,7 +61,7 @@ public class IncarnateTemplateItemDescriptionDto
   private List<TailoringReferenceParameterDto> references;
 
   public IncarnateTemplateItemDescriptionDto(
-      TemplateItemIncarnationDescription p, ReferenceAssembler urlAssembler) {
+      TemplateItemIncarnationDescription<T, TNamespace> p, ReferenceAssembler urlAssembler) {
     item = IdRef.from(p.getItem(), urlAssembler);
     references =
         p.getReferences().stream()
@@ -75,7 +77,7 @@ public class IncarnateTemplateItemDescriptionDto
 
   @JsonIgnore
   @Override
-  public ITypedId<TemplateItem<?>> getItemRef() {
+  public ITypedId<TemplateItem<?, ?>> getItemRef() {
     return item;
   }
 

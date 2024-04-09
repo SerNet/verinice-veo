@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.TailoringReferenceState;
 import org.veo.core.entity.state.TemplateItemState;
@@ -35,7 +36,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ExportCatalogItemDto extends FullCatalogItemDto
-    implements TemplateItemState<CatalogItem>, IdentifiableDto {
+    implements TemplateItemState<CatalogItem, DomainBase>, IdentifiableDto {
   @Override
   @JsonIgnore
   public String getSelfId() {
@@ -54,9 +55,9 @@ public class ExportCatalogItemDto extends FullCatalogItemDto
 
   @Override
   @JsonIgnore
-  public Set<TailoringReferenceState<CatalogItem>> getTailoringReferenceStates() {
+  public Set<TailoringReferenceState<CatalogItem, DomainBase>> getTailoringReferenceStates() {
     return getTailoringReferences().stream()
-        .map(tr -> (TailoringReferenceState<CatalogItem>) tr)
+        .map(tr -> (TailoringReferenceState<CatalogItem, DomainBase>) tr)
         .collect(Collectors.toSet());
   }
 }

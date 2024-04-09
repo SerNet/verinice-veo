@@ -31,8 +31,9 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.RiskValues;
 
 public interface RiskState<
-    TRisk extends AbstractRisk<TOwner, TRisk>, TOwner extends RiskAffected<TOwner, TRisk>> {
-  ITypedId<TOwner> getOwnerRef();
+    TRisk extends AbstractRisk<TNamespace, TRisk>,
+    TNamespace extends RiskAffected<TNamespace, TRisk>> {
+  ITypedId<TNamespace> getOwnerRef();
 
   ITypedId<Scenario> getScenarioRef();
 

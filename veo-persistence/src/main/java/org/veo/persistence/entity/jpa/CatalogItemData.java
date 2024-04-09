@@ -57,7 +57,8 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogItemData extends TemplateItemData<CatalogItem> implements CatalogItem {
+public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
+    implements CatalogItem {
 
   @Id
   @ToString.Include
@@ -83,7 +84,7 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  private Set<TailoringReference<CatalogItem>> tailoringReferences = new HashSet<>();
+  private Set<TailoringReference<CatalogItem, DomainBase>> tailoringReferences = new HashSet<>();
 
   @Column(name = "updatereferences")
   @OneToMany(
@@ -129,28 +130,30 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
 
   @Override
   protected void add(
-      TailoringReference<CatalogItem> reference, TailoringReferenceType type, CatalogItem target) {
+      TailoringReference<CatalogItem, DomainBase> reference,
+      TailoringReferenceType type,
+      CatalogItem target) {
     super.add(reference, type, target);
     tailoringReferences.add(reference);
   }
 
   @Override
-  protected TailoringReference<CatalogItem> createTailoringReference() {
+  protected TailoringReference<CatalogItem, DomainBase> createTailoringReference() {
     return new CatalogTailoringReferenceData();
   }
 
   @Override
-  protected LinkTailoringReference<CatalogItem> createLinkTailoringReference() {
+  protected LinkTailoringReference<CatalogItem, DomainBase> createLinkTailoringReference() {
     return new LinkTailoringReferenceData();
   }
 
   @Override
-  protected RiskTailoringReference<CatalogItem> createRiskTailoringReference() {
+  protected RiskTailoringReference<CatalogItem, DomainBase> createRiskTailoringReference() {
     throw new UnprocessableDataException("Risks currently not supported for catalog items");
   }
 
   @Override
-  protected ControlImplementationTailoringReference<CatalogItem>
+  protected ControlImplementationTailoringReference<CatalogItem, DomainBase>
       createControlImplementationTailoringReference() {
     throw new UnprocessableDataException(
         "Control implementations currently not supported for catalog items");

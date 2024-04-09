@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
@@ -32,7 +33,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileTailoringReferenceData extends ProfileReferenceData
-    implements TailoringReference<ProfileItem>, TemplateItemReference<ProfileItem> {
+    implements TailoringReference<ProfileItem, Profile>,
+        TemplateItemReference<ProfileItem, Profile> {
   @Column(name = "reference_type", columnDefinition = "int4")
   private TailoringReferenceType referenceType;
 

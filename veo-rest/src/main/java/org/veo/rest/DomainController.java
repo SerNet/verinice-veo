@@ -548,7 +548,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 Key.uuidFrom(profileId)),
             out ->
                 out.getReferences().stream()
-                    .map(TemplateItemIncarnationDescriptionState.class::cast)
+                    .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)
                     .toList())
         .thenCompose(
             references ->

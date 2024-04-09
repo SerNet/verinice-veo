@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class GetProfileIncarnationDescriptionUseCase
-    extends AbstractGetIncarnationDescriptionUseCase<ProfileItem>
+    extends AbstractGetIncarnationDescriptionUseCase<ProfileItem, Profile>
     implements TransactionalUseCase<
         GetProfileIncarnationDescriptionUseCase.InputData,
         GetProfileIncarnationDescriptionUseCase.OutputData> {
@@ -77,7 +77,7 @@ public class GetProfileIncarnationDescriptionUseCase
             .stream()
             .map(
                 catalogItem ->
-                    new TemplateItemIncarnationDescription(
+                    new TemplateItemIncarnationDescription<>(
                         catalogItem,
                         toParameters(catalogItem.getTailoringReferences(), Collections.emptyMap())))
             .toList();
@@ -126,7 +126,7 @@ public class GetProfileIncarnationDescriptionUseCase
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    @Valid List<TemplateItemIncarnationDescription> references;
+    @Valid List<TemplateItemIncarnationDescription<ProfileItem, Profile>> references;
     Unit container;
   }
 }

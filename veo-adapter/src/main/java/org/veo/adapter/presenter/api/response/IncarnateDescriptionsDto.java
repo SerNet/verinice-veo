@@ -22,6 +22,8 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.List;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,13 +45,14 @@ public class IncarnateDescriptionsDto {
       description =
           "A list of CatalogItemDescription defining the structure of each catalog item to create.",
       requiredMode = REQUIRED)
-  private List<IncarnateTemplateItemDescriptionDto> parameters;
+  private List<IncarnateTemplateItemDescriptionDto<CatalogItem, DomainBase>> parameters;
 
   public IncarnateDescriptionsDto(
-      List<TemplateItemIncarnationDescription> references, ReferenceAssembler urlAssembler) {
+      List<TemplateItemIncarnationDescription<CatalogItem, DomainBase>> references,
+      ReferenceAssembler urlAssembler) {
     this.parameters =
         references.stream()
-            .map(p -> new IncarnateTemplateItemDescriptionDto(p, urlAssembler))
+            .map(p -> new IncarnateTemplateItemDescriptionDto<>(p, urlAssembler))
             .toList();
   }
 }

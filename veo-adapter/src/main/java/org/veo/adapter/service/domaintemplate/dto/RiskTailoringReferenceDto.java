@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
@@ -41,8 +42,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RiskTailoringReferenceDto<T extends TemplateItem<T>> extends TailoringReferenceDto<T>
-    implements RiskTailoringReferenceState<T> {
+public class RiskTailoringReferenceDto<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReferenceDto<T, TNamespace>
+    implements RiskTailoringReferenceState<T, TNamespace> {
   private IdRef<T> mitigation;
   private IdRef<T> riskOwner;
 

@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.inspection.Inspection;
@@ -85,7 +86,7 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
 
   @Override
   @JsonIgnore
-  public Set<TemplateItemState<CatalogItem>> getCatalogItemStates() {
+  public Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates() {
     return new HashSet<>(catalogItems);
   }
 

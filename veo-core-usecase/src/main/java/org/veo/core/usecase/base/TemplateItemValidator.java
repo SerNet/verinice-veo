@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.TailoringReference;
@@ -36,7 +37,8 @@ import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 
 /** Validates template items according to the domain's element type definitions. */
 public class TemplateItemValidator {
-  public static <T extends TemplateItem<T>> void validate(T item) {
+  public static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void validate(T item) {
     var domain = item.getDomainBase();
     SubTypeValidator.validate(domain, item.getSubType(), item.getStatus(), item.getElementType());
     item.getCustomAspects()
@@ -54,9 +56,9 @@ public class TemplateItemValidator {
     validate(item.getAspects(), item.getElementType(), domain);
   }
 
-  public static <T extends TemplateItem<T>> void validate(
-      TailoringReference<T> tailoringReference, DomainBase domain) {
-    if (tailoringReference instanceof LinkTailoringReference<T> linkRef) {
+  public static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void validate(TailoringReference<T, TNamespace> tailoringReference, DomainBase domain) {
+    if (tailoringReference instanceof LinkTailoringReference<T, TNamespace> linkRef) {
       validateLink(
           linkRef.getLinkType(),
           linkRef.getLinkSourceItem(),
@@ -66,7 +68,7 @@ public class TemplateItemValidator {
     }
   }
 
-  private static <T extends TemplateItem<T>> void validateLink(
+  private static <T extends TemplateItem<T, ?>> void validateLink(
       String linkType,
       T linkSourceItem,
       T linkTargetItem,
@@ -91,13 +93,13 @@ public class TemplateItemValidator {
     }
   }
 
-  private static <T extends TemplateItem<T>> void validateLinkTargetType(
+  private static <T extends TemplateItem<T, ?>> void validateLinkTargetType(
       String linkType, T target, LinkDefinition linkDefinition) {
     var targetType = target.getElementType();
     DomainSensitiveElementValidator.validateLinkTargetType(linkType, linkDefinition, targetType);
   }
 
-  private static <T extends TemplateItem<T>> void validateLinkTargetSubType(
+  private static <T extends TemplateItem<T, ?>> void validateLinkTargetSubType(
       String linkType, T target, LinkDefinition linkDefinition) {
     var targetSubType = target.getSubType();
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {

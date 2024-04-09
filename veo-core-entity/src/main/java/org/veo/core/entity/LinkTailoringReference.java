@@ -28,8 +28,9 @@ import org.veo.core.entity.state.LinkTailoringReferenceState;
  * this is applied with {@link TailoringReferenceType#LINK_EXTERNAL}, a custom link is created in
  * the opposite direction.
  */
-public interface LinkTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, LinkTailoringReferenceState<T> {
+public interface LinkTailoringReference<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReference<T, TNamespace>, LinkTailoringReferenceState<T, TNamespace> {
   void setLinkType(String aType);
 
   void setAttributes(Map<String, Object> attributes);

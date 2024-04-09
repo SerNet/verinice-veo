@@ -19,11 +19,13 @@ package org.veo.core.entity.state;
 
 import java.util.List;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
 
-public interface TemplateItemIncarnationDescriptionState {
-  ITypedId<TemplateItem<?>> getItemRef();
+public interface TemplateItemIncarnationDescriptionState<
+    T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
+  ITypedId<TemplateItem<?, ?>> getItemRef();
 
   List<TailoringReferenceParameterState> getParameterStates();
 }

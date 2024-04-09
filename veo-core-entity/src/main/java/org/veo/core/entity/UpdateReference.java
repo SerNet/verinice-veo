@@ -26,7 +26,7 @@ import jakarta.validation.constraints.NotNull;
  * catalogitem in the previous catalog when: The update type is upate, replace, split or join 2. The
  * reference catalogItem point to a catalogitem in this catalog when: The update type is add
  */
-public interface UpdateReference extends TemplateItemReference<CatalogItem> {
+public interface UpdateReference extends TemplateItemReference<CatalogItem, DomainBase> {
   String SINGULAR_TERM = "updatereference";
   String PLURAL_TERM = "updatereferences";
 

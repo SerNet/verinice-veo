@@ -26,6 +26,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -153,8 +154,9 @@ public class DomainStateMapper {
         Optional.ofNullable(source.getAppliedCatalogItemRef()).map(resolver::resolve).orElse(null));
   }
 
-  private <T extends TemplateItem<T>> void mapTemplateItem(
-      TemplateItemState<T> source, T target, IdRefResolver resolver) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void mapTemplateItem(
+          TemplateItemState<T, TNamespace> source, T target, IdRefResolver resolver) {
     EntityStateMapper.mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
@@ -167,24 +169,25 @@ public class DomainStateMapper {
     source.getTailoringReferenceStates().forEach(tr -> addTailoringReference(tr, target, resolver));
   }
 
-  private <T extends TemplateItem<T>> void addTailoringReference(
-      TailoringReferenceState<T> source, T owner, IdRefResolver resolver) {
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void addTailoringReference(
+          TailoringReferenceState<T, TNamespace> source, T owner, IdRefResolver resolver) {
     var targetItem = resolver.resolve(source.getTargetRef());
     switch (source) {
-      case LinkTailoringReferenceState<T> linkDto ->
+      case LinkTailoringReferenceState<T, TNamespace> linkDto ->
           owner.addLinkTailoringReference(
               source.getReferenceType(),
               targetItem,
               linkDto.getLinkType(),
               linkDto.getAttributes());
-      case RiskTailoringReferenceState<T> riskDto ->
+      case RiskTailoringReferenceState<T, TNamespace> riskDto ->
           owner.addRiskTailoringReference(
               source.getReferenceType(),
               targetItem,
               Optional.ofNullable(riskDto.getRiskOwnerRef()).map(resolver::resolve).orElse(null),
               Optional.ofNullable(riskDto.getMitigationRef()).map(resolver::resolve).orElse(null),
               riskDto.getRiskDefinitions());
-      case ControlImplementationTailoringReferenceState<T> ciDto ->
+      case ControlImplementationTailoringReferenceState<T, TNamespace> ciDto ->
           owner.addControlImplementationReference(
               targetItem,
               Optional.ofNullable(ciDto.getResponsibleRef()).map(resolver::resolve).orElse(null),

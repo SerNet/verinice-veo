@@ -33,7 +33,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
  * Usecase 1 is defined by the element and a set of TailoringReferences. Usecase 2 is defined by a
  * set of UpdateReferences.
  */
-public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
+public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, DomainBase> {
 
   String SINGULAR_TERM = "catalogitem";
   String PLURAL_TERM = "catalogitems";
@@ -77,14 +77,15 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
   }
 
   default void addElementsToCopy(
-      TailoringReference<CatalogItem> reference, Set<CatalogItem> itemList) {
+      TailoringReference<CatalogItem, DomainBase> reference, Set<CatalogItem> itemList) {
     itemList.add(reference.getTarget());
     reference.getTarget().getTailoringReferences().stream()
         .filter(TailoringReference::isCopyRef)
         .forEach(rr -> addElementsToCopy(rr, itemList));
   }
 
-  default void setTailoringReferences(Set<TailoringReference<CatalogItem>> tailoringReferences) {
+  default void setTailoringReferences(
+      Set<TailoringReference<CatalogItem, DomainBase>> tailoringReferences) {
     clearTailoringReferences();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);

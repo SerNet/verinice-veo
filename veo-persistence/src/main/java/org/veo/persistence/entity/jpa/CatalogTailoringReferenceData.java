@@ -21,6 +21,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CatalogTailoringReferenceData extends CatalogReferenceData
-    implements TailoringReference<CatalogItem> {
+    implements TailoringReference<CatalogItem, DomainBase> {
 
   @Column(name = "reference_type", columnDefinition = "int4")
   @EqualsAndHashCode.Include

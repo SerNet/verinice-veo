@@ -21,11 +21,14 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 
-public interface TemplateItemState<T extends TemplateItem<T>> extends Nameable {
+public interface TemplateItemState<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends Nameable {
   String getSelfId();
 
   @NotNull
@@ -37,7 +40,7 @@ public interface TemplateItemState<T extends TemplateItem<T>> extends Nameable {
 
   Set<CustomAspectState> getCustomAspectStates();
 
-  Set<TailoringReferenceState<T>> getTailoringReferenceStates();
+  Set<TailoringReferenceState<T, TNamespace>> getTailoringReferenceStates();
 
   TemplateItemAspects getAspects();
 }

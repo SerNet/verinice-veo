@@ -29,6 +29,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TemplateItemReference;
@@ -40,7 +41,7 @@ import lombok.ToString;
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class CatalogReferenceData
-    implements Identifiable, TemplateItemReference<CatalogItem> {
+    implements Identifiable, TemplateItemReference<CatalogItem, DomainBase> {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")

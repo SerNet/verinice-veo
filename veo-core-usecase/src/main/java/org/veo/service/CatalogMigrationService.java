@@ -74,7 +74,7 @@ public class CatalogMigrationService {
   }
 
   private void migrateAllTailoringReferences(
-      EntityType type, Domain domain, Set<? extends TemplateItem<?>> items) {
+      EntityType type, Domain domain, Set<? extends TemplateItem<?, ?>> items) {
     items.stream()
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(LinkTailoringReference.class::isInstance)
@@ -109,7 +109,7 @@ public class CatalogMigrationService {
                         }));
   }
 
-  private void migrate(TemplateItem<?> item, Domain domain) {
+  private void migrate(TemplateItem<?, ?> item, Domain domain) {
     var definition = domain.getElementTypeDefinition(item.getElementType());
     new HashMap<>(item.getCustomAspects())
         .entrySet()

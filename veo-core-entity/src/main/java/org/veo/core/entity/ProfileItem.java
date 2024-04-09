@@ -27,19 +27,21 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.ProfileItemState;
 
-public interface ProfileItem extends ProfileItemState, TemplateItem<ProfileItem>, ClientOwned {
+public interface ProfileItem
+    extends ProfileItemState, TemplateItem<ProfileItem, Profile>, ClientOwned {
   String SINGULAR_TERM = "profile-item";
   String PLURAL_TERM = "profile-items";
 
   /** All the tailoring references for this catalog item. */
-  Set<TailoringReference<ProfileItem>> getTailoringReferences();
+  Set<TailoringReference<ProfileItem, Profile>> getTailoringReferences();
 
   @Override
   default DomainBase getDomainBase() {
     return getOwner().getOwner();
   }
 
-  default void setTailoringReferences(Set<TailoringReference<ProfileItem>> tailoringReferences) {
+  default void setTailoringReferences(
+      Set<TailoringReference<ProfileItem, Profile>> tailoringReferences) {
     clearTailoringReferences();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);

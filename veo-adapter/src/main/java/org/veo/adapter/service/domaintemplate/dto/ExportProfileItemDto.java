@@ -28,6 +28,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.state.CustomAspectState;
@@ -68,9 +69,9 @@ public class ExportProfileItemDto extends FullProfileItemDto
 
   @Override
   @JsonIgnore
-  public Set<TailoringReferenceState<ProfileItem>> getTailoringReferenceStates() {
+  public Set<TailoringReferenceState<ProfileItem, Profile>> getTailoringReferenceStates() {
     return getTailoringReferences().stream()
-        .map(tr -> (TailoringReferenceState<ProfileItem>) tr)
+        .map(tr -> (TailoringReferenceState<ProfileItem, Profile>) tr)
         .collect(Collectors.toSet());
   }
 }

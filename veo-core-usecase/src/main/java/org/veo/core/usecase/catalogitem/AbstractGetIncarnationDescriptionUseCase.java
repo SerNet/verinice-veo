@@ -26,6 +26,7 @@ import java.util.function.Function;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
@@ -37,10 +38,12 @@ import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
-public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>> {
+public class AbstractGetIncarnationDescriptionUseCase<
+    T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
 
   protected List<TailoringReferenceParameter> toParameters(
-      Collection<TailoringReference<T>> catalogItem, Map<T, Optional<Element>> itemsToElements) {
+      Collection<TailoringReference<T, TNamespace>> catalogItem,
+      Map<T, Optional<Element>> itemsToElements) {
     return catalogItem.stream()
         .filter(TailoringReference::isParameterRef)
         .map(
@@ -54,11 +57,12 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
   }
 
   private TailoringReferenceParameter mapParameter(
-      TailoringReference<T> reference, Element element) {
+      TailoringReference<T, ?> reference, Element element) {
     return switch (reference.getReferenceType()) {
       case PART, COMPOSITE, RISK, CONTROL_IMPLEMENTATION, SCOPE, MEMBER ->
           fromReference(reference, element);
-      case LINK, LINK_EXTERNAL -> fromLinkReference((LinkTailoringReference<T>) reference, element);
+      case LINK, LINK_EXTERNAL ->
+          fromLinkReference((LinkTailoringReference<T, ?>) reference, element);
       default ->
           throw new IllegalArgumentException(
               "Unmapped tailoring reference type: " + reference.getReferenceType());
@@ -66,7 +70,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
   }
 
   private TailoringReferenceParameter fromReference(
-      TailoringReference<T> linkReference, Element element) {
+      TailoringReference<T, ?> linkReference, Element element) {
     TailoringReferenceParameter tailoringReferenceParameter =
         new TailoringReferenceParameter(linkReference.getReferenceType(), null);
     tailoringReferenceParameter.setReferencedElement(element);
@@ -76,7 +80,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
 
   /** Create a parameter object for this {@link LinkTailoringReference}. */
   private TailoringReferenceParameter fromLinkReference(
-      LinkTailoringReference<T> linkReference, Element element) {
+      LinkTailoringReference<T, ?> linkReference, Element element) {
     if (linkReference.getLinkType() == null) {
       throw new RuntimeModelException(
           "LinkType should not be null affected TailoringReferences: " + linkReference.getId());

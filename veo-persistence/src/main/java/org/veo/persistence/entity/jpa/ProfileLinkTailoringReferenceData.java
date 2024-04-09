@@ -26,6 +26,7 @@ import jakarta.persistence.Entity;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -37,7 +38,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileLinkTailoringReferenceData extends ProfileTailoringReferenceData
-    implements LinkTailoringReference<ProfileItem> {
+    implements LinkTailoringReference<ProfileItem, Profile> {
 
   @ToString.Include private String linkType;
 

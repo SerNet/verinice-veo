@@ -31,6 +31,7 @@ import org.hibernate.annotations.Type;
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.RiskTailoringReference;
@@ -52,8 +53,9 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @MappedSuperclass
-public abstract class TemplateItemData<T extends TemplateItem<T>> extends IdentifiableVersionedData
-    implements TemplateItem<T> {
+public abstract class TemplateItemData<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends IdentifiableVersionedData implements TemplateItem<T, TNamespace> {
   @NotNull
   @Column(name = "name")
   @ToString.Include
@@ -98,7 +100,7 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   }
 
   @Override
-  public TailoringReference<T> addTailoringReference(
+  public TailoringReference<T, TNamespace> addTailoringReference(
       TailoringReferenceType referenceType, T target) {
     var ref = createTailoringReference();
     add(ref, referenceType, target);
@@ -106,7 +108,7 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   }
 
   @Override
-  public LinkTailoringReference<T> addLinkTailoringReference(
+  public LinkTailoringReference<T, TNamespace> addLinkTailoringReference(
       TailoringReferenceType tailoringReferenceType,
       T target,
       String linkType,
@@ -119,7 +121,7 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   }
 
   @Override
-  public RiskTailoringReference<T> addRiskTailoringReference(
+  public RiskTailoringReference<T, TNamespace> addRiskTailoringReference(
       TailoringReferenceType referenceType,
       T target,
       @Nullable T riskOwner,
@@ -134,7 +136,7 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   }
 
   @Override
-  public ControlImplementationTailoringReference<T> addControlImplementationReference(
+  public ControlImplementationTailoringReference<T, TNamespace> addControlImplementationReference(
       T control, @Nullable T responsible, @Nullable String description) {
     var ref = createControlImplementationTailoringReference();
     add(ref, TailoringReferenceType.CONTROL_IMPLEMENTATION, control);
@@ -143,19 +145,20 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     return ref;
   }
 
-  protected void add(TailoringReference<T> reference, TailoringReferenceType type, T target) {
+  protected void add(
+      TailoringReference<T, TNamespace> reference, TailoringReferenceType type, T target) {
     reference.setReferenceType(type);
     reference.setOwner((T) this);
     reference.setTarget(target);
   }
 
-  protected abstract TailoringReference<T> createTailoringReference();
+  protected abstract TailoringReference<T, TNamespace> createTailoringReference();
 
-  protected abstract LinkTailoringReference<T> createLinkTailoringReference();
+  protected abstract LinkTailoringReference<T, TNamespace> createLinkTailoringReference();
 
-  protected abstract RiskTailoringReference<T> createRiskTailoringReference();
+  protected abstract RiskTailoringReference<T, TNamespace> createRiskTailoringReference();
 
-  protected abstract ControlImplementationTailoringReference<T>
+  protected abstract ControlImplementationTailoringReference<T, TNamespace>
       createControlImplementationTailoringReference();
 
   protected Element createElement(Unit owner) {

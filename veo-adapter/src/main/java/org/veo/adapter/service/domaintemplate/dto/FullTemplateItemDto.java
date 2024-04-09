@@ -29,6 +29,7 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
@@ -36,7 +37,9 @@ import org.veo.core.entity.TemplateItemAspects;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
 
-public interface FullTemplateItemDto<T extends TemplateItem<T>> extends NameableDto {
+public interface FullTemplateItemDto<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends NameableDto {
   String getId();
 
   String getStatus();
@@ -76,9 +79,11 @@ public interface FullTemplateItemDto<T extends TemplateItem<T>> extends Nameable
         name = "CONTROL_IMPLEMENTATION"),
   })
   @Schema(description = "References to other catalog items in the same domain")
-  Set<TailoringReferenceDto<T>> getTailoringReferences();
+  Set<TailoringReferenceDto<T, TNamespace>> getTailoringReferences();
 
-  void setTailoringReferences(Set<TailoringReferenceDto<T>> tailoringReferences);
+  void setTailoringReferences(Set<TailoringReferenceDto<T, TNamespace>> tailoringReferences);
 
-  void add(@Valid @NonNull TailoringReference<T> source, @NonNull ReferenceAssembler uriAssembler);
+  void add(
+      @Valid @NonNull TailoringReference<T, TNamespace> source,
+      @NonNull ReferenceAssembler uriAssembler);
 }

@@ -33,6 +33,7 @@ import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.aspects.SubTypeAspect;
@@ -46,8 +47,8 @@ import lombok.ToString;
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem>
-    implements IdentifiableDto, FullTemplateItemDto<CatalogItem> {
+public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase>
+    implements IdentifiableDto, FullTemplateItemDto<CatalogItem, DomainBase> {
 
   @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
   @Schema(
@@ -70,10 +71,10 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem>
       title = "CustomAspect")
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
-  private Set<TailoringReferenceDto<CatalogItem>> tailoringReferences = new HashSet<>();
+  private Set<TailoringReferenceDto<CatalogItem, DomainBase>> tailoringReferences = new HashSet<>();
 
   public void add(
-      @NonNull TailoringReference<CatalogItem> source,
+      @NonNull TailoringReference<CatalogItem, DomainBase> source,
       @NonNull ReferenceAssembler referenceAssembler) {
     tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
   }

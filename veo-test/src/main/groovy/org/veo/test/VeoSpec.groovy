@@ -243,7 +243,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static <T extends TemplateItem<T>> TailoringReference<T> newTailoringReference(T owner, T target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static <T extends TemplateItem<T,TNamespace>,TNamespace extends Identifiable> TailoringReference<T,TNamespace> newTailoringReference(T owner, T target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
         return owner.addTailoringReference(type, target).tap {
             VeoSpec.execute(it, init)
@@ -257,7 +257,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static <T extends TemplateItem<T>> LinkTailoringReference<T> newLinkTailoringReference(
+    static <T extends TemplateItem<T,TNamespace>,TNamespace extends Identifiable> LinkTailoringReference<T,TNamespace> newLinkTailoringReference(
             T owner,
             T target,
             TailoringReferenceType referenceType,

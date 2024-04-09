@@ -20,6 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
@@ -29,7 +30,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractProfileItemDto extends AbstractTemplateItemDto<ProfileItem> {
+public abstract class AbstractProfileItemDto extends AbstractTemplateItemDto<ProfileItem, Profile> {
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")

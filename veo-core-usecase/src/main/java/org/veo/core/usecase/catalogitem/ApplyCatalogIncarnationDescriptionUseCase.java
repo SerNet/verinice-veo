@@ -23,7 +23,9 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
@@ -66,7 +68,7 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     @NotNull Key<UUID> unitId;
-    @NotNull List<TemplateItemIncarnationDescriptionState> descriptions;
+    @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions;
   }
 
   @Valid

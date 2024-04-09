@@ -25,8 +25,10 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 
-public interface ControlImplementationTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, ControlImplementationTailoringReferenceState<T> {
+public interface ControlImplementationTailoringReference<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReference<T, TNamespace>,
+        ControlImplementationTailoringReferenceState<T, TNamespace> {
 
   void setDescription(@Nullable String description);
 

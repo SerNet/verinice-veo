@@ -19,11 +19,13 @@ package org.veo.core.entity.state;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
 
-public interface ControlImplementationTailoringReferenceState<T extends TemplateItem<T>>
-    extends TailoringReferenceState<T> {
+public interface ControlImplementationTailoringReferenceState<
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends TailoringReferenceState<T, TNamespace> {
 
   @Nullable
   String getDescription();
