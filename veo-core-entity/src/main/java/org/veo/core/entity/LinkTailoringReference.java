@@ -19,6 +19,8 @@ package org.veo.core.entity;
 
 import java.util.Map;
 
+import org.veo.core.entity.state.LinkTailoringReferenceState;
+
 /**
  * This reference type is used to describe a {@link CustomLink} on an {@link Element}. When this is
  * applied with {@link TailoringReferenceType#LINK}, a custom link is created from the element
@@ -26,13 +28,9 @@ import java.util.Map;
  * this is applied with {@link TailoringReferenceType#LINK_EXTERNAL}, a custom link is created in
  * the opposite direction.
  */
-public interface LinkTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
-
-  String getLinkType();
-
+public interface LinkTailoringReference<T extends TemplateItem<T>>
+    extends TailoringReference<T>, LinkTailoringReferenceState<T> {
   void setLinkType(String aType);
-
-  Map<String, Object> getAttributes();
 
   void setAttributes(Map<String, Object> attributes);
 

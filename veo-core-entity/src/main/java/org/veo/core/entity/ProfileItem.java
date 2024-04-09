@@ -20,9 +20,14 @@ package org.veo.core.entity;
 import java.util.Optional;
 import java.util.Set;
 
-import org.veo.core.entity.exception.UnprocessableDataException;
+import javax.annotation.Nullable;
 
-public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned {
+import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.state.ProfileItemState;
+
+public interface ProfileItem extends ProfileItemState, TemplateItem<ProfileItem>, ClientOwned {
   String SINGULAR_TERM = "profile-item";
   String PLURAL_TERM = "profile-items";
 
@@ -69,5 +74,11 @@ public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned {
    */
   default Domain requireDomainMembership() {
     return getOwner().requireDomainMembership();
+  }
+
+  @Nullable
+  @Override
+  default ITypedId<CatalogItem> getAppliedCatalogItemRef() {
+    return Optional.ofNullable(getAppliedCatalogItem()).map(TypedId::from).orElse(null);
   }
 }

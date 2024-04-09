@@ -21,29 +21,35 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.validation.constraints.NotNull;
-
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.TailoringReferenceState;
+import org.veo.core.entity.state.TemplateItemState;
 
-public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable, Versioned {
-
-  @NotNull
-  String getElementType();
-
+public interface TemplateItem<T extends TemplateItem<T>>
+    extends TemplateItemState<T>, Identifiable, Versioned {
   void setElementType(String aType);
 
-  String getSubType();
-
   void setSubType(String subType);
-
-  String getStatus();
 
   void setStatus(String status);
 
   Map<String, Map<String, Object>> getCustomAspects();
+
+  @Override
+  default String getSelfId() {
+    return getIdAsString();
+  }
+
+  @Override
+  default Set<CustomAspectState> getCustomAspectStates() {
+    return getCustomAspects().entrySet().stream()
+        .map(kv -> new CustomAspectState.CustomAspectStateImpl(kv.getKey(), kv.getValue()))
+        .collect(Collectors.toSet());
+  }
 
   void setCustomAspects(Map<String, Map<String, Object>> container);
 
@@ -51,12 +57,17 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
 
   Element incarnate(Unit owner);
 
+  @Override
+  default Set<TailoringReferenceState<T>> getTailoringReferenceStates() {
+    return getTailoringReferences().stream()
+        .map(tr -> (TailoringReferenceState<T>) tr)
+        .collect(Collectors.toSet());
+  }
+
   /** All the tailoring references for this template item. */
   Set<TailoringReference<T>> getTailoringReferences();
 
   void clearTailoringReferences();
-
-  TemplateItemAspects getAspects();
 
   void setAspects(TemplateItemAspects aspects);
 

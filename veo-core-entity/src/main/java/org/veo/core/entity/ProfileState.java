@@ -17,26 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Optional;
+import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.veo.core.entity.state.ProfileItemState;
 
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
-import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
+public interface ProfileState {
+  String getName();
 
-public interface ControlImplementationTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, ControlImplementationTailoringReferenceState<T> {
+  String getDescription();
 
-  void setDescription(@Nullable String description);
+  String getLanguage();
 
-  @Nullable
-  T getResponsible();
-
-  void setResponsible(@Nullable T responsible);
-
-  @Override
-  default ITypedId<T> getResponsibleRef() {
-    return Optional.ofNullable(getResponsible()).map(TypedId::from).orElse(null);
-  }
+  Set<ProfileItemState> getItemStates();
 }

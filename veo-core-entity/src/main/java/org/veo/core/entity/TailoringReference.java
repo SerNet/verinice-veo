@@ -21,6 +21,10 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.state.TailoringReferenceState;
+
 /**
  * TailoringReference Refers another catalog item in this catalog which are connected and need to be
  * applied also. Like a set of controls connected to a scenario. The following constrains applies to
@@ -29,9 +33,15 @@ import jakarta.validation.constraints.NotNull;
  * in the same catalog. 2.2. For each such reference a coresponding tailref of type LINK must exist,
  * pointing to the catalogItem which holds the refered element.
  */
-public interface TailoringReference<T extends TemplateItem<T>> extends TemplateItemReference<T> {
+public interface TailoringReference<T extends TemplateItem<T>>
+    extends TailoringReferenceState<T>, TemplateItemReference<T> {
   String SINGULAR_TERM = "tailoringreference";
   String PLURAL_TERM = "tailoringreferences";
+
+  @Override
+  default ITypedId<T> getTargetRef() {
+    return TypedId.from(getTarget());
+  }
 
   @NotNull
   TailoringReferenceType getReferenceType();

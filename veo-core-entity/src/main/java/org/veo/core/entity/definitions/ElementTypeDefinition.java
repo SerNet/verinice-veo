@@ -23,31 +23,21 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
-public interface ElementTypeDefinition {
+import org.veo.core.entity.state.ElementTypeDefinitionState;
+
+public interface ElementTypeDefinition extends ElementTypeDefinitionState {
   @NotNull
   String getElementType();
 
-  @NotNull
-  Map<String, SubTypeDefinition> getSubTypes();
-
   void setSubTypes(Map<String, SubTypeDefinition> definitions);
 
-  @NotNull
-  Map<String, CustomAspectDefinition> getCustomAspects();
-
   void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
-
-  @NotNull
-  Map<String, LinkDefinition> getLinks();
 
   default Optional<LinkDefinition> findLink(String type) {
     return Optional.ofNullable(getLinks().get(type));
   }
 
   void setLinks(Map<String, LinkDefinition> definitions);
-
-  @NotNull
-  Map<Locale, Map<String, String>> getTranslations();
 
   void setTranslations(Map<Locale, Map<String, String>> translations);
 

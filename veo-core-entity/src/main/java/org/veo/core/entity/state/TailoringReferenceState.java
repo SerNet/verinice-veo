@@ -15,28 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.state;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
+import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
-import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 
-public interface ControlImplementationTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, ControlImplementationTailoringReferenceState<T> {
+public interface TailoringReferenceState<T extends TemplateItem<T>> {
+  TailoringReferenceType getReferenceType();
 
-  void setDescription(@Nullable String description);
-
-  @Nullable
-  T getResponsible();
-
-  void setResponsible(@Nullable T responsible);
-
-  @Override
-  default ITypedId<T> getResponsibleRef() {
-    return Optional.ofNullable(getResponsible()).map(TypedId::from).orElse(null);
-  }
+  ITypedId<T> getTargetRef();
 }

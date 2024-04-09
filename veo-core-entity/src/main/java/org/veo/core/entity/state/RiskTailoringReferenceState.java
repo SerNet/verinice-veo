@@ -15,28 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.state;
 
-import java.util.Optional;
+import java.util.Map;
 
-import javax.annotation.Nullable;
-
+import org.veo.core.entity.RiskTailoringReferenceValues;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
-import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
-public interface ControlImplementationTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, ControlImplementationTailoringReferenceState<T> {
+public interface RiskTailoringReferenceState<T extends TemplateItem<T>>
+    extends TailoringReferenceState<T> {
 
-  void setDescription(@Nullable String description);
+  ITypedId<T> getMitigationRef();
 
-  @Nullable
-  T getResponsible();
+  ITypedId<T> getRiskOwnerRef();
 
-  void setResponsible(@Nullable T responsible);
-
-  @Override
-  default ITypedId<T> getResponsibleRef() {
-    return Optional.ofNullable(getResponsible()).map(TypedId::from).orElse(null);
-  }
+  Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();
 }

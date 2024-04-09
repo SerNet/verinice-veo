@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import static java.util.function.Function.identity;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -29,38 +32,42 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.state.DomainBaseState;
+import org.veo.core.entity.state.ElementTypeDefinitionState;
+import org.veo.core.entity.state.TemplateItemState;
 
-public interface DomainBase extends Nameable, Identifiable, Versioned {
+public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBaseState {
   int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int TEMPLATE_VERSION_MAX_LENGTH = 10;
   int DECISION_ID_MAX_LENGTH = 256;
   int INSPECTION_ID_MAX_LENGTH = 256;
 
-  /** The authority of this domaintemplate. */
-  @NotNull
-  String getAuthority();
-
   void setAuthority(@NotNull String aAuthority);
-
-  /** The version */
-  String getTemplateVersion();
 
   void setTemplateVersion(@NotNull String aTemplateVersion);
 
   Set<CatalogItem> getCatalogItems();
 
+  @Override
+  default Set<TemplateItemState<CatalogItem>> getCatalogItemStates() {
+    return getCatalogItems().stream()
+        .map(ci -> (TemplateItemState<CatalogItem>) ci)
+        .collect(Collectors.toSet());
+  }
+
   void setCatalogItems(Set<CatalogItem> catalogItems);
 
   Set<ElementTypeDefinition> getElementTypeDefinitions();
 
+  @Override
+  default Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
+    return getElementTypeDefinitions().stream()
+        .collect(Collectors.toMap(ElementTypeDefinition::getElementType, identity()));
+  }
+
   void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
 
   void applyElementTypeDefinition(ElementTypeDefinition definition);
-
-  /**
-   * The default behavior when creating incarnation descriptions for catalog items from this domain
-   */
-  IncarnationConfiguration getIncarnationConfiguration();
 
   void setIncarnationConfiguration(IncarnationConfiguration incarnationConfiguration);
 
@@ -78,8 +85,10 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
                     String.format("Domain has no definition for entity type %s", type)));
   }
 
-  /** Returns a map of risk definitions grouped by their ID. */
-  Map<String, RiskDefinition> getRiskDefinitions();
+  @Override
+  default Set<ProfileState> getProfileStates() {
+    return getProfiles().stream().map(p -> (ProfileState) p).collect(Collectors.toSet());
+  }
 
   Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
 
@@ -92,8 +101,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
   void setProfiles(Set<Profile> profiles);
 
   void setRiskDefinitions(Map<String, RiskDefinition> definitions);
-
-  Map<String, Decision> getDecisions();
 
   /**
    * @throws org.veo.core.entity.exception.UnprocessableDataException if any decisions are invalid
@@ -122,8 +129,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
                     "Decision '%s' not found in domain %s"
                         .formatted(decisionKey, getIdAsString())));
   }
-
-  Map<String, Inspection> getInspections();
 
   /**
    * @return {@code true} if this domain contains a definition for given custom aspect type that is

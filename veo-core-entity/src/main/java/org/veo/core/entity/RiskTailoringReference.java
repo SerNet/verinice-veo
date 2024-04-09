@@ -18,22 +18,36 @@
 package org.veo.core.entity;
 
 import java.util.Map;
+import java.util.Optional;
 
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.state.RiskTailoringReferenceState;
 
 /**
  * This reference type describes an {@link AbstractRisk}. The owning template item describes the
  * {@link RiskAffected} and the target template item describes the risk's {@link Scenario}.
  */
-public interface RiskTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
-
+public interface RiskTailoringReference<T extends TemplateItem<T>>
+    extends TailoringReference<T>, RiskTailoringReferenceState<T> {
   void setMitigation(T mitigation);
 
   T getMitigation();
 
+  @Override
+  default ITypedId<T> getMitigationRef() {
+    return Optional.ofNullable(getMitigation()).map(TypedId::from).orElse(null);
+  }
+
   void setRiskOwner(T riskOwner);
 
   T getRiskOwner();
+
+  @Override
+  default ITypedId<T> getRiskOwnerRef() {
+    return Optional.ofNullable(getRiskOwner()).map(TypedId::from).orElse(null);
+  }
 
   Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();
 

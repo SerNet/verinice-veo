@@ -15,28 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.state;
 
-import java.util.Optional;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
-import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
+import org.veo.core.entity.definitions.CustomAspectDefinition;
+import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.definitions.SubTypeDefinition;
 
-public interface ControlImplementationTailoringReference<T extends TemplateItem<T>>
-    extends TailoringReference<T>, ControlImplementationTailoringReferenceState<T> {
+public interface ElementTypeDefinitionState {
 
-  void setDescription(@Nullable String description);
+  @NotNull
+  Map<String, SubTypeDefinition> getSubTypes();
 
-  @Nullable
-  T getResponsible();
+  @NotNull
+  Map<String, CustomAspectDefinition> getCustomAspects();
 
-  void setResponsible(@Nullable T responsible);
+  @NotNull
+  Map<String, LinkDefinition> getLinks();
 
-  @Override
-  default ITypedId<T> getResponsibleRef() {
-    return Optional.ofNullable(getResponsible()).map(TypedId::from).orElse(null);
-  }
+  @NotNull
+  Map<Locale, Map<String, String>> getTranslations();
 }
