@@ -41,6 +41,8 @@ public enum EntityType {
   INCIDENT(Incident.class, Incident.SINGULAR_TERM, Incident.PLURAL_TERM),
   PERSON(Person.class, Person.SINGULAR_TERM, Person.PLURAL_TERM),
   PROCESS(Process.class, Process.SINGULAR_TERM, Process.PLURAL_TERM),
+  PROFILE(Profile.class, Profile.SINGULAR_TERM, Profile.PLURAL_TERM),
+  PROFILE_ITEM(ProfileItem.class, ProfileItem.SINGULAR_TERM, ProfileItem.PLURAL_TERM),
   UNIT(Unit.class, Unit.SINGULAR_TERM, Unit.PLURAL_TERM),
   SCENARIO(Scenario.class, Scenario.SINGULAR_TERM, Scenario.PLURAL_TERM),
   SCOPE(Scope.class, Scope.SINGULAR_TERM, Scope.PLURAL_TERM);

@@ -22,9 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
+import org.veo.core.entity.DomainBase
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
+import org.veo.core.entity.Profile
+import org.veo.core.entity.ProfileItem
 import org.veo.rest.configuration.TypeExtractor
 
 class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
@@ -57,19 +60,32 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
     }
 
     def createEntity(Class<Identifiable> type) {
-        def entity = Stub(type) {
-            def key = Key.newUuid()
-            getId () >> key
-            getIdAsString() >> key.uuidValue()
+        Stub(type) {
             getModelInterface() >> type
-        }
-        if (type == CatalogItem) {
-            entity.domainBase >> Stub(Domain) {
-                def key = Key.newUuid()
-                getId() >> key
-                getIdAsString() >> key.uuidValue()
+            id >> Key.newUuid()
+            idAsString >> it.id.uuidValue()
+            if (it instanceof CatalogItem) {
+                domainBase >> Stub(Domain) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+            if (it instanceof ProfileItem) {
+                owner >> Stub(Profile) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+                domainBase >> Stub(Domain) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+            if (it instanceof Profile) {
+                owner >> Stub(DomainBase) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
             }
         }
-        entity
     }
 }
