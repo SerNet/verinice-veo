@@ -50,7 +50,7 @@ public interface ProfileItem extends ProfileItemState, TemplateItem<ProfileItem>
   void setAppliedCatalogItem(CatalogItem item);
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<ProfileItem> getModelInterface() {
     return ProfileItem.class;
   }
 

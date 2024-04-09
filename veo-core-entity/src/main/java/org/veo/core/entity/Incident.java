@@ -30,7 +30,7 @@ public interface Incident extends Element, CompositeElement<Incident> {
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Incident> getModelInterface() {
     return Incident.class;
   }
 

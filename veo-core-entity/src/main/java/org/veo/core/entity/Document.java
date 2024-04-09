@@ -38,7 +38,7 @@ public interface Document extends Element, CompositeElement<Document> {
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Document> getModelInterface() {
     return Document.class;
   }
 }

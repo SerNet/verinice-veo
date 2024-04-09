@@ -53,7 +53,7 @@ public interface Client extends Identifiable, Versioned {
   void setDomains(Set<Domain> aDomains);
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Client> getModelInterface() {
     return Client.class;
   }
 

@@ -28,7 +28,6 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -88,7 +87,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   private Map<String, Decision> decisions = new HashMap<>();
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<? extends DomainBase> getModelInterface() {
     return DomainTemplate.class;
   }
 }

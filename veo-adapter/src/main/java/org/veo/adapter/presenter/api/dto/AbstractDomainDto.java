@@ -28,7 +28,6 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -88,7 +87,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Domain> getModelInterface() {
     return Domain.class;
   }
 }

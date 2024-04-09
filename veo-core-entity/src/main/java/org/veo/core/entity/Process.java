@@ -28,7 +28,7 @@ public interface Process extends CompositeElement<Process>, RiskAffected<Process
   String TYPE_DESIGNATOR = "PRO";
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Process> getModelInterface() {
     return Process.class;
   }
 

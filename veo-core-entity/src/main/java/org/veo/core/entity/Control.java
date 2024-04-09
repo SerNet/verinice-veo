@@ -45,7 +45,7 @@ public interface Control extends CompositeElement<Control>, RiskRelated {
   Map<RiskDefinitionRef, ControlRiskValues> getRiskValues(Domain domain);
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Control> getModelInterface() {
     return Control.class;
   }
 

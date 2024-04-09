@@ -90,7 +90,7 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Unit> getModelInterface() {
     return Unit.class;
   }
 

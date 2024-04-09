@@ -27,7 +27,7 @@ public interface DomainTemplate extends DomainBase {
   String PLURAL_TERM = "domain-templates";
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<DomainTemplate> getModelInterface() {
     return DomainTemplate.class;
   }
 

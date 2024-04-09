@@ -23,7 +23,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
 
@@ -57,7 +56,7 @@ public abstract class AbstractProfileDto extends AbstractVersionedSelfReferencin
   private String language;
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Profile> getModelInterface() {
     return Profile.class;
   }
 }

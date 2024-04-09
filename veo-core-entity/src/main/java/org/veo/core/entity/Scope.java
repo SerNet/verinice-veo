@@ -42,7 +42,7 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Scope> getModelInterface() {
     return Scope.class;
   }
 

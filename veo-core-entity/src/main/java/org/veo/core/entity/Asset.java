@@ -33,7 +33,7 @@ public interface Asset extends Element, CompositeElement<Asset>, RiskAffected<As
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Asset> getModelInterface() {
     return Asset.class;
   }
 

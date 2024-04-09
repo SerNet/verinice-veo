@@ -46,7 +46,7 @@ public interface Domain extends DomainBase, ClientOwned {
   void setDomainTemplate(DomainTemplate aDomaintemplate);
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Domain> getModelInterface() {
     return Domain.class;
   }
 

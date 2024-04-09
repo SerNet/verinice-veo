@@ -31,7 +31,7 @@ public interface Profile extends Versioned, Identifiable, ClientOwned, ProfileSt
   String PLURAL_TERM = "profiles";
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Profile> getModelInterface() {
     return Profile.class;
   }
 

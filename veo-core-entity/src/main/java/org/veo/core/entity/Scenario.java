@@ -39,7 +39,7 @@ public interface Scenario extends Element, CompositeElement<Scenario>, RiskRelat
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Scenario> getModelInterface() {
     return Scenario.class;
   }
 

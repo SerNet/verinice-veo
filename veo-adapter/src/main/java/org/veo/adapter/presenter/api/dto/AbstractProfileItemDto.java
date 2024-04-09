@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
@@ -38,7 +37,7 @@ public abstract class AbstractProfileItemDto extends AbstractTemplateItemDto<Pro
   private String status;
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<ProfileItem> getModelInterface() {
     return ProfileItem.class;
   }
 }

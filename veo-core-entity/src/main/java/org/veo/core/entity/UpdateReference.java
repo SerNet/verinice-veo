@@ -37,7 +37,7 @@ public interface UpdateReference extends TemplateItemReference<CatalogItem> {
   void setUpdateType(ItemUpdateType aUpdateType);
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<UpdateReference> getModelInterface() {
     return UpdateReference.class;
   }
 

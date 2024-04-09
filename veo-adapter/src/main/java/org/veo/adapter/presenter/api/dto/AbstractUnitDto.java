@@ -26,7 +26,6 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.UnitState;
 
@@ -60,7 +59,7 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
   private Set<IdRef<Domain>> domains = Collections.emptySet();
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Unit> getModelInterface() {
     return Unit.class;
   }
 

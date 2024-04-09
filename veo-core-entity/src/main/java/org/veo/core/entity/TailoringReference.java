@@ -62,7 +62,7 @@ public interface TailoringReference<T extends TemplateItem<T>>
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<TailoringReference> getModelInterface() {
     return TailoringReference.class;
   }
 

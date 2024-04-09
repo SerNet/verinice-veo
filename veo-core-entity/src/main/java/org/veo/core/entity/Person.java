@@ -28,7 +28,7 @@ public interface Person extends Element, CompositeElement<Person> {
   String TYPE_DESIGNATOR = "PER";
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<Person> getModelInterface() {
     return Person.class;
   }
 

@@ -100,7 +100,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
   }
 
   @Override
-  default Class<? extends Identifiable> getModelInterface() {
+  default Class<CatalogItem> getModelInterface() {
     return CatalogItem.class;
   }
 
