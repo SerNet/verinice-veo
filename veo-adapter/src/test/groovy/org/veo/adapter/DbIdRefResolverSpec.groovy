@@ -60,9 +60,6 @@ class DbIdRefResolverSpec extends Specification {
         then: "the asset is returned"
         1 * assetRepo.findAllByRefs(Set.of(IdRef.from(asset, Mock(ReferenceAssembler))), client) >> [asset]
         result == asset
-
-        and: "the client was validated"
-        1 * asset.checkSameClient(client)
     }
 
     def "caches results"() {

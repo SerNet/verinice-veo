@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.ITypedId;
@@ -46,7 +47,14 @@ public interface Repository<T extends Identifiable> extends RepositoryBase<T, IT
 
   @Override
   default Set<T> findAllByRefs(Set<ITypedId<T>> refs, Client client) {
-    return findByIds(refs.stream().map(ITypedId::toKey).collect(Collectors.toSet()));
+    var results = findByIds(refs.stream().map(ITypedId::toKey).collect(Collectors.toSet()));
+    results.forEach(
+        r -> {
+          if (r instanceof ClientOwned co) {
+            co.checkSameClient(client);
+          }
+        });
+    return results;
   }
 
   T save(T entity);

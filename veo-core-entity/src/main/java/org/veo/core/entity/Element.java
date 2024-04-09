@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,7 +28,6 @@ import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.EntitySpecifications;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -124,17 +122,6 @@ public interface Element
    */
   default void checkSameClient(Element element) {
     element.checkSameClient(getOwningClient().get());
-  }
-
-  /**
-   * @throws ClientBoundaryViolationException if the passed client is not equal to the client in the
-   *     unit to which the entity belongs
-   */
-  default void checkSameClient(Client client) {
-    Objects.requireNonNull(client, "client must not be null");
-    if (!(EntitySpecifications.hasSameClient(client).isSatisfiedBy(getOwner().getClient()))) {
-      throw new ClientBoundaryViolationException(this, client);
-    }
   }
 
   Set<SubTypeAspect> getSubTypeAspects();

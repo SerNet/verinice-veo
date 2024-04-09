@@ -26,16 +26,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.RepositoryProvider;
 
@@ -97,16 +93,6 @@ public class DbIdRefResolver extends LocalRefResolver {
 
     entities.forEach(
         entity -> {
-          if (entity instanceof Unit unit) {
-            unit.checkSameClient(client);
-          }
-          if (entity instanceof Element element) {
-            element.checkSameClient(client);
-          }
-          if (entity instanceof Domain domain) {
-            if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy((domain).getOwner()))
-              throw new ClientBoundaryViolationException(domain, client);
-          }
           result.add(entity);
           var reference = IEntityRef.from(entity);
           cache.put(reference, entity);

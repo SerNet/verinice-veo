@@ -17,9 +17,26 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Objects;
 import java.util.Optional;
+
+import org.veo.core.entity.ref.IEntityRef;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.EntitySpecifications;
 
 /** Something that can be owned by a specific client. */
 public interface ClientOwned extends Entity {
   Optional<Client> getOwningClient();
+
+  /**
+   * @throws ClientBoundaryViolationException if the passed client is not equal to the client in the
+   *     unit to which the entity belongs
+   */
+  default void checkSameClient(Client client) {
+    Objects.requireNonNull(client, "client must not be null");
+    if (!(EntitySpecifications.hasSameClient(client)
+        .isSatisfiedBy(getOwningClient().orElseThrow()))) {
+      throw new ClientBoundaryViolationException(IEntityRef.from(this), client);
+    }
+  }
 }
