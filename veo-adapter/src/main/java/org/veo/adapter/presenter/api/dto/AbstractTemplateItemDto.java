@@ -27,9 +27,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationTailoringReference;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
@@ -59,11 +57,6 @@ public abstract class AbstractTemplateItemDto<T extends TemplateItem<T>>
   @Schema(description = "The subtype for the Element.", example = "PER")
   @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
   private String subType;
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return CatalogItem.class;
-  }
 
   protected TailoringReferenceDto<T> createTailoringReferenceDto(
       TailoringReference<T> source, ReferenceAssembler referenceAssembler) {

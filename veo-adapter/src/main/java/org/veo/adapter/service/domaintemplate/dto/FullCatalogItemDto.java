@@ -77,4 +77,9 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem>
       @NonNull ReferenceAssembler referenceAssembler) {
     tailoringReferences.add(createTailoringReferenceDto(source, referenceAssembler));
   }
+
+  @Override
+  public Class<CatalogItem> getModelInterface() {
+    return CatalogItem.class;
+  }
 }

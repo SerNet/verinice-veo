@@ -39,4 +39,9 @@ public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem> {
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public Class<CatalogItem> getModelInterface() {
+    return CatalogItem.class;
+  }
 }
