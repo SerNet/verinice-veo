@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 
-@AllArgsConstructor(staticName = "from")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class TypedId<T extends Identifiable> implements ITypedId<T> {
 
@@ -31,8 +33,16 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
 
   @NonNull private final Class<T> type;
 
+  public static <T extends Identifiable> TypedId<T> from(String id, Class<T> type) {
+    if (id == null) {
+      throw new IllegalArgumentException(
+          "Missing ID for %s".formatted(EntityType.getSingularTermByType(type)));
+    }
+    return new TypedId<>(id, type);
+  }
+
   public static <T extends Identifiable> TypedId<T> from(T entity) {
-    return new TypedId<>(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
+    return TypedId.from(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
   }
 
   @Override
