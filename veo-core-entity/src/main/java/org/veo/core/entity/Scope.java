@@ -30,7 +30,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * multiple scopes. Scopes can contain scopes.
  */
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
-public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
+public interface Scope extends RiskAffected<Scope, ScopeRisk> {
 
   String SINGULAR_TERM = "scope";
   String PLURAL_TERM = "scopes";

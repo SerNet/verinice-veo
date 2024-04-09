@@ -21,7 +21,7 @@ package org.veo.core.entity;
  * Person represents a natural person such as an employee. Persons will have responsibilities
  * assigned for other domain objects.
  */
-public interface Person extends Element, CompositeElement<Person> {
+public interface Person extends CompositeElement<Person> {
 
   String SINGULAR_TERM = "person";
   String PLURAL_TERM = "persons";

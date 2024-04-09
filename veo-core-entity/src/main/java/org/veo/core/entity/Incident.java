@@ -18,7 +18,7 @@
 package org.veo.core.entity;
 
 /** Something that happened. */
-public interface Incident extends Element, CompositeElement<Incident> {
+public interface Incident extends CompositeElement<Incident> {
 
   String SINGULAR_TERM = "incident";
   String PLURAL_TERM = "incidents";
