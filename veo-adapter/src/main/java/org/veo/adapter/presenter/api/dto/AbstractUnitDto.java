@@ -63,4 +63,9 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
   public Class<? extends Identifiable> getModelInterface() {
     return Unit.class;
   }
+
+  @Override
+  public String getSelfId() {
+    return null;
+  }
 }

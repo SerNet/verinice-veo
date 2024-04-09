@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface ElementState<T extends Element> extends EntityState {
+  String getSelfId();
 
   Set<DomainAssociationState> getDomainAssociationStates();
 

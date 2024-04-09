@@ -40,4 +40,9 @@ public class FullDocumentDto extends AbstractDocumentDto implements Identifiable
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

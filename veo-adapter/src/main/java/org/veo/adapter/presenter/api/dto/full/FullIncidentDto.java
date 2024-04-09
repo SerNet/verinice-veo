@@ -40,4 +40,9 @@ public class FullIncidentDto extends AbstractIncidentDto implements Identifiable
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

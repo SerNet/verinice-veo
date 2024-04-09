@@ -40,4 +40,9 @@ public class FullScenarioDto extends AbstractScenarioDto implements Identifiable
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

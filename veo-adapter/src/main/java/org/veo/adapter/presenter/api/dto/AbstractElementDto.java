@@ -53,6 +53,12 @@ import lombok.ToString;
 public abstract class AbstractElementDto<T extends Element>
     extends AbstractVersionedSelfReferencingDto implements NameableDto, ElementState<T> {
 
+  @Override
+  @JsonIgnore
+  public String getSelfId() {
+    return null;
+  }
+
   @Schema(
       description = "The name for the Element.",
       example = "Lock doors",

@@ -69,6 +69,12 @@ import lombok.ToString;
 public abstract class AbstractElementInDomainDto<TElement extends Element>
     extends AbstractVersionedDto
     implements NameableDto, ElementState<TElement>, DomainAssociationState {
+  @Override
+  @JsonIgnore
+  public String getSelfId() {
+    return null;
+  }
+
   @JsonIgnore
   @Getter(AccessLevel.NONE)
   private ElementInDomainIdRef<TElement> selfRef;

@@ -40,4 +40,9 @@ public class FullPersonDto extends AbstractPersonDto implements IdentifiableDto 
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }

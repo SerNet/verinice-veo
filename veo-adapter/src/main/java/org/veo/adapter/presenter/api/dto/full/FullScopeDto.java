@@ -50,4 +50,9 @@ public class FullScopeDto extends AbstractScopeDto implements IdentifiableDto {
   @JsonProperty(access = READ_ONLY)
   @Schema(description = "An optional map of all risks and risk-values for this scope.")
   private Set<ScopeRiskDto> risks;
+
+  @Override
+  public String getSelfId() {
+    return id;
+  }
 }
