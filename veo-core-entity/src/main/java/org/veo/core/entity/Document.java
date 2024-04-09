@@ -36,4 +36,9 @@ public interface Document extends Element, CompositeElement<Document> {
   default String getTypeDesignator() {
     return TYPE_DESIGNATOR;
   }
+
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Document.class;
+  }
 }

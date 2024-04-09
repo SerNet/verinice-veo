@@ -28,7 +28,6 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.state.CustomAspectState;
@@ -49,11 +48,6 @@ public class ExportProfileItemDto extends FullProfileItemDto
   @JsonIgnore
   public ITypedId<CatalogItem> getAppliedCatalogItemRef() {
     return appliedCatalogItem;
-  }
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
   }
 
   @Override

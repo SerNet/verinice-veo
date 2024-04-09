@@ -44,5 +44,10 @@ public interface Control extends CompositeElement<Control>, RiskRelated {
 
   Map<RiskDefinitionRef, ControlRiskValues> getRiskValues(Domain domain);
 
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Control.class;
+  }
+
   void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }

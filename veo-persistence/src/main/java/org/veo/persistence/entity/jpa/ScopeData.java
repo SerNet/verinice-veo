@@ -34,7 +34,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -60,11 +59,6 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   @Valid
   @Getter
   private final Set<Element> members = new HashSet<>();
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return Scope.class;
-  }
 
   public boolean removeMemberById(Key<UUID> id) {
     return removeMembersById(Set.of(id));

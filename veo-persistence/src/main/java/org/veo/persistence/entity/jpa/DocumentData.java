@@ -30,7 +30,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItemAspects;
 
 import lombok.EqualsAndHashCode;
@@ -41,11 +40,6 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentData extends ElementData implements Document {
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return Document.class;
-  }
 
   @ManyToMany(
       targetEntity = DocumentData.class,

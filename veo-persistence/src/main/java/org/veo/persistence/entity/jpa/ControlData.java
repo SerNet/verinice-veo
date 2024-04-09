@@ -34,7 +34,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -49,11 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ControlData extends ElementData implements Control {
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return Control.class;
-  }
 
   @ManyToMany(
       targetEntity = ControlData.class,
