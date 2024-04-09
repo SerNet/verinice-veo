@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Urs Zeidler.
+ * Copyright (C) 2024  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,21 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.ref;
 
-import java.util.Optional;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/** Base type for entities that act as aggregate roots and have a UUID */
-public interface Identifiable extends Entity {
-  Key<UUID> getId();
+import org.veo.core.entity.Entity;
 
-  default String getIdAsString() {
-    return Optional.ofNullable(getId()).map(Key::uuidValue).orElse(null);
-  }
-
-  void setId(Key<UUID> id);
-
-  @Override
-  Class<? extends Identifiable> getModelInterface();
+public interface IEntityRef<T extends Entity> {
+  @JsonIgnore
+  Class<T> getType();
 }

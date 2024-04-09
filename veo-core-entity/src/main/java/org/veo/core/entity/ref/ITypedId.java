@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
-public interface ITypedId<T extends Identifiable> {
+public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
   @JsonIgnore
   String getId();

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Urs Zeidler.
+ * Copyright (C) 2024  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,19 +17,19 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Optional;
-import java.util.UUID;
+/**
+ * An entity as defined in Domain Driven Design.
+ *
+ * <p>Not to be confused with {@link Element}, which is a subcategory of entities.
+ */
+public interface Entity {
+  /**
+   * @return Lowercase singular name for the specific type of {@link Entity}
+   */
+  String getModelType();
 
-/** Base type for entities that act as aggregate roots and have a UUID */
-public interface Identifiable extends Entity {
-  Key<UUID> getId();
-
-  default String getIdAsString() {
-    return Optional.ofNullable(getId()).map(Key::uuidValue).orElse(null);
-  }
-
-  void setId(Key<UUID> id);
-
-  @Override
-  Class<? extends Identifiable> getModelInterface();
+  /**
+   * @return The specific interface for this type of {@link Entity}
+   */
+  Class<? extends Entity> getModelInterface();
 }
