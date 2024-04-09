@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -37,6 +39,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.ref.ITypedId;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -97,5 +100,11 @@ public class ScopeRiskDto extends AbstractRiskDto {
         .selfRef(new RiskRef(referenceAssembler, risk))
         .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
         .build();
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedId<Scope> getOwnerRef() {
+    return scope;
   }
 }

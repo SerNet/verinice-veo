@@ -23,12 +23,15 @@ import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+
+import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
@@ -45,7 +49,10 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.risk.RiskValues;
+import org.veo.core.entity.state.RiskState;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,7 +70,8 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto {
+public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
+    implements RiskState {
 
   @Schema(
       description = "Compact human-readable identifier that is unique within the client.",
@@ -153,5 +161,37 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
       AbstractRisk<?, ?> risk, Domain domain) {
     return risk.getRiskDefinitions(domain).stream()
         .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd, domain)));
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<ITypedId<Domain>> getDomainRefs() {
+    return new HashSet<>(domains);
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedId<Scenario> getScenarioRef() {
+    return scenario;
+  }
+
+  @Nullable
+  @Override
+  @JsonIgnore
+  public ITypedId<Control> getMitigationRef() {
+    return mitigation;
+  }
+
+  @Nullable
+  @Override
+  @JsonIgnore
+  public ITypedId<Person> getRiskOwnerRef() {
+    return riskOwner;
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<RiskValues> getRiskValues() {
+    return CategorizedRiskValueMapper.map(getDomainsWithRiskValues());
   }
 }
