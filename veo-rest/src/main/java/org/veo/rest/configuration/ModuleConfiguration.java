@@ -920,8 +920,12 @@ public class ModuleConfiguration {
 
   @Bean
   public UnitImportUseCase unitImportUseCase(
-      UnitRepository unitRepository, ElementBatchCreator elementBatchCreator) {
-    return new UnitImportUseCase(unitRepository, elementBatchCreator);
+      UnitRepository unitRepository,
+      ElementBatchCreator elementBatchCreator,
+      EntityStateMapper entityStateMapper,
+      RefResolverFactory refResolverFactory) {
+    return new UnitImportUseCase(
+        unitRepository, refResolverFactory, entityStateMapper, elementBatchCreator);
   }
 
   @Bean

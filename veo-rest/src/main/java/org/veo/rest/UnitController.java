@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -65,7 +66,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
-import org.veo.adapter.presenter.api.io.mapper.UnitImportMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
@@ -76,6 +76,8 @@ import org.veo.core.entity.IncarnationRequestModeType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
@@ -120,7 +122,6 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   private static final String IMPORT_UNIT_DESCRIPTION =
       "Imports a previously exported unit. The unit, elements & risks in the request body are created as new resources. The domains in the request body are only used to find the equivalent existing domains. If the domains have been updated since the export, the exported elements or risks may have become incompatible and cannot be imported.";
 
-  private final UnitImportMapper unitImportMapper;
   private final CreateUnitUseCase createUnitUseCase;
   private final GetUnitUseCase getUnitUseCase;
   private final UpdateUnitUseCase putUnitUseCase;
@@ -319,8 +320,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       ApplicationUser user, UnitDumpDto dto) {
     return useCaseInteractor.execute(
         unitImportUseCase,
-        (Supplier<UnitImportUseCase.InputData>)
-            () -> unitImportMapper.mapInput(dto, getClient(user)),
+        new UnitImportUseCase.InputData(
+            getClient(user),
+            dto.getUnit(),
+            dto.getElements().stream().map(e -> (ElementState<?>) e).collect(Collectors.toSet()),
+            dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),
         out ->
             RestApiResponse.created(
                 referenceAssembler.targetReferenceOf(out.getUnit()), "Unit created successfully"));

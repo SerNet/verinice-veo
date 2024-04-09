@@ -23,11 +23,18 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.state.RiskState;
+import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.domain.ElementBatchCreator;
+import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,18 +44,42 @@ import lombok.RequiredArgsConstructor;
 public class UnitImportUseCase
     implements TransactionalUseCase<UnitImportUseCase.InputData, UnitImportUseCase.OutputData> {
   private final UnitRepository unitRepository;
+  private final RefResolverFactory refResolverFactory;
+  private final EntityStateMapper entityStateMapper;
   private final ElementBatchCreator elementBatchCreator;
 
   @Override
   public OutputData execute(InputData input) {
-    input.unit.setClient(input.client);
-    elementBatchCreator.create(input.elements, unitRepository.save(input.unit), false);
+    var resolver = refResolverFactory.db(input.client);
+    var unit = resolver.injectNewEntity(TypedId.from(input.unit.getSelfId(), Unit.class));
+    var elements =
+        input.elements.stream()
+            .map(
+                e ->
+                    (Element)
+                        resolver.injectNewEntity(
+                            TypedId.from(e.getSelfId(), e.getModelInterface())))
+            .toList();
+
+    unit.setClient(input.client);
+    entityStateMapper.mapState(input.unit, unit, resolver);
+    elements.forEach(e -> e.setOwner(unit));
+    input.elements.forEach(e -> mapElement(e, resolver));
+    input.risks.forEach(r -> entityStateMapper.mapState(r, resolver));
+
+    elementBatchCreator.create(elements, unitRepository.save(unit), false);
     try {
-      input.elements.forEach(DomainSensitiveElementValidator::validate);
+      elements.forEach(DomainSensitiveElementValidator::validate);
     } catch (IllegalArgumentException illEx) {
       throw new UnprocessableDataException(illEx.getMessage());
     }
-    return new OutputData(input.unit);
+    return new OutputData(unit);
+  }
+
+  private <T extends Element, TState extends ElementState<T>> void mapElement(
+      TState source, IdRefResolver resolver) {
+    var target = resolver.resolve(TypedId.from(source.getSelfId(), source.getModelInterface()));
+    entityStateMapper.mapState(source, target, false, resolver);
   }
 
   @Override
@@ -60,8 +91,9 @@ public class UnitImportUseCase
   @AllArgsConstructor
   public static class InputData implements UseCase.InputData {
     private Client client;
-    private Unit unit;
-    private Set<Element> elements;
+    private UnitState unit;
+    private Set<ElementState<?>> elements;
+    private Set<RiskState<?, ?>> risks;
   }
 
   @Data

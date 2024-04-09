@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
@@ -68,6 +69,7 @@ import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.PotentialImpactDomainAssociationState;
 import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.entity.state.RiskAffectedState;
+import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
@@ -127,6 +129,20 @@ public class EntityStateMapper {
       ce.setParts(idRefResolver.resolve(compositeElementState.getParts()));
       publishPartsChanged(ce, oldParts);
     }
+  }
+
+  public <R extends AbstractRisk<T, R>, T extends RiskAffected<T, R>> R mapState(
+      RiskState<R, T> source, DbIdRefResolver resolver) {
+    var element = resolver.resolve(source.getOwnerRef());
+    var scenario = resolver.resolve(source.getScenarioRef());
+    var domains = resolver.resolve(source.getDomainRefs());
+    var target = element.obtainRisk(scenario, domains);
+    target.appoint(
+        Optional.ofNullable(source.getRiskOwnerRef()).map(resolver::resolve).orElse(null));
+    target.mitigate(
+        Optional.ofNullable(source.getMitigationRef()).map(resolver::resolve).orElse(null));
+    target.defineRiskValues(source.getRiskValues());
+    return target;
   }
 
   public void mapState(
