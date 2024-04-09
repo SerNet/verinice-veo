@@ -18,11 +18,9 @@
 package org.veo.core.repository;
 
 import java.util.Set;
-import java.util.UUID;
 
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Versioned;
 
@@ -34,7 +32,7 @@ public interface RepositoryProvider {
   <T extends Identifiable & Versioned>
       IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(Class<T> entityType);
 
-  <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
+  <T extends Identifiable> Repository<T> getRepositoryFor(Class<T> entityType);
 
   Set<ElementRepository<? extends RiskRelated>> getRiskRelatedElementRepos();
 }

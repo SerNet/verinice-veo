@@ -32,7 +32,7 @@ import org.veo.core.entity.Key;
  * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
  * methods - i.e. queries based on particular fields.
  */
-public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
+public interface DomainTemplateRepository extends Repository<DomainTemplate> {
   List<DomainTemplate> findAll();
 
   List<Key<UUID>> getDomainTemplateIds(String name);

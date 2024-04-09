@@ -20,6 +20,9 @@ package org.veo.core.repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+
+import org.veo.core.entity.Key;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -35,21 +38,21 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * uses factories and builders to build entities to specification.
  * */
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
-public interface Repository<T, K> {
+public interface Repository<T> {
 
   T save(T entity);
 
   List<T> saveAll(Set<T> entities);
 
-  Optional<T> findById(K id);
+  Optional<T> findById(Key<UUID> id);
 
-  Set<T> findByIds(Set<K> ids);
+  Set<T> findByIds(Set<Key<UUID>> ids);
 
-  Set<T> getByIds(Set<K> ids);
+  Set<T> getByIds(Set<Key<UUID>> ids);
 
   void delete(T entity);
 
-  void deleteById(K id);
+  void deleteById(Key<UUID> id);
 
-  boolean exists(K id);
+  boolean exists(Key<UUID> id);
 }

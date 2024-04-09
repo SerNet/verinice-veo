@@ -38,8 +38,8 @@ class DbIdRefResolverSpec extends Specification {
     Client client = Mock()
     IdRefResolver referenceResolver = new DbIdRefResolver(repositoryProvider, identifiableFactory, client)
 
-    Repository<Asset, Key<UUID>> assetRepo = Mock()
-    Repository<Person, Key<UUID>> personRepo = Mock()
+    Repository<Asset> assetRepo = Mock()
+    Repository<Person> personRepo = Mock()
 
     def setup() {
         repositoryProvider.getRepositoryFor(Asset) >> assetRepo

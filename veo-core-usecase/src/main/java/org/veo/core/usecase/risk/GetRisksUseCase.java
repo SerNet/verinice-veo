@@ -47,7 +47,7 @@ public class GetRisksUseCase<T extends RiskAffected<T, R>, R extends AbstractRis
 
   @Transactional
   public OutputData<R> execute(InputData input) {
-    Repository<T, Key<UUID>> repositoryFor = repositoryProvider.getRepositoryFor(entityClass);
+    Repository<T> repositoryFor = repositoryProvider.getRepositoryFor(entityClass);
     var riskAffected = repositoryFor.findById(input.riskAffectedRef).orElseThrow();
 
     riskAffected.checkSameClient(input.authenticatedClient);

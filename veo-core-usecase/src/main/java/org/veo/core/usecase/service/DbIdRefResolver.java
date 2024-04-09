@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -91,7 +90,7 @@ public class DbIdRefResolver extends LocalRefResolver {
 
     Class<TEntity> entityType = objectReferences.iterator().next().getType();
 
-    Repository<? extends Identifiable, Key<UUID>> entityRepository =
+    Repository<? extends Identifiable> entityRepository =
         repositoryProvider.getRepositoryFor(entityType);
 
     Set<? extends Identifiable> entities =

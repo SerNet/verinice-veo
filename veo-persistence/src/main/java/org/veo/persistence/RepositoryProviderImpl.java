@@ -18,7 +18,6 @@
 package org.veo.persistence;
 
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
@@ -90,24 +88,24 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
+  public <T extends Identifiable> Repository<T> getRepositoryFor(Class<T> entityType) {
     if (Element.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) getElementRepositoryFor((Class<Element>) entityType);
+      return (Repository<T>) getElementRepositoryFor((Class<Element>) entityType);
     }
     if (Client.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) clientRepository;
+      return (Repository<T>) clientRepository;
     }
     if (Domain.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) domainRepository;
+      return (Repository<T>) domainRepository;
     }
     if (Unit.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) unitRepository;
+      return (Repository<T>) unitRepository;
     }
     if (CatalogItem.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) catalogItemRepository;
+      return (Repository<T>) catalogItemRepository;
     }
     if (Profile.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) profileRepository;
+      return (Repository<T>) profileRepository;
     }
     throw new IllegalArgumentException("Unsupported entity type " + entityType);
   }
