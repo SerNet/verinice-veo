@@ -38,7 +38,6 @@ import org.veo.core.usecase.service.EntityStateMapper
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
     DesignatorService designatorService = Mock()
-    IdentifiableFactory identifiableFactory = Mock()
     EntityStateMapper entityStateMapper = Mock()
     EventPublisher eventPublisher = Mock()
 

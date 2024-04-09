@@ -36,7 +36,6 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
 
     DesignatorService designatorService = Mock()
     EventPublisher eventPublisher = Mock()
-    IdentifiableFactory identifiableFactory = Mock()
     EntityStateMapper entityStateMapper = Mock()
     ScopeRepository scopeRepository = Mock()
 
