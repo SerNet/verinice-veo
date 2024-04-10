@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.usecase.UseCase;
 
@@ -33,15 +34,15 @@ public class TypeDefinitionProvider {
   private final ReferenceAssembler referenceAssembler;
 
   public Map<String, TypeDefinition> getAll() {
-    return EntityType.ELEMENT_TYPES.stream()
-        .collect(Collectors.toMap(EntityType::getSingularTerm, this::buildDefinition));
+    return EntityType.ELEMENT_TYPE_CLASSES.stream()
+        .collect(Collectors.toMap(EntityType::getSingularTermByType, this::buildDefinition));
   }
 
-  private TypeDefinition buildDefinition(EntityType type) {
+  private TypeDefinition buildDefinition(Class<? extends Element> type) {
     return new TypeDefinition(
-        referenceAssembler.resourcesReferenceOf(type.getType()),
-        referenceAssembler.searchesReferenceOf(type.getType()),
-        referenceAssembler.schemaReferenceOf(type.getSingularTerm()));
+        referenceAssembler.resourcesReferenceOf(type),
+        referenceAssembler.searchesReferenceOf(type),
+        referenceAssembler.schemaReferenceOf(EntityType.getSingularTermByType(type)));
   }
 
   @Data
