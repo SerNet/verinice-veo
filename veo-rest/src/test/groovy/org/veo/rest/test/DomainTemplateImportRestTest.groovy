@@ -191,6 +191,19 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
     }
 
+    def "cannot import template with missing catalog item ID"() {
+        given:
+        var template = getTemplateBody()
+        def vtItem = template.catalogItems.find { it.name == "Test process-1" }
+        vtItem.id = null
+
+        when: "trying to create the template"
+        def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Missing symbolic ID for catalogitem in domain-template $template.id")
+    }
+
     def "cannot import template with invalid catalog item sub type"() {
         given: "a template with an invalid sub type"
         var template = getTemplateBody()

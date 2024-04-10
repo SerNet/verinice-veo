@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.SymIdentifiable;
 
@@ -38,12 +39,17 @@ public class TypedSymbolicId<
   public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
       TypedSymbolicId<T, TNamespace> from(
           String symbolicId, Class<T> type, ITypedId<? extends TNamespace> ownerRef) {
+    if (symbolicId == null) {
+      throw new IllegalArgumentException(
+          "Missing symbolic ID for %s in %s"
+              .formatted(EntityType.getSingularTermByType(type), ownerRef));
+    }
     return new TypedSymbolicId<>(symbolicId, type, (ITypedId<TNamespace>) ownerRef);
   }
 
   public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
       TypedSymbolicId<T, TNamespace> from(T entity) {
-    return new TypedSymbolicId<>(
+    return TypedSymbolicId.from(
         entity.getSymbolicIdAsString(),
         (Class<T>) entity.getModelInterface(),
         TypedId.from(entity.getNamespace()));
