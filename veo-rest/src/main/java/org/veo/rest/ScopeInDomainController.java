@@ -22,6 +22,7 @@ import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.ELEMENT_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
@@ -49,6 +50,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -363,7 +365,8 @@ public class ScopeInDomainController implements ElementInDomainResource {
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) Set<String> elementTypes) {
     var client = clientLookup.getClient(auth);
     elementService.ensureElementExists(client, domainId, uuid, getScopeUseCase);
     return elementService.getElements(
@@ -371,21 +374,9 @@ public class ScopeInDomainController implements ElementInDomainResource {
         getElementsUseCase,
         QueryInputMapper.map(
             client,
-            null,
             domainId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
             uuid,
-            null,
-            null,
-            null,
-            null,
-            null,
+            elementTypes,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformElement2Dto);
   }

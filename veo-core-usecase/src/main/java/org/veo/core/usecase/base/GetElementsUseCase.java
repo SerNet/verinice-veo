@@ -81,6 +81,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
   }
 
   protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
+    Optional.ofNullable(input.getElementTypes()).ifPresent(query::whereElementTypeMatches);
     Optional.ofNullable(input.getUnitUuid())
         .map(
             condition ->
@@ -136,6 +137,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
   @Builder
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
+    QueryCondition<String> elementTypes;
     QueryCondition<Key<UUID>> unitUuid;
     SingleValueQueryCondition<Key<UUID>> domainId;
     QueryCondition<String> displayName;
@@ -181,6 +183,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         boolean embedRisks) {
       super(
           authenticatedClient,
+          null,
           unitUuid,
           domainId,
           displayName,

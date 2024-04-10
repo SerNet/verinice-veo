@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,6 +31,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
 import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
@@ -95,6 +99,23 @@ public class QueryInputMapper {
         .build();
   }
 
+  public static GetElementsUseCase.InputData map(
+      Client client,
+      String domainId,
+      String scopeId,
+      Set<String> elementTypes,
+      PagingConfiguration config) {
+    Optional.ofNullable(elementTypes)
+        .ifPresent(types -> types.forEach(EntityType::validateElementType));
+    return GetElementsUseCase.InputData.builder()
+        .authenticatedClient(client)
+        .elementTypes(createCondition(elementTypes))
+        .domainId(createSingleValueCondition(Key.uuidFrom(domainId)))
+        .pagingConfiguration(config)
+        .scopeId(createSingleValueCondition(Key.uuidFrom(scopeId)))
+        .build();
+  }
+
   public static QueryCatalogItemsUseCase.InputData map(
       Client client,
       String domainId,
@@ -155,6 +176,13 @@ public class QueryInputMapper {
       return new QueryCondition<>(Collections.singleton(null));
     }
     return new QueryCondition<>(Set.of(value));
+  }
+
+  static <T> QueryCondition<T> createCondition(Collection<T> values) {
+    if (values == null || values.isEmpty()) {
+      return null;
+    }
+    return new QueryCondition<>(new HashSet<>(values));
   }
 
   static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {

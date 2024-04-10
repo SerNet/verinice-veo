@@ -343,6 +343,24 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 subType == "Company"
             }
         }
+
+        and: "element type filter to work"
+        with(parseJson(get("$scopeUri/members?elementType=scope"))) {
+            totalItemCount == 1
+            items[0].name == "S for Scope"
+        }
+        with(parseJson(get("$scopeUri/members?elementType=asset,document"))) {
+            totalItemCount == 2
+            items[0].name == "A for Asset"
+            items[1].name == "D for Document"
+        }
+
+        when: "trying to filter by an invalid element type"
+        get("$scopeUri/members?elementType=wtf", 400)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message ==~ /'wtf' is not a valid element type - must be one of asset, control, .*/
     }
 
     def "missing scope is handled"() {

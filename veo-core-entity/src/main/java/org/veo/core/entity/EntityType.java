@@ -67,6 +67,9 @@ public enum EntityType {
           .filter(type -> RiskAffected.class.isAssignableFrom(type.type))
           .collect(Collectors.toUnmodifiableSet());
 
+  public static final Set<String> ELEMENT_SINGULAR_TERMS =
+      ELEMENT_TYPES.stream().map(et -> et.singularTerm).collect(Collectors.toUnmodifiableSet());
+
   public static final Set<String> ELEMENT_PLURAL_TERMS =
       ELEMENT_TYPES.stream().map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
 
@@ -116,5 +119,15 @@ public enum EntityType {
         .findFirst()
         .orElseThrow()
         .getPluralTerm();
+  }
+
+  public static void validateElementType(String elementType) {
+    if (!ELEMENT_SINGULAR_TERMS.contains(elementType)) {
+      throw new IllegalArgumentException(
+          "'%s' is not a valid element type - must be one of %s"
+              .formatted(
+                  elementType,
+                  ELEMENT_SINGULAR_TERMS.stream().sorted().collect(Collectors.joining(", "))));
+    }
   }
 }

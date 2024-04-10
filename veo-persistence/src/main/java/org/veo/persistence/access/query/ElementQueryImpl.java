@@ -152,6 +152,14 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
+  public void whereElementTypeMatches(QueryCondition<String> elementType) {
+    mySpec =
+        mySpec.and(
+            (root, query, criteriaBuilder) ->
+                in(root.get("elementType"), elementType.getValues(), criteriaBuilder));
+  }
+
+  @Override
   public void whereSubTypeMatches(QueryCondition<String> condition) {
     mySpec =
         mySpec.and(
