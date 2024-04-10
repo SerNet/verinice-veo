@@ -25,6 +25,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
@@ -44,6 +46,12 @@ import lombok.ToString;
 
 @Data
 @Entity(name = "profile_item")
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "UK_symbolic_id_profile",
+          columnNames = {"symbolic_db_id", "owner_db_id"}),
+    })
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> implements ProfileItem {

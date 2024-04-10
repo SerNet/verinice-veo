@@ -26,6 +26,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
@@ -50,6 +52,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "catalogitem")
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "UK_symbolic_id_domain",
+          columnNames = {"symbolic_db_id", "domain_db_id", "domain_template_db_id"}),
+    })
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data

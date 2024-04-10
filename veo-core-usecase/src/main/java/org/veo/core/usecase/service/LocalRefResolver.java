@@ -65,6 +65,9 @@ public class LocalRefResolver implements IdRefResolver {
 
   public <T extends Entity> T injectNewEntity(IEntityRef<T> ref) {
     var entity = factory.create(ref.getType());
+    if (cache.containsKey(ref)) {
+      throw new UnprocessableDataException("Duplicate key: %s".formatted(ref));
+    }
     cache.put(ref, entity);
     // #2834 avoid this mess
     if (ref instanceof ITypedSymbolicId<?, ?> symId) {
