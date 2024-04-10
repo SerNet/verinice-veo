@@ -123,7 +123,7 @@ public interface Element
    *     unit to which the entity belongs
    */
   default void checkSameClient(Element element) {
-    checkSameClient(element.getOwner().getClient());
+    element.checkSameClient(getOwningClient().get());
   }
 
   /**

@@ -225,7 +225,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Incident with ID $randomIncidentId not found"
+        nfEx.message == "incident $randomIncidentId not found"
     }
 
     def "missing domain is handled"() {
@@ -247,7 +247,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated incident is handled"() {

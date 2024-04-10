@@ -70,9 +70,7 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({ClientBoundaryViolationException.class})
   protected ResponseEntity<ApiResponseBody> handle(ClientBoundaryViolationException exception) {
     log.warn("client boundary violation, mapping to 404", exception);
-    return handle(
-        new NotFoundException(exception.getEntityId(), exception.getEntityType()),
-        HttpStatus.NOT_FOUND);
+    return handle(new NotFoundException(exception.getRef()), HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler({IllegalArgumentException.class})

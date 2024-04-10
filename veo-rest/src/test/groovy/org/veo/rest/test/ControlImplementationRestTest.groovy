@@ -652,15 +652,15 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         expect:
         get("/$elementType.pluralTerm/$randomUuid/control-implementations/$subControl2Id/requirement-implementations", 404)
-                .body.message == "$elementType.type.simpleName with ID $randomUuid not found"
+                .body.message == "$elementType.singularTerm $randomUuid not found"
         get("/$elementType.pluralTerm/$elementId/control-implementations/$randomUuid/requirement-implementations", 404)
-                .body.message == "Control with ID $randomUuid not found"
+                .body.message == "control $randomUuid not found"
         get("/$elementType.pluralTerm/$elementId/control-implementations/$subControl3Id/requirement-implementations", 404)
                 .body.message == "$elementType.singularTerm $elementId does not implement control $subControl3Id"
 
         and:
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$randomUuid", 404)
-                .body.message == "Control with ID $randomUuid not found"
+                .body.message == "control $randomUuid not found"
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
                 .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
 
@@ -671,7 +671,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             status: "YES",
             origination: "SYSTEM_SPECIFIC",
         ], "", 404)
-        .body.message == "Control with ID $randomUuid not found"
+        .body.message == "control $randomUuid not found"
         put("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", [
             origin: [targetUri: "/$elementType.pluralTerm/$elementId"],
             control: [targetUri: "/controls/$subControl2Id"],

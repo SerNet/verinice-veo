@@ -221,7 +221,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Asset with ID $randomAssetId not found"
+        nfEx.message == "asset $randomAssetId not found"
     }
 
     def "missing domain is handled"() {
@@ -239,7 +239,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated asset is handled"() {
@@ -266,7 +266,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Asset with ID $randomAssetId not found"
+        nfEx.message == "asset $randomAssetId not found"
     }
 
     def "risk values can be updated"() {

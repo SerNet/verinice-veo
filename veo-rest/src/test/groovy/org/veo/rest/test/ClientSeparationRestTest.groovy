@@ -66,7 +66,7 @@ class ClientSeparationRestTest extends VeoRestTest {
         def illegalGetResponse = get("/controls/$secondaryClientControlId", 404, UserType.DEFAULT)
 
         then: "the existence of secondary client's control is concealed"
-        illegalGetResponse.body.message == "Control with ID $secondaryClientControlId not found"
+        illegalGetResponse.body.message == "control $secondaryClientControlId not found"
 
         and: "response is indistinguishable from a non-existing control response"
         with(randomUUID().toString()) {nonExistingId ->
@@ -90,7 +90,7 @@ class ClientSeparationRestTest extends VeoRestTest {
         def illegalPutResponse = put("/controls/$secondaryClientControlId", body, eTag, 404, UserType.DEFAULT)
 
         then: "the existence of secondary client's control is concealed"
-        illegalPutResponse.body.message == "Control with ID $secondaryClientControlId not found"
+        illegalPutResponse.body.message == "control $secondaryClientControlId not found"
 
         and: "response is indistinguishable from a non-existing control response"
         with(randomUUID().toString()) {nonExistingId ->
@@ -102,7 +102,7 @@ class ClientSeparationRestTest extends VeoRestTest {
         def illegalDeleteResponse = delete("/controls/$secondaryClientControlId", 404, UserType.DEFAULT)
 
         then: "the existence of secondary client's control is concealed"
-        illegalDeleteResponse.body.message == "Control with ID $secondaryClientControlId not found"
+        illegalDeleteResponse.body.message == "control $secondaryClientControlId not found"
 
         and: "response is indistinguishable from a non-existing control response"
         with(randomUUID().toString()) {nonExistingId ->
@@ -115,7 +115,7 @@ class ClientSeparationRestTest extends VeoRestTest {
         expect: "that the secondary client's domain cannot be retrieved"
         get("/domains/$secondaryClientDomainId", 404)
                 .body
-                .message == "Domain with ID $secondaryClientDomainId not found"
+                .message == "domain $secondaryClientDomainId not found"
 
         and: "and that it cannot be referenced"
         post("/units", [

@@ -233,7 +233,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Process with ID $randomProcessId not found"
+        nfEx.message == "process $randomProcessId not found"
     }
 
     def "risk values can be updated"() {
@@ -284,7 +284,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated process is handled"() {

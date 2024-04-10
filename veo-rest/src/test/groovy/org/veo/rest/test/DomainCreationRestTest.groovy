@@ -460,7 +460,7 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "delete is allowed and the domain is deleted"
         delete("/content-creation/domains/${domainId}",204)
         with(get("/domains/$domainId", 404).body) {
-            message ==~ /Domain with ID .* not found/
+            message ==~ /domain .* not found/
         }
     }
 

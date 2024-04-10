@@ -34,6 +34,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def setup() {
         existingDomainId = Key.newUuid()
         existingDomain.getId() >> existingDomainId
+        existingDomain.getIdAsString() >> existingDomainId.uuidValue()
         existingDomain.owner >> existingClient
 
         repository.getById(existingDomainId) >> existingDomain

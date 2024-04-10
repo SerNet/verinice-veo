@@ -80,7 +80,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
 
     def "validates scope client"() {
         given: "a scope for another client"
-        def scope = Mock(Scope)
+        def scope = Spy(Scope)
         scope.id >> Key.newUuid()
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]

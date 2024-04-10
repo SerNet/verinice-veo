@@ -21,6 +21,7 @@ import java.time.Instant
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
+import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.LinkDefinition
@@ -173,8 +174,10 @@ class CompositeElementSpec extends VeoSpec {
         Unit unit2 = newUnit(client2)
 
         def processes = [
-            newProcess(unit),
-            newProcess(unit2)
+            newProcess(unit) { id = Key.newUuid() },
+            newProcess(unit2) {
+                id = Key.newUuid()
+            }
         ] as Set
 
         when: "a composite is reinstantiated with the processes:"
@@ -182,15 +185,16 @@ class CompositeElementSpec extends VeoSpec {
         composite.parts = processes
 
         then: "an exception is thrown"
-        thrown ClientBoundaryViolationException
+        def ex = thrown ClientBoundaryViolationException
+        ex.message == "The client boundary would be violated by the attempted operation on process ${processes[1].idAsString} by client: $client.id"
     }
 
     def "A composite part from another client cannot be added"() {
         given: "a set of two processes from different clients"
         Client client2 = newClient()
         Unit unit2 = newUnit(client2)
-        def p1 = newProcess(unit)
-        def p2 = newProcess(unit2)
+        def p1 = newProcess(unit) { id = Key.newUuid() }
+        def p2 = newProcess(unit2) { id = Key.newUuid() }
 
         when: "a new composite is created"
         def processComposite = newProcess(unit)
@@ -199,7 +203,8 @@ class CompositeElementSpec extends VeoSpec {
         processComposite.parts = [p1, p2] as Set
 
         then: "an exception is thrown"
-        thrown ClientBoundaryViolationException
+        def ex = thrown ClientBoundaryViolationException
+        ex.message == "The client boundary would be violated by the attempted operation on process ${p2.idAsString} by client: $client.id"
     }
 
     def "A composite can return its parts"() {

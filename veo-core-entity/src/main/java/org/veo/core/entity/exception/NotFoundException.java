@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ref.IEntityRef;
+import org.veo.core.entity.ref.TypedId;
 
 /**
  * Runtime exception thrown when a requested object could not be found, i.e. during an update
@@ -38,8 +40,12 @@ import org.veo.core.entity.Key;
  */
 public class NotFoundException extends DomainException {
 
+  public NotFoundException(IEntityRef<?> ref) {
+    super("%s not found".formatted(ref));
+  }
+
   public NotFoundException(Key<UUID> id, Class<? extends Identifiable> type) {
-    super("%s with ID %s not found".formatted(type.getSimpleName(), id.uuidValue()));
+    this(TypedId.from(id.uuidValue(), type));
   }
 
   public NotFoundException(String messageTemplate, Object... arguments) {

@@ -187,7 +187,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Person with ID $randomPersonId not found"
+        nfEx.message == "person $randomPersonId not found"
     }
 
     def "missing domain is handled"() {
@@ -209,7 +209,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated person is handled"() {

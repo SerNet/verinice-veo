@@ -262,7 +262,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Control with ID $randomControlId not found"
+        nfEx.message == "control $randomControlId not found"
     }
 
     def "missing domain is handled"() {
@@ -284,7 +284,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated control is handled"() {

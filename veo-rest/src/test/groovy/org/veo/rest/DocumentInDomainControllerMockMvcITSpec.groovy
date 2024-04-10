@@ -225,7 +225,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Document with ID $randomDocumentId not found"
+        nfEx.message == "document $randomDocumentId not found"
     }
 
     def "missing domain is handled"() {
@@ -247,7 +247,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def nfEx = thrown(NotFoundException)
-        nfEx.message == "Domain with ID $randomDomainId not found"
+        nfEx.message == "domain $randomDomainId not found"
     }
 
     def "unassociated document is handled"() {

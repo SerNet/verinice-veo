@@ -177,7 +177,7 @@ class ProfileRestTest extends VeoRestTest {
 
         expect:
         post("/domains/$testDomainId/profiles/$randomId/incarnation?unit=$unitId", null, 404)
-                .body.message == "Profile with ID $randomId not found"
+                .body.message == "profile $randomId not found"
     }
 
     def putElementTypeDefinitions(String domainId) {
