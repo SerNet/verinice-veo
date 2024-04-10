@@ -40,6 +40,7 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -132,6 +133,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
   @Valid
   @Value
   @NonFinal
+  @Builder
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     QueryCondition<Key<UUID>> unitUuid;

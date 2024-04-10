@@ -47,7 +47,11 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new InputData(existingClient,null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
+        def output = usecase.execute(InputData.builder()
+                .authenticatedClient(existingClient)
+                .pagingConfiguration(pagingConfiguration)
+                .build()
+                )
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
@@ -62,9 +66,14 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = new InputData(existingClient, Mock(QueryCondition) {
-            getValues() >> [existingUnit.id]
-        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration)
+        def input = InputData.builder()
+                .authenticatedClient(existingClient)
+                .unitUuid(Mock(QueryCondition) {
+                    getValues() >> [existingUnit.id]
+                })
+                .subType(Mock(QueryCondition))
+                .pagingConfiguration(pagingConfiguration)
+                .build()
 
         when:
         def output = usecase.execute(input)

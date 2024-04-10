@@ -55,46 +55,44 @@ public class QueryInputMapper {
       String abbreviation,
       String updatedBy,
       PagingConfiguration pagingConfiguration) {
-    return new GetElementsUseCase.InputData(
-        client,
-        createUuidCondition(unitUuid),
-        createSingleValueCondition(Key.uuidFrom(domainId)),
-        createStringFilter(displayName),
-        createNonEmptyCondition(subType),
-        createNonEmptyCondition(status),
-        createUuidListCondition(childElementIds),
-        createSingleValueCondition(hasChildElements),
-        createSingleValueCondition(hasParentElements),
-        createSingleValueCondition(Key.uuidFrom(compositeId)),
-        createSingleValueCondition(Key.uuidFrom(scopeId)),
-        createStringFilter(description),
-        createStringFilter(designator),
-        createStringFilter(name),
-        createStringFilter(abbreviation),
-        createStringFilter(updatedBy),
-        pagingConfiguration);
+    return GetElementsUseCase.InputData.builder()
+        .authenticatedClient(client)
+        .abbreviation(createStringFilter(abbreviation))
+        .childElementIds(createUuidListCondition(childElementIds))
+        .compositeId(createSingleValueCondition(Key.uuidFrom(compositeId)))
+        .description(createStringFilter(description))
+        .designator(createStringFilter(designator))
+        .displayName(createStringFilter(displayName))
+        .domainId(createSingleValueCondition(Key.uuidFrom(domainId)))
+        .hasChildElements(createSingleValueCondition(hasChildElements))
+        .hasParentElements(createSingleValueCondition(hasParentElements))
+        .name(createStringFilter(name))
+        .pagingConfiguration(pagingConfiguration)
+        .scopeId(createSingleValueCondition(Key.uuidFrom(scopeId)))
+        .status(createNonEmptyCondition(status))
+        .subType(createNonEmptyCondition(subType))
+        .unitUuid(createUuidCondition(unitUuid))
+        .updatedBy(createStringFilter(updatedBy))
+        .build();
   }
 
   public static GetElementsUseCase.InputData map(
       Client client, SearchQueryDto searchQuery, PagingConfiguration pagingConfiguration) {
-    return new GetElementsUseCase.InputData(
-        client,
-        transformCondition(searchQuery.getUnitId()),
-        null,
-        transformCondition(searchQuery.getDisplayName()),
-        transformCondition(searchQuery.getSubType()),
-        transformCondition(searchQuery.getStatus()),
-        transformUuidCondition(searchQuery.getChildElementIds()),
-        transformCondition(searchQuery.getHasChildElements()),
-        transformCondition(searchQuery.getHasParentElements()),
-        null,
-        null,
-        transformCondition(searchQuery.getDescription()),
-        transformCondition(searchQuery.getDesignator()),
-        transformCondition(searchQuery.getName()),
-        null,
-        transformCondition(searchQuery.getUpdatedBy()),
-        pagingConfiguration);
+    return GetElementsUseCase.InputData.builder()
+        .authenticatedClient(client)
+        .childElementIds(transformUuidCondition(searchQuery.getChildElementIds()))
+        .description(transformCondition(searchQuery.getDescription()))
+        .designator(transformCondition(searchQuery.getDesignator()))
+        .displayName(transformCondition(searchQuery.getDisplayName()))
+        .hasChildElements(transformCondition(searchQuery.getHasChildElements()))
+        .hasParentElements(transformCondition(searchQuery.getHasParentElements()))
+        .name(transformCondition(searchQuery.getName()))
+        .pagingConfiguration(pagingConfiguration)
+        .status(transformCondition(searchQuery.getStatus()))
+        .subType(transformCondition(searchQuery.getSubType()))
+        .unitUuid(transformCondition(searchQuery.getUnitId()))
+        .updatedBy(transformCondition(searchQuery.getUpdatedBy()))
+        .build();
   }
 
   public static QueryCatalogItemsUseCase.InputData map(

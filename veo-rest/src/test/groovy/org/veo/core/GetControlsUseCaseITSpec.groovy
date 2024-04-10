@@ -71,11 +71,14 @@ class GetControlsUseCaseITSpec extends AbstractPerformanceITSpec {
 
         when:
         def output = executeInTransaction {
-            getControlsUseCase.execute(new GetElementsUseCase.InputData(client, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new PagingConfiguration(numberOfControlsToRetrieve, 0, 'name', PagingConfiguration.SortOrder.ASCENDING))).tap {
-                elements.resultPage.each {
-                    entityToDtoTransformer.transform2Dto(it, false)
-                }
-            }
+            getControlsUseCase.execute(GetElementsUseCase.InputData.builder()
+                    .authenticatedClient(client)
+                    .pagingConfiguration(new PagingConfiguration(numberOfControlsToRetrieve, 0, 'name', PagingConfiguration.SortOrder.ASCENDING))
+                    .build()).tap {
+                        elements.resultPage.each {
+                            entityToDtoTransformer.transform2Dto(it, false)
+                        }
+                    }
         }
         def queryCounts = QueryCountHolder.grandTotal
 
