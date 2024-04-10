@@ -34,6 +34,7 @@ import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.DomainBaseState;
@@ -87,6 +88,7 @@ public class DomainStateMapper {
 
   private void map(DomainBaseState source, DomainBase target) {
     var resolver = refResolverFactory.local();
+    var domainRef = TypedId.from(source.getSelfId(), source.getModelInterface());
     target.setAbbreviation(source.getAbbreviation());
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitionStates().entrySet().stream()
@@ -106,14 +108,20 @@ public class DomainStateMapper {
     // may reference each other.
     target.setCatalogItems(
         source.getCatalogItemStates().stream()
-            .map(ci -> resolver.injectNewEntity(TypedId.from(ci.getSelfId(), CatalogItem.class)))
+            .map(
+                ci ->
+                    resolver.injectNewEntity(
+                        TypedSymbolicId.from(ci.getSelfId(), CatalogItem.class, domainRef)))
             .collect(toSet()));
     source
         .getCatalogItemStates()
         .forEach(
             ciState ->
                 mapTemplateItem(
-                    ciState, resolver.resolve(ciState.getSelfId(), CatalogItem.class), resolver));
+                    ciState,
+                    resolver.resolve(
+                        TypedSymbolicId.from(ciState.getSelfId(), CatalogItem.class, domainRef)),
+                    resolver));
 
     target.setProfiles(
         source.getProfileStates().stream()
@@ -126,6 +134,7 @@ public class DomainStateMapper {
   }
 
   private Profile toProfile(ProfileState source, LocalRefResolver resolver, DomainBase owner) {
+    var profileRef = TypedId.from(source.getSelfId(), Profile.class);
     var target = entityFactory.createProfile(owner);
     target.setName(source.getName());
     target.setDescription(source.getDescription());
@@ -138,7 +147,7 @@ public class DomainStateMapper {
             .map(
                 itemState ->
                     resolver.injectNewEntity(
-                        TypedId.from(itemState.getSelfId(), ProfileItem.class)))
+                        TypedSymbolicId.from(itemState.getSelfId(), ProfileItem.class, profileRef)))
             .collect(toSet()));
     source
         .getItemStates()
@@ -146,7 +155,8 @@ public class DomainStateMapper {
             itemState ->
                 mapProfileItem(
                     itemState,
-                    resolver.resolve(itemState.getSelfId(), ProfileItem.class),
+                    resolver.resolve(
+                        TypedSymbolicId.from(itemState.getSelfId(), ProfileItem.class, profileRef)),
                     resolver));
 
     return target;
@@ -162,6 +172,7 @@ public class DomainStateMapper {
       void mapTemplateItem(
           TemplateItemState<T, TNamespace> source, T target, IdRefResolver resolver) {
     EntityStateMapper.mapNameableProperties(source, target);
+    target.setSymbolicId(Key.uuidFrom(source.getSelfId()));
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
     target.setSubType(source.getSubType());

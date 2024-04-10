@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
 public interface ControlImplementationTailoringReferenceState<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -31,5 +31,5 @@ public interface ControlImplementationTailoringReferenceState<
   String getDescription();
 
   @Nullable
-  ITypedId<T> getResponsibleRef();
+  ITypedSymbolicId<T, TNamespace> getResponsibleRef();
 }

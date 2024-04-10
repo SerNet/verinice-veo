@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,30 +30,37 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.repository.ProfileItemRepository;
 import org.veo.persistence.access.jpa.ProfileItemDataRepository;
 import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
+import lombok.RequiredArgsConstructor;
+
 @Repository
-public class ProfileItemRepositoryImpl
-    extends AbstractIdentifiableVersionedRepository<ProfileItem, ProfileItemData>
-    implements ProfileItemRepository {
+@RequiredArgsConstructor
+public class ProfileItemRepositoryImpl implements ProfileItemRepository {
 
   private final ProfileItemDataRepository profileItemDataRepository;
-
-  public ProfileItemRepositoryImpl(
-      ProfileItemDataRepository dataRepository, ValidationService validator) {
-    super(dataRepository, validator);
-    profileItemDataRepository = dataRepository;
-  }
+  private final ValidationService validator;
 
   @Override
-  public Set<ProfileItem> findAllByIdsFetchDomain(Set<Key<UUID>> ids, Client client) {
-    return profileItemDataRepository
-        .findAllByIds(ids.stream().map(Key::uuidValue).toList(), client)
+  public Set<ProfileItem> findAllByRefs(
+      Set<ITypedSymbolicId<ProfileItem, ? extends Profile>> refs, Client client) {
+    return refs.stream()
+        .collect(Collectors.groupingBy(ITypedSymbolicId::getNamespaceId))
+        .entrySet()
         .stream()
-        .map(ProfileItem.class::cast)
+        .flatMap(
+            entry -> {
+              var namespaceId = entry.getKey();
+              var symIds =
+                  entry.getValue().stream()
+                      .map(ITypedSymbolicId::getSymbolicId)
+                      .collect(Collectors.toSet());
+              return profileItemDataRepository.findAllByIds(symIds, namespaceId, client).stream();
+            })
         .collect(Collectors.toSet());
   }
 
@@ -72,5 +80,18 @@ public class ProfileItemRepositoryImpl
     return profileItemDataRepository.findAllByProfile(profile, type.getSingularTerm()).stream()
         .map(ProfileItem.class::cast)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public ProfileItem save(ProfileItem item) {
+    validator.validate(item);
+    return profileItemDataRepository.save((ProfileItemData) item);
+  }
+
+  @Override
+  public void saveAll(Collection<ProfileItem> templateItems) {
+    templateItems.forEach(validator::validate);
+    profileItemDataRepository.saveAll(
+        templateItems.stream().map(ti -> (ProfileItemData) ti).toList());
   }
 }

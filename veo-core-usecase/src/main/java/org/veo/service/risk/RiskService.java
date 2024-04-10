@@ -32,7 +32,6 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
@@ -71,7 +70,7 @@ public class RiskService {
   private final EventPublisher eventPublisher;
 
   public void evaluateChangedRiskComponent(Element element) {
-    Class<? extends Identifiable> type = element.getModelInterface();
+    var type = element.getModelInterface();
 
     if (Asset.class.isAssignableFrom(type)) {
       assetRepository.findWithRisksAndScenarios(Set.of(element.getId()));

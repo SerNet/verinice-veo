@@ -64,7 +64,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         existingDomain.modelInterface >> Domain.class
         domainRepository.getById(existingDomainId) >> existingDomain
 
-        item1.id >> Key.newUuid()
+        item1.symbolicId >> Key.newUuid()
         item1.domainBase >> existingDomain
         item1.requireDomainMembership() >> existingDomain
     }

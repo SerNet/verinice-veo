@@ -76,6 +76,16 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/domains/753dcdd6-597a-4f6d-9096-6e3b2cf8059e/profiles/065e7d6c-0dff-4b1f-9244-90a0c745d7f1/items/3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9' | '3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9'
     }
 
+    def "parsed owner id for #url is #parsedId"() {
+        expect:
+        referenceAssembler.parseNamespaceId(url) == parsedId
+
+        where:
+        url                                                                                                                     | parsedId
+        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/catalog-items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | '37aa44d5-3707-416a-864c-839f97535a06'
+        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/profiles/02557ca8-a579-4e53-a161-b1433b62eb77/items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | '02557ca8-a579-4e53-a161-b1433b62eb77'
+    }
+
     def "parsed type for #url is #type"() {
         1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
 
@@ -175,7 +185,7 @@ class ReferenceAssemblerImplSpec extends Specification {
             idAsString >> domainId
         }
         CatalogItem catalogItem = Stub {
-            idAsString >> itemId
+            symbolicIdAsString >> itemId
             domainBase >> domain
             modelInterface >> CatalogItem
         }

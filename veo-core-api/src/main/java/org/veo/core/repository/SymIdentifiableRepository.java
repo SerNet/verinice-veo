@@ -15,20 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.repository;
 
-import java.util.Set;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
-import org.veo.core.entity.state.ProfileItemState;
-
-public interface ProfileState {
-  String getSelfId();
-
-  String getName();
-
-  String getDescription();
-
-  String getLanguage();
-
-  Set<ProfileItemState> getItemStates();
-}
+public interface SymIdentifiableRepository<
+        T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
+    extends RepositoryBase<T, ITypedSymbolicId<T, ? extends TNamespace>> {}

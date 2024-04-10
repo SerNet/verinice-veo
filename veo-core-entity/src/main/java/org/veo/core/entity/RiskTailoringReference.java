@@ -20,8 +20,8 @@ package org.veo.core.entity;
 import java.util.Map;
 import java.util.Optional;
 
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.state.RiskTailoringReferenceState;
 
@@ -37,8 +37,8 @@ public interface RiskTailoringReference<
   T getMitigation();
 
   @Override
-  default ITypedId<T> getMitigationRef() {
-    return Optional.ofNullable(getMitigation()).map(TypedId::from).orElse(null);
+  default ITypedSymbolicId<T, TNamespace> getMitigationRef() {
+    return Optional.ofNullable(getMitigation()).map(TypedSymbolicId::from).orElse(null);
   }
 
   void setRiskOwner(T riskOwner);
@@ -46,8 +46,8 @@ public interface RiskTailoringReference<
   T getRiskOwner();
 
   @Override
-  default ITypedId<T> getRiskOwnerRef() {
-    return Optional.ofNullable(getRiskOwner()).map(TypedId::from).orElse(null);
+  default ITypedSymbolicId<T, TNamespace> getRiskOwnerRef() {
+    return Optional.ofNullable(getRiskOwner()).map(TypedSymbolicId::from).orElse(null);
   }
 
   Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();

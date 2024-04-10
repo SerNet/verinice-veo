@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.Versioned;
 
 /** This class provides methods to manage ETags, see: https://en.wikipedia.org/wiki/HTTP_ETag. */
@@ -38,6 +39,14 @@ public final class ETag {
 
   public static <T extends Identifiable & Versioned> String from(T entity) {
     return from(entity.getIdAsString(), entity.getVersion());
+  }
+
+  public static <T extends SymIdentifiable<?, ?> & Versioned> String fromSymIdentifiable(T entity) {
+    return from(
+        entity.getSymbolicIdAsString()
+            + entity.getNamespace().getModelType()
+            + entity.getNamespace().getIdAsString(),
+        entity.getVersion());
   }
 
   public static String from(String id, long version) {

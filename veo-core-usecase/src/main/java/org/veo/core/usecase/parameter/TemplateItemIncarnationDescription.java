@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.TailoringReferenceParameterState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 
@@ -42,8 +42,8 @@ public class TemplateItemIncarnationDescription<
   private List<TailoringReferenceParameter> references = new ArrayList<>();
 
   @Override
-  public ITypedId<TemplateItem<?, ?>> getItemRef() {
-    return TypedId.from(item);
+  public ITypedSymbolicId<T, TNamespace> getItemRef() {
+    return TypedSymbolicId.from(item);
   }
 
   @Override

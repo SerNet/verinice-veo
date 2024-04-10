@@ -120,7 +120,7 @@ public class CatalogMigrationService {
                 log.debug(
                     "Removing obsolete custom aspect {} from element {}.",
                     entry.getKey(),
-                    item.getIdAsString());
+                    item.getSymbolicIdAsString());
                 item.getCustomAspects().remove(entry.getKey());
                 return;
               }

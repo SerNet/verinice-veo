@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.Key
+import org.veo.core.entity.ref.TypedSymbolicId
 import org.veo.persistence.access.CatalogItemRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -60,10 +62,10 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
             status = "NEW"
         }
         client = clientRepository.save(client)
-        def itemId = client.domains.first().catalogItems.first().id
+        def itemRef = TypedSymbolicId.from(client.domains.first().catalogItems.first())
 
         when:
-        def item = catalogItemRepository.findById(itemId)
+        def item = catalogItemRepository.findByRef(itemRef, client)
 
         then:
         item.present
@@ -82,6 +84,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
         when:
         CatalogItem catalogItem = new CatalogItemData()
+        catalogItem.setSymbolicId(Key.newUuid())
         catalogItem.setName("my name")
         catalogItem.setSubType("ctl")
         catalogItem.setStatus("NEW")

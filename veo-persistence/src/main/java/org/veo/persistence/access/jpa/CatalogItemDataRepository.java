@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
 
@@ -26,19 +28,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.DomainData;
 
-public interface CatalogItemDataRepository
-    extends IdentifiableVersionedDataRepository<CatalogItemData> {
+public interface CatalogItemDataRepository extends CrudRepository<CatalogItemData, Key<UUID>> {
 
-  @Query("select e from #{#entityName} e where e.dbId = ?1 and e.domain = ?2")
+  @Query("select e from #{#entityName} e where e.symbolicDbId = ?1 and e.domain = ?2")
   Optional<CatalogItem> findByIdInDomain(String id, DomainData domain);
 
   @Query(
@@ -46,7 +49,7 @@ public interface CatalogItemDataRepository
          select ci from #{#entityName} ci
            left join fetch ci.domain
            left join fetch ci.domainTemplate
-           where ci.dbId in ?1 and ci.domain.owner = ?2
+           where ci.symbolicDbId in ?1 and ci.domain.owner = ?2
          """)
   Set<CatalogItemData> findAllByIdsFetchDomain(Iterable<String> ids, Client client);
 
@@ -57,8 +60,9 @@ public interface CatalogItemDataRepository
               left join fetch ci.domainTemplate
               left join fetch ci.tailoringReferences tr
               left join fetch tr.target
-              where ci.dbId in ?1 and ci.domain.owner = ?2
+              where ci.symbolicDbId in ?1 and ci.domain.owner = ?2
           """)
+  @Deprecated
   Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(
       Iterable<String> ids, Client client);
 
@@ -96,4 +100,19 @@ public interface CatalogItemDataRepository
                   where dt.dbId = ?1
               """)
   Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(String domainTemplateId);
+
+  @Query(
+      """
+    select ci from catalogitem ci
+        where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2 or (ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3)
+  """)
+  Set<CatalogItem> findAllByIdsAndDomain(
+      Collection<String> symbolicIds, String domainId, String clientId);
+
+  @Query(
+      """
+    select ci from catalogitem ci
+        where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2
+  """)
+  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<String> symbolicIds, String domainTemplateId);
 }

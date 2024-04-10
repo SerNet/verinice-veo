@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,9 +29,11 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.repository.CatalogItemQuery;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.SubTypeCount;
@@ -40,23 +43,19 @@ import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
+import lombok.RequiredArgsConstructor;
+
 @Repository
-public class CatalogItemRepositoryImpl
-    extends AbstractIdentifiableVersionedRepository<CatalogItem, CatalogItemData>
-    implements CatalogItemRepository {
+@RequiredArgsConstructor
+public class CatalogItemRepositoryImpl implements CatalogItemRepository {
 
   private final CatalogItemDataRepository catalogItemDataRepository;
-
-  public CatalogItemRepositoryImpl(
-      CatalogItemDataRepository dataRepository, ValidationService validator) {
-    super(dataRepository, validator);
-    catalogItemDataRepository = dataRepository;
-  }
+  private final ValidationService validator;
 
   @Override
   public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(
-      Set<Key<UUID>> ids, Client client) {
-    var idStrings = ids.stream().map(Key::uuidValue).toList();
+      Set<Key<UUID>> symIds, Client client) {
+    var idStrings = symIds.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
             catalogItemDataRepository
                 .findAllByIdsFetchDomainAndTailoringReferences(idStrings, client)
@@ -78,11 +77,32 @@ public class CatalogItemRepositoryImpl
   }
 
   @Override
-  public Set<CatalogItem> findAllByIdsFetchDomain(Set<Key<UUID>> ids, Client client) {
-    return catalogItemDataRepository
-        .findAllByIdsFetchDomain(ids.stream().map(Key::uuidValue).toList(), client)
+  public Set<CatalogItem> findAllByRefs(
+      Set<ITypedSymbolicId<CatalogItem, ? extends DomainBase>> refs, Client client) {
+    return refs.stream()
+        .collect(Collectors.groupingBy(ITypedSymbolicId::getNamespaceRef))
+        .entrySet()
         .stream()
-        .map(CatalogItem.class::cast)
+        .flatMap(
+            entry -> {
+              var namespaceType = entry.getKey().getType();
+              var namespaceId = entry.getKey().getId();
+              var symIds =
+                  entry.getValue().stream()
+                      .map(ITypedSymbolicId::getSymbolicId)
+                      .collect(Collectors.toSet());
+              if (namespaceType.equals(Domain.class)) {
+                return catalogItemDataRepository
+                    .findAllByIdsAndDomain(symIds, namespaceId, client.getIdAsString())
+                    .stream();
+              }
+              if (namespaceType.equals(DomainTemplate.class)) {
+                return catalogItemDataRepository
+                    .findAllByIdsAndDomainTemplate(symIds, namespaceId)
+                    .stream();
+              }
+              throw new UnsupportedOperationException();
+            })
         .collect(Collectors.toSet());
   }
 
@@ -95,6 +115,19 @@ public class CatalogItemRepositoryImpl
         .stream()
         .map(tr -> (TailoringReference<CatalogItem, DomainBase>) tr)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public CatalogItem save(CatalogItem item) {
+    validator.validate(item);
+    return catalogItemDataRepository.save((CatalogItemData) item);
+  }
+
+  @Override
+  public void saveAll(Collection<CatalogItem> templateItems) {
+    templateItems.forEach(validator::validate);
+    catalogItemDataRepository.saveAll(
+        templateItems.stream().map(ci -> (CatalogItemData) ci).toList());
   }
 
   @Override

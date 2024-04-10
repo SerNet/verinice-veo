@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 
 import lombok.Data;
@@ -27,4 +28,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ExportDomainDto extends ExportDomainTemplateDto {
   private IdRef<DomainTemplate> domainTemplate;
+
+  @Override
+  public Class<Domain> getModelInterface() {
+    return Domain.class;
+  }
 }

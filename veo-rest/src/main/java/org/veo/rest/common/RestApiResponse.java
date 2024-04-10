@@ -29,7 +29,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.usecase.common.ETag;
 
@@ -52,10 +52,10 @@ public class RestApiResponse {
     return bodyBuilder.body(body);
   }
 
-  public static <TEntity extends Identifiable & Versioned, TDto>
+  public static <TEntity extends SymIdentifiable<?, ?> & Versioned, TDto>
       ResponseEntity<TDto> okOrNotModified(
           TEntity entity, Function<TEntity, TDto> transformer, WebRequest webRequest) {
-    var etag = ETag.from(entity);
+    var etag = ETag.fromSymIdentifiable(entity);
     if (webRequest.checkNotModified(etag)) {
       return ResponseEntity.status(HttpStatus.NOT_MODIFIED.value()).build();
     }

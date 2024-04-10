@@ -49,7 +49,7 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
 
     def "can persist profile #type tailoring references"() {
         given:
-        def catalogItemIds = txTemplate.execute {
+        def catalogItemSymIds = txTemplate.execute {
             def item1 = newCatalogItem(domain) {
                 name = "target"
                 elementType = "asset"
@@ -69,11 +69,11 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
                 item1,
                 item2
             ]
-            )*.idAsString
+            )*.symbolicIdAsString
         }
 
         when:
-        def items = catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(catalogItemIds, client)
+        def items = catalogItemRepository.findAllByIdsAndDomain(catalogItemSymIds, domain.idAsString, client.idAsString)
 
         then:
         items.size() == 2

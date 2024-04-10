@@ -24,10 +24,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.transform.IdentifiableFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -36,16 +42,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LocalRefResolver implements IdRefResolver {
   private final IdentifiableFactory factory;
-  protected final Map<ITypedId<?>, Identifiable> cache = new HashMap<>();
+  protected final Map<IEntityRef<?>, Entity> cache = new HashMap<>();
 
-  public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
+  public <TEntity extends Entity> TEntity resolve(IEntityRef<TEntity> objectReference)
       throws NotFoundException {
     return resolve(Collections.singleton(objectReference)).iterator().next();
   }
 
   @Override
-  public <TEntity extends Identifiable> Set<TEntity> resolve(
-      Set<? extends ITypedId<TEntity>> objectReferences) {
+  public <TEntity extends Entity, TRef extends IEntityRef<TEntity>> Set<TEntity> resolve(
+      Set<? extends TRef> objectReferences) {
     return objectReferences.stream()
         .map(
             ref ->
@@ -57,9 +63,28 @@ public class LocalRefResolver implements IdRefResolver {
         .collect(Collectors.toSet());
   }
 
-  public <T extends Identifiable> T injectNewEntity(ITypedId<T> ref) {
+  public <T extends Entity> T injectNewEntity(IEntityRef<T> ref) {
     var entity = factory.create(ref.getType());
     cache.put(ref, entity);
+    // #2834 avoid this mess
+    if (ref instanceof ITypedSymbolicId<?, ?> symId) {
+      if (symId.getNamespaceType().equals(Domain.class)) {
+        cache.put(
+            TypedSymbolicId.from(
+                symId.getSymbolicId(),
+                (Class) symId.getType(),
+                TypedId.from(symId.getNamespaceId(), DomainTemplate.class)),
+            entity);
+      }
+      if (symId.getNamespaceType().equals(DomainTemplate.class)) {
+        cache.put(
+            TypedSymbolicId.from(
+                symId.getSymbolicId(),
+                (Class) symId.getType(),
+                TypedId.from(symId.getNamespaceId(), Domain.class)),
+            entity);
+      }
+    }
     return entity;
   }
 }

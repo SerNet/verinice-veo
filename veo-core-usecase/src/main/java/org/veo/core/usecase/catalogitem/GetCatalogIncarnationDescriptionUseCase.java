@@ -46,6 +46,7 @@ import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -96,8 +97,8 @@ public class GetCatalogIncarnationDescriptionUseCase
             .sorted(
                 Comparator.comparingInt(
                     item ->
-                        input.catalogItemIds.contains(item.getId())
-                            ? input.catalogItemIds.indexOf(item.getId())
+                        input.catalogItemIds.contains(item.getSymbolicId())
+                            ? input.catalogItemIds.indexOf(item.getSymbolicId())
                             : Integer.MAX_VALUE))
             .map(
                 catalogItem ->
@@ -118,13 +119,14 @@ public class GetCatalogIncarnationDescriptionUseCase
         catalogItemRepository
             .findAllByIdsFetchDomainAndTailoringReferences(new HashSet<>(catalogItemIds), client)
             .stream()
-            .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
+            .collect(Collectors.toMap(CatalogItem::getSymbolicId, Function.identity()));
     return catalogItemIds.stream()
         .map(
             id -> {
               var catalogItem = catalogItemsById.get(id);
               if (catalogItem == null) {
-                throw new NotFoundException(id, CatalogItem.class);
+                throw new NotFoundException(
+                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, null));
               }
               return catalogItem;
             })

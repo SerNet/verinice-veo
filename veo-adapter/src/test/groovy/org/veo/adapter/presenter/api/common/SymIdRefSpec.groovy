@@ -18,12 +18,13 @@
 package org.veo.adapter.presenter.api.common
 
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 
 import spock.lang.Issue
 import spock.lang.Specification
 
-class IdentifiableReferenceSpec extends Specification {
+class SymIdRefSpec extends Specification {
 
     @Issue('VEO-560')
     def "create IdRef for CatalogItem"() {
@@ -32,11 +33,14 @@ class IdentifiableReferenceSpec extends Specification {
             getId() >> Key.newUuid()
             getModelInterface() >> CatalogItem
             getDisplayName() >> null
+            namespace >> Stub(Domain) {
+                getModelInterface() >> Domain
+            }
         }
         ReferenceAssembler referenceAssembler = Mock()
 
         when:
-        def mor = IdRef.from(catalogItem, referenceAssembler)
+        def mor = SymIdRef.from(catalogItem, referenceAssembler)
 
         then:
         mor.displayName == null

@@ -21,8 +21,8 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.TailoringReferenceState;
 
 /**
@@ -40,8 +40,8 @@ public interface TailoringReference<
   String PLURAL_TERM = "tailoringreferences";
 
   @Override
-  default ITypedId<T> getTargetRef() {
-    return TypedId.from(getTarget());
+  default ITypedSymbolicId<T, TNamespace> getTargetRef() {
+    return TypedSymbolicId.from(getTarget());
   }
 
   @NotNull

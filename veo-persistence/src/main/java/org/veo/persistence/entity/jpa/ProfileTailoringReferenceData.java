@@ -24,7 +24,6 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.TemplateItemReference;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,8 +32,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileTailoringReferenceData extends ProfileReferenceData
-    implements TailoringReference<ProfileItem, Profile>,
-        TemplateItemReference<ProfileItem, Profile> {
+    implements TailoringReference<ProfileItem, Profile> {
   @Column(name = "reference_type", columnDefinition = "int4")
   private TailoringReferenceType referenceType;
 

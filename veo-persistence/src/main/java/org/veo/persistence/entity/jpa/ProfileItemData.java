@@ -23,13 +23,9 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationTailoringReference;
@@ -51,11 +47,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> implements ProfileItem {
-  @Id
-  @ToString.Include
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  private String dbId;
 
   @ManyToOne(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
   private CatalogItem appliedCatalogItem;

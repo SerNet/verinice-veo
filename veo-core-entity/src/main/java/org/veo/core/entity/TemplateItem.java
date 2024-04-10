@@ -31,7 +31,7 @@ import org.veo.core.entity.state.TemplateItemState;
 
 public interface TemplateItem<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
-    extends TemplateItemState<T, TNamespace>, Identifiable, Versioned {
+    extends TemplateItemState<T, TNamespace>, SymIdentifiable<T, TNamespace>, Versioned {
   void setElementType(String aType);
 
   void setSubType(String subType);
@@ -42,7 +42,7 @@ public interface TemplateItem<
 
   @Override
   default String getSelfId() {
-    return getIdAsString();
+    return getSymbolicIdAsString();
   }
 
   @Override

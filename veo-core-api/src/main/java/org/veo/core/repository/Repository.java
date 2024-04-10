@@ -21,8 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ref.ITypedId;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -38,7 +42,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * uses factories and builders to build entities to specification.
  * */
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
-public interface Repository<T> {
+public interface Repository<T extends Identifiable> extends RepositoryBase<T, ITypedId<T>> {
+
+  @Override
+  default Set<T> findAllByRefs(Set<ITypedId<T>> refs, Client client) {
+    return findByIds(refs.stream().map(ITypedId::toKey).collect(Collectors.toSet()));
+  }
 
   T save(T entity);
 

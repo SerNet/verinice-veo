@@ -84,7 +84,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         createClient()
         Domain domain = createCatalogItems()
         QueryCountHolder.clear()
-        def itemIds = domain.catalogItems.collect { it.id }
+        def itemIds = domain.catalogItems.collect { it.symbolicId }
 
         when: "simulating the GET"
         def dto = executeInTransaction {
@@ -114,7 +114,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 13
+        queryCounts.select == 14
         queryCounts.insert == 18
         queryCounts.time < 500
     }

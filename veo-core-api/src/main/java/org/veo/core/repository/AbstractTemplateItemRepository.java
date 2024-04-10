@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,9 +28,13 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 
 public interface AbstractTemplateItemRepository<
-    T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
-  Set<T> findAllByIdsFetchDomain(Set<Key<UUID>> ids, Client client);
+        T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+    extends SymIdentifiableRepository<T, TNamespace> {
 
   Set<TailoringReference<T, TNamespace>> findTailoringReferencesByIds(
       Set<Key<UUID>> ids, Client client);
+
+  T save(T item);
+
+  void saveAll(Collection<T> templateItems);
 }

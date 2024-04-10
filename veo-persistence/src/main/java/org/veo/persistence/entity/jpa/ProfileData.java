@@ -125,4 +125,9 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   public String getDisplayName() {
     return name;
   }
+
+  @Override
+  public String getSelfId() {
+    return getDbId();
+  }
 }

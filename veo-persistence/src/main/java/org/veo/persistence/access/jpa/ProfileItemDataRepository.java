@@ -18,23 +18,25 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData;
 
-public interface ProfileItemDataRepository
-    extends IdentifiableVersionedDataRepository<ProfileItemData> {
+public interface ProfileItemDataRepository extends CrudRepository<ProfileItemData, Key<UUID>> {
 
   @Query(
       """
          select pi from #{#entityName} pi
-           where pi.dbId in ?1 and pi.owner.domain.owner = ?2
+           where pi.owner.dbId = ?2 and pi.symbolicDbId in ?1 and pi.owner.domain.owner = ?3
          """)
-  Set<ProfileItemData> findAllByIds(Iterable<String> ids, Client client);
+  Set<ProfileItemData> findAllByIds(Iterable<String> symIds, String profileId, Client client);
 
   @Query(
       """

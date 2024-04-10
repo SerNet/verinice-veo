@@ -23,8 +23,10 @@ import java.util.UUID;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.ref.ITypedId;
@@ -63,6 +65,18 @@ public interface ReferenceAssembler {
   String targetReferenceOf(AbstractRisk<?, ?> risk);
 
   /**
+   * Returns an absolute reference to the target object, where the target object is identified using
+   * a symbolic ID and namespace (parent entity) reference.
+   *
+   * <p>I.e. the URI to an object with a symbolic ID could look like this:
+   * "/domains/<DOMAIN-UUID>/catalog-items/<CATALOG-ITEM-SYMBOLIC-UUID>"
+   *
+   * @return the URI of the specific target object
+   */
+  <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
+      String targetReferenceOf(T entity);
+
+  /**
    * Returns a reference to a collection of searches for the target type. Searches are a ressource
    * so they can be created, requested and deleted (think: "named search").
    *
@@ -87,7 +101,7 @@ public interface ReferenceAssembler {
    * @param uri the URI which may be a URL.
    * @return The class of the specific {@link Identifiable} type.
    */
-  Class<? extends Identifiable> parseType(String uri);
+  Class<? extends Entity> parseType(String uri);
 
   /**
    * Extract the objects ID from the given URI.
@@ -95,6 +109,12 @@ public interface ReferenceAssembler {
    * @param uri the URI which may be a URL
    */
   String parseId(String uri);
+
+  /** Extracts the UUID of the namespace (parent entity) of a {@link SymIdentifiable} entity. */
+  String parseNamespaceId(String uri);
+
+  /** Extracts the type of the namespace (parent entity) of a {@link SymIdentifiable} entity. */
+  Class<? extends Identifiable> parseNamespaceType(String uri);
 
   /** Transforms the given adapter layer reference to an entity key. */
   Key<UUID> toKey(ITypedId<? extends Identifiable> reference);

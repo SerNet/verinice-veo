@@ -26,6 +26,7 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -46,11 +47,10 @@ public class GetProfileItemUseCase extends AbstractProfileUseCase
     return new OutputData(
         profileRepo
             .findProfileItemByIdFetchTailoringReferences(
-                input.profile.toKey(),
-                input.profileItem.toKey(),
+                input.profileItem.getOwnerKey(),
+                input.profileItem.getSymbolicKey(),
                 input.getAuthenticatedClient().getId())
-            .orElseThrow(
-                () -> new NotFoundException(input.profileItem.getId(), ProfileItem.class)));
+            .orElseThrow(() -> new NotFoundException(input.profileItem)));
   }
 
   @Valid
@@ -58,8 +58,7 @@ public class GetProfileItemUseCase extends AbstractProfileUseCase
   public static class InputData implements UseCase.InputData {
     @NotNull Client authenticatedClient;
     @NotNull ITypedId<Domain> domain;
-    @NotNull ITypedId<Profile> profile;
-    @NotNull ITypedId<ProfileItem> profileItem;
+    @NotNull ITypedSymbolicId<ProfileItem, Profile> profileItem;
   }
 
   @Valid

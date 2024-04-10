@@ -48,7 +48,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -353,7 +353,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     items.collect(Collectors.groupingBy(Element::getModelInterface)).forEach(this::fullyLoadItems);
   }
 
-  private void fullyLoadItems(Class<? extends Identifiable> type, List<TDataClass> items) {
+  private void fullyLoadItems(Class<? extends Entity> type, List<TDataClass> items) {
     var ids = items.stream().map(Element::getIdAsString).toList();
     ListUtils.partition(ids, 10000)
         .forEach(

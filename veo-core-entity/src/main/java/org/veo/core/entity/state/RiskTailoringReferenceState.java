@@ -22,16 +22,16 @@ import java.util.Map;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 public interface RiskTailoringReferenceState<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends TailoringReferenceState<T, TNamespace> {
 
-  ITypedId<T> getMitigationRef();
+  ITypedSymbolicId<T, TNamespace> getMitigationRef();
 
-  ITypedId<T> getRiskOwnerRef();
+  ITypedSymbolicId<T, TNamespace> getRiskOwnerRef();
 
   Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();
 }

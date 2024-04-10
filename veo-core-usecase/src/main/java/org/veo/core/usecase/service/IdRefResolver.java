@@ -19,8 +19,10 @@ package org.veo.core.usecase.service;
 
 import java.util.Set;
 
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.TypedId;
 
@@ -39,7 +41,7 @@ public interface IdRefResolver {
    * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when entity does not
    *     belong to this resolver's client.
    */
-  <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
+  <TEntity extends Entity> TEntity resolve(IEntityRef<TEntity> objectReference)
       throws NotFoundException;
 
   /**
@@ -59,6 +61,6 @@ public interface IdRefResolver {
    * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when one or more
    *     entities do not belong to this resolver's client.
    */
-  <TEntity extends Identifiable> Set<TEntity> resolve(
-      Set<? extends ITypedId<TEntity>> objectReferences);
+  <TEntity extends Entity, TRef extends IEntityRef<TEntity>> Set<TEntity> resolve(
+      Set<? extends TRef> objectReferences);
 }

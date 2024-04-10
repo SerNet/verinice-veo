@@ -47,14 +47,14 @@ public enum EntityType {
   SCENARIO(Scenario.class, Scenario.SINGULAR_TERM, Scenario.PLURAL_TERM),
   SCOPE(Scope.class, Scope.SINGULAR_TERM, Scope.PLURAL_TERM);
 
-  @Getter private final Class<? extends Identifiable> type;
+  @Getter private final Class<? extends Entity> type;
   @Getter private final String singularTerm;
   @Getter private final String pluralTerm;
 
   public static final Set<String> PLURAL_TERMS =
       Stream.of(values()).map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
 
-  public static final Set<Class<? extends Identifiable>> TYPES =
+  public static final Set<Class<? extends Entity>> TYPES =
       Stream.of(values()).map(et -> et.type).collect(Collectors.toUnmodifiableSet());
 
   public static final Set<EntityType> ELEMENT_TYPES =
@@ -90,7 +90,7 @@ public enum EntityType {
           Scenario.TYPE_DESIGNATOR,
           Scope.TYPE_DESIGNATOR);
 
-  public static Class<? extends Identifiable> getTypeForPluralTerm(String pluralTerm) {
+  public static Class<? extends Entity> getTypeForPluralTerm(String pluralTerm) {
     return Stream.of(values())
         .filter(et -> et.pluralTerm.equals(pluralTerm))
         .map(et -> et.type)
@@ -105,7 +105,7 @@ public enum EntityType {
         .orElseThrow();
   }
 
-  public static String getSingularTermByType(Class<? extends Identifiable> type) {
+  public static String getSingularTermByType(Class<? extends Entity> type) {
     return Stream.of(values())
         .filter(et -> et.type.equals(type))
         .findFirst()
@@ -113,7 +113,7 @@ public enum EntityType {
         .getSingularTerm();
   }
 
-  public static String getPluralTermByType(Class<? extends Identifiable> type) {
+  public static String getPluralTermByType(Class<? extends Entity> type) {
     return Stream.of(values())
         .filter(et -> et.type.equals(type))
         .findFirst()

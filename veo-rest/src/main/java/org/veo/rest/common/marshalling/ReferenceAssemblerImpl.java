@@ -52,6 +52,7 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
@@ -64,6 +65,7 @@ import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -109,6 +111,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
   private static final Pattern LAST_UUID_PATTERN = Pattern.compile(".+/(" + UUID_REGEX + ")");
+
+  private static final Pattern PANULTIMATE_UUID_PATTERN =
+      Pattern.compile(".+/(" + UUID_REGEX + ")/[^/]+/" + UUID_PATTERN);
   private static final Pattern ELEMENT_IN_DOMAIN_URI_PATTERN =
       Pattern.compile("/" + Domain.PLURAL_TERM + "/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
 
@@ -179,40 +184,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .withRel(DomainTemplateController.URL_BASE_PATH)
           .getHref();
     }
-    if (CatalogItem.class.isAssignableFrom(type)) {
-      CatalogItem catalogItem = (CatalogItem) identifiable;
-      return linkTo(
-              methodOn(DomainController.class)
-                  .getCatalogItem(
-                      ANY_AUTH,
-                      catalogItem.getDomainBase().getIdAsString(),
-                      catalogItem.getIdAsString(),
-                      ANY_REQUEST))
-          .withRel(DomainController.URL_BASE_PATH)
-          .expand()
-          .getHref();
-    }
     if (Profile.class.isAssignableFrom(type)) {
       Profile profile = (Profile) identifiable;
       return linkTo(
               // TODO #2497 introduce endpoint for  profiles in domain templates
               methodOn(DomainController.class)
                   .getProfile(ANY_AUTH, profile.getOwner().getIdAsString(), id, ANY_REQUEST))
-          .withRel(DomainController.URL_BASE_PATH)
-          .expand()
-          .getHref();
-    }
-    if (ProfileItem.class.isAssignableFrom(type)) {
-      ProfileItem profileItem = (ProfileItem) identifiable;
-      return linkTo(
-              methodOn(DomainController.class)
-                  .getProfileItem(
-                      ANY_AUTH,
-                      // TODO #2497 introduce endpoint for  profile items in domain templates
-                      profileItem.getDomainBase().getIdAsString(),
-                      profileItem.getOwner().getIdAsString(),
-                      id,
-                      ANY_REQUEST))
           .withRel(DomainController.URL_BASE_PATH)
           .expand()
           .getHref();
@@ -343,6 +320,56 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             methodOn(DomainController.class).getInspection(ANY_AUTH, domain.getIdAsString(), id))
         .withRel(DomainController.URL_BASE_PATH)
         .getHref();
+  }
+
+  @Override
+  public Class<? extends Identifiable> parseNamespaceType(String uri) {
+    var entityType = parseType(uri);
+    if (ProfileItem.class.isAssignableFrom(entityType)) {
+      return Profile.class;
+    }
+    if (CatalogItem.class.isAssignableFrom(entityType)) {
+      var controllerType = typeExtractor.parseControllerType(uri);
+      if (DomainController.class.isAssignableFrom(controllerType)) {
+        return Domain.class;
+      }
+      if (DomainTemplateController.class.isAssignableFrom(controllerType)) {
+        return DomainTemplate.class;
+      }
+    }
+    throw new UnprocessableDataException(String.format("No mapping found for URI: %s", uri));
+  }
+
+  @Override
+  public <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
+      String targetReferenceOf(T entity) {
+    if (entity instanceof CatalogItem catalogItem) {
+      return linkTo(
+              methodOn(DomainController.class)
+                  .getCatalogItem(
+                      ANY_AUTH,
+                      catalogItem.getDomainBase().getIdAsString(),
+                      catalogItem.getSymbolicIdAsString(),
+                      ANY_REQUEST))
+          .withRel(DomainController.URL_BASE_PATH)
+          .expand()
+          .getHref();
+    }
+    if (entity instanceof ProfileItem profileItem) {
+      return linkTo(
+              methodOn(DomainController.class)
+                  .getProfileItem(
+                      ANY_AUTH,
+                      // TODO #2497 introduce endpoint for  profile items in domain templates
+                      profileItem.getDomainBase().getIdAsString(),
+                      profileItem.getOwner().getIdAsString(),
+                      profileItem.getSymbolicIdAsString(),
+                      ANY_REQUEST))
+          .withRel(DomainController.URL_BASE_PATH)
+          .expand()
+          .getHref();
+    }
+    throw new NotImplementedException();
   }
 
   private WebMvcLinkBuilder linkToRequirementImplementation(
@@ -701,7 +728,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
    * @return the class of the entity that is mapped by the DTO
    */
   @Override
-  public Class<? extends Identifiable> parseType(String uriString) {
+  public Class<? extends Entity> parseType(String uriString) {
     Class<? extends ModelDto> modelType =
         typeExtractor
             .parseDtoType(uriString)
@@ -729,6 +756,19 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
     return matcher.group(1);
     // TODO: VEO-585: handle compound IDs
+  }
+
+  @Override
+  public String parseNamespaceId(String uri) {
+    String pathComponent = UriComponentsBuilder.fromUriString(uri).build().getPath();
+    if (pathComponent == null) {
+      throw invalidReference(uri);
+    }
+    Matcher matcher = PANULTIMATE_UUID_PATTERN.matcher(pathComponent);
+    if (!matcher.find()) {
+      throw invalidReference(uri);
+    }
+    return matcher.group(1);
   }
 
   @Override

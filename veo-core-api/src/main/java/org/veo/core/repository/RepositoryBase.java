@@ -15,20 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.repository;
 
+import java.util.Optional;
 import java.util.Set;
 
-import org.veo.core.entity.state.ProfileItemState;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Entity;
+import org.veo.core.entity.ref.IEntityRef;
 
-public interface ProfileState {
-  String getSelfId();
+public interface RepositoryBase<T extends Entity, TRef extends IEntityRef<T>> {
+  Set<T> findAllByRefs(Set<TRef> refs, Client client);
 
-  String getName();
-
-  String getDescription();
-
-  String getLanguage();
-
-  Set<ProfileItemState> getItemStates();
+  default Optional<T> findByRef(TRef ref, Client client) {
+    return findAllByRefs(Set.of(ref), client).stream().findFirst();
+  }
 }

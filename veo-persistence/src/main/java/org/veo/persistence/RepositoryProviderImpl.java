@@ -29,16 +29,20 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ClientRepository;
@@ -50,11 +54,14 @@ import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ProfileItemRepository;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.Repository;
+import org.veo.core.repository.RepositoryBase;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.ScopeRepository;
+import org.veo.core.repository.SymIdentifiableRepository;
 import org.veo.core.repository.UnitRepository;
 
 @Service
@@ -83,6 +90,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
   @Autowired private ScopeRepository scopeRepository;
 
   @Autowired private CatalogItemRepository catalogItemRepository;
+  @Autowired private ProfileItemRepository profileItemRepository;
 
   @Autowired private ProfileRepository profileRepository;
 
@@ -101,13 +109,22 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     if (Unit.class.isAssignableFrom(entityType)) {
       return (Repository<T>) unitRepository;
     }
-    if (CatalogItem.class.isAssignableFrom(entityType)) {
-      return (Repository<T>) catalogItemRepository;
-    }
     if (Profile.class.isAssignableFrom(entityType)) {
       return (Repository<T>) profileRepository;
     }
     throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  }
+
+  @Override
+  public <T extends Entity, TRepo extends RepositoryBase<T, TRef>, TRef extends IEntityRef<T>>
+      TRepo getRepositoryBaseFor(Class<T> entityType) {
+    if (Identifiable.class.isAssignableFrom(entityType)) {
+      return (TRepo) getRepositoryFor((Class) entityType);
+    }
+    if (SymIdentifiable.class.isAssignableFrom((Class<?>) entityType)) {
+      return (TRepo) getSymRepositoryFor((Class) entityType);
+    }
+    throw new IllegalArgumentException("Unsupported entity type " + entityType.getSimpleName());
   }
 
   @SuppressWarnings("unchecked")
@@ -127,9 +144,6 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (Unit.class.isAssignableFrom(entityType)) {
       return (IdentifiableVersionedRepository<T>) unitRepository;
-    }
-    if (CatalogItem.class.isAssignableFrom(entityType)) {
-      return (IdentifiableVersionedRepository<T>) catalogItemRepository;
     }
     if (Profile.class.isAssignableFrom(entityType)) {
       return (IdentifiableVersionedRepository<T>) profileRepository;
@@ -172,5 +186,17 @@ public class RepositoryProviderImpl implements RepositoryProvider {
   public Set<ElementRepository<? extends RiskRelated>> getRiskRelatedElementRepos() {
     return Set.of(
         assetRepository, controlRepository, processRepository, scenarioRepository, scopeRepository);
+  }
+
+  @Override
+  public <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
+      SymIdentifiableRepository<T, TNamespace> getSymRepositoryFor(Class<T> entityType) {
+    if (CatalogItem.class.isAssignableFrom(entityType)) {
+      return (SymIdentifiableRepository<T, TNamespace>) catalogItemRepository;
+    }
+    if (ProfileItem.class.isAssignableFrom(entityType)) {
+      return (SymIdentifiableRepository<T, TNamespace>) profileItemRepository;
+    }
+    throw new IllegalArgumentException("Unsupported entity type " + entityType.getSimpleName());
   }
 }

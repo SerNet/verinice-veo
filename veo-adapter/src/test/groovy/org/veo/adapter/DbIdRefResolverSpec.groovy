@@ -42,14 +42,15 @@ class DbIdRefResolverSpec extends Specification {
     Repository<Person> personRepo = Mock()
 
     def setup() {
-        repositoryProvider.getRepositoryFor(Asset) >> assetRepo
-        repositoryProvider.getRepositoryFor(Person) >> personRepo
+        repositoryProvider.getRepositoryBaseFor(Asset) >> assetRepo
+        repositoryProvider.getRepositoryBaseFor(Person) >> personRepo
     }
 
     def "loads reference target from repo"() {
         given: "an asset"
         def asset = Mock(Asset) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Asset
         }
 
@@ -57,7 +58,7 @@ class DbIdRefResolverSpec extends Specification {
         def result = referenceResolver.resolve(IdRef.from(asset, Mock(ReferenceAssembler)))
 
         then: "the asset is returned"
-        1 * assetRepo.findByIds(Set.of(asset.id)) >> [asset]
+        1 * assetRepo.findAllByRefs(Set.of(IdRef.from(asset, Mock(ReferenceAssembler))), client) >> [asset]
         result == asset
 
         and: "the client was validated"
@@ -68,22 +69,27 @@ class DbIdRefResolverSpec extends Specification {
         given: "two assets and two persons"
         def asset1 = Mock(Asset) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Asset
         }
         def asset2 = Mock(Asset) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Asset
         }
         def asset3 = Mock(Asset) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Asset
         }
         def person1 = Mock(Person) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Person
         }
         def person2 = Mock(Person) {
             it.id >> Key.newUuid()
+            it.idAsString >> it.id.uuidValue()
             it.getModelInterface() >> Person
         }
 
@@ -94,10 +100,10 @@ class DbIdRefResolverSpec extends Specification {
         referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
 
         then: "the entities are fetched from the repo"
-        1 * assetRepo.findByIds(Set.of(asset1.id)) >> [asset1]
-        1 * assetRepo.findByIds(Set.of(asset2.id)) >> [asset2]
-        1 * personRepo.findByIds(Set.of(person1.id)) >> [person1]
-        1 * personRepo.findByIds(Set.of(person2.id)) >> [person2]
+        1 * assetRepo.findAllByRefs(Set.of(IdRef.from(asset1, Mock(ReferenceAssembler))), client) >> [asset1]
+        1 * assetRepo.findAllByRefs(Set.of(IdRef.from(asset2, Mock(ReferenceAssembler))), client) >> [asset2]
+        1 * personRepo.findAllByRefs(Set.of(IdRef.from(person1, Mock(ReferenceAssembler))), client) >> [person1]
+        1 * personRepo.findAllByRefs(Set.of(IdRef.from(person2, Mock(ReferenceAssembler))), client) >> [person2]
 
         when: "resolving the references again"
         def retrievedAsset1 = referenceResolver.resolve(IdRef.from(asset1, Mock(ReferenceAssembler)))
@@ -106,8 +112,8 @@ class DbIdRefResolverSpec extends Specification {
         def retrievedPerson2 = referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
 
         then: "they are not fetched again"
-        0 * assetRepo.findByIds(_)
-        0 * personRepo.findByIds(_)
+        0 * assetRepo.findAllByRefs(_, _)
+        0 * personRepo.findAllByRefs(_, _)
 
         and: "they are returned from a cache"
         retrievedAsset1 == asset1
@@ -122,8 +128,8 @@ class DbIdRefResolverSpec extends Specification {
         ] as Set)
 
         then: "only the uncached asset is fetched"
-        1 * assetRepo.findByIds(Set.of(asset3.id)) >> [asset3]
-        0 * assetRepo.findByIds(_)
+        1 * assetRepo.findAllByRefs(Set.of(IdRef.from(asset3, Mock(ReferenceAssembler))), client) >> [asset3]
+        0 * assetRepo.findAllByRefs(_, _)
         retrievedAssets == [asset1, asset3] as Set
     }
 }

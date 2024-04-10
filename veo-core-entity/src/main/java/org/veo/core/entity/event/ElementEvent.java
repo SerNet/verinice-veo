@@ -26,5 +26,5 @@ public interface ElementEvent extends DomainEvent {
 
   Key<UUID> getEntityId();
 
-  Class<? extends Element> getEntityType();
+  <T extends Element> Class<T> getEntityType();
 }

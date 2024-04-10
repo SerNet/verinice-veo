@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Set;
-
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
@@ -27,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.code.EntityValidationException;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
@@ -47,10 +44,10 @@ public class ValidationService {
   private final Validator beanValidator;
   private final EntityValidator entityValidator;
 
-  public void validate(Identifiable identifiable)
+  public void validate(Entity identifiable)
       throws EntityValidationException, ConstraintViolationException {
     // execute JSR 380 validations on model entities:
-    Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
+    var violations = beanValidator.validate(identifiable);
     if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
 
     if (identifiable instanceof DomainBase domain) {

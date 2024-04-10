@@ -49,6 +49,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.VersioningEvent;
 import org.veo.persistence.entity.jpa.AbstractRiskData;
+import org.veo.persistence.entity.jpa.TemplateItemData;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -161,7 +162,7 @@ public class MostRecentChangeTracker<
       var id = determineId(eventToStore.getEntity());
       log.debug(
           "Tracking PERSIST event with already existing ID {} for a {} with change number {}. ID should be null on newly PERSISTed entities.",
-          eventToStore.getEntity().getIdAsString(),
+          id,
           eventToStore.getEntity().getClass(),
           eventToStore.getChangeNumber());
       allSeenChanges.computeIfAbsent(id, k -> new ArrayList<>()).add(eventToStore);
@@ -179,6 +180,8 @@ public class MostRecentChangeTracker<
   private String determineId(V entityToStore) {
     if (entityToStore instanceof AbstractRiskData<?, ?> risk) {
       return risk.getDbId();
+    } else if (entityToStore instanceof TemplateItemData<?, ?> ti) {
+      return ti.getDbId();
     } else {
       return entityToStore.getIdAsString();
     }

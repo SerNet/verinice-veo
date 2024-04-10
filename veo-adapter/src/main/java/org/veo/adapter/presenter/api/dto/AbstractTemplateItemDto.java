@@ -22,8 +22,8 @@ import java.util.Optional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
@@ -65,7 +65,7 @@ public abstract class AbstractTemplateItemDto<
     var target = supplyDto(source, referenceAssembler);
     target.setId(source.getIdAsString());
     target.setReferenceType(source.getReferenceType());
-    target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
+    target.setTarget(SymIdRef.from(source.getTarget(), referenceAssembler));
     return target;
   }
 
@@ -79,17 +79,17 @@ public abstract class AbstractTemplateItemDto<
     } else if (source instanceof RiskTailoringReference<T, TNamespace> riskSource) {
       var riskRefDto = new RiskTailoringReferenceDto<T, TNamespace>();
       Optional.ofNullable(riskSource.getMitigation())
-          .map(m -> IdRef.from(m, uriAssembler))
+          .map(m -> SymIdRef.from(m, uriAssembler))
           .ifPresent(riskRefDto::setMitigation);
       Optional.ofNullable(riskSource.getRiskOwner())
-          .map(p -> IdRef.from(p, uriAssembler))
+          .map(p -> SymIdRef.from(p, uriAssembler))
           .ifPresent(riskRefDto::setRiskOwner);
       riskRefDto.setRiskDefinitions(riskSource.getRiskDefinitions());
       return riskRefDto;
     } else if (source instanceof ControlImplementationTailoringReference<T, TNamespace> ciSource) {
       var ciRefDto = new ControlImplementationTailoringReferenceDto<T, TNamespace>();
       Optional.ofNullable(ciSource.getResponsible())
-          .map(r -> IdRef.from(r, uriAssembler))
+          .map(r -> SymIdRef.from(r, uriAssembler))
           .ifPresent(ciRefDto::setResponsible);
       ciRefDto.setDescription(ciSource.getDescription());
       return ciRefDto;

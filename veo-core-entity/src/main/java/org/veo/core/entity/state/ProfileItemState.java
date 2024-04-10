@@ -20,11 +20,12 @@ package org.veo.core.entity.state;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
 public interface ProfileItemState extends TemplateItemState<ProfileItem, Profile> {
   @Nullable
-  ITypedId<CatalogItem> getAppliedCatalogItemRef();
+  ITypedSymbolicId<CatalogItem, DomainBase> getAppliedCatalogItemRef();
 }

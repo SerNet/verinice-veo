@@ -23,12 +23,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.state.TailoringReferenceState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,11 +58,11 @@ public class TailoringReferenceDto<
 
   private TailoringReferenceType referenceType;
 
-  private IdRef<T> target;
+  private SymIdRef<T, TNamespace> target;
 
   @Override
   @JsonIgnore
-  public ITypedId<T> getTargetRef() {
+  public ITypedSymbolicId<T, TNamespace> getTargetRef() {
     return target;
   }
 }

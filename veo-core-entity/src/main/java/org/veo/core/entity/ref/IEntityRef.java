@@ -20,8 +20,21 @@ package org.veo.core.entity.ref;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.Entity;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 public interface IEntityRef<T extends Entity> {
   @JsonIgnore
   Class<T> getType();
+
+  static <T extends Entity> IEntityRef<T> from(T entity) {
+    if (entity instanceof Identifiable i) {
+      return TypedId.from(i.getIdAsString(), (Class) i.getModelInterface());
+    } else if (entity instanceof SymIdentifiable s) {
+      return TypedSymbolicId.from(s);
+    }
+    throw new UnprocessableDataException(
+        "Unsupported reference type: %s".formatted(entity.getModelInterface()));
+  }
 }

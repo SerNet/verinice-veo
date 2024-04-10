@@ -24,7 +24,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
@@ -58,7 +58,7 @@ import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
 public class IdentifiableDataFactory implements IdentifiableFactory {
   @Override
-  public <T extends Identifiable> T create(Class<T> type) {
+  public <T extends Entity> T create(Class<T> type) {
     if (type == Person.class) {
       return (T) new PersonData();
     }

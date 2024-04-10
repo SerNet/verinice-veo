@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-class CatalogItemRestTest extends VeoRestTest{
+import static java.util.UUID.randomUUID
+import static org.veo.rest.test.UserType.ADMIN
+import static org.veo.rest.test.UserType.CONTENT_CREATOR
+import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
+
+class CatalogItemRestTest extends VeoRestTest {
     def "fetch catalog items"() {
         expect: "items are fetched"
         with(get("/domains/$testDomainId/catalog-items").body) {
@@ -72,6 +77,44 @@ class CatalogItemRestTest extends VeoRestTest{
         with(get("/domains/$testDomainId/catalog-items?subType=TOM").body) {
             totalItemCount == 6
             items*.name.every { it.startsWith("Control") }
+        }
+    }
+
+    def "catalog item IDs are symbolic"() {
+        given: "a catalog item in a copy of test-domain"
+        def copyOfTestDomainId = copyDomain(testDomainId)
+        def sourceUnitId = postNewUnit().resourceId
+        post("/domains/$copyOfTestDomainId/assets", [
+            name: "brave test subject",
+            subType: "Information",
+            status: "CURRENT",
+            owner: [targetUri: "/units/$sourceUnitId"]
+        ])
+        def originalCatalogItemId = get("/domains/$copyOfTestDomainId/catalog-items?sortBy=abbreviation").body.items
+                .find { it.abbreviation == "aa-1" }
+                .id
+
+        expect:
+        originalCatalogItemId != null
+
+        when: "creating and exporting a domain template from the domain"
+        def templateId = post("/content-creation/domains/$copyOfTestDomainId/template", [
+            version: "99.99.99"
+        ], 201, CONTENT_CREATOR).body.id
+        def exportedDomainTemplate = get("/content-creation/domain-templates/$templateId", 200, CONTENT_CREATOR).body
+
+        and: "importing the template under a different name"
+        exportedDomainTemplate.name = "completely different domain template ${randomUUID()}"
+        def newDomainTemplateId = post("/content-creation/domain-templates", exportedDomainTemplate, 201, CONTENT_CREATOR).body.resourceId
+
+        and: "applying the template in another client"
+        post("/domain-templates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
+        def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
+
+        then: "the catalog item can be found in the new domain under the original symbolic ID"
+        with(get("/domains/$newDomainInOtherClientId/catalog-items/$originalCatalogItemId", 200, SECONDARY_CLIENT_USER).body) {
+            abbreviation == "aa-1"
+            id == originalCatalogItemId
         }
     }
 }

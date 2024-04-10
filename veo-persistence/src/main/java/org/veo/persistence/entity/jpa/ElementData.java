@@ -367,7 +367,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         getCustomAspects(domain).stream()
             .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
     item.setAspects(mapAspectsToItem(domain));
-    if (item.getId() != null) {
+    if (item.getUpdatedAt() != null) {
       item.setUpdatedAt(Instant.now());
     }
   }

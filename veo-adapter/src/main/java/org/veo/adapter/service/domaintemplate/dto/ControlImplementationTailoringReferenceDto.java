@@ -19,11 +19,11 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 
 import lombok.AllArgsConstructor;
@@ -40,12 +40,12 @@ public class ControlImplementationTailoringReferenceDto<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends TailoringReferenceDto<T, TNamespace>
     implements ControlImplementationTailoringReferenceState<T, TNamespace> {
-  private IdRef<T> responsible;
+  private SymIdRef<T, TNamespace> responsible;
   private String description;
 
   @Override
   @JsonIgnore
-  public ITypedId<T> getResponsibleRef() {
+  public ITypedSymbolicId<T, TNamespace> getResponsibleRef() {
     return responsible;
   }
 }

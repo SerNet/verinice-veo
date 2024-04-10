@@ -17,9 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.transform;
 
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 
 /** Creates {@link Identifiable} instances generically (based on a type and a UUID). */
 public interface IdentifiableFactory {
-  <T extends Identifiable> T create(Class<T> type);
+  <T extends Entity> T create(Class<T> type);
 }

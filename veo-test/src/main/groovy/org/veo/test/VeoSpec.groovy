@@ -32,6 +32,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
+import org.veo.core.entity.Entity
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
@@ -75,7 +76,6 @@ import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.CatalogItemData
-import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
@@ -84,12 +84,10 @@ import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.DomainTemplateData
 import org.veo.persistence.entity.jpa.IncidentData
-import org.veo.persistence.entity.jpa.LinkTailoringReferenceData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ProfileData
 import org.veo.persistence.entity.jpa.ProfileItemData
-import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.UnitData
@@ -488,9 +486,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    private static def name(Identifiable target) {
+    private static def name(Entity target) {
         if (target.name == null) {
-            target.name = target.modelType + " " + target.id
+            target.name = target.modelType + " " + target.dbId
         }
     }
 

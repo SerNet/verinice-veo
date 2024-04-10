@@ -25,10 +25,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefTemplateItem;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.state.TailoringReferenceParameterState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
@@ -51,7 +52,7 @@ public class IncarnateTemplateItemDescriptionDto<
       title = "Reference the template item to be incarnated.",
       requiredMode = REQUIRED,
       implementation = IdRefTemplateItem.class)
-  private IdRef<TemplateItem<?, ?>> item;
+  private SymIdRef<T, TNamespace> item;
 
   @ArraySchema(
       schema =
@@ -62,8 +63,8 @@ public class IncarnateTemplateItemDescriptionDto<
 
   public IncarnateTemplateItemDescriptionDto(
       TemplateItemIncarnationDescription<T, TNamespace> p, ReferenceAssembler urlAssembler) {
-    item = IdRef.from(p.getItem(), urlAssembler);
-    references =
+    this(
+        SymIdRef.from(p.getItem(), urlAssembler),
         p.getReferences().stream()
             .map(
                 r ->
@@ -72,12 +73,12 @@ public class IncarnateTemplateItemDescriptionDto<
                         r.getReferenceKey(),
                         r.getReferenceType(),
                         r.getId()))
-            .toList();
+            .toList());
   }
 
   @JsonIgnore
   @Override
-  public ITypedId<TemplateItem<?, ?>> getItemRef() {
+  public ITypedSymbolicId<T, TNamespace> getItemRef() {
     return item;
   }
 

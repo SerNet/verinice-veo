@@ -22,16 +22,13 @@ import static java.lang.String.format;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
@@ -40,7 +37,6 @@ import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.entity.transform.IdentifiableFactory;
-import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
 
 /**
@@ -68,17 +64,17 @@ public class DbIdRefResolver extends LocalRefResolver {
    *     resolver's client.
    */
   @Override
-  public <TEntity extends Identifiable> Set<TEntity> resolve(
-      Set<? extends ITypedId<TEntity>> objectReferences) {
+  public <TEntity extends Entity, TRef extends IEntityRef<TEntity>> Set<TEntity> resolve(
+      Set<? extends TRef> objectReferences) {
     if (objectReferences.isEmpty()) {
       return Collections.emptySet();
     }
     HashSet<TEntity> result = new HashSet<>(objectReferences.size());
-    HashSet<ITypedId<TEntity>> copyOfReferences = new HashSet<>(objectReferences);
-    Iterator<ITypedId<TEntity>> it = copyOfReferences.iterator();
+    HashSet<TRef> copyOfReferences = new HashSet<>(objectReferences);
+    Iterator<TRef> it = copyOfReferences.iterator();
     while (it.hasNext()) {
-      ITypedId<TEntity> ref = it.next();
-      Identifiable cachedEntry = cache.get(ref);
+      TRef ref = it.next();
+      Entity cachedEntry = cache.get(ref);
       if (cachedEntry != null) {
         result.add((TEntity) cachedEntry);
         it.remove();
@@ -90,18 +86,14 @@ public class DbIdRefResolver extends LocalRefResolver {
 
     Class<TEntity> entityType = objectReferences.iterator().next().getType();
 
-    Repository<? extends Identifiable> entityRepository =
-        repositoryProvider.getRepositoryFor(entityType);
-
-    Set<? extends Identifiable> entities =
-        entityRepository.findByIds(
-            copyOfReferences.stream()
-                .map(ITypedId::getId)
-                .map(Key::uuidFrom)
-                .collect(Collectors.toSet()));
-
-    Map<String, ITypedId<TEntity>> copyOfReferencesById =
-        copyOfReferences.stream().collect(Collectors.toMap(ITypedId::getId, Function.identity()));
+    var entities =
+        repositoryProvider
+            .getRepositoryBaseFor(entityType)
+            .findAllByRefs(
+                (copyOfReferences.stream()
+                    .map(r -> (IEntityRef<TEntity>) r)
+                    .collect(Collectors.toSet())),
+                client);
 
     entities.forEach(
         entity -> {
@@ -113,10 +105,10 @@ public class DbIdRefResolver extends LocalRefResolver {
           }
           if (entity instanceof Domain domain) {
             if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy((domain).getOwner()))
-              throw new ClientBoundaryViolationException(entity, client);
+              throw new ClientBoundaryViolationException(domain, client);
           }
-          result.add((TEntity) entity);
-          ITypedId<TEntity> reference = copyOfReferencesById.get(entity.getId().uuidValue());
+          result.add(entity);
+          var reference = IEntityRef.from(entity);
           cache.put(reference, entity);
           copyOfReferences.remove(reference);
         });

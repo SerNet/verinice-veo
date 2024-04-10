@@ -37,6 +37,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
 import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
@@ -115,6 +116,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
@@ -201,7 +203,7 @@ public final class EntityToDtoTransformer {
     var target = new ExportProfileItemDto();
     mapFullTemplateItem(source, target);
     Optional.ofNullable(source.getAppliedCatalogItem())
-        .map(ci -> IdRef.from(ci, referenceAssembler))
+        .map(ci -> SymIdRef.from(ci, referenceAssembler))
         .ifPresent(target::setAppliedCatalogItem);
     return target;
   }
@@ -436,14 +438,14 @@ public final class EntityToDtoTransformer {
 
   public ShortCatalogItemDto transformShortCatalogItem2Dto(@Valid CatalogItem source) {
     var target = new ShortCatalogItemDto();
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getSymbolicIdAsString());
     mapTemplateItem(source, target);
     return target;
   }
 
   public ShortProfileItemDto transformShortProfileItem2Dto(@Valid ProfileItem source) {
     var target = new ShortProfileItemDto();
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getSymbolicIdAsString());
     target.setStatus(source.getStatus());
     mapTemplateItem(source, target);
     return target;
@@ -458,7 +460,7 @@ public final class EntityToDtoTransformer {
       void mapFullTemplateItem(TEntity source, TDto target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapTemplateItem(source, target);
-    target.setId(source.getIdAsString());
+    target.setId(source.getSymbolicIdAsString());
     target.setStatus(source.getStatus());
     target.setAspects(source.getAspects());
     target.setCustomAspects(CustomAspectMapDto.from(source.getCustomAspects()));
@@ -551,6 +553,15 @@ public final class EntityToDtoTransformer {
   private <TEntity extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
       TEntity source, AbstractVersionedSelfReferencingDto target) {
     target.setSelfRef(IdRef.from(source, referenceAssembler));
+    mapVersionedProperties(source, target);
+  }
+
+  private <
+          TEntity extends SymIdentifiable<TEntity, TNamespace> & Versioned,
+          TNamespace extends Identifiable>
+      void mapVersionedSelfReferencingProperties(
+          TEntity source, AbstractVersionedSelfReferencingDto target) {
+    target.setSelfRef(SymIdRef.from(source, referenceAssembler));
     mapVersionedProperties(source, target);
   }
 

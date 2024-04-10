@@ -33,8 +33,9 @@ import org.veo.core.entity.Key;
  * methods - i.e. queries based on particular fields.
  */
 public interface CatalogItemRepository
-    extends IdentifiableVersionedRepository<CatalogItem>,
-        AbstractTemplateItemRepository<CatalogItem, DomainBase> {
+    extends AbstractTemplateItemRepository<CatalogItem, DomainBase> {
+
+  @Deprecated
   Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids, Client client);
 
   CatalogItem getByIdInDomain(Key<UUID> catalogItemId, Domain domain);

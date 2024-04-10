@@ -24,13 +24,14 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.ProfileItemState;
 import org.veo.core.entity.state.TailoringReferenceState;
@@ -42,12 +43,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ExportProfileItemDto extends FullProfileItemDto
     implements IdentifiableDto, ProfileItemState {
-  private IdRef<CatalogItem> appliedCatalogItem;
+  private SymIdRef<CatalogItem, DomainBase> appliedCatalogItem;
 
   @Nullable
   @Override
   @JsonIgnore
-  public ITypedId<CatalogItem> getAppliedCatalogItemRef() {
+  public ITypedSymbolicId<CatalogItem, DomainBase> getAppliedCatalogItemRef() {
     return appliedCatalogItem;
   }
 

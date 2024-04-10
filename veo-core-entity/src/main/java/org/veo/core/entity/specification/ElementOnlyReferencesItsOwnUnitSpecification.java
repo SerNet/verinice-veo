@@ -40,7 +40,7 @@ public class ElementOnlyReferencesItsOwnUnitSpecification implements EntitySpeci
   }
 
   private static List<Element> getElements(Element entity) {
-    var referencedElements =
+    List<Element> referencedElements =
         entity.getLinks().stream().map(CustomLink::getTarget).collect(Collectors.toList());
     referencedElements.addAll(entity.getScopes());
     if (entity instanceof CompositeElement<?> comp) {

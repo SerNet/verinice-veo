@@ -198,6 +198,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public CatalogItem createCatalogItem(DomainBase domain) {
     CatalogItem catalogItem = new CatalogItemData();
+    catalogItem.setSymbolicId(Key.newUuid());
     catalogItem.setDomainBase(domain);
     domain.getCatalogItems().add(catalogItem);
     return catalogItem;
@@ -230,6 +231,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public ProfileItem createProfileItem(Profile profile) {
     ProfileItemData profileData = new ProfileItemData();
+    profileData.setSymbolicId(Key.newUuid());
     profileData.setOwner(profile);
     profile.getItems().add(profileData);
     return profileData;

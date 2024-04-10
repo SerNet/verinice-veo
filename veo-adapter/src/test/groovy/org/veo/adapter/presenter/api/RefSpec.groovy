@@ -19,10 +19,14 @@ package org.veo.adapter.presenter.api
 
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.common.SymIdRef
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.ref.TypedId
+import org.veo.core.entity.ref.TypedSymbolicId
 
 import spock.lang.Specification
 
@@ -91,5 +95,80 @@ class RefSpec extends Specification{
         IdRef.from(assetWithSameId, referenceAssembler) != TypedId.from(unit1)
         TypedId.from(unit1) != IdRef.from(assetWithSameId, referenceAssembler)
         TypedId.from(unit1).hashCode() != IdRef.from(assetWithSameId, referenceAssembler).hashCode()
+    }
+
+    def "sym ref equals & hashcode is implemented correctly"() {
+        given:
+        def domain = Spy(Domain) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def domain2 = Spy(Domain) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def ci = Spy(CatalogItem) {
+            symbolicId >> Key.newUuid()
+            displayName >> ""
+            domainBase >> domain
+        }
+        def ci2 = Spy(CatalogItem) {
+            symbolicId >> Key.newUuid()
+            displayName >> ""
+            domainBase >> domain
+        }
+        def ciDoppelganger = Spy(CatalogItem) {
+            symbolicId >> ci.symbolicId
+            displayName >> ""
+            domainBase >> domain
+        }
+        def ciWithSameIdInOtherDomain = Spy(CatalogItem) {
+            symbolicId >> ci.symbolicId
+            displayName >> ""
+            domainBase >> domain2
+        }
+
+        expect:
+        SymIdRef.from(ci, referenceAssembler) == SymIdRef.from(ci, referenceAssembler)
+        SymIdRef.from(ci, referenceAssembler).hashCode() == SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ciDoppelganger, referenceAssembler) == SymIdRef.from(ci, referenceAssembler)
+        SymIdRef.from(ciDoppelganger, referenceAssembler).hashCode() == SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ci2, referenceAssembler) != SymIdRef.from(ci, referenceAssembler)
+        SymIdRef.from(ci2, referenceAssembler).hashCode() != SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ciWithSameIdInOtherDomain, referenceAssembler) != SymIdRef.from(ci, referenceAssembler)
+        SymIdRef.from(ciWithSameIdInOtherDomain, referenceAssembler).hashCode() != SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        and:
+        TypedSymbolicId.from(ci) == TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ci).hashCode() == TypedSymbolicId.from(ci).hashCode()
+
+        TypedSymbolicId.from(ciDoppelganger) == TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ciDoppelganger).hashCode() == TypedSymbolicId.from(ci).hashCode()
+
+        TypedSymbolicId.from(ci2) != TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ci2).hashCode() != TypedSymbolicId.from(ci).hashCode()
+
+        TypedSymbolicId.from(ciWithSameIdInOtherDomain) != TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ciWithSameIdInOtherDomain).hashCode() != TypedSymbolicId.from(ci).hashCode()
+
+        and:
+        SymIdRef.from(ci, referenceAssembler) == TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ci) == SymIdRef.from(ci, referenceAssembler)
+        TypedSymbolicId.from(ci).hashCode() == SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ciDoppelganger, referenceAssembler) == TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ciDoppelganger) == SymIdRef.from(ci, referenceAssembler)
+        TypedSymbolicId.from(ciDoppelganger).hashCode() == SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ci2, referenceAssembler) != TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ci2) != SymIdRef.from(ci, referenceAssembler)
+        TypedSymbolicId.from(ci2).hashCode() != SymIdRef.from(ci, referenceAssembler).hashCode()
+
+        SymIdRef.from(ciWithSameIdInOtherDomain, referenceAssembler) != TypedSymbolicId.from(ci)
+        TypedSymbolicId.from(ciWithSameIdInOtherDomain) != SymIdRef.from(ci, referenceAssembler)
+        TypedSymbolicId.from(ciWithSameIdInOtherDomain).hashCode() != TypedSymbolicId.from(ci).hashCode()
     }
 }

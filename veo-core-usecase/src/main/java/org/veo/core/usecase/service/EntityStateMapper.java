@@ -131,6 +131,8 @@ public class EntityStateMapper {
     }
   }
 
+  private <T extends CompositeElement<T>> void ok(T ce) {}
+
   public <R extends AbstractRisk<T, R>, T extends RiskAffected<T, R>> R mapState(
       RiskState<R, T> source, DbIdRefResolver resolver) {
     var element = resolver.resolve(source.getOwnerRef());
@@ -381,9 +383,9 @@ public class EntityStateMapper {
             .orElse(null));
   }
 
-  private void mapToEntity(
+  private <T extends Element> void mapToEntity(
       Set<? extends DomainAssociationState> domains,
-      Element target,
+      T target,
       IdRefResolver idRefResolver,
       BiConsumer<Domain, DomainAssociationState> customMapper,
       boolean removeFromOtherDomains) {

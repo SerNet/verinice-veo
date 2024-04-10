@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -59,6 +60,15 @@ public class TypeExtractor {
 
   public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
     return extractDtoType(getMethodParam(uriString).getGenericParameterType());
+  }
+
+  public Class<?> parseControllerType(String uriString) {
+    return Optional.ofNullable(getMethodParam(uriString).getMethod())
+        .map(Method::getDeclaringClass)
+        .orElseThrow(
+            () ->
+                new UnsupportedOperationException(
+                    "Cannot determine controller for URI %s".formatted(uriString)));
   }
 
   private MethodParameter getMethodParam(String uriString) {

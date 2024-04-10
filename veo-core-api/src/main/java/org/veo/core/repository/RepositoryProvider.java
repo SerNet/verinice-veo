@@ -20,12 +20,17 @@ package org.veo.core.repository;
 import java.util.Set;
 
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskRelated;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.ref.IEntityRef;
 
 /** A service that helps to retrieve the correct {@link Repository} for a given type */
 public interface RepositoryProvider {
+  <T extends Entity, TRepo extends RepositoryBase<T, TRef>, TRef extends IEntityRef<T>>
+      TRepo getRepositoryBaseFor(Class<T> entityType);
 
   <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
 
@@ -35,4 +40,7 @@ public interface RepositoryProvider {
   <T extends Identifiable> Repository<T> getRepositoryFor(Class<T> entityType);
 
   Set<ElementRepository<? extends RiskRelated>> getRiskRelatedElementRepos();
+
+  <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
+      SymIdentifiableRepository<T, TNamespace> getSymRepositoryFor(Class<T> entityType);
 }

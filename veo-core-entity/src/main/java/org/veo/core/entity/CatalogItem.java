@@ -39,7 +39,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   String PLURAL_TERM = "catalogitems";
 
   Comparator<? super CatalogItem> BY_CATALOGITEMS =
-      (ci1, ci2) -> ci1.getId().uuidValue().compareTo(ci2.getId().uuidValue());
+      Comparator.comparing(ci -> ci.getSymbolicId().uuidValue());
 
   /**
    * @return this item's domain if the item belongs to a domain and can be applied
@@ -122,4 +122,9 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   }
 
   void setDomainBase(DomainBase owner);
+
+  @Override
+  default DomainBase getNamespace() {
+    return getDomainBase();
+  }
 }

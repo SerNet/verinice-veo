@@ -42,6 +42,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
@@ -94,15 +95,13 @@ public class IncarnationDescriptionApplier {
           AbstractTemplateItemRepository<T, TNamespace> repository,
           Client client) {
     return repository
-        .findAllByIdsFetchDomain(
+        .findAllByRefs(
             descriptions.stream()
                 .map(TemplateItemIncarnationDescriptionState::getItemRef)
-                .map(ITypedId::getId)
-                .map(Key::uuidFrom)
                 .collect(Collectors.toSet()),
             client)
         .stream()
-        .collect(Collectors.toMap(Identifiable::getIdAsString, identity()));
+        .collect(Collectors.toMap(SymIdentifiable::getSymbolicIdAsString, identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -153,7 +152,7 @@ public class IncarnationDescriptionApplier {
         descriptions.stream()
             .map(
                 description -> {
-                  var item = itemsById.get(description.getItemRef().getId());
+                  var item = itemsById.get(description.getItemRef().getSymbolicId());
                   var element = elementsByItem.get(item);
                   applyTailoringReferences(
                       item,

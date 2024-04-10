@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.ControlImplementationTailoringReferenceState;
 
 public interface ControlImplementationTailoringReference<
@@ -38,7 +38,7 @@ public interface ControlImplementationTailoringReference<
   void setResponsible(@Nullable T responsible);
 
   @Override
-  default ITypedId<T> getResponsibleRef() {
-    return Optional.ofNullable(getResponsible()).map(TypedId::from).orElse(null);
+  default ITypedSymbolicId<T, TNamespace> getResponsibleRef() {
+    return Optional.ofNullable(getResponsible()).map(TypedSymbolicId::from).orElse(null);
   }
 }

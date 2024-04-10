@@ -24,13 +24,9 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationTailoringReference;
@@ -59,13 +55,6 @@ import lombok.ToString;
 @Data
 public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
     implements CatalogItem {
-
-  @Id
-  @ToString.Include
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  private String dbId;
-
   @ManyToOne(targetEntity = DomainData.class)
   @Getter(value = AccessLevel.NONE)
   @Setter(value = AccessLevel.NONE)
@@ -96,6 +85,7 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
   @Valid
   private Set<UpdateReference> updateReferences = new HashSet<>();
 
+  @Override
   public DomainBase getDomainBase() {
     return domain != null ? domain : domainTemplate;
   }

@@ -23,8 +23,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
-import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.ProfileItemState;
 
 public interface ProfileItem
@@ -80,7 +80,12 @@ public interface ProfileItem
 
   @Nullable
   @Override
-  default ITypedId<CatalogItem> getAppliedCatalogItemRef() {
-    return Optional.ofNullable(getAppliedCatalogItem()).map(TypedId::from).orElse(null);
+  default ITypedSymbolicId<CatalogItem, DomainBase> getAppliedCatalogItemRef() {
+    return Optional.ofNullable(getAppliedCatalogItem()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default Profile getNamespace() {
+    return getOwner();
   }
 }

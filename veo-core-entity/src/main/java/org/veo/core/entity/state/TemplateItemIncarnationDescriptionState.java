@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
 public interface TemplateItemIncarnationDescriptionState<
     T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
-  ITypedId<TemplateItem<?, ?>> getItemRef();
+  ITypedSymbolicId<T, TNamespace> getItemRef();
 
   List<TailoringReferenceParameterState> getParameterStates();
 }

@@ -486,7 +486,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we incarnate one linked catalog item"
-        def catalogItemsId = catalogItems.find{it.name == "example scenario Container" }.getIdAsString()
+        def catalogItemsId = catalogItems.find{it.name == "example scenario Container" }.symbolicIdAsString
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [
@@ -502,7 +502,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we incarnate all catalog items"
         delete("/units/${unitId}")
-        def catalogItemsIds = catalogItems.collect{it.getIdAsString()}.join(',')
+        def catalogItemsIds = catalogItems.collect{it.symbolicIdAsString}.join(',')
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [
@@ -553,7 +553,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
         }
 
-        def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.getIdAsString()}.join(',')
+        def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.symbolicIdAsString}.join(',')
         incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL"))
         def references = incarnationDescription.parameters.references.first()
 
@@ -852,7 +852,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 it.tailoringReferences.size()
             }
         }
-        def catalogItemsId = catalogItems.find{it.name == "Control-2" }.getIdAsString()
+        def catalogItemsId = catalogItems.find{it.name == "Control-2" }.symbolicIdAsString
 
         def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsId}"))
         post("/units/${unitId}/incarnations", incarnationDescription)
@@ -1095,7 +1095,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we incarnate all catatlog items"
-        def catalogItemsIds = catalogItems.collect{it.getIdAsString()}.join(',')
+        def catalogItemsIds = catalogItems.collect{it.symbolicIdAsString}.join(',')
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [

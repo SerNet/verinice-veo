@@ -82,6 +82,7 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
@@ -320,8 +321,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor.execute(
         getProfileItemUseCase,
         new GetProfileItemUseCase.InputData(
-            getAuthenticatedClient(auth), TypedId.from(domainId, Domain.class),
-            TypedId.from(profileId, Profile.class), TypedId.from(itemId, ProfileItem.class)),
+            getAuthenticatedClient(auth),
+            TypedId.from(domainId, Domain.class),
+            TypedSymbolicId.from(
+                itemId, ProfileItem.class, TypedId.from(profileId, Profile.class))),
         out ->
             ResponseEntity.ok()
                 .cacheControl(defaultCacheControl)

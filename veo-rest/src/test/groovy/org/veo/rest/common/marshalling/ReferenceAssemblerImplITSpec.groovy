@@ -19,15 +19,18 @@ package org.veo.rest.common.marshalling
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
+import org.veo.core.entity.Entity
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
 import org.veo.core.entity.Profile
 import org.veo.core.entity.ProfileItem
+import org.veo.core.entity.SymIdentifiable
 import org.veo.rest.configuration.TypeExtractor
 
 class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
@@ -35,9 +38,14 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
     @Autowired
     TypeExtractor typeExtractor
 
+    ReferenceAssembler referenceAssembler
+
+    def setup() {
+        referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
+    }
+
     def "creates and parses URLs for #type.simpleName"() {
         given:
-        def referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
         def entity = createEntity(type)
 
         when: "creating a target URL"
@@ -59,13 +67,35 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
         type << EntityType.TYPES
     }
 
-    def createEntity(Class<Identifiable> type) {
+    def "parsed namespace type for #url is #type"() {
+        expect:
+        referenceAssembler.parseNamespaceType(url) == type
+
+        where:
+        url                                                                                                                                                           | type
+        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/catalog-items/a149f709-3055-40a2-867a-aaf6b2ccc36d'                                       | Domain
+        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/profiles/02557ca8-a579-4e53-a161-b1433b62eb77/items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | Profile
+    }
+
+    def createEntity(Class<Entity> type) {
         Stub(type) {
             getModelInterface() >> type
-            id >> Key.newUuid()
-            idAsString >> it.id.uuidValue()
+            if (it instanceof Identifiable) {
+                id >> Key.newUuid()
+                idAsString >> it.id.uuidValue()
+            }
+            if (it instanceof SymIdentifiable) {
+                symbolicId >> Key.newUuid()
+                symbolicIdAsString >> it.symbolicId.uuidValue()
+            }
             if (it instanceof CatalogItem) {
                 domainBase >> Stub(Domain) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+            if (it instanceof Profile) {
+                owner >> Stub(DomainBase) {
                     id >> Key.newUuid()
                     idAsString >> it.id.uuidValue()
                 }
@@ -76,12 +106,6 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
                     idAsString >> it.id.uuidValue()
                 }
                 domainBase >> Stub(Domain) {
-                    id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
-                }
-            }
-            if (it instanceof Profile) {
-                owner >> Stub(DomainBase) {
                     id >> Key.newUuid()
                     idAsString >> it.id.uuidValue()
                 }

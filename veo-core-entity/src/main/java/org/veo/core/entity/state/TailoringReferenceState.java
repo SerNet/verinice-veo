@@ -20,11 +20,11 @@ package org.veo.core.entity.state;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
 public interface TailoringReferenceState<
     T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
   TailoringReferenceType getReferenceType();
 
-  ITypedId<T> getTargetRef();
+  ITypedSymbolicId<T, TNamespace> getTargetRef();
 }

@@ -19,19 +19,25 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.RiskTailoringReference;
@@ -46,16 +52,32 @@ import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @MappedSuperclass
 public abstract class TemplateItemData<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
-    extends IdentifiableVersionedData implements TemplateItem<T, TNamespace> {
+    extends VersionedData implements TemplateItem<T, TNamespace> {
+
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
+
+  @NotNull @ToString.Include private String symbolicDbId;
+
+  @Override
+  public Key<UUID> getSymbolicId() {
+    return Optional.ofNullable(symbolicDbId).map(Key::uuidFrom).orElse(null);
+  }
+
+  @Override
+  public void setSymbolicId(Key<UUID> symbolicId) {
+    symbolicDbId = symbolicId.uuidValue();
+  }
+
   @NotNull
   @Column(name = "name")
   @ToString.Include
@@ -168,5 +190,26 @@ public abstract class TemplateItemData<
             .create((Class<Element>) EntityType.getBySingularTerm(getElementType()).getType());
     element.setOwner(owner);
     return element;
+  }
+
+  public boolean equals(Object o) {
+    if (o == null) return false;
+
+    if (this == o) return true;
+
+    if (o instanceof TemplateItemData<?, ?> other) {
+      // Transient (unmanaged) entities have an ID of 'null'. Only managed
+      // (persisted and detached) entities have an identity. JPA requires that
+      // an entity's identity remains the same over all state changes.
+      // Therefore, a transient entity must never equal another entity.
+      String dbId = getDbId();
+      return dbId != null && dbId.equals(other.getDbId());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

@@ -31,6 +31,9 @@ import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface DomainBaseState extends EntityState {
+
+  String getSelfId();
+
   @NotNull
   String getAuthority();
 
@@ -53,4 +56,6 @@ public interface DomainBaseState extends EntityState {
   Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates();
 
   Set<ProfileState> getProfileStates();
+
+  Class<? extends DomainBase> getModelInterface();
 }
