@@ -58,19 +58,24 @@ public class TypeExtractor {
   }
 
   public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
+    return extractDtoType(getMethodParam(uriString).getGenericParameterType());
+  }
+
+  private MethodParameter getMethodParam(String uriString) {
     UriComponents uriComponents = UriComponentsBuilder.fromUriString(uriString).build();
     String pathComponent = uriComponents.getPath();
-    if (pathComponent == null) return Optional.empty();
-    log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
-    var pathContainer = PathContainer.parsePath(pathComponent);
-    // Incrementally strip segments from the start of the path until a matching endpoint is found.
-    // This is necessary because the path may start with an unknown context path (e.g. /apps/veo/)
-    while (!pathContainer.value().isEmpty()) {
-      var type = findDtoType(pathContainer);
-      if (type.isPresent()) {
-        return type;
+    if (pathComponent != null) {
+      log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
+      var pathContainer = PathContainer.parsePath(pathComponent);
+      // Incrementally strip segments from the start of the path until a matching endpoint is found.
+      // This is necessary because the path may start with an unknown context path (e.g. /apps/veo/)
+      while (!pathContainer.value().isEmpty()) {
+        var type = findMethodParam(pathContainer);
+        if (type.isPresent()) {
+          return type.get();
+        }
+        pathContainer = pathContainer.subPath(1);
       }
-      pathContainer = pathContainer.subPath(1);
     }
     throw new UnprocessableDataException(String.format("No mapping found for URI: %s", uriString));
   }
@@ -82,6 +87,12 @@ public class TypeExtractor {
       return Optional.of(ExportDomainTemplateDto.class);
     }
 
+    return findMethodParam(pathContainer)
+        .map(MethodParameter::getGenericParameterType)
+        .flatMap(this::extractDtoType);
+  }
+
+  private Optional<MethodParameter> findMethodParam(PathContainer pathContainer) {
     return getRequestHandlerMapping().getHandlerMethods().entrySet().stream()
         .filter(
             entry ->
@@ -105,9 +116,7 @@ public class TypeExtractor {
                     "Found return type {} for URI string {}",
                     e.getGenericParameterType().getTypeName(),
                     pathContainer.value()))
-        .findFirst()
-        .map(MethodParameter::getGenericParameterType)
-        .flatMap(this::extractDtoType);
+        .findFirst();
   }
 
   private Optional<Class<? extends ModelDto>> extractDtoType(Type type) {
