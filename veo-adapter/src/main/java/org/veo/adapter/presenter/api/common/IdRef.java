@@ -146,4 +146,9 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   public int hashCode() {
     return ITypedId.hashCode(this);
   }
+
+  @Override
+  public String toString() {
+    return ITypedId.toString(this);
+  }
 }

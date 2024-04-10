@@ -36,6 +36,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
@@ -123,9 +124,10 @@ public class DbIdRefResolver extends LocalRefResolver {
     if (!copyOfReferences.isEmpty()) {
       throw new ReferenceTargetNotFoundException(
           format(
-              "Reference targets of type %s with IDs %s not found",
-              entityType.getSimpleName(),
-              copyOfReferences.stream().map(ITypedId::getId).collect(Collectors.joining(", "))));
+              "Reference target(s) not found: %s",
+              copyOfReferences.stream()
+                  .map(IEntityRef::toString)
+                  .collect(Collectors.joining(", "))));
     }
     return result;
   }

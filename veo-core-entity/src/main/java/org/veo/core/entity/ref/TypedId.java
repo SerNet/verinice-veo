@@ -44,4 +44,9 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
   public int hashCode() {
     return ITypedId.hashCode(this);
   }
+
+  @Override
+  public String toString() {
+    return ITypedId.toString(this);
+  }
 }
