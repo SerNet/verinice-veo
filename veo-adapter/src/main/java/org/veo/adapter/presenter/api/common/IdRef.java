@@ -93,7 +93,6 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getTargetUri() {
     if (uri == null) {
       uri = urlAssembler.targetReferenceOf(entity);

@@ -110,7 +110,6 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
   }
 
   @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getTargetUri() {
     if (uri == null) {
       uri = urlAssembler.targetReferenceOf(entity);
