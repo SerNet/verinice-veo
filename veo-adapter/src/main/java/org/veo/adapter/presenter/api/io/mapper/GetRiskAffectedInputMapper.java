@@ -17,13 +17,12 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
-import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createNonEmptyCondition;
-import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createSingleValueCondition;
-import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createStringFilter;
-import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createUuidCondition;
-import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createUuidListCondition;
 import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.transformCondition;
 import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.transformUuidCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.whereEquals;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.whereEqualsOrNull;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.whereIn;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.whereUuidIn;
 
 import java.util.List;
 
@@ -55,21 +54,21 @@ public class GetRiskAffectedInputMapper {
       boolean embedRisks) {
     return new GetElementsUseCase.RiskAffectedInputData(
         client,
-        createUuidCondition(unitUuid),
-        createSingleValueCondition(Key.uuidFrom(domainId)),
-        createStringFilter(displayName),
-        createNonEmptyCondition(subType),
-        createNonEmptyCondition(status),
-        createUuidListCondition(childElementIds),
-        createSingleValueCondition(hasChildElements),
-        createSingleValueCondition(hasParentElements),
-        createSingleValueCondition(Key.uuidFrom(compositeId)),
-        createSingleValueCondition(Key.uuidFrom(scopeId)),
-        createStringFilter(description),
-        createStringFilter(designator),
-        createStringFilter(name),
-        createStringFilter(abbreviation),
-        createStringFilter(updatedBy),
+        whereUuidIn(unitUuid),
+        whereEquals(Key.uuidFrom(domainId)),
+        whereIn(displayName),
+        whereEqualsOrNull(subType),
+        whereEqualsOrNull(status),
+        whereUuidIn(childElementIds),
+        whereEquals(hasChildElements),
+        whereEquals(hasParentElements),
+        whereEquals(Key.uuidFrom(compositeId)),
+        whereEquals(Key.uuidFrom(scopeId)),
+        whereIn(description),
+        whereIn(designator),
+        whereIn(name),
+        whereIn(abbreviation),
+        whereIn(updatedBy),
         pagingConfiguration,
         embedRisks);
   }

@@ -61,22 +61,22 @@ public class QueryInputMapper {
       PagingConfiguration pagingConfiguration) {
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
-        .abbreviation(createStringFilter(abbreviation))
-        .childElementIds(createUuidListCondition(childElementIds))
-        .compositeId(createSingleValueCondition(Key.uuidFrom(compositeId)))
-        .description(createStringFilter(description))
-        .designator(createStringFilter(designator))
-        .displayName(createStringFilter(displayName))
-        .domainId(createSingleValueCondition(Key.uuidFrom(domainId)))
-        .hasChildElements(createSingleValueCondition(hasChildElements))
-        .hasParentElements(createSingleValueCondition(hasParentElements))
-        .name(createStringFilter(name))
+        .abbreviation(whereIn(abbreviation))
+        .childElementIds(whereUuidIn(childElementIds))
+        .compositeId(whereEquals(Key.uuidFrom(compositeId)))
+        .description(whereIn(description))
+        .designator(whereIn(designator))
+        .displayName(whereIn(displayName))
+        .domainId(whereEquals(Key.uuidFrom(domainId)))
+        .hasChildElements(whereEquals(hasChildElements))
+        .hasParentElements(whereEquals(hasParentElements))
+        .name(whereIn(name))
         .pagingConfiguration(pagingConfiguration)
-        .scopeId(createSingleValueCondition(Key.uuidFrom(scopeId)))
-        .status(createNonEmptyCondition(status))
-        .subType(createNonEmptyCondition(subType))
-        .unitUuid(createUuidCondition(unitUuid))
-        .updatedBy(createStringFilter(updatedBy))
+        .scopeId(whereEquals(Key.uuidFrom(scopeId)))
+        .status(whereEqualsOrNull(status))
+        .subType(whereEqualsOrNull(subType))
+        .unitUuid(whereUuidIn(unitUuid))
+        .updatedBy(whereIn(updatedBy))
         .build();
   }
 
@@ -109,10 +109,10 @@ public class QueryInputMapper {
         .ifPresent(types -> types.forEach(EntityType::validateElementType));
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
-        .elementTypes(createCondition(elementTypes))
-        .domainId(createSingleValueCondition(Key.uuidFrom(domainId)))
+        .elementTypes(whereIn(elementTypes))
+        .domainId(whereEquals(Key.uuidFrom(domainId)))
         .pagingConfiguration(config)
-        .scopeId(createSingleValueCondition(Key.uuidFrom(scopeId)))
+        .scopeId(whereEquals(Key.uuidFrom(scopeId)))
         .build();
   }
 
@@ -126,8 +126,8 @@ public class QueryInputMapper {
         client.getId(),
         Key.uuidFrom(domainId),
         config,
-        createNonEmptyCondition(elementType),
-        createNonEmptyCondition(subType));
+        whereEqualsOrNull(elementType),
+        whereEqualsOrNull(subType));
   }
 
   static <T> SingleValueQueryCondition<T> transformCondition(SingleValueQueryConditionDto<T> dto) {
@@ -160,49 +160,49 @@ public class QueryInputMapper {
     return null;
   }
 
-  static <T> SingleValueQueryCondition<T> createSingleValueCondition(T value) {
-    if (value != null) {
-      return new SingleValueQueryCondition<>(value);
-    }
-    return null;
-  }
-
-  static <T> QueryCondition<T> createNonEmptyCondition(T value) {
-    if (value == null) {
-      return null;
-    }
-    // Empty string -> match against null.
-    if (value.equals("")) {
-      return new QueryCondition<>(Collections.singleton(null));
-    }
-    return new QueryCondition<>(Set.of(value));
-  }
-
-  static <T> QueryCondition<T> createCondition(Collection<T> values) {
-    if (values == null || values.isEmpty()) {
-      return null;
-    }
-    return new QueryCondition<>(new HashSet<>(values));
-  }
-
-  static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {
-    if (ids != null) {
-      return new QueryCondition<>(ids.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
-    }
-    return null;
-  }
-
-  static QueryCondition<String> createStringFilter(String value) {
+  static <T> QueryCondition<T> whereIn(T value) {
     if (value != null) {
       return new QueryCondition<>(Set.of(value));
     }
     return null;
   }
 
-  static QueryCondition<Key<UUID>> createUuidCondition(String value) {
+  static <T> QueryCondition<T> whereIn(Collection<T> values) {
+    if (values == null || values.isEmpty()) {
+      return null;
+    }
+    return new QueryCondition<>(new HashSet<>(values));
+  }
+
+  static <T> SingleValueQueryCondition<T> whereEquals(T value) {
     if (value != null) {
-      return new QueryCondition<>(Set.of(Key.uuidFrom(value)));
+      return new SingleValueQueryCondition<>(value);
     }
     return null;
+  }
+
+  static QueryCondition<Key<UUID>> whereUuidIn(List<String> ids) {
+    if (ids != null) {
+      return new QueryCondition<>(ids.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+    }
+    return null;
+  }
+
+  static QueryCondition<Key<UUID>> whereUuidIn(String id) {
+    if (id != null) {
+      return new QueryCondition<>(Set.of(Key.uuidFrom(id)));
+    }
+    return null;
+  }
+
+  static QueryCondition<String> whereEqualsOrNull(String value) {
+    if (value == null) {
+      return null;
+    }
+    // Empty string -> match against null.
+    if (value.isEmpty()) {
+      return new QueryCondition<>(Collections.singleton(null));
+    }
+    return new QueryCondition<>(Set.of(value));
   }
 }
