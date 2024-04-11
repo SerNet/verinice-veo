@@ -68,10 +68,7 @@ public enum EntityType {
           .collect(Collectors.toUnmodifiableSet());
 
   public static final Set<String> ELEMENT_PLURAL_TERMS =
-      Stream.of(values())
-          .filter(type -> Element.class.isAssignableFrom(type.type))
-          .map(et -> et.pluralTerm)
-          .collect(Collectors.toUnmodifiableSet());
+      ELEMENT_TYPES.stream().map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
 
   public static final Set<Class<? extends Element>> ELEMENT_TYPE_CLASSES =
       ELEMENT_TYPES.stream()
