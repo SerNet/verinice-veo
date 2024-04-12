@@ -11987,7 +11987,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-115. Group: org.springdoc  Name: springdoc-openapi-starter-common  Version: 2.4.0
+115. Group: org.springdoc  Name: springdoc-openapi-starter-common  Version: 2.5.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -12199,7 +12199,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-116. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-api  Version: 2.4.0
+116. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-api  Version: 2.5.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -12411,7 +12411,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-117. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-ui  Version: 2.4.0
+117. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-ui  Version: 2.5.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -23419,7 +23419,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-169. Group: org.webjars  Name: swagger-ui  Version: 5.11.8
+169. Group: org.webjars  Name: swagger-ui  Version: 5.13.0
 
 POM Project URL: http://webjars.org
 
@@ -23438,5 +23438,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Mar 28 13:26:09 UTC 2024.
+This report was generated at Fri Apr 12 08:29:18 UTC 2024.
 
