@@ -17,18 +17,26 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.event.DomainImpactRecalculateEvent;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
+import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
@@ -45,6 +53,7 @@ public class RiskComponentChangeListener {
   private final RiskService riskService;
   private final ImpactInheritanceCalculator impactInheritanceCalculator;
   private final GenericElementRepository elementRepository;
+  private final UnitRepository unitRepository;
   private final Decider decider;
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
@@ -70,6 +79,29 @@ public class RiskComponentChangeListener {
       impactInheritanceCalculator.calculateImpactInheritance(
           ra, event.getDomain(), event.getLinkType());
     }
+  }
+
+  @TransactionalEventListener(condition = "#event.source != @riskService")
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void handle(UnitImpactRecalculatedEvent event) {
+    Unit unit = unitRepository.findById(event.getUnit().getId()).orElseThrow();
+    Optional.ofNullable(event.getDomain())
+        .ifPresentOrElse(
+            domain -> impactInheritanceCalculator.updateAllRootNodes(unit, domain),
+            () -> impactInheritanceCalculator.updateAllRootNodes(unit));
+  }
+
+  @TransactionalEventListener(condition = "#event.source != @riskService")
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void handle(DomainImpactRecalculateEvent event) {
+    Domain domain = event.getDomain();
+    List<Unit> units = unitRepository.findByClient(event.getClient());
+    units.stream()
+        .filter(u -> u.getDomains().contains(domain))
+        .forEach(
+            unit -> {
+              impactInheritanceCalculator.updateAllRootNodes(unit, domain);
+            });
   }
 
   @TransactionalEventListener

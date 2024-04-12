@@ -18,6 +18,7 @@
 package org.veo.core.service;
 
 import org.veo.core.entity.event.ControlPartsChangedEvent;
+import org.veo.core.entity.event.DomainEvent;
 import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.entity.event.StoredEvent;
 
@@ -31,4 +32,6 @@ public interface EventPublisher {
   void publish(RiskEvent event);
 
   void publish(ControlPartsChangedEvent evt);
+
+  void publish(DomainEvent event);
 }

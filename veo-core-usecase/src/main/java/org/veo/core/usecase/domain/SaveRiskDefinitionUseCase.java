@@ -22,9 +22,11 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
+import org.veo.core.entity.event.DomainImpactRecalculateEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -36,6 +38,7 @@ public class SaveRiskDefinitionUseCase
         SaveRiskDefinitionUseCase.InputData, SaveRiskDefinitionUseCase.OutputData> {
 
   private final DomainRepository repository;
+  private final EventPublisher eventPublisher;
 
   @Override
   public OutputData execute(InputData input) {
@@ -43,8 +46,9 @@ public class SaveRiskDefinitionUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    return new OutputData(
-        domain.applyRiskDefinition(input.riskDefinitionRef, input.riskDefinition));
+    boolean isNew = domain.applyRiskDefinition(input.riskDefinitionRef, input.riskDefinition);
+    eventPublisher.publish(DomainImpactRecalculateEvent.from(domain, this));
+    return new OutputData(isNew);
   }
 
   @Override

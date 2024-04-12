@@ -870,9 +870,10 @@ public class ModuleConfiguration {
       UnitRepository unitRepository,
       ElementBatchCreator elementBatchCreator,
       EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
+      RefResolverFactory refResolverFactory,
+      EventPublisher eventPublisher) {
     return new UnitImportUseCase(
-        unitRepository, refResolverFactory, entityStateMapper, elementBatchCreator);
+        unitRepository, refResolverFactory, entityStateMapper, elementBatchCreator, eventPublisher);
   }
 
   @Bean
@@ -1310,8 +1311,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  SaveRiskDefinitionUseCase saveRiskDefinitionUseCase(DomainRepository domainRepository) {
-    return new SaveRiskDefinitionUseCase(domainRepository);
+  SaveRiskDefinitionUseCase saveRiskDefinitionUseCase(
+      DomainRepository domainRepository, EventPublisher publisher) {
+    return new SaveRiskDefinitionUseCase(domainRepository, publisher);
   }
 
   @Bean

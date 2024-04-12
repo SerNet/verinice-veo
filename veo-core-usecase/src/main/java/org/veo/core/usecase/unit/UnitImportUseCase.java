@@ -22,12 +22,14 @@ import java.util.Set;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
@@ -45,6 +47,7 @@ public class UnitImportUseCase
   private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
   private final ElementBatchCreator elementBatchCreator;
+  private final EventPublisher eventPublisher;
 
   @Override
   public OutputData execute(InputData input) {
@@ -71,6 +74,7 @@ public class UnitImportUseCase
     } catch (IllegalArgumentException illEx) {
       throw new UnprocessableDataException(illEx.getMessage());
     }
+    eventPublisher.publish(UnitImpactRecalculatedEvent.from(unit, this));
     return new OutputData(unit);
   }
 

@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.event.ControlPartsChangedEvent;
+import org.veo.core.entity.event.DomainEvent;
 import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.core.service.EventPublisher;
@@ -44,6 +45,11 @@ public class EventPublisherImpl implements EventPublisher {
 
   @Override
   public void publish(ControlPartsChangedEvent event) {
+    publisher.publishEvent(event);
+  }
+
+  @Override
+  public void publish(DomainEvent event) {
     publisher.publishEvent(event);
   }
 }
