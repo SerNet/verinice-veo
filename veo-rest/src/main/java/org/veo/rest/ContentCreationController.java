@@ -75,8 +75,6 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
-import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
@@ -94,8 +92,6 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
-import org.veo.core.usecase.service.EntityStateMapper;
-import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
@@ -117,7 +113,6 @@ import lombok.extern.slf4j.Slf4j;
 @ApiResponse(responseCode = "401", description = "Content creator role required")
 public class ContentCreationController extends AbstractVeoController {
   private final ObjectSchemaParser objectSchemaParser;
-  private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase;
@@ -138,9 +133,6 @@ public class ContentCreationController extends AbstractVeoController {
 
   private final CreateDomainUseCase createDomainUseCase;
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
-  private final EntityFactory entityFactory;
-  private final IdentifiableFactory identifiableFactory;
-  private final EntityStateMapper entityStateMapper;
 
   @PostMapping("/domains")
   @Operation(summary = "Creates blank new domain")
