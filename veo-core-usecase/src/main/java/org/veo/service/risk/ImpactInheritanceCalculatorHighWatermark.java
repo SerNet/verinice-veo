@@ -139,6 +139,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   private final ScopeRepository scopeRepository;
   private final FlyweightLinkRepository flyweightRepo;
 
+  @Override
   public Collection<? extends Element> updateAllRootNodes(
       Unit unit, Domain domain, String riskDefinitionId) {
     long startTime = System.currentTimeMillis();

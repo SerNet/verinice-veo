@@ -30,14 +30,14 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 public interface ImpactInheritanceCalculator {
 
   /**
-   * Calculates the Impact Inheritance for an affected Element in a unit for a risk definition.
+   * Calculates the impact inheritance for an affected Element in a unit for a risk definition.
    * Returns the changed elements.
    */
   Collection<Element> calculateImpactInheritance(
       Unit unit, Domain domain, String riskDefinitionId, RiskAffected<?, ?> affectedElement);
 
   /**
-   * Calculates the Impact Inheritance for all elements in the unit for a risk definition. Returns
+   * Calculates the impact inheritance for all elements in the unit for a risk definition. Returns
    * the changed elements.
    */
   Collection<? extends Element> updateAllRootNodes(
@@ -94,5 +94,15 @@ public interface ImpactInheritanceCalculator {
 
   default Predicate<? super RiskDefinition> hasInheritingLinks() {
     return rd -> !rd.getImpactInheritingLinks().isEmpty();
+  }
+
+  default void updateAllRootNodes(Unit unit) {
+    unit.getDomains().forEach(domain -> updateAllRootNodes(unit, domain));
+  }
+
+  default void updateAllRootNodes(Unit unit, Domain domain) {
+    domain.getRiskDefinitions().values().stream()
+        .filter(hasInheritingLinks())
+        .forEach(rd -> updateAllRootNodes(unit, domain, rd.getId()));
   }
 }
