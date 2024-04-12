@@ -46,6 +46,8 @@ class MostRecentChangeTrackerSpec extends Specification {
         ApplicationEventPublisher publisher = Mock()
         Asset asset = Mock()
         asset.getIdAsString() >>> ids
+        asset.getRequirementImplementations() >> []
+        asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
         expect:
@@ -104,6 +106,8 @@ class MostRecentChangeTrackerSpec extends Specification {
         Asset asset = Mock()
 
         asset.getIdAsString() >> uuid
+        asset.getRequirementImplementations() >> []
+        asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
         expect:
@@ -150,6 +154,8 @@ class MostRecentChangeTrackerSpec extends Specification {
         Asset asset = Mock()
 
         asset.getIdAsString() >> uuid
+        asset.getRequirementImplementations() >> []
+        asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
         expect:
