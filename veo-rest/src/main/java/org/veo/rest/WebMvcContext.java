@@ -19,16 +19,27 @@ package org.veo.rest;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** Adds custom controller method parameter resolvers. */
 @Configuration
 class WebMvcContext implements WebMvcConfigurer {
 
+  @Autowired private ObjectMapper defaultMapper;
+
   @Override
   public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
     argumentResolvers.add(new ApplicationUserArgumentResolver());
+  }
+
+  @Override
+  public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+    converters.addFirst(new CompactJsonHttpMessageConverter(defaultMapper));
   }
 }

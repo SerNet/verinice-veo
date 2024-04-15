@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.web.servlet.MockMvc
@@ -96,9 +97,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .accept(APPLICATION_JSON), expectedStatusCode)
     }
 
-    ResultActions get(String url, int expectedStatusCode = 200) {
+    ResultActions get(String url, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
         doRequest(MockMvcRequestBuilders.get(url)
-                .accept(APPLICATION_JSON), expectedStatusCode)
+                .accept(mediaType), expectedStatusCode)
     }
 
     ResultActions put(String url, Map content, Map headers, int expectedStatusCode = 200) {

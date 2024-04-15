@@ -151,6 +151,49 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "export a domain template"() {
+        given:
+        createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
+
+        when: "exporting with default media type"
+        def export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID"))
+
+        then: "default and read-only values are contained"
+        export.name != null
+        export.profiles_v2 == []
+        with(export.catalogItems.find { it.abbreviation == "cc-1" }) {
+            customAspects == [:]
+            with(tailoringReferences.first()) {
+                target.targetUri != null
+                target.id != null
+                target.name != null
+            }
+        }
+
+        when: "exporting with compact media type"
+        export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID", 200, CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT))
+
+        then: "default and read-only values are absent"
+        export.name != null
+        !export.containsKey("profiles_v2")
+        with(export.catalogItems.find { it.abbreviation == "cc-1" }) {
+            !it.containsKey("customAspects")
+            with(tailoringReferences.first()) {
+                target.targetUri != null
+                !target.containsKey("id")
+                !target.containsKey("name")
+            }
+        }
+
+        when: "the compact domain template is re-imported"
+        export.name = "just a copy"
+        post("/content-creation/domain-templates", export)
+
+        then:
+        notThrown(Exception)
+    }
+
+    @WithUserDetails("content-creator")
     def "update the element type schema in a domain with an object schema"() {
         given:
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
