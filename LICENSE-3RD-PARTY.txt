@@ -60,7 +60,11 @@ Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
 
 4. Group: com.fasterxml.jackson  Name: jackson-bom  Version: 2.15.4
 
-No license information found
+POM Project URL: https://github.com/FasterXML/jackson-bom
+
+POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
+--------------------------------------------------------------------------------
 
 5. Group: com.fasterxml.jackson.core  Name: jackson-annotations  Version: 2.15.4
 
@@ -7443,7 +7447,11 @@ Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 
 84. Group: org.apache.groovy  Name: groovy-bom  Version: 4.0.18
 
-No license information found
+POM Project URL: https://groovy-lang.org
+
+POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
+--------------------------------------------------------------------------------
 
 85. Group: org.apache.groovy  Name: groovy-json  Version: 4.0.18
 
@@ -23438,5 +23446,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Apr 12 08:29:18 UTC 2024.
+This report was generated at Mon Apr 15 15:28:31 UTC 2024.
 
