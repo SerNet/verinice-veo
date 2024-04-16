@@ -34,6 +34,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
@@ -41,7 +42,7 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 import lombok.Value;
 
 public class DeleteElementUseCase
-    implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput>, RetryableUseCase {
 
   private final RepositoryProvider repositoryProvider;
   private final EventPublisher eventPublisher;
@@ -89,6 +90,16 @@ public class DeleteElementUseCase
   @Override
   public boolean isReadOnly() {
     return false;
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.SERIALIZABLE;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 
   @Value
