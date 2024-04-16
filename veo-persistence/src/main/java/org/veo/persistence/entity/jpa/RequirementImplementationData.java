@@ -88,7 +88,8 @@ public class RequirementImplementationData implements RequirementImplementation 
   private UUID id;
 
   /** The asset/process/scope that shows its implementation via this implementedRequirement. */
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
+  // TODO #2841 remove eager fetching when no longer needed
+  @ManyToOne(fetch = FetchType.EAGER, targetEntity = ElementData.class, optional = false)
   @JoinColumn(name = "origin_db_id", foreignKey = @ForeignKey(name = "FK_origin"))
   @NotNull
   @NonNull
