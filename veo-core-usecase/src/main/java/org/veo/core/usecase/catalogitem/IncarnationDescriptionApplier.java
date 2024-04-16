@@ -54,7 +54,7 @@ import org.veo.core.entity.state.TailoringReferenceParameterState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.AbstractTemplateItemRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.domain.ElementBatchCreator;
@@ -68,7 +68,7 @@ public class IncarnationDescriptionApplier {
   private final EntityFactory factory;
   private final UnitRepository unitRepository;
   private final ElementBatchCreator elementBatchCreator;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
 
   public <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
       List<Element> incarnate(
@@ -131,11 +131,7 @@ public class IncarnationDescriptionApplier {
         .map(o -> o.orElse(null))
         .filter(Objects::nonNull)
         .distinct()
-        .map(
-            ref ->
-                repositoryProvider
-                    .getElementRepositoryFor(ref.getType())
-                    .getById(Key.uuidFrom(ref.getId()), client.getId()))
+        .map(ref -> elementRepository.getById(Key.uuidFrom(ref.getId()), ref.getType(), client))
         .collect(Collectors.toMap(Element::getIdAsString, identity()));
   }
 

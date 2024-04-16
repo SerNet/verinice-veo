@@ -954,9 +954,9 @@ public class ModuleConfiguration {
       UnitRepository unitRepository,
       ElementBatchCreator elementBatchCreator,
       EntityFactory factory,
-      RepositoryProvider repositoryProvider) {
+      GenericElementRepository genericElementRepository) {
     return new IncarnationDescriptionApplier(
-        factory, unitRepository, elementBatchCreator, repositoryProvider);
+        factory, unitRepository, elementBatchCreator, genericElementRepository);
   }
 
   @Bean
@@ -1165,8 +1165,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Decider decider(ClientRepository clientRepository, RepositoryProvider repositoryProvider) {
-    return new Decider(clientRepository, repositoryProvider);
+  public Decider decider(
+      ClientRepository clientRepository, GenericElementRepository genericElementRepository) {
+    return new Decider(clientRepository, genericElementRepository);
   }
 
   @Bean
@@ -1178,7 +1179,7 @@ public class ModuleConfiguration {
   public EvaluateElementUseCase evaluateElementUseCase(
       RefResolverFactory refResolverFactory,
       DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
+      GenericElementRepository genericElementRepository,
       Decider decider,
       Inspector inspector,
       IdentifiableFactory identifiableFactory,
@@ -1188,7 +1189,7 @@ public class ModuleConfiguration {
         identifiableFactory,
         entityStateMapper,
         domainRepository,
-        repositoryProvider,
+        genericElementRepository,
         decider,
         inspector);
   }
@@ -1336,18 +1337,18 @@ public class ModuleConfiguration {
 
   @Bean
   AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
-      RepositoryProvider repositoryProvider, DomainRepository domainRepository) {
-    return new AssociateElementWithDomainUseCase(repositoryProvider, domainRepository);
+      GenericElementRepository genericElementRepository, DomainRepository domainRepository) {
+    return new AssociateElementWithDomainUseCase(genericElementRepository, domainRepository);
   }
 
   @Bean
   AddLinksUseCase addLinksUseCase(
       DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
+      GenericElementRepository genericElementRepository,
       EntityStateMapper entityStateMapper,
       RefResolverFactory refResolverFactory) {
     return new AddLinksUseCase(
-        domainRepository, repositoryProvider, refResolverFactory, entityStateMapper);
+        domainRepository, genericElementRepository, refResolverFactory, entityStateMapper);
   }
 
   @Bean

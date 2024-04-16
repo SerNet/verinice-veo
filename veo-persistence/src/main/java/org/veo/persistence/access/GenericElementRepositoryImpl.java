@@ -20,6 +20,7 @@ package org.veo.persistence.access;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -84,6 +85,15 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Override
   public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
     return dataRepository.getCountsBySubType(u.getIdAsString(), d.getIdAsString());
+  }
+
+  @Override
+  public <T extends Element> Optional<T> findById(
+      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId) {
+    return dataRepository
+        .findById(elementId.uuidValue(), clientId.uuidValue())
+        .filter(e -> e.getModelInterface() == elementType)
+        .map(e -> (T) e);
   }
 
   @Override

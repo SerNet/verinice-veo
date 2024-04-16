@@ -27,7 +27,7 @@ import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Decider {
   private final ClientRepository clientRepository;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
 
   /** Transiently evaluates decisions on given element and returns the results. */
   public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
@@ -57,9 +57,8 @@ public class Decider {
    */
   public void updateDecisions(ElementEvent event) {
     var client = clientRepository.getActiveById(event.getClientId());
-    repositoryProvider
-        .getElementRepositoryFor(event.getEntityType())
-        .findById(event.getEntityId())
+    elementRepository
+        .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
         .ifPresent(
             element ->
                 client

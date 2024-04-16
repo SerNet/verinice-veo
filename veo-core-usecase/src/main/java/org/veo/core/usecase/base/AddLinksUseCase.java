@@ -30,7 +30,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.service.EntityStateMapper;
@@ -43,7 +43,7 @@ import lombok.Value;
 public class AddLinksUseCase
     implements TransactionalUseCase<AddLinksUseCase.InputData, AddLinksUseCase.OutputData> {
   private final DomainRepository domainRepository;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepo;
   private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
 
@@ -66,8 +66,7 @@ public class AddLinksUseCase
       Key<UUID> domainId,
       Client client) {
     var domain = domainRepository.getById(domainId, client.getId());
-    var elementRepo = repositoryProvider.getElementRepositoryFor(type);
-    var element = elementRepo.getById(elementId, client.getId());
+    var element = elementRepo.getById(elementId, type, client);
     if (!element.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
           "%s %s is not associated with domain %s"
@@ -79,7 +78,7 @@ public class AddLinksUseCase
         .forEach(element::addLink);
     DomainSensitiveElementValidator.validate(element);
     element.setUpdatedAt(now());
-    return elementRepo.getById(elementId, client.getId());
+    return elementRepo.getById(elementId, type, client);
   }
 
   @Valid

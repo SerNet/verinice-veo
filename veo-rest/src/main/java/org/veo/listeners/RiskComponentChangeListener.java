@@ -28,8 +28,7 @@ import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
-import org.veo.core.repository.ElementRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
@@ -45,15 +44,14 @@ import lombok.RequiredArgsConstructor;
 public class RiskComponentChangeListener {
   private final RiskService riskService;
   private final ImpactInheritanceCalculator impactInheritanceCalculator;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
   private final Decider decider;
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskAffectingElementChangeEvent event) {
-    ElementRepository<? extends Element> repository =
-        repositoryProvider.getElementRepositoryFor(event.getEntityType());
-    Element element = repository.findById(event.getEntityId()).orElseThrow();
+    Element element =
+        elementRepository.getById(event.getEntityId(), event.getEntityType(), event.getClientId());
     riskService.evaluateChangedRiskComponent(element);
     if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
       if (element instanceof RiskAffected<?, ?> ra) {
@@ -65,9 +63,8 @@ public class RiskComponentChangeListener {
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskAffectedLinkDeletedEvent event) {
-    ElementRepository<? extends Element> repository =
-        repositoryProvider.getElementRepositoryFor(event.getEntityType());
-    Element element = repository.findById(event.getEntityId()).orElseThrow();
+    Element element =
+        elementRepository.getById(event.getEntityId(), event.getEntityType(), event.getClientId());
 
     if (element instanceof RiskAffected<?, ?> ra) {
       impactInheritanceCalculator.calculateImpactInheritance(

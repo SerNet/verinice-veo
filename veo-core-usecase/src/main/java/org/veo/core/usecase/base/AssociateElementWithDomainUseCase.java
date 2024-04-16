@@ -26,7 +26,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -39,7 +39,7 @@ import lombok.Value;
 public class AssociateElementWithDomainUseCase
     implements TransactionalUseCase<
         AssociateElementWithDomainUseCase.InputData, AssociateElementWithDomainUseCase.OutputData> {
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
   private final DomainRepository domainRepository;
 
   @Override
@@ -59,9 +59,7 @@ public class AssociateElementWithDomainUseCase
   }
 
   private Element fetchElement(InputData input) {
-    return repositoryProvider
-        .getElementRepositoryFor(input.elementType)
-        .getById(input.elementId, input.authenticatedClient.getId());
+    return elementRepository.getById(input.elementId, input.elementType, input.authenticatedClient);
   }
 
   @Valid

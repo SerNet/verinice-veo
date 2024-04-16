@@ -18,11 +18,16 @@
 package org.veo.core.repository;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
 
 public interface GenericElementRepository extends ElementQueryProvider<Element> {
 
@@ -31,4 +36,17 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
   void deleteAll(Collection<Element> entities);
 
   Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
+
+  default <T extends Element> T getById(Key<UUID> elementId, Class<T> elementType, Client client) {
+    return getById(elementId, elementType, client.getId());
+  }
+
+  default <T extends Element> T getById(
+      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId) {
+    return findById(elementId, elementType, clientId)
+        .orElseThrow(() -> new NotFoundException(elementId, elementType));
+  }
+
+  <T extends Element> Optional<T> findById(
+      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId);
 }

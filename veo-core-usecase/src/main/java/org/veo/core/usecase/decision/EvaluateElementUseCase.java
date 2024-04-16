@@ -33,7 +33,7 @@ import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.inspection.Inspector;
@@ -56,7 +56,7 @@ public class EvaluateElementUseCase
   private final IdentifiableFactory identifiableFactory;
   private final EntityStateMapper entityStateMapper;
   private final DomainRepository domainRepository;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
   private final Decider decider;
   private final Inspector inspector;
 
@@ -75,11 +75,7 @@ public class EvaluateElementUseCase
     var element =
         Optional.ofNullable(source.getSelfId())
             .map(Key::uuidFrom)
-            .map(
-                id ->
-                    repositoryProvider
-                        .getElementRepositoryFor(source.getModelInterface())
-                        .getById(id, client.getId()))
+            .map(id -> elementRepository.getById(id, source.getModelInterface(), client))
             .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
     entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
     return element;
