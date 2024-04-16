@@ -85,7 +85,8 @@ public class ControlImplementationData implements ControlImplementation {
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
+  // TODO #2841 remove eager fetching when no longer needed
+  @ManyToOne(fetch = FetchType.EAGER, targetEntity = ElementData.class, optional = false)
   @JoinColumn(name = "owner_db_id", foreignKey = @ForeignKey(name = "FK_owner"))
   RiskAffected<?, ?> owner;
 
