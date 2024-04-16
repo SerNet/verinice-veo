@@ -45,6 +45,7 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
+import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
@@ -92,6 +93,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Action;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -758,6 +760,19 @@ public final class EntityToDtoTransformer {
     target.setElementType(source.getElementType());
     target.setSeverity(source.getSeverity());
     target.setSelfRef(() -> referenceAssembler.inspectionReferenceOf(id, domain));
+    return target;
+  }
+
+  public Set<ActionDto> transformActions2Dtos(Map<String, Action> actions) {
+    return actions.entrySet().stream()
+        .map(e -> transformAction2Dto(e.getKey(), e.getValue()))
+        .collect(toSet());
+  }
+
+  private ActionDto transformAction2Dto(String id, Action source) {
+    var target = new ActionDto();
+    target.setId(id);
+    target.setName(source.name());
     return target;
   }
 }

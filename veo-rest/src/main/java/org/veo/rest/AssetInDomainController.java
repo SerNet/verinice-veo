@@ -49,6 +49,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -73,6 +74,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetInDomainDto;
@@ -387,5 +389,18 @@ public class AssetInDomainController implements ElementInDomainResource {
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, String domainId) {
     return elementService.getJsonSchema(auth, domainId, Asset.SINGULAR_TERM);
+  }
+
+  @Operation(summary = "Loads available domain-specific actions for an asset")
+  @GetMapping(UUID_PARAM_SPEC + "/actions")
+  public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    return elementService.getActions(domainId, uuid, Asset.class, auth);
   }
 }

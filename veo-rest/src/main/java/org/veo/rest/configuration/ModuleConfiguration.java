@@ -81,6 +81,7 @@ import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
@@ -1349,6 +1350,11 @@ public class ModuleConfiguration {
       RefResolverFactory refResolverFactory) {
     return new AddLinksUseCase(
         domainRepository, genericElementRepository, refResolverFactory, entityStateMapper);
+  }
+
+  @Bean
+  GetAvailableActionsUseCase getAvailableActionsUseCase(DomainRepository domainRepository) {
+    return new GetAvailableActionsUseCase(domainRepository);
   }
 
   @Bean

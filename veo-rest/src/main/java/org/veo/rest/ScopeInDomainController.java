@@ -76,6 +76,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
@@ -386,5 +387,18 @@ public class ScopeInDomainController implements ElementInDomainResource {
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, String domainId) {
     return elementService.getJsonSchema(auth, domainId, Scope.SINGULAR_TERM);
+  }
+
+  @Operation(summary = "Loads available domain-specific actions for a scope")
+  @GetMapping(UUID_PARAM_SPEC + "/actions")
+  public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    return elementService.getActions(domainId, uuid, Scope.class, auth);
   }
 }

@@ -18,6 +18,7 @@
 package org.veo.rest.common;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -33,12 +34,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -46,6 +49,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
@@ -75,8 +79,10 @@ public class ElementInDomainService {
   private final AddLinksUseCase addLinksUseCase;
   private final DomainRepository domainRepository;
   private final EntitySchemaService entitySchemaService;
+  private final GetAvailableActionsUseCase getAvailableActionsUseCase;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
   public @Valid <
           TElement extends Element,
@@ -246,5 +252,14 @@ public class ElementInDomainService {
                   Key.uuidFrom(domainId), clientLookup.getClient(auth).getId());
           return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
         });
+  }
+
+  public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
+      String domainId, String uuid, Class<? extends Element> type, Authentication auth) {
+    return useCaseInteractor.execute(
+        getAvailableActionsUseCase,
+        new GetAvailableActionsUseCase.InputData(
+            Key.uuidFrom(domainId), Key.uuidFrom(uuid), type, clientLookup.getClient(auth).getId()),
+        o -> ResponseEntity.ok(entityToDtoTransformer.transformActions2Dtos(o.actions())));
   }
 }

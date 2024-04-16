@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -70,4 +75,29 @@ public interface Domain extends DomainBase, ClientOwned {
   boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition);
 
   void removeRiskDefinition(RiskDefinitionRef riskDefinition);
+
+  default Map<String, Action> getActions() {
+    // TODO #2844 use dynamic descriptive actions, remove hard-coded domain-specific biz
+    if (this.getName().equals("IT-Grundschutz")) {
+      return Map.of(
+          "riskAnalysis",
+          new Action(
+              new TranslatedText(
+                  Map.of(Locale.GERMAN, "Risikoanalyse", Locale.ENGLISH, "Risk analysis")),
+              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+    }
+    return Collections.emptyMap();
+  }
+
+  default Map<String, Action> getAvailableActions(Class<? extends Element> elementType) {
+    return getActions().entrySet().stream()
+        .filter(
+            e ->
+                e.getValue().elementTypes().contains(EntityType.getSingularTermByType(elementType)))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  default Optional<Action> findAction(String actionId) {
+    return Optional.ofNullable(getActions().get(actionId));
+  }
 }
