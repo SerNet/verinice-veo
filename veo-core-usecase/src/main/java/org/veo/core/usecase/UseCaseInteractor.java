@@ -50,17 +50,4 @@ public interface UseCaseInteractor {
    */
   <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
       UseCase<I, O> useCase, @Valid I input, Function<O, R> outputMapper);
-
-  /**
-   * The input data must be validated before it is passed to the use case. The validator provided in
-   * the implementation must implement the JSR-380 specification to be able to process constraint
-   * annotations inside entities.
-   *
-   * <p>If may implement a different method to ensure the integrity of all entities if it knows
-   * about all constraints in some other way (i.e. invariants described in OCL).
-   *
-   * @param <I> the input passed to the
-   * @param input
-   */
-  <I extends UseCase.InputData> void validated(I input);
 }

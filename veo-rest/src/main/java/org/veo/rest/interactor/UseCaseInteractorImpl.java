@@ -119,16 +119,4 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
     }
     return CompletableFuture.completedFuture(resultSupplier.get());
   }
-
-  @Override
-  /**
-   * Validation of the use case input is accomplished using JSR-380 annotations and the validator
-   * provided by the spring application context (see above).
-   *
-   * <p>Therefore this method does not need to be implemented here. Instead of passing
-   * "validated(input)" we annotate the method parameter: "@Valid I input".
-   */
-  public <I extends InputData> void validated(I input) {
-    // implementation not required, see JavaDoc
-  }
 }
