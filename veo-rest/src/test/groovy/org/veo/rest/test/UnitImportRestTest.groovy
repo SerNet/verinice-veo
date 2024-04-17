@@ -198,7 +198,7 @@ class UnitImportRestTest extends VeoRestTest {
         given: "an incarnated catalog item"
         def oldUnitUri = "/units/" + postNewUnit().resourceId
         def catalogItemId = get("/domains/$dsgvoDomainId/catalog-items?size=100").body.items.find { it.abbreviation == "DS-G.38" }.id
-        def incarnationDescriptions = get("$oldUnitUri/incarnations?itemIds=$catalogItemId").body
+        def incarnationDescriptions = get("$oldUnitUri/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=$catalogItemId").body
         post("$oldUnitUri/incarnations", incarnationDescriptions)
 
         expect: "unit export and import to succeed"

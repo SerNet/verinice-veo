@@ -53,6 +53,17 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
   private final ValidationService validator;
 
   @Override
+  public Set<CatalogItem> findAllByIdsFetchTailoringReferences(
+      Collection<Key<UUID>> symIds, Domain domain) {
+    var idStrings = symIds.stream().map(Key::uuidValue).toList();
+    return catalogItemDataRepository
+        .findAllByIdsFetchTailoringReferences(idStrings, domain)
+        .stream()
+        .map(CatalogItem.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
   public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> symIds, Client client) {
     var idStrings = symIds.stream().map(Key::uuidValue).toList();

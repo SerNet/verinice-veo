@@ -41,7 +41,7 @@ class AdminRestTest extends VeoRestTest{
         def catalogItemIds = getCatalogItems(dsgvoDomainId)*.id
         log.info("==> catalogItemIds: {}", catalogItemIds)
 
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemIds.join(',')}&mode=MANUAL").body
+        def incarnationDescription = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${catalogItemIds.join(',')}&mode=MANUAL").body
         log.info("==> incarnationDescription: {}", JsonOutput.toJson(incarnationDescription))
         post("/units/${unitId}/incarnations", incarnationDescription)
 

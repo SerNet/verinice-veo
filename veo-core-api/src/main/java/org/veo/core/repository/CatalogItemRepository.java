@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +35,8 @@ import org.veo.core.entity.Key;
  */
 public interface CatalogItemRepository
     extends AbstractTemplateItemRepository<CatalogItem, DomainBase> {
+  Set<CatalogItem> findAllByIdsFetchTailoringReferences(
+      Collection<Key<UUID>> symIds, Domain domain);
 
   @Deprecated
   Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids, Client client);

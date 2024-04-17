@@ -90,7 +90,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         def dto = executeInTransaction {
             def out = synchronousUseCaseInteractor.execute(
                     getIncarnationDescriptionUseCase,
-                    new GetCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
+                    new GetCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
                     Function.identity()
                     ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)
@@ -99,7 +99,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
 
         then:
         dto.parameters.size() == 6
-        queryCounts.select == 3
+        queryCounts.select == 4
 
         when: "simulating the POST"
         QueryCountHolder.clear()

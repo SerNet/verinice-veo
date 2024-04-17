@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.entity.jpa.CatalogItemData;
@@ -65,6 +66,17 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
   @Deprecated
   Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(
       Iterable<String> ids, Client client);
+
+  @Query(
+      """
+            select ci from #{#entityName} ci
+              left join fetch ci.domain
+              left join fetch ci.domainTemplate
+              left join fetch ci.tailoringReferences tr
+              left join fetch tr.target
+              where ci.symbolicDbId in ?1 and ci.domain = ?2
+          """)
+  Set<CatalogItemData> findAllByIdsFetchTailoringReferences(Iterable<String> symIds, Domain domain);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);
@@ -104,7 +116,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
   @Query(
       """
     select ci from catalogitem ci
-        where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2 or (ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3)
+        where ci.symbolicDbId in ?1 and ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3
   """)
   Set<CatalogItem> findAllByIdsAndDomain(
       Collection<String> symbolicIds, String domainId, String clientId);

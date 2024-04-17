@@ -33,8 +33,11 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
@@ -46,8 +49,10 @@ import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
@@ -66,6 +71,7 @@ public class GetCatalogIncarnationDescriptionUseCase
     implements TransactionalUseCase<
         GetCatalogIncarnationDescriptionUseCase.InputData,
         GetCatalogIncarnationDescriptionUseCase.OutputData> {
+  private final DomainRepository domainRepository;
   private final UnitRepository unitRepository;
   private final CatalogItemRepository catalogItemRepository;
   private final GenericElementRepository genericElementRepository;
@@ -77,7 +83,14 @@ public class GetCatalogIncarnationDescriptionUseCase
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
 
-    var requestedItems = loadCatalogItems(input.getCatalogItemIds(), input.authenticatedClient);
+    var domain =
+        Optional.ofNullable(input.domainId)
+            .map(
+                domainId ->
+                    domainRepository.getActiveById(domainId, input.authenticatedClient.getId()))
+            .orElse(null);
+    var requestedItems =
+        loadCatalogItems(input.getCatalogItemIds(), domain, input.authenticatedClient);
     var config =
         createConfig(requestedItems, input.requestType, input.lookup, input.exclude, input.include);
     var tailoringReferenceFilter = config.createTailoringReferenceFilter();
@@ -114,10 +127,18 @@ public class GetCatalogIncarnationDescriptionUseCase
     return new OutputData(incarnationDescriptions, unit);
   }
 
-  private List<CatalogItem> loadCatalogItems(List<Key<UUID>> catalogItemIds, Client client) {
+  private List<CatalogItem> loadCatalogItems(
+      List<Key<UUID>> catalogItemIds, @Nullable Domain domain, Client client) {
+    // TODO #2831 always use proper domain ref
+    var domainRef =
+        Optional.ofNullable(domain).map(TypedId::from).orElse(TypedId.from("", Domain.class));
     var catalogItemsById =
-        catalogItemRepository
-            .findAllByIdsFetchDomainAndTailoringReferences(new HashSet<>(catalogItemIds), client)
+        Optional.ofNullable(domain)
+            .map(d -> catalogItemRepository.findAllByIdsFetchTailoringReferences(catalogItemIds, d))
+            .orElseGet(
+                () ->
+                    catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(
+                        new HashSet<>(catalogItemIds), client))
             .stream()
             .collect(Collectors.toMap(CatalogItem::getSymbolicId, Function.identity()));
     return catalogItemIds.stream()
@@ -126,7 +147,7 @@ public class GetCatalogIncarnationDescriptionUseCase
               var catalogItem = catalogItemsById.get(id);
               if (catalogItem == null) {
                 throw new NotFoundException(
-                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, null));
+                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, domainRef));
               }
               return catalogItem;
             })
@@ -250,6 +271,8 @@ public class GetCatalogIncarnationDescriptionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     @NotNull Key<UUID> unitId;
+    // TODO #2831 always use, make @NotNull
+    Key<UUID> domainId;
     @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
     IncarnationLookup lookup;

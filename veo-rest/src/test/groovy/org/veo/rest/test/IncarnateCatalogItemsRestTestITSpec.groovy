@@ -267,11 +267,11 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def "Create a unit and one tom, then add the tom again and again"() {
         when: "We create one element"
         def dsg10 = itemIdByAbbreviation("DS-G.10", dsgvoDomainId)
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
+        def incarnationDescription = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${dsg10}&mode=MANUAL").body
         incarnate(incarnationDescription)
 
         and: "We add the same control from the catalog"
-        def idTom = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
+        def idTom = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${dsg10}&mode=MANUAL").body
         def toms = incarnate(idTom)
         def tom1 = get(toms[0].targetUri).body
 
@@ -280,7 +280,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         tom1.abbreviation == "DS-G.10"
 
         when: "We add the same element again"
-        idTom = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
+        idTom = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${dsg10}&mode=MANUAL").body
         toms = incarnate(idTom)
         tom1 = get(toms[0].targetUri).body
 
@@ -292,7 +292,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def "all references must be resolved"() {
         when: "fetching an incarnation description for a single item with an external link reference"
         def itemId = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${itemId}&mode=MANUAL").body
+        def incarnationDescription = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${itemId}&mode=MANUAL").body
 
         then: "it cannot be applied"
         incarnate(incarnationDescription, 422).message == "CatalogItem VVT not included in request but required by TOM zur Gewährleistung der Integrität."
@@ -324,7 +324,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
         when: "We create all elements"
         def catalogItemsIds = getCatalogItems(dsgvoDomainId)*.id
-        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds, IncarnationRequestModeType.MANUAL)
+        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds, IncarnationRequestModeType.MANUAL, dsgvoDomainId)
         def newElements = incarnate(incarnationDescription)
 
         then: "all items of the catalog are created"
@@ -334,7 +334,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
         def tome = itemIdByAbbreviation("TOM-P", dsgvoDomainId)
 
-        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi},${tome}&mode=MANUAL").body
+        def idTom = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${tomi},${tome}&mode=MANUAL").body
         def toms = incarnate(idTom)
 
         def tom1 = get(toms[0].targetUri).body
@@ -350,8 +350,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         getCatalogItems(domainId).find { it.abbreviation == abbreviation }.id
     }
 
-    private Object getIncarnationDescriptions(Collection<String> itemIds, IncarnationRequestModeType mode = IncarnationRequestModeType.MANUAL) {
-        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}&mode=${mode}").body
+    private Object getIncarnationDescriptions(Collection<String> itemIds, IncarnationRequestModeType mode = IncarnationRequestModeType.MANUAL, String domainId = testDomainId) {
+        get("/units/${unitId}/domains/$domainId/incarnation-descriptions?itemIds=${itemIds.join(',')}&mode=${mode}").body
     }
 
     private getControls() {

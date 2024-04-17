@@ -176,7 +176,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     def "Create elements with wrong mode"() {
         when: "a control is created"
         def allItems = getCatalogItems(dsgvoDomainId)*.id.join(',')
-        def error = get("/units/${unitId}/incarnations?itemIds=${allItems.join(',')}&mode=TEST", 400).body
+        def error = get("/units/${unitId}/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=${allItems.join(',')}&mode=TEST", 400).body
 
         then: "an error messages is returned"
         error.message ==~/No enum constant org.veo.core.entity.IncarnationRequestModeType.TEST/
@@ -245,7 +245,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def itemIds = getCatalogItemIdsByNames(domainId, ["Control-cc-1"])
 
         expect: "that the item and its linked item should be incarnated"
-        get("/units/$unitId/incarnations?itemIds=$itemIds").body.parameters.size() == 2
+        get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$itemIds").body.parameters.size() == 2
 
         when: "excluding link references in the domain's incarnation config"
         get("/domains/$domainId/incarnation-configuration").with{
@@ -254,15 +254,15 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
 
         then: "only the item itself would be incarnated"
-        get("/units/$unitId/incarnations?itemIds=$itemIds").body.parameters.size() == 1
+        get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$itemIds").body.parameters.size() == 1
 
         and: "the default behavior can be overridden"
-        get("/units/$unitId/incarnations?itemIds=$itemIds&exclude=").body.parameters.size() == 2
+        get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$itemIds&exclude=").body.parameters.size() == 2
     }
 
     private getIncarnationDescriptions(String domainId, selectedItemNames = null, Collection<String> exclude = [], String mode = "DEFAULT", String useExistingIncarnations = "FOR_REFERENCED_ITEMS") {
         def itemIds = getCatalogItemIdsByNames(domainId, selectedItemNames)
-        return get("/units/$unitId/incarnations?itemIds=$itemIds&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
+        return get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$itemIds&mode=$mode&exclude=${exclude.join(',')}&useExistingIncarnations=$useExistingIncarnations").body
     }
 
     private String getCatalogItemIdsByNames(String domainId, List<String> selectedItemNames) {

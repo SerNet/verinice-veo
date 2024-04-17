@@ -60,9 +60,11 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
 
         def existingDomainId = Key.newUuid()
         existingDomain.id >> existingDomainId
+        existingDomain.idAsString >> existingDomainId.uuidValue()
         existingDomain.owner >> existingClient
         existingDomain.modelInterface >> Domain.class
         domainRepository.getById(existingDomainId) >> existingDomain
+        domainRepository.getActiveById(existingDomainId, existingClient.id) >> existingDomain
 
         item1.symbolicId >> Key.newUuid()
         item1.domainBase >> existingDomain
