@@ -170,13 +170,6 @@ public class ClientChangedEventListener {
             unit ->
                 deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
 
-    client
-        .getDomains()
-        .forEach(
-            domain -> {
-              domainRepository.delete(domain);
-              client.removeFromDomains(domain);
-            });
     repository.delete(client);
   }
 
