@@ -26,7 +26,6 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ref.ITypedId;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,9 +46,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   @EqualsAndHashCode.Include
   private final String id;
 
-  @ToString.Include
-  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-  private final String displayName;
+  @ToString.Include private final String displayName;
 
   @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
 
@@ -101,13 +98,11 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getSearchesUri() {
     return urlAssembler.searchesReferenceOf(type);
   }
 
   @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getResourcesUri() {
     return urlAssembler.resourcesReferenceOf(type);
   }

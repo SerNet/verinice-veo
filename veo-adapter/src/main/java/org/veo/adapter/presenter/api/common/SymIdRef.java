@@ -26,7 +26,6 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.ref.ITypedSymbolicId;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,7 +48,6 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
   @EqualsAndHashCode.Include
   private final String namespaceId;
 
-  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
   private final String displayName;
 
   @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
@@ -124,7 +122,6 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
   }
 
   @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getResourcesUri() {
     return null;
   }

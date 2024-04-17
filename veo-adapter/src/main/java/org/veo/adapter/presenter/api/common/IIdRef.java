@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * A representation of a URI reference to an {@link org.veo.core.entity.Identifiable} resource.
  * Offers methods to retrieve a resource identifier / resource locator to the resource itself and an
@@ -26,16 +28,19 @@ package org.veo.adapter.presenter.api.common;
 public interface IIdRef extends Ref {
 
   /** A user friendly name of the target object. */
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String getDisplayName();
 
   /**
    * Returns a URI of searches for the target type that can be used for discovery. It may be a URL.
    */
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String getSearchesUri();
 
   /**
    * Returns a URI of a collection of objects for the target type that may be used for discovery. It
    * may be a URL.
    */
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String getResourcesUri();
 }
