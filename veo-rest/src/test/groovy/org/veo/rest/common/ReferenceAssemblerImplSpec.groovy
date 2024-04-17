@@ -210,6 +210,22 @@ class ReferenceAssemblerImplSpec extends Specification {
         DomainTemplate | '/domain-templates'
     }
 
+    def "compound-identifiable resources reference for #type is #reference"() {
+        given:
+        def entity = Mock(type) {
+            firstIdAsString >> 'a90f5269-e268-469d-b342-920a7255a471'
+        }
+
+        expect:
+        referenceAssembler.resourcesReferenceOf(entity) == reference
+
+        where:
+        type           | reference
+        AssetRisk   | '/assets/a90f5269-e268-469d-b342-920a7255a471/risks'
+        ProcessRisk | '/processes/a90f5269-e268-469d-b342-920a7255a471/risks'
+        ScopeRisk   | '/scopes/a90f5269-e268-469d-b342-920a7255a471/risks'
+    }
+
     def "searches reference for #type is #reference"() {
         expect:
         referenceAssembler.searchesReferenceOf(type) == reference

@@ -742,6 +742,29 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     throw new NotImplementedException("Unsupported collection reference type " + type);
   }
 
+  @Override
+  @SuppressFBWarnings // ignore warnings on calls to method proxy factories
+  public String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity) {
+    if (entity instanceof AssetRisk) {
+      return linkTo(methodOn(AssetController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+          .withSelfRel()
+          .getHref();
+    }
+    if (entity instanceof ProcessRisk) {
+      return linkTo(
+              methodOn(ProcessController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+          .withSelfRel()
+          .getHref();
+    }
+    if (entity instanceof ScopeRisk) {
+      return linkTo(methodOn(ScopeController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+          .withSelfRel()
+          .getHref();
+    }
+    throw new NotImplementedException(
+        "Unsupported collection reference type %s".formatted(entity.getModelType()));
+  }
+
   /**
    * Compares the given URI with all mapped request methods of type "GET". Extracts the DTO type
    * used in the methods return value. Then returns the corresponding entity type.

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api
 
+import org.veo.adapter.presenter.api.common.CompoundIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
@@ -211,6 +212,19 @@ class RefSpec extends Specification {
         }
 
         expect:
+        CompoundIdRef.from(risk, referenceAssembler) == CompoundIdRef.from(risk, referenceAssembler)
+        CompoundIdRef.from(risk, referenceAssembler).hashCode() == CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskDoppelganger, referenceAssembler) == CompoundIdRef.from(risk, referenceAssembler)
+        CompoundIdRef.from(riskDoppelganger, referenceAssembler).hashCode() == CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskWithOtherScn, referenceAssembler) != CompoundIdRef.from(risk, referenceAssembler)
+        CompoundIdRef.from(riskWithOtherScn, referenceAssembler).hashCode() != CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskWithOtherAsset, referenceAssembler) != CompoundIdRef.from(risk, referenceAssembler)
+        CompoundIdRef.from(riskWithOtherAsset, referenceAssembler).hashCode() != CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        and:
         TypedCompoundId.from(risk) == TypedCompoundId.from(risk)
         TypedCompoundId.from(risk).hashCode() == TypedCompoundId.from(risk).hashCode()
 
@@ -221,6 +235,23 @@ class RefSpec extends Specification {
         TypedCompoundId.from(riskWithOtherScn).hashCode() != TypedCompoundId.from(risk).hashCode()
 
         TypedCompoundId.from(riskWithOtherAsset) != TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskWithOtherAsset).hashCode() != TypedCompoundId.from(risk).hashCode()
+
+        and:
+        CompoundIdRef.from(risk, referenceAssembler) == TypedCompoundId.from(risk)
+        TypedCompoundId.from(risk) == CompoundIdRef.from(risk, referenceAssembler)
+        TypedCompoundId.from(risk).hashCode() == CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskDoppelganger, referenceAssembler) == TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskDoppelganger) == CompoundIdRef.from(risk, referenceAssembler)
+        TypedCompoundId.from(riskDoppelganger).hashCode() == CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskWithOtherScn, referenceAssembler) != TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskWithOtherScn) != CompoundIdRef.from(risk, referenceAssembler)
+        TypedCompoundId.from(riskWithOtherScn).hashCode() != CompoundIdRef.from(risk, referenceAssembler).hashCode()
+
+        CompoundIdRef.from(riskWithOtherAsset, referenceAssembler) != TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskWithOtherAsset) != CompoundIdRef.from(risk, referenceAssembler)
         TypedCompoundId.from(riskWithOtherAsset).hashCode() != TypedCompoundId.from(risk).hashCode()
     }
 }

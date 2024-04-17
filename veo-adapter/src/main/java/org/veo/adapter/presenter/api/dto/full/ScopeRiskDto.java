@@ -28,9 +28,9 @@ import jakarta.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.CompoundIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.common.RiskRef;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.core.entity.Control;
@@ -65,7 +65,7 @@ public class ScopeRiskDto extends AbstractRiskDto {
       @Pattern(regexp = Patterns.DATETIME) String updatedAt,
       String updatedBy,
       @Valid IdRef<Scope> scope,
-      RiskRef selfRef,
+      CompoundIdRef<ScopeRisk, Scope, Scenario> selfRef,
       long version,
       String designator,
       @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
@@ -96,7 +96,7 @@ public class ScopeRiskDto extends AbstractRiskDto {
             risk.getDomains().stream()
                 .map(o -> IdRef.from(o, referenceAssembler))
                 .collect(Collectors.toSet()))
-        .selfRef(new RiskRef(referenceAssembler, risk))
+        .selfRef(CompoundIdRef.from(risk, referenceAssembler))
         .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
         .build();
   }

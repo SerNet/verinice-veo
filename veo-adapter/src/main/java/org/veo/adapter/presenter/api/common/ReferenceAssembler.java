@@ -99,6 +99,8 @@ public interface ReferenceAssembler {
    */
   String resourcesReferenceOf(Class<? extends Identifiable> type);
 
+  String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity);
+
   /**
    * Extract the objects type from the given URI.
    *

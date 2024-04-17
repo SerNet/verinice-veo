@@ -17,7 +17,14 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.veo.core.entity.CompoundIdentifiable;
+import org.veo.core.entity.Entity;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.SymIdentifiable;
 
 /**
  * A representation of a URI reference to an {@link org.veo.core.entity.Identifiable} resource.
@@ -43,4 +50,17 @@ public interface IIdRef extends Ref {
    */
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String getResourcesUri();
+
+  static <T extends Entity> IIdRef from(T entity, ReferenceAssembler urlAssembler) {
+    if (entity instanceof Identifiable i) {
+      return IdRef.from(i, urlAssembler);
+    }
+    if (entity instanceof SymIdentifiable s) {
+      return SymIdRef.from(s, urlAssembler);
+    }
+    if (entity instanceof CompoundIdentifiable c) {
+      return CompoundIdRef.from(c, urlAssembler);
+    }
+    throw new NotImplementedException();
+  }
 }
