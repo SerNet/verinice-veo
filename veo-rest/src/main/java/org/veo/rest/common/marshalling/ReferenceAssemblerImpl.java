@@ -47,6 +47,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -426,26 +427,26 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   @SuppressFBWarnings // ignore warning on call to method proxy factory
-  public String targetReferenceOf(AbstractRisk<?, ?> risk) {
-    var entityId = risk.getEntity().getId().uuidValue();
-    var scenarioId = risk.getScenario().getId().uuidValue();
-    if (risk instanceof AssetRisk) {
-      return linkTo(methodOn(AssetController.class).getRisk(ANY_USER, entityId, scenarioId))
+  public String targetReferenceOf(CompoundIdentifiable<?, ?> entity) {
+    var firstId = entity.getFirstIdAsString();
+    var secondId = entity.getSecondIdAsString();
+    if (entity instanceof AssetRisk) {
+      return linkTo(methodOn(AssetController.class).getRisk(ANY_USER, firstId, secondId))
           .withRel(AssetController.URL_BASE_PATH + AssetRiskResource.RELPATH)
           .getHref();
     }
-    if (risk instanceof ProcessRisk) {
-      return linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, entityId, scenarioId))
+    if (entity instanceof ProcessRisk) {
+      return linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, firstId, secondId))
           .withRel(ProcessController.URL_BASE_PATH + ProcessRiskResource.RELPATH)
           .getHref();
     }
-    if (risk instanceof ScopeRisk) {
-      return linkTo(methodOn(ScopeController.class).getRisk(ANY_USER, entityId, scenarioId))
+    if (entity instanceof ScopeRisk) {
+      return linkTo(methodOn(ScopeController.class).getRisk(ANY_USER, firstId, secondId))
           .withRel(ScopeController.URL_BASE_PATH + ScopeRiskResource.RELPATH)
           .getHref();
     }
     throw new NotImplementedException(
-        format("Cannot create risk reference to entity " + "%s.", risk.getClass()));
+        format("Cannot create risk reference to entity " + "%s.", entity.getClass()));
   }
 
   @Override

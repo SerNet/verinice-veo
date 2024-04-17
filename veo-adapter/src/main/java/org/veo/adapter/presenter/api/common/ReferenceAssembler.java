@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
@@ -60,10 +61,10 @@ public interface ReferenceAssembler {
    * <p>I.e. the URI to an object with a compound ID could look like this
    * "/risks/<ASSET-UUID>/<SCENARIO-UUID>"
    *
-   * @param risk target risk
+   * @param entity target entity
    * @return the URI of the specific target object
    */
-  String targetReferenceOf(AbstractRisk<?, ?> risk);
+  String targetReferenceOf(CompoundIdentifiable<?, ?> entity);
 
   /**
    * Returns an absolute reference to the target object, where the target object is identified using

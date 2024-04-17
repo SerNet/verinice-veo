@@ -21,16 +21,19 @@ import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
 import org.veo.core.entity.Asset
+import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
+import org.veo.core.entity.ref.TypedCompoundId
 import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.ref.TypedSymbolicId
 
 import spock.lang.Specification
 
-class RefSpec extends Specification{
+class RefSpec extends Specification {
 
     ReferenceAssembler referenceAssembler = Mock()
 
@@ -170,5 +173,54 @@ class RefSpec extends Specification{
         SymIdRef.from(ciWithSameIdInOtherDomain, referenceAssembler) != TypedSymbolicId.from(ci)
         TypedSymbolicId.from(ciWithSameIdInOtherDomain) != SymIdRef.from(ci, referenceAssembler)
         TypedSymbolicId.from(ciWithSameIdInOtherDomain).hashCode() != TypedSymbolicId.from(ci).hashCode()
+    }
+
+    def "compound ref equals & hashcode is implemented correctly"() {
+        given:
+        def asset1 = Spy(Asset) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def asset2 = Spy(Asset) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def scenario1 = Spy(Scenario) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def scenario2 = Spy(Scenario) {
+            id >> Key.newUuid()
+            displayName >> ""
+        }
+        def risk = Spy(AssetRisk) {
+            entity >> asset1
+            scenario >> scenario1
+        }
+        def riskWithOtherScn = Spy(AssetRisk) {
+            entity >> asset1
+            scenario >> scenario2
+        }
+        def riskDoppelganger = Spy(AssetRisk) {
+            entity >> asset1
+            scenario >> scenario1
+        }
+        def riskWithOtherAsset = Spy(AssetRisk) {
+            entity >> asset2
+            scenario >> scenario1
+        }
+
+        expect:
+        TypedCompoundId.from(risk) == TypedCompoundId.from(risk)
+        TypedCompoundId.from(risk).hashCode() == TypedCompoundId.from(risk).hashCode()
+
+        TypedCompoundId.from(riskDoppelganger) == TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskDoppelganger).hashCode() == TypedCompoundId.from(risk).hashCode()
+
+        TypedCompoundId.from(riskWithOtherScn) != TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskWithOtherScn).hashCode() != TypedCompoundId.from(risk).hashCode()
+
+        TypedCompoundId.from(riskWithOtherAsset) != TypedCompoundId.from(risk)
+        TypedCompoundId.from(riskWithOtherAsset).hashCode() != TypedCompoundId.from(risk).hashCode()
     }
 }

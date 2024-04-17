@@ -25,6 +25,7 @@ import org.veo.core.entity.AbstractRisk
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.CompoundIdentifiable
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
 import org.veo.core.entity.Entity
@@ -119,29 +120,9 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
                     idAsString >> it.id.uuidValue()
                 }
             }
-            if(it instanceof AbstractRisk) {
-                if(it instanceof AssetRisk) {
-                    entity >> Stub(Asset) {
-                        id >> Key.newUuid()
-                        idAsString >> it.id.uuidValue()
-                    }
-                }
-                if(it instanceof ProcessRisk) {
-                    entity >> Stub(Process) {
-                        id >> Key.newUuid()
-                        idAsString >> it.id.uuidValue()
-                    }
-                }
-                if(it instanceof ScopeRisk) {
-                    entity >> Stub(Scope) {
-                        id >> Key.newUuid()
-                        idAsString >> it.id.uuidValue()
-                    }
-                }
-                scenario >> Stub(Scenario) {
-                    id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
-                }
+            if(it instanceof CompoundIdentifiable) {
+                firstIdAsString >> UUID.randomUUID()
+                secondIdAsString >> UUID.randomUUID()
             }
             if(it instanceof UserConfiguration) {
                 applicationId >> "foo"

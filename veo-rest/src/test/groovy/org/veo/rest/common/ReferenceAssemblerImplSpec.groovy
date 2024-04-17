@@ -44,6 +44,7 @@ import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.core.entity.ScopeRisk
 import org.veo.core.entity.compliance.ControlImplementation
 import org.veo.rest.common.marshalling.ReferenceAssemblerImpl
 import org.veo.rest.configuration.TypeExtractor
@@ -223,26 +224,23 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '/domains/searches'
     }
 
-    def "target reference for #type and compound-id #entityId/#scenarioId is #reference"() {
-        def risk = Stub(type) {
-            entity >> Stub(entityType as Class<Element>) {
-                id >> Key.uuidFrom(entityId)
-            }
-            scenario >> Stub(Scenario) {
-                id >> Key.uuidFrom(scenarioId)
-            }
+    def "target reference for #type is #reference"() {
+        def entity = Stub(type) {
+            firstIdAsString >> '40331ed5-be07-4c69-bf99-553811ce5454'
+            secondIdAsString >> '5743c89a-5b17-4b50-8c21-72f2ac86faf3'
         }
 
         when:
-        def result = referenceAssembler.targetReferenceOf(risk)
+        def result = referenceAssembler.targetReferenceOf(entity)
 
         then:
         result == reference
 
         where:
-        type        | entityType | entityId                               | scenarioId                             | reference
-        AssetRisk   | Asset      | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
-        ProcessRisk | Process    | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/processes/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        type        | reference
+        AssetRisk   | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        ProcessRisk | '/processes/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        ScopeRisk   | '/scopes/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
     }
 
     def "requirement implementations reference for #type is generated"() {

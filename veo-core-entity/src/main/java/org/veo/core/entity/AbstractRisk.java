@@ -53,7 +53,7 @@ import lombok.NonNull;
  * own).
  */
 public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    extends ClientOwned, CompoundKeyEntity, Designated, Versioned, RiskRelated {
+    extends ClientOwned, CompoundIdentifiable<T, Scenario>, Designated, Versioned, RiskRelated {
 
   String TYPE_DESIGNATOR = "RSK";
 
@@ -123,4 +123,14 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
 
   void setValues(
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions, Domain domain);
+
+  @Override
+  default T getFirstRelation() {
+    return getEntity();
+  }
+
+  @Override
+  default Scenario getSecondRelation() {
+    return getScenario();
+  }
 }
