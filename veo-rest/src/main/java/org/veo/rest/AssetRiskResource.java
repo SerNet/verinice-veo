@@ -68,7 +68,7 @@ public interface AssetRiskResource {
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   })
   @Valid
-  CompletableFuture<List<AssetRiskDto>> getRisks(
+  Future<List<AssetRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, @PathVariable String assetId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")

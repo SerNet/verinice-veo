@@ -72,7 +72,7 @@ public interface ProcessRiskResource {
                 array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
   })
   @Valid
-  CompletableFuture<List<ProcessRiskDto>> getRisks(
+  Future<List<ProcessRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, @PathVariable String processId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")

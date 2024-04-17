@@ -68,7 +68,7 @@ public interface ScopeRiskResource {
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   })
   @Valid
-  CompletableFuture<List<ScopeRiskDto>> getRisks(
+  Future<List<ScopeRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, @PathVariable String scopeId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")

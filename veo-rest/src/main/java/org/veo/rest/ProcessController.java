@@ -455,7 +455,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public CompletableFuture<List<ProcessRiskDto>> getRisks(
+  public Future<List<ProcessRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String processId) {
 
     Client client = getClient(user.getClientId());

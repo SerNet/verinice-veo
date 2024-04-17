@@ -467,7 +467,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   }
 
   @Override
-  public CompletableFuture<List<ScopeRiskDto>> getRisks(
+  public Future<List<ScopeRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String scopeId) {
 
     Client client = getClient(user.getClientId());

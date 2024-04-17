@@ -452,7 +452,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   }
 
   @Override
-  public CompletableFuture<List<AssetRiskDto>> getRisks(
+  public Future<List<AssetRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String assetId) {
 
     Client client = getClient(user.getClientId());
