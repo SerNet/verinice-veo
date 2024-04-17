@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 
@@ -183,15 +182,12 @@ public class ElementInDomainService {
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
     dto.applyResourceId(id);
     dto.setDomain(TypedId.from(domainId, Domain.class));
+    var user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    var client = clientLookup.getClient(user);
     return useCaseInteractor.execute(
         updateUseCase,
-        (Supplier<UpdateElementInDomainUseCase.InputData<TElement>>)
-            () -> {
-              var user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-              var client = clientLookup.getClient(user);
-              return new UpdateElementInDomainUseCase.InputData<TElement>(
-                  Key.uuidFrom(id), dto, Key.uuidFrom(domainId), client, eTag, user.getUsername());
-            },
+        new UpdateElementInDomainUseCase.InputData<>(
+            Key.uuidFrom(id), dto, Key.uuidFrom(domainId), client, eTag, user.getUsername()),
         output ->
             toResponseEntity(
                 output.getEntity(),

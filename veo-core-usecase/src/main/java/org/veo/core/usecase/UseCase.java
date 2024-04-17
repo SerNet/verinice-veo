@@ -19,7 +19,6 @@ package org.veo.core.usecase;
 
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 
@@ -40,17 +39,6 @@ import lombok.Getter;
 public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
 
   O execute(I input);
-
-  /**
-   * Uses the inputSupplier to get the Input, execute the usecase with the input, use the result
-   * resultMapper to produce a R.
-   *
-   * <p>Override this Method and annotate it with @Transactional in the concrete usescase when you
-   * need to transform the input and/or the output.
-   */
-  default <R> R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
-    return resultMapper.apply(execute(inputSupplier.get()));
-  }
 
   /**
    * Execute the usecase with the input, use the result resultMapper to produce a R.

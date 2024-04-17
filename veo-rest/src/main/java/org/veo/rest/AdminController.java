@@ -18,7 +18,6 @@
 package org.veo.rest;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +75,7 @@ public class AdminController {
   public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
-        (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(unitId),
+        UnitDumpMapper.mapInput(unitId),
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 

@@ -18,7 +18,6 @@
 package org.veo.core.usecase;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import jakarta.transaction.Transactional;
 
@@ -30,13 +29,6 @@ import jakarta.transaction.Transactional;
  */
 public interface TransactionalUseCase<I extends UseCase.InputData, O extends UseCase.OutputData>
     extends UseCase<I, O> {
-
-  @Transactional(Transactional.TxType.REQUIRED)
-  @Override
-  default <R> R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
-
-    return resultMapper.apply(execute(inputSupplier.get()));
-  }
 
   @Transactional(Transactional.TxType.REQUIRED)
   @Override

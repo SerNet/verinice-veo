@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -270,18 +269,12 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     CompletableFuture<List<IdRef<Element>>> completableFuture =
         useCaseInteractor.execute(
             applyCatalogIncarnationDescriptionUseCase,
-            (Supplier<ApplyCatalogIncarnationDescriptionUseCase.InputData>)
-                () ->
-                    new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                        client,
-                        Key.uuidFrom(unitId),
-                        applyInformation.getParameters().stream()
-                            .map(
-                                d ->
-                                    (TemplateItemIncarnationDescriptionState<
-                                            CatalogItem, DomainBase>)
-                                        d)
-                            .toList()),
+            new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                client,
+                Key.uuidFrom(unitId),
+                applyInformation.getParameters().stream()
+                    .map(d -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) d)
+                    .toList()),
             output ->
                 output.getNewElements().stream()
                     .map(c -> IdRef.from(c, referenceAssembler))
@@ -355,7 +348,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
-        (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(id),
+        UnitDumpMapper.mapInput(id),
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
