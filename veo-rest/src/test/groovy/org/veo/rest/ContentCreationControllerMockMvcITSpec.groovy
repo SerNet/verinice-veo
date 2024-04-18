@@ -22,6 +22,7 @@ import static org.veo.core.entity.TailoringReferenceType.RISK
 import java.nio.charset.StandardCharsets
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -155,7 +156,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         given:
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
 
-        when: "exporting with default media type"
+        when: "exporting with application/json"
         def export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID"))
 
         then: "default and read-only values are contained"
@@ -191,6 +192,12 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         notThrown(Exception)
+
+        when: "exporting with default media type"
+        export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID", 200, MediaType.ALL))
+
+        then: "non-compact format is used"
+        export.profiles_v2 == []
     }
 
     @WithUserDetails("content-creator")
