@@ -25,6 +25,8 @@ class DomainUpdateRestTest extends VeoRestTest {
     String oldDomainTemplateId
     String newDomainTemplateId
     String templateName
+    String unitId
+    String oldDomainId
 
     def setup() {
         templateName = "domain update test template ${UUID.randomUUID()}"
@@ -34,13 +36,14 @@ class DomainUpdateRestTest extends VeoRestTest {
 
         template.templateVersion = "1.1.0"
         newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
+
+        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
+        unitId = postNewUnit().resourceId
+        oldDomainId = get("/domains").body.find { it.name == templateName }.id
     }
 
     def "updates client to new domain template version and migrates elements"() {
         given: "a scope and a process linked to it in the old domain"
-        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
-        def unitId = postNewUnit().resourceId
-        def oldDomainId = get("/domains").body.find { it.name == templateName }.id
         def scopeId = post("/scopes", [
             name: "target scope",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -79,20 +82,9 @@ class DomainUpdateRestTest extends VeoRestTest {
         ]
         put("/scopes/$scopeId", scope, scopeResponse.getETag())
 
-        when: "incarnating the new domain template version"
-        post("/domain-templates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
-
-        and: "triggering migration to the new domain"
-        post("/admin/domain-templates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
-
-        then: "only the new domain is active"
-        defaultPolling.eventually {
-            get("/domains").body.findAll{it.name == templateName}*.templateVersion == ["1.1.0"]
-        }
-
-        when: "fetching the migrated scope"
+        when: "migrating to the new domain"
+        def newDomainId = migrateToNewDomain()
         def migratedScope = get("/scopes/$scopeId").body
-        def newDomainId = get("/domains").body.findAll{it.name == templateName}.first().id
 
         then: "the sub type and link are still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
@@ -273,5 +265,14 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ]
         ]
+    }
+
+    String migrateToNewDomain() {
+        post("/domain-templates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
+        post("/admin/domain-templates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
+        defaultPolling.eventually {
+            get("/domains").body.findAll{it.name == templateName}*.templateVersion == ["1.1.0"]
+        }
+        get("/domains").body.findAll{it.name == templateName}.first().id
     }
 }
