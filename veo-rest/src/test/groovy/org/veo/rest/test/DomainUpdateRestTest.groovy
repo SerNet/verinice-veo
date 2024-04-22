@@ -131,6 +131,56 @@ class DomainUpdateRestTest extends VeoRestTest {
         noExceptionThrown()
     }
 
+    def "information in other domains is untouched during migration"() {
+        given: "a document associated with two domains"
+        def targetPersonId = post("/domains/$testDomainId/persons", [
+            name: "Manuel el autor",
+            subType: "MasterOfDisaster",
+            status: "CAUSING_REAL_DISASTERS",
+            owner: [targetUri: "/units/$unitId"],
+        ]).body.resourceId
+        def documentId = post("/domains/$testDomainId/documents", [
+            name: "protagonist document",
+            subType: "Manual",
+            status: "OUTDATED",
+            owner: [targetUri: "/units/$unitId"],
+            customAspects: [
+                details: [
+                    numberOfPages: 83
+                ]
+            ],
+            links: [
+                author: [
+                    [
+                        target: [targetUri: "/persons/$targetPersonId"],
+                        attributes: [
+                            writingFinished: "2024-04-01"
+                        ]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+        post("/domains/$oldDomainId/documents/$documentId", [
+            subType: "DOC_Document",
+            status: "NEW",
+        ], 200)
+
+        when: "migrating to a new template version"
+        def newDomainId = migrateToNewDomain()
+
+        then: "the document has been migrated"
+        get("/domains/$newDomainId/documents/$documentId").body.subType == "DOC_Document"
+
+        and: "the information in the other domain hasn't been altered"
+        with(get("/domains/$testDomainId/documents/$documentId").body) {
+            subType == "Manual"
+            status == "OUTDATED"
+            customAspects.details.numberOfPages == 83
+            links.author[0].target.name == "Manuel el autor"
+            links.author[0].attributes.writingFinished == "2024-04-01"
+        }
+    }
+
     private LinkedHashMap<String, Serializable> getTemplate() {
         [
             id: UUID.randomUUID(),

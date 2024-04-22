@@ -55,12 +55,14 @@ class ElementMigrationServiceSpec extends Specification{
                     attributes >> [
                         "attrA": "valueA"
                     ]
+                    it.domain >> domain
                 },
                 Spy(CustomAspect) {
                     type >> "typeB"
                     attributes >> [
                         "attrA": "valueA"
                     ]
+                    it.domain >> domain
                 }
             ] as Set)
             links >> ([] as Set)
@@ -95,6 +97,7 @@ class ElementMigrationServiceSpec extends Specification{
                         attrA: "valueA",
                         attrB: "valueB"
                     ]
+                    it.domain >> domain
                 }
             ] as Set)
             links >> ([] as Set)
@@ -132,11 +135,13 @@ class ElementMigrationServiceSpec extends Specification{
                     type >> "typeA"
                     attributes >> [:]
                     target >> targetPerson
+                    it.domain >> domain
                 },
                 Spy(CustomLink) {
                     type >> "typeB"
                     attributes >> [:]
                     target >> targetPerson
+                    it.domain >> domain
                 }
             ] as Set)
             findSubType(domain) >> Optional.empty()
@@ -178,6 +183,7 @@ class ElementMigrationServiceSpec extends Specification{
                         attrB: "valueB",
                     ]
                     target >> targetPerson
+                    it.domain >> domain
                 }
             ] as Set)
             findSubType(domain) >> Optional.empty()
@@ -212,6 +218,7 @@ class ElementMigrationServiceSpec extends Specification{
                         firstName: "Johnny",
                         lastName: 5,
                     ]
+                    it.domain >> domain
                 }
             ]
             links >> []
@@ -259,16 +266,19 @@ class ElementMigrationServiceSpec extends Specification{
                     type >> "veryNicePersonLink"
                     attributes >> [:]
                     target >> veryNiceTargetPerson
+                    it.domain >> domain
                 },
                 Spy(CustomLink) {
                     type >> "verySmartPeronLink"
                     attributes >> [:]
                     target >> veryNiceTargetPerson
+                    it.domain >> domain
                 },
                 Spy(CustomLink) {
                     type >> "serverLink"
                     attributes >> [:]
                     target >> veryNiceTargetPerson
+                    it.domain >> domain
                 }
             ] as Set)
             findSubType(domain) >> Optional.empty()
@@ -298,8 +308,8 @@ class ElementMigrationServiceSpec extends Specification{
         def element = Mock(Element) {
             id >> Key.newUuid()
             modelType >> "asset"
-            customAspects >> ([] as Set)
-            links >> ([] as Set)
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Building")
             getStatus(domain) >> "NEW"
         }
@@ -325,8 +335,8 @@ class ElementMigrationServiceSpec extends Specification{
         def element = Mock(Element) {
             id >> Key.newUuid()
             modelType >> "asset"
-            customAspects >> ([] as Set)
-            links >> ([] as Set)
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "OLD"
         }

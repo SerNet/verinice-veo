@@ -18,7 +18,6 @@
 package org.veo.service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.veo.core.entity.Domain;
@@ -39,7 +38,8 @@ public class ElementMigrationService {
 
   public void migrate(Element element, Domain domain) {
     var definition = domain.getElementTypeDefinition(element.getModelType());
-    new HashSet<>(element.getCustomAspects())
+    element
+        .getCustomAspects(domain)
         .forEach(
             ca -> {
               var caDefinition = definition.getCustomAspects().get(ca.getType());
@@ -53,7 +53,8 @@ public class ElementMigrationService {
               }
               migrateAttributes(ca.getAttributes(), caDefinition.getAttributeDefinitions());
             });
-    new HashSet<>(element.getLinks())
+    element
+        .getLinks(domain)
         .forEach(
             link -> {
               var linkDefinition = definition.getLinks().get(link.getType());
