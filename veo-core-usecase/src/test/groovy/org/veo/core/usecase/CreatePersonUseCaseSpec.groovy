@@ -46,6 +46,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         scopes >> []
         parts >> []
         composites >> []
+        appliedCatalogItems >> []
     }
 
     CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)

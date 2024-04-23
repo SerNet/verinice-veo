@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jochen Kemnade
+ * Copyright (C) 2024  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,30 +17,17 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashSet;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.CustomAttributeContainer;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
-/** Checks that an element only references domains that it is associated with. */
-public class ElementOnlyReferencesAssociatedDomains implements EntitySpecification<Element> {
-
+public class ElementOnlyReferencesUpToOneCatalogItemPerDomain
+    implements EntitySpecification<Element> {
   @Override
-  public boolean test(Element element) {
-    return element.getDomains().containsAll(getReferencedDomains(element));
-  }
-
-  private static Set<Domain> getReferencedDomains(Element element) {
-    return Stream.of(
-            element.getCustomAspects().stream().map(CustomAttributeContainer::getDomain),
-            element.getLinks().stream().map(CustomAttributeContainer::getDomain),
-            element.getAppliedCatalogItems().stream().map(CatalogItem::requireDomainMembership))
-        .flatMap(Function.identity())
-        .collect(Collectors.toSet());
+  public boolean test(Element entity) {
+    var ciDomains =
+        entity.getAppliedCatalogItems().stream().map(CatalogItem::requireDomainMembership).toList();
+    return ciDomains.size() == new HashSet<>(ciDomains).size();
   }
 }

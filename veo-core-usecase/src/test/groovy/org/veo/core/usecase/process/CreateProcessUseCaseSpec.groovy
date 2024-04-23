@@ -53,6 +53,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         parts >> []
         composites >> []
         scopes >> []
+        appliedCatalogItems >> []
     }
 
     CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)

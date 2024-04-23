@@ -47,6 +47,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         links >> []
         members >> []
         scopes >> []
+        appliedCatalogItems >> []
     }
 
     CreateElementUseCase usecase = new CreateElementUseCase(refResolverFactory, repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)

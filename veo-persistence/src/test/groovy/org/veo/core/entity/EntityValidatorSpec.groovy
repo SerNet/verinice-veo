@@ -20,7 +20,6 @@ package org.veo.core.entity
 import org.veo.core.entity.code.EntityValidationException
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.specification.EntityValidator
-import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.test.VeoSpec
 
 class EntityValidatorSpec extends VeoSpec {
@@ -269,6 +268,53 @@ class EntityValidatorSpec extends VeoSpec {
         given: "a person associated with a new domain"
         Person person = newPerson(unit) {
             associateWithDomain(newDomain(client), "NormalPerson", "NEW")
+        }
+
+        when:
+        validator.validate(person)
+
+        then:
+        thrown(EntityValidationException)
+    }
+
+    def "a person associated with an inactive domain does not pass validation"() {
+        given:
+        domain.active = false
+        Person person = newPerson(unit) {
+            associateWithDomain(domain, "NormalPerson", "NEW")
+        }
+
+        when:
+        validator.validate(person)
+
+        then:
+        thrown(EntityValidationException)
+    }
+
+    def "a person referencing a catalog item from an unassociated domain does not pass validation"() {
+        given:
+        Person person = newPerson(unit) {
+            associateWithDomain(domain, "NormalPerson", "NEW")
+            appliedCatalogItems = [
+                newCatalogItem(newDomain(client))
+            ]
+        }
+
+        when:
+        validator.validate(person)
+
+        then:
+        thrown(EntityValidationException)
+    }
+
+    def "a person referencing multiple catalog items from the same domain does not pass validation"() {
+        given:
+        Person person = newPerson(unit) {
+            associateWithDomain(domain, "NormalPerson", "NEW")
+            appliedCatalogItems = [
+                newCatalogItem(domain),
+                newCatalogItem(domain),
+            ]
         }
 
         when:

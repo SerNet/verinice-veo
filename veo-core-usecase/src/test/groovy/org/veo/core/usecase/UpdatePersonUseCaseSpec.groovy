@@ -49,6 +49,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         person.parts >> []
         person.composites >> []
         person.scopes >> []
+        person.appliedCatalogItems >> []
 
         CompositeElementState personState = Mock {
             getId() >> id.uuidValue()

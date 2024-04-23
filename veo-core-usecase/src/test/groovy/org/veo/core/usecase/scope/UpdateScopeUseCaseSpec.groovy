@@ -59,6 +59,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
             it.members >> []
             it.scopes >> []
             it.domainTemplates >> []
+            it.appliedCatalogItems >> []
             it.modelInterface >> Scope
         }
 
