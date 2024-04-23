@@ -20,8 +20,7 @@ package org.veo.core.entity.specification;
 import org.veo.core.entity.Element;
 
 /** Checks that an element's custom aspects' domains are contained in the element's domains. */
-public class ElementIsAssociatedWithCustomAspectAndLinkDomains
-    implements EntitySpecification<Element> {
+public class ElementOnlyReferencesAssociatedDomains implements EntitySpecification<Element> {
 
   @Override
   public boolean test(Element element) {

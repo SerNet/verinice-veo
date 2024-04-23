@@ -30,7 +30,7 @@ import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
-import org.veo.core.entity.specification.ElementIsAssociatedWithCustomAspectAndLinkDomains;
+import org.veo.core.entity.specification.ElementOnlyReferencesAssociatedDomains;
 import org.veo.core.entity.specification.ElementOnlyReferencesItsOwnUnitSpecification;
 
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
@@ -44,7 +44,7 @@ public class DomainSensitiveElementValidator {
       throw new UnprocessableDataException(
           "Element can only be associated with its unit's domains");
     }
-    if (!new ElementIsAssociatedWithCustomAspectAndLinkDomains().test(element)) {
+    if (!new ElementOnlyReferencesAssociatedDomains().test(element)) {
       throw new IllegalArgumentException(
           "Element cannot contain custom aspects or links for domains it is not associated with");
     }

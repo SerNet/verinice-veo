@@ -44,8 +44,7 @@ public class EntityValidator {
                 ClientOwned.class,
                 new SameClientSpecification(accountProvider.getCurrentUserAccount().getClient())),
             new TypedValidator<>(Domain.class, new CompleteEntityTypeDefinitionsSpecification()),
-            new TypedValidator<>(
-                Element.class, new ElementIsAssociatedWithCustomAspectAndLinkDomains()),
+            new TypedValidator<>(Element.class, new ElementOnlyReferencesAssociatedDomains()),
             new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
             new TypedValidator<>(Element.class, new ElementDomainsAreSubsetOfUnitDomains()),
             new TypedValidator<>(Element.class, new ElementOnlyReferencesItsOwnUnitSpecification()),
