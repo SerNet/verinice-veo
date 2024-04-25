@@ -917,6 +917,45 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ], 204)
 
+        and: "we create a simple circle in the profile by linking two controls"
+        def c1 = parseJson(post("/controls", [
+            name   : "control-1",
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
+            ],
+            owner  : [targetUri: "/units/$unitId"]
+        ])).resourceId
+
+        def c2 = parseJson(post("/controls", [
+            name   : "control-2",
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
+            ],
+            owner  : [targetUri: "/units/$unitId"]
+        ])).resourceId
+
+        post("/domains/$domainId/controls/$c1/links", [
+            control_tom: [
+                [
+                    target: [targetUri: "/controls/$c2"]
+                ]
+            ]
+        ], 204)
+
+        post("/domains/$domainId/controls/$c2/links", [
+            control_tom: [
+                [
+                    target: [targetUri: "/controls/$c1"]
+                ]
+            ]
+        ], 204)
+
         and: "we create a new profile and export"
         def profileId = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
                 [
@@ -931,7 +970,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(exportedProfile) {
             name == 'export-test'
             description == 'All the good stuff'
-            items.size() == 9
+            items.size() == 11
         }
         with(exportedProfile.items.find{it.name == "Control-2" }) {
             abbreviation == 'c-2'
@@ -966,7 +1005,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         result !=null
         dt.profiles.size() == 1
         dt.profiles[0].name == 'export-test1'
-        dt.profiles[0].items.size() == 9
+        dt.profiles[0].items.size() == 11
 
         with(dt.profiles[0].items.find{it.name == "Control-2" }) {
             abbreviation == 'c-2'
@@ -998,7 +1037,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         dt.profiles.size() == 1
         dt.profiles[0].name == 'export-test1'
         dt.profiles[0].description == 'a new description'
-        dt.profiles[0].items.size() == 9
+        dt.profiles[0].items.size() == 11
 
         with(dt.profiles[0].items.find{it.name == "Control-2" }) {
             abbreviation == 'c-2'
