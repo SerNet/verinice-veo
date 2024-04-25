@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
@@ -204,9 +205,22 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   public boolean removeFromDomains(Domain domain) {
     boolean removed = super.removeFromDomains(domain);
     if (removed) {
-      getRisks().forEach(r -> r.removeFromDomains(domain));
+      Set.copyOf(getRisks()).stream()
+          .filter(associatedWithDomain(domain))
+          .forEach(
+              risk -> {
+                if (risk.getDomains().size() == 1) {
+                  getRisks().remove(risk);
+                } else {
+                  risk.removeFromDomains(domain);
+                }
+              });
     }
     return removed;
+  }
+
+  private Predicate<? super R> associatedWithDomain(Domain domain) {
+    return r -> r.getDomains().contains(domain);
   }
 
   @Override

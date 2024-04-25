@@ -40,6 +40,7 @@ import org.veo.jobs.MessagingJob
 import org.veo.message.TestContainersUtil
 
 import spock.lang.AutoCleanup
+import spock.lang.IgnoreRest
 import spock.lang.Shared
 
 @ActiveProfiles(["test", PROFILE_BACKGROUND_TASKS])
@@ -103,6 +104,20 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                     }
                 ]
             })
+            applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+                subTypes = [
+                    NormalControl: newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                subTypes = [
+                    NormalScenario: newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
         }
         domainId = domain.id.uuidValue()
         clientRepo.save(client)
@@ -136,7 +151,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ])).resourceId
-
         // TODO VEO-399 create catalog item via API endpoint
 
         and: "a catalog item that conforms to the element type definition"
@@ -211,6 +225,75 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
         and: "the obsolete content has been removed from the profile item"
         profileItem.customAspects.aspectOne.attrTwo == null
+    }
+
+    @IgnoreRest
+    @WithUserDetails("content-creator")
+    def 'risk is removed when element is dissociated from a domain'() {
+        given: "an asset and a risk"
+        def assetId = parseJson(post("/assets", [
+            domains: [
+                (domainId): [
+                    subType: "NormalAsset",
+                    status: "NEW",
+                ]
+            ],
+            name: "my little asset",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+
+        ])).resourceId
+
+        def scenarioId = parseJson(post("/scenarios", [
+            domains: [
+                (domainId): [
+                    subType: "NormalScenario",
+                    status: "NEW",
+                ]
+            ],
+            name: "my little scenario",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+
+        ])).resourceId
+
+        post("/assets/$assetId/risks", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [:]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+
+        when: "we get the risks"
+        def risks = parseJson(get("/assets/$assetId/risks"))
+
+        then: "the risk exist"
+        risks.size() == 1
+
+        when: "removing the subtype from the element type definition"
+        def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
+        etd.subTypes = [:]
+        put("/content-creation/domains/$domainId/element-type-definitions/asset", etd, 204)
+
+        and: "triggering message processing"
+        messagingJob.sendMessages()
+
+        and: "wait for the asset to be migrated"
+        def retrievedAsset = null
+        for (def i = 0; i < 50; i++) {
+            retrievedAsset = parseJson(get("/assets/$assetId"))
+            if (retrievedAsset.domains.size() == 0) {
+                break
+            }
+            sleep(200)
+        }
+
+        and: "get the risks"
+        risks = parseJson(get("/assets/$assetId/risks"))
+
+        then: "the risk is gone"
+        risks.size() == 0
     }
 
     def cleanup() {

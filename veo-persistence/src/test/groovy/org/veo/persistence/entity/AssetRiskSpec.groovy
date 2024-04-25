@@ -21,6 +21,7 @@ import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ModelConsistencyException
+import org.veo.service.ElementMigrationService
 import org.veo.test.VeoSpec
 
 class AssetRiskSpec extends VeoSpec {
@@ -249,5 +250,27 @@ class AssetRiskSpec extends VeoSpec {
 
         then: "The operation is prevented"
         thrown(ModelConsistencyException)
+    }
+
+    def "A risk must belong to one or multiple domains1"() {
+        given: "predefined entities"
+        def scenario1 = newScenario(unit)
+        def asset1 = newAsset(unit)
+        def domain1 = newDomain(client)
+        def domain2 = newDomain(client)
+        def domainUnknown = newDomain(client)
+        asset1.associateWithDomain(domain1, "NormalAsset", "NEW")
+
+        when: "a risk is created with one domain"
+        def risk = asset1.obtainRisk(scenario1, domain1)
+
+        then: "the risk is present"
+        asset1.getRisks().size() == 1
+
+        when:"we migrate and remove the Subtype"
+        new ElementMigrationService().migrate(asset1, domain1)
+
+        then: "the risk is also gone"
+        asset1.getRisks().size() == 0
     }
 }
