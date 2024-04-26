@@ -40,6 +40,8 @@ veo:
       lockExpirationMs: 20000
       delayMs: 500
       processingChunkSize: 5000
+  taskExecutor:
+    virtualThreads: true
 
 spring:
   data:

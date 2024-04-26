@@ -20,6 +20,7 @@ package org.veo.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -101,6 +102,9 @@ public class RestApplication {
 
   @Autowired private ApplicationContext appContext;
 
+  @Value("${veo.taskExecutor.virtualThreads:true}")
+  private boolean enableVirtualThreads;
+
   public static void main(String[] args) {
     var app = new SpringApplication(RestApplication.class);
     app.setBanner((env, sourceClass, out) -> out.println(BannerProvider.getBanner()));
@@ -111,7 +115,7 @@ public class RestApplication {
   public DelegatingSecurityContextAsyncTaskExecutor taskExecutor() {
     AsyncTaskExecutor delegate =
         new SimpleAsyncTaskExecutorBuilder()
-            .virtualThreads(true)
+            .virtualThreads(enableVirtualThreads)
             .threadNamePrefix(THREAD_NAME_PREFIX)
             .build();
     return new DelegatingSecurityContextAsyncTaskExecutor(delegate);
