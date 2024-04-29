@@ -271,7 +271,7 @@ public class MostRecentChangeTracker<
   public synchronized void publishAll() {
     log.atDebug().log(
         () ->
-            "Publishing all events:\n %s"
+            "Publishing all events:%n %s"
                 .formatted(
                     consolidatedChanges.values().stream()
                         .map(Object::toString)
