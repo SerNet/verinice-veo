@@ -32,6 +32,7 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 
 public abstract class AbstractCompositeElementController<
@@ -42,8 +43,14 @@ public abstract class AbstractCompositeElementController<
       Class<T> modelType,
       GetElementUseCase<T> getElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
-      InspectElementUseCase inspectElementUseCase) {
-    super(modelType, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
+      InspectElementUseCase inspectElementUseCase,
+      GetElementsUseCase getElementsUseCase) {
+    super(
+        modelType,
+        getElementUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
   }
 
   public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(

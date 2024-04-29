@@ -87,7 +87,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateIncidentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
-import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -114,7 +113,6 @@ public class IncidentInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Incident.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetIncidentUseCase getIncidentUseCase;
-  private final GetIncidentsUseCase getIncidentsUseCase;
   private final CreateElementUseCase<Incident> createUseCase;
   private final UpdateIncidentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -194,7 +192,6 @@ public class IncidentInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getIncidentsUseCase,
         QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
@@ -213,7 +210,8 @@ public class IncidentInDomainController implements ElementInDomainResource {
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformIncident2Dto);
+        entityToDtoTransformer::transformIncident2Dto,
+        Incident.class);
   }
 
   @Operation(summary = "Loads the parts of an incident in a domain")
@@ -262,7 +260,6 @@ public class IncidentInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getIncidentUseCase);
     return elementService.getElements(
         domainId,
-        getIncidentsUseCase,
         QueryInputMapper.map(
             client,
             null,
@@ -281,7 +278,8 @@ public class IncidentInDomainController implements ElementInDomainResource {
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformIncident2Dto);
+        entityToDtoTransformer::transformIncident2Dto,
+        Incident.class);
   }
 
   @Operation(summary = "Creates an incident, assigning it to the domain")

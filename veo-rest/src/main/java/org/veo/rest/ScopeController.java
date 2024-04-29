@@ -86,7 +86,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -95,8 +94,8 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -119,7 +118,6 @@ import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
-import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -141,13 +139,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScopeController.URL_BASE_PATH)
 @Slf4j
-public class ScopeController extends AbstractElementController<Scope, AbstractScopeDto>
+public class ScopeController extends AbstractElementController<Scope, FullScopeDto>
     implements ScopeRiskResource, RiskAffectedResource {
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
   private final CreateElementUseCase<Scope> createScopeUseCase;
-  private final GetScopesUseCase getScopesUseCase;
   private final UpdateScopeUseCase updateScopeUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final GetScopeRiskUseCase getScopeRiskUseCase;
@@ -165,7 +162,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase,
       CreateElementUseCase<Scope> createScopeUseCase,
-      GetScopesUseCase getScopesUseCase,
+      GetElementsUseCase getElementsUseCase,
       UpdateScopeUseCase updateScopeUseCase,
       DeleteElementUseCase deleteElementUseCase,
       GetScopeRiskUseCase getScopeRiskUseCase,
@@ -177,9 +174,13 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
           getRequirementImplementationsByControlImplementationUseCase,
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
-    super(Scope.class, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
+    super(
+        Scope.class,
+        getElementUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createScopeUseCase = createScopeUseCase;
-    this.getScopesUseCase = getScopesUseCase;
     this.updateScopeUseCase = updateScopeUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
     this.getScopeRiskUseCase = getScopeRiskUseCase;
@@ -244,38 +245,27 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
           Boolean embedRisksParam) {
     Client client = getAuthenticatedClient(auth);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
-
-    final GetElementsUseCase.RiskAffectedInputData inputData =
-        GetRiskAffectedInputMapper.map(
-            client,
-            unitUuid,
-            null,
-            displayName,
-            subType,
-            status,
-            childElementIds,
-            hasChildElements,
-            hasParentElements,
-            null,
-            null,
-            description,
-            designator,
-            name,
-            abbreviation,
-            updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            embedRisks);
-    return getScopes(inputData);
-  }
-
-  private CompletableFuture<PageDto<FullScopeDto>> getScopes(
-      GetElementsUseCase.RiskAffectedInputData inputData) {
-    return useCaseInteractor.execute(
-        getScopesUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(), asset -> entity2Dto(asset, inputData.isEmbedRisks())));
+    return getElements(
+        QueryInputMapper.map(
+                client,
+                unitUuid,
+                null,
+                displayName,
+                subType,
+                status,
+                childElementIds,
+                hasChildElements,
+                hasParentElements,
+                null,
+                null,
+                description,
+                designator,
+                name,
+                abbreviation,
+                updatedBy,
+                PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+            .withEmbedRisks(embedRisks),
+        e -> entity2Dto(e, embedRisks));
   }
 
   @GetMapping(UUID_PARAM_SPEC)
@@ -454,12 +444,13 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
           Boolean embedRisksParam) {
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     try {
-      return getScopes(
-          GetRiskAffectedInputMapper.map(
-              getAuthenticatedClient(auth),
-              SearchQueryDto.decodeFromSearchId(searchId),
-              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-              embedRisks));
+      return getElements(
+          QueryInputMapper.map(
+                  getAuthenticatedClient(auth),
+                  SearchQueryDto.decodeFromSearchId(searchId),
+                  PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+              .withEmbedRisks(embedRisks),
+          e -> entity2Dto(e, embedRisks));
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;

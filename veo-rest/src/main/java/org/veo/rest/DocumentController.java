@@ -101,7 +101,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
-import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -127,14 +126,18 @@ public class DocumentController
 
   public DocumentController(
       GetDocumentUseCase getDocumentUseCase,
-      GetDocumentsUseCase getDocumentsUseCase,
+      GetElementsUseCase getElementsUseCase,
       CreateElementUseCase<Document> createDocumentUseCase,
       UpdateDocumentUseCase updateDocumentUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Document.class, getDocumentUseCase, evaluateElementUseCase, inspectElementUseCase);
-    this.getDocumentsUseCase = getDocumentsUseCase;
+    super(
+        Document.class,
+        getDocumentUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createDocumentUseCase = createDocumentUseCase;
     this.updateDocumentUseCase = updateDocumentUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
@@ -144,7 +147,6 @@ public class DocumentController
 
   private final CreateElementUseCase<Document> createDocumentUseCase;
   private final UpdateDocumentUseCase updateDocumentUseCase;
-  private final GetDocumentsUseCase getDocumentsUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   @GetMapping
@@ -187,7 +189,7 @@ public class DocumentController
           String sortOrder) {
     Client client = getAuthenticatedClient(auth);
 
-    return getDocuments(
+    return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
@@ -206,17 +208,6 @@ public class DocumentController
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
-  }
-
-  private CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
-      GetElementsUseCase.InputData inputData) {
-    return useCaseInteractor.execute(
-        getDocumentsUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                source -> entityToDtoTransformer.transformDocument2Dto(source, false)));
   }
 
   @Override
@@ -349,7 +340,7 @@ public class DocumentController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     try {
-      return getDocuments(
+      return getElements(
           QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),

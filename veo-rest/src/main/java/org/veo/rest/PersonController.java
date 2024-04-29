@@ -101,7 +101,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
-import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -127,21 +126,24 @@ public class PersonController extends AbstractCompositeElementController<Person,
   public static final String URL_BASE_PATH = "/" + Person.PLURAL_TERM;
 
   private final CreateElementUseCase<Person> createPersonUseCase;
-  private final GetPersonsUseCase getPersonsUseCase;
   private final UpdatePersonUseCase updatePersonUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   public PersonController(
       CreateElementUseCase<Person> createPersonUseCase,
       GetPersonUseCase getPersonUseCase,
-      GetPersonsUseCase getPersonsUseCase,
+      GetElementsUseCase getElementsUseCase,
       UpdatePersonUseCase updatePersonUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Person.class, getPersonUseCase, evaluateElementUseCase, inspectElementUseCase);
+    super(
+        Person.class,
+        getPersonUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createPersonUseCase = createPersonUseCase;
-    this.getPersonsUseCase = getPersonsUseCase;
     this.updatePersonUseCase = updatePersonUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
   }
@@ -186,7 +188,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
           String sortOrder) {
     Client client = getAuthenticatedClient(auth);
 
-    return getPersons(
+    return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
@@ -205,17 +207,6 @@ public class PersonController extends AbstractCompositeElementController<Person,
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
-  }
-
-  private CompletableFuture<PageDto<FullPersonDto>> getPersons(
-      GetElementsUseCase.InputData inputData) {
-    return useCaseInteractor.execute(
-        getPersonsUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                source -> entityToDtoTransformer.transformPerson2Dto(source, false)));
   }
 
   @Override
@@ -350,7 +341,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     try {
-      return getPersons(
+      return getElements(
           QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),

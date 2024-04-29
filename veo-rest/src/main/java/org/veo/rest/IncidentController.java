@@ -101,7 +101,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
-import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -127,14 +126,18 @@ public class IncidentController
 
   public IncidentController(
       GetIncidentUseCase getIncidentUseCase,
-      GetIncidentsUseCase getIncidentsUseCase,
+      GetElementsUseCase getElementsUseCase,
       CreateElementUseCase<Incident> createIncidentUseCase,
       UpdateIncidentUseCase updateIncidentUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Incident.class, getIncidentUseCase, evaluateElementUseCase, inspectElementUseCase);
-    this.getIncidentsUseCase = getIncidentsUseCase;
+    super(
+        Incident.class,
+        getIncidentUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createIncidentUseCase = createIncidentUseCase;
     this.updateIncidentUseCase = updateIncidentUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
@@ -144,7 +147,6 @@ public class IncidentController
 
   private final CreateElementUseCase<Incident> createIncidentUseCase;
   private final UpdateIncidentUseCase updateIncidentUseCase;
-  private final GetIncidentsUseCase getIncidentsUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   @GetMapping
@@ -187,7 +189,7 @@ public class IncidentController
           String sortOrder) {
     Client client = getAuthenticatedClient(auth);
 
-    return getIncidents(
+    return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
@@ -206,17 +208,6 @@ public class IncidentController
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
-  }
-
-  private CompletableFuture<PageDto<FullIncidentDto>> getIncidents(
-      GetElementsUseCase.InputData inputData) {
-    return useCaseInteractor.execute(
-        getIncidentsUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                source -> entityToDtoTransformer.transformIncident2Dto(source, false)));
   }
 
   @Override
@@ -349,7 +340,7 @@ public class IncidentController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     try {
-      return getIncidents(
+      return getElements(
           QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),

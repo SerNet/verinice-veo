@@ -46,9 +46,11 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.PerformActionUseCase;
@@ -73,6 +75,7 @@ public class ElementInDomainService {
   private final ClientLookup clientLookup;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
+  private final GetElementsUseCase getElementsUseCase;
   private final AssociateElementWithDomainUseCase associateUseCase;
   private final ReferenceAssembler referenceAssembler;
   private final EvaluateElementUseCase evaluateElementUseCase;
@@ -118,15 +121,23 @@ public class ElementInDomainService {
         != null;
   }
 
-  public <
-          TElement extends Element,
-          TFullDto extends AbstractElementInDomainDto<TElement>,
-          TInput extends GetElementsUseCase.InputData>
+  public <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
       Future<PageDto<TFullDto>> getElements(
           String domainId,
-          GetElementsUseCase<TElement, TInput> getElementsUseCase,
-          TInput input,
-          BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
+          GetElementsUseCase.InputData input,
+          BiFunction<TElement, Domain, TFullDto> toDtoMapper,
+          Class<TElement> type) {
+    return getElements(
+        domainId,
+        input.withElementTypes(
+            new QueryCondition<>(Set.of(EntityType.getSingularTermByType(type)))),
+        (Element e, Domain d) -> toDtoMapper.apply((TElement) e, d));
+  }
+
+  public <TFullDto> CompletableFuture<PageDto<TFullDto>> getElements(
+      String domainId,
+      GetElementsUseCase.InputData input,
+      BiFunction<Element, Domain, TFullDto> toDtoMapper) {
     return useCaseInteractor.execute(
         getElementsUseCase,
         input,

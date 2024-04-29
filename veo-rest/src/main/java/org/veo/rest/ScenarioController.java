@@ -101,7 +101,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -127,14 +126,18 @@ public class ScenarioController
 
   public ScenarioController(
       GetScenarioUseCase getScenarioUseCase,
-      GetScenariosUseCase getScenariosUseCase,
+      GetElementsUseCase getElementsUseCase,
       CreateElementUseCase<Scenario> createScenarioUseCase,
       UpdateScenarioUseCase updateScenarioUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Scenario.class, getScenarioUseCase, evaluateElementUseCase, inspectElementUseCase);
-    this.getScenariosUseCase = getScenariosUseCase;
+    super(
+        Scenario.class,
+        getScenarioUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createScenarioUseCase = createScenarioUseCase;
     this.updateScenarioUseCase = updateScenarioUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
@@ -144,7 +147,6 @@ public class ScenarioController
 
   private final CreateElementUseCase<Scenario> createScenarioUseCase;
   private final UpdateScenarioUseCase updateScenarioUseCase;
-  private final GetScenariosUseCase getScenariosUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   @GetMapping
@@ -187,7 +189,7 @@ public class ScenarioController
           String sortOrder) {
     Client client = getAuthenticatedClient(auth);
 
-    return getScenarios(
+    return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
@@ -206,17 +208,6 @@ public class ScenarioController
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
-  }
-
-  private CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
-      GetElementsUseCase.InputData inputData) {
-    return useCaseInteractor.execute(
-        getScenariosUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                source -> entityToDtoTransformer.transformScenario2Dto(source, false)));
   }
 
   @Override
@@ -349,7 +340,7 @@ public class ScenarioController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     try {
-      return getScenarios(
+      return getElements(
           QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),

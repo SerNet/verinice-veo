@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,61 +26,64 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.CompositeElementQuery;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementQueryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.With;
 import lombok.experimental.NonFinal;
 
 /** Reinstantiate persisted entity objects. */
-public abstract class GetElementsUseCase<T extends Element, I extends GetElementsUseCase.InputData>
-    implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
+@RequiredArgsConstructor
+public class GetElementsUseCase
+    implements TransactionalUseCase<GetElementsUseCase.InputData, GetElementsUseCase.OutputData> {
 
-  private final ElementQueryProvider<T> repository;
-  protected final ClientRepository clientRepository;
+  private final ClientRepository clientRepository;
+  private final GenericElementRepository genericRepository;
+  private final RepositoryProvider repositoryProvider;
   private final UnitHierarchyProvider unitHierarchyProvider;
-
-  public GetElementsUseCase(
-      ClientRepository clientRepository,
-      ElementQueryProvider<T> repository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    this.clientRepository = clientRepository;
-    this.repository = repository;
-    this.unitHierarchyProvider = unitHierarchyProvider;
-  }
 
   /**
    * Find persisted control objects and reinstantiate them. Throws a domain exception if the
    * (optional) requested parent unit was not found in the repository.
    */
-  @Override
-  public OutputData<T> execute(I input) {
+  public OutputData execute(InputData input) {
     Client client =
         UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
 
-    var query = createQuery(client);
+    var query = getRepo(input.elementTypes).query(client);
     applyDefaultQueryParameters(input, query);
-    return new OutputData<>(query.execute(input.getPagingConfiguration()));
+    return new OutputData(query.execute(input.getPagingConfiguration()));
   }
 
-  protected ElementQuery<T> createQuery(Client client) {
-    return repository.query(client);
+  private ElementQueryProvider<? extends Element> getRepo(QueryCondition<String> elementTypes) {
+    // Prefer specific repository, because it supports more query filters.
+    // TODO #2902 fix filters with generic repo
+    if (elementTypes != null && elementTypes.getValues().size() == 1) {
+      return repositoryProvider.getElementRepositoryFor(
+          (Class<? extends Element>)
+              EntityType.getBySingularTerm(elementTypes.getValues().iterator().next()).getType());
+    }
+    return genericRepository;
   }
 
-  protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
+  protected void applyDefaultQueryParameters(InputData input, ElementQuery<?> query) {
     Optional.ofNullable(input.getElementTypes()).ifPresent(query::whereElementTypeMatches);
     Optional.ofNullable(input.getUnitUuid())
         .map(
@@ -129,12 +132,16 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
             });
     Optional.ofNullable(input.getScopeId()).ifPresent(query::whereScopesContain);
     query.fetchChildren();
+    if (input.embedRisks) {
+      query.fetchRisks();
+    }
   }
 
   @Valid
   @Value
   @NonFinal
   @Builder
+  @With
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     QueryCondition<String> elementTypes;
@@ -154,59 +161,12 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     QueryCondition<String> abbreviation;
     QueryCondition<String> updatedBy;
     PagingConfiguration pagingConfiguration;
-  }
-
-  @Valid
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  public static class RiskAffectedInputData extends GetElementsUseCase.InputData {
     boolean embedRisks;
-
-    public RiskAffectedInputData(
-        Client authenticatedClient,
-        QueryCondition<Key<UUID>> unitUuid,
-        SingleValueQueryCondition<Key<UUID>> domainId,
-        QueryCondition<String> displayName,
-        QueryCondition<String> subType,
-        QueryCondition<String> status,
-        QueryCondition<Key<UUID>> childElementIds,
-        SingleValueQueryCondition<Boolean> hasChildElements,
-        SingleValueQueryCondition<Boolean> hasParentElements,
-        SingleValueQueryCondition<Key<UUID>> compositeId,
-        SingleValueQueryCondition<Key<UUID>> scopeId,
-        QueryCondition<String> description,
-        QueryCondition<String> designator,
-        QueryCondition<String> name,
-        QueryCondition<String> abbreviation,
-        QueryCondition<String> updatedBy,
-        PagingConfiguration pagingConfiguration,
-        boolean embedRisks) {
-      super(
-          authenticatedClient,
-          null,
-          unitUuid,
-          domainId,
-          displayName,
-          subType,
-          status,
-          childElementIds,
-          hasChildElements,
-          hasParentElements,
-          compositeId,
-          scopeId,
-          description,
-          designator,
-          name,
-          abbreviation,
-          updatedBy,
-          pagingConfiguration);
-      this.embedRisks = embedRisks;
-    }
   }
 
   @Valid
   @Value
-  public static class OutputData<T> implements UseCase.OutputData {
-    @Valid PagedResult<T> elements;
+  public static class OutputData implements UseCase.OutputData {
+    @Valid PagedResult<? extends Element> elements;
   }
 }

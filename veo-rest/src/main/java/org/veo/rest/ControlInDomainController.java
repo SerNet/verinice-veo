@@ -86,7 +86,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
-import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
@@ -112,7 +111,6 @@ public class ControlInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Control.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetControlUseCase getControlUseCase;
-  private final GetControlsUseCase getControlsUseCase;
   private final CreateElementUseCase<Control> createUseCase;
   private final UpdateControlInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -192,7 +190,6 @@ public class ControlInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getControlsUseCase,
         QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
@@ -211,7 +208,8 @@ public class ControlInDomainController implements ElementInDomainResource {
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformControl2Dto);
+        entityToDtoTransformer::transformControl2Dto,
+        Control.class);
   }
 
   @Operation(summary = "Loads the parts of a control in a domain")
@@ -260,7 +258,6 @@ public class ControlInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getControlUseCase);
     return elementService.getElements(
         domainId,
-        getControlsUseCase,
         QueryInputMapper.map(
             client,
             null,
@@ -279,7 +276,8 @@ public class ControlInDomainController implements ElementInDomainResource {
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformControl2Dto);
+        entityToDtoTransformer::transformControl2Dto,
+        Control.class);
   }
 
   @Operation(summary = "Creates a control, assigning it to the domain")

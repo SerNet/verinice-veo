@@ -94,8 +94,8 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -117,7 +117,6 @@ import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
@@ -153,7 +152,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   private final CreateElementUseCase<Process> createProcessUseCase;
   private final UpdateProcessUseCase updateProcessUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
-  private final GetProcessesUseCase getProcessesUseCase;
   private final GetProcessRiskUseCase getProcessRiskUseCase;
   private final CreateProcessRiskUseCase createProcessRiskUseCase;
   private final GetProcessRisksUseCase getProcessRisksUseCase;
@@ -170,7 +168,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       GetProcessUseCase getProcessUseCase,
       UpdateProcessUseCase putProcessUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      GetProcessesUseCase getProcessesUseCase,
+      GetElementsUseCase getElementsUseCase,
       CreateProcessRiskUseCase createProcessRiskUseCase,
       GetProcessRiskUseCase getProcessRiskUseCase,
       GetProcessRisksUseCase getProcessRisksUseCase,
@@ -182,11 +180,15 @@ public class ProcessController extends AbstractCompositeElementController<Proces
           getRequirementImplementationsByControlImplementationUseCase,
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
-    super(Process.class, getProcessUseCase, evaluateElementUseCase, inspectElementUseCase);
+    super(
+        Process.class,
+        getProcessUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createProcessUseCase = createProcessUseCase;
     this.updateProcessUseCase = putProcessUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
-    this.getProcessesUseCase = getProcessesUseCase;
     this.createProcessRiskUseCase = createProcessRiskUseCase;
     this.getProcessRiskUseCase = getProcessRiskUseCase;
     this.getProcessRisksUseCase = getProcessRisksUseCase;
@@ -349,37 +351,27 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     Client client = getAuthenticatedClient(auth);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
-    return getProcesses(
-        GetRiskAffectedInputMapper.map(
-            client,
-            parentUuid,
-            null,
-            displayName,
-            subType,
-            status,
-            childElementIds,
-            hasChildElements,
-            hasParentElements,
-            null,
-            null,
-            description,
-            designator,
-            name,
-            abbreviation,
-            updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            embedRisks));
-  }
-
-  private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
-      GetElementsUseCase.RiskAffectedInputData inputData) {
-
-    return useCaseInteractor.execute(
-        getProcessesUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(), process -> entity2Dto(process, inputData.isEmbedRisks())));
+    return getElements(
+        QueryInputMapper.map(
+                client,
+                parentUuid,
+                null,
+                displayName,
+                subType,
+                status,
+                childElementIds,
+                hasChildElements,
+                hasParentElements,
+                null,
+                null,
+                description,
+                designator,
+                name,
+                abbreviation,
+                updatedBy,
+                PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+            .withEmbedRisks(embedRisks),
+        e -> entity2Dto(e, embedRisks));
   }
 
   @Override
@@ -424,12 +416,13 @@ public class ProcessController extends AbstractCompositeElementController<Proces
           Boolean embedRisksParam) {
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     try {
-      return getProcesses(
-          GetRiskAffectedInputMapper.map(
-              getAuthenticatedClient(auth),
-              SearchQueryDto.decodeFromSearchId(searchId),
-              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-              embedRisks));
+      return getElements(
+          QueryInputMapper.map(
+                  getAuthenticatedClient(auth),
+                  SearchQueryDto.decodeFromSearchId(searchId),
+                  PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+              .withEmbedRisks(embedRisks),
+          e -> entity2Dto(e, embedRisks));
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;

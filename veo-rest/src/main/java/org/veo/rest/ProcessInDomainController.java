@@ -80,8 +80,8 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
@@ -90,7 +90,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -115,7 +114,6 @@ public class ProcessInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Process.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetProcessUseCase getProcessUseCase;
-  private final GetProcessesUseCase getProcessesUseCase;
   private final CreateElementUseCase<Process> createUseCase;
   private final UpdateProcessInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -195,8 +193,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getProcessesUseCase,
-        GetRiskAffectedInputMapper.map(
+        QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -213,9 +210,9 @@ public class ProcessInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            false),
-        entityToDtoTransformer::transformProcess2Dto);
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        entityToDtoTransformer::transformProcess2Dto,
+        Process.class);
   }
 
   @Operation(summary = "Loads the parts of a process in a domain")
@@ -264,8 +261,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getProcessUseCase);
     return elementService.getElements(
         domainId,
-        getProcessesUseCase,
-        GetRiskAffectedInputMapper.map(
+        QueryInputMapper.map(
             client,
             null,
             domainId,
@@ -282,9 +278,9 @@ public class ProcessInDomainController implements ElementInDomainResource {
             null,
             null,
             null,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            false),
-        entityToDtoTransformer::transformProcess2Dto);
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        entityToDtoTransformer::transformProcess2Dto,
+        Process.class);
   }
 
   @Operation(summary = "Creates a process, assigning it to the domain")

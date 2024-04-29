@@ -20,6 +20,7 @@ package org.veo.rest;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import jakarta.validation.Valid;
 
@@ -29,12 +30,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.security.ApplicationUser;
@@ -50,6 +56,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   protected final GetElementUseCase<T> getElementUseCase;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final InspectElementUseCase inspectElementUseCase;
+  private final GetElementsUseCase getElementsUseCase;
 
   @Autowired private TransactionalRunner runner;
 
@@ -76,6 +83,19 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
             output -> entity2Dto(output.getElement()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
+  }
+
+  protected Future<PageDto<E>> getElements(GetElementsUseCase.InputData inputData) {
+    return getElements(inputData, this::entity2Dto);
+  }
+
+  protected Future<PageDto<E>> getElements(
+      GetElementsUseCase.InputData inputData, Function<T, E> dtoMapper) {
+    return useCaseInteractor.execute(
+        getElementsUseCase,
+        inputData.withElementTypes(
+            new QueryCondition<>(Set.of(EntityType.getSingularTermByType(modelType)))),
+        o -> PagingMapper.toPage(o.getElements(), e -> dtoMapper.apply((T) e)));
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(

@@ -101,7 +101,6 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
-import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -128,21 +127,24 @@ public class ControlController extends AbstractCompositeElementController<Contro
   public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
 
   private final CreateElementUseCase<Control> createControlUseCase;
-  private final GetControlsUseCase getControlsUseCase;
   private final UpdateControlUseCase updateControlUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   public ControlController(
       CreateElementUseCase<Control> createControlUseCase,
       GetControlUseCase getControlUseCase,
-      GetControlsUseCase getControlsUseCase,
+      GetElementsUseCase getElementsUseCase,
       UpdateControlUseCase updateControlUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Control.class, getControlUseCase, evaluateElementUseCase, inspectElementUseCase);
+    super(
+        Control.class,
+        getControlUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createControlUseCase = createControlUseCase;
-    this.getControlsUseCase = getControlsUseCase;
     this.updateControlUseCase = updateControlUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
   }
@@ -187,7 +189,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
           String sortOrder) {
     Client client = getAuthenticatedClient(auth);
 
-    return getControls(
+    return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
@@ -206,17 +208,6 @@ public class ControlController extends AbstractCompositeElementController<Contro
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
-  }
-
-  private CompletableFuture<PageDto<FullControlDto>> getControls(
-      GetElementsUseCase.InputData inputData) {
-    return useCaseInteractor.execute(
-        getControlsUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                source -> entityToDtoTransformer.transformControl2Dto(source, false)));
   }
 
   @Override
@@ -351,7 +342,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     try {
-      return getControls(
+      return getElements(
           QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),

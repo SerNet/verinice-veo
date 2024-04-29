@@ -87,7 +87,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
-import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -112,7 +111,6 @@ public class PersonInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Person.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetPersonUseCase getPersonUseCase;
-  private final GetPersonsUseCase getPersonsUseCase;
   private final CreateElementUseCase<Person> createUseCase;
   private final UpdatePersonInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -192,7 +190,6 @@ public class PersonInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getPersonsUseCase,
         QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
@@ -211,7 +208,8 @@ public class PersonInDomainController implements ElementInDomainResource {
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformPerson2Dto);
+        entityToDtoTransformer::transformPerson2Dto,
+        Person.class);
   }
 
   @Operation(summary = "Loads the parts of a person in a domain")
@@ -259,7 +257,6 @@ public class PersonInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getPersonUseCase);
     return elementService.getElements(
         domainId,
-        getPersonsUseCase,
         QueryInputMapper.map(
             client,
             null,
@@ -278,7 +275,8 @@ public class PersonInDomainController implements ElementInDomainResource {
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformPerson2Dto);
+        entityToDtoTransformer::transformPerson2Dto,
+        Person.class);
   }
 
   @Operation(summary = "Creates a person, assigning it to the domain")

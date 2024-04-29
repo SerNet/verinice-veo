@@ -94,8 +94,8 @@ import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
@@ -108,7 +108,6 @@ import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
-import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -153,7 +152,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   public AssetController(
       GetAssetUseCase getAssetUseCase,
-      GetAssetsUseCase getAssetsUseCase,
+      GetElementsUseCase getElementsUseCase,
       CreateElementUseCase<Asset> createAssetUseCase,
       UpdateAssetUseCase updateAssetUseCase,
       DeleteElementUseCase deleteElementUseCase,
@@ -168,8 +167,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
           getRequirementImplementationsByControlImplementationUseCase,
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
-    super(Asset.class, getAssetUseCase, evaluateElementUseCase, inspectElementUseCase);
-    this.getAssetsUseCase = getAssetsUseCase;
+    super(
+        Asset.class,
+        getAssetUseCase,
+        evaluateElementUseCase,
+        inspectElementUseCase,
+        getElementsUseCase);
     this.createAssetUseCase = createAssetUseCase;
     this.updateAssetUseCase = updateAssetUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
@@ -189,7 +192,6 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   private final CreateElementUseCase<Asset> createAssetUseCase;
   private final UpdateAssetUseCase updateAssetUseCase;
-  private final GetAssetsUseCase getAssetsUseCase;
   private final GetAssetUseCase getAssetUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final CreateAssetRiskUseCase createAssetRiskUseCase;
@@ -239,36 +241,27 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     Client client = getAuthenticatedClient(auth);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
-    return getAssets(
-        GetRiskAffectedInputMapper.map(
-            client,
-            unitUuid,
-            null,
-            displayName,
-            subType,
-            status,
-            childElementIds,
-            hasChildElements,
-            hasParentElements,
-            null,
-            null,
-            description,
-            designator,
-            name,
-            abbreviation,
-            updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            embedRisks));
-  }
-
-  private CompletableFuture<PageDto<FullAssetDto>> getAssets(
-      GetElementsUseCase.RiskAffectedInputData inputData) {
-    return useCaseInteractor.execute(
-        getAssetsUseCase,
-        inputData,
-        output ->
-            PagingMapper.toPage(
-                output.getElements(), asset -> entity2Dto(asset, inputData.isEmbedRisks())));
+    return getElements(
+        QueryInputMapper.map(
+                client,
+                unitUuid,
+                null,
+                displayName,
+                subType,
+                status,
+                childElementIds,
+                hasChildElements,
+                hasParentElements,
+                null,
+                null,
+                description,
+                designator,
+                name,
+                abbreviation,
+                updatedBy,
+                PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+            .withEmbedRisks(embedRisks),
+        e -> entity2Dto(e, embedRisks));
   }
 
   @Operation(summary = "Loads an asset")
@@ -421,12 +414,13 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
     try {
-      return getAssets(
-          GetRiskAffectedInputMapper.map(
-              getAuthenticatedClient(auth),
-              SearchQueryDto.decodeFromSearchId(searchId),
-              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-              embedRisks));
+      return getElements(
+          QueryInputMapper.map(
+                  getAuthenticatedClient(auth),
+                  SearchQueryDto.decodeFromSearchId(searchId),
+                  PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+              .withEmbedRisks(embedRisks),
+          e -> entity2Dto(e, embedRisks));
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;

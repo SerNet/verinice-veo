@@ -87,7 +87,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
-import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -112,7 +111,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Document.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetDocumentUseCase getDocumentUseCase;
-  private final GetDocumentsUseCase getDocumentsUseCase;
   private final CreateElementUseCase<Document> createUseCase;
   private final UpdateDocumentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -192,7 +190,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getDocumentsUseCase,
         QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
@@ -211,7 +208,8 @@ public class DocumentInDomainController implements ElementInDomainResource {
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformDocument2Dto);
+        entityToDtoTransformer::transformDocument2Dto,
+        Document.class);
   }
 
   @Operation(summary = "Loads the parts of a document in a domain")
@@ -260,7 +258,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getDocumentUseCase);
     return elementService.getElements(
         domainId,
-        getDocumentsUseCase,
         QueryInputMapper.map(
             client,
             null,
@@ -279,7 +276,8 @@ public class DocumentInDomainController implements ElementInDomainResource {
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformDocument2Dto);
+        entityToDtoTransformer::transformDocument2Dto,
+        Document.class);
   }
 
   @Operation(summary = "Creates a document, assigning it to the domain")

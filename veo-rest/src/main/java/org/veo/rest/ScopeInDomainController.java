@@ -83,7 +83,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
@@ -92,11 +91,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
 import org.veo.core.usecase.base.CreateElementUseCase;
-import org.veo.core.usecase.base.GenericGetElementsUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
-import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -123,8 +121,7 @@ public class ScopeInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scope.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetScopeUseCase getScopeUseCase;
-  private final GetScopesUseCase getScopesUseCase;
-  private final GenericGetElementsUseCase getElementsUseCase;
+  private final GetElementsUseCase getElementsUseCase;
   private final CreateElementUseCase<Scope> createUseCase;
   private final UpdateScopeInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -204,8 +201,7 @@ public class ScopeInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getScopesUseCase,
-        GetRiskAffectedInputMapper.map(
+        QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -222,9 +218,9 @@ public class ScopeInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            false),
-        entityToDtoTransformer::transformScope2Dto);
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        entityToDtoTransformer::transformScope2Dto,
+        Scope.class);
   }
 
   @Operation(summary = "Creates a scope, assigning it to the domain")
@@ -373,7 +369,6 @@ public class ScopeInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getScopeUseCase);
     return elementService.getElements(
         domainId,
-        getElementsUseCase,
         QueryInputMapper.map(
             client,
             domainId,

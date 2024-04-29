@@ -86,7 +86,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -111,7 +110,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scenario.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetScenarioUseCase getScenarioUseCase;
-  private final GetScenariosUseCase getScenariosUseCase;
   private final CreateElementUseCase<Scenario> createUseCase;
   private final UpdateScenarioInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -191,7 +189,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getScenariosUseCase,
         QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
@@ -210,7 +207,8 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             abbreviation,
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformScenario2Dto);
+        entityToDtoTransformer::transformScenario2Dto,
+        Scenario.class);
   }
 
   @Operation(summary = "Loads the parts of a scenario in a domain")
@@ -259,7 +257,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getScenarioUseCase);
     return elementService.getElements(
         domainId,
-        getScenariosUseCase,
         QueryInputMapper.map(
             client,
             null,
@@ -278,7 +275,8 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
-        entityToDtoTransformer::transformScenario2Dto);
+        entityToDtoTransformer::transformScenario2Dto,
+        Scenario.class);
   }
 
   @Operation(summary = "Creates a scenario, assigning it to the domain")

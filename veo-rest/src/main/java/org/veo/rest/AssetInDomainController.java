@@ -80,14 +80,13 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetInDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
 import org.veo.core.usecase.asset.GetAssetUseCase;
-import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -115,7 +114,6 @@ public class AssetInDomainController implements ElementInDomainResource {
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Asset.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetAssetUseCase getAssetUseCase;
-  private final GetAssetsUseCase getAssetsUseCase;
   private final CreateElementUseCase<Asset> createUseCase;
   private final UpdateAssetInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -195,8 +193,7 @@ public class AssetInDomainController implements ElementInDomainResource {
           String sortOrder) {
     return elementService.getElements(
         domainId,
-        getAssetsUseCase,
-        GetRiskAffectedInputMapper.map(
+        QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -213,9 +210,9 @@ public class AssetInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            false),
-        entityToDtoTransformer::transformAsset2Dto);
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        entityToDtoTransformer::transformAsset2Dto,
+        Asset.class);
   }
 
   @Operation(summary = "Loads the parts of an asset in a domain")
@@ -263,8 +260,7 @@ public class AssetInDomainController implements ElementInDomainResource {
     elementService.ensureElementExists(client, domainId, uuid, getAssetUseCase);
     return elementService.getElements(
         domainId,
-        getAssetsUseCase,
-        GetRiskAffectedInputMapper.map(
+        QueryInputMapper.map(
             client,
             null,
             domainId,
@@ -281,9 +277,9 @@ public class AssetInDomainController implements ElementInDomainResource {
             null,
             null,
             null,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
-            false),
-        entityToDtoTransformer::transformAsset2Dto);
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        entityToDtoTransformer::transformAsset2Dto,
+        Asset.class);
   }
 
   @Operation(summary = "Creates an asset, assigning it to the domain")

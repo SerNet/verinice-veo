@@ -17,56 +17,60 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Control
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
-import org.veo.core.repository.ControlRepository
+import org.veo.core.entity.Person
 import org.veo.core.repository.ElementQuery
+import org.veo.core.repository.GenericElementRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.QueryCondition
+import org.veo.core.repository.RepositoryProvider
+import org.veo.core.usecase.base.GetElementsUseCase
 import org.veo.core.usecase.base.GetElementsUseCase.InputData
-import org.veo.core.usecase.control.GetControlsUseCase
 
-class GetControlsUseCaseSpec extends UseCaseSpec {
+class GetElementsUseCaseSpec extends UseCaseSpec {
 
-    ControlRepository controlRepository = Mock()
-    ElementQuery<Control> query = Mock()
+    GenericElementRepository repo = Mock()
+    ElementQuery<Person> query = Mock()
     PagingConfiguration pagingConfiguration = Mock()
+    RepositoryProvider repositoryProvider = Mock()
 
-    GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider)
+    GetElementsUseCase usecase = new GetElementsUseCase(clientRepository, repo, repositoryProvider, unitHierarchyProvider)
 
     def setup() {
-        controlRepository.query(existingClient) >> query
+        repo.query(existingClient) >> query
     }
 
-    def "retrieve all controls for a client"() {
+    def "retrieve all elements for a client"() {
         given:
         def id = Key.newUuid()
-        Control control = Mock() {
+        Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
 
         when:
-        def output = usecase.execute(InputData.builder()
+        def output = usecase.execute(
+                InputData.builder()
                 .authenticatedClient(existingClient)
                 .pagingConfiguration(pagingConfiguration)
-                .build()
-                )
+                .build())
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * query.execute(pagingConfiguration) >> singleResult(control, pagingConfiguration)
+        1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
         output.elements.resultPage*.id == [id]
     }
 
     def "apply query conditions"() {
         given:
         def id = Key.newUuid()
-        Control control = Mock() {
+        Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = InputData.builder()
+        def input =
+                InputData.builder()
                 .authenticatedClient(existingClient)
                 .unitUuid(Mock(QueryCondition) {
                     getValues() >> [existingUnit.id]
@@ -83,7 +87,7 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeMatches(input.subType)
-        1 * query.execute(pagingConfiguration) >> singleResult(control, pagingConfiguration)
+        1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
         output.elements.resultPage*.id == [id]
     }
 }

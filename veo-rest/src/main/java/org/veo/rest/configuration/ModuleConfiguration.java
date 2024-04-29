@@ -90,14 +90,13 @@ import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
-import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
-import org.veo.core.usecase.base.GenericGetElementsUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
@@ -120,12 +119,10 @@ import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
-import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
-import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
@@ -157,17 +154,14 @@ import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
-import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.core.usecase.inspection.Inspector;
 import org.veo.core.usecase.person.GetPersonUseCase;
-import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.profile.GetIncarnationConfigurationUseCase;
@@ -178,13 +172,11 @@ import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
-import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
@@ -340,12 +332,13 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GenericGetElementsUseCase genericGetElementsUseCase(
+  public GetElementsUseCase genericGetElementsUseCase(
       ClientRepository clientRepository,
       GenericElementRepository elementRepository,
+      RepositoryProvider repositoryProvider,
       UnitHierarchyProvider unitHierarchyProvider) {
-    return new GenericGetElementsUseCase(
-        clientRepository, elementRepository, unitHierarchyProvider);
+    return new GetElementsUseCase(
+        clientRepository, elementRepository, repositoryProvider, unitHierarchyProvider);
   }
 
   @Bean
@@ -358,14 +351,6 @@ public class ModuleConfiguration {
   public GetAssetUseCase getAssetUseCase(
       AssetRepositoryImpl assetRepository, DomainRepository domainRepository) {
     return new GetAssetUseCase(assetRepository, domainRepository);
-  }
-
-  @Bean
-  public GetAssetsUseCase getAssetsUseCase(
-      ClientRepositoryImpl clientRepository,
-      AssetRepositoryImpl assetRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider);
   }
 
   @Bean
@@ -389,14 +374,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetControlsUseCase getControlsUseCase(
-      ClientRepositoryImpl clientRepository,
-      ControlRepositoryImpl controlRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider);
-  }
-
-  @Bean
   public UpdateControlUseCase updateControlUseCase(
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
@@ -417,14 +394,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetDocumentsUseCase getDocumentsUseCase(
-      ClientRepositoryImpl clientRepository,
-      DocumentRepositoryImpl documentRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetDocumentsUseCase(clientRepository, documentRepository, unitHierarchyProvider);
-  }
-
-  @Bean
   public UpdateDocumentUseCase updateDocumentUseCase(
       RepositoryProvider repositoryProvider,
       Decider decider,
@@ -438,14 +407,6 @@ public class ModuleConfiguration {
   public GetScenarioUseCase getScenarioUseCase(
       ScenarioRepositoryImpl scenarioRepository, DomainRepository domainRepository) {
     return new GetScenarioUseCase(scenarioRepository, domainRepository);
-  }
-
-  @Bean
-  public GetScenariosUseCase getScenariosUseCase(
-      ClientRepositoryImpl clientRepository,
-      ScenarioRepositoryImpl scenarioRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetScenariosUseCase(clientRepository, scenarioRepository, unitHierarchyProvider);
   }
 
   @Bean
@@ -466,14 +427,6 @@ public class ModuleConfiguration {
   public GetIncidentUseCase getIncidentUseCase(
       IncidentRepositoryImpl incidentRepository, DomainRepository domainRepository) {
     return new GetIncidentUseCase(incidentRepository, domainRepository);
-  }
-
-  @Bean
-  public GetIncidentsUseCase getIncidentsUseCase(
-      ClientRepositoryImpl clientRepository,
-      IncidentRepositoryImpl incidentRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetIncidentsUseCase(clientRepository, incidentRepository, unitHierarchyProvider);
   }
 
   @Bean
@@ -543,14 +496,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetProcessesUseCase getProcessesUseCase(
-      ClientRepository clientRepository,
-      ProcessRepository processRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider);
-  }
-
-  @Bean
   public UnitValidator unitValidator(GenericElementRepository genericElementRepository) {
     return new UnitValidator(genericElementRepository);
   }
@@ -593,14 +538,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetPersonsUseCase getPersonsUseCase(
-      ClientRepositoryImpl clientRepository,
-      PersonRepositoryImpl personRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider);
-  }
-
-  @Bean
   public UpdatePersonUseCase updatePersonUseCase(
       RepositoryProvider repositoryProvider,
       Decider decider,
@@ -614,14 +551,6 @@ public class ModuleConfiguration {
   public GetScopeUseCase getScopeUseCase(
       DomainRepository domainRepository, ScopeRepositoryImpl scopeRepository) {
     return new GetScopeUseCase(domainRepository, scopeRepository);
-  }
-
-  @Bean
-  public GetScopesUseCase getScopesUseCase(
-      ClientRepositoryImpl clientRepository,
-      ScopeRepositoryImpl scopeRepository,
-      UnitHierarchyProvider unitHierarchyProvider) {
-    return new GetScopesUseCase(clientRepository, scopeRepository, unitHierarchyProvider);
   }
 
   @Bean
