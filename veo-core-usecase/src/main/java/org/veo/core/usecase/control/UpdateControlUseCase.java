@@ -42,7 +42,7 @@ public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
   @Override
   public OutputData<Control> execute(InputData<Control> input) {
     OutputData<Control> result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 }

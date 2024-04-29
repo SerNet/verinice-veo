@@ -32,8 +32,6 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 public class GetProfileItemsUseCase extends AbstractProfileUseCase
     implements TransactionalUseCase<
         GetProfileItemsUseCase.InputData, GetProfileItemsUseCase.OutputData> {
@@ -44,26 +42,22 @@ public class GetProfileItemsUseCase extends AbstractProfileUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    checkClientOwnsDomain(input.getAuthenticatedClient(), input.domain.getId());
+    checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Profile profile =
         profileRepo
-            .findById(input.authenticatedClient.getId(), input.getProfile().toKey())
-            .orElseThrow(() -> new NotFoundException(input.getProfile().toKey(), Profile.class));
+            .findById(input.authenticatedClient.getId(), input.profile.toKey())
+            .orElseThrow(() -> new NotFoundException(input.profile.toKey(), Profile.class));
 
     return new OutputData(profile.getItems());
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull ITypedId<Domain> domain;
-    @NotNull ITypedId<Profile> profile;
-  }
+  public record InputData(
+      @NotNull Client authenticatedClient,
+      @NotNull ITypedId<Domain> domain,
+      @NotNull ITypedId<Profile> profile)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Set<ProfileItem> items;
-  }
+  public record OutputData(@Valid Set<ProfileItem> items) implements UseCase.OutputData {}
 }

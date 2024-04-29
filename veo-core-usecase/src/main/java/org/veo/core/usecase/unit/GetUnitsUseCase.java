@@ -32,8 +32,6 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 /** Reinstantiate a persisted unit object. */
 public class GetUnitsUseCase
     implements TransactionalUseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
@@ -54,13 +52,13 @@ public class GetUnitsUseCase
   public OutputData execute(InputData input) {
     Client client =
         repository
-            .findById(input.getAuthenticatedClient().getId())
+            .findById(input.authenticatedClient.getId())
             .orElseThrow(
-                () -> new NotFoundException(input.getAuthenticatedClient().getId(), Client.class));
+                () -> new NotFoundException(input.authenticatedClient.getId(), Client.class));
 
-    if (input.getParentUuid().isEmpty()) return new OutputData(unitRepository.findByClient(client));
+    if (input.parentUuid.isEmpty()) return new OutputData(unitRepository.findByClient(client));
     else {
-      Key<UUID> parentId = Key.uuidFrom(input.getParentUuid().get());
+      Key<UUID> parentId = Key.uuidFrom(input.parentUuid.get());
       Unit parentUnit =
           unitRepository
               .findById(parentId)
@@ -70,15 +68,9 @@ public class GetUnitsUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Optional<String> parentUuid;
-  }
+  public record InputData(Client authenticatedClient, Optional<String> parentUuid)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<Unit> units;
-  }
+  public record OutputData(@Valid List<Unit> units) implements UseCase.OutputData {}
 }

@@ -51,30 +51,30 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   @Override
   public OutputData<R> execute(InputData input) {
     // Retrieve required elements for operation:
-    var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
+    var riskAffected = findEntity(entityClass, input.riskAffectedRef()).orElseThrow();
 
-    var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
+    var scenario = findEntity(Scenario.class, input.scenarioRef()).orElseThrow();
 
-    var domains = findEntities(Domain.class, input.getDomainRefs());
+    var domains = findEntities(Domain.class, input.domainRefs());
 
     var mitigation = input.getControlRef().flatMap(id -> findEntity(Control.class, id));
 
     var riskOwner = input.getRiskOwnerRef().flatMap(id -> findEntity(Person.class, id));
 
-    var risk = riskAffected.getRisk(input.getScenarioRef()).orElseThrow();
+    var risk = riskAffected.getRisk(input.scenarioRef()).orElseThrow();
 
     // Validate input:
     checkETag(risk, input);
-    riskAffected.checkSameClient(input.getAuthenticatedClient());
-    scenario.checkSameClient(input.getAuthenticatedClient());
-    checkDomainOwnership(input.getAuthenticatedClient(), domains);
-    mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
-    riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
+    riskAffected.checkSameClient(input.authenticatedClient());
+    scenario.checkSameClient(input.authenticatedClient());
+    checkDomainOwnership(input.authenticatedClient(), domains);
+    mitigation.ifPresent(control -> control.checkSameClient(input.authenticatedClient()));
+    riskOwner.ifPresent(person -> person.checkSameClient(input.authenticatedClient()));
 
     // Execute requested operation:
     R result =
         riskAffected.updateRisk(
-            risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.getRiskValues());
+            risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.riskValues());
     if (!new RiskOnlyReferencesItsOwnersUnitSpecification().test(risk)) {
       throw new CrossUnitReferenceException();
     }
@@ -91,7 +91,7 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   private void checkETag(AbstractRisk<T, R> risk, InputData input) {
     var riskAffectedId = risk.getEntity().getId().uuidValue();
     var scenarioId = risk.getScenario().getId().uuidValue();
-    if (!ETag.matches(riskAffectedId, scenarioId, risk.getVersion(), input.getETag())) {
+    if (!ETag.matches(riskAffectedId, scenarioId, risk.getVersion(), input.eTag())) {
       throw new ETagMismatchException(
           String.format(
               "The eTag does not match for the element with the ID %s_%s",

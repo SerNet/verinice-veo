@@ -39,8 +39,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
-import lombok.Value;
-
 public class DeleteElementUseCase
     implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput>, RetryableUseCase {
 
@@ -65,15 +63,15 @@ public class DeleteElementUseCase
         repositoryProvider.getElementRepositoryFor(input.entityClass);
     Element entity =
         repository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), input.entityClass));
+            .findById(input.id)
+            .orElseThrow(() -> new NotFoundException(input.id, input.entityClass));
     entity.checkSameClient(input.authenticatedClient);
 
     entity.remove();
     repository.deleteById(entity.getId());
-    if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
+    if (RELEVANT_CLASSES_FOR_RISK.contains(input.entityClass)) {
       eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
-      if (RISK_AFFECTED_CLASSES.contains(input.getEntityClass()) && entity.getLinks() != null) {
+      if (RISK_AFFECTED_CLASSES.contains(input.entityClass) && entity.getLinks() != null) {
         // notify link targets
         entity
             .getLinks()
@@ -102,10 +100,7 @@ public class DeleteElementUseCase
     return 5;
   }
 
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Class<? extends Element> entityClass;
-    Key<UUID> id;
-    Client authenticatedClient;
-  }
+  public record InputData(
+      Class<? extends Element> entityClass, Key<UUID> id, Client authenticatedClient)
+      implements UseCase.InputData {}
 }

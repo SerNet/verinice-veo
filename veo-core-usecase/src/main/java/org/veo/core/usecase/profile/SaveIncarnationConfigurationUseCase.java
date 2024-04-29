@@ -30,7 +30,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class SaveIncarnationConfigurationUseCase
@@ -52,10 +51,9 @@ public class SaveIncarnationConfigurationUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull Key<UUID> domainId;
-    @NotNull IncarnationConfiguration incarnationConfiguration;
-  }
+  public record InputData(
+      @NotNull Client authenticatedClient,
+      @NotNull Key<UUID> domainId,
+      @NotNull IncarnationConfiguration incarnationConfiguration)
+      implements UseCase.InputData {}
 }

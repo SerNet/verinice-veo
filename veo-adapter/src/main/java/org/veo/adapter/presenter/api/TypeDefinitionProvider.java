@@ -27,7 +27,6 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @AllArgsConstructor
 public class TypeDefinitionProvider {
@@ -45,9 +44,5 @@ public class TypeDefinitionProvider {
         referenceAssembler.schemaReferenceOf(EntityType.getSingularTermByType(type)));
   }
 
-  @Data
-  @AllArgsConstructor
-  public static class OutputData implements UseCase.OutputData {
-    List<TypeDefinition> types;
-  }
+  public record OutputData(List<TypeDefinition> types) implements UseCase.OutputData {}
 }

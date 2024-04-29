@@ -29,7 +29,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -49,15 +48,15 @@ public abstract class ChangeUnitUseCase
    */
   @Override
   public OutputData execute(InputData input) {
-    log.info("Updating unit with id {}", input.getId());
+    log.info("Updating unit with id {}", input.id);
 
-    var storedUnit = unitRepository.getById(Key.uuidFrom(input.getId()));
+    var storedUnit = unitRepository.getById(Key.uuidFrom(input.id));
     checkSameClient(storedUnit, input);
-    ETag.validate(input.getETag(), storedUnit);
+    ETag.validate(input.eTag, storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     save(updatedUnit, input);
-    return output(unitRepository.getById(Key.uuidFrom(input.getId())));
+    return output(unitRepository.getById(Key.uuidFrom(input.id)));
   }
 
   protected abstract Unit update(Unit storedUnit, InputData input);
@@ -68,7 +67,7 @@ public abstract class ChangeUnitUseCase
     // returned after the save.
     // i.e. to exclude all references and collections:
     // "dataToEntityContext.partialUnit();"
-    unit.setClient(input.getAuthenticatedClient());
+    unit.setClient(input.authenticatedClient);
     return this.unitRepository.save(unit);
   }
 
@@ -86,9 +85,9 @@ public abstract class ChangeUnitUseCase
   private void checkSameClient(Unit storedUnit, InputData input) {
     log.info(
         "Comparing clients {} and {}",
-        input.getAuthenticatedClient().getId().uuidValue(),
+        input.authenticatedClient.getId().uuidValue(),
         storedUnit.getClient().getId().uuidValue());
-    storedUnit.checkSameClient(input.getAuthenticatedClient());
+    storedUnit.checkSameClient(input.authenticatedClient);
   }
 
   @Override
@@ -97,18 +96,10 @@ public abstract class ChangeUnitUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    String id;
-    UnitState changedUnit;
-    Client authenticatedClient;
-    String eTag;
-    String username;
-  }
+  public record InputData(
+      String id, UnitState changedUnit, Client authenticatedClient, String eTag, String username)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Unit unit;
-  }
+  public record OutputData(@Valid Unit unit) implements UseCase.OutputData {}
 }

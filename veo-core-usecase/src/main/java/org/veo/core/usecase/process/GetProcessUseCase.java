@@ -37,9 +37,9 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
   public GetElementUseCase.OutputData<Process> execute(InputData input) {
     var process =
         processRepository
-            .findById(input.getId(), input.isEmbedRisks())
-            .orElseThrow(() -> new NotFoundException(input.getId(), Process.class));
-    process.checkSameClient(input.getAuthenticatedClient());
+            .findById(input.elementId(), input.embedRisks())
+            .orElseThrow(() -> new NotFoundException(input.elementId(), Process.class));
+    process.checkSameClient(input.authenticatedClient());
     return new GetElementUseCase.OutputData<>(process, getDomain(process, input).orElse(null));
   }
 }

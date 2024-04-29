@@ -37,7 +37,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class AddLinksUseCase
@@ -82,18 +81,14 @@ public class AddLinksUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> elementId;
-    Class<? extends Element> type;
-    Key<UUID> domainId;
-    Set<CustomLinkState> links;
-    Client authenticatedClient;
-  }
+  public record InputData(
+      Key<UUID> elementId,
+      Class<? extends Element> type,
+      Key<UUID> domainId,
+      Set<CustomLinkState> links,
+      Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Element entity;
-  }
+  public record OutputData(@Valid Element entity) implements UseCase.OutputData {}
 }

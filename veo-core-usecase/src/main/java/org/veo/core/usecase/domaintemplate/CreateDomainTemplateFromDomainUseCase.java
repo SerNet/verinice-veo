@@ -39,8 +39,6 @@ import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 public class CreateDomainTemplateFromDomainUseCase
     implements TransactionalUseCase<
         CreateDomainTemplateFromDomainUseCase.InputData,
@@ -63,10 +61,9 @@ public class CreateDomainTemplateFromDomainUseCase
   public OutputData execute(InputData input) {
     Domain domain =
         repository
-            .findByIdWithProfilesAndRiskDefinitions(
-                input.getId(), input.authenticatedClient.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), Domain.class));
-    Client client = input.getAuthenticatedClient();
+            .findByIdWithProfilesAndRiskDefinitions(input.id, input.authenticatedClient.getId())
+            .orElseThrow(() -> new NotFoundException(input.id, Domain.class));
+    Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -107,16 +104,9 @@ public class CreateDomainTemplateFromDomainUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> id;
-    Version version;
-    Client authenticatedClient;
-  }
+  public record InputData(Key<UUID> id, Version version, Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid DomainTemplate newDomainTemplate;
-  }
+  public record OutputData(@Valid DomainTemplate newDomainTemplate) implements UseCase.OutputData {}
 }

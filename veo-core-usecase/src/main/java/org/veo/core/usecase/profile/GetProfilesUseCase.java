@@ -30,7 +30,6 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,7 +42,7 @@ public class GetProfilesUseCase extends AbstractProfileUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    checkClientOwnsDomain(input.getAuthenticatedClient(), input.domain.getId());
+    checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Set<Profile> profiles =
         profileRepo.findAllByDomainId(input.authenticatedClient.getId(), input.domain.toKey());
     log.info("profiles: {}", profiles.size());
@@ -51,15 +50,9 @@ public class GetProfilesUseCase extends AbstractProfileUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull ITypedId<Domain> domain;
-  }
+  public record InputData(@NotNull Client authenticatedClient, @NotNull ITypedId<Domain> domain)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Set<Profile> profiles;
-  }
+  public record OutputData(@Valid Set<Profile> profiles) implements UseCase.OutputData {}
 }

@@ -154,7 +154,7 @@ public class ContentCreationController extends AbstractVeoController {
             domainDto.getDescription(),
             domainDto.getAuthority()),
         output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
+          ApiResponseBody body = CreateOutputMapper.map(output.domain());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }
@@ -258,7 +258,7 @@ public class ContentCreationController extends AbstractVeoController {
         new SaveDecisionUseCase.InputData(
             Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey, decision),
         out ->
-            out.isNewDecision()
+            out.newDecision()
                 ? RestApiResponse.created(request.getRequest().getRequestURI(), "Decision created")
                 : RestApiResponse.ok("Decision updated"));
   }
@@ -309,7 +309,7 @@ public class ContentCreationController extends AbstractVeoController {
         new SaveInspectionUseCase.InputData(
             Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), inspectionId, inspection),
         out ->
-            out.isNewInspection()
+            out.newInspection()
                 ? RestApiResponse.created(
                     request.getRequest().getRequestURI(), "Inspection created")
                 : RestApiResponse.ok("Inspection updated"));
@@ -368,7 +368,7 @@ public class ContentCreationController extends AbstractVeoController {
             riskDefinitionId,
             riskDefinition),
         out ->
-            out.isNewRiskDefinition()
+            out.newRiskDefinition()
                 ? RestApiResponse.created(
                     request.getRequest().getRequestURI(), "Risk definition created")
                 : RestApiResponse.ok("Risk definition updated"));
@@ -443,7 +443,7 @@ public class ContentCreationController extends AbstractVeoController {
                 createParameter.getName(),
                 createParameter.getDescription(),
                 createParameter.getLanguage()),
-            out -> IdRef.from(out.getProfile(), referenceAssembler))
+            out -> IdRef.from(out.profile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
@@ -523,7 +523,7 @@ public class ContentCreationController extends AbstractVeoController {
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
                 Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client),
-            out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
+            out -> IdRef.from(out.newDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
@@ -540,7 +540,7 @@ public class ContentCreationController extends AbstractVeoController {
             createProfileInDomainTemplate,
             new CreateProfileInDomainTemplateUseCase.InputData(
                 client, Key.uuidFrom(id), profileDto),
-            out -> IdRef.from(out.getProfile(), referenceAssembler))
+            out -> IdRef.from(out.profile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
@@ -576,8 +576,7 @@ public class ContentCreationController extends AbstractVeoController {
         .execute(
             getDomainTemplateUseCase,
             new IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
-            output ->
-                entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate()))
+            output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.domainTemplate()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));
   }
@@ -610,7 +609,7 @@ public class ContentCreationController extends AbstractVeoController {
         createDomainTemplatesUseCase,
         new CreateDomainTemplateUseCase.InputData(domainTemplateDto),
         out -> {
-          var body = CreateOutputMapper.map(out.getDomainTemplate());
+          var body = CreateOutputMapper.map(out.domainTemplate());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }

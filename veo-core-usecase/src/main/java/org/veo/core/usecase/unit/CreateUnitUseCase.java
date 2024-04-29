@@ -42,7 +42,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -75,8 +74,8 @@ public class CreateUnitUseCase
   public OutputData execute(InputData input) {
     Client client =
         clientRepository
-            .findById(input.getClientId())
-            .orElseThrow(() -> new NotFoundException(input.getClientId(), Client.class));
+            .findById(input.clientId)
+            .orElseThrow(() -> new NotFoundException(input.clientId, Client.class));
 
     // Note: the new client will get the name of the new unit by default.
     // If we want to get a client name we would have to do a REST call to
@@ -91,21 +90,21 @@ public class CreateUnitUseCase
       throwTooManyUnits(effectiveMaxUnits);
     }
     Unit newUnit;
-    if (input.getParentUnitId().isEmpty()) {
-      newUnit = entityFactory.createUnit(input.getNameableInput().getName(), null);
+    if (input.parentUnitId.isEmpty()) {
+      newUnit = entityFactory.createUnit(input.nameableInput.getName(), null);
     } else {
       Unit parentUnit =
           unitRepository
-              .findById(input.getParentUnitId().get())
+              .findById(input.parentUnitId.get())
               .orElseThrow(
                   () ->
                       new ReferenceTargetNotFoundException(
-                          format("Parent unit %s was not found", input.getParentUnitId().get())));
-      newUnit = entityFactory.createUnit(input.getNameableInput().getName(), parentUnit);
+                          format("Parent unit %s was not found", input.parentUnitId.get())));
+      newUnit = entityFactory.createUnit(input.nameableInput.getName(), parentUnit);
     }
 
-    newUnit.setAbbreviation(input.getNameableInput().getAbbreviation());
-    newUnit.setDescription(input.getNameableInput().getDescription());
+    newUnit.setAbbreviation(input.nameableInput.getAbbreviation());
+    newUnit.setDescription(input.nameableInput.getDescription());
     newUnit.setClient(client);
     client.incrementTotalUnits();
     if (input.domainIds != null) {
@@ -142,18 +141,14 @@ public class CreateUnitUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    NameableInputData nameableInput;
-    Key<UUID> clientId;
-    Optional<Key<UUID>> parentUnitId;
-    Integer maxUnits;
-    Set<Key<UUID>> domainIds;
-  }
+  public record InputData(
+      NameableInputData nameableInput,
+      Key<UUID> clientId,
+      Optional<Key<UUID>> parentUnitId,
+      Integer maxUnits,
+      Set<Key<UUID>> domainIds)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Unit unit;
-  }
+  public record OutputData(@Valid Unit unit) implements UseCase.OutputData {}
 }

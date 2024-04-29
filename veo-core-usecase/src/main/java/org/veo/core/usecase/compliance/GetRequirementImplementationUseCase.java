@@ -27,8 +27,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
 import org.veo.core.usecase.common.ETag;
 
-import lombok.Value;
-
 public class GetRequirementImplementationUseCase
     extends AbstractUseCase<
         GetRequirementImplementationUseCase.InputData,
@@ -44,16 +42,12 @@ public class GetRequirementImplementationUseCase
     return new OutputData(origin.getRequirementImplementation(control), ETag.from(origin));
   }
 
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    TypedId<? extends RiskAffected<?, ?>> origin;
-    TypedId<Control> control;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      TypedId<? extends RiskAffected<?, ?>> origin,
+      TypedId<Control> control)
+      implements UseCase.InputData {}
 
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    RequirementImplementation requirementImplementation;
-    String eTag;
-  }
+  public record OutputData(RequirementImplementation requirementImplementation, String eTag)
+      implements UseCase.OutputData {}
 }

@@ -32,7 +32,6 @@ import org.veo.core.usecase.base.TemplateItemValidator;
 import org.veo.core.usecase.service.DomainStateMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 /** Creates given new domain template. Will never update existing domain templates. */
 @RequiredArgsConstructor
@@ -67,14 +66,8 @@ public class CreateDomainTemplateUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    DomainBaseState domainTemplate;
-  }
+  public record InputData(DomainBaseState domainTemplate) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    DomainTemplate domainTemplate;
-  }
+  public record OutputData(DomainTemplate domainTemplate) implements UseCase.OutputData {}
 }

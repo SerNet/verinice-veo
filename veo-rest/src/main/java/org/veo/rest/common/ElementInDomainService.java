@@ -107,7 +107,7 @@ public class ElementInDomainService {
         .execute(
             getElementUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, Key.uuidFrom(domainId)),
-            output -> toDtoMapper.apply(output.getElement(), output.getDomain()))
+            output -> toDtoMapper.apply(output.element(), output.domain()))
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
@@ -143,7 +143,7 @@ public class ElementInDomainService {
         input,
         output ->
             PagingMapper.toPage(
-                output.getElements(),
+                output.elements(),
                 e ->
                     toDtoMapper.apply(
                         e,
@@ -164,7 +164,7 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         createUseCase,
         CreateElementInputMapper.map(dto, clientLookup.getClient(user), scopeIds),
-        output -> RestApiResponse.created(output.getEntity(), domainId, referenceAssembler));
+        output -> RestApiResponse.created(output.entity(), domainId, referenceAssembler));
   }
 
   public <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
@@ -184,7 +184,7 @@ public class ElementInDomainService {
             Key.uuidFrom(domainId),
             dto.getSubType(),
             dto.getStatus()),
-        o -> ResponseEntity.ok().body(toDtoMapper.apply((TElement) o.getElement(), o.getDomain())));
+        o -> ResponseEntity.ok().body(toDtoMapper.apply((TElement) o.element(), o.domain())));
   }
 
   public <
@@ -208,9 +208,9 @@ public class ElementInDomainService {
             Key.uuidFrom(id), dto, Key.uuidFrom(domainId), client, eTag, user.getUsername()),
         output ->
             toResponseEntity(
-                output.getEntity(),
+                output.entity(),
                 toDtoMapper,
-                output.getEntity().getDomains().stream()
+                output.entity().getDomains().stream()
                     .filter(d -> d.getIdAsString().equals(domainId))
                     .findFirst()
                     .orElseThrow()));
@@ -243,7 +243,7 @@ public class ElementInDomainService {
             clientLookup.getClient(auth)),
         out ->
             ResponseEntity.noContent()
-                .eTag(ETag.from(elementId, out.getEntity().getVersion()))
+                .eTag(ETag.from(elementId, out.entity().getVersion()))
                 .build());
   }
 

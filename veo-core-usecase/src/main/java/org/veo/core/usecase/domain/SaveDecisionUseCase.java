@@ -29,7 +29,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class SaveDecisionUseCase
@@ -39,7 +38,7 @@ public class SaveDecisionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var domain = repository.getById(input.getDomainId(), input.getAuthenticatedClientId());
+    var domain = repository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -52,17 +51,10 @@ public class SaveDecisionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> authenticatedClientId;
-    Key<UUID> domainId;
-    String decisionRef;
-    Decision decision;
-  }
+  public record InputData(
+      Key<UUID> authenticatedClientId, Key<UUID> domainId, String decisionRef, Decision decision)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    boolean newDecision;
-  }
+  public record OutputData(boolean newDecision) implements UseCase.OutputData {}
 }

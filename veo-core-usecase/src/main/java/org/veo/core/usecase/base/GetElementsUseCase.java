@@ -45,9 +45,7 @@ import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.With;
-import lombok.experimental.NonFinal;
 
 /** Reinstantiate persisted entity objects. */
 @RequiredArgsConstructor
@@ -65,11 +63,11 @@ public class GetElementsUseCase
    */
   public OutputData execute(InputData input) {
     Client client =
-        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
+        UseCaseTools.checkClientExists(input.authenticatedClient.getId(), clientRepository);
 
     var query = getRepo(input.elementTypes).query(client);
     applyDefaultQueryParameters(input, query);
-    return new OutputData(query.execute(input.getPagingConfiguration()));
+    return new OutputData(query.execute(input.pagingConfiguration));
   }
 
   private ElementQueryProvider<? extends Element> getRepo(QueryCondition<String> elementTypes) {
@@ -84,8 +82,8 @@ public class GetElementsUseCase
   }
 
   protected void applyDefaultQueryParameters(InputData input, ElementQuery<?> query) {
-    Optional.ofNullable(input.getElementTypes()).ifPresent(query::whereElementTypeMatches);
-    Optional.ofNullable(input.getUnitUuid())
+    Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
+    Optional.ofNullable(input.unitUuid)
         .map(
             condition ->
                 condition.getValues().stream()
@@ -94,33 +92,31 @@ public class GetElementsUseCase
                             unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
                     .collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
-    Optional.ofNullable(input.getDomainId())
+    Optional.ofNullable(input.domainId)
         .map(
             condition ->
-                input.getAuthenticatedClient().getDomains().stream()
+                input.authenticatedClient.getDomains().stream()
                     .filter(d -> d.getId().equals(condition.getValue()))
                     .findFirst()
                     .orElseThrow(
-                        () -> new NotFoundException(input.getDomainId().getValue(), Domain.class)))
+                        () -> new NotFoundException(input.domainId.getValue(), Domain.class)))
         .ifPresent(query::whereDomainsContain);
-    Optional.ofNullable(input.getSubType()).ifPresent(query::whereSubTypeMatches);
-    Optional.ofNullable(input.getStatus()).ifPresent(query::whereStatusMatches);
-    Optional.ofNullable(input.getDisplayName())
-        .ifPresent(query::whereDisplayNameMatchesIgnoringCase);
-    Optional.ofNullable(input.getDescription()).ifPresent(query::whereDescriptionMatchesIgnoreCase);
-    Optional.ofNullable(input.getDesignator()).ifPresent(query::whereDesignatorMatchesIgnoreCase);
-    Optional.ofNullable(input.getName()).ifPresent(query::whereNameMatchesIgnoreCase);
-    Optional.ofNullable(input.getAbbreviation())
-        .ifPresent(query::whereAbbreviationMatchesIgnoreCase);
-    Optional.ofNullable(input.getUpdatedBy()).ifPresent(query::whereUpdatedByContainsIgnoreCase);
-    Optional.ofNullable(input.getChildElementIds()).ifPresent(query::whereChildElementIn);
-    Optional.ofNullable(input.getHasChildElements())
+    Optional.ofNullable(input.subType).ifPresent(query::whereSubTypeMatches);
+    Optional.ofNullable(input.status).ifPresent(query::whereStatusMatches);
+    Optional.ofNullable(input.displayName).ifPresent(query::whereDisplayNameMatchesIgnoringCase);
+    Optional.ofNullable(input.description).ifPresent(query::whereDescriptionMatchesIgnoreCase);
+    Optional.ofNullable(input.designator).ifPresent(query::whereDesignatorMatchesIgnoreCase);
+    Optional.ofNullable(input.name).ifPresent(query::whereNameMatchesIgnoreCase);
+    Optional.ofNullable(input.abbreviation).ifPresent(query::whereAbbreviationMatchesIgnoreCase);
+    Optional.ofNullable(input.updatedBy).ifPresent(query::whereUpdatedByContainsIgnoreCase);
+    Optional.ofNullable(input.childElementIds).ifPresent(query::whereChildElementIn);
+    Optional.ofNullable(input.hasChildElements)
         .map(SingleValueQueryCondition::getValue)
         .ifPresent(query::whereChildElementsPresent);
-    Optional.ofNullable(input.getHasParentElements())
+    Optional.ofNullable(input.hasParentElements)
         .map(SingleValueQueryCondition::getValue)
         .ifPresent(query::whereParentElementPresent);
-    Optional.ofNullable(input.getCompositeId())
+    Optional.ofNullable(input.compositeId)
         .ifPresent(
             condition -> {
               if (query instanceof CompositeElementQuery<?> c) {
@@ -130,7 +126,7 @@ public class GetElementsUseCase
                     "Composite filter not compatible with query type");
               }
             });
-    Optional.ofNullable(input.getScopeId()).ifPresent(query::whereScopesContain);
+    Optional.ofNullable(input.scopeId).ifPresent(query::whereScopesContain);
     query.fetchChildren();
     if (input.embedRisks) {
       query.fetchRisks();
@@ -138,35 +134,31 @@ public class GetElementsUseCase
   }
 
   @Valid
-  @Value
-  @NonFinal
   @Builder
   @With
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    QueryCondition<String> elementTypes;
-    QueryCondition<Key<UUID>> unitUuid;
-    SingleValueQueryCondition<Key<UUID>> domainId;
-    QueryCondition<String> displayName;
-    QueryCondition<String> subType;
-    QueryCondition<String> status;
-    QueryCondition<Key<UUID>> childElementIds;
-    SingleValueQueryCondition<Boolean> hasChildElements;
-    SingleValueQueryCondition<Boolean> hasParentElements;
-    SingleValueQueryCondition<Key<UUID>> compositeId;
-    SingleValueQueryCondition<Key<UUID>> scopeId;
-    QueryCondition<String> description;
-    QueryCondition<String> designator;
-    QueryCondition<String> name;
-    QueryCondition<String> abbreviation;
-    QueryCondition<String> updatedBy;
-    PagingConfiguration pagingConfiguration;
-    boolean embedRisks;
-  }
+  public static record InputData(
+      Client authenticatedClient,
+      QueryCondition<String> elementTypes,
+      QueryCondition<Key<UUID>> unitUuid,
+      SingleValueQueryCondition<Key<UUID>> domainId,
+      QueryCondition<String> displayName,
+      QueryCondition<String> subType,
+      QueryCondition<String> status,
+      QueryCondition<Key<UUID>> childElementIds,
+      SingleValueQueryCondition<Boolean> hasChildElements,
+      SingleValueQueryCondition<Boolean> hasParentElements,
+      SingleValueQueryCondition<Key<UUID>> compositeId,
+      SingleValueQueryCondition<Key<UUID>> scopeId,
+      QueryCondition<String> description,
+      QueryCondition<String> designator,
+      QueryCondition<String> name,
+      QueryCondition<String> abbreviation,
+      QueryCondition<String> updatedBy,
+      PagingConfiguration pagingConfiguration,
+      boolean embedRisks)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid PagedResult<? extends Element> elements;
-  }
+  public record OutputData(@Valid PagedResult<? extends Element> elements)
+      implements UseCase.OutputData {}
 }

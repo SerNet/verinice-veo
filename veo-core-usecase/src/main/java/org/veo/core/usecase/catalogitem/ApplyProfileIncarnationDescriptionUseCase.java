@@ -35,7 +35,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 /** Uses a list of {@link TemplateItemIncarnationDescription}s to create profile items in a unit. */
 @RequiredArgsConstructor
@@ -59,16 +58,12 @@ public class ApplyProfileIncarnationDescriptionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    @NotNull Key<UUID> unitId;
-    @NotNull List<TemplateItemIncarnationDescriptionState<ProfileItem, Profile>> descriptions;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      @NotNull Key<UUID> unitId,
+      @NotNull List<TemplateItemIncarnationDescriptionState<ProfileItem, Profile>> descriptions)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<Element> newElements;
-  }
+  public record OutputData(@Valid List<Element> newElements) implements UseCase.OutputData {}
 }

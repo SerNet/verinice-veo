@@ -29,7 +29,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
@@ -56,8 +55,5 @@ public class UpdateAllClientDomainsUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> domainTemplateId;
-  }
+  public record InputData(Key<UUID> domainTemplateId) implements UseCase.InputData {}
 }

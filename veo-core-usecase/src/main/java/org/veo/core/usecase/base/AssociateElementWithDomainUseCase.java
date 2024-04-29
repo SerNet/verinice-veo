@@ -30,10 +30,7 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class AssociateElementWithDomainUseCase
@@ -63,21 +60,16 @@ public class AssociateElementWithDomainUseCase
   }
 
   @Valid
-  @Getter
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Class<? extends Element> elementType;
-    Key<UUID> elementId;
-    Key<UUID> domainId;
-    String subType;
-    String status;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      Class<? extends Element> elementType,
+      Key<UUID> elementId,
+      Key<UUID> domainId,
+      String subType,
+      String status)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Element element;
-    @Valid Domain domain;
-  }
+  public record OutputData(@Valid Element element, @Valid Domain domain)
+      implements UseCase.OutputData {}
 }

@@ -32,7 +32,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
@@ -59,14 +58,8 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    String domainTemplateId;
-  }
+  public record InputData(String domainTemplateId) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Set<Key<UUID>> clientIds;
-  }
+  public record OutputData(@Valid Set<Key<UUID>> clientIds) implements UseCase.OutputData {}
 }

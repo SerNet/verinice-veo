@@ -37,7 +37,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public abstract class ModifyElementUseCase<T extends Element>
@@ -53,22 +52,22 @@ public abstract class ModifyElementUseCase<T extends Element>
 
   @Override
   public OutputData<T> execute(InputData<T> input) {
-    ElementState<T> entity = input.getElement();
+    ElementState<T> entity = input.element;
     ElementRepository<T> repo = repositoryProvider.getElementRepositoryFor(elementClass);
     var storedEntity =
-        repo.findById(Key.uuidFrom(input.getId()))
-            .orElseThrow(() -> new NotFoundException(Key.uuidFrom(input.getId()), elementClass));
+        repo.findById(Key.uuidFrom(input.id))
+            .orElseThrow(() -> new NotFoundException(Key.uuidFrom(input.id), elementClass));
     ETag.validate(input.eTag, storedEntity);
     checkClientBoundaries(input, storedEntity);
     entityStateMapper.mapState(
-        entity, storedEntity, true, refResolverFactory.db(input.getAuthenticatedClient()));
+        entity, storedEntity, true, refResolverFactory.db(input.authenticatedClient));
     evaluateDecisions(storedEntity);
     DomainSensitiveElementValidator.validate(storedEntity);
 
     storedEntity.setUpdatedAt(Instant.now());
     repo.save(storedEntity);
     return new OutputData<>(
-        repo.getById(Key.uuidFrom(input.getId()), input.authenticatedClient.getId()));
+        repo.getById(Key.uuidFrom(input.id), input.authenticatedClient.getId()));
   }
 
   private void evaluateDecisions(T entity) {
@@ -88,7 +87,7 @@ public abstract class ModifyElementUseCase<T extends Element>
   }
 
   protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {
-    storedEntity.checkSameClient(input.getAuthenticatedClient());
+    storedEntity.checkSameClient(input.authenticatedClient());
   }
 
   @Override
@@ -97,24 +96,14 @@ public abstract class ModifyElementUseCase<T extends Element>
   }
 
   @Valid
-  @Value
-  public static class InputData<T extends Element> implements UseCase.InputData {
-
-    String id;
-
-    @Valid ElementState<T> element;
-
-    @Valid Client authenticatedClient;
-
-    String eTag;
-
-    String username;
-  }
+  public record InputData<T extends Element>(
+      String id,
+      @Valid ElementState<T> element,
+      @Valid Client authenticatedClient,
+      String eTag,
+      String username)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData<T> implements UseCase.OutputData {
-
-    @Valid T entity;
-  }
+  public record OutputData<T>(@Valid T entity) implements UseCase.OutputData {}
 }

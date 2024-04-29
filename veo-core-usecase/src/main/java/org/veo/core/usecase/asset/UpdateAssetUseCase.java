@@ -42,7 +42,7 @@ public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
   @Override
   public OutputData<Asset> execute(InputData<Asset> input) {
     OutputData<Asset> result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 }

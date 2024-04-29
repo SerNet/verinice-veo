@@ -26,8 +26,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.IdAndClient;
 
-import lombok.Value;
-
 /** Reinstantiate a persisted unit object. */
 public class GetUnitUseCase
     implements TransactionalUseCase<IdAndClient, GetUnitUseCase.OutputData> {
@@ -46,15 +44,12 @@ public class GetUnitUseCase
   public OutputData execute(IdAndClient input) {
     Unit unit =
         repository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), Unit.class));
-    unit.checkSameClient(input.getAuthenticatedClient());
+            .findById(input.id())
+            .orElseThrow(() -> new NotFoundException(input.id(), Unit.class));
+    unit.checkSameClient(input.authenticatedClient());
     return new OutputData(unit);
   }
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Unit unit;
-  }
+  public record OutputData(@Valid Unit unit) implements UseCase.OutputData {}
 }

@@ -57,30 +57,30 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   public OutputData<R> execute(InputData input) {
     boolean newRiskCreated = false;
     // Retrieve the necessary entities for the requested operation:
-    var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
+    var riskAffected = findEntity(entityClass, input.riskAffectedRef()).orElseThrow();
 
-    var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
+    var scenario = findEntity(Scenario.class, input.scenarioRef()).orElseThrow();
 
-    var domains = findEntities(Domain.class, input.getDomainRefs());
-    if (domains.size() != input.getDomainRefs().size()) {
+    var domains = findEntities(Domain.class, input.domainRefs());
+    if (domains.size() != input.domainRefs().size()) {
       throw new UnprocessableDataException("Unable to resolve all domain references");
     }
 
     // Validate security constraints:
-    riskAffected.checkSameClient(input.getAuthenticatedClient());
-    scenario.checkSameClient(input.getAuthenticatedClient());
-    checkDomainOwnership(input.getAuthenticatedClient(), domains);
+    riskAffected.checkSameClient(input.authenticatedClient());
+    scenario.checkSameClient(input.authenticatedClient());
+    checkDomainOwnership(input.authenticatedClient(), domains);
 
     // Apply requested operation:
     var risk = riskAffected.obtainRisk(scenario, domains);
     if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
-      designatorService.assignDesignator(risk, input.getAuthenticatedClient());
+      designatorService.assignDesignator(risk, input.authenticatedClient());
       newRiskCreated = true;
     }
 
     risk = applyOptionalInput(input, risk);
 
-    risk.defineRiskValues(input.getRiskValues());
+    risk.defineRiskValues(input.riskValues());
     publishEvents(riskAffected, risk);
     if (!new RiskOnlyReferencesItsOwnersUnitSpecification().test(risk)) {
       throw new CrossUnitReferenceException();

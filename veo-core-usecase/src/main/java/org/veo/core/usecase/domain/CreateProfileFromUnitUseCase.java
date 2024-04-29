@@ -42,7 +42,6 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /** Create or update a profile in a domain. */
@@ -66,19 +65,19 @@ public class CreateProfileFromUnitUseCase
 
   public OutputData execute(InputData input) {
     Domain domain =
-        domainRepository.getActiveById(input.getDomainId(), input.authenticatedClient.getId());
-    Client client = input.getAuthenticatedClient();
+        domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    Client client = input.authenticatedClient;
     Profile profile =
-        input.getProfileId() == null
+        input.profileId == null
             ? factory.createProfile(domain)
             : domain.getProfiles().stream()
                 .filter(p1 -> p1.getId().equals(input.profileId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
-    profile.setName(input.getName());
-    profile.setDescription(input.getDescription());
-    profile.setLanguage(input.getLanguage());
+    profile.setName(input.name);
+    profile.setDescription(input.description);
+    profile.setLanguage(input.language);
 
     if (input.unitId != null) {
       cleanProfile(profile);
@@ -121,20 +120,16 @@ public class CreateProfileFromUnitUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> domainId;
-    Client authenticatedClient;
-    Key<UUID> unitId;
-    Key<UUID> profileId;
-    String name;
-    String description;
-    String language;
-  }
+  public record InputData(
+      Key<UUID> domainId,
+      Client authenticatedClient,
+      Key<UUID> unitId,
+      Key<UUID> profileId,
+      String name,
+      String description,
+      String language)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Profile profile;
-  }
+  public record OutputData(@Valid Profile profile) implements UseCase.OutputData {}
 }

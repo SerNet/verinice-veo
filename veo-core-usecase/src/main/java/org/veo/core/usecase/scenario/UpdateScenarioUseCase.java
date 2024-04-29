@@ -43,7 +43,7 @@ public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
   @Override
   public OutputData<Scenario> execute(InputData<Scenario> input) {
     OutputData<Scenario> result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 }

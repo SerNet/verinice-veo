@@ -41,8 +41,6 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -134,22 +132,14 @@ public class GetUnitDumpUseCase
     return a.stream().filter(b::contains).collect(Collectors.toSet());
   }
 
-  @Data
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    @NonNull private Key<UUID> unitId;
+  public record InputData(
+      @NonNull Key<UUID> unitId,
+      /**
+       * If a domain ID is set, only elements associated with that domain are exported and aspects
+       * belonging to other domains are not included in the elements' representations.
+       */
+      Key<UUID> domainId)
+      implements UseCase.InputData {}
 
-    /**
-     * If a domain ID is set, only elements associated with that domain are exported and aspects
-     * belonging to other domains are not included in the elements' representations.
-     */
-    private Key<UUID> domainId;
-  }
-
-  @Data
-  @AllArgsConstructor
-  public static class OutputData implements UseCase.OutputData {
-    private Unit unit;
-    private Set<Element> elements;
-  }
+  public record OutputData(Unit unit, Set<Element> elements) implements UseCase.OutputData {}
 }

@@ -37,7 +37,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public abstract class UpdateElementInDomainUseCase<T extends Element>
@@ -53,9 +52,9 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   public OutputData<T> execute(InputData<T> input) {
     var idRefResolver = refResolverFactory.db(input.authenticatedClient);
 
-    var domain = idRefResolver.resolve(input.getDomainId().uuidValue(), Domain.class);
-    var inputElement = input.getElement();
-    var storedElement = repo.getById(input.getId(), input.authenticatedClient.getId());
+    var domain = idRefResolver.resolve(input.domainId.uuidValue(), Domain.class);
+    var inputElement = input.element;
+    var storedElement = repo.getById(input.id, input.authenticatedClient.getId());
     storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
@@ -64,7 +63,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
           storedElement.getIdAsString(),
           domain.getIdAsString());
     }
-    ETag.validate(input.getETag(), storedElement);
+    ETag.validate(input.eTag, storedElement);
     entityStateMapper.mapState(inputElement, storedElement, false, idRefResolver);
     // TODO VEO-1874: Only mark root element as updated when basic properties change, version domain
     // associations independently.
@@ -82,19 +81,15 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   }
 
   @Valid
-  @Value
-  public static class InputData<T extends Element> implements UseCase.InputData {
-    Key<UUID> id;
-    @Valid ElementState<T> element;
-    Key<UUID> domainId;
-    Client authenticatedClient;
-    String eTag;
-    String username;
-  }
+  public record InputData<T extends Element>(
+      Key<UUID> id,
+      @Valid ElementState<T> element,
+      Key<UUID> domainId,
+      Client authenticatedClient,
+      String eTag,
+      String username)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData<T> implements UseCase.OutputData {
-    @Valid T entity;
-  }
+  public record OutputData<T>(@Valid T entity) implements UseCase.OutputData {}
 }

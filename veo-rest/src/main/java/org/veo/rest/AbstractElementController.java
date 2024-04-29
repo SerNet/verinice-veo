@@ -80,7 +80,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
         useCaseInteractor.execute(
             getElementUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
-            output -> entity2Dto(output.getElement()));
+            output -> entity2Dto(output.element()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
@@ -95,7 +95,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
         getElementsUseCase,
         inputData.withElementTypes(
             new QueryCondition<>(Set.of(EntityType.getSingularTermByType(modelType)))),
-        o -> PagingMapper.toPage(o.getElements(), e -> dtoMapper.apply((T) e)));
+        o -> PagingMapper.toPage(o.elements(), e -> dtoMapper.apply((T) e)));
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
@@ -114,7 +114,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
         inspectElementUseCase,
         new InspectElementUseCase.InputData(
             client, elementType, Key.uuidFrom(elementId), Key.uuidFrom(domainId)),
-        output -> ResponseEntity.ok().body(output.getFindings()));
+        output -> ResponseEntity.ok().body(output.findings()));
   }
 
   @SuppressWarnings("unchecked")

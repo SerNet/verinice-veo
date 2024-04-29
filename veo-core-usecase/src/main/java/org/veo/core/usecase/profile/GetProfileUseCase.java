@@ -30,7 +30,6 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,7 +42,7 @@ public class GetProfileUseCase extends AbstractProfileUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    checkClientOwnsDomain(input.getAuthenticatedClient(), input.domain.getId());
+    checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     var profile =
         (input.fastLoadDetails
                 ? profileRepo.findProfileByIdFetchTailoringReferences(
@@ -57,17 +56,13 @@ public class GetProfileUseCase extends AbstractProfileUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull ITypedId<Domain> domain;
-    @NotNull ITypedId<Profile> profile;
-    boolean fastLoadDetails;
-  }
+  public record InputData(
+      @NotNull Client authenticatedClient,
+      @NotNull ITypedId<Domain> domain,
+      @NotNull ITypedId<Profile> profile,
+      boolean fastLoadDetails)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Profile profile;
-  }
+  public record OutputData(@Valid Profile profile) implements UseCase.OutputData {}
 }

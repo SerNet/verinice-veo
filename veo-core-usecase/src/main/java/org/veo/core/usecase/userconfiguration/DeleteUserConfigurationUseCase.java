@@ -28,7 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 @AllArgsConstructor
 public class DeleteUserConfigurationUseCase
@@ -51,16 +50,9 @@ public class DeleteUserConfigurationUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> clientId;
-    String userName;
-    String applicationId;
-  }
+  public record InputData(Key<UUID> clientId, String userName, String applicationId)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    String applicationId;
-  }
+  public record OutputData(String applicationId) implements UseCase.OutputData {}
 }

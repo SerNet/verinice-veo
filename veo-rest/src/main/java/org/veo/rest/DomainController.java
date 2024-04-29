@@ -170,7 +170,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         getDomainsUseCase,
         inputData,
         output ->
-            output.getObjects().stream()
+            output.objects().stream()
                 .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
                 .toList());
   }
@@ -195,7 +195,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         useCaseInteractor.execute(
             getDomainUseCase,
             new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            output -> entityToDtoTransformer.transformDomain2Dto(output.getDomain()));
+            output -> entityToDtoTransformer.transformDomain2Dto(output.domain()));
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
@@ -217,7 +217,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         .execute(
             exportDomainUseCase,
             new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            o -> entityToDtoTransformer.transformDomain2ExportDto(o.getExportDomain()))
+            o -> entityToDtoTransformer.transformDomain2ExportDto(o.exportDomain()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
@@ -233,7 +233,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         getIncarnationConfigurationUseCase,
         new GetIncarnationConfigurationUseCase.InputData(
             getAuthenticatedClient(auth), Key.uuidFrom(domainId)),
-        GetIncarnationConfigurationUseCase.OutputData::getIncarnationConfiguration);
+        GetIncarnationConfigurationUseCase.OutputData::incarnationConfiguration);
   }
 
   @GetMapping("/{domainId}/profiles")
@@ -248,9 +248,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         new GetProfilesUseCase.InputData(
             getAuthenticatedClient(auth), TypedId.from(domainId, Domain.class)),
         out ->
-            out.getProfiles().stream()
-                .map(entityToDtoTransformer::transformProfile2ListDto)
-                .toList());
+            out.profiles().stream().map(entityToDtoTransformer::transformProfile2ListDto).toList());
   }
 
   @GetMapping("/{domainId}/profiles/{profileId}")
@@ -276,7 +274,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 TypedId.from(domainId, Domain.class),
                 TypedId.from(profileId, Profile.class),
                 false),
-            t -> entityToDtoTransformer.transformProfile2Dto(t.getProfile()))
+            t -> entityToDtoTransformer.transformProfile2Dto(t.profile()))
         .thenApply(
             profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
   }
@@ -299,7 +297,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             TypedId.from(domainId, Domain.class),
             TypedId.from(profileId, Profile.class)),
         out ->
-            out.getItems().stream()
+            out.items().stream()
                 .map(v -> entityToDtoTransformer.transformShortProfileItem2Dto(v))
                 .toList());
   }
@@ -328,7 +326,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         out ->
             ResponseEntity.ok()
                 .cacheControl(defaultCacheControl)
-                .body(entityToDtoTransformer.transformShortProfileItem2Dto(out.getProfileItems())));
+                .body(entityToDtoTransformer.transformShortProfileItem2Dto(out.profileItems())));
   }
 
   @GetMapping("/{domainId}/profiles/{profileId}/export")
@@ -351,7 +349,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 TypedId.from(domainId, Domain.class),
                 TypedId.from(profileId, Profile.class),
                 true),
-            o -> entityToDtoTransformer.transformProfile2ExportDto(o.getProfile()))
+            o -> entityToDtoTransformer.transformProfile2ExportDto(o.profile()))
         .thenApply(
             profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
   }
@@ -396,8 +394,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             subType,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         out ->
-            PagingMapper.toPage(
-                out.getPage(), entityToDtoTransformer::transformShortCatalogItem2Dto));
+            PagingMapper.toPage(out.page(), entityToDtoTransformer::transformShortCatalogItem2Dto));
   }
 
   @GetMapping("/{domainId}/catalog-items/{itemId}")
@@ -421,9 +418,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             Key.uuidFrom(itemId), Key.uuidFrom(domainId), getAuthenticatedClient(auth)),
         out ->
             RestApiResponse.okOrNotModified(
-                out.getCatalogItem(),
-                entityToDtoTransformer::transformShortCatalogItem2Dto,
-                request));
+                out.catalogItem(), entityToDtoTransformer::transformShortCatalogItem2Dto, request));
   }
 
   @Override
@@ -468,7 +463,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             getElementStatusCountUseCase,
             new GetElementStatusCountUseCase.InputData(
                 Key.uuidFrom(unitId), Key.uuidFrom(id), client),
-            GetElementStatusCountUseCase.OutputData::getResult)
+            GetElementStatusCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
 
@@ -526,7 +521,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         .execute(
             getCatalogItemsTypeCountUseCase,
             new GetCatalogItemsTypeCountUseCase.InputData(Key.uuidFrom(id), client),
-            GetCatalogItemsTypeCountUseCase.OutputData::getResult)
+            GetCatalogItemsTypeCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
 
@@ -550,7 +545,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 null,
                 Key.uuidFrom(profileId)),
             out ->
-                out.getReferences().stream()
+                out.references().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)
                     .toList())
         .thenCompose(

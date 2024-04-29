@@ -29,8 +29,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
-import lombok.Value;
-
 public class GetDomainTemplatesUseCase
     implements TransactionalUseCase<
         GetDomainTemplatesUseCase.InputData, GetDomainTemplatesUseCase.OutputData> {
@@ -51,20 +49,14 @@ public class GetDomainTemplatesUseCase
   @Override
   public OutputData execute(InputData input) {
     Client client =
-        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
+        UseCaseTools.checkClientExists(input.authenticatedClient.getId(), clientRepository);
 
     return new OutputData(templateService.getTemplates(client));
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-  }
+  public record InputData(Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<DomainTemplate> objects;
-  }
+  public record OutputData(@Valid List<DomainTemplate> objects) implements UseCase.OutputData {}
 }

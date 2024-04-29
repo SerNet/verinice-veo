@@ -263,7 +263,7 @@ public class DocumentController
         createDocumentUseCase,
         CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          ApiResponseBody body = CreateOutputMapper.map(output.entity());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }
@@ -282,7 +282,7 @@ public class DocumentController
     return useCaseInteractor.execute(
         updateDocumentUseCase,
         new InputData<>(id, documentDto, getClient(user), eTag, user.getUsername()),
-        output -> toResponseEntity(output.getEntity()));
+        output -> toResponseEntity(output.entity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

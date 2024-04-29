@@ -35,7 +35,6 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.service.DomainStateMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class UpdateElementTypeDefinitionUseCase
@@ -48,9 +47,9 @@ public class UpdateElementTypeDefinitionUseCase
   public EmptyOutput execute(InputData input) {
     Domain domain =
         repository
-            .findById(input.getDomainId())
-            .orElseThrow(() -> new NotFoundException(input.getDomainId().uuidValue()));
-    Client client = input.getAuthenticatedClient();
+            .findById(input.domainId)
+            .orElseThrow(() -> new NotFoundException(input.domainId.uuidValue()));
+    Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -70,15 +69,10 @@ public class UpdateElementTypeDefinitionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-
-    @Valid Client authenticatedClient;
-
-    Key<UUID> domainId;
-
-    EntityType entityType;
-
-    ElementTypeDefinitionState elementTypeDefinition;
-  }
+  public record InputData(
+      @Valid Client authenticatedClient,
+      Key<UUID> domainId,
+      EntityType entityType,
+      ElementTypeDefinitionState elementTypeDefinition)
+      implements UseCase.InputData {}
 }

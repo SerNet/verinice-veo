@@ -42,7 +42,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
@@ -59,7 +58,7 @@ public class GetProfileIncarnationDescriptionUseCase
   public OutputData execute(InputData input) {
     log.info(
         "profile: {}, unit: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
-    Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
+    Unit unit = unitRepository.getByIdFetchClient(input.unitId);
     unit.checkSameClient(input.authenticatedClient);
 
     validateInput(input);
@@ -92,11 +91,11 @@ public class GetProfileIncarnationDescriptionUseCase
         .findAny()
         .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
 
-    if (input.getProfileId() != null) {
+    if (input.profileId != null) {
       Profile profile =
           profileRepository
-              .findById(input.getProfileId())
-              .orElseThrow(() -> new NotFoundException(input.getProfileId(), Profile.class));
+              .findById(input.profileId)
+              .orElseThrow(() -> new NotFoundException(input.profileId, Profile.class));
       if (!(EntitySpecifications.hasSameClient(
               profile
                   .getOwningClient()
@@ -114,19 +113,17 @@ public class GetProfileIncarnationDescriptionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Key<UUID> unitId;
-    Key<UUID> domainId;
-    List<Key<UUID>> profileItemIds;
-    Key<UUID> profileId;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      Key<UUID> unitId,
+      Key<UUID> domainId,
+      List<Key<UUID>> profileItemIds,
+      Key<UUID> profileId)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<TemplateItemIncarnationDescription<ProfileItem, Profile>> references;
-    Unit container;
-  }
+  public record OutputData(
+      @Valid List<TemplateItemIncarnationDescription<ProfileItem, Profile>> references,
+      Unit container)
+      implements UseCase.OutputData {}
 }

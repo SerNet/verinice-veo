@@ -31,8 +31,6 @@ import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 public class GetCatalogItemsUseCase
     implements TransactionalUseCase<
         GetCatalogItemsUseCase.InputData, GetCatalogItemsUseCase.OutputData> {
@@ -51,15 +49,9 @@ public class GetCatalogItemsUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> domainId;
-    Client authenticatedClient;
-  }
+  public record InputData(Key<UUID> domainId, Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<CatalogItem> catalogItems;
-  }
+  public record OutputData(@Valid List<CatalogItem> catalogItems) implements UseCase.OutputData {}
 }

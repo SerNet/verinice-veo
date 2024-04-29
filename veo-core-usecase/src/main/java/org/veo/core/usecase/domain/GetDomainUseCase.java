@@ -28,8 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.IdAndClient;
 
-import lombok.Value;
-
 public class GetDomainUseCase
     implements TransactionalUseCase<IdAndClient, GetDomainUseCase.OutputData> {
   private final DomainRepository repository;
@@ -40,8 +38,8 @@ public class GetDomainUseCase
 
   @Override
   public OutputData execute(IdAndClient input) {
-    Domain domain = repository.getById(input.getId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = repository.getById(input.id());
+    Client client = input.authenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -52,8 +50,5 @@ public class GetDomainUseCase
   }
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Domain domain;
-  }
+  public record OutputData(@Valid Domain domain) implements UseCase.OutputData {}
 }

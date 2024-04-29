@@ -25,9 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Superclass for all use cases. Each use case must provide an implementation of input and output
  * data structures.
@@ -84,10 +81,5 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
    * the client.
    */
   @Valid
-  @AllArgsConstructor
-  @Getter
-  class IdAndClient implements UseCase.InputData {
-    private final Key<UUID> id;
-    private final Client authenticatedClient;
-  }
+  record IdAndClient(Key<UUID> id, Client authenticatedClient) implements UseCase.InputData {}
 }

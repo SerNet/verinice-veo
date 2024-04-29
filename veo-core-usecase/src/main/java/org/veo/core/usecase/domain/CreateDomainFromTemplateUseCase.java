@@ -30,7 +30,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class CreateDomainFromTemplateUseCase
@@ -57,15 +56,8 @@ public class CreateDomainFromTemplateUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    String domainTemplateId;
-    String clientId;
-  }
+  public record InputData(String domainTemplateId, String clientId) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Domain domain;
-  }
+  public record OutputData(@Valid Domain domain) implements UseCase.OutputData {}
 }

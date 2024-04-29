@@ -63,7 +63,7 @@ public abstract class AbstractCompositeElementController<
         getElementUseCase,
         new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
         output -> {
-          T element = output.getElement();
+          T element = output.element();
           return ResponseEntity.ok()
               .cacheControl(defaultCacheControl)
               .body(element.getParts().stream().map(this::entity2Dto).toList());

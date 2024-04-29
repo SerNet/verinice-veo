@@ -29,7 +29,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class ExportDomainUseCase
@@ -38,8 +37,8 @@ public class ExportDomainUseCase
 
   @Override
   public OutputData execute(IdAndClient input) {
-    Domain domain = repository.getById(input.getId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = repository.getById(input.id());
+    Client client = input.authenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -51,8 +50,5 @@ public class ExportDomainUseCase
   }
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Domain exportDomain;
-  }
+  public record OutputData(@Valid Domain exportDomain) implements UseCase.OutputData {}
 }

@@ -263,7 +263,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
         createControlUseCase,
         CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          ApiResponseBody body = CreateOutputMapper.map(output.entity());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }
@@ -285,7 +285,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
         updateControlUseCase,
         new ModifyElementUseCase.InputData<>(
             uuid, controlDto, getClient(user), eTag, user.getUsername()),
-        output -> toResponseEntity(output.getEntity()));
+        output -> toResponseEntity(output.entity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

@@ -40,7 +40,6 @@ import org.veo.core.usecase.decision.Decider;
 import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -126,8 +125,5 @@ public class MigrateDomainUseCase
         element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
   }
 
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> domainId;
-  }
+  public record InputData(Key<UUID> domainId) implements UseCase.InputData {}
 }

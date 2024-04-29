@@ -43,7 +43,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 @AllArgsConstructor
 public class CreateElementUseCase<TEntity extends Element>
@@ -62,7 +61,7 @@ public class CreateElementUseCase<TEntity extends Element>
   @Transactional(Transactional.TxType.REQUIRED)
   public CreateElementUseCase.OutputData<TEntity> execute(
       CreateElementUseCase.InputData<TEntity> input) {
-    var state = input.getNewEntity();
+    var state = input.newEntity;
     Class<TEntity> entityType = state.getModelInterface();
     var entity = identifiableFactory.create(entityType);
     entityStateMapper.mapState(
@@ -113,16 +112,10 @@ public class CreateElementUseCase<TEntity extends Element>
   }
 
   @Valid
-  @Value
-  public static class InputData<TEntity extends Element> implements UseCase.InputData {
-    ElementState<TEntity> newEntity;
-    Client authenticatedClient;
-    Set<Key<UUID>> scopeIds;
-  }
+  public record InputData<TEntity extends Element>(
+      ElementState<TEntity> newEntity, Client authenticatedClient, Set<Key<UUID>> scopeIds)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData<TEntity> implements UseCase.OutputData {
-    @Valid TEntity entity;
-  }
+  public record OutputData<TEntity>(@Valid TEntity entity) implements UseCase.OutputData {}
 }

@@ -34,7 +34,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class QueryCatalogItemsUseCase
@@ -53,17 +52,13 @@ public class QueryCatalogItemsUseCase
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NotNull Key<UUID> clientId;
-    @NotNull Key<UUID> domainId;
-    @NotNull PagingConfiguration pagingConfiguration;
-    QueryCondition<String> elementTypes;
-    QueryCondition<String> subTypes;
-  }
+  public record InputData(
+      @NotNull Key<UUID> clientId,
+      @NotNull Key<UUID> domainId,
+      @NotNull PagingConfiguration pagingConfiguration,
+      QueryCondition<String> elementTypes,
+      QueryCondition<String> subTypes)
+      implements UseCase.InputData {}
 
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid PagedResult<CatalogItem> page;
-  }
+  public record OutputData(@Valid PagedResult<CatalogItem> page) implements UseCase.OutputData {}
 }

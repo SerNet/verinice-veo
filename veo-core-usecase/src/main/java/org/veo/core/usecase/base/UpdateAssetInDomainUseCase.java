@@ -47,7 +47,7 @@ public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Ass
   @Override
   public OutputData<Asset> execute(InputData<Asset> input) {
     var result = super.execute(input); // TODO:VEO-2219 move to update element
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 

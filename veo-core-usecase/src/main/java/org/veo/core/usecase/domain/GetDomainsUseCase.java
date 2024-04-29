@@ -28,7 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class GetDomainsUseCase
@@ -45,14 +44,8 @@ public class GetDomainsUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-  }
+  public record InputData(Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<Domain> objects;
-  }
+  public record OutputData(@Valid List<Domain> objects) implements UseCase.OutputData {}
 }

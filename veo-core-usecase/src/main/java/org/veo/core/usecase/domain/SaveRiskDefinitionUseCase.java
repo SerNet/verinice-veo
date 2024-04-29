@@ -29,7 +29,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class SaveRiskDefinitionUseCase
@@ -40,7 +39,7 @@ public class SaveRiskDefinitionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var domain = repository.getById(input.getDomainId(), input.getAuthenticatedClientId());
+    var domain = repository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -54,17 +53,13 @@ public class SaveRiskDefinitionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> authenticatedClientId;
-    Key<UUID> domainId;
-    String riskDefinitionRef;
-    RiskDefinition riskDefinition;
-  }
+  public record InputData(
+      Key<UUID> authenticatedClientId,
+      Key<UUID> domainId,
+      String riskDefinitionRef,
+      RiskDefinition riskDefinition)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    boolean newRiskDefinition;
-  }
+  public record OutputData(boolean newRiskDefinition) implements UseCase.OutputData {}
 }

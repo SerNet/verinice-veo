@@ -27,7 +27,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class FindDomainTemplatesUseCase
@@ -40,8 +39,6 @@ public class FindDomainTemplatesUseCase
   }
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<DomainTemplate> getDomainTemplates;
-  }
+  public record OutputData(@Valid List<DomainTemplate> getDomainTemplates)
+      implements UseCase.OutputData {}
 }

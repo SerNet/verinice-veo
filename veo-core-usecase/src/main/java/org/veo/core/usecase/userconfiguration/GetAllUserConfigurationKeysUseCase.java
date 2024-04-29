@@ -28,7 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 @AllArgsConstructor
 public class GetAllUserConfigurationKeysUseCase
@@ -45,15 +44,8 @@ public class GetAllUserConfigurationKeysUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> clientId;
-    String userName;
-  }
+  public record InputData(Key<UUID> clientId, String userName) implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    protected Set<String> keys;
-  }
+  public record OutputData(Set<String> keys) implements UseCase.OutputData {}
 }

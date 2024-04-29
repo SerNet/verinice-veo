@@ -36,7 +36,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,8 +49,8 @@ public class GetCatalogItemsTypeCountUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    Domain domain = domainRepository.getById(input.getDomainId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = domainRepository.getById(input.domainId);
+    Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -70,15 +69,9 @@ public class GetCatalogItemsTypeCountUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    private final Key<UUID> domainId;
-    private final Client authenticatedClient;
-  }
+  public record InputData(Key<UUID> domainId, Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid CatalogItemsTypeCount result;
-  }
+  public record OutputData(@Valid CatalogItemsTypeCount result) implements UseCase.OutputData {}
 }

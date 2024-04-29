@@ -36,8 +36,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.core.usecase.service.RefResolverFactory;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -87,18 +85,9 @@ public class UnitImportUseCase
     return false;
   }
 
-  @Data
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    private Client client;
-    private UnitState unit;
-    private Set<ElementState<?>> elements;
-    private Set<RiskState<?, ?>> risks;
-  }
+  public record InputData(
+      Client client, UnitState unit, Set<ElementState<?>> elements, Set<RiskState<?, ?>> risks)
+      implements UseCase.InputData {}
 
-  @Data
-  @AllArgsConstructor
-  public static class OutputData implements UseCase.OutputData {
-    private Unit unit;
-  }
+  public record OutputData(Unit unit) implements UseCase.OutputData {}
 }

@@ -47,7 +47,7 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
   @Override
   public OutputData<Scope> execute(InputData<Scope> input) {
     OutputData<Scope> result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 

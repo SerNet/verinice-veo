@@ -45,8 +45,8 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
 
   @Override
   public EmptyOutput execute(IdAndClient input) {
-    Domain domain = domainRepository.getById(input.getId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = domainRepository.getById(input.id());
+    Client client = input.authenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -59,10 +59,10 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
                 u ->
                     u.getDomains().stream()
                         .map(d -> d.getId())
-                        .anyMatch(k -> k.equals(input.getId())));
+                        .anyMatch(k -> k.equals(input.id())));
 
     if (isUsed) {
-      throw new DomainInUseException("Domain in use: " + input.getId().uuidValue());
+      throw new DomainInUseException("Domain in use: " + input.id().uuidValue());
     }
 
     log.info("deleting unused domain {}", domain);

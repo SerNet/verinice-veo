@@ -38,14 +38,14 @@ public class GetProcessRisksUseCase extends GetRisksUseCase<Process, ProcessRisk
   public OutputData<ProcessRisk> execute(InputData input) {
     var process =
         processRepository
-            .findByIdWithRiskValues(input.getRiskAffectedRef())
+            .findByIdWithRiskValues(input.riskAffectedRef())
             .orElseThrow(
                 () ->
                     new NotFoundException(
                         "Could not find risks for process %s",
-                        input.getRiskAffectedRef().uuidValue()));
+                        input.riskAffectedRef().uuidValue()));
 
-    process.checkSameClient(input.getAuthenticatedClient());
+    process.checkSameClient(input.authenticatedClient());
     return new OutputData<>(process.getRisks());
   }
 }

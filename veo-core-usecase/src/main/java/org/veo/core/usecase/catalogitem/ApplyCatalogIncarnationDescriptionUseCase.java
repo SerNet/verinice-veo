@@ -35,7 +35,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -64,16 +63,12 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    @NotNull Key<UUID> unitId;
-    @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      @NotNull Key<UUID> unitId,
+      @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<Element> newElements;
-  }
+  public record OutputData(@Valid List<Element> newElements) implements UseCase.OutputData {}
 }

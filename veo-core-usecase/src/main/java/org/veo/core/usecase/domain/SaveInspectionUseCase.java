@@ -28,7 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class SaveInspectionUseCase
@@ -39,7 +38,7 @@ public class SaveInspectionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var domain = repository.getActiveById(input.getDomainId(), input.getAuthenticatedClientId());
+    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
     return new OutputData(domain.applyInspection(input.inspectionId, input.inspection));
   }
 
@@ -49,17 +48,13 @@ public class SaveInspectionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> authenticatedClientId;
-    Key<UUID> domainId;
-    String inspectionId;
-    Inspection inspection;
-  }
+  public record InputData(
+      Key<UUID> authenticatedClientId,
+      Key<UUID> domainId,
+      String inspectionId,
+      Inspection inspection)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    boolean newInspection;
-  }
+  public record OutputData(boolean newInspection) implements UseCase.OutputData {}
 }

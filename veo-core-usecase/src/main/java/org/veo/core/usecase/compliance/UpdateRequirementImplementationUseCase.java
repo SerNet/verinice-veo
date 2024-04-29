@@ -32,8 +32,6 @@ import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
-import lombok.Value;
-
 public class UpdateRequirementImplementationUseCase
     extends AbstractUseCase<
         UpdateRequirementImplementationUseCase.InputData,
@@ -68,17 +66,13 @@ public class UpdateRequirementImplementationUseCase
     return new OutputData(ETag.from(getEntity(input.origin, input.authenticatedClient)));
   }
 
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    TypedId<? extends RiskAffected<?, ?>> origin;
-    TypedId<Control> control;
-    RequirementImplementationState state;
-    String eTag;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      TypedId<? extends RiskAffected<?, ?>> origin,
+      TypedId<Control> control,
+      RequirementImplementationState state,
+      String eTag)
+      implements UseCase.InputData {}
 
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    String eTag;
-  }
+  public record OutputData(String eTag) implements UseCase.OutputData {}
 }

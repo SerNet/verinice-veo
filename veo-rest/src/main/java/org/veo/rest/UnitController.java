@@ -236,7 +236,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                 useExistingIncarnations,
                 include,
                 exclude),
-            output -> new IncarnateDescriptionsDto(output.getReferences(), urlAssembler));
+            output -> new IncarnateDescriptionsDto(output.references(), urlAssembler));
     return catalogFuture.thenApply(result -> ResponseEntity.ok().body(result));
   }
 
@@ -276,9 +276,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                     .map(d -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) d)
                     .toList()),
             output ->
-                output.getNewElements().stream()
-                    .map(c -> IdRef.from(c, referenceAssembler))
-                    .toList());
+                output.newElements().stream().map(c -> IdRef.from(c, referenceAssembler)).toList());
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
@@ -305,9 +303,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         getUnitsUseCase,
         inputData,
         output ->
-            output.getUnits().stream()
-                .map(u -> entityToDtoTransformer.transformUnit2Dto(u))
-                .toList());
+            output.units().stream().map(u -> entityToDtoTransformer.transformUnit2Dto(u)).toList());
   }
 
   @GetMapping(value = "/{id}")
@@ -329,7 +325,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         useCaseInteractor.execute(
             getUnitUseCase,
             new UseCase.IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
-            output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
+            output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
   }
@@ -382,7 +378,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),
         out ->
             RestApiResponse.created(
-                referenceAssembler.targetReferenceOf(out.getUnit()), "Unit created successfully"));
+                referenceAssembler.targetReferenceOf(out.unit()), "Unit created successfully"));
   }
 
   // TODO: veo-279 use the complete dto
@@ -403,7 +399,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         createUnitUseCase,
         CreateUnitInputMapper.map(createUnitDto, user.getClientId(), user.getMaxUnits()),
         output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getUnit());
+          ApiResponseBody body = CreateOutputMapper.map(output.unit());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }
@@ -422,7 +418,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     return useCaseInteractor.execute(
         putUnitUseCase,
         new UpdateUnitUseCase.InputData(id, unitDto, getClient(user), eTag, user.getUsername()),
-        output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
+        output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

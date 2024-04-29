@@ -55,7 +55,7 @@ public abstract class AbstractRiskUseCase<
               .getRepositoryFor(Control.class)
               .findById(input.getControlRef().get())
               .orElseThrow();
-      control.checkSameClient(input.getAuthenticatedClient());
+      control.checkSameClient(input.authenticatedClient());
       risk.mitigate(control);
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractRiskUseCase<
               .getRepositoryFor(Person.class)
               .findById(input.getRiskOwnerRef().get())
               .orElseThrow();
-      riskOwner.checkSameClient(input.getAuthenticatedClient());
+      riskOwner.checkSameClient(input.authenticatedClient());
       risk.appoint(riskOwner);
     }
 
@@ -73,19 +73,16 @@ public abstract class AbstractRiskUseCase<
   }
 
   @Valid
-  @Value
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull Key<UUID> riskAffectedRef;
-    @NotNull Key<UUID> scenarioRef;
-    @NotNull Set<@NotNull Key<UUID>> domainRefs;
-    @Nullable Key<UUID> controlRef;
-    @Nullable Key<UUID> riskOwnerRef;
-
-    @Nullable String eTag;
-
-    Set<RiskValues> riskValues;
+  public record InputData(
+      @NotNull Client authenticatedClient,
+      @NotNull Key<UUID> riskAffectedRef,
+      @NotNull Key<UUID> scenarioRef,
+      @NotNull Set<@NotNull Key<UUID>> domainRefs,
+      @Nullable Key<UUID> controlRef,
+      @Nullable Key<UUID> riskOwnerRef,
+      @Nullable String eTag,
+      Set<RiskValues> riskValues)
+      implements UseCase.InputData {
 
     public Optional<Key<UUID>> getControlRef() {
       return Optional.ofNullable(controlRef);

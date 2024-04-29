@@ -230,7 +230,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
         useCaseInteractor.execute(
             getProcessUseCase,
             new GetProcessUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
-            output -> entity2Dto(output.getElement(), embedRisks));
+            output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
@@ -269,7 +269,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
         createProcessUseCase,
         CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          ApiResponseBody body = CreateOutputMapper.map(output.entity());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
   }
@@ -288,7 +288,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     return useCaseInteractor.execute(
         updateProcessUseCase,
         new InputData<>(id, processDto, getClient(user), eTag, user.getUsername()),
-        output -> toResponseEntity(output.getEntity()));
+        output -> toResponseEntity(output.entity()));
   }
 
   @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -592,10 +592,10 @@ public class ProcessController extends AbstractCompositeElementController<Proces
             TypedId.from(controlId, Control.class)),
         out ->
             ResponseEntity.ok()
-                .eTag(out.getETag())
+                .eTag(out.eTag())
                 .body(
                     entityToDtoTransformer.transformRequirementImplementation2Dto(
-                        out.getRequirementImplementation())));
+                        out.requirementImplementation())));
   }
 
   @Override
@@ -613,7 +613,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
             TypedId.from(controlId, Control.class),
             dto,
             eTag),
-        out -> ResponseEntity.noContent().eTag(out.getETag()).build());
+        out -> ResponseEntity.noContent().eTag(out.eTag()).build());
   }
 
   @Override
@@ -638,7 +638,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
             sortOrder),
         out ->
             PagingMapper.toPage(
-                out.getResult(), entityToDtoTransformer::transformRequirementImplementation2Dto));
+                out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
   @Override

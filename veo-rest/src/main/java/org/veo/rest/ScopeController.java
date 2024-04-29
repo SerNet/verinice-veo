@@ -297,7 +297,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
             getElementUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
             output ->
-                entityToDtoTransformer.transformScope2Dto(output.getElement(), false, embedRisks));
+                entityToDtoTransformer.transformScope2Dto(output.element(), false, embedRisks));
     return scopeFuture.thenApply(
         scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
   }
@@ -326,7 +326,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         getElementUseCase,
         new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
         output -> {
-          Scope scope = output.getElement();
+          Scope scope = output.element();
           return ResponseEntity.ok()
               .cacheControl(defaultCacheControl)
               .body(
@@ -349,7 +349,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         createScopeUseCase,
         CreateElementInputMapper.map(createScopeDto, getClient(user), scopeIds),
         output -> {
-          Scope scope = output.getEntity();
+          Scope scope = output.entity();
           Optional<String> scopeId =
               scope.getId() == null
                   ? Optional.empty()
@@ -378,7 +378,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         new UpdateScopeUseCase.InputData<>(
             uuid, scopeDto, getClient(user), eTag, user.getUsername()),
         output -> {
-          var scope = output.getEntity();
+          var scope = output.entity();
           return ResponseEntity.ok()
               .eTag(ETag.from(uuid, scope.getVersion()))
               .body(entityToDtoTransformer.transformScope2Dto(scope, false));
@@ -621,10 +621,10 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
             TypedId.from(controlId, Control.class)),
         out ->
             ResponseEntity.ok()
-                .eTag(out.getETag())
+                .eTag(out.eTag())
                 .body(
                     entityToDtoTransformer.transformRequirementImplementation2Dto(
-                        out.getRequirementImplementation())));
+                        out.requirementImplementation())));
   }
 
   @Override
@@ -642,7 +642,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
             TypedId.from(controlId, Control.class),
             dto,
             eTag),
-        out -> ResponseEntity.noContent().eTag(out.getETag()).build());
+        out -> ResponseEntity.noContent().eTag(out.eTag()).build());
   }
 
   @Override
@@ -667,7 +667,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
             sortOrder),
         out ->
             PagingMapper.toPage(
-                out.getResult(), entityToDtoTransformer::transformRequirementImplementation2Dto));
+                out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
   protected FullScopeDto entity2Dto(Scope entity) {

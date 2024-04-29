@@ -28,8 +28,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -60,9 +58,5 @@ public class DeleteClientUseCase
     return false;
   }
 
-  @AllArgsConstructor
-  @Getter
-  public static class InputData implements UseCase.InputData {
-    public Key<UUID> clientId;
-  }
+  public record InputData(Key<UUID> clientId) implements UseCase.InputData {}
 }

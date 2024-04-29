@@ -43,7 +43,7 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
   @Override
   public OutputData<Process> execute(InputData<Process> input) {
     OutputData<Process> result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 }

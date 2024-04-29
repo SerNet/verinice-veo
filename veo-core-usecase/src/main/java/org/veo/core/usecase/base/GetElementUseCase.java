@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -32,10 +33,7 @@ import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class GetElementUseCase<T extends Element>
@@ -48,15 +46,15 @@ public class GetElementUseCase<T extends Element>
   public OutputData<T> execute(InputData input) {
     T element =
         repository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), type));
-    element.checkSameClient(input.getAuthenticatedClient());
+            .findById(input.elementId)
+            .orElseThrow(() -> new NotFoundException(input.elementId, type));
+    element.checkSameClient(input.authenticatedClient);
     return new OutputData<>(element, getDomain(element, input).orElse(null));
   }
 
   protected Optional<Domain> getDomain(T element, InputData input) {
     return Optional.ofNullable(input.domainId)
-        .map(id -> domainRepository.getById(id, input.getAuthenticatedClient().getId()))
+        .map(id -> domainRepository.getById(id, input.authenticatedClient.getId()))
         .map(
             domain -> {
               if (!element.isAssociatedWithDomain(domain)) {
@@ -70,18 +68,13 @@ public class GetElementUseCase<T extends Element>
             });
   }
 
-  @EqualsAndHashCode(callSuper = true)
   @Valid
-  @Getter
-  public static class InputData extends UseCase.IdAndClient {
-
-    public InputData(
-        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
-      super(id, authenticatedClient);
-      this.domainId = domainId;
-      this.embedRisks = embedRisks;
-    }
-
+  public record InputData(
+      @NotNull Key<UUID> elementId,
+      @NotNull Client authenticatedClient,
+      Key<UUID> domainId,
+      boolean embedRisks)
+      implements UseCase.InputData {
     public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
       this(id, authenticatedClient, null, embedRisks);
     }
@@ -93,15 +86,9 @@ public class GetElementUseCase<T extends Element>
     public InputData(Key<UUID> id, Client client, Key<UUID> domainId) {
       this(id, client, domainId, false);
     }
-
-    Key<UUID> domainId;
-    boolean embedRisks;
   }
 
   @Valid
-  @Value
-  public static class OutputData<T> implements UseCase.OutputData {
-    @Valid T element;
-    @Valid Domain domain;
-  }
+  public record OutputData<T>(@Valid T element, @Valid Domain domain)
+      implements UseCase.OutputData {}
 }

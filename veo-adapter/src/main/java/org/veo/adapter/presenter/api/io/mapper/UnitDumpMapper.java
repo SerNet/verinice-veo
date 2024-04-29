@@ -42,14 +42,14 @@ public class UnitDumpMapper {
   public static UnitDumpDto mapOutput(
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
     var elementDtos =
-        useCaseOutput.getElements().stream()
+        useCaseOutput.elements().stream()
             .map(it -> entityToDtoTransformer.transform2Dto(it, false))
             .collect(Collectors.toSet());
     return new UnitDumpDto(
-        entityToDtoTransformer.transformUnit2Dto(useCaseOutput.getUnit()),
+        entityToDtoTransformer.transformUnit2Dto(useCaseOutput.unit()),
         mapDomains(useCaseOutput, entityToDtoTransformer),
         elementDtos,
-        getRisks(useCaseOutput.getElements(), entityToDtoTransformer));
+        getRisks(useCaseOutput.elements(), entityToDtoTransformer));
   }
 
   private static Set<AbstractRiskDto> getRisks(
@@ -64,7 +64,7 @@ public class UnitDumpMapper {
 
   private static Set<FullDomainDto> mapDomains(
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
-    return useCaseOutput.getUnit().getDomains().stream()
+    return useCaseOutput.unit().getDomains().stream()
         .map(entityToDtoTransformer::transformDomain2Dto)
         .collect(Collectors.toSet());
   }

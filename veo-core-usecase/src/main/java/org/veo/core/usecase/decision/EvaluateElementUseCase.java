@@ -41,7 +41,6 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 /**
  * Evaluates decisions and inspections for a transient element and returns the results. Does not
@@ -82,17 +81,11 @@ public class EvaluateElementUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Key<UUID> domainId;
-    ElementState<?> element;
-  }
+  public record InputData(Client authenticatedClient, Key<UUID> domainId, ElementState<?> element)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    Map<DecisionRef, DecisionResult> decisionResults;
-    Set<Finding> inspectionFindings;
-  }
+  public record OutputData(
+      Map<DecisionRef, DecisionResult> decisionResults, Set<Finding> inspectionFindings)
+      implements UseCase.OutputData {}
 }

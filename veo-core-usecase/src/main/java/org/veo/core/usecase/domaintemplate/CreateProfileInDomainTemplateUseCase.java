@@ -36,7 +36,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -56,7 +55,7 @@ public class CreateProfileInDomainTemplateUseCase
             .findById(input.templateId)
             .orElseThrow(() -> new NotFoundException(input.templateId, DomainTemplate.class));
 
-    if (!checkClient(input.getClient(), domainTemplate)) {
+    if (!checkClient(input.client, domainTemplate)) {
       throw new MissingAdminPrivilegesException();
     }
     domainTemplate.getProfiles().stream()
@@ -99,16 +98,9 @@ public class CreateProfileInDomainTemplateUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    private final Client client;
-    private final Key<UUID> templateId;
-    private final ProfileState profile;
-  }
+  public record InputData(Client client, Key<UUID> templateId, ProfileState profile)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    Profile profile;
-  }
+  public record OutputData(Profile profile) implements UseCase.OutputData {}
 }

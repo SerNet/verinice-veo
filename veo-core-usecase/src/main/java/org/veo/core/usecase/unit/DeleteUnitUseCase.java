@@ -37,7 +37,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class DeleteUnitUseCase
@@ -49,7 +48,7 @@ public class DeleteUnitUseCase
 
   @Override
   public EmptyOutput execute(InputData input) {
-    Client client = clientRepository.getById(input.getAuthenticatedClient().getId());
+    Client client = clientRepository.getById(input.authenticatedClient.getId());
     Unit unit = unitRepository.getById(input.unitId);
     unit.checkSameClient(client);
 
@@ -91,9 +90,6 @@ public class DeleteUnitUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> unitId;
-    Client authenticatedClient;
-  }
+  public record InputData(Key<UUID> unitId, Client authenticatedClient)
+      implements UseCase.InputData {}
 }

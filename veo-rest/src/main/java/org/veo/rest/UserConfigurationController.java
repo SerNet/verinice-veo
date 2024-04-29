@@ -78,7 +78,7 @@ public class UserConfigurationController extends AbstractVeoController {
         getAllUserConfigurationKeysUseCase,
         new GetAllUserConfigurationKeysUseCase.InputData(
             authenticatedClient.getId(), applicationUser.getUsername()),
-        output -> output.getKeys());
+        GetAllUserConfigurationKeysUseCase.OutputData::keys);
   }
 
   @GetMapping(value = "/{appId}")
@@ -98,7 +98,7 @@ public class UserConfigurationController extends AbstractVeoController {
         getUserConfigurationUseCase,
         new GetUserConfigurationUseCase.InputData(
             authenticatedClient.getId(), applicationUser.getUsername(), appId),
-        output -> output.getConfiguration());
+        GetUserConfigurationUseCase.OutputData::configuration);
   }
 
   @PutMapping("/{appId}")
@@ -116,8 +116,8 @@ public class UserConfigurationController extends AbstractVeoController {
         new SaveUserConfigurationUseCase.InputData(
             authenticatedClient, applicationUser.getUsername(), appId, userConfiguration),
         output ->
-            output.isCreated()
-                ? RestApiResponse.created(output.getApplicationId(), "configuration created")
+            output.created()
+                ? RestApiResponse.created(output.applicationId(), "configuration created")
                 : RestApiResponse.ok("configuration updated"));
   }
 

@@ -61,7 +61,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
@@ -79,7 +78,7 @@ public class GetCatalogIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input) {
     log.info("unid: {}, items: {}", input.unitId, input.catalogItemIds);
-    Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
+    Unit unit = unitRepository.getByIdFetchClient(input.unitId);
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
 
@@ -89,8 +88,7 @@ public class GetCatalogIncarnationDescriptionUseCase
                 domainId ->
                     domainRepository.getActiveById(domainId, input.authenticatedClient.getId()))
             .orElse(null);
-    var requestedItems =
-        loadCatalogItems(input.getCatalogItemIds(), domain, input.authenticatedClient);
+    var requestedItems = loadCatalogItems(input.catalogItemIds, domain, input.authenticatedClient);
     var config =
         createConfig(requestedItems, input.requestType, input.lookup, input.exclude, input.include);
     var tailoringReferenceFilter = config.createTailoringReferenceFilter();
@@ -267,23 +265,21 @@ public class GetCatalogIncarnationDescriptionUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    @NotNull Key<UUID> unitId;
-    // TODO #2831 always use, make @NotNull
-    Key<UUID> domainId;
-    @NotNull List<Key<UUID>> catalogItemIds;
-    IncarnationRequestModeType requestType;
-    IncarnationLookup lookup;
-    Set<TailoringReferenceType> include;
-    Set<TailoringReferenceType> exclude;
-  }
+  public record InputData(
+      Client authenticatedClient,
+      @NotNull Key<UUID> unitId,
+      // TODO #2831 always use, make @NotNull
+      Key<UUID> domainId,
+      @NotNull List<Key<UUID>> catalogItemIds,
+      IncarnationRequestModeType requestType,
+      IncarnationLookup lookup,
+      Set<TailoringReferenceType> include,
+      Set<TailoringReferenceType> exclude)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid List<TemplateItemIncarnationDescription<CatalogItem, DomainBase>> references;
-    Unit container;
-  }
+  public record OutputData(
+      @Valid List<TemplateItemIncarnationDescription<CatalogItem, DomainBase>> references,
+      Unit container)
+      implements UseCase.OutputData {}
 }

@@ -94,7 +94,7 @@ public class DomainTemplateController extends AbstractEntityController {
         out ->
             ResponseEntity.ok()
                 .body(
-                    out.getGetDomainTemplates().stream()
+                    out.getDomainTemplates().stream()
                         .map(entityToDtoTransformer::transformDomainTemplateMetadata2Dto)
                         .toList()));
   }
@@ -112,7 +112,7 @@ public class DomainTemplateController extends AbstractEntityController {
             : useCaseInteractor.execute(
                 getClientIdsWhereDomainTemplateNotAppliedUseCase,
                 new GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData(id),
-                GetClientIdsWhereDomainTemplateNotAppliedUseCase.OutputData::getClientIds))
+                GetClientIdsWhereDomainTemplateNotAppliedUseCase.OutputData::clientIds))
         .thenCompose(clientIds -> createDomains(id, clientIds))
         .thenApply(v -> ResponseEntity.noContent().build());
   }

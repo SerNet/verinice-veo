@@ -35,8 +35,6 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 public class DeleteRiskUseCase
     implements TransactionalUseCase<DeleteRiskUseCase.InputData, UseCase.EmptyOutput> {
 
@@ -54,7 +52,7 @@ public class DeleteRiskUseCase
     var riskAffected =
         repositoryProvider
             .getRepositoryFor(input.entityClass)
-            .findById(input.getRiskAffectedRef())
+            .findById(input.riskAffectedRef)
             .orElseThrow();
 
     riskAffected.checkSameClient(input.authenticatedClient);
@@ -76,11 +74,10 @@ public class DeleteRiskUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Class<? extends RiskAffected<?, ?>> entityClass;
-    Client authenticatedClient;
-    Key<UUID> riskAffectedRef;
-    Key<UUID> scenarioRef;
-  }
+  public record InputData(
+      Class<? extends RiskAffected<?, ?>> entityClass,
+      Client authenticatedClient,
+      Key<UUID> riskAffectedRef,
+      Key<UUID> scenarioRef)
+      implements UseCase.InputData {}
 }

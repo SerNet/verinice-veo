@@ -30,9 +30,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.inspection.Inspector;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class InspectElementUseCase
@@ -67,17 +65,9 @@ public class InspectElementUseCase
     return new OutputData(inspector.inspect(element, domain));
   }
 
-  @Value
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    private Client client;
-    private Class<? extends Element> elementType;
-    private Key<UUID> elementId;
-    private Key<UUID> domainId;
-  }
+  public record InputData(
+      Client client, Class<? extends Element> elementType, Key<UUID> elementId, Key<UUID> domainId)
+      implements UseCase.InputData {}
 
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    private Set<Finding> findings;
-  }
+  public record OutputData(Set<Finding> findings) implements UseCase.OutputData {}
 }

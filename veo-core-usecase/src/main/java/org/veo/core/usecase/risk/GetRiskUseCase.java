@@ -72,12 +72,8 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Key<UUID> entityRef;
-    Key<UUID> scenarioRef;
-  }
+  public record InputData(Client authenticatedClient, Key<UUID> entityRef, Key<UUID> scenarioRef)
+      implements UseCase.InputData {}
 
   @Valid
   @Value

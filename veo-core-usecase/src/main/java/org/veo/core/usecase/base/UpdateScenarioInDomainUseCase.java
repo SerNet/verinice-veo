@@ -45,7 +45,7 @@ public class UpdateScenarioInDomainUseCase extends UpdateElementInDomainUseCase<
   @Override
   public OutputData<Scenario> execute(InputData<Scenario> input) {
     var result = super.execute(input);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
     return result;
   }
 }

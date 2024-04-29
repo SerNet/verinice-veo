@@ -36,9 +36,9 @@ public class GetAssetUseCase extends GetElementUseCase<Asset> {
   public GetElementUseCase.OutputData<Asset> execute(InputData input) {
     var asset =
         assetRepository
-            .findById(input.getId(), input.isEmbedRisks())
-            .orElseThrow(() -> new NotFoundException(input.getId(), Asset.class));
-    asset.checkSameClient(input.getAuthenticatedClient());
+            .findById(input.elementId(), input.embedRisks())
+            .orElseThrow(() -> new NotFoundException(input.elementId(), Asset.class));
+    asset.checkSameClient(input.authenticatedClient());
     return new GetElementUseCase.OutputData<>(asset, getDomain(asset, input).orElse(null));
   }
 }

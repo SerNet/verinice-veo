@@ -32,7 +32,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 @AllArgsConstructor
 public class SaveUserConfigurationUseCase
@@ -45,7 +44,7 @@ public class SaveUserConfigurationUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    if (input.getConfiguration().toString().getBytes(StandardCharsets.UTF_8).length
+    if (input.configuration.toString().getBytes(StandardCharsets.UTF_8).length
         > maxBytesPerConfiguration) {
       throw new ContentTooLongException(
           "Exceeds the configuration size limit. (%d bytes)".formatted(maxBytesPerConfiguration));
@@ -64,7 +63,7 @@ public class SaveUserConfigurationUseCase
           "Exceeds the configuration per user limit. (%d allowed)"
               .formatted(maxUserConfigurations));
     }
-    userConfiguration.setConfiguration(input.getConfiguration());
+    userConfiguration.setConfiguration(input.configuration);
     userConfigurationRepository.save(userConfiguration);
     return new OutputData(created, userConfiguration.getApplicationId());
   }
@@ -75,18 +74,10 @@ public class SaveUserConfigurationUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Client client;
-    String userName;
-    String applicationId;
-    Map<String, Object> configuration;
-  }
+  public record InputData(
+      Client client, String userName, String applicationId, Map<String, Object> configuration)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    boolean created;
-    String applicationId;
-  }
+  public record OutputData(boolean created, String applicationId) implements UseCase.OutputData {}
 }

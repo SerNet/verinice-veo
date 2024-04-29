@@ -31,7 +31,6 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @RequiredArgsConstructor
 public class GetCatalogItemUseCase
@@ -47,16 +46,10 @@ public class GetCatalogItemUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    @NonNull Key<UUID> itemId;
-    @NonNull Key<UUID> domainId;
-    @NonNull Client authenticatedClient;
-  }
+  public record InputData(
+      @NonNull Key<UUID> itemId, @NonNull Key<UUID> domainId, @NonNull Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid CatalogItem catalogItem;
-  }
+  public record OutputData(@Valid CatalogItem catalogItem) implements UseCase.OutputData {}
 }

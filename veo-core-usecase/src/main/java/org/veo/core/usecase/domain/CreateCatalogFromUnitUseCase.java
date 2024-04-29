@@ -47,7 +47,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -68,9 +67,8 @@ public class CreateCatalogFromUnitUseCase
   }
 
   public EmptyOutput execute(InputData input) {
-    Domain domain =
-        domainRepository.getById(input.getDomainId(), input.authenticatedClient.getId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
+    Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -127,10 +125,6 @@ public class CreateCatalogFromUnitUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    Key<UUID> domainId;
-    Client authenticatedClient;
-    Key<UUID> unitId;
-  }
+  public record InputData(Key<UUID> domainId, Client authenticatedClient, Key<UUID> unitId)
+      implements UseCase.InputData {}
 }

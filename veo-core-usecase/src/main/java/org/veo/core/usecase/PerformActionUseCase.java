@@ -153,7 +153,7 @@ public class PerformActionUseCase
                     config.useExistingIncarnations(),
                     config.include(),
                     config.exclude()))
-            .getReferences()
+            .references()
             .stream()
             .map(r -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) r)
             .toList();
@@ -161,7 +161,7 @@ public class PerformActionUseCase
         .execute(
             new ApplyCatalogIncarnationDescriptionUseCase.InputData(
                 unit.getClient(), unit.getId(), incarnationDescriptions))
-        .getNewElements();
+        .newElements();
   }
 
   public record InputData(

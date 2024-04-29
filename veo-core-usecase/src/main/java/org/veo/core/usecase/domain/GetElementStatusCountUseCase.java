@@ -38,7 +38,6 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -53,16 +52,16 @@ public class GetElementStatusCountUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    Domain domain = domainRepository.getById(input.getDomainId());
-    Client client = input.getAuthenticatedClient();
+    Domain domain = domainRepository.getById(input.domainId);
+    Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    Unit unit = unitRepository.getById(input.getUnitId());
-    unit.checkSameClient(input.getAuthenticatedClient());
+    Unit unit = unitRepository.getById(input.unitId);
+    unit.checkSameClient(input.authenticatedClient);
 
     ElementStatusCounts elementStatusCounts = new ElementStatusCounts(domain);
 
@@ -91,16 +90,9 @@ public class GetElementStatusCountUseCase
   }
 
   @Valid
-  @Value
-  public static class InputData implements UseCase.InputData {
-    private final Key<UUID> unitId;
-    private final Key<UUID> domainId;
-    private final Client authenticatedClient;
-  }
+  public record InputData(Key<UUID> unitId, Key<UUID> domainId, Client authenticatedClient)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid ElementStatusCounts result;
-  }
+  public record OutputData(@Valid ElementStatusCounts result) implements UseCase.OutputData {}
 }

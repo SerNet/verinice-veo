@@ -40,7 +40,7 @@ public class UpdateUnitUseCase extends ChangeUnitUseCase {
   @Override
   protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
     entityStateMapper.mapState(
-        input.getChangedUnit(), storedUnit, refResolverFactory.db(input.getAuthenticatedClient()));
+        input.changedUnit(), storedUnit, refResolverFactory.db(input.authenticatedClient()));
     return storedUnit;
   }
 }

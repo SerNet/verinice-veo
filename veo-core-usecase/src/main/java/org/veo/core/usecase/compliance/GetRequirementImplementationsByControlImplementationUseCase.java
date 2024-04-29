@@ -37,9 +37,6 @@ import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
 /** Return all {@link RequirementImplementation}s for the given {@link ControlImplementation}. */
 public class GetRequirementImplementationsByControlImplementationUseCase
     extends AbstractUseCase<
@@ -71,19 +68,14 @@ public class GetRequirementImplementationsByControlImplementationUseCase
   }
 
   @Valid
-  @Value
-  @AllArgsConstructor
-  public static class InputData implements UseCase.InputData {
-    @NotNull Client authenticatedClient;
-    @NotNull ITypedId<? extends RiskAffected<?, ?>> owner;
-    @NotNull ITypedId<Control> control;
-    @NotNull PagingConfiguration pagingConfiguration;
-  }
+  public record InputData(
+      @NotNull Client authenticatedClient,
+      @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
+      @NotNull ITypedId<Control> control,
+      @NotNull PagingConfiguration pagingConfiguration)
+      implements UseCase.InputData {}
 
   @Valid
-  @Value
-  @AllArgsConstructor
-  public static class OutputData implements UseCase.OutputData {
-    @NotNull PagedResult<RequirementImplementation> result;
-  }
+  public record OutputData(@NotNull PagedResult<RequirementImplementation> result)
+      implements UseCase.OutputData {}
 }
