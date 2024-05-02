@@ -22,6 +22,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import org.hibernate.Hibernate;
+
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 
@@ -36,6 +38,11 @@ import lombok.ToString;
 public class CustomLinkData extends CustomAttributeContainerData implements CustomLink {
   public CustomLinkData() {
     super();
+  }
+
+  @Override
+  public Element loadTarget() {
+    return (Element) Hibernate.unproxy(target);
   }
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)

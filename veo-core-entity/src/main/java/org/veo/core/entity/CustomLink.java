@@ -36,6 +36,14 @@ public interface CustomLink extends CustomAttributeContainer {
   @NotNull
   Element getSource();
 
+  // TODO #2863 load targets using query, remove this
+  /**
+   * Eagerly load the actual target (not a proxy). {@link CustomLink::getTarget} may return a proxy
+   * that can be hydrated, but can never cast to a concrete subinterface of {@link Element}.
+   */
+  @Deprecated
+  Element loadTarget();
+
   void setSource(Element aSource);
 
   void remove();
