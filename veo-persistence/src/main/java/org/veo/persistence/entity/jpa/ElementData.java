@@ -217,6 +217,15 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     findAspectByDomain(decisionResultsAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     getCustomAspects(oldDomain).forEach(ca -> ca.setDomain(newDomain));
     getLinks(oldDomain).forEach(cl -> cl.setDomain(newDomain));
+    // Update catalog item reference
+    findAppliedCatalogItem(oldDomain)
+        .ifPresent(
+            oldItem -> {
+              appliedCatalogItems.remove(oldItem);
+              newDomain
+                  .findCatalogItem(oldItem.getSymbolicId())
+                  .ifPresent(newItem -> appliedCatalogItems.add(newItem));
+            });
   }
 
   @Override

@@ -139,6 +139,12 @@ public interface Element
 
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
+  default Optional<CatalogItem> findAppliedCatalogItem(Domain domain) {
+    return getAppliedCatalogItems().stream()
+        .filter(ci -> ci.requireDomainMembership().equals(domain))
+        .findFirst();
+  }
+
   /** Applies the properties of the template item to the element. */
   void apply(TemplateItem<?, ?> item);
 

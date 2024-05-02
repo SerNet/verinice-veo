@@ -82,6 +82,10 @@ class DomainUpdateRestTest extends VeoRestTest {
         ]
         put("/scopes/$scopeId", scope, scopeResponse.getETag())
 
+        and: "an incarnated catalog item"
+        def c1SymId = get("/domains/$oldDomainId/catalog-items").body.items.first().id
+        post("/units/${unitId}/incarnations", get("/units/${unitId}/domains/${oldDomainId}/incarnation-descriptions?itemIds=${c1SymId}").body)
+
         when: "migrating to the new domain"
         def newDomainId = migrateToNewDomain()
         def migratedScope = get("/scopes/$scopeId").body
@@ -107,6 +111,12 @@ class DomainUpdateRestTest extends VeoRestTest {
 
         and: "decision results are present on migrated element"
         migratedProcess.domains[newDomainId].decisionResults.riskAnalyzed.decisiveRule == 0
+
+        when: "fetching incarnation descriptions for the catalog item in the new domain"
+        def c1IncarnationDescriptions = get("/units/$unitId/domains/$newDomainId/incarnation-descriptions?itemIds=$c1SymId&useExistingIncarnations=ALWAYS").body
+
+        then: "the old incarnation is detected"
+        c1IncarnationDescriptions.parameters.empty
 
         when: "adding a link from a new process to an old scope"
         post("/processes", [
@@ -187,7 +197,15 @@ class DomainUpdateRestTest extends VeoRestTest {
             name: templateName,
             templateVersion: "1.0.0",
             authority: "jj",
-            catalogItems: [],
+            catalogItems: [
+                [
+                    id: UUID.randomUUID(),
+                    name: "c1",
+                    elementType: "asset",
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
+            ],
             elementTypeDefinitions: [
                 'asset': [
                     'customAspects': [:],
