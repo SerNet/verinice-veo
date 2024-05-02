@@ -139,9 +139,8 @@ public class DomainStateMapper {
         .forEach(
             ciRef ->
                 resolver.inject(
-                    owner.getCatalogItems().stream()
-                        .filter(ci -> ci.getSymbolicIdAsString().equals(ciRef.getSymbolicId()))
-                        .findFirst()
+                    owner
+                        .findCatalogItem(Key.uuidFrom(ciRef.getSymbolicId()))
                         .orElseThrow(
                             () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
                     ciRef));

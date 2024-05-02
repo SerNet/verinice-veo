@@ -49,6 +49,12 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   Set<CatalogItem> getCatalogItems();
 
+  default Optional<CatalogItem> findCatalogItem(Key<UUID> symbolicId) {
+    return getCatalogItems().stream()
+        .filter(ci -> ci.getSymbolicId().equals(symbolicId))
+        .findFirst();
+  }
+
   @Override
   default Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates() {
     return getCatalogItems().stream()
