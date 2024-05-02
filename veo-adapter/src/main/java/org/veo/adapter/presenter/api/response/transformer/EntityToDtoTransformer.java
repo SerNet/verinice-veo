@@ -33,6 +33,7 @@ import jakarta.validation.Valid;
 import javax.annotation.Nullable;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
+import org.veo.adapter.presenter.api.common.IIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
@@ -85,6 +86,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
+import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
@@ -94,6 +96,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Action;
+import org.veo.core.entity.ActionResult;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -773,6 +776,13 @@ public final class EntityToDtoTransformer {
     var target = new ActionDto();
     target.setId(id);
     target.setName(source.name());
+    return target;
+  }
+
+  public ActionResultDto transformActionResult2Dto(ActionResult source) {
+    var target = new ActionResultDto();
+    target.setCreatedEntities(
+        source.createdEntities().stream().map(e -> IIdRef.from(e, referenceAssembler)).toList());
     return target;
   }
 }

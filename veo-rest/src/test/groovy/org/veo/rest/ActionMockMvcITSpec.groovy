@@ -127,6 +127,30 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
         actions[0].id == "riskAnalysis"
         actions[0].name.de == "Risikoanalyse"
 
+        when: "performing the action"
+        def result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/riskAnalysis/execution", null, 200))
+
+        then: "two new scenarios and two new risks are reported"
+        result.createdEntities.size() == 4
+        result.createdEntities*.designator.findAll { it.startsWith("SCN-") }.size() == 2
+        result.createdEntities*.designator.findAll { it.startsWith("RSK-") }.size() == 2
+
+        and: "the control links from the catalog have been applied"
+        parseJson(get("/domains/$domainId/controls/$control1Id")).links.control_relevantAppliedThreat*.target*.name == ["bad things happen"]
+        parseJson(get("/domains/$domainId/controls/$control2Id")).links.control_relevantAppliedThreat*.target*.name == ["worse things happen"]
+
+        and: "risks have been created for the linked scenarios"
+        parseJson(get("/$type.pluralTerm/$elementId/risks"))*.scenario*.name ==~ [
+            "bad things happen",
+            "worse things happen"
+        ]
+
+        when: "performing the action again"
+        result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/riskAnalysis/execution", null, 200))
+
+        then: "nothing has happened"
+        result.createdEntities.empty
+
         where:
         type << EntityType.RISK_AFFECTED_TYPES
     }

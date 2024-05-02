@@ -18,6 +18,7 @@
 package org.veo.core.entity;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.condition.CurrentElementExpression;
+import org.veo.core.entity.condition.ImplementedControlsExpression;
+import org.veo.core.entity.condition.LinkTargetsExpression;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -84,7 +88,28 @@ public interface Domain extends DomainBase, ClientOwned {
           new Action(
               new TranslatedText(
                   Map.of(Locale.GERMAN, "Risikoanalyse", Locale.ENGLISH, "Risk analysis")),
-              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM),
+              List.of(
+                  new ReapplyCatalogItemsStep(
+                      new ImplementedControlsExpression(new CurrentElementExpression()),
+                      new IncarnationConfiguration(
+                          IncarnationRequestModeType.DEFAULT,
+                          IncarnationLookup.ALWAYS,
+                          // #852 only include LINKs.
+                          // The LINK tailoring reference currently cannot be applied, because it
+                          // originates on the control itself. The control is already incarnated,
+                          // and
+                          // we cannot apply tailoring references to existing incarnations yet. The
+                          // workaround is to also include LINK_EXTERNAL, the reverse reference that
+                          // can be applied successfully if the linked scenario does not exist yet.
+                          // The current implementation cannot create the link if both the control
+                          // and the scenario are already incarnated, that will only work with #852.
+                          Set.of(TailoringReferenceType.LINK, TailoringReferenceType.LINK_EXTERNAL),
+                          null)),
+                  new AddRisksStep(
+                      new LinkTargetsExpression(
+                          new ImplementedControlsExpression(new CurrentElementExpression()),
+                          "control_relevantAppliedThreat")))));
     }
     return Collections.emptyMap();
   }

@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.adapter.presenter.api.response;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-/**
- * A domain-specific procedure that a user can trigger for an {@link Element}. Actions may alter the
- * element itself or create new related entities (e.g., adding risks to a risk-affected element).
- */
-public record Action(TranslatedText name, Set<String> elementTypes, List<ActionStep> steps) {
-  // TODO #2844 call this when a user PUTs an action
-  void selfValidate(Domain domain) {
-    // Make sure that each step is valid for each element type.
-    elementTypes.forEach(elementType -> steps.forEach(s -> s.selfValidate(domain, elementType)));
-  }
+import org.veo.adapter.presenter.api.common.IIdRef;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+@Data
+@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+public class ActionResultDto {
+  private List<IIdRef> createdEntities = new ArrayList<>();
 }

@@ -40,6 +40,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
@@ -50,6 +51,7 @@ import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
+import org.veo.core.usecase.PerformActionUseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
@@ -59,7 +61,6 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
@@ -70,7 +71,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ElementInDomainService {
   private final ClientLookup clientLookup;
-  private final RefResolverFactory refResolverFactory;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
   private final AssociateElementWithDomainUseCase associateUseCase;
@@ -80,6 +80,7 @@ public class ElementInDomainService {
   private final DomainRepository domainRepository;
   private final EntitySchemaService entitySchemaService;
   private final GetAvailableActionsUseCase getAvailableActionsUseCase;
+  private final PerformActionUseCase performActionUseCase;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
   private final EntityToDtoTransformer entityToDtoTransformer;
@@ -261,5 +262,22 @@ public class ElementInDomainService {
         new GetAvailableActionsUseCase.InputData(
             Key.uuidFrom(domainId), Key.uuidFrom(uuid), type, clientLookup.getClient(auth).getId()),
         o -> ResponseEntity.ok(entityToDtoTransformer.transformActions2Dtos(o.actions())));
+  }
+
+  public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
+      String domainId,
+      String uuid,
+      Class<? extends Element> elementType,
+      String actionId,
+      Authentication auth) {
+    return useCaseInteractor.execute(
+        performActionUseCase,
+        new PerformActionUseCase.InputData(
+            Key.uuidFrom(domainId),
+            Key.uuidFrom(uuid),
+            elementType,
+            actionId,
+            clientLookup.getClient(auth).getId()),
+        o -> ResponseEntity.ok(entityToDtoTransformer.transformActionResult2Dto(o.result())));
   }
 }

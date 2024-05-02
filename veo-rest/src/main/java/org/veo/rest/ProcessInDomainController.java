@@ -82,6 +82,7 @@ import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
@@ -409,5 +410,19 @@ public class ProcessInDomainController implements ElementInDomainResource {
           @PathVariable
           String uuid) {
     return elementService.getActions(domainId, uuid, Process.class, auth);
+  }
+
+  @Operation(summary = "Performs a domain-specific action on a process")
+  @PostMapping(UUID_PARAM_SPEC + "/actions/{actionId}/execution")
+  public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Parameter(required = true, example = "riskAnalysis") @PathVariable String actionId) {
+    return elementService.performAction(domainId, uuid, Process.class, actionId, auth);
   }
 }

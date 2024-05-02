@@ -17,17 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.List;
-import java.util.Set;
-
 /**
- * A domain-specific procedure that a user can trigger for an {@link Element}. Actions may alter the
- * element itself or create new related entities (e.g., adding risks to a risk-affected element).
+ * A sub-procedure within an {@link Action} that can be executed on an element.
+ *
+ * <p>Because the execution of an action step may depend upon several beans, the actual execution
+ * code for action steps does not live in the action step classes themselves, but in the use case
+ * layer. The sealed class structure aids in this external implementation approach.
  */
-public record Action(TranslatedText name, Set<String> elementTypes, List<ActionStep> steps) {
-  // TODO #2844 call this when a user PUTs an action
-  void selfValidate(Domain domain) {
-    // Make sure that each step is valid for each element type.
-    elementTypes.forEach(elementType -> steps.forEach(s -> s.selfValidate(domain, elementType)));
-  }
+public abstract sealed class ActionStep permits AddRisksStep, ReapplyCatalogItemsStep {
+  abstract void selfValidate(Domain domain, String elementType);
 }

@@ -17,17 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.List;
 import java.util.Set;
 
-/**
- * A domain-specific procedure that a user can trigger for an {@link Element}. Actions may alter the
- * element itself or create new related entities (e.g., adding risks to a risk-affected element).
- */
-public record Action(TranslatedText name, Set<String> elementTypes, List<ActionStep> steps) {
-  // TODO #2844 call this when a user PUTs an action
-  void selfValidate(Domain domain) {
-    // Make sure that each step is valid for each element type.
-    elementTypes.forEach(elementType -> steps.forEach(s -> s.selfValidate(domain, elementType)));
-  }
-}
+import jakarta.validation.constraints.NotNull;
+
+public record ActionResult(@NotNull Set<Entity> createdEntities) {}

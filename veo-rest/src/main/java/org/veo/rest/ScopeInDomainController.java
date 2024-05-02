@@ -86,6 +86,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
+import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -400,5 +401,19 @@ public class ScopeInDomainController implements ElementInDomainResource {
           @PathVariable
           String uuid) {
     return elementService.getActions(domainId, uuid, Scope.class, auth);
+  }
+
+  @Operation(summary = "Performs a domain-specific action on a scope")
+  @PostMapping(UUID_PARAM_SPEC + "/actions/{actionId}/execution")
+  public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Parameter(required = true, example = "riskAnalysis") @PathVariable String actionId) {
+    return elementService.performAction(domainId, uuid, Scope.class, actionId, auth);
   }
 }

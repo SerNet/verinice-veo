@@ -85,6 +85,7 @@ import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
+import org.veo.core.usecase.PerformActionUseCase;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
@@ -1355,6 +1356,23 @@ public class ModuleConfiguration {
   @Bean
   GetAvailableActionsUseCase getAvailableActionsUseCase(DomainRepository domainRepository) {
     return new GetAvailableActionsUseCase(domainRepository);
+  }
+
+  @Bean
+  PerformActionUseCase performActionUseCase(
+      ClientRepository clientRepository,
+      DomainRepository domainRepository,
+      GenericElementRepository elementRepository,
+      GetCatalogIncarnationDescriptionUseCase getCatalogIncarnationDescriptionUseCase,
+      ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase,
+      DesignatorService designatorService) {
+    return new PerformActionUseCase(
+        clientRepository,
+        domainRepository,
+        elementRepository,
+        getCatalogIncarnationDescriptionUseCase,
+        applyCatalogIncarnationDescriptionUseCase,
+        designatorService);
   }
 
   @Bean
