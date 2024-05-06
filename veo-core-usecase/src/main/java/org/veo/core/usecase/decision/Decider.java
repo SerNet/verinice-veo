@@ -57,27 +57,27 @@ public class Decider {
    */
   public void updateDecisions(ElementEvent event) {
     var client = clientRepository.getActiveById(event.getClientId());
-    var element =
-        repositoryProvider
-            .getElementRepositoryFor(event.getEntityType())
-            .findById(event.getEntityId())
-            .orElseThrow();
-    client
-        .getDomains()
-        .forEach(
-            domain ->
-                domain
-                    .getDecisions()
+    repositoryProvider
+        .getElementRepositoryFor(event.getEntityType())
+        .findById(event.getEntityId())
+        .ifPresent(
+            element ->
+                client
+                    .getDomains()
                     .forEach(
-                        (key, decision) -> {
-                          if (decision.isApplicableToElement(element, domain)
-                              && decision.isAffectedByEvent(event, domain)
-                              && element.setDecisionResult(
-                                  new DecisionRef(key, domain),
-                                  decision.evaluate(element, domain),
-                                  domain)) {
-                            element.setUpdatedAt(Instant.now());
-                          }
-                        }));
+                        domain ->
+                            domain
+                                .getDecisions()
+                                .forEach(
+                                    (key, decision) -> {
+                                      if (decision.isApplicableToElement(element, domain)
+                                          && decision.isAffectedByEvent(event, domain)
+                                          && element.setDecisionResult(
+                                              new DecisionRef(key, domain),
+                                              decision.evaluate(element, domain),
+                                              domain)) {
+                                        element.setUpdatedAt(Instant.now());
+                                      }
+                                    })));
   }
 }

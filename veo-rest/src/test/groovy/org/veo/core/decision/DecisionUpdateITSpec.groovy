@@ -77,5 +77,13 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
         with(controlDataRepository.findById(control.idAsString, client.idAsString).get()) {
             it.getDecisionResults(domain).get(new DecisionRef("isGroup")).value
         }
+
+        when: "deleting the control and passing an event"
+        control.removePart(part)
+        controlDataRepository.delete(control)
+        decider.updateDecisions(new ControlPartsChangedEvent(control, [part] as Set))
+
+        then:
+        notThrown(Exception)
     }
 }
