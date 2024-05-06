@@ -56,7 +56,7 @@ public class Decider {
    * decision results on the element accordingly.
    */
   public void updateDecisions(ElementEvent event) {
-    var client = clientRepository.findById(event.getClientId()).orElseThrow();
+    var client = clientRepository.getActiveById(event.getClientId());
     var element =
         repositoryProvider
             .getElementRepositoryFor(event.getEntityType())

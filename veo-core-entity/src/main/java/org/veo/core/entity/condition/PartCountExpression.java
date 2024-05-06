@@ -22,9 +22,12 @@ import java.util.stream.Collectors;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.event.ControlPartsChangedEvent;
+import org.veo.core.entity.event.ElementEvent;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -57,6 +60,11 @@ public class PartCountExpression implements VeoExpression {
       return parts.size();
     }
     return 0;
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return event instanceof ControlPartsChangedEvent && event.getEntityType().equals(Control.class);
   }
 
   @Override
