@@ -6,22 +6,17 @@
   },
   "links": {},
   "customAspects": {
-    "scenario_threat": {
-      "domains": [],
-      "attributes": {
-        "scenario_threat_type": "scenario_threat_type_criminalAct"
-      }
-    },
     "scenario_generalInformation": {
       "domains": [],
       "attributes": {
         "scenario_generalInformation_document": "https://en.wikipedia.org/wiki/Special:Random"
       }
     },
-    "scenario_vulnerability": {
+    "scenario_cause": {
       "domains": [],
       "attributes": {
-        "scenario_vulnerability_type": "scenario_vulnerability_type_organisationalDeficiencies"
+        "scenario_cause_threat": "Threat to the scenario",
+        "scenario_cause_vulnerability": "Vulnerability of the scenario"
       }
     }
   },
