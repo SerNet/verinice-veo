@@ -21,7 +21,6 @@ import static java.time.Instant.now;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,9 +34,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -111,13 +108,6 @@ public class DomainData extends DomainBaseData implements Domain {
   @Override
   public boolean applyInspection(String inspectionId, Inspection inspection) {
     return inspectionSet.apply(inspectionId, inspection);
-  }
-
-  @Override
-  public void removeProfile(Key<UUID> profileId) {
-    if (!profiles.removeIf(p -> p.getId().equals(profileId))) {
-      throw new NotFoundException(profileId, Profile.class);
-    }
   }
 
   @Override

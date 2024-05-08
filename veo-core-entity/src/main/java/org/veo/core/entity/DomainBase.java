@@ -22,6 +22,7 @@ import static java.util.function.Function.identity;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
@@ -158,4 +159,11 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   boolean applyInspection(String inspectionId, Inspection inspection);
 
   void removeInspection(String inspectionId);
+
+  default void removeProfile(Key<UUID> profileId) {
+    if (!getProfiles().removeIf(p -> p.getId().equals(profileId))) {
+      throw new NotFoundException(profileId, Profile.class);
+    }
+    ;
+  }
 }

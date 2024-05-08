@@ -18,7 +18,6 @@
 package org.veo.core.entity;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -71,6 +70,4 @@ public interface Domain extends DomainBase, ClientOwned {
   boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition);
 
   void removeRiskDefinition(RiskDefinitionRef riskDefinition);
-
-  void removeProfile(Key<UUID> profileId);
 }
