@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import static org.veo.core.entity.TailoringReferenceType.RISK
+import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
 
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -31,6 +32,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.IncarnationLookup
+import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
@@ -40,6 +43,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
 import groovy.json.JsonSlurper
+import jdk.dynalink.linker.support.Lookup
 
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
@@ -173,7 +177,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "exporting with compact media type"
-        export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID", 200, CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT))
+        export = parseJson(get("/content-creation/domain-templates/$TEST_DOMAIN_TEMPLATE_ID", 200, MEDIA_TYPE_JSON_COMPACT))
 
         then: "default and read-only values are absent"
         export.name != null
@@ -754,6 +758,30 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             useExistingIncarnations == "ALWAYS"
             exclude ==~ ["LINK", "LINK_EXTERNAL"]
         }
+    }
+
+    @WithUserDetails("content-creator")
+    def "compact incarnation config representation can be put back with #mode & #lookup"() {
+        given: "a persisted config"
+        def config = [
+            mode: "$mode",
+            useExistingIncarnations: "$lookup"
+        ]
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", config, 204)
+
+        when: "fetching and putting back a compact representation"
+        def compactConfig = parseJson(get("/domains/$testDomain.idAsString/incarnation-configuration", 200, MEDIA_TYPE_JSON_COMPACT))
+        put("/content-creation/domains/$testDomain.idAsString/incarnation-configuration", compactConfig, 204)
+
+        then: "the values haven't changed"
+        notThrown(Exception)
+        parseJson(get("/domains/$testDomain.idAsString/incarnation-configuration", 200)) == config
+
+        where:
+        [mode, lookup] << [
+            IncarnationRequestModeType.values(),
+            IncarnationLookup.values()
+        ].combinations()
     }
 
     @WithUserDetails("content-creator")

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -66,6 +67,12 @@ public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessage
 
                       @Override
                       public JsonInclude.Value findPropertyInclusion(Annotated a) {
+                        if (a instanceof AnnotatedClass m && m.getRawType().isRecord()) {
+                          // NON_DEFAULT makes no sense for records, because jackson cannot apply
+                          // default values when deserializing a record:
+                          // https://github.com/FasterXML/jackson-future-ideas/issues/67
+                          return null;
+                        }
                         return includeNonDefault;
                       }
 
