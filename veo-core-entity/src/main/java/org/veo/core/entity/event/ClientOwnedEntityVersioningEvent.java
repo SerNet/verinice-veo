@@ -25,19 +25,16 @@ import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Versioned;
 
 import lombok.NonNull;
-import lombok.Value;
 import lombok.With;
 
 /**
  * This event should be triggered by the persistence layer when a {@link Versioned} and {@link
  * ClientOwned} element is being persisted, updated or removed.
  */
-@Value
-public class ClientOwnedEntityVersioningEvent<T extends Versioned & ClientOwned>
-    implements VersioningEvent<T> {
-  @NonNull @NotNull T entity;
-  ModificationType type;
-  String author;
-  Instant time;
-  @With long changeNumber;
-}
+public record ClientOwnedEntityVersioningEvent<T extends Versioned & ClientOwned>(
+    @NonNull @NotNull T entity,
+    VersioningEvent.ModificationType type,
+    String author,
+    Instant time,
+    @With long changeNumber)
+    implements VersioningEvent<T> {}

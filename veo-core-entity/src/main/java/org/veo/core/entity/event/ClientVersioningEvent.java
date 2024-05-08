@@ -25,19 +25,15 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 
 import lombok.NonNull;
-import lombok.Value;
 import lombok.With;
 
 /**
  * This event should be triggered by the persistence layer when a {@link Client} is being persisted,
  * updated or removed.
  */
-@Value
-public class ClientVersioningEvent implements VersioningEvent<Client> {
-  @NonNull @NotNull Client entity;
-  ModificationType type;
-  @With long changeNumber;
-
+public record ClientVersioningEvent(
+    @NonNull @NotNull Client entity, ModificationType type, @With long changeNumber)
+    implements VersioningEvent<Client> {
   public Key<UUID> getClientId() {
     return entity.getId();
   }

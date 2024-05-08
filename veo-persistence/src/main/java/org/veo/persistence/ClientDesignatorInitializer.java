@@ -39,9 +39,9 @@ public class ClientDesignatorInitializer {
 
   @EventListener
   public void handle(ClientVersioningEvent event) {
-    if (event.getType() == PERSIST) {
+    if (event.type() == PERSIST) {
       designatorSequenceRepository.createSequences(event.getClientId());
-    } else if (event.getType() == REMOVE) {
+    } else if (event.type() == REMOVE) {
       designatorSequenceRepository.deleteSequences(event.getClientId());
     }
   }

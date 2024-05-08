@@ -120,20 +120,20 @@ public class MostRecentChangeTracker<
   }
 
   public synchronized void put(@NonNull E eventToStore) {
-    requireNonNull(eventToStore.getEntity());
-    if (eventToStore.getEntity() instanceof AbstractRisk<?, ?>) {
+    requireNonNull(eventToStore.entity());
+    if (eventToStore.entity() instanceof AbstractRisk<?, ?>) {
       // only consolidate Elements. Publish risks normally.
       publisher.publishEvent(eventToStore);
       return;
     }
     log.debug(
         "Evaluate event for {} of type {} and change no. {}.",
-        eventToStore.getEntity().getClass().getSimpleName(),
-        eventToStore.getType(),
-        eventToStore.getChangeNumber());
+        eventToStore.entity().getClass().getSimpleName(),
+        eventToStore.type(),
+        eventToStore.changeNumber());
 
-    hydrate(eventToStore.getEntity());
-    switch (eventToStore.getType()) {
+    hydrate(eventToStore.entity());
+    switch (eventToStore.type()) {
       case PERSIST -> trackEventWithoutId(eventToStore);
       case UPDATE, REMOVE -> trackEvent(eventToStore);
     }
@@ -142,38 +142,38 @@ public class MostRecentChangeTracker<
   }
 
   private synchronized void trackEvent(@NonNull E eventToStore) {
-    if (eventToStore.getType() != UPDATE && eventToStore.getType() != REMOVE) {
+    if (eventToStore.type() != UPDATE && eventToStore.type() != REMOVE) {
       throw new IllegalArgumentException("Not an UPDATE or REMOVE event.");
     }
     log.debug(
         "Tracking event for {} with type {} and change no. {}",
-        eventToStore.getEntity().getClass().getSimpleName(),
-        eventToStore.getType(),
-        eventToStore.getChangeNumber());
+        eventToStore.entity().getClass().getSimpleName(),
+        eventToStore.type(),
+        eventToStore.changeNumber());
 
-    var id = determineId(eventToStore.getEntity());
+    var id = determineId(eventToStore.entity());
     allSeenChanges.computeIfAbsent(id, k -> new ArrayList<>()).add(eventToStore);
   }
 
   private synchronized void trackEventWithoutId(E eventToStore) {
-    if (eventToStore.getType() != PERSIST) {
+    if (eventToStore.type() != PERSIST) {
       throw new IllegalArgumentException("Not a PERSIST event.");
     }
-    if (determineId(eventToStore.getEntity()) != null) {
-      var id = determineId(eventToStore.getEntity());
+    if (determineId(eventToStore.entity()) != null) {
+      var id = determineId(eventToStore.entity());
       log.debug(
           "Tracking PERSIST event with already existing ID {} for a {} with change number {}. ID should be null on newly PERSISTed entities.",
           id,
-          eventToStore.getEntity().getClass(),
-          eventToStore.getChangeNumber());
+          eventToStore.entity().getClass(),
+          eventToStore.changeNumber());
       allSeenChanges.computeIfAbsent(id, k -> new ArrayList<>()).add(eventToStore);
       return;
     }
 
     log.debug(
         "Tracking a PERSIST event for a {} with ID null and changeNumber {}.",
-        eventToStore.getEntity().getClass(),
-        eventToStore.getChangeNumber());
+        eventToStore.entity().getClass(),
+        eventToStore.changeNumber());
 
     allSeenChanges.computeIfAbsent(NO_ID, k -> new ArrayList<>()).add(eventToStore);
   }
@@ -202,7 +202,7 @@ public class MostRecentChangeTracker<
               // add PERSIST events that already have an ID (edge case):
               var persistsWithId =
                   allSeenChanges.get(id).stream()
-                      .filter(e -> e.getType() == PERSIST && determineId(e.getEntity()) != null)
+                      .filter(e -> e.type() == PERSIST && determineId(e.entity()) != null)
                       .toList();
               if (!persistsWithId.isEmpty()) {
                 // get only one, order doesn't matter for inserts:
@@ -214,12 +214,12 @@ public class MostRecentChangeTracker<
               // add UPDATE event:
               // (add only the latest UPDATE rewritten to the lowest seen change-no of any update)
               var updates =
-                  allSeenChanges.get(id).stream().filter(e -> e.getType() == UPDATE).toList();
+                  allSeenChanges.get(id).stream().filter(e -> e.type() == UPDATE).toList();
               var lowestNo = -1L;
               if (!updates.isEmpty()) {
                 lowestNo = lowestSeenChangeNo(updates);
                 var newestUpdate = newestEvent(updates);
-                newestUpdate.getEntity().consolidateChangeNumber(lowestNo);
+                newestUpdate.entity().consolidateChangeNumber(lowestNo);
                 consolidatedChanges
                     .computeIfAbsent(id, k -> new ArrayList<>())
                     .add((E) newestUpdate.withChangeNumber(lowestNo));
@@ -227,7 +227,7 @@ public class MostRecentChangeTracker<
 
               // add REMOVE event:
               var removes =
-                  allSeenChanges.get(id).stream().filter(e -> e.getType() == REMOVE).toList();
+                  allSeenChanges.get(id).stream().filter(e -> e.type() == REMOVE).toList();
               if (!removes.isEmpty()) {
                 var newestRemove = newestEvent(removes);
                 if (lowestNo == -1L) {
@@ -236,7 +236,7 @@ public class MostRecentChangeTracker<
                 } else {
                   lowestNo += 1;
                 }
-                newestRemove.getEntity().consolidateChangeNumber(lowestNo);
+                newestRemove.entity().consolidateChangeNumber(lowestNo);
                 consolidatedChanges
                     .computeIfAbsent(id, k -> new ArrayList<>())
                     .add((E) newestRemove.withChangeNumber(lowestNo));
@@ -247,7 +247,7 @@ public class MostRecentChangeTracker<
   // Reset the entity's change number to the lowest seen changeNumber.
 
   private long lowestSeenChangeNo(Collection<E> events) {
-    return events.stream().map(VersioningEvent::getChangeNumber).min(Long::compare).orElseThrow();
+    return events.stream().map(VersioningEvent::changeNumber).min(Long::compare).orElseThrow();
   }
 
   private void hydrate(V entity) {
@@ -263,7 +263,7 @@ public class MostRecentChangeTracker<
   }
 
   private E newestEvent(Collection<E> events) {
-    return events.stream().max(comparingLong(VersioningEvent::getChangeNumber)).orElseThrow();
+    return events.stream().max(comparingLong(VersioningEvent::changeNumber)).orElseThrow();
   }
 
   @Transactional(propagation = Propagation.MANDATORY)

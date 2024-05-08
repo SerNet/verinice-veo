@@ -74,16 +74,16 @@ public class MessageCreatorImpl implements MessageCreator {
     // org.veo.persistence.access.jpa.MostRecentChangeTracker.hydrate
     var json =
         createEntityRevisionJson(
-            versioningEvent.getEntity(),
-            versioningEvent.getType(),
-            versioningEvent.getAuthor(),
-            versioningEvent.getTime(),
-            versioningEvent.getChangeNumber());
+            versioningEvent.entity(),
+            versioningEvent.type(),
+            versioningEvent.author(),
+            versioningEvent.time(),
+            versioningEvent.changeNumber());
     storeMessage(
         EVENT_TYPE_ENTITY_REVISION,
         json,
-        getUri(versioningEvent.getEntity()),
-        versioningEvent.getChangeNumber());
+        getUri(versioningEvent.entity()),
+        versioningEvent.changeNumber());
   }
 
   @Override

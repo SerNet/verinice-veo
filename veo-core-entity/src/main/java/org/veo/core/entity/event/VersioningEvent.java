@@ -20,11 +20,11 @@ package org.veo.core.entity.event;
 import org.veo.core.entity.Versioned;
 
 public interface VersioningEvent<T extends Versioned> {
-  ModificationType getType();
+  ModificationType type();
 
-  T getEntity();
+  T entity();
 
-  long getChangeNumber();
+  long changeNumber();
 
   VersioningEvent<T> withChangeNumber(long changeNumber);
 

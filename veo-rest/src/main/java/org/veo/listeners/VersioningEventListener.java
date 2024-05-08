@@ -54,12 +54,12 @@ public class VersioningEventListener {
 
     log.debug(
         "Handling VersioningEvent of type {} with changeNo {} for {}",
-        event.getType(),
-        event.getChangeNumber(),
-        event.getEntity().getClass());
-    var entity = event.getEntity();
+        event.type(),
+        event.changeNumber(),
+        event.entity().getClass());
+    var entity = event.entity();
 
-    if (entity instanceof Domain domain && event.getType() == PERSIST) {
+    if (entity instanceof Domain domain && event.type() == PERSIST) {
       log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
       messageCreator.createDomainCreationMessage(domain);
     }
@@ -77,9 +77,9 @@ public class VersioningEventListener {
                 }
                 log.debug(
                     "Creating entity revision message for {} event for entity {} modified by user {}",
-                    event.getType(),
+                    event.type(),
                     entity,
-                    event.getAuthor());
+                    event.author());
                 messageCreator.createEntityRevisionMessage(event);
               });
     }
