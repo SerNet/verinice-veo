@@ -984,8 +984,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we post the exported profile to the domain template"
         exportedProfile.name = 'export-test1'
-        def result = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
-                exportedProfile))
+        def profileInTemplateId = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
+                exportedProfile)).id
 
         def dt = txTemplate.execute {
             domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
@@ -1002,7 +1002,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:
-        result !=null
+        profileInTemplateId != null
         dt.profiles.size() == 1
         dt.profiles[0].name == 'export-test1'
         dt.profiles[0].items.size() == 11
@@ -1015,8 +1015,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "post the exported profile again to override"
         exportedProfile.description = 'a new description'
-        result = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
-                exportedProfile))
+        profileInTemplateId = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
+                exportedProfile)).id
         dt = txTemplate.execute {
             domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
                 dt1.profiles.size()
@@ -1033,7 +1033,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:
-        result !=null
+        profileInTemplateId != null
         dt.profiles.size() == 1
         dt.profiles[0].name == 'export-test1'
         dt.profiles[0].description == 'a new description'
@@ -1044,6 +1044,17 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             appliedCatalogItem.name == 'Control-2'
             appliedCatalogItem.getNamespace() == dt
         }
+
+        when:
+        delete("/content-creation/domain-templates/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/profiles/$profileInTemplateId")
+        dt = txTemplate.execute {
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{
+                profiles.size()
+            }
+        }
+
+        then:
+        dt.profiles.empty
     }
 
     @WithUserDetails("content-creator")

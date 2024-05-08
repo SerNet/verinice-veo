@@ -92,6 +92,7 @@ import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateProfileInDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
@@ -131,6 +132,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final DeleteDomainUseCase deleteDomainUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
   private final CreateProfileInDomainTemplateUseCase createProfileInDomainTemplate;
+  private final DeleteProfileInDomainTemplateUseCase deleteProfileInDomainTemplateUseCase;
 
   public static final String URL_BASE_PATH = "/content-creation";
 
@@ -540,6 +542,21 @@ public class ContentCreationController extends AbstractVeoController {
                 client, Key.uuidFrom(id), profileDto),
             out -> IdRef.from(out.getProfile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
+  }
+
+  @DeleteMapping(value = "/domain-templates/{id}/profiles/{profileId}")
+  @Operation(summary = "Delete a profile in a domain template")
+  @ApiResponse(responseCode = "204", description = "Profile deleted")
+  public Future<ResponseEntity<Void>> deleteProfileInDomainTemplate(
+      Authentication auth,
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
+      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
+          String profileId) {
+    return useCaseInteractor.execute(
+        deleteProfileInDomainTemplateUseCase,
+        new DeleteProfileInDomainTemplateUseCase.InputData(
+            getAuthenticatedClient(auth), Key.uuidFrom(id), Key.uuidFrom(profileId)),
+        out -> ResponseEntity.noContent().build());
   }
 
   @GetMapping(value = "/domain-templates/{id}")
