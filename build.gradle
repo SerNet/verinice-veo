@@ -26,7 +26,7 @@ def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 allprojects  {
     group = 'org.veo'
-    version = '0.46.0'
+    version = '0.47.0-SNAPSHOT'
 
     apply plugin: "com.diffplug.spotless"
 
