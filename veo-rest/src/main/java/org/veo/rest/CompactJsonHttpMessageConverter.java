@@ -24,16 +24,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.fasterxml.jackson.databind.ser.PropertyWriter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -44,8 +37,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessageConverter {
   public static final MediaType MEDIA_TYPE_JSON_COMPACT =
       MediaType.parseMediaType("application/vnd.sernet.verinice.compact+json");
-
-  private static final String READ_ONLY_FILTER = "read-only";
 
   public CompactJsonHttpMessageConverter(ObjectMapper defaultMapper) {
     super(configureCompactMapper(defaultMapper), MEDIA_TYPE_JSON_COMPACT);
@@ -77,44 +68,24 @@ public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessage
                       public JsonInclude.Value findPropertyInclusion(Annotated a) {
                         return includeNonDefault;
                       }
-                    }))
-        // Register filter that omits read-only properties.
-        .setFilterProvider(
-            new SimpleFilterProvider()
-                .addFilter(
-                    READ_ONLY_FILTER,
-                    new SimpleBeanPropertyFilter() {
+
+                      /** Omit read-only properties */
                       @Override
-                      protected boolean include(PropertyWriter writer) {
-                        var propAnn = writer.getAnnotation(JsonProperty.class);
-                        if (propAnn != null && propAnn.access() == JsonProperty.Access.READ_ONLY) {
-                          return false;
+                      public boolean hasIgnoreMarker(AnnotatedMember m) {
+                        if (super.hasIgnoreMarker(m)) {
+                          return true;
                         }
-                        var schemaAnn = writer.getAnnotation(Schema.class);
+                        var propAnn = m.getAnnotation(JsonProperty.class);
+                        if (propAnn != null && propAnn.access() == JsonProperty.Access.READ_ONLY) {
+                          return true;
+                        }
+                        var schemaAnn = m.getAnnotation(Schema.class);
                         if (schemaAnn != null
                             && schemaAnn.accessMode() == Schema.AccessMode.READ_ONLY) {
-                          return false;
+                          return true;
                         }
-                        return true;
+                        return false;
                       }
-                    }))
-        // Apply that read-only filter globally.
-        .registerModule(
-            new SimpleModule() {
-              @Override
-              public void setupModule(SetupContext context) {
-                super.setupModule(context);
-                context.addBeanSerializerModifier(
-                    new BeanSerializerModifier() {
-                      @Override
-                      public JsonSerializer<?> modifySerializer(
-                          SerializationConfig config,
-                          BeanDescription desc,
-                          JsonSerializer<?> serializer) {
-                        return serializer.withFilterId(READ_ONLY_FILTER);
-                      }
-                    });
-              }
-            });
+                    }));
   }
 }

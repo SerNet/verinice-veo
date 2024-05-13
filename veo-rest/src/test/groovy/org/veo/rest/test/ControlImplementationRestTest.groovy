@@ -17,10 +17,11 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
+
 import org.veo.core.entity.EntityType
 
 import spock.lang.Issue
-import spock.lang.Unroll
 
 class ControlImplementationRestTest extends VeoRestTest {
     private String domainId
@@ -679,6 +680,35 @@ class ControlImplementationRestTest extends VeoRestTest {
             origination: "SYSTEM_SPECIFIC",
         ], "", 404)
         .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "CIs and RIs for #elementType.pluralTerm can be fetched in compact representation"() {
+        given:
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "affectionate",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$subControl2Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        expect:
+        with(get("/$elementType.pluralTerm/$elementId", 200, UserType.DEFAULT, MEDIA_TYPE_JSON_COMPACT).body.controlImplementations[0]) {
+            control.id == subControl2Id
+            _requirementImplementations == null
+            implementationStatus == null
+        }
+
+        with(get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id", 200, UserType.DEFAULT, MEDIA_TYPE_JSON_COMPACT).body) {
+            control.id == subControl2Id
+            status == "UNKNOWN"
+            _self == null
+        }
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
