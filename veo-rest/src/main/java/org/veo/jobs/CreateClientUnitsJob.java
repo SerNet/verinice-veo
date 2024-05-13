@@ -46,7 +46,7 @@ public abstract class CreateClientUnitsJob {
   private void createUnit(Client client, String name) {
     createUnitUseCase.execute(
         new CreateUnitUseCase.InputData(
-            new NameableInputData(Optional.empty(), name, "", ""),
+            new NameableInputData(name, "", ""),
             client.getId(),
             Optional.empty(),
             client.getMaxUnits(),

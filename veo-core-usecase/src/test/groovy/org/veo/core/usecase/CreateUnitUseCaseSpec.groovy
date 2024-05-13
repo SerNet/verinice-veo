@@ -37,12 +37,11 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         newUnit1.name >> "New unit"
 
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
+        def namedInput = new NameableInputData("New unit", null, null)
 
         when: "the use case to create a unit is executed"
         def input = new InputData(namedInput, existingClient.id, Optional.empty(), 1, [] as Set)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input).unit
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -57,8 +56,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
     def "Create a new subunit in an existing unit" () {
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
+        def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
@@ -71,7 +69,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2, [] as Set)
 
         when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input).unit
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -87,8 +85,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
     def "Create a unit with a domain" () {
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
+        def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
@@ -114,8 +111,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
     def "Create a unit with an invalid domain" () {
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
+        def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
@@ -141,8 +137,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
     def "Create a unit with another client's domain" () {
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
+        def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()

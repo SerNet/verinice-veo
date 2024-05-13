@@ -17,23 +17,5 @@
  ******************************************************************************/
 package org.veo.core.usecase.common;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.veo.core.entity.Key;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /** Common record class to pass nameable attributes from a DTO into a use case. */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class NameableInputData {
-  private Optional<Key<UUID>> id;
-
-  private String name;
-  private String abbreviation;
-  private String description;
-}
+public record NameableInputData(String name, String abbreviation, String description) {}

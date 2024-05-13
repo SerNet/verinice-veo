@@ -91,7 +91,7 @@ public class CreateUnitUseCase
     }
     Unit newUnit;
     if (input.parentUnitId.isEmpty()) {
-      newUnit = entityFactory.createUnit(input.nameableInput.getName(), null);
+      newUnit = entityFactory.createUnit(input.nameableInput.name(), null);
     } else {
       Unit parentUnit =
           unitRepository
@@ -100,11 +100,11 @@ public class CreateUnitUseCase
                   () ->
                       new ReferenceTargetNotFoundException(
                           format("Parent unit %s was not found", input.parentUnitId.get())));
-      newUnit = entityFactory.createUnit(input.nameableInput.getName(), parentUnit);
+      newUnit = entityFactory.createUnit(input.nameableInput.name(), parentUnit);
     }
 
-    newUnit.setAbbreviation(input.nameableInput.getAbbreviation());
-    newUnit.setDescription(input.nameableInput.getDescription());
+    newUnit.setAbbreviation(input.nameableInput.abbreviation());
+    newUnit.setDescription(input.nameableInput.description());
     newUnit.setClient(client);
     client.incrementTotalUnits();
     if (input.domainIds != null) {
