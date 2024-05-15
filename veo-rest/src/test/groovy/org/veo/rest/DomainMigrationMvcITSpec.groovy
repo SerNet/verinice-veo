@@ -40,7 +40,6 @@ import org.veo.jobs.MessagingJob
 import org.veo.message.TestContainersUtil
 
 import spock.lang.AutoCleanup
-import spock.lang.IgnoreRest
 import spock.lang.Shared
 
 @ActiveProfiles(["test", PROFILE_BACKGROUND_TASKS])
@@ -104,19 +103,8 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                     }
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("control", it) {
-                subTypes = [
-                    NormalControl: newSubTypeDefinition {
-                        statuses = ["NEW"]
-                    }
-                ]
-            })
             applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
-                subTypes = [
-                    NormalScenario: newSubTypeDefinition {
-                        statuses = ["NEW"]
-                    }
-                ]
+                subTypes.NormalScenario = newSubTypeDefinition()
             })
         }
         domainId = domain.id.uuidValue()
@@ -227,73 +215,49 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         profileItem.customAspects.aspectOne.attrTwo == null
     }
 
-    @IgnoreRest
     @WithUserDetails("content-creator")
     def 'risk is removed when element is dissociated from a domain'() {
         given: "an asset and a risk"
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [
-                    subType: "NormalAsset",
-                    status: "NEW",
-                ]
-            ],
+        def assetId = parseJson(post("/domains/$domainId/assets", [
             name: "my little asset",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-
+            subType: "NormalAsset",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-
-        def scenarioId = parseJson(post("/scenarios", [
-            domains: [
-                (domainId): [
-                    subType: "NormalScenario",
-                    status: "NEW",
-                ]
-            ],
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "my little scenario",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-
+            subType: "NormalScenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-
         post("/assets/$assetId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
             domains: [
                 (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
-                    riskDefinitions: [:]
+                    reference: [targetUri: "/domains/$domainId"],
                 ]
             ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
 
-        when: "we get the risks"
-        def risks = parseJson(get("/assets/$assetId/risks"))
-
-        then: "the risk exist"
-        risks.size() == 1
+        expect: "the risk to exist"
+        parseJson(get("/assets/$assetId/risks")).size() == 1
 
         when: "removing the subtype from the element type definition"
-        def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
-        etd.subTypes = [:]
-        put("/content-creation/domains/$domainId/element-type-definitions/asset", etd, 204)
+        parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset.with {
+            it.subTypes = [:]
+            put("/content-creation/domains/$owner.domainId/element-type-definitions/asset", it, 204)
+        }
 
         and: "triggering message processing"
         messagingJob.sendMessages()
 
-        and: "wait for the asset to be migrated"
-        def retrievedAsset = null
-        for (def i = 0; i < 50; i++) {
-            retrievedAsset = parseJson(get("/assets/$assetId"))
-            if (retrievedAsset.domains.size() == 0) {
-                break
-            }
-            sleep(200)
+        and: "waiting for the asset to be migrated"
+        defaultPolling.eventually {
+            parseJson(get("/assets/$assetId")).domains.isEmpty()
         }
 
-        and: "get the risks"
-        risks = parseJson(get("/assets/$assetId/risks"))
-
         then: "the risk is gone"
-        risks.size() == 0
+        parseJson(get("/assets/$assetId/risks")).isEmpty()
     }
 
     def cleanup() {
