@@ -27,7 +27,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.RequirementImplementation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,14 +36,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ImplementedControlsExpression implements VeoExpression {
+public class ImplementedRequirementsExpression implements VeoExpression {
   @NotNull VeoExpression riskAffected;
 
   @Override
   public Object getValue(Element element, Domain domain) {
     if (riskAffected.getValue(element, domain) instanceof RiskAffected<?, ?> ra) {
-      return ra.getControlImplementations().stream()
-          .map(ControlImplementation::getControl)
+      return ra.getRequirementImplementations().stream()
+          .map(RequirementImplementation::getControl)
           .collect(Collectors.toSet());
     }
     return new HashSet<>();
@@ -55,7 +55,7 @@ public class ImplementedControlsExpression implements VeoExpression {
     var valueType = riskAffected.getValueType(domain, elementType);
     if (!RiskAffected.class.isAssignableFrom(valueType)) {
       throw new IllegalArgumentException(
-          "Cannot get implemented controls of %s".formatted(valueType));
+          "Cannot get implemented requirements of %s".formatted(valueType));
     }
   }
 

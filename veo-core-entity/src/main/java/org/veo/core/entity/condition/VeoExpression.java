@@ -39,7 +39,7 @@ import org.veo.core.entity.event.ElementEvent;
   @Type(value = CustomAspectAttributeValueExpression.class, name = "customAspectAttributeValue"),
   @Type(value = EqualsExpression.class, name = "equals"),
   @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
-  @Type(value = ImplementedControlsExpression.class, name = "implementedControls"),
+  @Type(value = ImplementedRequirementsExpression.class, name = "implementedRequirements"),
   @Type(value = LinkTargetsExpression.class, name = "linkTargets"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),

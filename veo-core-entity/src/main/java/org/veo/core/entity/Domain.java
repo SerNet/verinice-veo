@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.condition.CurrentElementExpression;
-import org.veo.core.entity.condition.ImplementedControlsExpression;
+import org.veo.core.entity.condition.ImplementedRequirementsExpression;
 import org.veo.core.entity.condition.LinkTargetsExpression;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -91,7 +91,7 @@ public interface Domain extends DomainBase, ClientOwned {
               Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM),
               List.of(
                   new ReapplyCatalogItemsStep(
-                      new ImplementedControlsExpression(new CurrentElementExpression()),
+                      new ImplementedRequirementsExpression(new CurrentElementExpression()),
                       new IncarnationConfiguration(
                           IncarnationRequestModeType.DEFAULT,
                           IncarnationLookup.ALWAYS,
@@ -108,7 +108,7 @@ public interface Domain extends DomainBase, ClientOwned {
                           null)),
                   new AddRisksStep(
                       new LinkTargetsExpression(
-                          new ImplementedControlsExpression(new CurrentElementExpression()),
+                          new ImplementedRequirementsExpression(new CurrentElementExpression()),
                           "control_relevantAppliedThreat")))));
     }
     return Collections.emptyMap();

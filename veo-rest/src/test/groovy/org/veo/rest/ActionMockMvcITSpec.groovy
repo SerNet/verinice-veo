@@ -27,6 +27,7 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.CatalogItemData
 
 @WithUserDetails("user@domain.example")
 class ActionMockMvcITSpec extends VeoMvcSpec{
@@ -66,25 +67,39 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
                 subType = "Scarynario"
                 status = "NEW"
             }
+
+            def subControl1 = newCatalogItem(d) {
+                name = "remotely controlled"
+                elementType = Control.SINGULAR_TERM
+                subType = "RemoteControl"
+                status = "NEW"
+                addLinkTailoringReference(TailoringReferenceType.LINK, scenario1, "control_relevantAppliedThreat", [:])
+                scenario1.addLinkTailoringReference(TailoringReferenceType.LINK_EXTERNAL, it, "control_relevantAppliedThreat", [:])
+            }
+
+            def subControl2 = newCatalogItem(d) {
+                name = "con troll"
+                elementType = Control.SINGULAR_TERM
+                subType = "RemoteControl"
+                status = "NEW"
+                addLinkTailoringReference(TailoringReferenceType.LINK, scenario2, "control_relevantAppliedThreat", [:])
+                scenario2.addLinkTailoringReference(TailoringReferenceType.LINK_EXTERNAL, it, "control_relevantAppliedThreat", [:])
+            }
             catalogItems = [
                 scenario1,
                 scenario2,
+                subControl1,
+                subControl2,
                 newCatalogItem(d) {
-                    name = "remotely controlled"
+                    name = "super troll"
                     elementType = Control.SINGULAR_TERM
                     subType = "RemoteControl"
                     status = "NEW"
-                    addLinkTailoringReference(TailoringReferenceType.LINK, scenario1, "control_relevantAppliedThreat", [:])
-                    scenario1.addLinkTailoringReference(TailoringReferenceType.LINK_EXTERNAL, it, "control_relevantAppliedThreat", [:])
-                },
-                newCatalogItem(d) {
-                    name = "con troll"
-                    elementType = Control.SINGULAR_TERM
-                    subType = "RemoteControl"
-                    status = "NEW"
-                    addLinkTailoringReference(TailoringReferenceType.LINK, scenario2, "control_relevantAppliedThreat", [:])
-                    scenario2.addLinkTailoringReference(TailoringReferenceType.LINK_EXTERNAL, it, "control_relevantAppliedThreat", [:])
-                },
+                    addTailoringReference(TailoringReferenceType.PART, subControl1)
+                    addTailoringReference(TailoringReferenceType.PART, subControl2)
+                    subControl1.addTailoringReference(TailoringReferenceType.COMPOSITE, it)
+                    subControl2.addTailoringReference(TailoringReferenceType.COMPOSITE, it)
+                }
             ]
         }
         client = clientRepository.save(client)
@@ -96,9 +111,10 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
     }
 
     def "risk-analysis action can be performed for #type.pluralTerm"() {
-        given: "two incarnated controls without links"
-        def control1Id = incarnate("remotely controlled", ["LINK"])
-        def control2Id = incarnate("con troll", ["LINK"])
+        given: "three incarnated controls without links"
+        def superControlId = incarnate("super troll", ["LINK"])
+        def subControl1Id = parseJson(get("/controls?name=remotely controlled")).items[0].id
+        def subControl2Id = parseJson(get("/controls?name=con troll")).items[0].id
 
         and: "an asset that implements the controls"
         def elementId = parseJson(post("/domains/$domainId/$type.pluralTerm", [
@@ -107,14 +123,13 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
             status: "NEW",
             owner: [targetUri: "/units/$unitId"],
             controlImplementations: [
-                [control: ["targetUri": "/controls/$control1Id"]],
-                [control: ["targetUri": "/controls/$control2Id"]],
+                [control: ["targetUri": "/controls/$superControlId"]],
             ]
         ])).resourceId
 
         expect: "control links to be absent"
-        parseJson(get("/domains/$domainId/controls/$control1Id")).links == [:]
-        parseJson(get("/domains/$domainId/controls/$control2Id")).links == [:]
+        parseJson(get("/domains/$domainId/controls/$subControl1Id")).links == [:]
+        parseJson(get("/domains/$domainId/controls/$subControl2Id")).links == [:]
 
         and: "asset risks to be absent"
         parseJson(get("/$type.pluralTerm/$elementId/risks")) == []
@@ -136,8 +151,8 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
         result.createdEntities*.designator.findAll { it.startsWith("RSK-") }.size() == 2
 
         and: "the control links from the catalog have been applied"
-        parseJson(get("/domains/$domainId/controls/$control1Id")).links.control_relevantAppliedThreat*.target*.name == ["bad things happen"]
-        parseJson(get("/domains/$domainId/controls/$control2Id")).links.control_relevantAppliedThreat*.target*.name == ["worse things happen"]
+        parseJson(get("/domains/$domainId/controls/$subControl1Id")).links.control_relevantAppliedThreat*.target*.name == ["bad things happen"]
+        parseJson(get("/domains/$domainId/controls/$subControl2Id")).links.control_relevantAppliedThreat*.target*.name == ["worse things happen"]
 
         and: "risks have been created for the linked scenarios"
         parseJson(get("/$type.pluralTerm/$elementId/risks"))*.scenario*.name ==~ [
