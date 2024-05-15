@@ -25,6 +25,7 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -45,6 +46,7 @@ import lombok.ToString;
 @Entity(name = "domain")
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@EntityListeners({VersionedEntityListener.class})
 public class DomainData extends DomainBaseData implements Domain {
   @Column(name = "active")
   @ToString.Include

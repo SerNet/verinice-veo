@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -85,6 +86,7 @@ import lombok.ToString;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+@EntityListeners({VersionedEntityListener.class})
 public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
     extends VersionedData implements AbstractRisk<T, R> {
 
