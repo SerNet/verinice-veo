@@ -17,20 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
-
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 
 /** Reinstantiate a persisted process object. */
 public class GetProcessUseCase extends GetElementUseCase<Process> {
@@ -42,30 +33,13 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
     processRepository = repository;
   }
 
+  @Override
   public GetElementUseCase.OutputData<Process> execute(InputData input) {
     var process =
         processRepository
-            .findById(input.getId(), input.embedRisks)
+            .findById(input.getId(), input.isEmbedRisks())
             .orElseThrow(() -> new NotFoundException(input.getId(), Process.class));
     process.checkSameClient(input.getAuthenticatedClient());
     return new GetElementUseCase.OutputData<>(process, getDomain(process, input).orElse(null));
-  }
-
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  @Valid
-  public static class InputData extends GetElementUseCase.InputData {
-    boolean embedRisks;
-
-    public InputData(
-        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
-      super(id, authenticatedClient, domainId);
-      this.embedRisks = embedRisks;
-    }
-
-    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
-      super(id, authenticatedClient);
-      this.embedRisks = embedRisks;
-    }
   }
 }

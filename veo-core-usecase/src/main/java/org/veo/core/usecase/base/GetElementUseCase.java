@@ -74,17 +74,28 @@ public class GetElementUseCase<T extends Element>
   @Valid
   @Getter
   public static class InputData extends UseCase.IdAndClient {
-    public InputData(Key<UUID> id, Client authenticatedClient) {
-      super(id, authenticatedClient);
-      this.domainId = null;
-    }
 
-    public InputData(Key<UUID> id, Client authenticatedClient, Key<UUID> domainId) {
+    public InputData(
+        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
       super(id, authenticatedClient);
       this.domainId = domainId;
+      this.embedRisks = embedRisks;
+    }
+
+    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
+      this(id, authenticatedClient, null, false);
+    }
+
+    public InputData(Key<UUID> id, Client client) {
+      this(id, client, false);
+    }
+
+    public InputData(Key<UUID> id, Client client, Key<UUID> domainId) {
+      this(id, client, domainId, false);
     }
 
     Key<UUID> domainId;
+    boolean embedRisks;
   }
 
   @Valid

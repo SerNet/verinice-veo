@@ -17,20 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
-
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 
 public class GetScopeUseCase extends GetElementUseCase<Scope> {
   private final ScopeRepository scopeRepository;
@@ -40,30 +31,13 @@ public class GetScopeUseCase extends GetElementUseCase<Scope> {
     this.scopeRepository = repository;
   }
 
+  @Override
   public GetElementUseCase.OutputData<Scope> execute(InputData input) {
     var scope =
         scopeRepository
-            .findById(input.getId(), input.embedRisks)
+            .findById(input.getId(), input.isEmbedRisks())
             .orElseThrow(() -> new NotFoundException(input.getId(), Scope.class));
     scope.checkSameClient(input.getAuthenticatedClient());
     return new GetElementUseCase.OutputData<>(scope, getDomain(scope, input).orElse(null));
-  }
-
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  @Valid
-  public static class InputData extends GetElementUseCase.InputData {
-    boolean embedRisks;
-
-    public InputData(
-        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
-      super(id, authenticatedClient, domainId);
-      this.embedRisks = embedRisks;
-    }
-
-    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
-      super(id, authenticatedClient);
-      this.embedRisks = embedRisks;
-    }
   }
 }

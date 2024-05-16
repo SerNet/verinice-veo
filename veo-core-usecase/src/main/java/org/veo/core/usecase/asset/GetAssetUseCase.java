@@ -17,20 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
-
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 
 public class GetAssetUseCase extends GetElementUseCase<Asset> {
 
@@ -41,30 +32,13 @@ public class GetAssetUseCase extends GetElementUseCase<Asset> {
     this.assetRepository = repository;
   }
 
+  @Override
   public GetElementUseCase.OutputData<Asset> execute(InputData input) {
     var asset =
         assetRepository
-            .findById(input.getId(), input.embedRisks)
+            .findById(input.getId(), input.isEmbedRisks())
             .orElseThrow(() -> new NotFoundException(input.getId(), Asset.class));
     asset.checkSameClient(input.getAuthenticatedClient());
     return new GetElementUseCase.OutputData<>(asset, getDomain(asset, input).orElse(null));
-  }
-
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  @Valid
-  public static class InputData extends GetElementUseCase.InputData {
-    boolean embedRisks;
-
-    public InputData(
-        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
-      super(id, authenticatedClient, domainId);
-      this.embedRisks = embedRisks;
-    }
-
-    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
-      super(id, authenticatedClient);
-      this.embedRisks = embedRisks;
-    }
   }
 }
