@@ -83,7 +83,7 @@ public class GetElementUseCase<T extends Element>
     }
 
     public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
-      this(id, authenticatedClient, null, false);
+      this(id, authenticatedClient, null, embedRisks);
     }
 
     public InputData(Key<UUID> id, Client client) {

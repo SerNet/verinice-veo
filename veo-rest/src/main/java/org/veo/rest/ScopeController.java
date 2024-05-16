@@ -305,7 +305,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
+            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
             output ->
                 entityToDtoTransformer.transformScope2Dto(output.getElement(), false, embedRisks));
     return scopeFuture.thenApply(
