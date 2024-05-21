@@ -34,12 +34,15 @@ import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidatio
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Generates JSON schemas for java classes. Returned Schemas are encapsulated in {@link Supplier}
  * objects that may be loaded eagerly when the application starts. Each time the actual schema is
  * accessed on a supplier, a deep copy is created, so the original encapsulated schema is immutable.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchemaProvider {
   private static final SchemaProvider INSTANCE = new SchemaProvider();
   private final SchemaGenerator schemaGenerator = createSchemaGenerator();
