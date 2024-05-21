@@ -27,6 +27,8 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskRef;
 import org.veo.core.entity.risk.RiskReferenceProvider;
 
+import lombok.Getter;
+
 /**
  * Simple factory for reference objects to be used by JPA converters. Should not be used outside the
  * package by converters - use a {@code ReferenceProvider} instead which ensures that references
@@ -36,14 +38,9 @@ import org.veo.core.entity.risk.RiskReferenceProvider;
  */
 final class RiskReferenceFactoryImpl extends org.veo.core.entity.risk.RiskReferenceFactory {
 
-  private static RiskReferenceFactoryImpl instance = new RiskReferenceFactoryImpl();
+  @Getter private static final RiskReferenceFactoryImpl instance = new RiskReferenceFactoryImpl();
 
   private RiskReferenceFactoryImpl() {}
-
-  public static RiskReferenceFactoryImpl getInstance() {
-    if (instance == null) instance = new RiskReferenceFactoryImpl();
-    return instance;
-  }
 
   @Override
   protected RiskRef createRiskRef(BigDecimal id) {
