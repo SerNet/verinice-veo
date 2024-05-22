@@ -19,12 +19,14 @@ package org.veo.adapter.presenter.api.openapi;
 
 import org.veo.core.entity.inspection.Inspection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
     description =
         "Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.")
 public abstract class InspectionSchema extends Inspection {
+  @SuppressFBWarnings("NP")
   public InspectionSchema() {
     super(null, null, null, null, null);
   }

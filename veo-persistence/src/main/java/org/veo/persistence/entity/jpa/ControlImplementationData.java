@@ -48,6 +48,7 @@ import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -83,6 +84,7 @@ public class ControlImplementationData implements ControlImplementation {
   @NonNull
   @NaturalId
   @Column(nullable = false, updatable = false)
+  @SuppressFBWarnings("NP") // ID is generated, no need to complain
   private UUID id;
 
   // TODO #2841 remove eager fetching when no longer needed

@@ -10,7 +10,6 @@ bin/
 .project
 .settings/
 *.log
-lombok.config
 *.local.*
 
 vna-type-mapping-missing.properties
