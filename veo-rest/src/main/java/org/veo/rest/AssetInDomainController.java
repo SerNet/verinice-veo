@@ -411,7 +411,7 @@ public class AssetInDomainController implements ElementInDomainResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
-      @Parameter(required = true, example = "riskAnalysis") @PathVariable String actionId) {
+      @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
     return elementService.performAction(domainId, uuid, Asset.class, actionId, auth);
   }
 }

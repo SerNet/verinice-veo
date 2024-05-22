@@ -408,7 +408,7 @@ public class ScopeInDomainController implements ElementInDomainResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
-      @Parameter(required = true, example = "riskAnalysis") @PathVariable String actionId) {
+      @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
     return elementService.performAction(domainId, uuid, Scope.class, actionId, auth);
   }
 }

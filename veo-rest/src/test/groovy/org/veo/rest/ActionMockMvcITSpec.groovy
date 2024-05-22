@@ -139,11 +139,11 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
 
         then: "risk analysis is returned"
         actions.size() == 1
-        actions[0].id == "riskAnalysis"
-        actions[0].name.de == "Risikoanalyse"
+        actions[0].id == "threatOverview"
+        actions[0].name.de == "Gefährdungsübersicht erstellen"
 
         when: "performing the action"
-        def result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/riskAnalysis/execution", null, 200))
+        def result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/threatOverview/execution", null, 200))
 
         then: "two new scenarios and two new risks are reported"
         result.createdEntities.size() == 4
@@ -161,7 +161,7 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
         ]
 
         when: "performing the action again"
-        result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/riskAnalysis/execution", null, 200))
+        result = parseJson(post("/domains/$domainId/$type.pluralTerm/$elementId/actions/threatOverview/execution", null, 200))
 
         then: "nothing has happened"
         result.createdEntities.empty

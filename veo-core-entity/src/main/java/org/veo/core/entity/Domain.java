@@ -84,10 +84,14 @@ public interface Domain extends DomainBase, ClientOwned {
     // TODO #2844 use dynamic descriptive actions, remove hard-coded domain-specific biz
     if (this.getName().equals("IT-Grundschutz")) {
       return Map.of(
-          "riskAnalysis",
+          "threatOverview",
           new Action(
               new TranslatedText(
-                  Map.of(Locale.GERMAN, "Risikoanalyse", Locale.ENGLISH, "Risk analysis")),
+                  Map.of(
+                      Locale.GERMAN,
+                      "Gefährdungsübersicht erstellen",
+                      Locale.ENGLISH,
+                      "Draw up threat overview")),
               Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM),
               List.of(
                   new ReapplyCatalogItemsStep(
