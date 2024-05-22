@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<include
-		resource="org/springframework/boot/logging/logback/base.xml" />
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+				<timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
+				<timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+				<jsonFormatter
+					class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+					<prettyPrint>true</prettyPrint>
+				</jsonFormatter>
+				<appendLineSeparator>true</appendLineSeparator>
+			</layout>
+		</encoder>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="CONSOLE" />
+	</root>
+
 	<logger name="org.springframework" level="WARN" />
 	<logger name="org.flywaydb" level="WARN" />
 	<logger name="org.hibernate" level="WARN" />
