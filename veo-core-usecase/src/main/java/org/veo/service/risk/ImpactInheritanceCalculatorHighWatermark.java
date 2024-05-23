@@ -110,18 +110,21 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     List<CategoryRef> cats;
     Graph<FlyweightElement, FlyweightLink> elementSubGraph;
     CycleDetector<Element, CustomLink> cycleDetector;
+    Set<RiskAffected<?, ?>> riskAffectedCache;
 
     private UpdateAffectedGraphParameter(
         AbstractGraph<Element, CustomLink> elementGraph,
         Domain domain,
         List<CategoryRef> cats,
         RiskDefinitionRef definitionRef,
-        Graph<FlyweightElement, FlyweightLink> elementSubGraph) {
+        Graph<FlyweightElement, FlyweightLink> elementSubGraph,
+        Set<RiskAffected<?, ?>> riskAffectedCache) {
       this.elementGraph = elementGraph;
       this.domain = domain;
       this.cats = cats;
       this.riskDefinitionRef = definitionRef;
       this.elementSubGraph = elementSubGraph;
+      this.riskAffectedCache = riskAffectedCache;
       cycleDetector = new CycleDetector<>(elementGraph);
     }
 
@@ -172,6 +175,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       // TODO: #2908 examine and handle edge cases, like unconnected nodes
       return Collections.emptyList();
     }
+    Set<RiskAffected<?, ?>> allRiskElements = loadAllRiskElements(unit, domain);
 
     // we group the elements by the number of incoming edges
     Map<Integer, List<FlyweightElement>> inDegree =
@@ -181,14 +185,15 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     List<FlyweightElement> listOfRootElements = inDegree.get(0);
     if (listOfRootElements == null) {
       Set<FlyweightElement> cycles = new CycleDetector<>(data.completeGraph).findCycles();
-      Set<RiskAffected<?, ?>> elementsInCycle = loadRiskElements(unit, domain, toIds(cycles));
+      Set<RiskAffected<?, ?>> elementsInCycle =
+          mapIdsToRiskAffected(allRiskElements, toIds(cycles));
       log.info("no roots, may be circles: {}", listNodes(elementsInCycle));
       clearCalculatedImpactsInCycle(elementsInCycle, domain, data.definitionRef);
       return elementsInCycle;
     }
 
     Set<RiskAffected<?, ?>> allRootelements =
-        loadRiskElements(unit, domain, toIds(listOfRootElements));
+        mapIdsToRiskAffected(allRiskElements, toIds(listOfRootElements));
     Map<String, RiskAffected<?, ?>> idToElement =
         allRootelements.stream().collect(toMap(Identifiable::getIdAsString, identity()));
     Set<FlyweightElement> processed = new HashSet<>();
@@ -197,7 +202,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     listOfRootElements.stream()
         .filter(notProcessed(processed))
         .sorted(byElementName(idToElement)) // walk roots in predictable manner
-        .map(fe -> createParameter(data, fe))
+        .map(fe -> createParameter(data, fe, allRiskElements))
         .forEach(
             parameter ->
                 updateAllRootsInSubgraph(
@@ -231,7 +236,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         rootElementsForSubGraph.size());
 
     Set<RiskAffected<?, ?>> allRootsOfGraph =
-        loadRiskElements(unit, domain, toIds(rootElementsForSubGraph));
+        mapIdsToRiskAffected(parameter.riskAffectedCache, toIds(rootElementsForSubGraph));
     log.debug("all roots in subgraph: {} ", listNodes(allRootsOfGraph));
 
     allRootsOfGraph.stream()
@@ -279,7 +284,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       return Collections.emptyList();
     }
 
-    UpdateAffectedGraphParameter parameter = createParameter(data, flyweightElement);
+    UpdateAffectedGraphParameter parameter = createParameter(data, flyweightElement, null);
     if (parameter.detectCyclesContainingVertex(affectedElement)) {
       Set<Element> elementsInCycle = parameter.findCyclesContainingVertex(affectedElement);
       log.debug(
@@ -359,13 +364,16 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
    * returns a new sub graph with the concrete elements.
    */
   private UpdateAffectedGraphParameter createParameter(
-      FlyweightImpactInheritenceContext data, FlyweightElement affectedElement) {
+      FlyweightImpactInheritenceContext data,
+      FlyweightElement affectedElement,
+      Set<RiskAffected<?, ?>> riskAffectedCache) {
 
     Graph<FlyweightElement, FlyweightLink> elementSubGraph =
         new BiconnectivityInspector<>(data.completeGraph).getConnectedComponent(affectedElement);
 
     AbstractGraph<Element, CustomLink> elementGraph =
-        buildElementGraph(data.domain, data.unit, data.inheritanceLinkTypes, elementSubGraph);
+        buildElementGraph(
+            data.domain, data.unit, data.inheritanceLinkTypes, elementSubGraph, riskAffectedCache);
 
     if (log.isTraceEnabled()) {
       //     export dot graph
@@ -378,7 +386,12 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     }
 
     return new UpdateAffectedGraphParameter(
-        elementGraph, data.domain, data.catRefs, data.definitionRef, elementSubGraph);
+        elementGraph,
+        data.domain,
+        data.catRefs,
+        data.definitionRef,
+        elementSubGraph,
+        riskAffectedCache);
   }
 
   private FlyweightImpactInheritenceContext prepareData(
@@ -441,9 +454,12 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       Domain domain,
       Unit unit,
       Collection<String> inheritanceLinkTypes,
-      Graph<FlyweightElement, FlyweightLink> elementSubGraph) {
+      Graph<FlyweightElement, FlyweightLink> elementSubGraph,
+      Set<RiskAffected<?, ?>> riskAffectedCache) {
     Set<RiskAffected<?, ?>> riskAffectedElements =
-        loadRiskElements(unit, domain, toIds(elementSubGraph.vertexSet()));
+        riskAffectedCache == null
+            ? loadRiskElements(unit, domain, toIds(elementSubGraph.vertexSet()))
+            : mapIdsToRiskAffected(riskAffectedCache, toIds(elementSubGraph.vertexSet()));
     Map<String, RiskAffected<?, ?>> elementById =
         riskAffectedElements.stream().collect(toMap(Identifiable::getIdAsString, identity()));
 
@@ -544,6 +560,20 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     return allElements;
   }
 
+  /** Loads all elements in unit and domain as a filter. */
+  private Set<RiskAffected<?, ?>> loadAllRiskElements(Unit unit, Domain domain) {
+    long startTime = System.currentTimeMillis();
+
+    HashSet<RiskAffected<?, ?>> allElements = new HashSet<RiskAffected<?, ?>>(200);
+    allElements.addAll(queryElements(unit, domain, processRepository, null));
+    allElements.addAll(queryElements(unit, domain, assetRepository, null));
+    allElements.addAll(queryElements(unit, domain, scopeRepository, null));
+
+    long timeNeeded = System.currentTimeMillis() - startTime;
+    log.debug("loadRiskElements: {} elements loaded in {} ms", allElements.size(), timeNeeded);
+    return allElements;
+  }
+
   /** Queries the elements by ids. */
   private List<? extends RiskAffected<?, ?>> queryElements(
       Unit unit,
@@ -553,9 +583,18 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     ElementQuery<? extends RiskAffected<?, ?>> query = repository.query(unit.getClient());
     query.whereOwnerIs(unit);
     query.whereDomainsContain(domain);
-    query.whereIdIn(new QueryCondition<String>(ids));
+    if (ids != null) {
+      query.whereIdIn(new QueryCondition<String>(ids));
+    }
 
     return query.execute(PagingConfiguration.UNPAGED).getResultPage().stream().toList();
+  }
+
+  private Set<RiskAffected<?, ?>> mapIdsToRiskAffected(
+      Set<RiskAffected<?, ?>> allRiskElements, Set<String> ids) {
+    return allRiskElements.stream()
+        .filter(r -> ids.contains(r.getIdAsString()))
+        .collect(Collectors.toSet());
   }
 
   private RiskAffected<?, ?> saveAffectedElement(RiskAffected<?, ?> affectedElement) {

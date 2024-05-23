@@ -1052,11 +1052,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 1630
+            queryCounts.select == 409
             queryCounts.insert == 11
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 1500
+            queryCounts.time < 400
         }
     }
 
@@ -1298,11 +1298,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 24
+            queryCounts.select == 12
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 45
+            queryCounts.time < 25
         }
     }
 
@@ -1407,11 +1407,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 33
+            queryCounts.select == 12
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 45
+            queryCounts.time < 35
         }
     }
 
@@ -1473,11 +1473,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 51
+            queryCounts.select == 27
             queryCounts.insert == 1
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 50
         }
 
         when: "we calculate all roots for a unit"
@@ -1490,11 +1490,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         then:"no result is returned"
         verifyAll {
-            queryCounts.select == 51
+            queryCounts.select == 27
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 40
         }
 
         when: "we calculate all roots for a second domain with no risk definition"
