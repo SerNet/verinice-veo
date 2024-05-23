@@ -231,7 +231,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         })
 
         when: "Recalculate for the root element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, root)
@@ -287,7 +287,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         })
 
         when: "Recalculate for the root element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, root)
@@ -322,7 +322,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         startC = assetDataRepository.save(startC)
 
         when: "we change the startC element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, startC)
@@ -357,7 +357,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def listasset6 = buildAssetList(listasset5, unit, domain,"l6")
 
         when: "we change the l3 element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, listassetCircle)
@@ -376,7 +376,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we change the l0 element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, l0)
@@ -397,7 +397,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we change the l6 element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         listasset6 = executeInTransaction {
             listasset6 = assetDataRepository.findById(listasset6.getIdAsString()).get()
             listasset6.setImpactValues(domain, impactValues1)
@@ -434,7 +434,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
 
         when: "we calculate from a1"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             a1 = assetDataRepository.findById(a1.getIdAsString()).get()
@@ -494,7 +494,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of b2"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         b2 = executeInTransaction {
             b2 = assetDataRepository.findById(b2.getIdAsString()).get()
             b2.setImpactValues(domain, impactValues1)
@@ -528,7 +528,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we get calculate the impact for c2"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             c2 = assetDataRepository.findById(c2.getIdAsString()).get()
@@ -559,7 +559,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of c1 to 3"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         c1 = executeInTransaction {
             c1 = assetDataRepository.findById(c1.getIdAsString()).get()
             c1.setImpactValues(domain, impactValues2)
@@ -596,7 +596,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of b1"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         b1 = executeInTransaction {
             b1 = assetDataRepository.findById(b1.getIdAsString()).get()
             b1.setImpactValues(domain, impactValues3)
@@ -679,7 +679,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of b1"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         b1 = executeInTransaction {
             b1 = assetDataRepository.findById(b1.getIdAsString()).get()
             b1.setImpactValues(domain, impactValues1)
@@ -722,7 +722,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of c1"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         c1 = executeInTransaction {
             c1 = assetDataRepository.findById(c1.getIdAsString()).get()
             c1.setImpactValues(domain, impactValues2)
@@ -755,7 +755,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "We change the impact of b3"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         b3 = executeInTransaction {
             b3 = assetDataRepository.findById(b3.getIdAsString()).get()
             b3.setImpactValues(domain, impactValues3)
@@ -859,7 +859,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             })
         }
 
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
 
         when: "change the impact of process p-1-100"
         process = executeInTransaction {
@@ -902,7 +902,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             assetDataRepository.save(simpleAsset)
         }
 
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, a0)
@@ -929,7 +929,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             n.setImpactValues(domain, impactValues2)
             assetDataRepository.save(n)
         }
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, asset50)
@@ -950,7 +950,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
     }
 
     def "a big connected graph"() {
-        given: "A graph with 702 elements and 500 links"
+        given: "A graph with 402 elements and 500 links"
         def a0 = assetDataRepository.save(newAsset(unit) {
             name = "A-0"
             associateWithDomain(domain, "AST_Application", "NEW")
@@ -995,7 +995,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetDataRepository.save(assetsA[48])
         assetDataRepository.save(assetsB[88])
 
-        log.info("all saved elements {}", assetDataRepository.count())
+        log.debug("all saved elements {}", assetDataRepository.count())
 
         when: "recalculate the impact of a A-50"
         def asset50 = executeInTransaction {
@@ -1003,7 +1003,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             n.setImpactValues(domain, impactValues2)
             assetDataRepository.save(n)
         }
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, asset50)
@@ -1027,7 +1027,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "recalculate for whole unit"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1041,7 +1041,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }))
 
         def summary = elementByCount.entrySet().stream().collect(Collectors.summarizingInt({ it.getValue() }))
-        log.info("summary {}",summary)
+        log.debug("summary {}",summary)
 
         //402 relvant assets
         //B-48 -- B-0 3 times
@@ -1120,14 +1120,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             first = assetDataRepository.findById(first.idAsString).get()
             first.setImpactValues(domain, newImpactValue(confidentialityRef, firstImpact as String))
             first = assetDataRepository.save(first)
-            log.info("-> {}", first.name)
+            log.debug("-> {}", first.name)
 
             def second = this.dataDrivenAssets[secondAsset]
             second = assetDataRepository.findById(second.idAsString).get()
             second.setImpactValues(domain, newImpactValue(confidentialityRef, secondImpact as String))
             second = assetDataRepository.save(second)
 
-            log.info("{}", second.name)
+            log.debug("{}", second.name)
 
             def changed = impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, first)
             changed.forEach {assetDataRepository.save(it)}
@@ -1226,14 +1226,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             first = assetDataRepository.findById(first.idAsString).get()
             first.setImpactValues(domain, newImpactValue(confidentialityRef, firstImpact as String))
             first = assetDataRepository.save(first)
-            log.info("-> {}", first.name)
+            log.debug("-> {}", first.name)
 
             def second = this.dataDrivenAssets[secondAsset]
             second = assetDataRepository.findById(second.idAsString).get()
             second.setImpactValues(domain, newImpactValue(confidentialityRef, secondImpact as String))
             second = assetDataRepository.save(second)
 
-            log.info("{}", second.name)
+            log.debug("{}", second.name)
 
             try {
                 def changed = impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, first)
@@ -1280,7 +1280,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
 
         when: "we calculate for all roots"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1315,7 +1315,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetDataRepository.save(a1)
 
         when: "we calculate for all roots"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1358,7 +1358,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetDataRepository.save(a3)
 
         when: "we calculate for all roots"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1389,7 +1389,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetDataRepository.save(r2)
 
         and: "we calculate all roots in the unit"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1455,7 +1455,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         assetDataRepository.save(line2[0])
 
         when: "we calculate for all roots in unit"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1481,7 +1481,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we calculate all roots for a unit"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit)
@@ -1498,7 +1498,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we calculate all roots for a second domain with no risk definition"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, secondDomain)
@@ -1526,7 +1526,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         asset = assetDataRepository.save(asset)
 
         when: "we calculate for an element"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, asset)
@@ -1546,7 +1546,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we calculate for all roots in domain and riskdefinition"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit, domain, riskDefinitionId)
@@ -1566,7 +1566,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
 
         when: "we calculate for all roots in the unit"
-        log.info("---------------------------------------------")
+        log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         executeInTransaction {
             impactInheritanceCalculator.updateAllRootNodes(unit)
@@ -1587,7 +1587,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
     private void listLinks(Element a) {
         a.links.forEach{
-            log.info("{}->{}", it.source.designator,it.target.designator)
+            log.debug("{}->{}", it.source.designator,it.target.designator)
             listLinks(it.target)
         }
     }
