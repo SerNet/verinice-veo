@@ -25,9 +25,11 @@ buildCache {
     local {
         enabled = !isCiServer
     }
-    remote(HttpBuildCache) {
-        url = 'https://bob-2019.int.sernet.de:8090/cache/'
-        push = isCiServer
-        allowUntrustedServer = isCiServer
+    System.env.GRADLE_REMOTE_BUILD_CACHE_URL?.with { url->
+        remote(HttpBuildCache) {
+            it.url = url
+            push = isCiServer
+            allowUntrustedServer = isCiServer
+        }
     }
 }
