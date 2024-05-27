@@ -56,6 +56,7 @@ public interface ITypedCompoundId<
     return TypedId.from(getSecondId(), getSecondType());
   }
 
+  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
   static <T extends Identifiable> boolean equals(ITypedCompoundId<?, ?, ?> a, Object other) {
     return other instanceof ITypedCompoundId b
         && a.getFirstRef().equals(b.getFirstRef())

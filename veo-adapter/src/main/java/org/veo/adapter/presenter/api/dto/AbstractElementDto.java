@@ -55,6 +55,7 @@ public abstract class AbstractElementDto<T extends Element>
 
   @Override
   @JsonIgnore
+  @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
   public String getSelfId() {
     return null;
   }

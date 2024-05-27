@@ -35,7 +35,6 @@ import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -45,8 +44,12 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchemaProvider {
-  @Getter private static final SchemaProvider instance = new SchemaProvider();
+  private static final SchemaProvider INSTANCE = new SchemaProvider();
   private final SchemaGenerator schemaGenerator = createSchemaGenerator();
+
+  public static SchemaProvider getInstance() {
+    return INSTANCE;
+  }
 
   /** Generates JSON schema for given class. */
   public Supplier<ObjectNode> schema(Class<?> clazz) {

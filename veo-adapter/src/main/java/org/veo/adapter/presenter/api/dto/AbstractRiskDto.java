@@ -62,6 +62,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -70,6 +71,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+@Accessors(makeFinal = true)
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
     implements RiskState, ModelDto {
 

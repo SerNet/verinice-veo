@@ -22,7 +22,6 @@ import org.veo.core.entity.decision.DecisionReferenceFactory;
 import org.veo.core.entity.decision.DecisionRuleRef;
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -30,8 +29,12 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DecisionReferenceFactoryImpl extends DecisionReferenceFactory {
-  @Getter
-  private static final DecisionReferenceFactoryImpl instance = new DecisionReferenceFactoryImpl();
+
+  private static final DecisionReferenceFactoryImpl INSTANCE = new DecisionReferenceFactoryImpl();
+
+  public static DecisionReferenceFactoryImpl getInstance() {
+    return INSTANCE;
+  }
 
   @Override
   protected DecisionRef createDecisionRef(String key) {

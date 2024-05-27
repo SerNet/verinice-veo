@@ -71,6 +71,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
     implements NameableDto, ElementState<TElement>, DomainAssociationState {
   @Override
   @JsonIgnore
+  @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
   public String getSelfId() {
     return null;
   }

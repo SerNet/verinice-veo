@@ -27,9 +27,11 @@ import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+@Accessors(makeFinal = true)
 public abstract class AbstractVersionedDto {
   @Schema(
       description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",

@@ -44,7 +44,7 @@ public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessage
   }
 
   @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-  private class Dummy {}
+  private final class Dummy {}
 
   private static ObjectMapper configureCompactMapper(ObjectMapper defaultMapper) {
     var includeNonDefault = new JsonInclude.Value(Dummy.class.getAnnotation(JsonInclude.class));

@@ -38,6 +38,7 @@ public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
     return Key.uuidFrom(getId());
   }
 
+  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
   static <T extends Identifiable> boolean equals(ITypedId<?> a, Object other) {
     return other instanceof ITypedId b
         && a.getId().equals(b.getId())

@@ -49,6 +49,7 @@ public interface ITypedSymbolicId<
     return TypedId.from(getNamespaceId(), getNamespaceType());
   }
 
+  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
   static boolean equals(ITypedSymbolicId<?, ?> a, Object other) {
     return other instanceof ITypedSymbolicId b
         && a.getSymbolicId().equals(b.getSymbolicId())

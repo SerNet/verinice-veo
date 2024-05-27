@@ -103,7 +103,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     }
   }
 
-  class UpdateAffectedGraphParameter {
+  final class UpdateAffectedGraphParameter {
     AbstractGraph<Element, CustomLink> elementGraph;
     Domain domain;
     RiskDefinitionRef riskDefinitionRef;

@@ -21,11 +21,13 @@ import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @EqualsAndHashCode
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 /** Represents a concrete reference on a concrete {@link Element}. */
+@Accessors(makeFinal = true)
 public abstract class CatalogReferenceParameter {
   private String id;
   private Element referencedElement;

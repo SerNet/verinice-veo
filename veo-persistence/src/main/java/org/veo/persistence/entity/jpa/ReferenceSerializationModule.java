@@ -47,6 +47,7 @@ public class ReferenceSerializationModule extends SimpleModule {
 
   private static final long serialVersionUID = -786416108694458569L;
 
+  @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public ReferenceSerializationModule() {
     addSerializer(
         ImpactRef.class,

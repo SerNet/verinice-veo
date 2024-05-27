@@ -43,6 +43,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 public class RiskValue extends DiscreteValue {
 
+  @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public RiskValue(
       int ordinalValue,
       String htmlColor,

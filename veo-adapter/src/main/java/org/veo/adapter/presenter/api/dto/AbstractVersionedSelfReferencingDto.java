@@ -30,6 +30,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 /**
  * Implements all members of {@link org.veo.core.entity.Versioned} and has a self reference.
@@ -40,6 +41,7 @@ import lombok.Getter;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+@Accessors(makeFinal = true)
 public abstract class AbstractVersionedSelfReferencingDto extends AbstractVersionedDto {
   @JsonIgnore
   @Getter(AccessLevel.NONE)

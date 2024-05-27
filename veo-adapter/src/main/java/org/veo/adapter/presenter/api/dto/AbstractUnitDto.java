@@ -64,6 +64,7 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
   }
 
   @Override
+  @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
   public String getSelfId() {
     return null;
   }
