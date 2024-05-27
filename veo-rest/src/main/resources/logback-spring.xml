@@ -17,7 +17,7 @@
 			</layout>
 		</encoder>
 	</appender>
-	<root level="debug">
+	<root value="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>
 </configuration>
