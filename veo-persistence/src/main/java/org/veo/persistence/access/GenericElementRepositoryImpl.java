@@ -25,9 +25,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
@@ -57,7 +59,9 @@ import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
+import org.veo.persistence.entity.jpa.ControlImplementationData;
 import org.veo.persistence.entity.jpa.ElementData;
+import org.veo.persistence.entity.jpa.RequirementImplementationData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
@@ -108,19 +112,20 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Transactional
   public void deleteAll(Collection<Element> elements) {
     Set<Key<UUID>> elementKeys = elements.stream().map(Element::getId).collect(Collectors.toSet());
-    Set<String> elementUUIDs = elementKeys.stream().map(Key::uuidValue).collect(Collectors.toSet());
-    deleteLinksByTargets(elementUUIDs);
+    List<String> elementUUIDs = elementKeys.stream().map(Key::uuidValue).toList();
+    ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
+        .forEach(batch -> deleteLinksByTargets(Set.copyOf(batch)));
+
     elements.forEach(e -> e.getLinks().clear());
 
     // remove risks for all scenarios that are to be deleted
-    Set<ScenarioData> scenarios =
+    List<ScenarioData> scenarios =
         elements.stream()
             .filter(it -> it.getModelInterface().equals(Scenario.class))
             .map(ScenarioData.class::cast)
-            .collect(Collectors.toSet());
-    if (!scenarios.isEmpty()) {
-      removeRisks(scenarios);
-    }
+            .toList();
+    ListUtils.partition(scenarios, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
+        .forEach(this::removeRisks);
 
     // remove control and requirement implementations for all risk affected elements that are to be
     // deleted
@@ -134,7 +139,12 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     }
 
     // remove elements from scope members:
-    Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(elementUUIDs);
+    Set<Scope> scopes =
+        ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
+            .flatMap(
+                batch ->
+                    scopeDataRepository.findDistinctOthersByMemberIds(Set.copyOf(batch)).stream())
+            .collect(Collectors.toSet());
     scopes.stream()
         .map(ScopeData.class::cast)
         .forEach(scopeData -> scopeData.removeMembersById(elementKeys));
@@ -153,13 +163,15 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             Incident.class,
             Person.class);
 
-    dataRepository.deleteAll(
+    List<ElementData> sortedElements =
         elements.stream()
             .sorted(
                 Comparator.<Element, Integer>comparing(
                     it -> deletionOrder.indexOf(it.getModelInterface())))
             .map(ElementData.class::cast)
-            .toList());
+            .toList();
+    ListUtils.partition(sortedElements, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
+        .forEach(dataRepository::deleteAll);
   }
 
   private void removeCIsAndRIsFrom(Set<? extends RiskAffected> riskAffecteds) {
@@ -172,15 +184,27 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         });
   }
 
-  private void removeCIs(RiskAffected ra) {
-    ciRepository.deleteAll(ra.getControlImplementations());
+  private void removeCIs(RiskAffected<?, ?> ra) {
+    ListUtils.partition(
+            List.copyOf(ra.getControlImplementations()), VeoConstants.DB_QUERY_CHUNK_SIZE)
+        .stream()
+        .forEach(
+            chunk ->
+                ciRepository.deleteAll(
+                    chunk.stream().map(ControlImplementationData.class::cast).toList()));
   }
 
-  private void removeRIs(RiskAffected ra) {
-    riRepository.deleteAll(ra.getRequirementImplementations());
+  private void removeRIs(RiskAffected<?, ?> ra) {
+    ListUtils.partition(
+            List.copyOf(ra.getRequirementImplementations()), VeoConstants.DB_QUERY_CHUNK_SIZE)
+        .stream()
+        .forEach(
+            chunk ->
+                riRepository.deleteAll(
+                    chunk.stream().map(RequirementImplementationData.class::cast).toList()));
   }
 
-  private void removeRisks(Set<ScenarioData> scenarios) {
+  private void removeRisks(Collection<ScenarioData> scenarios) {
     // remove risks associated with these scenarios:
     var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
     assets.forEach(
