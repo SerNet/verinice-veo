@@ -3,7 +3,7 @@
 
 verinice.veo is a cloud-native application for managing information security and data protection.
 
-![Dashbaord of verinice.veo](doc/readme_pics/dashboard.png)
+![Dashboard of verinice.veo](doc/readme_pics/dashboard.png)
 
 
 ## Build
@@ -294,6 +294,48 @@ Use the following values:
 Click on 'Get New Access Token'. Enter your credentials. Then select the acquired token in the dropdown box 'Available Tokens'.
 
 You can now send your HTTP request. The access token will time out (usually after 1-5 minutes) nad has to be requested again for another request.
+
+## Microservices
+
+This repository is one of multiple microservices that are required to run the full verinice.veo application. The following microservices must run in tandem with this one:
+
+- [veo-web](https://github.com/SerNet/verinice-veo-web): The web frontend application
+- [veo-history](https://github.com/SerNet/verinice-veo-history): Retains an audit trail of all changes to entities
+- [veo-reporting](https://github.com/SerNet/verinice-veo-reporting): Creates reports in PDF and conceivably other formats
+- [veo-accounts](https://github.com/SerNet/verinice-veo-accounts): Manages user accounts and permissions from within the application
+- [veo-forms](https://github.com/SerNet/verinice-veo-forms): Manages form templates and form customizations
+
+Additionally, verinice.veo requires supporting infrastructure services:
+
+- [Keycloak](https://www.keycloak.org/): For authentication and authorization
+- [PostgreSQL](https://www.postgresql.org/): For data storage
+- [RabbitMQ](https://www.rabbitmq.com/): For event messaging between the services
+
+### Keycloak
+
+To configure the required Keycloak realm and client, you can use the exported realm configuration found in the `doc/keycloak-configuration` directory. The realm configuration contains all required scopes, groups, roles, and clients for the verinice.veo application.
+
+To import the realm configuration, open the Keycloak backend UI in your browser and navigate to Master(Realm-Dropdown) -> Create Realm -> "Drag resource file here".
+
+Afterwards you can rename the prepared verinice.veo client and adapt other settings as required (URLs, users, group memberships...).
+
+### PostgreSQL
+
+Most verinice.veo microservices require a PostgreSQL database. To create databases for all services you may execute the following commands:
+
+```bash
+	createdb -Uveo -Oveo veo
+	createdb -Uveo -Oveo forms
+	createdb -Uveo -Oveo history
+	createdb -Uveo -Oveo keycloak
+```
+
+### RabbitMQ
+
+RabbitMQ is used for event messaging between the verinice.veo services. The event dispatcher in the veo-rest service will forward generated application events to an external AMQP message broker. The dispatcher needs to be configured using the corresponding settings found in `application.yaml` in each project.
+
+The required exchanges and queues are created by the verinice.veo services automatically.
+
 
 ## Modules
 
