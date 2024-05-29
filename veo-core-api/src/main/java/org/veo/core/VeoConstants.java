@@ -19,4 +19,6 @@ package org.veo.core;
 
 public class VeoConstants {
   public static final String UUID_MESSAGE = "ID must be a valid UUID string following RFC 4122.";
+
+  public static final int DB_QUERY_CHUNK_SIZE = 10000;
 }

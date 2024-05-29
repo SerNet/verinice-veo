@@ -39,6 +39,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
@@ -335,7 +336,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   private void fullyLoadItems(List<String> ids) {
     var items =
-        ListUtils.partition(ids, 10000).stream()
+        ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
             .flatMap(
                 batch -> {
                   var chunk = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(batch);
@@ -355,7 +356,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   private void fullyLoadItems(Class<? extends Entity> type, List<TDataClass> items) {
     var ids = items.stream().map(Element::getIdAsString).toList();
-    ListUtils.partition(ids, 10000)
+    ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE)
         .forEach(
             batch -> {
               if (type.equals(Asset.class)) {
