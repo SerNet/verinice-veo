@@ -112,6 +112,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     deleteLinksByTargets(elementUUIDs);
     elements.forEach(e -> e.getLinks().clear());
 
+    // remove risks for all scenarios that are to be deleted
     Set<ScenarioData> scenarios =
         elements.stream()
             .filter(it -> it.getModelInterface().equals(Scenario.class))
@@ -121,6 +122,8 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
       removeRisks(scenarios);
     }
 
+    // remove control and requirement implementations for all risk affected elements that are to be
+    // deleted
     var riskAffecteds =
         elements.stream()
             .filter(it -> it.getClass().isAssignableFrom(RiskAffected.class))
@@ -136,6 +139,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         .map(ScopeData.class::cast)
         .forEach(scopeData -> scopeData.removeMembersById(elementKeys));
     elements.forEach(Element::remove);
+
     // First remove the owning side of bi-directional associations
     // (members/risks), then delete the other elements in a predictable order
     List<Class<? extends Object>> deletionOrder =
