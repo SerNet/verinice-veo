@@ -26,11 +26,19 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ControlRiskValues
+import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImpactValues
+import org.veo.core.entity.risk.ImplementationStatusRef
+import org.veo.core.entity.risk.PotentialProbability
+import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -71,7 +79,11 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem otherItem
     CatalogItem processImpactExample
     CatalogItem controlImpactExample
+    CatalogItem controlImpactExample1
+    CatalogItem controlImpactExample2
     CatalogItem scenarioProbabilityExample
+    CatalogItem scenarioProbabilityExample1
+    CatalogItem scenarioProbabilityExample2
     CatalogItem itemComposite
     CatalogItem itemPart
     CatalogItem itemScope
@@ -90,7 +102,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain = newDomain (client) {
                 description = "ISO/IEC"
                 abbreviation = "ISO"
-                name = "ISO"
+                name = "IT-Grundschutz"
                 authority = 'ta'
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
@@ -109,6 +121,12 @@ class CatalogSpec extends VeoMvcSpec {
                             ]
                         },
                         link_to_zz2: newLinkDefinition("control", "CTL_TOM") {
+                            attributeDefinitions = [
+                                control_comment: new TextAttributeDefinition(),
+                                control_operatingStage: new TextAttributeDefinition(),
+                            ]
+                        },
+                        control_relevantAppliedThreat: newLinkDefinition("scenario", "SCN_Scenario") {
                             attributeDefinitions = [
                                 control_comment: new TextAttributeDefinition(),
                                 control_operatingStage: new TextAttributeDefinition(),
@@ -265,62 +283,126 @@ class CatalogSpec extends VeoMvcSpec {
 
             processImpactExample = newCatalogItem(domain, {
                 elementType = "process"
-                subType = "PRO_DataProcessing"
+                subType = "normalProcess"
                 status = "NEW"
-                name = 'zzzp-impact'
+                name = 'processImpactExample'
                 description = "a process example entry"
 
-                //TODO:veo-2285
-                //                aspects = [
-                //                    (org.veo.core.entity.CatalogItem.PROCESS_RISK_VALUES): [
-                //                        (RISK_DEF_ID):  [
-                //                            "C" : 2
-                //                        ]
-                //                    ]
-                //                ]
+                aspects = new TemplateItemAspects(
+                        null,[
+                            (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
+                            (new ImpactValues([
+                                ( CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                .getCategory("C").get())):
+                                (
+                                ImpactRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                .getCategory("C").get().getLevel(2).get())
+                                )
+                            ])
+                            )]
+                        ,null)
             })
 
             controlImpactExample = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
-                name = 'zzzzc-impact'
+                name = 'controlImpactExample'
                 description = "a control example entry"
-                //                aspects = [
-                //                    (org.veo.core.entity.CatalogItem.CONTROL_RISK_VALUES):  [
-                //                        (RISK_DEF_ID): [
-                //                            "implementationStatus": 1
-                //                        ]
-                //                    ]
-                //                ]
+                aspects = new TemplateItemAspects(
+                        (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
+                        (new ControlRiskValues(
+                        ImplementationStatusRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                        .getCategory("C").get().getLevel(1).get()))
+                        )
+                        ,[:],[:])
+            })
+
+            controlImpactExample1 = newCatalogItem(domain, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'controlImpactExample1'
+                description = "a second control example entry"
+            })
+
+            controlImpactExample2 = newCatalogItem(domain, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'controlImpactExample2'
+                description = "a second control example entry"
             })
 
             scenarioProbabilityExample = newCatalogItem(domain, {
                 elementType = "scenario"
                 subType = "SCN_Scenario"
                 status = "NEW"
-                name = 'zzzzszsimpact'
+                name = 'scenarioProbabilityExample'
                 description = "a scenario example entry"
-                //                aspects = [
-                //                    (org.veo.core.entity.CatalogItem.SCENARIO_RISK_VALUES): [
-                //                        (RISK_DEF_ID): [
-                //                            "potentialProbability": 3
-                //                        ]]
-                //                ]
+                aspects = new TemplateItemAspects([:],[:],[
+                    (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
+                    (new PotentialProbability(
+                    ProbabilityRef.from(domain.riskDefinitions.get(RISK_DEF_ID).getProbability().getLevel(3).get())))
+                ])
             })
+
+            scenarioProbabilityExample1 = newCatalogItem(domain, {
+                elementType = "scenario"
+                subType = "SCN_Scenario"
+                status = "NEW"
+                name = 'scenarioProbabilityExample1'
+                description = "a scenario example entry"
+            })
+
+            scenarioProbabilityExample2 = newCatalogItem(domain, {
+                elementType = "scenario"
+                subType = "SCN_Scenario"
+                status = "NEW"
+                name = 'scenarioProbabilityExample2'
+                description = "a scenario example entry"
+            })
+
+            newLinkTailoringReference(controlImpactExample, scenarioProbabilityExample, TailoringReferenceType.LINK) {
+                linkType = "control_relevantAppliedThreat"
+            }
+            newLinkTailoringReference(scenarioProbabilityExample,controlImpactExample, TailoringReferenceType.LINK_EXTERNAL) {
+                linkType = "control_relevantAppliedThreat"
+            }
+
+            newLinkTailoringReference(controlImpactExample2, scenarioProbabilityExample1, TailoringReferenceType.LINK) {
+                linkType = "control_relevantAppliedThreat"
+            }
+            newLinkTailoringReference(scenarioProbabilityExample1,controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
+                linkType = "control_relevantAppliedThreat"
+            }
+
+            newLinkTailoringReference(controlImpactExample2, scenarioProbabilityExample2, TailoringReferenceType.LINK) {
+                linkType = "control_relevantAppliedThreat"
+            }
+            newLinkTailoringReference(scenarioProbabilityExample2,controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
+                linkType = "control_relevantAppliedThreat"
+            }
+
+            newLinkTailoringReference(controlImpactExample1, scenarioProbabilityExample2, TailoringReferenceType.LINK) {
+                linkType = "control_relevantAppliedThreat"
+            }
+            newLinkTailoringReference(scenarioProbabilityExample2,controlImpactExample1, TailoringReferenceType.LINK_EXTERNAL) {
+                linkType = "control_relevantAppliedThreat"
+            }
 
             itemComposite = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
-                name = 'zzzzzComposite'
+                name = 'itemComposite'
             })
 
             itemPart = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
-                name = 'zzzzzPart'
+                name = 'itemPart'
             })
 
             newTailoringReference(itemComposite, itemPart, TailoringReferenceType.PART)
@@ -330,13 +412,13 @@ class CatalogSpec extends VeoMvcSpec {
                 elementType = "scope"
                 subType = "kaleidoscope"
                 status = "NEW"
-                name = "zzScope"
+                name = "itemScope"
             }
             itemMember = newCatalogItem(domain) {
                 elementType = "process"
                 subType = "normalProcess"
                 status = "NEW"
-                name = "zzMember"
+                name = "itemMember"
             }
 
             newTailoringReference(itemMember, itemScope, TailoringReferenceType.SCOPE)
@@ -360,8 +442,28 @@ class CatalogSpec extends VeoMvcSpec {
             domain = client.domains.toList().get(0)
             domain1 = client.domains.toList().get(1)
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, itemMember, itemScope, processImpactExample,
-                    controlImpactExample, scenarioProbabilityExample, itemComposite, itemPart) = domain.catalogItems.sort{it.name}
+            item1 = domain.catalogItems.find{it.name == "c1"}
+            item2 = domain.catalogItems.find{it.name == "c2"}
+            item3 = domain.catalogItems.find{it.name == "c3"}
+            item4 = domain.catalogItems.find{it.name == "p1"}
+            item5 = domain.catalogItems.find{it.name == "p2"}
+            item6 = domain.catalogItems.find{it.name == "p3-all-features"}
+            item7 = domain.catalogItems.find{it.name == "tom1"}
+            zz1 = domain.catalogItems.find{it.name == "zz1"}
+            zz2 = domain.catalogItems.find{it.name == "zz2"}
+            itemMember = domain.catalogItems.find{it.name == "c1"}
+            itemScope = domain.catalogItems.find{it.name == "c1"}
+            processImpactExample = domain.catalogItems.find{it.name == "processImpactExample"}
+            controlImpactExample = domain.catalogItems.find{it.name == "controlImpactExample"}
+            controlImpactExample1 = domain.catalogItems.find{it.name == "controlImpactExample1"}
+            controlImpactExample2 = domain.catalogItems.find{it.name == "controlImpactExample2"}
+            scenarioProbabilityExample = domain.catalogItems.find{it.name == "scenarioProbabilityExample"}
+            scenarioProbabilityExample1 = domain.catalogItems.find{it.name == "scenarioProbabilityExample1"}
+            scenarioProbabilityExample2 = domain.catalogItems.find{it.name == "scenarioProbabilityExample2"}
+            itemComposite = domain.catalogItems.find{it.name == "itemComposite"}
+            itemPart = domain.catalogItems.find{it.name == "itemPart"}
+            itemScope = domain.catalogItems.find{it.name == "itemScope"}
+            itemMember = domain.catalogItems.find{it.name == "itemMember"}
 
             secondClient = newClient() {
                 it.name = "the other"

@@ -26,6 +26,7 @@ import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 
 import spock.lang.Ignore
+import spock.lang.Issue
 
 class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     def basePath ="units"
@@ -68,7 +69,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalog items"
 
         when: "trying to retrieve incarnation descriptions for another client's catalog item"
-        get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.symbolicIdAsString}", 404)
+        get("/${basePath}/${unit.id.uuidValue()}/domains/$domain3.idAsString/incarnation-descriptions?itemIds=${otherItem.symbolicIdAsString}", 404)
 
         then:
         thrown(NotFoundException)
@@ -402,7 +403,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         thrown(UnprocessableDataException)
     }
 
-    @Ignore("VEO-2285")
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for processImpactExample and post"() {
         given: "the created catalogitems"
@@ -428,53 +428,29 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
     }
 
-    @Ignore("VEO-2285")
     @WithUserDetails("user@domain.example")
-    def "retrieve the apply info for controlImpactExample and post"() {
-        given: "the created catalogitems"
+    def "retrieve the apply info for scenarioProbabilityExample and post"() {
+        when: "a request is made to the server to create a scenarioProbabilityExample element"
+        def result = getIncarnationDescriptions([scenarioProbabilityExample])
 
-        when: "a request is made to the server to create a controlImpactExample element"
-        def result = getIncarnationDescriptions([controlImpactExample], "MANUAL")
+        then: "it contains 2 elements to create, scenarioProbabilityExample and the linked control"
+        result.parameters.size() == 2
 
-        then: "it contains 1 elements to create, controlImpactExample"
-        result.parameters.size() == 1
-
-        when: "we create controlImpactExample"
+        when: "we create scenarioProbabilityExample and the linked control"
         def postResult = postIncarnationDescriptions(result)
 
-        then: "1 objects are created"
-        postResult.size() == 1
+        then: "2 objects are created"
+        postResult.size() == 2
 
-        when: "we get the created Control"
-        def controlResult = parseJson(get(postResult[0].targetUri))
+        when: "we get the created scenario and the control"
+        def scenarioResult = parseJson(get(postResult[0].targetUri))
+        def controlResult = parseJson(get(postResult[1].targetUri))
 
         then: "the control is created and the risk values are set"
         validateNewElementAgainstCatalogItem(controlResult, controlImpactExample, domain)
-        controlResult.owner.displayName == 'Test unit'
         controlResult.domains[domain.id.uuidValue()].riskValues.id.implementationStatus == 1
-    }
 
-    @Ignore("VEO-2285")
-    @WithUserDetails("user@domain.example")
-    def "retrieve the apply info for scenarioProbabilityExample and post"() {
-        given: "the created catalogitems"
-
-        when: "a request is made to the server to create a scenarioProbabilityExample element"
-        def result = getIncarnationDescriptions([scenarioProbabilityExample], "MANUAL")
-
-        then: "it contains 1 elements to create, scenarioProbabilityExample"
-        result.parameters.size() == 1
-
-        when: "we create scenarioProbabilityExample"
-        def postResult = postIncarnationDescriptions(result)
-
-        then: "1 objects are created"
-        postResult.size() == 1
-
-        when: "we get the created scenario"
-        def scenarioResult = parseJson(get(postResult[0].targetUri))
-
-        then: "the scenario is created and the risk values are set"
+        and: "the scenario is created and the risk values are set"
         validateNewElementAgainstCatalogItem(scenarioResult, scenarioProbabilityExample, domain)
         scenarioResult.owner.displayName == 'Test unit'
         scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3
@@ -522,7 +498,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "can not apply"
         def upEx = thrown(UnprocessableDataException)
-        upEx.message == "CatalogItem zzzzzComposite not included in request but required by zzzzzPart."
+        upEx.message == "CatalogItem itemComposite not included in request but required by itemPart."
 
         when: "we create a control"
         getResult = getIncarnationDescriptions([item1], "MANUAL")
@@ -562,23 +538,23 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "only the part is included with a reference to the existing composite element"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName == "zzzzzPart"
-        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzComposite/
+        result.parameters[0].item.displayName == "itemPart"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemComposite/
 
         when: "we get itemPart in resolve all mode but exclude links"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}&exclude=LINK"))
 
         then: "only the part is included with a reference to the existing composite element"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName == "zzzzzPart"
-        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzComposite/
+        result.parameters[0].item.displayName == "itemPart"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemComposite/
 
         when: "we get itemPart in resolve all mode but exclude composite"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}&exclude=COMPOSITE"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName  =="zzzzzPart"
+        result.parameters[0].item.displayName  =="itemPart"
         result.parameters[0].references.size() == 0
 
         when: "we get itemPart in manual mode but exclude composite"
@@ -586,7 +562,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "one is included without reference"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName  =="zzzzzPart"
+        result.parameters[0].item.displayName  =="itemPart"
         result.parameters[0].references.size() == 0
 
         when: "we get itemComposite in resolve all mode but exclude links"
@@ -594,15 +570,15 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "only the composite is included with a reference to the existing part element"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName == "zzzzzComposite"
-        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ zzzzzPart/
+        result.parameters[0].item.displayName == "itemComposite"
+        result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemPart/
 
         when: "we get itemComposite in resolve all mode but exclude PART"
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.symbolicIdAsString}&exclude=PART"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName  =="zzzzzComposite"
+        result.parameters[0].item.displayName  =="itemComposite"
         result.parameters[0].references.size() == 0
 
         when: "we get itemComposite in manual mode but exclude PART"
@@ -610,7 +586,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "one is included without reference"
         result.parameters.size() == 1
-        result.parameters[0].item.displayName  =="zzzzzComposite"
+        result.parameters[0].item.displayName  =="itemComposite"
         result.parameters[0].references.size() == 0
     }
 
@@ -694,7 +670,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the part is gone"
         with(parseJson(get(compositeUri))) {
-            name == 'zzzzzComposite'
+            name == 'itemComposite'
             parts.size() == 0
         }
 
@@ -711,14 +687,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the part is created"
         with(parseJson(get(elementRef[0].targetUri))) {
             elementRef.size() == 1
-            name == 'zzzzzPart'
+            name == 'itemPart'
         }
 
         and: "the reference is restored"
         with(parseJson(get(compositeUri))) {
-            name == 'zzzzzComposite'
+            name == 'itemComposite'
             parts.size() == 1
-            parts[0].name == 'zzzzzPart'
+            parts[0].name == 'itemPart'
         }
 
         when:"all parts are present and we create incarnation descriptions using existing incarnations"
@@ -738,12 +714,311 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the scope from the catalog has been applied"
         scopes.size() == 1
-        scopes[0].name == "zzScope"
+        scopes[0].name == "itemScope"
 
         and: "it references the created member"
         scopes[0].members.size() == 1
-        scopes[0].members[0].name == "zzMember"
+        scopes[0].members[0].name == "itemMember"
         scopes[0].members[0].targetUri == memberUri
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "apply processImpactExample"() {
+        when: "applying process and control with scenario"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+        def result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample]))
+        def controlUri = result[0].targetUri
+        def scenarioUri = result[1].targetUri
+
+        and: "fetching the process"
+        def process = parseJson(get(processUri))
+        def control = parseJson(get(controlUri))
+
+        then: "the process from the catalog has been applied"
+        process.name == "processImpactExample"
+
+        when: "we delete the scenario"
+        delete(scenarioUri)
+        and : "we reapply the control"
+        result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample],"DEFAULT","ALWAYS"))
+
+        then: "the scenario is restored"
+        result.size() == 1
+        result[0].name == "scenarioProbabilityExample"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "apply processImpact without scenario"() {
+        when: "incarnating a process"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        and:"create the control without scenario"
+        def result = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                )
+
+        def controlUri = result[0].targetUri
+
+        and: "fetching the process"
+        def process = parseJson(get(processUri))
+        def control = parseJson(get(controlUri))
+
+        then: "the process from the catalog has been applied"
+        process.name == "processImpactExample"
+
+        when : "we reapply the item member"
+        result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample],"DEFAULT","ALWAYS"))
+
+        then: "the scenario is created"
+        result.size() == 1
+        result[0].name == "scenarioProbabilityExample"
+    }
+
+    @Ignore @Issue('verinice-veo#2969')
+    @WithUserDetails("user@domain.example")
+    def "apply processImpact serveral control incarnations"() {
+        when: "incarnating a process"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        and:"create the control without scenario"
+        3.times {
+            postIncarnationDescriptions(
+                    parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                    )
+        }
+
+        and: "fetching the process"
+        def process = parseJson(get(processUri))
+
+        then: "the process from the catalog has been applied"
+        process.name == "processImpactExample"
+
+        when : "we reapply the control"
+        def result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample],"DEFAULT","ALWAYS"))
+        def scenario = parseJson(get(result[0].targetUri))
+
+        def controls = parseJson(get("/domains/${domain.id.uuidValue()}/controls"))
+
+        then: "the scenario is created"
+        result.size() == 1
+        result[0].name == "scenarioProbabilityExample"
+
+        and: "the link is in all controls restored"
+        controls.items.size() == 3
+        controls.items[0].links.control_relevantAppliedThreat[0].target.name == result[0].name
+        controls.items[1].links.control_relevantAppliedThreat[0].target.name == result[0].name
+        controls.items[2].links.control_relevantAppliedThreat[0].target.name == result[0].name
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "threat overview"() {
+        when: "incarnating a process"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        and:"create the control without scenario"
+        def result = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                )
+
+        def controlUri = result[0].targetUri
+
+        and: "fetching the process"
+        def process = parseJson(get(processUri))
+        def control = parseJson(get(controlUri))
+
+        then: "the process from the catalog has been applied"
+        process.name == "processImpactExample"
+
+        when: "we add a controlImplementation to the process"
+        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+            def body = parseJson(it)
+            body.controlImplementations= [
+                [
+                    control: [targetUri: (controlUri)],
+                    description: "no reasons",
+                ]
+            ]
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        and : "we execute the threatOverview action"
+        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+
+        then: "the scenario and risk is created"
+        result.createdEntities.size() == 2
+        result.createdEntities.designator ==~ ["RSK-1", "SCN-1"]
+
+        when:"we get the control again"
+        control = parseJson(get(controlUri))
+
+        then: "the control is now linked to the scenario"
+        control.links.control_relevantAppliedThreat[0].target.name == "scenarioProbabilityExample"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "threat overview and existing scenario"() {
+        when: "applying a process, an unlinked control and a scenario"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        def controlUri = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                )[0].targetUri
+        def scenarioUri = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${scenarioProbabilityExample.symbolicIdAsString}&exclude=LINK_EXTERNAL"))
+                )[0].targetUri
+
+        and: "fetching the elements"
+        def process = parseJson(get(processUri))
+        def control = parseJson(get(controlUri))
+        def scenario = parseJson(get(scenarioUri))
+
+        then: "the control is not linked"
+        control.links.size() == 0
+
+        when: "we add a controlImplementation to the process"
+        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+            def body = parseJson(it)
+            body.controlImplementations= [
+                [
+                    control: [targetUri: (controlUri)],
+                    description: "no reasons",
+                ]
+            ]
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        and : "we execute the threatOverview action"
+        def result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+
+        then: "the risk is created"
+        result.createdEntities.size() == 1
+        result.createdEntities[0].designator == "RSK-1"
+
+        when:"we get the control again"
+        control = parseJson(get(controlUri))
+
+        then: "the control is now linked to the scenario"
+        control.links.control_relevantAppliedThreat[0].target.name == scenario.name
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "threat overview two processes"() {
+        when: "incarnating a process"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        and:"create the control without scenario"
+        def result = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample1.symbolicIdAsString}&exclude=LINK"))
+                )
+
+        def controlUri1 = result[0].targetUri
+
+        and: "fetching the process"
+        def process = parseJson(get(processUri))
+
+        then: "the process from the catalog has been applied"
+        process.name == "processImpactExample"
+
+        when: "we add a controlImplementation to the process"
+        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+            def body = parseJson(it)
+            body.controlImplementations= [
+                [
+                    control: [targetUri: (controlUri1)],
+                    description: "no reasons",
+                ]
+            ]
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        and : "we execute the threatOverview action"
+        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+
+        then: "the scenario and risk are created"
+        result.createdEntities.size() == 2
+        result.createdEntities.designator ==~ ["RSK-1", "SCN-1"]
+
+        when:"we get the control again"
+        def control = parseJson(get(controlUri1))
+
+        then: "the control is now linked to the scenario"
+        control.links.control_relevantAppliedThreat[0].target.name == "scenarioProbabilityExample2"
+
+        when: "we create a new process"
+        processUri = postIncarnationDescriptions(getIncarnationDescriptions([item4]))[0].targetUri
+        process = parseJson(get(processUri))
+
+        and: "another control linked with another scenario"
+        def controlUri2 = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample2.symbolicIdAsString}&exclude=LINK"))
+                )[0].targetUri
+
+        and: "we add a controlImplementation to the process"
+        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+            def body = parseJson(it)
+            body.controlImplementations= [
+                [
+                    control: [targetUri: (controlUri1)],
+                    description: "no reasons",
+                ],
+                [
+                    control: [targetUri: (controlUri2)],
+                    description: "no reasons",
+                ]
+            ]
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        and : "we execute the threatOverview action"
+        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+
+        then: "the risks are created and the missing scenario"
+        result.createdEntities.size() == 3
+        result.createdEntities.designator ==~ ["RSK-3", "RSK-2", "SCN-2"]
+
+        when:"we get the control again"
+        control = parseJson(get(controlUri1))
+        def control1 = parseJson(get(controlUri2))
+
+        then: "the control is now linked to the scenario"
+        control.links.control_relevantAppliedThreat[0].target.name == "scenarioProbabilityExample2"
+        control1.links.control_relevantAppliedThreat.target.name ==~ [
+            'scenarioProbabilityExample1',
+            'scenarioProbabilityExample2'
+        ]
+    }
+
+    @Ignore @Issue('verinice-veo#852')
+    @WithUserDetails("user@domain.example")
+    def "apply processImpact and existing scenario"() {
+        when: "applying a process, an unlinked control and a scenario"
+        def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
+
+        def result = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                )
+        def scenarioUri = postIncarnationDescriptions(
+                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${scenarioProbabilityExample.symbolicIdAsString}&exclude=LINK_EXTERNAL"))
+                )[0].targetUri
+
+        and: "fetching the control"
+        def control = parseJson(get(result[0].targetUri))
+
+        then: "the control is created but not the scenario"
+        result.size() == 1
+        control.name == "zzzzc-impact"
+
+        and: "the the control is not linked"
+        control.links.size() == 0
+
+        when : "we reapply the control"
+        result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample],"DEFAULT","ALWAYS"))
+        control = parseJson(get(result[0].targetUri))
+        def scenario = parseJson(get(scenarioUri))
+
+        then: "the scenario is not restored"
+        result.size() == 1
+        control.links.control_relevantAppliedThreat[0].target.name == scenario.name
     }
 
     private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT",  String useExistingIncarnations="FOR_REFERENCED_ITEMS") {
