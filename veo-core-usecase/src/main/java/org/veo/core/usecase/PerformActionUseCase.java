@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,28 +33,35 @@ import org.veo.core.entity.Action;
 import org.veo.core.entity.ActionResult;
 import org.veo.core.entity.ActionStep;
 import org.veo.core.entity.AddRisksStep;
+import org.veo.core.entity.ApplyLinkTailoringReferences;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
-import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ReapplyCatalogItemsStep;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.PagedResult;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
+import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class PerformActionUseCase
     implements TransactionalUseCase<
@@ -63,6 +72,7 @@ public class PerformActionUseCase
   private final GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
   private final ApplyCatalogIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
   private final DesignatorService designatorService;
+  private final EntityFactory factory;
 
   @Override
   public boolean isReadOnly() {
@@ -118,29 +128,105 @@ public class PerformActionUseCase
                   });
         }
       }
-      case ReapplyCatalogItemsStep reapplyCatalogItemsStep -> {
-        var catalogItemIds =
-            reapplyCatalogItemsStep.getIncarnations(element, domain).stream()
-                .flatMap(c -> c.getAppliedCatalogItems().stream())
-                .filter(ci -> ci.requireDomainMembership().equals(domain))
-                .map(SymIdentifiable::getSymbolicId)
-                .distinct()
-                .toList();
-        createdEntities.addAll(
-            reapplyCatalogItems(
-                catalogItemIds,
-                element.getOwner(),
-                domain,
-                Optional.ofNullable(reapplyCatalogItemsStep.getConfig())
-                    .orElse(domain.getIncarnationConfiguration())));
+      case ApplyLinkTailoringReferences createLinkedScenarios -> {
+        Set<Element> controls = createLinkedScenarios.getControls(element, domain);
+        controls.forEach(
+            control -> {
+              var controlCatalogItem = getCatalogItem(domain, control);
+              if (controlCatalogItem == null) {
+                log.debug(
+                    "Control '{}' has no applied catalogItem ... skipping", control.getName());
+                return;
+              }
+
+              Set<CatalogItem> scenarios =
+                  getScenarios(controlCatalogItem, createLinkedScenarios.getLinkType());
+              if (scenarios.isEmpty()) {
+                log.info(
+                    "CatalogItem '{}' has no connections to any scenario.", controlCatalogItem);
+                return;
+              }
+
+              List<Element> existingScenarios =
+                  loadExistingIncarnations(domain, scenarios, element.getOwner());
+              var newScenarios =
+                  applyIncarnationDescriptionUseCase
+                      .execute(
+                          new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                              domain.getOwningClient().get(),
+                              element.getOwner().getId(),
+                              scenarios.stream()
+                                  .filter(notIncarnated(existingScenarios))
+                                  .map(
+                                      item ->
+                                          (TemplateItemIncarnationDescriptionState<
+                                                  CatalogItem, DomainBase>)
+                                              new TemplateItemIncarnationDescription<>(
+                                                  item, List.of()))
+                                  .toList()))
+                      .newElements();
+              createdEntities.addAll(newScenarios);
+              Stream.concat(existingScenarios.stream(), newScenarios.stream())
+                  .forEach(
+                      scenario ->
+                          createLink(
+                              domain, control, scenario, createLinkedScenarios.getLinkType()));
+            });
       }
     }
     return new ActionResult(createdEntities);
   }
 
-  private List<Element> reapplyCatalogItems(
-      List<Key<UUID>> catalogItemIds, Unit unit, Domain domain, IncarnationConfiguration config) {
-    // TODO #852 pass "re-apply" flag
+  private Set<CatalogItem> getScenarios(CatalogItem controlCatalogItem, String linkType) {
+    return controlCatalogItem.getTailoringReferences().stream()
+        .filter(l -> l.isLinkRef(linkType))
+        .map(TailoringReference::getTarget)
+        .collect(Collectors.toSet());
+  }
+
+  private CatalogItem getCatalogItem(Domain domain, Element control) {
+    Optional<CatalogItem> appliedControl =
+        control.getAppliedCatalogItems().stream()
+            .filter(ci -> ci.requireDomainMembership().equals(domain))
+            .findFirst();
+    CatalogItem controlCatalogItem = appliedControl.orElse(null);
+    return controlCatalogItem;
+  }
+
+  private Predicate<? super CatalogItem> notIncarnated(List<Element> existingScenarios) {
+    return s -> existingScenarios.stream().noneMatch(es -> es.getAppliedCatalogItems().contains(s));
+  }
+
+  private void createLink(Domain domain, Element control, Element scenario, String linkType) {
+    control.getLinks(domain).stream()
+        .filter(l -> l.getTarget().equals(scenario) && l.getType().equals(linkType))
+        .findAny()
+        .ifPresentOrElse(
+            el -> {
+              log.debug("Skip existing link {}", el);
+            },
+            () -> {
+              control.addLink(factory.createCustomLink(scenario, control, linkType, domain));
+              genericElementRepository.saveAll(List.of(control));
+            });
+  }
+
+  private void incarnateScenarios(
+      Unit unit,
+      Domain domain,
+      Set<Entity> createdEntities,
+      ApplyLinkTailoringReferences createLinkedScenariosStep,
+      Element control,
+      CatalogItem controlCatalogItem,
+      List<Key<UUID>> scenarioCatalogItems) {
+
+    if (scenarioCatalogItems.isEmpty()) {
+      return;
+    }
+    var config =
+        Optional.ofNullable(createLinkedScenariosStep.getConfig())
+            .orElse(domain.getIncarnationConfiguration());
+
     var incarnationDescriptions =
         getIncarnationDescriptionUseCase
             .execute(
@@ -148,20 +234,69 @@ public class PerformActionUseCase
                     unit.getClient(),
                     unit.getId(),
                     domain.getId(),
-                    catalogItemIds,
+                    scenarioCatalogItems,
                     config.mode(),
                     config.useExistingIncarnations(),
                     config.include(),
                     config.exclude()))
-            .references()
-            .stream()
-            .map(r -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) r)
-            .toList();
-    return applyIncarnationDescriptionUseCase
-        .execute(
-            new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                unit.getClient(), unit.getId(), incarnationDescriptions))
-        .newElements();
+            .references();
+
+    incarnationDescriptions.stream()
+        .forEach(
+            icd -> {
+              var trp =
+                  getReferenceParameterForReference(
+                      icd,
+                      getTailoringReferences(
+                          controlCatalogItem, icd, createLinkedScenariosStep.getLinkType()));
+
+              trp.setReferencedElement(control);
+              icd.setReferences(List.of(trp));
+            });
+
+    List<Element> newScenario =
+        applyIncarnationDescriptionUseCase
+            .execute(
+                new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                    unit.getClient(),
+                    unit.getId(),
+                    incarnationDescriptions.stream()
+                        .map(
+                            r ->
+                                (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>)
+                                    r)
+                        .toList()))
+            .newElements();
+
+    createdEntities.addAll(newScenario);
+  }
+
+  private TailoringReferenceParameter getReferenceParameterForReference(
+      TemplateItemIncarnationDescription<CatalogItem, DomainBase> icd,
+      TailoringReference<CatalogItem, DomainBase> reference) {
+    return icd.getReferences().stream()
+        .filter(r -> r.getId().equals(reference.getIdAsString()))
+        .findAny()
+        .orElseThrow();
+  }
+
+  private TailoringReference<CatalogItem, DomainBase> getTailoringReferences(
+      CatalogItem controlCatalogItem,
+      TemplateItemIncarnationDescription<CatalogItem, DomainBase> incarnationDescription,
+      String linkType) {
+    return incarnationDescription.getItem().getTailoringReferences().stream()
+        .filter(l -> l.isLinkRef(linkType) && l.getTarget().equals(controlCatalogItem))
+        .findAny()
+        .orElseThrow();
+  }
+
+  private List<Element> loadExistingIncarnations(Domain domain, Set<CatalogItem> items, Unit unit) {
+    ElementQuery<Element> query = genericElementRepository.query(domain.getOwner());
+    query.whereAppliedItemsContain(items);
+    query.whereOwnerIs(unit);
+    query.fetchAppliedCatalogItems();
+    PagedResult<Element> result = query.execute(PagingConfiguration.UNPAGED);
+    return result.getResultPage();
   }
 
   public record InputData(

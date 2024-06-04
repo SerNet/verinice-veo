@@ -1295,14 +1295,16 @@ public class ModuleConfiguration {
       GenericElementRepository elementRepository,
       GetCatalogIncarnationDescriptionUseCase getCatalogIncarnationDescriptionUseCase,
       ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase,
-      DesignatorService designatorService) {
+      DesignatorService designatorService,
+      EntityFactory factory) {
     return new PerformActionUseCase(
         clientRepository,
         domainRepository,
         elementRepository,
         getCatalogIncarnationDescriptionUseCase,
         applyCatalogIncarnationDescriptionUseCase,
-        designatorService);
+        designatorService,
+        factory);
   }
 
   @Bean

@@ -37,14 +37,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @Valid
-public final class ReapplyCatalogItemsStep extends ActionStep {
-  /** Elements whose catalog item should be re-applied */
+public final class ApplyLinkTailoringReferences extends ActionStep {
+
   @NotNull private VeoExpression incarnations;
 
   private IncarnationConfiguration config;
+  private String linkType;
 
   @JsonIgnore
-  public Set<Element> getIncarnations(Element element, Domain domain) {
+  public Set<Element> getControls(Element element, Domain domain) {
     var targets = incarnations.getValue(element, domain);
     if (targets instanceof Collection<?> elements) {
       return elements.stream()

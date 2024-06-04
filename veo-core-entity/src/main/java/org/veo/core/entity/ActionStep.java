@@ -24,6 +24,6 @@ package org.veo.core.entity;
  * code for action steps does not live in the action step classes themselves, but in the use case
  * layer. The sealed class structure aids in this external implementation approach.
  */
-public abstract sealed class ActionStep permits AddRisksStep, ReapplyCatalogItemsStep {
+public abstract sealed class ActionStep permits AddRisksStep, ApplyLinkTailoringReferences {
   abstract void selfValidate(Domain domain, String elementType);
 }

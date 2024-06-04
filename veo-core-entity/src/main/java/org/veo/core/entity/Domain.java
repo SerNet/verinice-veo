@@ -94,11 +94,11 @@ public interface Domain extends DomainBase, ClientOwned {
                       "Draw up threat overview")),
               Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM),
               List.of(
-                  new ReapplyCatalogItemsStep(
+                  new ApplyLinkTailoringReferences(
                       new ImplementedRequirementsExpression(new CurrentElementExpression()),
                       new IncarnationConfiguration(
-                          IncarnationRequestModeType.DEFAULT,
-                          IncarnationLookup.ALWAYS,
+                          IncarnationRequestModeType.MANUAL,
+                          IncarnationLookup.NEVER,
                           // #852 only include LINKs.
                           // The LINK tailoring reference currently cannot be applied, because it
                           // originates on the control itself. The control is already incarnated,
@@ -108,8 +108,14 @@ public interface Domain extends DomainBase, ClientOwned {
                           // can be applied successfully if the linked scenario does not exist yet.
                           // The current implementation cannot create the link if both the control
                           // and the scenario are already incarnated, that will only work with #852.
-                          Set.of(TailoringReferenceType.LINK, TailoringReferenceType.LINK_EXTERNAL),
-                          null)),
+                          //                          Set.of(TailoringReferenceType.LINK,
+                          // TailoringReferenceType.LINK_EXTERNAL),
+                          Set.of(
+                              TailoringReferenceType.COMPOSITE,
+                              TailoringReferenceType.PART,
+                              TailoringReferenceType.LINK_EXTERNAL),
+                          null),
+                      "control_relevantAppliedThreat"),
                   new AddRisksStep(
                       new LinkTargetsExpression(
                           new ImplementedRequirementsExpression(new CurrentElementExpression()),
