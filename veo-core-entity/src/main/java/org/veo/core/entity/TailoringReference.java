@@ -49,6 +49,15 @@ public interface TailoringReference<
 
   void setReferenceType(TailoringReferenceType aReferenceType);
 
+  default boolean isLinkRef() {
+    return getReferenceType() == TailoringReferenceType.LINK
+        || getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
+  }
+
+  default boolean isLinkRef(String linkType) {
+    return false;
+  }
+
   default boolean isCopyRef() {
     return getReferenceType() == TailoringReferenceType.COPY
         || getReferenceType() == TailoringReferenceType.COPY_ALWAYS;

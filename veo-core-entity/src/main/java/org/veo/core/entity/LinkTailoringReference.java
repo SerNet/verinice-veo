@@ -48,4 +48,8 @@ public interface LinkTailoringReference<
     }
     return getTarget();
   }
+
+  default boolean isLinkRef(String linkType) {
+    return getLinkType().equals(linkType);
+  }
 }
