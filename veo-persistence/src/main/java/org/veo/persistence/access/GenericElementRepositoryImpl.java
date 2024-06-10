@@ -131,7 +131,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     // deleted
     var riskAffecteds =
         elements.stream()
-            .filter(it -> it.getClass().isAssignableFrom(RiskAffected.class))
+            .filter(RiskAffected.class::isInstance)
             .map(RiskAffected.class::cast)
             .collect(Collectors.toSet());
     if (!riskAffecteds.isEmpty()) {
