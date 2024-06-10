@@ -151,8 +151,8 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
         result.items.each { assert it.risks != null }
 
         and: "the number of read rows is acceptable"
-        // 120 is the currently observed count of 105 rows plus an acceptable safety margin
-        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBeforeQuery < 120
+        // 135 is the currently observed count of 125 rows plus an acceptable safety margin
+        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBeforeQuery < 135
     }
 
     private postRisk2(String processId, String scenario2Id) {

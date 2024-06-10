@@ -131,6 +131,9 @@ public class GetElementsUseCase
     if (input.embedRisks) {
       query.fetchRisks();
     }
+    query.fetchControlImplementations();
+    query.fetchRequirementImplementations();
+    query.fetchRiskValuesAspects();
   }
 
   @Valid
