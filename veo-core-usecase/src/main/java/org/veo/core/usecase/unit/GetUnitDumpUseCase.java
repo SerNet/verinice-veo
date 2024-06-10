@@ -72,6 +72,7 @@ public class GetUnitDumpUseCase
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
     query.fetchControlImplementations();
+    query.fetchRequirementImplementations();
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
