@@ -98,9 +98,6 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             def unit = unitDataRepository.save( newUnit(client).tap { unit->
                 addToDomains(testDomain)
             })
-            def assets = assetDataRepository.saveAll((0..99).collect{
-                newAsset(unit)
-            })
             def documents = documentDataRepository.saveAll((0..99).collect{
                 newDocument(unit)
             })
@@ -116,6 +113,22 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             def controls = controlDataRepository.saveAll((0..99).collect{
                 newControl(unit)
             })
+            def assets = assetDataRepository.saveAll((0..99).collect{ i->
+                newAsset(unit).tap {
+                    associateWithDomain(testDomain, 'AST_Application', 'NEw')
+                    obtainRisk(scenarios[i], testDomain).tap {
+                        assignDesignator(it)
+                        appoint(persons[i])
+                        mitigate(controls[i])
+                    }
+                    implementControl(controls[i]).tap { ci->
+                        controls.shuffled().minus(controls[i]).take(10).each {
+                            ci.addRequirement(it)
+                        }
+                        setResponsible(persons[i])
+                    }
+                }
+            })
             def processes = processDataRepository.saveAll((0..99).collect{ i->
                 newProcess(unit).tap {
                     associateWithDomain(testDomain, 'PRO_DataProcessing', 'NEw')
@@ -123,6 +136,12 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
                         assignDesignator(it)
                         appoint(persons[i])
                         mitigate(controls[i])
+                    }
+                    implementControl(controls[i]).tap { ci->
+                        controls.shuffled().minus(controls[i]).take(10).each {
+                            ci.addRequirement(it)
+                        }
+                        setResponsible(persons[i])
                     }
                 }
             })
@@ -135,6 +154,18 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
                     addMember(processes[i])
                     addMember(persons[i])
                     addMember(controls[i])
+                    associateWithDomain(testDomain, 'SCP_ResponsibleBody', 'NEw')
+                    obtainRisk(scenarios[i], testDomain).tap {
+                        assignDesignator(it)
+                        appoint(persons[i])
+                        mitigate(controls[i])
+                    }
+                    implementControl(controls[i]).tap { ci->
+                        controls.shuffled().minus(controls[i]).take(10).each {
+                            ci.addRequirement(it)
+                        }
+                        setResponsible(persons[i])
+                    }
                 }
             })
             unit
@@ -148,13 +179,13 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 58
-            queryCounts.insert == 31
+            queryCounts.select == 62
+            queryCounts.insert == 38
             queryCounts.update == 1
-            queryCounts.delete == 246
+            queryCounts.delete == 1452
             queryCounts.time < 6000
-            // 13000 is the currently observed count of 12320 rows plus an acceptable safety margin
-            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 13000
+            // 13000 is the currently observed count of 15524 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 16000
         }
     }
 
