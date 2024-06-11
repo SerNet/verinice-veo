@@ -23,7 +23,6 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
@@ -86,7 +85,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.update == 1
             queryCounts.delete == 41
             queryCounts.time < 1000
-            // 115 is the currently observed count of 105 rows plus an acceptable safety margin
+            // 115 is the currently observed count of 106 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 115
         }
     }
@@ -154,8 +153,8 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.update == 1
             queryCounts.delete == 246
             queryCounts.time < 6000
-            // 14000 is the currently observed count of 13201 rows plus an acceptable safety margin
-            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 14000
+            // 13000 is the currently observed count of 12320 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 13000
         }
     }
 
