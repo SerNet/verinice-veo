@@ -74,6 +74,8 @@ public class GetUnitDumpUseCase
     query.whereUnitIn(Set.of(unit));
     query.fetchControlImplementations();
     query.fetchRequirementImplementations();
+    query.fetchChildren();
+    query.fetchRisks();
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
