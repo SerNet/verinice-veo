@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AccountProvider;
@@ -90,55 +88,40 @@ public class GetUnitDumpUseCase
 
             // remove risks for scenarios that are not contained in the dump
             if (e instanceof Process process) {
-              filterRisks(process, elements);
+              filterRisks(process, domain);
             } else if (e instanceof Asset asset) {
-              filterRisks(asset, elements);
+              filterRisks(asset, domain);
             } else if (e instanceof Scope scope) {
-              filterRisks(scope, elements);
+              filterRisks(scope, domain);
             }
             // remove parts that are not contained in the dump
-            if (e instanceof CompositeElement composite) {
-              filterParts(composite, elements);
+            if (e instanceof CompositeElement<?> composite) {
+              composite.getParts().removeIf(part -> !part.isAssociatedWithDomain(domain));
             }
             // remove members that are not contained in the dump
             if (e instanceof Scope scope) {
-              scope.setMembers(intersection(scope.getMembers(), elements));
+              scope.getMembers().removeIf(member -> !member.isAssociatedWithDomain(domain));
             }
           });
     }
     return elements;
   }
 
-  private static <TElement extends CompositeElement<TElement>> void filterParts(
-      TElement composite, HashSet<Element> elements) {
-    composite.setParts(intersection(composite.getParts(), elements));
-  }
-
   private <
           TElement extends RiskAffected<TElement, TRisk>,
           TRisk extends AbstractRisk<TElement, TRisk>>
-      void filterRisks(TElement e, Set<Element> elements) {
-    e.setRisks(
-        e.getRisks().stream()
-            .filter(r -> elements.contains(r.getScenario()))
-            .collect(Collectors.toSet()));
+      void filterRisks(TElement e, Domain domain) {
+    e.getRisks().removeIf(r -> !r.getScenario().isAssociatedWithDomain(domain));
     e.getRisks()
         .forEach(
             r -> {
-              if (r.getMitigation() != null && !elements.contains(r.getMitigation())) {
+              if (r.getMitigation() != null && !r.getMitigation().isAssociatedWithDomain(domain)) {
                 r.mitigate(null);
               }
-              if (r.getRiskOwner() != null && !elements.contains(r.getRiskOwner())) {
+              if (r.getRiskOwner() != null && !r.getRiskOwner().isAssociatedWithDomain(domain)) {
                 r.appoint(null);
               }
             });
-  }
-
-  private static <T, U extends T> Set<U> intersection(Set<U> a, Set<T> b) {
-    if (a.isEmpty() || b.isEmpty()) {
-      return Collections.emptySet();
-    }
-    return a.stream().filter(b::contains).collect(Collectors.toSet());
   }
 
   public record InputData(
