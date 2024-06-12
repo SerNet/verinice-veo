@@ -81,30 +81,31 @@ public class GetUnitDumpUseCase
       query.whereDomainsContain(domain);
     }
     var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
-    elements.forEach(
-        e -> {
-          // remove irrelevant domains
-          if (domain != null) {
+    if (domain != null) {
+      // remove data from other domains
+      elements.forEach(
+          e -> {
             new HashSet<>(e.getDomains())
                 .stream().filter(d -> !domain.equals(d)).forEach(e::removeFromDomains);
-          }
-          // remove risks for scenarios that are not contained in the dump
-          if (e instanceof Process process) {
-            filterRisks(process, elements);
-          } else if (e instanceof Asset asset) {
-            filterRisks(asset, elements);
-          } else if (e instanceof Scope scope) {
-            filterRisks(scope, elements);
-          }
-          // remove parts that are not contained in the dump
-          if (e instanceof CompositeElement composite) {
-            filterParts(composite, elements);
-          }
-          // remove members that are not contained in the dump
-          if (e instanceof Scope scope) {
-            scope.setMembers(intersection(scope.getMembers(), elements));
-          }
-        });
+
+            // remove risks for scenarios that are not contained in the dump
+            if (e instanceof Process process) {
+              filterRisks(process, elements);
+            } else if (e instanceof Asset asset) {
+              filterRisks(asset, elements);
+            } else if (e instanceof Scope scope) {
+              filterRisks(scope, elements);
+            }
+            // remove parts that are not contained in the dump
+            if (e instanceof CompositeElement composite) {
+              filterParts(composite, elements);
+            }
+            // remove members that are not contained in the dump
+            if (e instanceof Scope scope) {
+              scope.setMembers(intersection(scope.getMembers(), elements));
+            }
+          });
+    }
     return elements;
   }
 
