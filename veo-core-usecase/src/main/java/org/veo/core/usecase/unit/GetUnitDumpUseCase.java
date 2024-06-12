@@ -76,6 +76,7 @@ public class GetUnitDumpUseCase
     query.fetchRequirementImplementations();
     query.fetchChildren();
     query.fetchRisks();
+    query.fetchRiskValuesAspects();
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
