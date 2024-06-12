@@ -153,7 +153,7 @@ subprojects {
             dependency 'com.networknt:json-schema-validator:1.4.0'
             dependency "org.testcontainers:spock:1.19.8"
             dependency "org.testcontainers:postgresql:1.19.8"
-            dependency "org.keycloak:keycloak-authz-client:24.0.4"
+            dependency "org.keycloak:keycloak-authz-client:25.0.0"
             dependency 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
             dependency 'com.github.zafarkhaja:java-semver:0.10.2'
             dependency 'org.apache.commons:commons-collections4:4.4'
