@@ -80,6 +80,93 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
+    def "omits parts & members in other domain"() {
+        given: "a composite and scope containing elements from different domains"
+        executeInTransaction {
+            def dsgvoPerson = personDataRepository.save(newPerson(unit) {
+                name = "dsgvo person"
+                associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
+            })
+            def testDomainPerson = personDataRepository.save(newPerson(unit) {
+                name = "test domain person"
+                associateWithDomain(testDomain, "Programmer", "CODING")
+            })
+            personDataRepository.save(newPerson(unit) {
+                name = "multi-domain team"
+                associateWithDomain(testDomain, "PER_Person", "NEW")
+                associateWithDomain(dsgvoDomain, "Programmer", "CODING")
+                parts = [dsgvoPerson, testDomainPerson]
+            })
+            scopeDataRepository.save(newScope(unit) {
+                name = "multi-domain company"
+                associateWithDomain(testDomain, "Company", "NEW")
+                associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
+                members = [dsgvoPerson, testDomainPerson]
+            })
+        }
+
+        when: "exporting unit with test domain"
+        def dump = dumpUnit(testDomain)
+
+        then: "part / member from other domain is excluded"
+        with(dump.elements.find { it.name == "multi-domain team" }) {
+            it.domains ==~ [testDomain]
+            it.parts*.name ==~ ["test domain person"]
+        }
+        with(dump.elements.find { it.name == "multi-domain company" }) {
+            it.domains ==~ [testDomain]
+            it.members*.name ==~ ["test domain person"]
+        }
+    }
+
+    def "omits risks, mitigations & risk owners from other domain"() {
+        given: "two risks for scenarios from different domains"
+        executeInTransaction {
+            def dsgvoPerson = personDataRepository.save(newPerson(unit) {
+                name = "dsgvo person"
+                associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
+            })
+            def dsgvoControl = controlDataRepository.save(newControl(unit) {
+                name = "dsgvo control"
+                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
+            })
+            def dsgvoScenario = scenarioDataRepository.save(newScenario(unit) {
+                name = "dsgvo scenario"
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
+            })
+            def testDomainScenario = scenarioDataRepository.save(newScenario(unit) {
+                name = "test domain scenario"
+                associateWithDomain(testDomain, "Attack", "NEW")
+            })
+            scopeDataRepository.save(newScope(unit) {
+                name = "multi-domain company"
+                associateWithDomain(testDomain, "Company", "NEW")
+                associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
+                obtainRisk(dsgvoScenario, [dsgvoDomain, testDomain] as Set).tap{
+                    designator = "RSK-1"
+                }
+                obtainRisk(testDomainScenario, [dsgvoDomain, testDomain] as Set).tap{
+                    designator = "RSK-2"
+                    mitigate(dsgvoControl)
+                    appoint(dsgvoPerson)
+                }
+            })
+        }
+
+        when: "exporting unit with test domain"
+        def dump = dumpUnit(testDomain)
+
+        then: "risk, mitigation & risk owner from other domain are excluded"
+        with(dump.elements.find { it.name == "multi-domain company" }) {
+            risks*.scenario*.name ==~ ["test domain scenario"]
+            with(risks[0]) {
+                domains*.name ==~ ["test-domain"]
+                mitigation == null
+                riskOwner == null
+            }
+        }
+    }
+
     private GetUnitDumpUseCase.OutputData dumpUnit(Domain domain) {
         executeInTransaction {
             getUnitDumpUseCase.execute(new GetUnitDumpUseCase.InputData(unit.id, domain.id))
