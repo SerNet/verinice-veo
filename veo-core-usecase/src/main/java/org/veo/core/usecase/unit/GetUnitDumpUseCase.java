@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -130,6 +131,9 @@ public class GetUnitDumpUseCase
   }
 
   private static <T, U extends T> Set<U> intersection(Set<U> a, Set<T> b) {
+    if (a.isEmpty() || b.isEmpty()) {
+      return Collections.emptySet();
+    }
     return a.stream().filter(b::contains).collect(Collectors.toSet());
   }
 
