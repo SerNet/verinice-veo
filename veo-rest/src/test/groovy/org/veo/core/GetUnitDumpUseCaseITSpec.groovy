@@ -66,9 +66,7 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
         })
 
         when:
-        def dump = executeInTransaction {
-            getUnitDumpUseCase.execute(new GetUnitDumpUseCase.InputData(unit.id, testDomain.id))
-        }
+        def dump = dumpUnit(testDomain)
 
         then:
         dump.elements.size() == 2
@@ -79,6 +77,12 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
         with(dump.elements.find { it.name == "multi-domain process" }) {
             it.domains ==~ [testDomain]
             it.links*.type == ["necessaryData"]
+        }
+    }
+
+    private GetUnitDumpUseCase.OutputData dumpUnit(Domain domain) {
+        executeInTransaction {
+            getUnitDumpUseCase.execute(new GetUnitDumpUseCase.InputData(unit.id, domain.id))
         }
     }
 }
