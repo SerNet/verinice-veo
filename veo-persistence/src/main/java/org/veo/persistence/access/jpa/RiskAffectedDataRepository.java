@@ -61,12 +61,20 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>> {
   @Nonnull
   @Query(
       """
-    select distinct e from #{#entityName} e
-    left join fetch e.controlImplementations
-    left join fetch e.requirementImplementations
-    where e.dbId in ?1
-    """)
-  Set<T> findAllWithCIsAndRIs(Iterable<String> ids);
+        select distinct e from #{#entityName} e
+        left join fetch e.controlImplementations
+        where e.dbId in ?1
+        """)
+  Set<T> findAllWithCIs(Iterable<String> ids);
+
+  @Nonnull
+  @Query(
+      """
+        select distinct e from #{#entityName} e
+        left join fetch e.requirementImplementations
+        where e.dbId in ?1
+        """)
+  Set<T> findAllWithRIs(Iterable<String> ids);
 
   // RIs must be joined twice, because the non-matching RIs would be missing from the returned
   // elements if the join-fetched RIs were used in the `where` clause.

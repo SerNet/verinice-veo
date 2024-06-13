@@ -395,8 +395,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
                 if (fetchRisks) {
                   scopeDataRepository.findAllWithRisksByDbIdIn(batch);
                 }
-                if (fetchRequirementImplementations || fetchControlImplementations) {
-                  scopeDataRepository.findAllWithCIsAndRIs(batch);
+                if (fetchControlImplementations) {
+                  scopeDataRepository.findAllWithCIs(batch);
+                }
+                if (fetchRequirementImplementations) {
+                  scopeDataRepository.findAllWithRIs(batch);
                 }
               }
             });
@@ -412,8 +415,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     if (fetchRisks) {
       repo.findAllWithRisksByDbIdIn(ids);
     }
-    if (fetchRequirementImplementations || fetchControlImplementations) {
-      repo.findAllWithCIsAndRIs(ids);
+    if (fetchControlImplementations) {
+      repo.findAllWithCIs(ids);
+    }
+    if (fetchRequirementImplementations) {
+      repo.findAllWithRIs(ids);
     }
   }
 
