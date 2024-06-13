@@ -110,6 +110,7 @@ public class CreateProfileFromUnitUseCase
     query.whereDomainsContain(domain);
     query.fetchAppliedCatalogItems();
     query.fetchRisks();
+    query.fetchRiskValuesAspects();
     var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
     return elements;
   }
