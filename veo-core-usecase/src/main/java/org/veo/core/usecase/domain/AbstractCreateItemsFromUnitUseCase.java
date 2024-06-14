@@ -57,18 +57,11 @@ public abstract class AbstractCreateItemsFromUnitUseCase<
         .getLinks(domain)
         .forEach(
             link -> {
+              var targetItem = elementsToCatalogItems.get(link.getTarget());
               item.addLinkTailoringReference(
-                  TailoringReferenceType.LINK,
-                  elementsToCatalogItems.get(link.getTarget()),
-                  link.getType(),
-                  link.getAttributes());
-              elementsToCatalogItems
-                  .get(link.getTarget())
-                  .addLinkTailoringReference(
-                      TailoringReferenceType.LINK_EXTERNAL,
-                      item,
-                      link.getType(),
-                      link.getAttributes());
+                  TailoringReferenceType.LINK, targetItem, link.getType(), link.getAttributes());
+              targetItem.addLinkTailoringReference(
+                  TailoringReferenceType.LINK_EXTERNAL, item, link.getType(), link.getAttributes());
             });
 
     if (element instanceof CompositeElement<?> composite) {
