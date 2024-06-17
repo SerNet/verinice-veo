@@ -40,6 +40,8 @@ import org.springframework.data.domain.AuditorAware;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.SchemaReplacer;
@@ -53,6 +55,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
@@ -800,7 +803,13 @@ public class ModuleConfiguration {
 
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
-    return builder -> builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    return builder ->
+        builder
+            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .filters(
+                new SimpleFilterProvider()
+                    .addFilter(
+                        VeoConstants.JSON_FILTER_IDREF, SimpleBeanPropertyFilter.serializeAll()));
   }
 
   @Bean

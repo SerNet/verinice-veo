@@ -668,7 +668,12 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         }
         with(result.elements) {
             size() == 1
-            first().name == 'My scope'
+            with(first()) {
+                name == 'My scope'
+                it.owner.containsKey('targetUri')
+                !it.owner.containsKey('searchesUri')
+                !it.owner.containsKey('resourcesUri')
+            }
         }
     }
 

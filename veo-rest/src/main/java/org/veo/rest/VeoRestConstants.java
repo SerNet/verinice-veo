@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2024  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core;
+package org.veo.rest;
 
-public class VeoConstants {
-  public static final String UUID_MESSAGE = "ID must be a valid UUID string following RFC 4122.";
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 
-  public static final int DB_QUERY_CHUNK_SIZE = 10000;
+public final class VeoRestConstants {
 
-  public static final String JSON_FILTER_IDREF = "idref";
+  public static final SimpleBeanPropertyFilter JSON_FILTER_EXCLUDE_SEARCHES_AND_RESOURCES =
+      SimpleBeanPropertyFilter.serializeAllExcept("searchesUri", "resourcesUri");
+
+  private VeoRestConstants() {}
 }
