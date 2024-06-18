@@ -96,6 +96,15 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             }
         })
 
+        and: "there are no searches or resources uris in the content"
+        with(messages.find{it.uri?.contains('/persons/')}) {
+            with(content.owner) {
+                it.containsKey 'targetUri'
+                !it.containsKey('searchesUri')
+                !it.containsKey('resourcesUri')
+            }
+        }
+
         and: "there is one creation message for each process"
         def processes = processRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         processes.size() > 0
