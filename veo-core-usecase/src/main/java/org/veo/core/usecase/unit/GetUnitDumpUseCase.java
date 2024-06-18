@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class GetUnitDumpUseCase
                 .orElse(null)));
   }
 
-  private Set<Element> getElements(Unit unit, Domain domain) {
+  private Collection<Element> getElements(Unit unit, Domain domain) {
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
     query.fetchControlImplementations();
@@ -78,7 +79,7 @@ public class GetUnitDumpUseCase
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
-    var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
     if (domain != null) {
       // remove data from other domains
       elements.forEach(
@@ -133,5 +134,5 @@ public class GetUnitDumpUseCase
       Key<UUID> domainId)
       implements UseCase.InputData {}
 
-  public record OutputData(Unit unit, Set<Element> elements) implements UseCase.OutputData {}
+  public record OutputData(Unit unit, Collection<Element> elements) implements UseCase.OutputData {}
 }

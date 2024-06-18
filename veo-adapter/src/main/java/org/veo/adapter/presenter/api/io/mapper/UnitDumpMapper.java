@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,7 @@ public class UnitDumpMapper {
   }
 
   private static Set<AbstractRiskDto> getRisks(
-      Set<Element> elements, EntityToDtoTransformer transformer) {
+      Collection<Element> elements, EntityToDtoTransformer transformer) {
     return elements.stream()
         .filter(RiskAffected.class::isInstance)
         .map(i -> (RiskAffected<?, ?>) i)
