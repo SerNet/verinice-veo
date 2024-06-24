@@ -1320,7 +1320,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-32. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.12.5
+32. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.12.6
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -1330,7 +1330,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-33. Group: io.jsonwebtoken  Name: jjwt-impl  Version: 0.12.5
+33. Group: io.jsonwebtoken  Name: jjwt-impl  Version: 0.12.6
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -1340,7 +1340,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-34. Group: io.jsonwebtoken  Name: jjwt-jackson  Version: 0.12.5
+34. Group: io.jsonwebtoken  Name: jjwt-jackson  Version: 0.12.6
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -23274,5 +23274,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Jun 21 10:30:11 UTC 2024.
+This report was generated at Mon Jun 24 08:33:43 UTC 2024.
 
