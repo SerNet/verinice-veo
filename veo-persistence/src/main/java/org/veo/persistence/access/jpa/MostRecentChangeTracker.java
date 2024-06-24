@@ -29,10 +29,12 @@ import static org.veo.core.entity.event.VersioningEvent.ModificationType.UPDATE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
@@ -69,6 +71,8 @@ public class MostRecentChangeTracker<
   private final Map<String, List<E>> allSeenChanges = new HashMap<>();
 
   private final Map<String, List<E>> consolidatedChanges = new HashMap<>();
+
+  private final Set<String> idsWithPendingChanges = new HashSet<>();
 
   public static final String NO_ID = "no_id";
 
@@ -153,6 +157,7 @@ public class MostRecentChangeTracker<
 
     var id = determineId(eventToStore.entity());
     allSeenChanges.computeIfAbsent(id, k -> new ArrayList<>()).add(eventToStore);
+    idsWithPendingChanges.add(id);
   }
 
   private synchronized void trackEventWithoutId(E eventToStore) {
@@ -167,6 +172,7 @@ public class MostRecentChangeTracker<
           eventToStore.entity().getClass(),
           eventToStore.changeNumber());
       allSeenChanges.computeIfAbsent(id, k -> new ArrayList<>()).add(eventToStore);
+      idsWithPendingChanges.add(id);
       return;
     }
 
@@ -176,6 +182,7 @@ public class MostRecentChangeTracker<
         eventToStore.changeNumber());
 
     allSeenChanges.computeIfAbsent(NO_ID, k -> new ArrayList<>()).add(eventToStore);
+    idsWithPendingChanges.add(NO_ID);
   }
 
   private String determineId(V entityToStore) {
@@ -189,13 +196,15 @@ public class MostRecentChangeTracker<
   }
 
   private synchronized void consolidate() {
-    consolidatedChanges.clear();
+    idsWithPendingChanges.forEach(consolidatedChanges::remove);
 
     // add PERSIST events:
-    var persists = allSeenChanges.computeIfAbsent(NO_ID, k -> new ArrayList<>());
-    consolidatedChanges.put(NO_ID, unmodifiableList(persists));
+    if (idsWithPendingChanges.contains(NO_ID)) {
+      var persists = allSeenChanges.computeIfAbsent(NO_ID, k -> new ArrayList<>());
+      consolidatedChanges.put(NO_ID, unmodifiableList(persists));
+    }
 
-    allSeenChanges.keySet().stream()
+    idsWithPendingChanges.stream()
         .filter(k -> !Objects.equals(k, NO_ID))
         .forEach(
             id -> {
@@ -242,6 +251,7 @@ public class MostRecentChangeTracker<
                     .add((E) newestRemove.withChangeNumber(lowestNo));
               }
             });
+    idsWithPendingChanges.clear();
   }
 
   // Reset the entity's change number to the lowest seen changeNumber.
