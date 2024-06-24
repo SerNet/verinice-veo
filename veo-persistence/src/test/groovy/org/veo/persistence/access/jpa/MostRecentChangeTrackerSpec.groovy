@@ -50,16 +50,26 @@ class MostRecentChangeTrackerSpec extends Specification {
         asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
-        expect:
+        when:
         def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
         toSend.forEach {
             sut.put(it)
         }
+        sut.publishAll()
+
+        then:
         sut.consolidatedChanges.values().collectMany { list ->
             list.collect {
                 event2Values(it)
             }
         } ==~ result
+        result.groupBy{it[0]}.each { e->
+            e.value.size() * publisher.publishEvent({
+                it.entity == asset
+                it.changeNumber == e.key
+            })
+        }
+        0 * publisher._
 
         where:
         /* Sadly spotless messes up the readability of these lines:
@@ -110,16 +120,26 @@ class MostRecentChangeTrackerSpec extends Specification {
         asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
-        expect:
+        when:
         def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
         toSend.forEach {
             sut.put(it)
         }
+        sut.publishAll()
+
+        then:
         sut.consolidatedChanges.values().collectMany { list ->
             list.collect {
                 event2Values(it)
             }
         } ==~ result
+        result.groupBy{it[0]}.each { e->
+            e.value.size() * publisher.publishEvent({
+                it.entity == asset
+                it.changeNumber == e.key
+            })
+        }
+        0 * publisher._
 
         where:
         events                                      | result
@@ -158,16 +178,26 @@ class MostRecentChangeTrackerSpec extends Specification {
         asset.getControlImplementations() >> []
         sut = new MostRecentChangeTracker(publisher)
 
-        expect:
+        when:
         def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
         toSend.forEach {
             sut.put(it)
         }
+        sut.publishAll()
+
+        then:
         sut.consolidatedChanges.values().collectMany { list ->
             list.collect {
                 event2Values(it)
             }
         } ==~ result
+        result.groupBy{it[0]}.each { e->
+            e.value.size() * publisher.publishEvent({
+                it.entity == asset
+                it.changeNumber == e.key
+            })
+        }
+        0 * publisher._
 
         where:
         events                                      | result
