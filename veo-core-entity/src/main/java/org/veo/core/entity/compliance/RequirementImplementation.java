@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.compliance;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.veo.core.entity.Control;
@@ -45,6 +46,10 @@ public interface RequirementImplementation {
   String getImplementationStatement();
 
   void setImplementationStatement(String implementationStatement);
+
+  LocalDate getImplementationUntil();
+
+  void setImplementationUntil(LocalDate implementationUntil);
 
   boolean isUnedited();
 

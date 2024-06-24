@@ -32,6 +32,7 @@ import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.compliance.Origination;
 import org.veo.core.entity.state.RequirementImplementationState;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -49,6 +50,9 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   String implementationStatement;
 
   Origination origination;
+
+  @Schema(format = "date")
+  String implementationUntil;
 
   @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
   public String getSelf() {

@@ -134,12 +134,14 @@ class ControlImplementationRestTest extends VeoRestTest {
             body.status = "PARTIAL"
             body.implementationStatement = "It's a start"
             body.responsible = [targetUri: "/persons/$person2Id"]
+            body.implementationUntil = '1970-01-01'
             put(body._self, body, getETag(), 204)
         }
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").with {
             body.status = "YES"
             body.implementationStatement = "Done!"
             body.responsible = [targetUri: "/persons/$person2Id"]
+            body.implementationUntil = '3000-01-01'
             put(body._self, body, getETag(), 204)
         }
 
@@ -149,11 +151,13 @@ class ControlImplementationRestTest extends VeoRestTest {
                 status == "PARTIAL"
                 implementationStatement == "It's a start"
                 responsible.displayName.endsWith("person 2")
+                implementationUntil == '1970-01-01'
             }
             with(items.find { it.control.displayName.endsWith("sub control 2") }) {
                 status == "YES"
                 implementationStatement == "Done!"
                 responsible.displayName.endsWith("person 2")
+                implementationUntil == '3000-01-01'
             }
         }
 

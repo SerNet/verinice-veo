@@ -22,6 +22,7 @@ import static org.veo.core.entity.Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 import static org.veo.core.entity.compliance.ImplementationStatus.UNKNOWN;
 import static org.veo.core.entity.compliance.Origination.SYSTEM_SPECIFIC;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -124,6 +125,8 @@ public class RequirementImplementationData implements RequirementImplementation 
   /** A description of this control implementation. */
   @Column(length = DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
+
+  private LocalDate implementationUntil;
 
   public static RequirementImplementationData createNew(Control control) {
     var ri = new RequirementImplementationData();

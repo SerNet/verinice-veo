@@ -23,6 +23,7 @@ import static org.veo.core.entity.EntityType.getBySingularTerm;
 import static org.veo.core.entity.EntityType.getSingularTermByType;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -157,6 +158,9 @@ public class EntityStateMapper {
         .ifPresent(target::setResponsible);
     target.setOrigination(source.getOrigination());
     target.setStatus(source.getStatus());
+    Optional.ofNullable(source.getImplementationUntil())
+        .map(LocalDate::parse)
+        .ifPresent(target::setImplementationUntil);
   }
 
   private void publishPartsChanged(CompositeElement entity, Set oldParts) {

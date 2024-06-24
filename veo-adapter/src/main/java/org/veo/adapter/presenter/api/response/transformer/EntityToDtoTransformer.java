@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -370,6 +371,9 @@ public final class EntityToDtoTransformer {
         .ifPresent(target::setResponsible);
     target.setImplementationStatement(source.getImplementationStatement());
     target.setOrigination(source.getOrigination());
+    Optional.ofNullable(source.getImplementationUntil())
+        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
+        .ifPresent(target::setImplementationUntil);
     return target;
   }
 

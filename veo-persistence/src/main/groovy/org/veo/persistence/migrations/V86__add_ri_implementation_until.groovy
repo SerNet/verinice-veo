@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Alexander Koderman
+ * Copyright (C) 2024  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.state;
+package org.veo.persistence.migrations
 
-import org.veo.core.entity.Person;
-import org.veo.core.entity.compliance.ImplementationStatus;
-import org.veo.core.entity.compliance.Origination;
-import org.veo.core.entity.ref.ITypedId;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-public interface RequirementImplementationState {
+import groovy.sql.Sql
 
-  Origination getOrigination();
-
-  ITypedId<Person> getResponsible();
-
-  ImplementationStatus getStatus();
-
-  void setStatus(ImplementationStatus status);
-
-  String getImplementationStatement();
-
-  void setImplementationStatement(String implementationStatement);
-
-  String getImplementationUntil();
-
-  void setImplementationUntil(String implementationUntil);
+class V86__add_ri_implementation_until extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).with {
+            execute("""
+                alter table requirement_implementation
+                   add column implementation_until date;
+        """.toString())
+        }
+    }
 }
