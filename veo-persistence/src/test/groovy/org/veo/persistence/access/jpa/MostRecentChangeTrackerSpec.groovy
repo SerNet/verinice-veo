@@ -36,7 +36,7 @@ import spock.lang.Subject
 class MostRecentChangeTrackerSpec extends Specification {
 
     @Subject
-    MostRecentChangeTracker sut;
+    MostRecentChangeTracker sut
 
     @Shared
     def uuid = UUID.randomUUID()
@@ -59,7 +59,7 @@ class MostRecentChangeTrackerSpec extends Specification {
             list.collect {
                 event2Values(it)
             }
-        } =~ result
+        } ==~ result
 
         where:
         /* Sadly spotless messes up the readability of these lines:
@@ -75,7 +75,7 @@ class MostRecentChangeTrackerSpec extends Specification {
         events                                                      | result                                    | ids
         [[0, PERSIST], [1, UPDATE]]                                 | [[0, PERSIST], [1, UPDATE]]               | [null, uuid]
         [[1, UPDATE], [0, PERSIST]]                                 | [[0, PERSIST], [1, UPDATE]]               | [uuid, null]
-        [[0, PERSIST], [0, PERSIST]]                                | [[0, PERSIST]]                            | [null, null]
+        [[0, PERSIST], [0, PERSIST]]                                | [[0, PERSIST], [0, PERSIST]]              | [null, null]
         [
             [0, PERSIST],
             [1, UPDATE],
@@ -119,7 +119,7 @@ class MostRecentChangeTrackerSpec extends Specification {
             list.collect {
                 event2Values(it)
             }
-        } =~ result
+        } ==~ result
 
         where:
         events                                      | result
@@ -167,7 +167,7 @@ class MostRecentChangeTrackerSpec extends Specification {
             list.collect {
                 event2Values(it)
             }
-        } =~ result
+        } ==~ result
 
         where:
         events                                      | result
@@ -194,6 +194,9 @@ class MostRecentChangeTrackerSpec extends Specification {
     }
 
     List event2Values(VersioningEvent it) {
-        return [it.changeNumber, it.type]
+        return [
+            it.changeNumber as int,
+            it.type
+        ]
     }
 }
