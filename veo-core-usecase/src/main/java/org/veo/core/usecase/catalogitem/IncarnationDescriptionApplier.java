@@ -142,20 +142,21 @@ public class IncarnationDescriptionApplier {
           Map<String, T> itemsById,
           Map<String, Element> referencedElementsById,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
-    var elementsByItem =
-        itemsById.values().stream().collect(Collectors.toMap(identity(), i -> i.incarnate(unit)));
+    var elementsByItemId =
+        itemsById.values().stream()
+            .collect(Collectors.toMap(T::getSymbolicIdAsString, i -> i.incarnate(unit)));
     var sortedElements =
         descriptions.stream()
             .map(
                 description -> {
                   var item = itemsById.get(description.getItemRef().getSymbolicId());
-                  var element = elementsByItem.get(item);
+                  var element = elementsByItemId.get(item.getSymbolicIdAsString());
                   applyTailoringReferences(
                       item,
                       element,
                       description.getParameterStates(),
                       referencedElementsById,
-                      elementsByItem,
+                      elementsByItemId,
                       tailoringReferencesById);
                   return element;
                 })
@@ -170,7 +171,7 @@ public class IncarnationDescriptionApplier {
           Element element,
           List<TailoringReferenceParameterState> parameters,
           Map<String, Element> referencedElementsById,
-          Map<T, Element> elementsByItem,
+          Map<String, Element> elementsByItemId,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     parameters.forEach(
         parameter -> {
@@ -183,7 +184,10 @@ public class IncarnationDescriptionApplier {
                   .getReferencedElementRef()
                   .map(ITypedId::getId)
                   .map(referencedElementsById::get)
-                  .orElseGet(() -> elementsByItem.get(tailoringReference.getTarget()));
+                  .orElseGet(
+                      () ->
+                          elementsByItemId.get(
+                              tailoringReference.getTarget().getSymbolicIdAsString()));
           if (target == null) {
             throw new UnprocessableDataException(
                 "%s %s not included in request but required by %s."
@@ -194,7 +198,11 @@ public class IncarnationDescriptionApplier {
           }
           // TODO #898 adapt to non-redundant tailoring reference system
           applyTailoringReference(
-              tailoringReference, element, target, item.requireDomainMembership(), elementsByItem);
+              tailoringReference,
+              element,
+              target,
+              item.requireDomainMembership(),
+              elementsByItemId);
         });
   }
 
@@ -204,7 +212,7 @@ public class IncarnationDescriptionApplier {
           Element origin,
           Element target,
           Domain domain,
-          Map<T, Element> elementsByItem) {
+          Map<String, Element> elementsByItemId) {
     log.debug(
         "Applying {} tailoring reference {} with target {}",
         tailoringReference.getReferenceType(),
@@ -217,9 +225,9 @@ public class IncarnationDescriptionApplier {
       case COMPOSITE -> addPart(target, origin);
       case SCOPE -> addScope(origin, target);
       case MEMBER -> addScope(target, origin);
-      case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItem);
+      case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItemId);
       case CONTROL_IMPLEMENTATION ->
-          addControlImplementation(origin, target, tailoringReference, elementsByItem);
+          addControlImplementation(origin, target, tailoringReference, elementsByItemId);
       default ->
           throw new IllegalArgumentException(
               "Unexpected tailoring reference type %s"
@@ -232,7 +240,7 @@ public class IncarnationDescriptionApplier {
           Element origin,
           Element target,
           TailoringReference<T, TNamespace> tailoringReference,
-          Map<T, Element> elementsByItem) {
+          Map<String, Element> elementsByItemId) {
     if (origin instanceof RiskAffected<?, ?> ra
         && target instanceof Control control
         && tailoringReference
@@ -240,7 +248,8 @@ public class IncarnationDescriptionApplier {
       var ci = ra.implementControl(control);
       ci.setDescription(tr.getDescription());
       Optional.ofNullable(tr.getResponsible())
-          .map(elementsByItem::get)
+          .map(T::getSymbolicIdAsString)
+          .map(elementsByItemId::get)
           .ifPresent(
               responsible -> {
                 if (responsible instanceof Person person) {
@@ -303,17 +312,19 @@ public class IncarnationDescriptionApplier {
           Element target,
           Domain domain,
           TailoringReference<T, TNamespace> tailoringReference,
-          Map<T, Element> elementsByItem) {
+          Map<String, Element> elementsByItemId) {
     if (source instanceof RiskAffected<?, ?> riskAffected && target instanceof Scenario scenario) {
       var risk = riskAffected.obtainRisk(scenario, domain);
       if (tailoringReference
           instanceof RiskTailoringReference<T, TNamespace> riskTailoringReference) {
         Optional.ofNullable(riskTailoringReference.getRiskOwner())
-            .map(elementsByItem::get)
+            .map(T::getSymbolicIdAsString)
+            .map(elementsByItemId::get)
             .map(Person.class::cast)
             .ifPresent(risk::appoint);
         Optional.ofNullable(riskTailoringReference.getMitigation())
-            .map(elementsByItem::get)
+            .map(T::getSymbolicIdAsString)
+            .map(elementsByItemId::get)
             .map(Control.class::cast)
             .ifPresent(risk::mitigate);
         risk.setValues(riskTailoringReference.getRiskDefinitions(), domain);
