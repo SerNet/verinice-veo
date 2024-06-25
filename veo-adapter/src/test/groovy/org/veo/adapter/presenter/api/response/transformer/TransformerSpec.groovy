@@ -20,13 +20,8 @@ package org.veo.adapter.presenter.api.response.transformer
 import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.AbstractUnitDto
-import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.entity.ref.ITypedId
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
@@ -38,15 +33,6 @@ class TransformerSpec extends Specification {
     def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
     def subUnitName = "Test subunit"
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
-    def clientName = "New Client"
-    def clientId = "c6960c88-1c71-4e0f-b429-0746d362f12b"
-    def domainName = "New Domain"
-    def domainId = "202ef4bc-102b-4feb-bbec-1366bcbdac0f"
-    def domainDescription = "This is a domain."
-    def mUnitId = null
-
-    def factory = Mock(EntityFactory)
-    def identifiableFactory = Mock(IdentifiableFactory)
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(DomainAssociationTransformer))
     def idRefResolver = Mock(IdRefResolver)
@@ -74,19 +60,6 @@ class TransformerSpec extends Specification {
 
         subUnit.getParent() >> unit
         return unit
-    }
-
-    AbstractUnitDto createUnitDto() {
-        def subUnitDto = Mock(ITypedId) {
-            it.id >> subUnitId
-        }
-
-        def unitDto = new FullUnitDto()
-        unitDto.setId(unitId)
-        unitDto.setName(unitName)
-        unitDto.setUnits([subUnitDto] as Set)
-
-        return unitDto
     }
 
     def "Transform Unit to UnitDto"() {
