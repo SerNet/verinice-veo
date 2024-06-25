@@ -74,6 +74,11 @@ public abstract class TemplateItemData<
   }
 
   @Override
+  public String getSymbolicIdAsString() {
+    return symbolicDbId;
+  }
+
+  @Override
   public void setSymbolicId(Key<UUID> symbolicId) {
     symbolicDbId = symbolicId.uuidValue();
   }

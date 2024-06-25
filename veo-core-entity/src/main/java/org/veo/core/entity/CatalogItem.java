@@ -39,7 +39,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   String PLURAL_TERM = "catalogitems";
 
   Comparator<? super CatalogItem> BY_CATALOGITEMS =
-      Comparator.comparing(ci -> ci.getSymbolicId().uuidValue());
+      Comparator.comparing(SymIdentifiable::getSymbolicIdAsString);
 
   /**
    * @return this item's domain if the item belongs to a domain and can be applied

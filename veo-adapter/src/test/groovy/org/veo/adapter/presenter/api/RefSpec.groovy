@@ -106,30 +106,30 @@ class RefSpec extends Specification {
     def "sym ref equals & hashcode is implemented correctly"() {
         given:
         def domain = Spy(Domain) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def domain2 = Spy(Domain) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def ci = Spy(CatalogItem) {
-            symbolicId >> Key.newUuid()
+            symbolicIdAsString >> randomUUID()
             displayName >> ""
             domainBase >> domain
         }
         def ci2 = Spy(CatalogItem) {
-            symbolicId >> Key.newUuid()
+            symbolicIdAsString >> randomUUID()
             displayName >> ""
             domainBase >> domain
         }
         def ciDoppelganger = Spy(CatalogItem) {
-            symbolicId >> ci.symbolicId
+            symbolicIdAsString >> ci.symbolicIdAsString
             displayName >> ""
             domainBase >> domain
         }
         def ciWithSameIdInOtherDomain = Spy(CatalogItem) {
-            symbolicId >> ci.symbolicId
+            symbolicIdAsString >> ci.symbolicIdAsString
             displayName >> ""
             domainBase >> domain2
         }

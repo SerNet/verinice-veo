@@ -38,9 +38,7 @@ public interface SymIdentifiable<
 
   Key<UUID> getSymbolicId();
 
-  default String getSymbolicIdAsString() {
-    return getSymbolicId().uuidValue();
-  }
+  String getSymbolicIdAsString();
 
   void setSymbolicId(Key<UUID> symbolicId);
 
