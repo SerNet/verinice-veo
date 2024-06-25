@@ -350,12 +350,9 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         CreateElementInputMapper.map(createScopeDto, getClient(user), scopeIds),
         output -> {
           Scope scope = output.entity();
-          Optional<String> scopeId =
-              scope.getId() == null
-                  ? Optional.empty()
-                  : Optional.ofNullable(scope.getId().uuidValue());
           ApiResponseBody apiResponseBody =
-              new ApiResponseBody(true, scopeId, "Scope created successfully.");
+              new ApiResponseBody(
+                  true, Optional.of(scope.getIdAsString()), "Scope created successfully.");
           return RestApiResponse.created(URL_BASE_PATH, apiResponseBody);
         });
   }
@@ -527,12 +524,12 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
               String.format(
                   "%s/%s/%s",
                   URL_BASE_PATH,
-                  output.getRisk().getEntity().getId().uuidValue(),
+                  output.getRisk().getEntity().getIdAsString(),
                   ScopeRiskResource.RESOURCE_NAME);
           var body =
               new ApiResponseBody(
                   true,
-                  Optional.of(output.getRisk().getScenario().getId().uuidValue()),
+                  Optional.of(output.getRisk().getScenario().getIdAsString()),
                   "Scope risk created successfully.");
           return RestApiResponse.created(url, body);
         });

@@ -42,8 +42,8 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         }
 
         when: "the use case to create a unit is executed"
-        def eTagNewUnit = ETag.from(this.existingUnit.getId().uuidValue(), 0)
-        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.getId().uuidValue(), newUnit, this.existingClient, eTagNewUnit, USER_NAME))
+        def eTagNewUnit = ETag.from(this.existingUnit.idAsString, 0)
+        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.idAsString, newUnit, this.existingClient, eTagNewUnit, USER_NAME))
 
         then: "the existing unit was retrieved"
         1 * unitRepository.getById(existingUnit.id) >> this.existingUnit

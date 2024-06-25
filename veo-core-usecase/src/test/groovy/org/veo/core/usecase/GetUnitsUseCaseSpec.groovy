@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import static java.util.UUID.randomUUID
+
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -43,7 +45,7 @@ public class GetUnitsUseCaseSpec extends Specification {
         existingUnit.getDomains() >> []
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
-        existingUnit.getId() >> Key.newUuid()
+        existingUnit.getIdAsString() >> randomUUID()
 
         existingClient.getUnits >> [existingUnit]
         existingClient.getUnit(_)>> Optional.of(existingUnit)
@@ -56,13 +58,13 @@ public class GetUnitsUseCaseSpec extends Specification {
         subUnit1.getDomains() >> []
         subUnit1.getParent() >> existingUnit
         subUnit1.getName() >> "Subunit 1"
-        subUnit1.getId() >> Key.newUuid()
+        subUnit1.getIdAsString() >> randomUUID()
 
         Unit subUnit2 = Mock()
         subUnit2.getDomains() >> []
         subUnit2.getParent() >> existingUnit
         subUnit2.getName() >> "Subunit 2"
-        subUnit2.getId() >> Key.newUuid()
+        subUnit2.getIdAsString() >> randomUUID()
 
         given: "fake repositories that record method calls"
         def clientRepo = Mock(ClientRepository)
@@ -70,7 +72,7 @@ public class GetUnitsUseCaseSpec extends Specification {
 
         when: "a request is made with a parent-ID"
         def input = new GetUnitsUseCase.InputData(existingClient,
-                Optional.of(existingUnit.getId().uuidValue()))
+                Optional.of(existingUnit.idAsString))
         def sot = new GetUnitsUseCase(clientRepo, unitRepo)
         def output = sot.execute(input)
 

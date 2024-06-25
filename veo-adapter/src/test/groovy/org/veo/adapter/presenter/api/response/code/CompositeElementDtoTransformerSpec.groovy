@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
+import static java.util.UUID.randomUUID
+
 import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.IdRef
@@ -99,19 +101,19 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element with parts to DTO"() {
         given: "A composite element with two parts"
         Asset asset1 = Mock(Asset) {
-            it.id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             it.displayName >> "Asset 1"
             it.modelInterface >> Asset
         }
 
         Asset asset2 = Mock(Asset) {
-            it.id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             it.displayName >> "Asset 2"
             it.modelInterface >> Asset
         }
 
         Asset compositeAsset = Mock(Asset) {
-            it.id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             it.name >> "Composite Asset"
             it.domains >> []
             it.links >> []
@@ -141,7 +143,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element that contains itself"() {
         given: "A composite element that contains itself"
         Asset compositeAsset = Mock()
-        compositeAsset.id >> (Key.newUuid())
+        compositeAsset.idAsString >> randomUUID()
         compositeAsset.name >> "Composite Asset"
         compositeAsset.domains >> []
         compositeAsset.links >> []

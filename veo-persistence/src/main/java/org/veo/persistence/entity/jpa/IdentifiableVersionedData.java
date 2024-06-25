@@ -50,6 +50,11 @@ public abstract class IdentifiableVersionedData extends VersionedData implements
   }
 
   @Override
+  public String getIdAsString() {
+    return getDbId();
+  }
+
+  @Override
   public void setId(Key<UUID> id) {
     setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
   }

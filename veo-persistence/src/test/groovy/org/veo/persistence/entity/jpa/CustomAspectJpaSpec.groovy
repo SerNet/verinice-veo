@@ -142,7 +142,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
 
         when:
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.getId().uuidValue())
+        def retrievedAsset = assetRepository.findById(asset.idAsString)
 
         then:
         retrievedAsset.present

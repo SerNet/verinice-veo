@@ -379,7 +379,7 @@ public final class EntityToDtoTransformer {
 
   public FullDomainDto transformDomain2Dto(@Valid Domain source) {
     var target = new FullDomainDto();
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getIdAsString());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
@@ -409,7 +409,7 @@ public final class EntityToDtoTransformer {
   }
 
   private void mapDomain(DomainBase source, ExportDomainTemplateDto target) {
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getIdAsString());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
@@ -488,7 +488,7 @@ public final class EntityToDtoTransformer {
 
   public FullUnitDto transformUnit2Dto(@Valid Unit source) {
     var target = new FullUnitDto();
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getIdAsString());
     target.setVersion(source.getVersion());
     target.setUnits(convertSet(source.getUnits(), u -> IdRef.from(u, referenceAssembler)));
     mapVersionedSelfReferencingProperties(source, target);
@@ -516,7 +516,7 @@ public final class EntityToDtoTransformer {
 
   private <TDto extends AbstractElementDto & IdentifiableDto> void mapElement(
       Element source, TDto target, boolean newStructure) {
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getIdAsString());
     target.setDesignator(source.getDesignator());
     target.setVersion(source.getVersion());
     mapVersionedSelfReferencingProperties(source, target);
@@ -626,7 +626,7 @@ public final class EntityToDtoTransformer {
 
   public DomainTemplateMetadataDto transformDomainTemplateMetadata2Dto(DomainTemplate source) {
     var target = new DomainTemplateMetadataDto();
-    target.setId(source.getId().uuidValue());
+    target.setId(source.getIdAsString());
     target.setSelfRef(IdRef.from(source, referenceAssembler));
     target.setName(source.getName());
     target.setTemplateVersion(source.getTemplateVersion());

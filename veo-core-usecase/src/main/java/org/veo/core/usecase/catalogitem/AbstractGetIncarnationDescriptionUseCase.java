@@ -74,7 +74,7 @@ public class AbstractGetIncarnationDescriptionUseCase<
     TailoringReferenceParameter tailoringReferenceParameter =
         new TailoringReferenceParameter(linkReference.getReferenceType(), null);
     tailoringReferenceParameter.setReferencedElement(element);
-    tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
+    tailoringReferenceParameter.setId(linkReference.getIdAsString());
     return tailoringReferenceParameter;
   }
 
@@ -88,7 +88,7 @@ public class AbstractGetIncarnationDescriptionUseCase<
     TailoringReferenceParameter tailoringReferenceParameter =
         new TailoringReferenceParameter(
             linkReference.getReferenceType(), linkReference.getLinkType());
-    tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
+    tailoringReferenceParameter.setId(linkReference.getIdAsString());
     tailoringReferenceParameter.setReferencedElement(element);
     return tailoringReferenceParameter;
   }

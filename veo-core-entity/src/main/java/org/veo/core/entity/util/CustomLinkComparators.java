@@ -32,7 +32,7 @@ public final class CustomLinkComparators {
       Comparator.comparing(s -> ofNullable(s).orElse(""));
 
   public static final Comparator<? super CustomLink> BY_LINK_TARGET =
-      Comparator.comparing(c -> c.getTarget().getId().uuidValue());
+      Comparator.comparing(c -> c.getTarget().getIdAsString());
 
   /**
    * Orders the links for application: first alphabetically by their type name, then alphabetically

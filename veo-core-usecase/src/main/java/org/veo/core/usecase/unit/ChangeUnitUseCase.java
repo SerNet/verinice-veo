@@ -85,8 +85,8 @@ public abstract class ChangeUnitUseCase
   private void checkSameClient(Unit storedUnit, InputData input) {
     log.info(
         "Comparing clients {} and {}",
-        input.authenticatedClient.getId().uuidValue(),
-        storedUnit.getClient().getId().uuidValue());
+        input.authenticatedClient.getIdAsString(),
+        storedUnit.getClient().getIdAsString());
     storedUnit.checkSameClient(input.authenticatedClient);
   }
 

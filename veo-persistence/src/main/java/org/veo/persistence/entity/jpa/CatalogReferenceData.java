@@ -65,6 +65,11 @@ public abstract class CatalogReferenceData
   }
 
   @Override
+  public String getIdAsString() {
+    return dbId;
+  }
+
+  @Override
   public Optional<Client> getOwningClient() {
     return getOwner().getOwningClient();
   }

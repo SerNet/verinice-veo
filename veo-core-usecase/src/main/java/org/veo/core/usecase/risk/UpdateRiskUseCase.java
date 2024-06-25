@@ -89,8 +89,8 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   }
 
   private void checkETag(AbstractRisk<T, R> risk, InputData input) {
-    var riskAffectedId = risk.getEntity().getId().uuidValue();
-    var scenarioId = risk.getScenario().getId().uuidValue();
+    var riskAffectedId = risk.getEntity().getIdAsString();
+    var scenarioId = risk.getScenario().getIdAsString();
     if (!ETag.matches(riskAffectedId, scenarioId, risk.getVersion(), input.eTag())) {
       throw new ETagMismatchException(
           String.format(

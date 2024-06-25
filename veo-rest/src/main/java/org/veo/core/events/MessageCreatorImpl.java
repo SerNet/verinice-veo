@@ -90,10 +90,10 @@ public class MessageCreatorImpl implements MessageCreator {
   @Transactional(propagation = Propagation.MANDATORY)
   public void createDomainCreationMessage(Domain domain) {
     var json = objectMapper.createObjectNode();
-    json.put("domainId", domain.getId().uuidValue());
-    json.put("clientId", domain.getOwner().getId().uuidValue());
+    json.put("domainId", domain.getIdAsString());
+    json.put("clientId", domain.getOwner().getIdAsString());
     if (domain.getDomainTemplate() != null) {
-      json.put("domainTemplateId", domain.getDomainTemplate().getId().uuidValue());
+      json.put("domainTemplateId", domain.getDomainTemplate().getIdAsString());
     }
 
     // Domain creation messages do not get a changeNumber. These would be duplicates because
@@ -106,7 +106,7 @@ public class MessageCreatorImpl implements MessageCreator {
   @Transactional(propagation = Propagation.MANDATORY)
   public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
     var json = objectMapper.createObjectNode();
-    json.put("domainId", domain.getId().uuidValue());
+    json.put("domainId", domain.getIdAsString());
     json.put("elementType", entityType.getSingularTerm());
     storeMessage(
         EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
@@ -136,7 +136,7 @@ public class MessageCreatorImpl implements MessageCreator {
     tree.put("changeNumber", changeNumber);
     tree.put("time", time.toString());
     tree.put("author", author);
-    tree.put("clientId", entity.getOwningClient().get().getId().uuidValue());
+    tree.put("clientId", entity.getOwningClient().get().getIdAsString());
     tree.set(
         "content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity, true)));
     return tree;

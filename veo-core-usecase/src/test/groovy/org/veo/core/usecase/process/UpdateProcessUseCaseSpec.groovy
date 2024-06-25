@@ -50,6 +50,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
         def existingProcess = Mock(Process) {
             it.id >> id
+            it.idAsString >> id.uuidValue()
             it.name >> "Old process"
             it.owner >> existingUnit
             it.domains >> []

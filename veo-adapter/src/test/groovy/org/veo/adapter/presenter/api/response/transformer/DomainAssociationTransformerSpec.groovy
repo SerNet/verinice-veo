@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import static java.util.UUID.randomUUID
+
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
@@ -36,8 +38,8 @@ import spock.lang.Specification
 
 class DomainAssociationTransformerSpec extends Specification {
 
-    Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
-    Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
+    Domain domain0 = Mock(Domain) { it.idAsString >> randomUUID() }
+    Domain domain1 = Mock(Domain) { it.idAsString >> randomUUID() }
     ReferenceAssembler referenceAssembler = Mock()
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer(referenceAssembler)
 
@@ -99,14 +101,14 @@ class DomainAssociationTransformerSpec extends Specification {
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
         capturedDomainMap.size() == 2
-        with(capturedDomainMap[domain0.id.uuidValue()]) {
+        with(capturedDomainMap[domain0.idAsString]) {
             subType == "foo"
             status == "NEW_FOO"
             customAspects.value.relevance.value.importance == 10000
             links.value.isEmpty()
             decisionResults == decisionResults0
         }
-        with(capturedDomainMap[domain1.id.uuidValue()]) {
+        with(capturedDomainMap[domain1.idAsString]) {
             subType == "bar"
             status == "NEW_BAR"
             customAspects.value.isEmpty()
@@ -150,11 +152,11 @@ class DomainAssociationTransformerSpec extends Specification {
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
         capturedDomainMap.size() == 2
-        with(capturedDomainMap[domain0.id.uuidValue()]) {
+        with(capturedDomainMap[domain0.idAsString]) {
             subType == "foo"
             status == "NEW_FOO"
         }
-        with(capturedDomainMap[domain1.id.uuidValue()]) {
+        with(capturedDomainMap[domain1.idAsString]) {
             subType == "bar"
             status == "NEW_BAR"
         }

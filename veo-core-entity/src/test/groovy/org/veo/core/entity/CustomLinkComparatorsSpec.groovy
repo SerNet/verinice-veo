@@ -41,9 +41,9 @@ class CustomLinkComparatorsSpec extends Specification {
         item.element >> element
         item1.element >> element1
 
-        element.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000001")
-        element1.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000002")
-        element2.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000003")
+        element.idAsString >> "00000000-0000-0000-0000-000000000001"
+        element1.idAsString >> "00000000-0000-0000-0000-000000000002"
+        element2.idAsString >> "00000000-0000-0000-0000-000000000003"
 
         l1.target >> element
         l2.target >> element1

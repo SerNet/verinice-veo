@@ -155,7 +155,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the asset to the user's unit"
-        putEntityToAnotherUnit("/" + Asset.PLURAL_TERM, otherClientsAsset.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Asset.PLURAL_TERM, otherClientsAsset.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -169,7 +169,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the control to the user's unit"
-        putEntityToAnotherUnit("/" + Control.PLURAL_TERM, otherClientsControl.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Control.PLURAL_TERM, otherClientsControl.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -183,7 +183,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the person to the user's unit"
-        putEntityToAnotherUnit("/" + Person.PLURAL_TERM, otherClientsPerson.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Person.PLURAL_TERM, otherClientsPerson.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -197,7 +197,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the process to the user's unit"
-        putEntityToAnotherUnit("/" + Process.PLURAL_TERM, otherClientsProcess.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Process.PLURAL_TERM, otherClientsProcess.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -211,7 +211,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a delete request tries to delete the unit"
-        delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 404)
+        delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -225,7 +225,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a delete request tries to delete the asset"
-        delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 404)
+        delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -239,7 +239,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a delete request tries to delete the control"
-        delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 404)
+        delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -253,7 +253,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a delete request tries to delete the person"
-        delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 404)
+        delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -267,7 +267,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a delete request tries to delete the process"
-        delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 404)
+        delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -281,7 +281,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a get request tries to get the asset"
-        get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 404)
+        get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -295,7 +295,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "aa get request tries to get the control"
-        get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 404)
+        get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -309,7 +309,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a get request tries to get the person"
-        get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 404)
+        get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -323,7 +323,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a get request tries to get the process"
-        get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 404)
+        get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -339,7 +339,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a get request tries to get the unit"
-        get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 404)
+        get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString, 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)

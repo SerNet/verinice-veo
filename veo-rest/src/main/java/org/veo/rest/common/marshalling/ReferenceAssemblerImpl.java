@@ -126,7 +126,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @SuppressFBWarnings // ignore warning on call to method proxy factory
   public String targetReferenceOf(Identifiable identifiable) {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
-    String id = identifiable.getId().uuidValue();
+    String id = identifiable.getIdAsString();
     if (Scope.class.isAssignableFrom(type)) {
       return trimVariables(
           linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH, id, ANY_BOOLEAN, ANY_REQUEST))

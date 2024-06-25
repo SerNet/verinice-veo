@@ -515,12 +515,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
               String.format(
                   "%s/%s/%s",
                   URL_BASE_PATH,
-                  output.getRisk().getEntity().getId().uuidValue(),
+                  output.getRisk().getEntity().getIdAsString(),
                   AssetRiskResource.RESOURCE_NAME);
           var body =
               new ApiResponseBody(
                   true,
-                  Optional.of(output.getRisk().getScenario().getId().uuidValue()),
+                  Optional.of(output.getRisk().getScenario().getIdAsString()),
                   "Asset risk created successfully.");
           return RestApiResponse.created(url, body);
         });

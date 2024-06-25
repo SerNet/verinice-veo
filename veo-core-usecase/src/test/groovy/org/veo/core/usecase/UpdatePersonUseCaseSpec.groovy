@@ -39,6 +39,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         def id = Key.newUuid()
         Person person = Mock()
         person.id >> id
+        person.idAsString >> id.uuidValue()
         person.getOwner() >> existingUnit
         person.name >> "Updated person"
         person.version >> 0

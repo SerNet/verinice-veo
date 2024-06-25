@@ -88,6 +88,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         given: "a scope for another client"
         def superScope = Spy(Scope)
         superScope.id >> Key.newUuid()
+        superScope.idAsString >> superScope.id.uuidValue()
         superScope.checkSameClient(existingClient) >> {
             throw new ClientBoundaryViolationException(superScope, existingClient)
         }

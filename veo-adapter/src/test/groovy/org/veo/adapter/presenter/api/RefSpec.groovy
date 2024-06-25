@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api
 
+import static java.util.UUID.randomUUID
+
 import org.veo.adapter.presenter.api.common.CompoundIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
@@ -41,19 +43,19 @@ class RefSpec extends Specification {
     def "ref equals & hashcode is implemented correctly"() {
         given:
         def unit1 = Spy(Unit) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def unit1Doppelganger = Spy(Unit) {
-            id >> unit1.id
+            idAsString >> unit1.idAsString
             displayName >> ""
         }
         def unit2 = Spy(Unit) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def assetWithSameId = Spy(Asset) {
-            id >> unit1.id
+            idAsString >> unit1.idAsString
             displayName >> ""
         }
 

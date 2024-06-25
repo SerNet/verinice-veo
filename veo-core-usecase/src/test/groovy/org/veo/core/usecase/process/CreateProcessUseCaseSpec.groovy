@@ -94,6 +94,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         given: "a scope for another client"
         def scope = Spy(Scope)
         scope.id >> Key.newUuid()
+        scope.idAsString >> scope.id.uuidValue()
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 

@@ -141,7 +141,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "target reference for #type and #id is #reference"() {
         given:
         def entity = Stub(type) {
-            getId () >> Key.uuidFrom(id)
+            getIdAsString () >> id
             getModelInterface() >> type
         }
 
@@ -263,10 +263,10 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def controlImplementation = Spy(ControlImplementation) {
             owner >> Spy(type as Class<RiskAffected>) {
-                id >> Key.uuidFrom("aff15bfa-7259-4044-a396-59db2e16b0e0")
+                idAsString >> "aff15bfa-7259-4044-a396-59db2e16b0e0"
             }
             control >> Spy(Control) {
-                id >> Key.uuidFrom("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
+                idAsString >> "da8f6256-15e0-4fd3-a11b-4a76c916abe5"
             }
         }
 

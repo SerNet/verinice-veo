@@ -517,12 +517,12 @@ public class ProcessController extends AbstractCompositeElementController<Proces
               String.format(
                   "%s/%s/%s",
                   URL_BASE_PATH,
-                  output.getRisk().getEntity().getId().uuidValue(),
+                  output.getRisk().getEntity().getIdAsString(),
                   ProcessRiskResource.RESOURCE_NAME);
           var body =
               new ApiResponseBody(
                   true,
-                  Optional.of(output.getRisk().getScenario().getId().uuidValue()),
+                  Optional.of(output.getRisk().getScenario().getIdAsString()),
                   "Process risk created successfully.");
           return RestApiResponse.created(url, body);
         });

@@ -230,7 +230,7 @@ public class DomainAssociationTransformer {
     return source.getDomains().stream()
         .collect(
             toMap(
-                domain -> domain.getId().uuidValue(),
+                domain -> domain.getIdAsString(),
                 domain -> {
                   var association = supplier.apply(domain);
                   association.setSubType(source.getSubType(domain));

@@ -99,11 +99,11 @@ public final class ETag {
   }
 
   public static <T extends Identifiable & Versioned> void validate(String eTag, T storedEntity) {
-    if (!matches(storedEntity.getId().uuidValue(), storedEntity.getVersion(), eTag)) {
+    if (!matches(storedEntity.getIdAsString(), storedEntity.getVersion(), eTag)) {
       throw new ETagMismatchException(
           String.format(
               "The eTag does not match for the %s with the ID %s",
-              storedEntity.getModelType(), storedEntity.getId().uuidValue()));
+              storedEntity.getModelType(), storedEntity.getIdAsString()));
     }
   }
 }

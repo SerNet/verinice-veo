@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.service
 
+import static java.util.UUID.randomUUID
+
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
@@ -47,7 +49,7 @@ class ElementMigrationServiceSpec extends Specification{
             ]
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> ([
                 Spy(CustomAspect) {
@@ -88,7 +90,7 @@ class ElementMigrationServiceSpec extends Specification{
             ]
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> ([
                 Spy(CustomAspect) {
@@ -127,7 +129,7 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
@@ -172,7 +174,7 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
@@ -209,7 +211,7 @@ class ElementMigrationServiceSpec extends Specification{
             ]
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> [
                 Spy(CustomAspect) {
@@ -258,7 +260,7 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("PER_VeryNice")
         }
         def element = Spy(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
@@ -333,7 +335,7 @@ class ElementMigrationServiceSpec extends Specification{
             ]
         }
         def element = Mock(Element) {
-            id >> Key.newUuid()
+            it.idAsString >> randomUUID()
             modelType >> "asset"
             getCustomAspects(domain) >> ([] as Set)
             getLinks(domain) >> ([] as Set)

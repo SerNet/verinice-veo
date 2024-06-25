@@ -80,7 +80,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
     if (entity == null) return null;
     return new IdRef<>(
         entity,
-        entity.getId().uuidValue(),
+        entity.getIdAsString(),
         ((Displayable) entity).getDisplayName(),
         (Class<T>) entity.getModelInterface(),
         urlAssembler);

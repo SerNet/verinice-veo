@@ -50,6 +50,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
         def existingScope = Mock(Scope) {
             it.id >> scopeId
+            it.idAsString >> scopeId.uuidValue()
             it.owner >> existingUnit
             it.domains >> []
             it.customAspects >> []
