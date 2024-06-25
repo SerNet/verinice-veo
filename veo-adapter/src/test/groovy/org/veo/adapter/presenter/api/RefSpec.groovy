@@ -181,19 +181,19 @@ class RefSpec extends Specification {
     def "compound ref equals & hashcode is implemented correctly"() {
         given:
         def asset1 = Spy(Asset) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def asset2 = Spy(Asset) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def scenario1 = Spy(Scenario) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def scenario2 = Spy(Scenario) {
-            id >> Key.newUuid()
+            idAsString >> randomUUID()
             displayName >> ""
         }
         def risk = Spy(AssetRisk) {

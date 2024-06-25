@@ -39,7 +39,7 @@ public interface CompoundIdentifiable<TFirst extends Identifiable, TSecond exten
   }
 
   default String getFirstIdAsString() {
-    return getFirstId().uuidValue();
+    return getFirstRelation().getIdAsString();
   }
 
   TSecond getSecondRelation();
@@ -49,6 +49,6 @@ public interface CompoundIdentifiable<TFirst extends Identifiable, TSecond exten
   }
 
   default String getSecondIdAsString() {
-    return getSecondId().uuidValue();
+    return getSecondRelation().getIdAsString();
   }
 }
