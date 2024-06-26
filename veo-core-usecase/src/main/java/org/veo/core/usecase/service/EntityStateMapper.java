@@ -153,14 +153,12 @@ public class EntityStateMapper {
       RequirementImplementation target,
       IdRefResolver idRefResolver) {
     target.setImplementationStatement(source.getImplementationStatement());
-    Optional.ofNullable(source.getResponsible())
-        .map(idRefResolver::resolve)
-        .ifPresent(target::setResponsible);
+    target.setResponsible(
+        Optional.ofNullable(source.getResponsible()).map(idRefResolver::resolve).orElse(null));
     target.setOrigination(source.getOrigination());
     target.setStatus(source.getStatus());
-    Optional.ofNullable(source.getImplementationUntil())
-        .map(LocalDate::parse)
-        .ifPresent(target::setImplementationUntil);
+    target.setImplementationUntil(
+        Optional.ofNullable(source.getImplementationUntil()).map(LocalDate::parse).orElse(null));
   }
 
   private void publishPartsChanged(CompositeElement entity, Set oldParts) {
