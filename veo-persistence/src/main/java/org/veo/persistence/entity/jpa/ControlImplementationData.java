@@ -87,8 +87,7 @@ public class ControlImplementationData implements ControlImplementation {
   @SuppressFBWarnings("NP") // ID is generated, no need to complain
   private UUID id;
 
-  // TODO #2841 remove eager fetching when no longer needed
-  @ManyToOne(fetch = FetchType.EAGER, targetEntity = ElementData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
   @JoinColumn(name = "owner_db_id", foreignKey = @ForeignKey(name = "FK_owner"))
   RiskAffected<?, ?> owner;
 
