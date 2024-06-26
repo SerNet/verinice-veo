@@ -47,7 +47,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.VersioningEvent;
@@ -265,10 +264,6 @@ public class MostRecentChangeTracker<
       unit.getDomains().forEach(Domain::getOwner);
     } else if (entity instanceof ClientOwned owned && owned.getOwningClient() != null) {
       owned.getOwningClient().ifPresent(Client::getState);
-    } else if (entity instanceof RiskAffected<?, ?> riskAffected) {
-      // TODO #2841 remove this workaround when no longer needed
-      riskAffected.getControlImplementations().forEach(ci -> ci.getOwner().getIdAsString());
-      riskAffected.getRequirementImplementations().forEach(ri -> ri.getOrigin().getIdAsString());
     }
   }
 
