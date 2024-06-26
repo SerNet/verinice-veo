@@ -29,10 +29,10 @@ public final class CustomLinkComparators {
 
   /** Orders a string alphabetically. {@code null} values are treated as empty strings. */
   public static final Comparator<? super String> BY_STRING_NULL_SAFE =
-      (s1, s2) -> ofNullable(s1).orElse("").compareTo(ofNullable(s2).orElse(""));
+      Comparator.comparing(s -> ofNullable(s).orElse(""));
 
   public static final Comparator<? super CustomLink> BY_LINK_TARGET =
-      (c1, c2) -> c1.getTarget().getId().uuidValue().compareTo(c2.getTarget().getId().uuidValue());
+      Comparator.comparing(c -> c.getTarget().getId().uuidValue());
 
   /**
    * Orders the links for application: first alphabetically by their type name, then alphabetically
