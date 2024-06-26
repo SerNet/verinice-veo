@@ -26,6 +26,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
@@ -66,6 +67,12 @@ public class DeleteElementUseCase
             .findById(input.id)
             .orElseThrow(() -> new NotFoundException(input.id, input.entityClass));
     entity.checkSameClient(input.authenticatedClient);
+
+    // workaround for #2815, initialize proxies before entity is deleted:
+    if (entity instanceof RiskAffected<?, ?> ra) {
+      ra.getControlImplementations().forEach(ci -> ci.getOwner().getIdAsString());
+      ra.getRequirementImplementations().forEach(ri -> ri.getOrigin().getIdAsString());
+    }
 
     entity.remove();
     repository.deleteById(entity.getId());

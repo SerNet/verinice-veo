@@ -124,17 +124,8 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   private void deleteLinksByTargets(Set<String> targetElementIds) {
-    // Workaround for #2815, initialize proxies on RiskAffected entities:
-    var links =
-        linkDataRepository.findLinksFromRiskAffectedElementsByTargetIdsWithCIOwners(
-            targetElementIds);
-    var loadedIDs =
-        links.stream().map(link -> link.getTarget().getIdAsString()).collect(Collectors.toSet());
-    Set<String> remainingIDs =
-        targetElementIds.stream().filter(id -> !loadedIDs.contains(id)).collect(Collectors.toSet());
-    links.addAll(linkDataRepository.findLinksFromOtherElementsByTargetIds(remainingIDs));
-
-    // Using deleteAll() to utilize batching and optimistic locking.
+    // using deleteAll() to utilize batching and optimistic locking:
+    var links = linkDataRepository.findLinksFromOtherElementsByTargetIds(targetElementIds);
     linkDataRepository.deleteAll(links);
     links.forEach(CustomLink::remove);
   }
