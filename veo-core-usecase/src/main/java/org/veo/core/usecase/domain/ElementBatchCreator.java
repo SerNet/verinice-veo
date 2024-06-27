@@ -40,7 +40,6 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +50,13 @@ public class ElementBatchCreator {
   private final GenericElementRepository genericElementRepository;
   private final EventPublisher eventPublisher;
   private final Decider decider;
-  private final ElementMigrationService elementMigrationService;
   private final DesignatorService designatorService;
 
   /**
    * Persists a batch of transient elements (and contained risks) in a way that doesn't make JPA
    * throw up. Assigns designators.
    */
-  public void create(Collection<Element> elements, Unit unit, boolean migrate) {
+  public void create(Collection<Element> elements, Unit unit) {
     Map<Element, Set<CustomLink>> links = new HashMap<>();
 
     Map<RiskAffected, Set<AbstractRisk>> risks = new HashMap<>();
@@ -112,7 +110,7 @@ public class ElementBatchCreator {
     elements.stream()
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(Identifiable::getModelType))
-        .forEach(e -> prepareElement(e, unit, migrate));
+        .forEach(e -> prepareElement(e, unit));
     saveElements(elements);
 
     links.forEach(
@@ -165,16 +163,11 @@ public class ElementBatchCreator {
     log.debug("Done");
   }
 
-  private void prepareElement(Element element, Unit unit, boolean migrate) {
+  private void prepareElement(Element element, Unit unit) {
     log.debug("Preparing element {}:{}", element.getId(), element);
     if (element.getDesignator() == null) {
       designatorService.assignDesignator(element, unit.getClient());
     }
     element.setOwner(unit);
-    // TODO VEO-1547 element migration will become obsolete once the profiles they come from get
-    // migrated in the domain.
-    if (migrate) {
-      element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
-    }
   }
 }

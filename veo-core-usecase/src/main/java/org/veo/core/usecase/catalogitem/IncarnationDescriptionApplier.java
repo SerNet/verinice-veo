@@ -161,7 +161,7 @@ public class IncarnationDescriptionApplier {
                   return element;
                 })
             .toList();
-    elementBatchCreator.create(sortedElements, unit, false);
+    elementBatchCreator.create(sortedElements, unit);
     return sortedElements;
   }
 

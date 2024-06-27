@@ -1180,14 +1180,9 @@ public class ModuleConfiguration {
       GenericElementRepository genericElementRepository,
       EventPublisher eventPublisher,
       Decider decider,
-      ElementMigrationService elementMigrationService,
       DesignatorService designatorService) {
     return new ElementBatchCreator(
-        genericElementRepository,
-        eventPublisher,
-        decider,
-        elementMigrationService,
-        designatorService);
+        genericElementRepository, eventPublisher, decider, designatorService);
   }
 
   @Bean

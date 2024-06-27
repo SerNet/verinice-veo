@@ -68,7 +68,7 @@ public class UnitImportUseCase
     input.elements.forEach(e -> mapElement(e, resolver));
     input.risks.forEach(r -> entityStateMapper.mapState(r, resolver));
 
-    elementBatchCreator.create(elements, unitRepository.save(unit), false);
+    elementBatchCreator.create(elements, unitRepository.save(unit));
     try {
       elements.forEach(DomainSensitiveElementValidator::validate);
     } catch (IllegalArgumentException illEx) {

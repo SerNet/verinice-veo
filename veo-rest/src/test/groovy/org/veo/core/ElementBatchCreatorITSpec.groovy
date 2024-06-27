@@ -68,7 +68,7 @@ class ElementBatchCreatorITSpec extends VeoSpringSpec{
         when:
         def elements = [member1, scope, comp, member2]
         elements.shuffle(r)
-        elementBatchCreator.create(elements, unit, false)
+        elementBatchCreator.create(elements, unit)
 
         then:
         member1.scopes ==~ [scope]
