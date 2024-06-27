@@ -121,13 +121,19 @@ public class QueryInputMapper {
       String domainId,
       String elementType,
       String subType,
+      String abbreviation,
+      String name,
+      String description,
       PagingConfiguration config) {
     return new QueryCatalogItemsUseCase.InputData(
         client.getId(),
         Key.uuidFrom(domainId),
         config,
         whereEqualsOrNull(elementType),
-        whereEqualsOrNull(subType));
+        whereEqualsOrNull(subType),
+        whereEqualsOrNull(abbreviation),
+        whereEqualsOrNull(name),
+        whereEqualsOrNull(description));
   }
 
   static <T> SingleValueQueryCondition<T> transformCondition(SingleValueQueryConditionDto<T> dto) {

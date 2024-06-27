@@ -85,23 +85,29 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         result.resultPage*.name == ["my CI 1", "my CI 2"]
     }
 
-    def 'queries by element type & sub type'() {
+    def 'queries by element properties'() {
         given:
         repo.saveAll([
             newCatalogItem(domain) {
+                abbreviation = "ab"
                 name = "abigail"
+                description = "a youtuber"
                 elementType = "person"
                 subType = "philosopher"
                 status = "alive"
             },
             newCatalogItem(domain) {
+                abbreviation = "cl"
                 name = "clemens"
+                description = "a doctor"
                 elementType = "person"
                 subType = "doctor"
                 status = "alive"
             },
             newCatalogItem(domain) {
+                abbreviation = "ea"
                 name = "earthQuake"
+                description = "shake the earth"
                 elementType = "incident"
                 subType = "naturalDisaster"
                 status = "old"
@@ -129,5 +135,29 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         then:
         query.execute(PagingConfiguration.UNPAGED)
                 .resultPage*.name ==~ ["abigail"]
+
+        when:
+        query = new CatalogItemQueryImpl(repo, domain)
+        query.whereDescriptionMatchesIgnoreCase(new QueryCondition<>(Set.of("A ")))
+
+        then:
+        query.execute(PagingConfiguration.UNPAGED)
+                .resultPage*.name ==~ ["abigail", "clemens"]
+
+        when:
+        query = new CatalogItemQueryImpl(repo, domain)
+        query.whereAbbreviationMatchesIgnoreCase(new QueryCondition<>(Set.of("a")))
+
+        then:
+        query.execute(PagingConfiguration.UNPAGED)
+                .resultPage*.name ==~ ["abigail", "earthQuake"]
+
+        when:
+        query = new CatalogItemQueryImpl(repo, domain)
+        query.whereNameMatchesIgnoreCase(new QueryCondition<>(Set.of("Quake")))
+
+        then:
+        query.execute(PagingConfiguration.UNPAGED)
+                .resultPage*.name ==~ ["earthQuake"]
     }
 }

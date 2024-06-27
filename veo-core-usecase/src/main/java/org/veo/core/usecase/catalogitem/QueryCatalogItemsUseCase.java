@@ -49,6 +49,10 @@ public class QueryCatalogItemsUseCase
     var query = catalogItemRepository.query(domain);
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
     Optional.ofNullable(input.subTypes).ifPresent(query::whereSubTypeMatches);
+    Optional.ofNullable(input.abbreviation).ifPresent(query::whereAbbreviationMatchesIgnoreCase);
+    Optional.ofNullable(input.name).ifPresent(query::whereNameMatchesIgnoreCase);
+    Optional.ofNullable(input.description).ifPresent(query::whereDescriptionMatchesIgnoreCase);
+
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
@@ -57,7 +61,10 @@ public class QueryCatalogItemsUseCase
       @NotNull Key<UUID> domainId,
       @NotNull PagingConfiguration pagingConfiguration,
       QueryCondition<String> elementTypes,
-      QueryCondition<String> subTypes)
+      QueryCondition<String> subTypes,
+      QueryCondition<String> abbreviation,
+      QueryCondition<String> name,
+      QueryCondition<String> description)
       implements UseCase.InputData {}
 
   public record OutputData(@Valid PagedResult<CatalogItem> page) implements UseCase.OutputData {}

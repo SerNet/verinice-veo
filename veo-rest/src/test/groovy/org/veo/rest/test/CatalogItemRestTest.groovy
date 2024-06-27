@@ -78,6 +78,20 @@ class CatalogItemRestTest extends VeoRestTest {
             totalItemCount == 6
             items*.name.every { it.startsWith("Control") }
         }
+        with(get("/domains/$testDomainId/catalog-items?name=Control-2").body) {
+            totalItemCount == 1
+            items[0].abbreviation == "c-2"
+        }
+        with(get("/domains/$testDomainId/catalog-items?description=Lorem").body) {
+            totalItemCount == 6
+            items[0].name == "Control-1"
+            items*.description.every { it.startsWith("Lorem") }
+        }
+        with(get("/domains/$testDomainId/catalog-items?abbreviation=c-2").body) {
+            totalItemCount == 2
+            items*.name ==~ ["Control-2", "Control-cc-2"]
+            items*.abbreviation ==~ ["c-2", "cc-2"]
+        }
     }
 
     def "catalog item IDs are symbolic"() {

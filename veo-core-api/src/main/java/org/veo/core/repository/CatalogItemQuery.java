@@ -23,4 +23,10 @@ public interface CatalogItemQuery extends Query<CatalogItem> {
   void whereElementTypeMatches(QueryCondition<String> elementTypes);
 
   void whereSubTypeMatches(QueryCondition<String> subTypes);
+
+  void whereAbbreviationMatchesIgnoreCase(QueryCondition<String> abbreviation);
+
+  void whereNameMatchesIgnoreCase(QueryCondition<String> values);
+
+  void whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
 }

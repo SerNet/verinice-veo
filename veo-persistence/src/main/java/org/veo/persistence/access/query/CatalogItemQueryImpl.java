@@ -18,6 +18,7 @@
 package org.veo.persistence.access.query;
 
 import static org.veo.persistence.access.query.QueryFunctions.andIn;
+import static org.veo.persistence.access.query.QueryFunctions.andInIgnoringCase;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +65,21 @@ public class CatalogItemQueryImpl implements CatalogItemQuery {
   @Override
   public void whereSubTypeMatches(QueryCondition<String> subTypes) {
     spec = andIn(spec, "subType", subTypes);
+  }
+
+  @Override
+  public void whereAbbreviationMatchesIgnoreCase(QueryCondition<String> condition) {
+    spec = andInIgnoringCase("abbreviation", condition, spec);
+  }
+
+  @Override
+  public void whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
+    spec = andInIgnoringCase("name", condition, spec);
+  }
+
+  @Override
+  public void whereDescriptionMatchesIgnoreCase(QueryCondition<String> condition) {
+    spec = andInIgnoringCase("description", condition, spec);
   }
 
   private Specification<CatalogItemData> createSpecification(Domain domain) {
