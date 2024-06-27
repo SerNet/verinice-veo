@@ -59,9 +59,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                         select i from profile_item i
                            left join fetch i.tailoringReferences tr
                           left join fetch i.appliedCatalogItem
-                          left join fetch i.owner p
-                          left join fetch p.domain
-                          where i.symbolicDbId in ?1 and p.domain.owner = ?2
+                          where i.symbolicDbId in ?1 and i.owner.domain.owner = ?2
                       """)
   Iterable<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Iterable<String> ids, Client client);
@@ -71,9 +69,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                   select i from profile_item i
                     left join fetch i.tailoringReferences tr
                     left join fetch i.appliedCatalogItem
-                    left join fetch i.owner p
-                    left join fetch p.domain
-                    where p.dbId = ?1 and p.domain.owner = ?2
+                    where i.owner.dbId = ?1 and i.owner.domain.owner = ?2
                 """)
   Iterable<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       String profileId, Client client);
