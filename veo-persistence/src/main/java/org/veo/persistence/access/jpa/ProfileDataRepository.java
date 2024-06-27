@@ -68,7 +68,6 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
       """
                   select i from profile_item i
                     left join fetch i.tailoringReferences tr
-                    left join fetch i.appliedCatalogItem
                     where i.owner.dbId = ?1 and i.owner.domain.owner = ?2
                 """)
   Iterable<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
