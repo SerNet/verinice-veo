@@ -31,7 +31,6 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -107,10 +106,7 @@ public class ElementBatchCreator {
                       return parts;
                     }));
 
-    elements.stream()
-        // sort entries by model type to get predictable designators
-        .sorted(Comparator.comparing(Identifiable::getModelType))
-        .forEach(e -> prepareElement(e, unit));
+    elements.forEach(e -> prepareElement(e, unit));
     saveElements(elements);
 
     links.forEach(
