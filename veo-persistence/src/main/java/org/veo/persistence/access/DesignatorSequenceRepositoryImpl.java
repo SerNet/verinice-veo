@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -61,12 +62,21 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    * @return The next sequential designator number for given client & entity type, starting with 1.
    */
   @Override
+  public Long getNext(Key<UUID> clientId, String typeDesignator) {
+    return getNext(clientId, typeDesignator, 1).getFirst();
+  }
+
+  @Override
   @SuppressFBWarnings("SQL_INJECTION_JPA")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public Long getNext(Key<UUID> clientId, String typeDesignator) {
-    return (Long)
-        em.createNativeQuery("SELECT nextval('" + getSequenceName(clientId, typeDesignator) + "')")
-            .getSingleResult();
+  public List<Long> getNext(Key<UUID> clientId, String typeDesignator, int count) {
+    return em.createNativeQuery(
+            "SELECT nextval('"
+                + getSequenceName(clientId, typeDesignator)
+                + "')  FROM generate_series(1,"
+                + count
+                + ");")
+        .getResultList();
   }
 
   /**

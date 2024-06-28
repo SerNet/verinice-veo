@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Designated;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.RiskAffected;
@@ -106,7 +107,7 @@ public class ElementBatchCreator {
                       return parts;
                     }));
 
-    elements.forEach(e -> prepareElement(e, unit));
+    prepareElements(elements, unit);
     saveElements(elements);
 
     links.forEach(
@@ -159,11 +160,17 @@ public class ElementBatchCreator {
     log.debug("Done");
   }
 
-  private void prepareElement(Element element, Unit unit) {
-    log.debug("Preparing element {}:{}", element.getId(), element);
-    if (element.getDesignator() == null) {
-      designatorService.assignDesignator(element, unit.getClient());
+  private void prepareElements(Collection<Element> elements, Unit unit) {
+    log.debug("Preparing elements {}", elements);
+
+    for (Element element : elements) {
+      element.setOwner(unit);
     }
-    element.setOwner(unit);
+    designatorService.assignDesignators(
+        elements.stream()
+            .filter(it -> it.getDesignator() == null)
+            .map(Designated.class::cast)
+            .toList(),
+        unit.getClient());
   }
 }

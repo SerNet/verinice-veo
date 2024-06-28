@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.veo.core.entity.Key;
@@ -27,4 +28,6 @@ import org.veo.core.entity.Key;
  */
 public interface DesignatorSequenceRepository {
   Long getNext(Key<UUID> clientId, String typeDesignator);
+
+  List<Long> getNext(Key<UUID> clientId, String typeDesignator, int count);
 }

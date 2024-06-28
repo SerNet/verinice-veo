@@ -55,6 +55,17 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         designatorSequenceRepo.getNext(clientId2, Document.TYPE_DESIGNATOR) == 2
     }
 
+    def "get multiple sequence values per object type"() {
+        given:
+        def clientId1 = Key.newUuid()
+        designatorSequenceRepo.createSequences(clientId1)
+
+        expect:
+        designatorSequenceRepo.getNext(clientId1, Asset.TYPE_DESIGNATOR, 2) == [1, 2]
+        designatorSequenceRepo.getNext(clientId1, Document.TYPE_DESIGNATOR, 4) == [1, 2, 3, 4]
+        designatorSequenceRepo.getNext(clientId1, Asset.TYPE_DESIGNATOR, 3) == [3, 4, 5]
+    }
+
     def "can't get value without creating sequence first"() {
         when:
         designatorSequenceRepo.getNext(Key.newUuid(), Asset.TYPE_DESIGNATOR)

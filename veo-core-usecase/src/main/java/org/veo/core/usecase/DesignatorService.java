@@ -17,6 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Designated;
 import org.veo.core.repository.DesignatorSequenceRepository;
@@ -33,12 +39,29 @@ public class DesignatorService {
    * @throws IllegalStateException when the target already has a designator.
    */
   public void assignDesignator(Designated target, Client client) {
-    if (target.getDesignator() != null) {
-      throw new IllegalStateException(
-          "Cannot reassign designator on target " + target.getDesignator());
+    assignDesignators(Set.of(target), client);
+  }
+
+  public void assignDesignators(Collection<Designated> targets, Client client) {
+    for (Designated target : targets) {
+      if (target.getDesignator() != null) {
+        throw new IllegalStateException(
+            "Cannot reassign designator on target " + target.getDesignator());
+      }
     }
-    String typeDesignator = target.getTypeDesignator();
-    var number = designatorSequenceRepository.getNext(client.getId(), typeDesignator);
-    target.setDesignator(typeDesignator + "-" + number);
+    Map<String, List<Designated>> itemsByTypeDesignator =
+        targets.stream().collect(Collectors.groupingBy(Designated::getTypeDesignator));
+    itemsByTypeDesignator.forEach(
+        (typeDesignator, items) -> {
+          int numItems = items.size();
+          List<Long> numbers =
+              designatorSequenceRepository.getNext(client.getId(), typeDesignator, numItems);
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < numItems; i++) {
+            sb.append(typeDesignator).append('-').append(numbers.get(i));
+            items.get(i).setDesignator(sb.toString());
+            sb.setLength(0);
+          }
+        });
   }
 }
