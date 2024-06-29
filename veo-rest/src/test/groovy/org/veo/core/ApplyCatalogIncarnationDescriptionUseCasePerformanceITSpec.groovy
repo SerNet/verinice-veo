@@ -22,6 +22,8 @@ import java.util.function.Function
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto
@@ -42,6 +44,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
@@ -56,6 +59,11 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
 
     @Autowired
     private StoredEventDataRepository storedEventRepository
+
+    @DynamicPropertySource
+    static void setRowCount(DynamicPropertyRegistry registry) {
+        registry.add("veo.logging.datasource.row_count", { -> true })
+    }
 
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
@@ -85,6 +93,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         Domain domain = createCatalogItems()
         QueryCountHolder.clear()
         def itemIds = domain.catalogItems.collect { it.symbolicId }
+        def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
 
         when: "simulating the GET"
         def dto = executeInTransaction {
@@ -100,9 +109,12 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         then:
         dto.parameters.size() == 6
         queryCounts.select == 4
+        // 12 is the currently observed count of 9 rows plus an acceptable safety margin
+        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 12
 
         when: "simulating the POST"
         QueryCountHolder.clear()
+        rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
         executeInTransaction {
             var references = dto.getParameters()
             synchronousUseCaseInteractor.execute(
@@ -117,6 +129,8 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         queryCounts.select == 14
         queryCounts.insert == 18
         queryCounts.time < 500
+        // 30 is the currently observed count of 27 rows plus an acceptable safety margin
+        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 30
     }
 
     Client createClient() {
