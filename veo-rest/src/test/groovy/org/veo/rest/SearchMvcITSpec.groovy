@@ -20,6 +20,7 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.EntityType
 
 @WithUserDetails("user@domain.example")
@@ -27,6 +28,7 @@ class SearchMvcITSpec extends VeoMvcSpec {
 
     String domainId
     String unitId
+    Client client
 
     def subTypes = [assets: "AST_Application",
         controls: "CTL_TOM",
@@ -38,10 +40,52 @@ class SearchMvcITSpec extends VeoMvcSpec {
         scopes: "SCP_ResponsibleBody"]
 
     def setup() {
-        def client = createTestClient()
+        client = createTestClient()
         domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id.uuidValue()
         client = clientRepository.getById(client.id)
         unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
+    }
+
+    def "search subtype and domain"() {
+        given:
+        newDomain(client) {
+            name = "Domain 1"
+            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                subTypes = [
+                    SCP_Scope: newSubTypeDefinition {
+                    }
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                subTypes = [
+                    SCP_Institution: newSubTypeDefinition {
+                    }
+                ]
+            })
+        }
+
+        client = clientRepository.save(client)
+        def testDomain = client.domains.find{it.name == "Domain 1"}
+        def testDomainId = testDomain.id.uuidValue()
+
+        unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
+        def scopeId1 = parseJson(post("/domains/$domainId/scopes", [
+            name: "Scope-1",
+            abbreviation: "DT",
+            description: "from domain",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "SCP_Scope",
+            status: "NEW",
+        ])).resourceId
+
+        post("/domains/$testDomainId/scopes/$scopeId1",[subType: "SCP_Institution",
+            status: "NEW"],200)
+
+        when:
+        def results = parseJson(get("/domains/$testDomainId/scopes?unit=$unitId&subType=SCP_Scope"))
+
+        then:
+        results.items.size() == 0
     }
 
     def 'find #type by status'() {

@@ -82,6 +82,7 @@ public class GetElementsUseCase
   }
 
   protected void applyDefaultQueryParameters(InputData input, ElementQuery<?> query) {
+
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
     Optional.ofNullable(input.unitUuid)
         .map(
@@ -92,6 +93,7 @@ public class GetElementsUseCase
                             unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
                     .collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
+
     Optional.ofNullable(input.domainId)
         .map(
             condition ->
@@ -100,8 +102,13 @@ public class GetElementsUseCase
                     .findFirst()
                     .orElseThrow(
                         () -> new NotFoundException(input.domainId.getValue(), Domain.class)))
-        .ifPresent(query::whereDomainsContain);
-    Optional.ofNullable(input.subType).ifPresent(query::whereSubTypeMatches);
+        .ifPresentOrElse(
+            d ->
+                Optional.ofNullable(input.subType)
+                    .ifPresentOrElse(
+                        s -> query.whereSubTypeMatches(s, d), () -> query.whereDomainsContain(d)),
+            () -> Optional.ofNullable(input.subType).ifPresent(query::whereSubTypeMatches));
+
     Optional.ofNullable(input.status).ifPresent(query::whereStatusMatches);
     Optional.ofNullable(input.displayName).ifPresent(query::whereDisplayNameMatchesIgnoringCase);
     Optional.ofNullable(input.description).ifPresent(query::whereDescriptionMatchesIgnoreCase);

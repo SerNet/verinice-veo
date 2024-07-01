@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -169,6 +170,18 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
                     root.join("subTypeAspects", JoinType.LEFT).get("subType"),
                     condition.getValues(),
                     criteriaBuilder));
+  }
+
+  @Override
+  public void whereSubTypeMatches(QueryCondition<String> condition, Domain domain) {
+    mySpec =
+        mySpec.and(
+            (root, query, criteriaBuilder) -> {
+              Join<Object, Object> join = root.join("subTypeAspects", JoinType.LEFT);
+              return criteriaBuilder.and(
+                  criteriaBuilder.equal(join.get("domain"), domain),
+                  criteriaBuilder.in(join.get("subType")).value(condition.getValues()));
+            });
   }
 
   @Override

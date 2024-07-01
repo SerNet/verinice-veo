@@ -38,6 +38,8 @@ public interface ElementQuery<T extends Element> extends Query<T> {
 
   void whereSubTypeMatches(QueryCondition<String> values);
 
+  void whereSubTypeMatches(QueryCondition<String> values, Domain domain);
+
   /**
    * Only include elements where at least one of its child elements (members or parts) has one of
    * the given IDs.
