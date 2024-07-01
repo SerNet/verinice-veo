@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -127,6 +128,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String targetReferenceOf(Identifiable identifiable) {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
     String id = identifiable.getIdAsString();
+    // TODO #2990: make url generation faster
+    boolean inRequestContext = RequestContextHolder.getRequestAttributes() != null;
+    if (!inRequestContext) {
+      return "/" + EntityType.getPluralTermByType(type) + "/" + id;
+    }
     if (Scope.class.isAssignableFrom(type)) {
       return trimVariables(
           linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH, id, ANY_BOOLEAN, ANY_REQUEST))
