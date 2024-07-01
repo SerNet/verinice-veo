@@ -12053,7 +12053,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-120. Group: org.springdoc  Name: springdoc-openapi-starter-common  Version: 2.5.0
+120. Group: org.springdoc  Name: springdoc-openapi-starter-common  Version: 2.6.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -12265,7 +12265,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-121. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-api  Version: 2.5.0
+121. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-api  Version: 2.6.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -12477,7 +12477,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-122. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-ui  Version: 2.5.0
+122. Group: org.springdoc  Name: springdoc-openapi-starter-webmvc-ui  Version: 2.6.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -23255,9 +23255,11 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-174. Group: org.webjars  Name: swagger-ui  Version: 5.13.0
+174. Group: org.webjars  Name: swagger-ui  Version: 5.17.14
 
-POM Project URL: http://webjars.org
+Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
+
+POM Project URL: https://www.webjars.org
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -23274,5 +23276,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Jun 27 11:29:10 UTC 2024.
+This report was generated at Mon Jul 01 08:27:35 UTC 2024.
 
