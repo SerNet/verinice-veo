@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -49,6 +50,7 @@ public class AssociateElementWithDomainUseCase
     var element = fetchElement(input);
     element.checkSameClient(input.authenticatedClient); // client boundary safety net
     element.associateWithDomain(domain, input.subType, input.status);
+    element.setUpdatedAt(Instant.now());
     DomainSensitiveElementValidator.validate(element);
     // re-fetch the element to make sure it is returned with updated versioning information and
     // transaction listeners are called

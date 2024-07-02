@@ -33,7 +33,7 @@ import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -57,7 +57,7 @@ public abstract class AbstractTemplateItemDto<
 
   @NotNull
   @Schema(description = "The subtype for the Element.", example = "PER")
-  @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  @Size(min = 1, max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
   private String subType;
 
   protected TailoringReferenceDto<T, TNamespace> createTailoringReferenceDto(

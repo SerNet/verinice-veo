@@ -167,7 +167,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 in(
-                    root.join("subTypeAspects", JoinType.LEFT).get("subType"),
+                    root.join("domainAssociations", JoinType.LEFT).get("subType"),
                     condition.getValues(),
                     criteriaBuilder));
   }
@@ -177,7 +177,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) -> {
-              Join<Object, Object> join = root.join("subTypeAspects", JoinType.LEFT);
+              Join<Object, Object> join = root.join("domainAssociations", JoinType.LEFT);
               return criteriaBuilder.and(
                   criteriaBuilder.equal(join.get("domain"), domain),
                   criteriaBuilder.in(join.get("subType")).value(condition.getValues()));
@@ -241,7 +241,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 in(
-                    root.join("subTypeAspects", JoinType.LEFT).get("status"),
+                    root.join("domainAssociations", JoinType.LEFT).get("status"),
                     condition.getValues(),
                     criteriaBuilder));
   }
@@ -280,7 +280,9 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   public void whereDomainsContain(Domain domain) {
     mySpec =
         mySpec.and(
-            (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("domains"), domain));
+            (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                    root.join("domainAssociations", JoinType.LEFT).get("domain"), domain));
   }
 
   @Override
@@ -350,9 +352,9 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
             .flatMap(
                 batch -> {
-                  var chunk = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(batch);
+                  var chunk = dataRepository.findAllWithLinksDecisionsByDbIdIn(batch);
                   dataRepository.findAllWithCustomAspectsByDbIdIn(batch);
-                  dataRepository.findAllWithSubtypeAspectsByDbIdIn(batch);
+                  dataRepository.findAllWithDomainAssociationsByDbIdIn(batch);
 
                   if (fetchAppliedCatalogItems) {
                     dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(batch);

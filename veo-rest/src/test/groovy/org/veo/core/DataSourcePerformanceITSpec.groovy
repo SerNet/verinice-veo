@@ -127,7 +127,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 5
+        queryCounts.insert == 4
         queryCounts.update == 0
         queryCounts.select == 2
         queryCounts.time < 500
@@ -144,7 +144,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 5
+        queryCounts.insert == 4
         queryCounts.update == 0
         queryCounts.select == 2
         queryCounts.time < 500
@@ -342,7 +342,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 31
         queryCounts.update == 5
-        queryCounts.select == 20
+        queryCounts.select == 19
         queryCounts.time < 500
     }
 

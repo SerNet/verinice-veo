@@ -420,8 +420,8 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             it.links.every {
                 it.domain == dsgvoDomainV2
             }
-            subTypeAspects.size() == 1
-            subTypeAspects.every {
+            domainAssociations.size() == 1
+            domainAssociations.every {
                 it.domain == dsgvoDomainV2
             }
             risks.every {
@@ -450,7 +450,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 it.links.every {
                     it.domain == dsgvoDomainV2
                 }
-                it.subTypeAspects.every {
+                it.domainAssociations.every {
                     it.domain == dsgvoDomainV2
                 }
             }

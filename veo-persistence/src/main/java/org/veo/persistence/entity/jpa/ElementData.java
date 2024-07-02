@@ -58,7 +58,7 @@ import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
@@ -100,10 +100,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @ToString.Include
   private String designator;
 
-  @Column(name = "domains")
-  @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
-  private final Set<Domain> domains = new HashSet<>();
-
   @Column(name = "links")
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -131,11 +127,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
-      targetEntity = SubTypeAspectData.class,
+      targetEntity = ElementDomainAssociationData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
+  private Set<ElementDomainAssociation> domainAssociations = new HashSet<>();
 
   @Column(name = "decision_results_aspect")
   @OneToMany(
@@ -178,17 +174,17 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Override
   public Optional<String> findSubType(Domain domain) {
-    return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
+    return findAspectByDomain(domainAssociations, domain).map(ElementDomainAssociation::getSubType);
   }
 
   @Override
   public Optional<String> findStatus(Domain domain) {
-    return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
+    return findAspectByDomain(domainAssociations, domain).map(ElementDomainAssociation::getStatus);
   }
 
   @Override
   public void setStatus(String status, Domain domain) {
-    findAspectByDomain(subTypeAspects, domain).orElseThrow().setStatus(status);
+    findAspectByDomain(domainAssociations, domain).orElseThrow().setStatus(status);
   }
 
   @Override
@@ -209,14 +205,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     requireAssociationWithDomain(oldDomain);
-    if (domains.contains(newDomain)) {
+    if (isAssociatedWithDomain(newDomain)) {
       throw new EntityAlreadyExistsException(
           "%s %s is already associated with domain %s"
               .formatted(getModelType(), getIdAsString(), newDomain.getIdAsString()));
     }
-    domains.remove(oldDomain);
-    domains.add(newDomain);
-    findAspectByDomain(subTypeAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    findAspectByDomain(domainAssociations, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     findAspectByDomain(decisionResultsAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     getCustomAspects(oldDomain).forEach(ca -> ca.setDomain(newDomain));
     getLinks(oldDomain).forEach(cl -> cl.setDomain(newDomain));
@@ -238,9 +232,8 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
           "%s %s is already associated with domain %s"
               .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
     }
-    domains.add(domain);
-    removeAspect(subTypeAspects, domain);
-    subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
+    removeAspect(domainAssociations, domain);
+    domainAssociations.add(new ElementDomainAssociationData(domain, this, subType, status));
 
     // apply identically-defined custom aspects from old domains to new domain
     copyOf(customAspects).forEach(this::applyCustomAspect);
@@ -252,7 +245,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     if (removed) {
       getCustomAspects().removeIf(ca -> ca.getDomain().equals(domain));
       getLinks().removeIf(l -> l.getDomain().equals(domain));
-      removeAspect(subTypeAspects, domain);
+      removeAspect(domainAssociations, domain);
       removeAspect(decisionResultsAspects, domain);
     }
     return removed;
@@ -397,7 +390,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .findCustomAspectDefinition(getModelType(), ca.getType())
         .map(
             definition ->
-                domains.stream()
+                getDomains().stream()
                     .filter(
                         d ->
                             d.containsCustomAspectDefinition(

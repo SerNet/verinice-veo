@@ -1537,7 +1537,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 14
+            queryCounts.select == 13
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0

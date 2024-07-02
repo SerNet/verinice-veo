@@ -104,10 +104,10 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [
             "customAspects[].type",
+            "domainAssociations[].status",
+            "domainAssociations[].subType",
             "links[].target",
             "parts[].designator",
-            "subTypeAspects[].status",
-            "subTypeAspects[].subType",
         ]
     }
 }

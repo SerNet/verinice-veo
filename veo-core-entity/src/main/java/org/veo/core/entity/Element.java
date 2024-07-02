@@ -23,8 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -56,7 +57,11 @@ public interface Element
   /**
    * @return all domains that this element is associated with
    */
-  Set<Domain> getDomains();
+  default Set<Domain> getDomains() {
+    return getDomainAssociations().stream()
+        .map(ElementDomainAssociation::getDomain)
+        .collect(Collectors.toSet());
+  }
 
   /**
    * Moves all domain-specific information for given old (associated) domain to a new (unassociated)
@@ -124,7 +129,7 @@ public interface Element
     element.checkSameClient(getOwningClient().get());
   }
 
-  Set<SubTypeAspect> getSubTypeAspects();
+  Set<ElementDomainAssociation> getDomainAssociations();
 
   // TODO VEO-889: Should this be unique in one domain/template? Should an object
   // exist in two different version of the same domainTemplate?
@@ -186,7 +191,7 @@ public interface Element
   }
 
   default boolean isAssociatedWithDomain(Domain domain) {
-    return getDomains().contains(domain);
+    return findSubType(domain).isPresent();
   }
 
   /**

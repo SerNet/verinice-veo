@@ -34,7 +34,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItemAspects;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -52,7 +52,7 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, Dom
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
+  @Size(min = 1, max = ElementDomainAssociation.STATUS_MAX_LENGTH)
   private String status;
 
   @Valid @NotNull private TemplateItemAspects aspects = new TemplateItemAspects();

@@ -297,6 +297,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             assetRepository.findById(asset.id).get().tap {
                 //initialize lazy associations
                 it.getImpactValues(dsgvoDomainV2)
+                (it as AssetData).riskValuesAspects*.domain*.name
             }
         }
 
@@ -404,8 +405,8 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             it.links.every {
                 it.domain == dsgvoDomainV2
             }
-            subTypeAspects.size() == 1
-            subTypeAspects.every {
+            domainAssociations.size() == 1
+            domainAssociations.every {
                 it.domain == dsgvoDomainV2
             }
             risks.every {
@@ -434,7 +435,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
                 it.links.every {
                     it.domain == dsgvoDomainV2
                 }
-                it.subTypeAspects.every {
+                it.domainAssociations.every {
                     it.domain == dsgvoDomainV2
                 }
             }

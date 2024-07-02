@@ -20,9 +20,10 @@ package org.veo.core.entity.aspects;
 import org.veo.core.entity.Constraints;
 
 /**
- * Marks an entity as being of a sub type. Sub types are specific to the domain and the entity type.
+ * Represents an association of an element with a domain. Holds domain-specific data such as the
+ * element's sub type and status in the respective domain.
  */
-public interface SubTypeAspect extends Aspect {
+public interface ElementDomainAssociation extends Aspect {
   String SUB_TYPE_DESCRIPTION =
       "Domain-specific sub type - available sub types are listed in the domain's element type definition. The sub type cannot be changed once the element has been associated with the domain.";
   int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;

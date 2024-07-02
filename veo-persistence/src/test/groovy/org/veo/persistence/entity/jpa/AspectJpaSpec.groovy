@@ -65,7 +65,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
         def retrievedAsset = assetRepository.findById(asset.dbId)
 
         then: "the aspect exists"
-        with(retrievedAsset.get().subTypeAspects) {
+        with(retrievedAsset.get().domainAssociations) {
             size() == 1
             it[0].subType == "foo"
         }
@@ -85,7 +85,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
         def retrievedAsset = assetRepository.findById(asset.dbId)
 
         then: "the new status has been applied"
-        with(retrievedAsset.get().subTypeAspects.sort { it.subType }) {
+        with(retrievedAsset.get().domainAssociations.sort { it.subType }) {
             size() == 2
             it[0].subType == "bar"
             it[0].status == "OLD"

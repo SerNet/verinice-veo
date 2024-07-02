@@ -30,7 +30,7 @@ import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
-import org.veo.core.entity.aspects.SubTypeAspect
+import org.veo.core.entity.aspects.ElementDomainAssociation
 import org.veo.core.entity.decision.DecisionResult
 
 import spock.lang.Specification
@@ -55,13 +55,13 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getImpactValues(_) >> [:]
         Map<String, ProcessDomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
-        entity.subTypeAspects >> [
-            Mock(SubTypeAspect) {
+        entity.domainAssociations >> [
+            Mock(ElementDomainAssociation) {
                 domain >> domain0
                 subType >> "foo"
                 status >> "NEW_FOO"
             },
-            Mock(SubTypeAspect) {
+            Mock(ElementDomainAssociation) {
                 domain >> domain1
                 subType >> "bar"
                 status >> "NEW_BAR"
@@ -127,13 +127,13 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getImpactValues(_) >> [:]
         Map<String, AssetDomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
-        entity.subTypeAspects >> [
-            Mock(SubTypeAspect) {
+        entity.domainAssociations >> [
+            Mock(ElementDomainAssociation) {
                 domain >> domain0
                 subType >> "foo"
                 status >> "NEW_FOO"
             },
-            Mock(SubTypeAspect) {
+            Mock(ElementDomainAssociation) {
                 domain >> domain1
                 subType >> "bar"
                 status >> "NEW_BAR"

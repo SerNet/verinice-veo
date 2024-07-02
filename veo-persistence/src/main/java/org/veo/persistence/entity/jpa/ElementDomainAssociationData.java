@@ -22,7 +22,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,12 +31,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "subtype_aspect")
+@Entity(name = "element_domain_association")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SubTypeAspectData extends AspectData implements SubTypeAspect {
-  public SubTypeAspectData(Domain domain, Element owner, String subType, String status) {
+public class ElementDomainAssociationData extends AspectData implements ElementDomainAssociation {
+  public ElementDomainAssociationData(Domain domain, Element owner, String subType, String status) {
     super(domain, owner);
     this.subType = subType;
     this.status = status;

@@ -22,7 +22,7 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -34,7 +34,7 @@ public abstract class AbstractProfileItemDto extends AbstractTemplateItemDto<Pro
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
+  @Size(min = 1, max = ElementDomainAssociation.STATUS_MAX_LENGTH)
   private String status;
 
   @Override

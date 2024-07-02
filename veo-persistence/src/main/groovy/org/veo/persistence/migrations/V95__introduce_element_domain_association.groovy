@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2024  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.definitions;
+package org.veo.persistence.migrations
 
-import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_MAX_LENGTH;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import groovy.sql.Sql
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class LinkDefinition extends CustomAspectDefinition {
-  @NotNull
-  @Size(min = 1, max = 32)
-  private String targetType;
-
-  @NotNull
-  @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
-  private String targetSubType;
+class V95__introduce_element_domain_association extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).with {
+            execute("""
+                DROP TABLE element_domains;
+                ALTER TABLE subtype_aspect RENAME TO element_domain_association;
+        """.toString())
+        }
+    }
 }

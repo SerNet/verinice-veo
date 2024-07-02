@@ -88,7 +88,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 31
             queryCounts.insert == 1
             queryCounts.update == 1
-            queryCounts.delete == 30
+            queryCounts.delete == 29
             queryCounts.time < 1000
             // 100 is the currently observed count of 86 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 100
@@ -188,7 +188,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 63
             queryCounts.insert == 37
             queryCounts.update == 1
-            queryCounts.delete == 68
+            queryCounts.delete == 67
             queryCounts.time < 4000
             // 7850 is the currently observed count of 7727 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 7850
@@ -197,7 +197,9 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     }
 
     def getStoredDeleteEvents() {
-        storedEventDataRepository.findAll().findAll{it.content != null && new JsonSlurper().parseText(it.content).type == 'HARD_DELETION'}
+        storedEventDataRepository.findAll().findAll{
+            it.content != null && new JsonSlurper().parseText(it.content).type == 'HARD_DELETION'
+        }
     }
 
     def runUseCase(Unit unit) {

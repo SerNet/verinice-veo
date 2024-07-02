@@ -30,7 +30,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.exception.NotFoundException;
@@ -59,7 +59,7 @@ public class Inspection {
   String elementType;
 
   @Nullable
-  @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  @Size(min = 1, max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
   String elementSubType;
 
   @NonNull VeoExpression condition;

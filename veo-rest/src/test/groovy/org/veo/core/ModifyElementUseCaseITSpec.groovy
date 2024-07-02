@@ -95,7 +95,7 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
         then:
         verifyAll {
             queryCounts.select == 12
-            queryCounts.insert == 4
+            queryCounts.insert == 3
             queryCounts.update == 1
             queryCounts.delete == 0
             queryCounts.time < 1000

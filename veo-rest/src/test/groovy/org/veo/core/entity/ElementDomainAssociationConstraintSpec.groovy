@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import org.veo.persistence.entity.jpa.SubTypeAspectData
+import org.veo.persistence.entity.jpa.ElementDomainAssociationData
 
 import jakarta.validation.Validation
 import jakarta.validation.Validator
@@ -25,13 +25,13 @@ import spock.lang.Specification
 /**
  * Test {@link ProcessData} property constraints.
  */
-class SubTypeAspectConstraintSpec extends Specification {
+class ElementDomainAssociationConstraintSpec extends Specification {
 
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator()
 
     def "subType and status must not be null"() {
         given: "a sub type aspect without a sub type"
-        def aspect = new SubTypeAspectData(Mock(Domain), Mock(Element), null, null)
+        def aspect = new ElementDomainAssociationData(Mock(Domain), Mock(Element), null, null)
 
         when: "it is validated"
         def errors = validator.validate(aspect)

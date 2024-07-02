@@ -98,9 +98,13 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
       }
 
       Predicate riskAffectedPredicate =
-          criteriaBuilder.equal(root.get("owner").get("domains").get("id"), domainId.value());
+          criteriaBuilder.equal(
+              root.get("owner").get("domainAssociations").get("domain").get("id"),
+              domainId.value());
       Predicate domainPredicate =
-          criteriaBuilder.equal(root.get("control").get("domains").get("id"), domainId.value());
+          criteriaBuilder.equal(
+              root.get("control").get("domainAssociations").get("domain").get("id"),
+              domainId.value());
       Predicate clientPredicate =
           criteriaBuilder.equal(root.get("control").get("owner").get("client"), client);
 

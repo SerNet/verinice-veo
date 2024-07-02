@@ -18,12 +18,12 @@
 package org.veo.adapter.presenter.api.dto;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_DESCRIPTION;
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_MAX_LENGTH;
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_NOT_NULL_MESSAGE;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_DESCRIPTION;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_MAX_LENGTH;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_NOT_NULL_MESSAGE;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_DESCRIPTION;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_MAX_LENGTH;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_NOT_NULL_MESSAGE;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_DESCRIPTION;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_MAX_LENGTH;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_NOT_NULL_MESSAGE;
 
 import java.util.Map;
 import java.util.Optional;

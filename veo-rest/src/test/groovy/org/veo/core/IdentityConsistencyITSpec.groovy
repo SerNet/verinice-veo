@@ -34,10 +34,10 @@ import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
 import org.veo.persistence.entity.jpa.DocumentData
+import org.veo.persistence.entity.jpa.ElementDomainAssociationData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScopeData
-import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
 
 import jakarta.persistence.EntityManager
@@ -275,14 +275,14 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         when:
         asset.associateWithDomain(this.domain, "foo", "NEW")
-        def aspect = asset.subTypeAspects[0]
-        testIdentityConsistency(SubTypeAspectData.class, aspect)
+        def aspect = asset.domainAssociations[0]
+        testIdentityConsistency(ElementDomainAssociationData.class, aspect)
 
         then:
         notThrown(Exception)
 
         and: "two different entities are not equal"
-        aspect != new SubTypeAspectData()
+        aspect != new ElementDomainAssociationData()
     }
 
     @Transactional

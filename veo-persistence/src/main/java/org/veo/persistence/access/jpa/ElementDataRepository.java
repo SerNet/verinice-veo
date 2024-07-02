@@ -44,9 +44,9 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
-          + "left join fetch e.domains "
           + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
+          + "left join fetch e.domainAssociations da "
+          + "left join fetch da.domain "
           + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
           + "where e.dbId = ?1")
@@ -57,9 +57,9 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
-          + "left join fetch e.domains "
           + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
+          + "left join fetch e.domainAssociations da "
+          + "left join fetch da.domain "
           + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
           + "where e.dbId = ?1 and e.owner.client.dbId = ?2")
@@ -68,8 +68,8 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = {"domains", "links", "decisionResultsAspects"})
-  List<T> findAllWithDomainsLinksDecisionsByDbIdIn(Iterable<UUID> ids);
+  @EntityGraph(attributePaths = {"links", "decisionResultsAspects"})
+  List<T> findAllWithLinksDecisionsByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
@@ -78,8 +78,8 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "subTypeAspects")
-  List<T> findAllWithSubtypeAspectsByDbIdIn(Iterable<UUID> ids);
+  @EntityGraph(attributePaths = {"domainAssociations", "domainAssociations.domain"})
+  List<T> findAllWithDomainAssociationsByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
@@ -93,7 +93,7 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Query(
       "SELECT new org.veo.core.repository.SubTypeStatusCount(e.elementType, a.subType, a.status, count(a.status)) from #{#entityName} as e "
-          + "inner join e.subTypeAspects a "
+          + "inner join e.domainAssociations a "
           + "where e.owner.dbId = ?1 "
           + "and a.domain.id = ?2 "
           + "group by e.elementType, a.subType, a.status")

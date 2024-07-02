@@ -30,7 +30,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -55,7 +55,7 @@ public class Decision {
   private String elementType;
 
   @NotNull
-  @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
   private String elementSubType;
 
   /** Rules ordered by priority (descending). */

@@ -17,12 +17,12 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.create;
 
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_DESCRIPTION;
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_MAX_LENGTH;
-import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_NOT_NULL_MESSAGE;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_DESCRIPTION;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_MAX_LENGTH;
-import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_NOT_NULL_MESSAGE;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_DESCRIPTION;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_MAX_LENGTH;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.STATUS_NOT_NULL_MESSAGE;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_DESCRIPTION;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_MAX_LENGTH;
+import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_NOT_NULL_MESSAGE;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

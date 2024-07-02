@@ -22,13 +22,13 @@ import org.veo.core.entity.Element
 
 import spock.lang.Specification
 
-class SubtypeAspectDataSpec extends Specification{
+class ElementDomainAssociationDataSpec extends Specification{
     def "transient instances are never equal"() {
         given: "two aspects with the same parameters"
         def commonOwner = Mock(Element)
         def commonDomain = Mock(Domain)
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+        def aspect1 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW")
+        def aspect2 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW")
 
         expect: "objects are not equal"
         aspect1 != aspect2
@@ -40,10 +40,10 @@ class SubtypeAspectDataSpec extends Specification{
         def commonDomain = Mock(Domain)
         def uuid1 = UUID.randomUUID()
         def uuid2 = UUID.randomUUID()
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
+        def aspect1 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW").tap {
             dbId = uuid1
         }
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
+        def aspect2 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW").tap {
             dbId = uuid2
         }
 
@@ -57,10 +57,10 @@ class SubtypeAspectDataSpec extends Specification{
         def commonDomain = Mock(Domain)
         def uuid = UUID.randomUUID()
 
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
+        def aspect1 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "new").tap {
             dbId = uuid
         }
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
+        def aspect2 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "new").tap {
             dbId = uuid
         }
 

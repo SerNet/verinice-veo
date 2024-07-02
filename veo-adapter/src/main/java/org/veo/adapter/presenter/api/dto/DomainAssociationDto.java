@@ -25,7 +25,7 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.ref.ITypedId;
@@ -40,11 +40,17 @@ import lombok.Data;
 @Data
 public class DomainAssociationDto {
   @NotNull
-  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, requiredMode = REQUIRED)
+  @Schema(
+      minLength = 1,
+      maxLength = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH,
+      requiredMode = REQUIRED)
   String subType;
 
   @NotNull
-  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH, requiredMode = REQUIRED)
+  @Schema(
+      minLength = 1,
+      maxLength = ElementDomainAssociation.STATUS_MAX_LENGTH,
+      requiredMode = REQUIRED)
   String status;
 
   @Schema(

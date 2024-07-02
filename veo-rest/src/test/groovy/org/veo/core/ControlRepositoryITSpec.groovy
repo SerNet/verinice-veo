@@ -70,8 +70,8 @@ class ControlRepositoryITSpec extends VeoSpringSpec {
             "links[].type",
             "links[].target",
             "parts[].designator",
-            "subTypeAspects[].status",
-            "subTypeAspects[].subType",
+            "domainAssociations[].status",
+            "domainAssociations[].subType",
         ]
     }
 }

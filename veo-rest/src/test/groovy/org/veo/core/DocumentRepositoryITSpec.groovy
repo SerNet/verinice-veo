@@ -72,8 +72,8 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
             "links[].target",
             "links[].type",
             "parts[].designator",
-            "subTypeAspects[].status",
-            "subTypeAspects[].subType",
+            "domainAssociations[].status",
+            "domainAssociations[].subType",
         ]
     }
 }

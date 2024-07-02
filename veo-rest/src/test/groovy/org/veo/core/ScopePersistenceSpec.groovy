@@ -99,10 +99,10 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [
             "customAspects[].type",
+            "domainAssociations[].status",
+            "domainAssociations[].subType",
             "links[].target",
             "members[].designator",
-            "subTypeAspects[].status",
-            "subTypeAspects[].subType",
         ]
     }
 }

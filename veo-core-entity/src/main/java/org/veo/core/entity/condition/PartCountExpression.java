@@ -52,7 +52,7 @@ public class PartCountExpression implements VeoExpression {
                 .filter(
                     c ->
                         partSubType.equals(
-                            // TODO VEO-1569: this fails if the part's subtypeAspects are a
+                            // TODO VEO-1569: this fails if the part's domainAssociations are a
                             // hibernate proxy
                             c.findSubType(domain).orElse(null)))
                 .collect(Collectors.toSet());

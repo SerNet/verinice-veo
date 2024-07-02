@@ -127,7 +127,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
 
         then:
         queryCounts.select == 11
-        queryCounts.insert == 18
+        queryCounts.insert == 7
         queryCounts.time < 500
         // 30 is the currently observed count of 27 rows plus an acceptable safety margin
         DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 30

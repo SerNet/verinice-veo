@@ -139,7 +139,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   private void checkDomain(Domain aDomain) {
-    if (!getEntity().getDomains().contains(aDomain)) {
+    if (!getEntity().isAssociatedWithDomain(aDomain)) {
       throw new ModelConsistencyException(
           "The provided domain '%s' is not yet known to the entity", aDomain.getDisplayName());
     }
