@@ -21,7 +21,3 @@ _Any information regarding the implementation._
 /label ~"3.Status::1.Specification"
 
 /label ~"4.Priority::5.Undefined"
-
-/label ~"5.Impact::5.Undefined"
-
-/label ~"6.Urgency::5.Undefined"

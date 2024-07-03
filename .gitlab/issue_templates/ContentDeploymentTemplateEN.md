@@ -50,7 +50,3 @@ Fill out all fields. Mark as `?` if unknown.
 /label ~"3.Status::1.Specification"
 
 /label ~"4.Priority::5.Undefined"
-
-/label ~"5.Impact::5.Undefined"
-
-/label ~"6.Urgency::5.Undefined"
