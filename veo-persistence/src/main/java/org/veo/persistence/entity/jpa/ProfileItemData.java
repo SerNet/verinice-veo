@@ -59,7 +59,7 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
   @ManyToOne(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
   private CatalogItem appliedCatalogItem;
 
-  @ManyToOne(targetEntity = ProfileData.class, optional = false)
+  @ManyToOne(targetEntity = ProfileData.class, optional = false, fetch = FetchType.LAZY)
   private Profile owner;
 
   @OneToMany(

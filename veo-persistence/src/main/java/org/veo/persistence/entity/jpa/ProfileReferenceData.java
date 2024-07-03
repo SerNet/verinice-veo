@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -48,10 +49,10 @@ public abstract class ProfileReferenceData
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(targetEntity = ProfileItemData.class)
+  @ManyToOne(targetEntity = ProfileItemData.class, fetch = FetchType.LAZY)
   private ProfileItem target;
 
-  @ManyToOne(targetEntity = ProfileItemData.class, optional = false)
+  @ManyToOne(targetEntity = ProfileItemData.class, optional = false, fetch = FetchType.LAZY)
   private ProfileItem owner;
 
   @Override
