@@ -26,18 +26,19 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScenarioRepository;
-import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
+import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -46,8 +47,7 @@ public class ScenarioRepositoryImpl
     extends AbstractCompositeEntityRepositoryImpl<Scenario, ScenarioData>
     implements ScenarioRepository {
 
-  private final AssetDataRepository assetDataRepository;
-  private final ProcessDataRepository processDataRepository;
+  private final RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository;
   private final ScenarioDataRepository scenarioDataRepository;
 
   public ScenarioRepositoryImpl(
@@ -55,8 +55,7 @@ public class ScenarioRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
-      AssetDataRepository assetDataRepository,
-      ProcessDataRepository processDataRepository,
+      RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository,
       ElementQueryFactory elementQueryFactory) {
     super(
         dataRepository,
@@ -66,8 +65,7 @@ public class ScenarioRepositoryImpl
         elementQueryFactory,
         Scenario.class);
     this.scenarioDataRepository = dataRepository;
-    this.assetDataRepository = assetDataRepository;
-    this.processDataRepository = processDataRepository;
+    this.riskAffectedDataRepository = riskAffectedDataRepository;
   }
 
   @Override
@@ -83,15 +81,13 @@ public class ScenarioRepositoryImpl
 
   private void removeRisks(Set<ScenarioData> scenarios) {
     // remove risks associated with these scenarios:
-    var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
-    assets.forEach(
-        assetData ->
-            scenarios.forEach(scenario -> assetData.getRisk(scenario).orElseThrow().remove()));
-
-    var processes = processDataRepository.findRisksWithValue(scenarios);
-    processes.forEach(
-        processData ->
-            scenarios.forEach(scenario -> processData.getRisk(scenario).orElseThrow().remove()));
+    riskAffectedDataRepository
+        .findDistinctByRisks_ScenarioIn(scenarios)
+        .forEach(
+            riskAffected -> {
+              scenarios.forEach(
+                  scenario -> riskAffected.getRisk(scenario).ifPresent(AbstractRisk::remove));
+            });
   }
 
   @Override

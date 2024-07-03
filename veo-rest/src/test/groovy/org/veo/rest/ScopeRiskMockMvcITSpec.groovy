@@ -248,6 +248,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             success
             message == "Scope risk created successfully."
         }
+
+        when: "deleting the scenario"
+        delete("/scenarios/$scenario.idAsString")
+
+        then: "the risk was also removed"
+        parseJson(get("/scopes/$scopeId/risks")).size() == 0
     }
 
     def "can update scope impact"() {
