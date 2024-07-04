@@ -215,6 +215,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @SuppressFBWarnings // ignore warning on call to method proxy factory
   public String elementInDomainRefOf(Element element, Domain domain) {
     var type = element.getModelInterface();
+    // TODO #2990: make url generation faster
+    boolean inRequestContext = RequestContextHolder.getRequestAttributes() != null;
+    if (!inRequestContext && Element.class.isAssignableFrom(type)) {
+      return "/domains/"
+          + domain.getIdAsString()
+          + "/"
+          + EntityType.getPluralTermByType(type)
+          + "/"
+          + element.getIdAsString();
+    }
     if (Asset.class.isAssignableFrom(type)) {
       return linkTo(
               methodOn(AssetInDomainController.class)
