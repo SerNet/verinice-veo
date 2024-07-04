@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
@@ -57,7 +57,7 @@ public class ProfileRepositoryImpl
   }
 
   @Override
-  public Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+  public List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> profileItemIds, Client client) {
     var idStrings = profileItemIds.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
@@ -66,7 +66,7 @@ public class ProfileRepositoryImpl
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Override
@@ -82,7 +82,7 @@ public class ProfileRepositoryImpl
   }
 
   @Override
-  public Set<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+  public List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       Key<UUID> profileId, Client client) {
     return StreamSupport.stream(
             profileDataRepository
@@ -91,7 +91,7 @@ public class ProfileRepositoryImpl
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Override

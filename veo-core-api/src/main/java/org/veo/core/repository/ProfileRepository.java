@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -37,10 +38,10 @@ public interface ProfileRepository extends IdentifiableVersionedRepository<Profi
   Optional<Profile> findProfileByIdFetchTailoringReferences(
       Key<UUID> profileId, Key<UUID> clientId);
 
-  Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+  List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> profileItemIds, Client client);
 
-  Set<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+  List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       Key<UUID> profileId, Client client);
 
   Set<Profile> findAllByDomain(Domain domain);
