@@ -477,9 +477,6 @@ public class EntityStateMapper {
       Map<String, T> values,
       String riskDefinitionId,
       DomainRiskReferenceProvider referenceProvider) {
-    if (values == null) {
-      return newHashMap(5);
-    }
     return values.entrySet().stream()
         .filter(e -> e.getValue() != null)
         .collect(

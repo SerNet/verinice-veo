@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -34,37 +37,43 @@ public class ImpactValuesDto implements PotentialImpactValues {
       description =
           "Potential impacts for a set of risk categories. These are specific values entered by the user directly.",
       example = "{\"C\":2,\n\"I\":3}")
-  private Map<String, ImpactRef> potentialImpacts;
+  @NotNull
+  private Map<String, ImpactRef> potentialImpacts = new HashMap<>();
 
   @Schema(
       description =
           "Potential impacts for a set of risk categories. These are calculated values based on the high water mark.",
       example = "{\"C\":2,\n\"A\":3}")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Map<String, ImpactRef> potentialImpactsCalculated;
+  @NotNull
+  private Map<String, ImpactRef> potentialImpactsCalculated = new HashMap<>();
 
   @Schema(
       description =
           "Potential impacts for a set of risk categories. These are either the specific or the calculated values.",
       example = "{\"C\":2,\n\"A\":1}")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Map<String, ImpactRef> potentialImpactsEffective;
+  @NotNull
+  private Map<String, ImpactRef> potentialImpactsEffective = new HashMap<>();
 
   @Schema(
       description = "The reason for the chosen user-defined potential impact in each category.",
       example = "{\"C\":\"impact_reason_manual\",\n\"A\":\"impact_reason_distributive\"}")
-  private Map<String, ImpactReason> potentialImpactReasons;
+  @NotNull
+  private Map<String, ImpactReason> potentialImpactReasons = new HashMap<>();
 
   @Schema(
       description = "An optional explanation for the user-entered specific potential impact.",
       example =
           "{\"C\":\"Confidentiality based on processed data.\",\n\"A\":\"Availability is distributed to redundant machines and therefore lower.\"}")
-  private Map<String, String> potentialImpactExplanations;
+  @NotNull
+  private Map<String, String> potentialImpactExplanations = new HashMap<>();
 
   @Schema(
       description =
           "The reason for the effective impact. This is either the one chosen by the user for a specific impact, or the used calculation method if the value was determined automatically. The values are always translation keys.",
       example = "{\"C\":\"impact_reason_manual\",\n\"A\":\"impact_method_high_water_mark\"}")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Map<String, String> potentialImpactEffectiveReasons;
+  @NotNull
+  private Map<String, String> potentialImpactEffectiveReasons = new HashMap<>();
 }

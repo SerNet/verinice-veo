@@ -386,6 +386,40 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
+    def "can remove potential impact by removing the maps"() {
+        given:
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                    ],
+                ]
+            ]
+        ])).resourceId
+
+        when:
+        get("/domains/$domainId/processes/$processId").with{
+            def body = parseJson(it)
+            body.riskValues.myFirstRiskDefinition.remove("potentialImpacts")
+            body.riskValues.myFirstRiskDefinition.remove("potentialImpactReasons")
+            put(body._self, body, ["If-Match": getETag(it)])
+        }
+
+        then:
+        with(parseJson(get("/domains/$domainId/processes/$processId")).riskValues.myFirstRiskDefinition) {
+            potentialImpacts == [:]
+            potentialImpactReasons == [:]
+        }
+    }
+
     def "null values are removed from maps"() {
         when:
         def processId = parseJson(post("/domains/$domainId/processes", [
