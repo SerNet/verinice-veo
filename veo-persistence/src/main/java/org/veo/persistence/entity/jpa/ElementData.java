@@ -173,7 +173,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   private String elementType;
 
   protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
-    return source.stream().filter(aspect -> aspect.getDomain().equals(domain)).findFirst();
+    return source.stream().filter(aspect -> domain.equals(aspect.getDomain())).findFirst();
   }
 
   @Override

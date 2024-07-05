@@ -312,6 +312,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             assetRepository.findById(asset.id).get().tap {
                 //initialize lazy associations
                 it.getImpactValues(dsgvoDomainV2)
+                riskValuesAspects*.domain*.name
             }
         }
 
