@@ -169,7 +169,8 @@ public class ClientChangedEventListener {
             unit ->
                 deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
 
-    repository.delete(client);
+    // Reload the client since the persistence context was cleared
+    repository.delete(repository.getById(client.getId()));
   }
 
   private Predicate<? super Domain> referenceDomainTemplate(String templateName) {

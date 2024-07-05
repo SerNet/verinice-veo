@@ -49,7 +49,8 @@ public class DeleteClientUseCase
         .forEach(
             unit ->
                 deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
-    clientRepository.delete(client);
+    // Reload the client since the persistence context was cleared
+    clientRepository.delete(clientRepository.getById(input.clientId));
     return EmptyOutput.INSTANCE;
   }
 

@@ -17,19 +17,15 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
-import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -52,26 +48,12 @@ public class DeleteUnitUseCase
     Unit unit = unitRepository.getById(input.unitId);
     unit.checkSameClient(client);
 
-    removeObjectsInUnit(unit);
+    genericElementRepository.deleteByUnit(unit);
     unitRepository.delete(unit);
+    // Reload the client since the persistence context was cleared
+    client = clientRepository.getById(input.authenticatedClient.getId());
     client.decrementTotalUnits();
     return EmptyOutput.INSTANCE;
-  }
-
-  void removeObjectsInUnit(Unit unit) {
-
-    ElementQuery<Element> query = genericElementRepository.query(unit.getClient());
-    query.whereOwnerIs(unit);
-    query.fetchAppliedCatalogItems();
-    query.fetchParentsAndChildrenAndSiblings();
-    query.fetchRisks();
-    query.fetchRiskValuesAspects();
-    query.fetchControlImplementations();
-    query.fetchRequirementImplementations();
-
-    List<Element> entitiesInUnit = query.execute(PagingConfiguration.UNPAGED).getResultPage();
-
-    genericElementRepository.deleteAll(entitiesInUnit);
   }
 
   @Override

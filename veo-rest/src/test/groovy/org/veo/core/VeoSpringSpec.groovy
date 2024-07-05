@@ -139,7 +139,8 @@ abstract class VeoSpringSpec extends VeoSpec {
     EntitySchemaService entitySchemaService
 
     def deleteUnitRecursively(Unit unit) {
-        unit.units.each {
+        // Query the repository since the persistence context was cleared
+        unitDataRepository.findByParentId(unit.idAsUUID).each {
             deleteUnitRecursively(it)
         }
         deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
@@ -153,7 +154,8 @@ abstract class VeoSpringSpec extends VeoSpec {
                 unitDataRepository.findByClientId(client.dbId).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
-                clientRepository.delete(client)
+                // Reload the client since the persistence context was cleared
+                clientRepository.delete(clientRepository.getById(client.id))
             }
             domainTemplateDataRepository.deleteAll()
             eventStoreDataRepository.deleteAll()

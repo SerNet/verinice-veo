@@ -51,4 +51,10 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
       Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId);
 
   LinkQuery queryLinks(Element element, Domain domain);
+
+  /**
+   * Delete all elements in the given unit. <b>This will clear the persistence context</b>, so all
+   * entity references will become stale.
+   */
+  void deleteByUnit(Unit unit);
 }

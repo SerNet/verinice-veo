@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.persistence.EntityManager;
 
@@ -53,6 +54,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.LinkQuery;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
@@ -195,6 +197,57 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
           ra.getRequirementImplementations()
               .forEach(ri -> ri.getOrigin().removeRequirementImplementation(ri.getControl()));
         });
+  }
+
+  @Override
+  @Transactional
+  public void deleteByUnit(Unit unit) {
+    var unitId = unit.getIdAsUUID();
+    em.flush();
+    Stream.of(
+            "delete from requirement_implementation where origin_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from control_implementation where owner_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from customlink where source_id in (select db_id from element where owner_id = ?1)",
+            "delete from custom_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from decision_results_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from subtype_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from element_domains where element_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from control_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'control' and owner_id = ?1)",
+            "delete from scenario_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
+            "delete from impact_values_aspect where owner_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1)",
+            "delete from scope_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",
+            "delete from asset_parts where composite_id in (select db_id from element where dtype = 'asset' and owner_id = ?1)",
+            "delete from control_parts where composite_id in (select db_id from element where dtype = 'control' and owner_id = ?1)",
+            "delete from document_parts where composite_id in (select db_id from element where dtype = 'document' and owner_id = ?1)",
+            "delete from incident_parts where composite_id in (select db_id from element where dtype = 'incident' and owner_id = ?1)",
+            "delete from person_parts where composite_id in (select db_id from element where dtype = 'person' and owner_id = ?1)",
+            "delete from process_parts where composite_id in (select db_id from element where dtype = 'process' and owner_id = ?1)",
+            "delete from scenario_parts where composite_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
+            "delete from scope_members where scope_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",
+            "delete from element_applied_catalog_items where element_db_id in (select db_id from element where owner_id = ?1)",
+            "delete from abstractriskdata_domains d where d.abstractriskdata_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1))",
+            "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1))")
+        .forEach(
+            statement -> em.createNativeQuery(statement).setParameter(1, unitId).executeUpdate());
+    em.clear();
+
+    ElementQuery<Element> query = query(unit.getClient());
+    query.whereOwnerIs(unit);
+    query.fetchAppliedCatalogItems();
+    query.fetchParentsAndChildrenAndSiblings();
+    query.fetchRisks();
+    query.fetchRiskValuesAspects();
+    query.fetchControlImplementations();
+    query.fetchRequirementImplementations();
+    List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+
+    elements.forEach(
+        element -> {
+          if (element instanceof RiskAffected<?, ?> ra) {
+            ra.getRisks().forEach(em::remove);
+          }
+        });
+    dataRepository.deleteAll(elements.stream().map(ElementData.class::cast).toList());
   }
 
   private void removeCIs(RiskAffected<?, ?> ra) {
