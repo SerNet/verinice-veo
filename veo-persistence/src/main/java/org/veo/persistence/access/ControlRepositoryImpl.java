@@ -29,17 +29,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.RiskAffected;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ElementQuery;
-import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
@@ -47,17 +45,15 @@ public class ControlRepositoryImpl
     extends AbstractCompositeEntityRepositoryImpl<Control, ControlData>
     implements ControlRepository {
 
-  private final AssetDataRepository assetDataRepository;
-  private final ProcessDataRepository processDataRepository;
+  private final RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository;
 
   public ControlRepositoryImpl(
       ControlDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
-      AssetDataRepository assetDataRepository,
-      ProcessDataRepository processDataRepository,
-      ElementQueryFactory elementQueryFactory) {
+      ElementQueryFactory elementQueryFactory,
+      RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository) {
     super(
         dataRepository,
         validation,
@@ -65,8 +61,7 @@ public class ControlRepositoryImpl
         scopeDataRepository,
         elementQueryFactory,
         Control.class);
-    this.assetDataRepository = assetDataRepository;
-    this.processDataRepository = processDataRepository;
+    this.riskAffectedDataRepository = riskAffectedDataRepository;
   }
 
   @Override
@@ -87,16 +82,15 @@ public class ControlRepositoryImpl
   }
 
   private void removeFromRisks(Set<ControlData> controls) {
-    getRiskAffectedRepos().stream()
-        .flatMap(repo -> repo.findDistinctByRisks_Mitigation_In(controls).stream())
+    riskAffectedDataRepository.findDistinctByRisks_Mitigation_In(controls).stream()
         .flatMap(riskAffected -> riskAffected.getRisks().stream())
         .filter(risk -> controls.contains(risk.getMitigation()))
         .forEach(risk -> risk.mitigate(null));
   }
 
   private void removeImplementations(Iterable<ControlData> controls) {
-    getRiskAffectedRepos().stream()
-        .flatMap(r -> r.findAllByRequirementImplementationControls(controls).stream())
+    riskAffectedDataRepository
+        .findAllByRequirementImplementationControls(controls)
         .forEach(
             ra ->
                 controls.forEach(
@@ -113,9 +107,5 @@ public class ControlRepositoryImpl
     removeFromRisks(controls);
     removeImplementations(controls);
     super.deleteAll(elements);
-  }
-
-  private Set<RiskAffectedDataRepository<? extends RiskAffected<?, ?>>> getRiskAffectedRepos() {
-    return Set.of(assetDataRepository, processDataRepository, scopeDataRepository);
   }
 }

@@ -32,8 +32,7 @@ import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
-public interface ScopeDataRepository
-    extends ElementDataRepository<ScopeData>, RiskAffectedDataRepository<ScopeData> {
+public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeData> {
 
   @Query(
       "select distinct s from scope s "

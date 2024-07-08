@@ -24,7 +24,6 @@ import java.util.Set;
 import jakarta.annotation.Nonnull;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.ControlData;
@@ -33,8 +32,8 @@ import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 
 @Transactional(readOnly = true)
-@NoRepositoryBean
-public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>> {
+public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
+    extends ElementDataRepository<T> {
 
   @SuppressWarnings("PMD.MethodNamingConventions")
   Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
