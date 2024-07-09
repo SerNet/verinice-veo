@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,7 +61,7 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @EqualsAndHashCode.Include
-  private String dbId;
+  private UUID dbId;
 
   @ToString.Include
   @Column(name = "name")
@@ -128,6 +129,6 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
 
   @Override
   public String getSelfId() {
-    return getDbId();
+    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
   }
 }

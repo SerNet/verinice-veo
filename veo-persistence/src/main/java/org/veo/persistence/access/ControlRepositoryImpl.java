@@ -71,7 +71,7 @@ public class ControlRepositoryImpl
 
   @Override
   public void deleteById(Key<UUID> id) {
-    delete(dataRepository.findById(id.uuidValue()).orElseThrow());
+    delete(dataRepository.findById(id.value()).orElseThrow());
   }
 
   @Override

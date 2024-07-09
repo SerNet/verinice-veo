@@ -47,7 +47,7 @@ public abstract class ProfileReferenceData
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @ManyToOne(targetEntity = ProfileItemData.class, fetch = FetchType.LAZY)
   private ProfileItem target;
@@ -57,16 +57,21 @@ public abstract class ProfileReferenceData
 
   @Override
   public Key<UUID> getId() {
-    return Key.uuidFrom(getDbId());
+    return Optional.ofNullable(getDbId()).map(Key::from).orElse(null);
   }
 
   @Override
   public void setId(Key<UUID> id) {
-    setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+    setDbId(Optional.ofNullable(id).map(Key::value).orElse(null));
   }
 
   @Override
   public String getIdAsString() {
+    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
+  }
+
+  @Override
+  public UUID getIdAsUUID() {
     return dbId;
   }
 
@@ -85,7 +90,7 @@ public abstract class ProfileReferenceData
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore, a transient entity must never equal another entity.
-    return dbId != null && dbId.equals(other.getIdAsString());
+    return dbId != null && dbId.equals(other.getDbId());
   }
 
   @Override

@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
@@ -186,9 +188,9 @@ public class MostRecentChangeTracker<
 
   private String determineId(V entityToStore) {
     if (entityToStore instanceof AbstractRiskData<?, ?> risk) {
-      return risk.getDbId();
+      return Optional.ofNullable(risk.getDbId()).map(UUID::toString).orElse(null);
     } else if (entityToStore instanceof TemplateItemData<?, ?> ti) {
-      return ti.getDbId();
+      return Optional.ofNullable(ti.getDbId()).map(UUID::toString).orElse(null);
     } else {
       return entityToStore.getIdAsString();
     }

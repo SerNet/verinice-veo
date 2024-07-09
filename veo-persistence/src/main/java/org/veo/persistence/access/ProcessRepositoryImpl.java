@@ -78,14 +78,14 @@ public class ProcessRepositoryImpl
   public Optional<Process> findByIdWithRiskValues(Key<UUID> processId) {
     var processes =
         ((ProcessDataRepository) dataRepository)
-            .findByIdsWithRiskValues(singleton(processId.uuidValue()));
+            .findByIdsWithRiskValues(singleton(processId.value()));
     return processes.stream().findFirst().map(Process.class::cast);
   }
 
   @Override
   @Transactional(readOnly = true)
   public Set<Process> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
-    List<String> dbIDs = ids.stream().map(Key::uuidValue).toList();
+    List<UUID> dbIDs = ids.stream().map(Key::value).toList();
     var elements = processDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
     return Collections.unmodifiableSet(elements);
   }

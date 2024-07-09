@@ -56,16 +56,14 @@ public class DomainRepositoryImpl
 
   @Override
   public Set<Domain> findAllActiveByClient(Key<UUID> clientId) {
-    return dataRepository.findAllActiveByClient(clientId.uuidValue()).stream()
+    return dataRepository.findAllActiveByClient(clientId.value()).stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
   public Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId) {
-    return dataRepository
-        .findActiveDomainsWithProfilesAndRiskDefinitions(clientId.uuidValue())
-        .stream()
+    return dataRepository.findActiveDomainsWithProfilesAndRiskDefinitions(clientId.value()).stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
@@ -75,7 +73,7 @@ public class DomainRepositoryImpl
       Collection<Key<UUID>> domainIds, Key<UUID> clientId) {
     return dataRepository
         .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-            domainIds.stream().map(Key::uuidValue).toList(), clientId.uuidValue())
+            domainIds.stream().map(Key::value).toList(), clientId.value())
         .stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
@@ -83,14 +81,14 @@ public class DomainRepositoryImpl
 
   @Override
   public Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId) {
-    return dataRepository.findIdsByDomainTemplateId(domainTemplateId.uuidValue()).stream()
+    return dataRepository.findIdsByDomainTemplateId(domainTemplateId.value()).stream()
         .map(Key::uuidFrom)
         .collect(Collectors.toSet());
   }
 
   @Override
   public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
-    return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
+    return dataRepository.findById(domainId.value(), clientId.value());
   }
 
   @Override
@@ -105,17 +103,15 @@ public class DomainRepositoryImpl
   @Override
   public Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
     return dataRepository
-        .findById(domainId.uuidValue(), clientId.uuidValue())
+        .findById(domainId.value(), clientId.value())
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }
 
   @Override
   public Set<Domain> findByIds(Set<Key<UUID>> ids, @NonNull Key<UUID> clientId) {
-    var idStrings = ids.stream().map(Key::uuidValue).toList();
+    var idStrings = ids.stream().map(Key::value).toList();
     return StreamSupport.stream(
-            dataRepository
-                .findAllByDbIdInAndOwnerDbIdIs(idStrings, clientId.uuidValue())
-                .spliterator(),
+            dataRepository.findAllByDbIdInAndOwnerDbIdIs(idStrings, clientId.value()).spliterator(),
             false)
         .collect(Collectors.toSet());
   }
@@ -138,7 +134,7 @@ public class DomainRepositoryImpl
   @Override
   public Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId) {
     return dataRepository
-        .findByIdWithProfilesAndRiskDefinitions(id.uuidValue(), clientId.uuidValue())
+        .findByIdWithProfilesAndRiskDefinitions(id.value(), clientId.value())
         .map(Domain.class::cast);
   }
 
@@ -150,7 +146,7 @@ public class DomainRepositoryImpl
   @Override
   public Domain getByIdWithDecisionsAndInspections(Key<UUID> domainId, Key<UUID> clientId) {
     return dataRepository
-        .findByIdWithDecisionsAndInspections(domainId.uuidValue(), clientId.uuidValue())
+        .findByIdWithDecisionsAndInspections(domainId.value(), clientId.value())
         .map(Domain.class::cast)
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }

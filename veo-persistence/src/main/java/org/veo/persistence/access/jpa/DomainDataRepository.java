@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,21 +32,21 @@ import org.veo.persistence.entity.jpa.DomainData;
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
   @Query("select e.dbId from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
-  Collection<String> findIdsByDomainTemplateId(String domainTemplateId);
+  Collection<String> findIdsByDomainTemplateId(UUID domainTemplateId);
 
   @Query(
       "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1 and d.active = true")
-  Set<DomainData> findAllActiveByClient(String clientId);
+  Set<DomainData> findAllActiveByClient(UUID clientId);
 
   @Query(
       "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
-  Set<DomainData> findAllByClient(String clientId);
+  Set<DomainData> findAllByClient(UUID clientId);
 
   @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
-  Optional<Domain> findById(String domainId, String clientId);
+  Optional<Domain> findById(UUID domainId, UUID clientId);
 
   @Query("select d from #{#entityName} d where d.dbId in ?1 and d.owner.dbId = ?2")
-  Set<Domain> findAllByDbIdInAndOwnerDbIdIs(Collection<String> domainIds, String clientId);
+  Set<Domain> findAllByDbIdInAndOwnerDbIdIs(Collection<UUID> domainIds, UUID clientId);
 
   @Query(
       """
@@ -54,7 +55,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           join fetch d.inspectionSet
           where d.dbId = ?1 and d.owner.dbId = ?2
     """)
-  Optional<DomainData> findByIdWithDecisionsAndInspections(String domainId, String clientId);
+  Optional<DomainData> findByIdWithDecisionsAndInspections(UUID domainId, UUID clientId);
 
   @Query(
       """
@@ -63,7 +64,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           join fetch d.riskDefinitionSet
           where d.owner.dbId = ?1 and d.active = true
       """)
-  Set<DomainData> findActiveDomainsWithProfilesAndRiskDefinitions(String clientId);
+  Set<DomainData> findActiveDomainsWithProfilesAndRiskDefinitions(UUID clientId);
 
   @Query(
       """
@@ -72,7 +73,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           join fetch d.riskDefinitionSet
           where d.dbId = ?1 and d.owner.dbId = ?2
       """)
-  Optional<DomainData> findByIdWithProfilesAndRiskDefinitions(String id, String clientId);
+  Optional<DomainData> findByIdWithProfilesAndRiskDefinitions(UUID id, UUID clientId);
 
   @Query(
       """
@@ -82,7 +83,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           where d.id in ?1 and d.owner.id = ?2 and d.active = true
       """)
   Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-      List<String> ids, String clientId);
+      List<UUID> ids, UUID clientId);
 
   @Query("select count(d.id) > 0 from domain d where d.name = ?1 and d.owner = ?2")
   boolean nameExistsInClient(String name, Client client);

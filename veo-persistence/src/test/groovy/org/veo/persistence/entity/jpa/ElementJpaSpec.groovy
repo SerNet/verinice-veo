@@ -193,7 +193,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         asset = assetRepository.save(asset)
         entityManager.flush()
         entityManager.detach(asset)
-        asset = assetRepository.findById(asset.idAsString).get()
+        asset = assetRepository.findById(asset.dbId).get()
 
         and: "trying to mutate the results again"
         asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])

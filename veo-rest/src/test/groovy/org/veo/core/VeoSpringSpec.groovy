@@ -150,7 +150,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         txTemplate.execute {
             TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
             clientRepository.findAll().each { client ->
-                unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each {
+                unitDataRepository.findByClientId(client.dbId).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
                 clientRepository.delete(client)

@@ -120,7 +120,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 name == clientName
             }
             def units = executeInTransaction {
-                unitDataRepository.findByClientId(cId.uuidValue()).tap {
+                unitDataRepository.findByClientId(cId.value()).tap {
                     // force lazy proxy initialization
                     it*.domains.collect { it.name }
                 }
@@ -169,7 +169,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         when: "we add a profile to a template and add this profile"
         def dt = domainTemplateDataRepository
-                .findByIdWithProfilesAndRiskDefinitions(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get()
+                .findByIdWithProfilesAndRiskDefinitions(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get()
 
         dt.profiles.add(newProfile(dt) {
             name = 'the new profile'

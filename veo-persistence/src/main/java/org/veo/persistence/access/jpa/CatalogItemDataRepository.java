@@ -88,7 +88,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
             where ci.domain.dbId = ?1
             group by ci.elementType, ci.subType
 """)
-  Set<SubTypeCount> getCountsBySubType(String domainId);
+  Set<SubTypeCount> getCountsBySubType(UUID domainId);
 
   @Nonnull
   @Transactional(readOnly = true)
@@ -111,7 +111,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
                   join ci.domainTemplate as dt
                   where dt.dbId = ?1
               """)
-  Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(String domainTemplateId);
+  Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(UUID domainTemplateId);
 
   @Query(
       """
@@ -119,12 +119,12 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
         where ci.symbolicDbId in ?1 and ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3
   """)
   Set<CatalogItem> findAllByIdsAndDomain(
-      Collection<String> symbolicIds, String domainId, String clientId);
+      Collection<String> symbolicIds, UUID domainId, UUID clientId);
 
   @Query(
       """
     select ci from catalogitem ci
         where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2
   """)
-  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<String> symbolicIds, String domainTemplateId);
+  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<String> symbolicIds, UUID domainTemplateId);
 }

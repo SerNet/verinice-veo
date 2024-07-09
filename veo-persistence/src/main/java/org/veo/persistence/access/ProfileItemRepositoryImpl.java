@@ -59,7 +59,9 @@ public class ProfileItemRepositoryImpl implements ProfileItemRepository {
                   entry.getValue().stream()
                       .map(ITypedSymbolicId::getSymbolicId)
                       .collect(Collectors.toSet());
-              return profileItemDataRepository.findAllByIds(symIds, namespaceId, client).stream();
+              return profileItemDataRepository
+                  .findAllByIds(symIds, UUID.fromString(namespaceId), client)
+                  .stream();
             })
         .collect(Collectors.toSet());
   }

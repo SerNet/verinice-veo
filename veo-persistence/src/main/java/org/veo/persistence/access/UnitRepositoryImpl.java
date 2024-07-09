@@ -44,20 +44,20 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
 
   @Override
   public List<Unit> findByClient(Client client) {
-    return dataRepository.findByClientId(client.getIdAsString()).stream()
+    return dataRepository.findByClientId(client.getIdAsUUID()).stream()
         .map(Unit.class::cast)
         .toList();
   }
 
   @Override
   public List<Unit> findByParent(Unit parent) {
-    return dataRepository.findByParentId(parent.getIdAsString()).stream()
+    return dataRepository.findByParentId(parent.getIdAsUUID()).stream()
         .map(Unit.class::cast)
         .toList();
   }
 
   @Override
   public Optional<Unit> findByIdFetchClient(Key<UUID> id) {
-    return dataRepository.findWithClientByDbId(id.uuidValue()).map(Unit.class::cast);
+    return dataRepository.findWithClientByDbId(id.value()).map(Unit.class::cast);
   }
 }

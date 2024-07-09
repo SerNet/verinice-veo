@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -41,7 +42,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           where i.symbolicDbId = ?2 and p.dbId= ?1 and d.owner.dbId = ?3
                       """)
   Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
-      String profileId, String itemId, String clientId);
+      UUID profileId, String itemId, UUID clientId);
 
   @Query(
       """
@@ -52,7 +53,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                                     left join fetch p.domain d
                                     where p.dbId= ?1 and d.owner.dbId = ?2
                                 """)
-  Optional<Profile> findProfileByIdFetchTailoringReferences(String profileId, String clientId);
+  Optional<Profile> findProfileByIdFetchTailoringReferences(UUID profileId, UUID clientId);
 
   @Query(
       """
@@ -71,14 +72,14 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                     where i.owner.dbId = ?1 and i.owner.domain.owner = ?2
                 """)
   Iterable<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
-      String profileId, Client client);
+      UUID profileId, Client client);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<Profile> findAllByDomain(DomainData domain);
 
   @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.domain.dbId = ?2")
-  Set<Profile> findAllByDomainId(String clientId, String domainId);
+  Set<Profile> findAllByDomainId(UUID clientId, UUID domainId);
 
   @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.dbId = ?2")
-  Optional<Profile> findById(String clientId, String profileId);
+  Optional<Profile> findById(UUID clientId, UUID profileId);
 }

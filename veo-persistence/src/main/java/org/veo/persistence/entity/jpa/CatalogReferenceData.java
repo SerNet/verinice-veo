@@ -46,7 +46,7 @@ public abstract class CatalogReferenceData
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @ManyToOne(targetEntity = CatalogItemData.class)
   private CatalogItem target;
@@ -56,16 +56,21 @@ public abstract class CatalogReferenceData
 
   @Override
   public Key<UUID> getId() {
-    return Key.uuidFrom(getDbId());
+    return Optional.ofNullable(getDbId()).map(Key::from).orElse(null);
   }
 
   @Override
   public void setId(Key<UUID> id) {
-    setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+    setDbId(Optional.ofNullable(id).map(Key::value).orElse(null));
   }
 
   @Override
   public String getIdAsString() {
+    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
+  }
+
+  @Override
+  public UUID getIdAsUUID() {
     return dbId;
   }
 
@@ -86,7 +91,7 @@ public abstract class CatalogReferenceData
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 

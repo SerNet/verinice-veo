@@ -64,7 +64,7 @@ public abstract class TemplateItemData<
   @Id
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @NotNull @ToString.Include private String symbolicDbId;
 
@@ -207,7 +207,7 @@ public abstract class TemplateItemData<
       // (persisted and detached) entities have an identity. JPA requires that
       // an entity's identity remains the same over all state changes.
       // Therefore, a transient entity must never equal another entity.
-      String dbId = getDbId();
+      UUID dbId = getDbId();
       return dbId != null && dbId.equals(other.getDbId());
     }
     return false;

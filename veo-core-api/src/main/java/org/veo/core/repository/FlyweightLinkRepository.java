@@ -18,11 +18,12 @@
 package org.veo.core.repository;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.FlyweightElement;
 
 public interface FlyweightLinkRepository {
 
   Set<FlyweightElement> findAllLinksGroupedByElement(
-      Set<String> types, String domainId, String unitId, String clientId);
+      Set<String> types, UUID domainId, UUID unitId, UUID clientId);
 }

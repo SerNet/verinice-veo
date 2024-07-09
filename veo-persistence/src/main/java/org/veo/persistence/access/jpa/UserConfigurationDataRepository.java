@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,15 +33,15 @@ public interface UserConfigurationDataRepository
       "select distinct e from #{#entityName} as e "
           + "where e.client.dbId=?1 and e.userName=?2 and e.applicationId=?3")
   Optional<UserConfigurationData> findUserConfiguration(
-      String clientId, String username, String applicationId);
+      UUID clientId, String username, String applicationId);
 
   @Query("select e from #{#entityName} as e where e.client.dbId=?1")
-  Set<UserConfigurationData> findUserConfigurationsByClient(String clientId);
+  Set<UserConfigurationData> findUserConfigurationsByClient(UUID clientId);
 
   @Query("select count(e) from #{#entityName} as e where e.client.dbId=?1 and e.userName=?2 ")
-  int countUserConfigurations(String clientId, String username);
+  int countUserConfigurations(UUID clientId, String username);
 
   @Query(
       "select e.applicationId from #{#entityName} as e where e.client.dbId=?1 and e.userName=?2 ")
-  Set<String> findAllKeysByUser(String clientId, String userName);
+  Set<String> findAllKeysByUser(UUID clientId, String userName);
 }

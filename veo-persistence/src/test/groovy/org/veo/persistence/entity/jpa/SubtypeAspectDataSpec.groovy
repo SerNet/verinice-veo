@@ -38,11 +38,13 @@ class SubtypeAspectDataSpec extends Specification{
         given: "two aspects with different IDs"
         def commonOwner = Mock(Element)
         def commonDomain = Mock(Domain)
+        def uuid1 = UUID.randomUUID()
+        def uuid2 = UUID.randomUUID()
         def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
-            dbId = 'abcde'
+            dbId = uuid1
         }
         def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
-            dbId = 'abcd'
+            dbId = uuid2
         }
 
         expect: "objects are not equal"
@@ -53,11 +55,13 @@ class SubtypeAspectDataSpec extends Specification{
         given: "two aspects with the same ID"
         def commonOwner = Mock(Element)
         def commonDomain = Mock(Domain)
+        def uuid = UUID.randomUUID()
+
         def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
-            dbId = 'abcde'
+            dbId = uuid
         }
         def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
-            dbId = 'abcde'
+            dbId = uuid
         }
 
         expect: "objects are equal"

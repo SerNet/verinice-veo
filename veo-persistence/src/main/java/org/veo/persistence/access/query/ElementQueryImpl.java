@@ -147,7 +147,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void whereIdIn(QueryCondition<String> ids) {
+  public void whereIdIn(QueryCondition<UUID> ids) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) -> in(root.get("id"), ids.getValues(), criteriaBuilder));
@@ -186,14 +186,13 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   @Override
   public void whereChildElementIn(QueryCondition<Key<UUID>> condition) {
-    var childIdsAsString =
-        condition.getValues().stream().map(Key::uuidValue).collect(Collectors.toSet());
+    var childIds = condition.getValues().stream().map(Key::value).collect(Collectors.toSet());
     mySpec =
         mySpec.and(
             (root, query, criateriaBuilder) ->
                 in(
                     root.join(getChildAttributeName(), JoinType.INNER).get("dbId"),
-                    childIdsAsString,
+                    childIds,
                     criateriaBuilder));
   }
 
@@ -290,8 +289,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("scopes", JoinType.LEFT).get("dbId"),
-                    condition.getValue().uuidValue()));
+                    root.join("scopes", JoinType.LEFT).get("dbId"), condition.getValue().value()));
   }
 
   @Override
@@ -337,7 +335,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Transactional(readOnly = true)
   public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
-    List<String> ids = items.stream().map(ElementData::getDbId).toList();
+    List<UUID> ids = items.stream().map(ElementData::getDbId).toList();
     fullyLoadItems(ids);
 
     return new PagedResult<>(
@@ -347,7 +345,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         items.getTotalPages());
   }
 
-  private void fullyLoadItems(List<String> ids) {
+  private void fullyLoadItems(List<UUID> ids) {
     var items =
         ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
             .flatMap(
@@ -368,7 +366,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   private void fullyLoadItems(Class<? extends Entity> type, List<TDataClass> items) {
-    var ids = items.stream().map(Element::getIdAsString).toList();
+    var ids = items.stream().map(Element::getIdAsUUID).toList();
     ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE)
         .forEach(
             batch -> {
@@ -423,7 +421,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
           TData extends RiskAffectedData<T, TRisk> & CompositeElement<T>,
           TRisk extends AbstractRisk<T, TRisk>>
       void fetchCompositeRiskAffected(
-          List<String> ids, CompositeRiskAffectedDataRepository<TData> repo) {
+          List<UUID> ids, CompositeRiskAffectedDataRepository<TData> repo) {
     fetchComposites(ids, repo);
     if (fetchRisks) {
       repo.findAllWithRisksByDbIdIn(ids);
@@ -437,7 +435,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   private void fetchComposites(
-      List<String> ids, CompositeEntityDataRepository<? extends ElementData> repo) {
+      List<UUID> ids, CompositeEntityDataRepository<? extends ElementData> repo) {
     if (fetchParts) {
       repo.findAllWithPartsByDbIdIn(ids);
     }

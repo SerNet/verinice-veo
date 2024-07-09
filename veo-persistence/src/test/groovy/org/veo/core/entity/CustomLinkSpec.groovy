@@ -47,18 +47,19 @@ class CustomLinkSpec extends Specification{
         given: "two aspects with different IDs"
         def commonSource = Mock(Element)
         def commonTarget = Mock(Element)
-
+        def uuid1 = UUID.randomUUID()
+        def uuid2 = UUID.randomUUID()
         def link1 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = 'a'
+            dbId = uuid1
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = 'b'
+            dbId = uuid2
         }
 
         expect: "objects are not equal"
@@ -69,18 +70,19 @@ class CustomLinkSpec extends Specification{
         given: "two aspects with the same ID"
         def commonSource = Mock(Element)
         def commonTarget = Mock(Element)
+        def uuid = UUID.randomUUID()
 
         def link1 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = 'a'
+            dbId = uuid
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = 'a'
+            dbId = uuid
         }
 
         expect: "objects are equal"

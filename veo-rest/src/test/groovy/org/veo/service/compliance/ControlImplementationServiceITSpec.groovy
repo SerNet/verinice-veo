@@ -146,9 +146,9 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         control_A_1.addPart(newControl)
         publishPartsChanged(control_A_1, oldParts)
 
-        control_A_1 = controlRepo.findById(control_A_1.idAsString).orElseThrow()
-        elmt1 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
+        control_A_1 = controlRepo.findById(control_A_1.idAsUUID).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
 
         then: "new requirementImplementations were created in all elements"
         elmt1.controlImplementations.size() == 1
@@ -183,8 +183,8 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         oldParts = control_A_1.getPartsRecursively()
         control_A_1.removePart(control_A_1_2)
         publishPartsChanged(control_A_1, oldParts)
-        elmt1 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
 
         then: "the control implementation itself is still present"
         elmt1.controlImplementations.size() == 1
@@ -212,8 +212,8 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         oldParts = control_A_1.getPartsRecursively()
         control_A_1.addPart(control_A_1_2)
         publishPartsChanged(control_A_1, oldParts)
-        elmt1 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsString).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
 
         then: "the retained modified requirementImplementation is acknowledged and reused"
         elmt1.controlImplementations.size() == 1

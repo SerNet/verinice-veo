@@ -93,7 +93,7 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
   @JoinColumn(name = "domain_id")
@@ -120,7 +120,7 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 

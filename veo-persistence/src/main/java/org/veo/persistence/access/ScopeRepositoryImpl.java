@@ -79,14 +79,14 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
   @Override
   @Transactional(readOnly = true)
   public Set<Scope> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
-    List<String> dbIDs = ids.stream().map(Key::uuidValue).toList();
+    List<UUID> dbIDs = ids.stream().map(Key::value).toList();
     var elements = scopeDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
     return Collections.unmodifiableSet(elements);
   }
 
   @Override
   public Optional<Scope> findByIdWithRiskValues(Key<UUID> processId) {
-    var processes = scopeDataRepository.findByIdsWithRiskValues(singleton(processId.uuidValue()));
+    var processes = scopeDataRepository.findByIdsWithRiskValues(singleton(processId.value()));
     return processes.stream().findFirst().map(Scope.class::cast);
   }
 

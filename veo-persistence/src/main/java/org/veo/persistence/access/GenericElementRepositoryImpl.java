@@ -88,14 +88,14 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   @Override
   public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
-    return dataRepository.getCountsBySubType(u.getIdAsString(), d.getIdAsString());
+    return dataRepository.getCountsBySubType(u.getIdAsUUID(), d.getIdAsUUID());
   }
 
   @Override
   public <T extends Element> Optional<T> findById(
       Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId) {
     return dataRepository
-        .findById(elementId.uuidValue(), clientId.uuidValue())
+        .findById(elementId.value(), clientId.value())
         .filter(e -> e.getModelInterface() == elementType)
         .map(e -> (T) e);
   }
@@ -112,7 +112,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Transactional
   public void deleteAll(Collection<Element> elements) {
     Set<Key<UUID>> elementKeys = elements.stream().map(Element::getId).collect(Collectors.toSet());
-    List<String> elementUUIDs = elementKeys.stream().map(Key::uuidValue).toList();
+    List<UUID> elementUUIDs = elementKeys.stream().map(Key::value).toList();
     ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
         .forEach(batch -> deleteLinksByTargets(Set.copyOf(batch)));
 
@@ -225,7 +225,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
                 scenario -> scopeData.getRisk(scenario).ifPresent(ScopeRisk::remove)));
   }
 
-  private void deleteLinksByTargets(Set<String> targetElementIds) {
+  private void deleteLinksByTargets(Set<UUID> targetElementIds) {
     // using deleteAll() to utilize batching and optimistic locking:
     var links = linkDataRepository.findLinksFromOtherElementsByTargetIds(targetElementIds);
     linkDataRepository.deleteAll(links);

@@ -117,14 +117,14 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
             userConfigRepository.save(factory.createUserConfiguration(client, "TestName3", "TestApp1"))
             userConfigRepository.save(factory.createUserConfiguration(client, "TestName4", "TestApp1"))
         }
-        def list = userConfigRepository.findUserConfigurationsByClient(client.idAsString)
+        def list = userConfigRepository.findUserConfigurationsByClient(client.dbId)
 
         then:
         list.size() == 8
 
         when:
         txTemplate.execute{
-            clientRepo.delete(client);
+            clientRepo.delete(client)
         }
         list = userConfigRepository.findAll()
 

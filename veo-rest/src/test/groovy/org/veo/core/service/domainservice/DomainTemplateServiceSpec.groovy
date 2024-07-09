@@ -24,11 +24,10 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
-
-import spock.lang.Ignore
 
 @ComponentScan("org.veo")
 @WithUserDetails("user@domain.example")
@@ -41,8 +40,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create specific domain from template"() {
         given: "a client"
-        def domainFromTemplate = null
-        def client = null
+        Domain domainFromTemplate = null
+        Client client = null
         txTemplate.execute {
             client = repository.save(newClient { })
             domainFromTemplate = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
@@ -54,7 +53,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == DSGVO_TEST_DOMAIN_TEMPLATE_ID
+            domainTemplate.idAsString == DSGVO_TEST_DOMAIN_TEMPLATE_ID
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
@@ -209,7 +208,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
+            domainTemplate.idAsString == "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
@@ -243,7 +242,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
+            domainTemplate.idAsString == "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description

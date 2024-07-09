@@ -49,26 +49,26 @@ public class UserConfigurationRepositoryImpl implements UserConfigurationReposit
 
   @Override
   public Set<String> findAllKeysByUser(Key<UUID> clientId, String userName) {
-    return dataRepository.findAllKeysByUser(clientId.uuidValue(), userName);
+    return dataRepository.findAllKeysByUser(clientId.value(), userName);
   }
 
   @Override
   public Optional<UserConfiguration> findUserConfiguration(
       Key<UUID> clientId, String username, String applicationId) {
     return dataRepository
-        .findUserConfiguration(clientId.uuidValue(), username, applicationId)
+        .findUserConfiguration(clientId.value(), username, applicationId)
         .map(UserConfiguration.class::cast);
   }
 
   @Override
   public Set<UserConfiguration> findAllByClient(Key<UUID> clientId) {
-    return dataRepository.findUserConfigurationsByClient(clientId.uuidValue()).stream()
+    return dataRepository.findUserConfigurationsByClient(clientId.value()).stream()
         .map(UserConfiguration.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
   public int countUserConfigurations(Key<UUID> clientId, String username) {
-    return dataRepository.countUserConfigurations(clientId.uuidValue(), username);
+    return dataRepository.countUserConfigurations(clientId.value(), username);
   }
 }

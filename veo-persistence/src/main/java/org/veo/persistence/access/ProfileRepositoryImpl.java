@@ -52,7 +52,7 @@ public class ProfileRepositoryImpl
   public Optional<Profile> findProfileByIdFetchTailoringReferences(
       Key<UUID> profileId, Key<UUID> clientId) {
     return profileDataRepository
-        .findProfileByIdFetchTailoringReferences(profileId.uuidValue(), clientId.uuidValue())
+        .findProfileByIdFetchTailoringReferences(profileId.value(), clientId.value())
         .map(Profile.class::cast);
   }
 
@@ -73,7 +73,7 @@ public class ProfileRepositoryImpl
   public Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
       Key<UUID> profileId, Key<UUID> itemId, Key<UUID> clientId) {
     return profileDataRepository.findProfileItemByIdFetchTailoringReferences(
-        profileId.uuidValue(), itemId.uuidValue(), clientId.uuidValue());
+        profileId.value(), itemId.uuidValue(), clientId.value());
   }
 
   @Override
@@ -86,8 +86,7 @@ public class ProfileRepositoryImpl
       Key<UUID> profileId, Client client) {
     return StreamSupport.stream(
             profileDataRepository
-                .findItemsByProfileIdFetchDomainAndTailoringReferences(
-                    profileId.uuidValue(), client)
+                .findItemsByProfileIdFetchDomainAndTailoringReferences(profileId.value(), client)
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
@@ -96,11 +95,11 @@ public class ProfileRepositoryImpl
 
   @Override
   public Set<Profile> findAllByDomainId(Key<UUID> clientId, Key<UUID> domainId) {
-    return profileDataRepository.findAllByDomainId(clientId.uuidValue(), domainId.uuidValue());
+    return profileDataRepository.findAllByDomainId(clientId.value(), domainId.value());
   }
 
   @Override
   public Optional<Profile> findById(Key<UUID> clientId, Key<UUID> profileId) {
-    return profileDataRepository.findById(clientId.uuidValue(), profileId.uuidValue());
+    return profileDataRepository.findById(clientId.value(), profileId.value());
   }
 }

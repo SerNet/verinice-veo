@@ -75,7 +75,7 @@ public class AssetRepositoryImpl
   @Override
   @Transactional(readOnly = true)
   public Set<Asset> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
-    List<String> dbIDs = ids.stream().map(Key::uuidValue).toList();
+    List<UUID> dbIDs = ids.stream().map(Key::value).toList();
     var elements = assetDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
     return Collections.unmodifiableSet(elements);
   }
@@ -84,7 +84,7 @@ public class AssetRepositoryImpl
   public Optional<Asset> findByIdWithRiskValues(Key<UUID> processId) {
     var processes =
         ((AssetDataRepository) dataRepository)
-            .findByIdsWithRiskValues(singleton(processId.uuidValue()));
+            .findByIdsWithRiskValues(singleton(processId.value()));
     return processes.stream().findFirst().map(Asset.class::cast);
   }
 

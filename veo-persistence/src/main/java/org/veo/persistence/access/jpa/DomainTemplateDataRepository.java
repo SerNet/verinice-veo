@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,10 +32,10 @@ public interface DomainTemplateDataRepository
       value =
           "select db_id from domaintemplate where name = ?1 order by templateVersion desc limit 1",
       nativeQuery = true)
-  Optional<String> findLatestTemplateIdByName(String name);
+  Optional<UUID> findLatestTemplateIdByName(String name);
 
   @Query(value = "select id from domaintemplate d where name = ?1 order by templateVersion")
-  List<String> findTemplateIdsByName(String name);
+  List<UUID> findTemplateIdsByName(String name);
 
   @Query(
       value = "SELECT MAX(templateversion) from domaintemplate where name = ?1",
@@ -48,5 +49,5 @@ public interface DomainTemplateDataRepository
           join fetch dt.riskDefinitionSet
           where dt.dbId = ?1
       """)
-  Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(String id);
+  Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(UUID id);
 }

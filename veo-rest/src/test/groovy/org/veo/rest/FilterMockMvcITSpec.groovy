@@ -29,17 +29,17 @@ class FilterMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
 
-    private String unitId
-    private String domainId
+    private UUID unitId
+    private UUID domainId
 
     def setup() {
         def client = createTestClient()
-        var domain = domainDataRepository.save(newDomain(client))
-        domainId = domain.getIdAsString()
+        def domain = domainDataRepository.save(newDomain(client))
+        domainId = domain.dbId
         client = clientRepository.getById(client.id)
         unitId = unitRepository.save(newUnit(client) {
             domains = [domain]
-        }).idAsString
+        }).idAsUUID
     }
 
     def "filter #type.pluralTerm by abbreviation"() {

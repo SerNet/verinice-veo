@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.UUID;
+
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -50,7 +52,7 @@ public abstract class AspectData implements Aspect {
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
   @JoinColumn(name = "domain_id")
@@ -72,7 +74,7 @@ public abstract class AspectData implements Aspect {
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 

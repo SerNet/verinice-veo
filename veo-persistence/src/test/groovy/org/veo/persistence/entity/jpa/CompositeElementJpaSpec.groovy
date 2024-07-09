@@ -61,7 +61,7 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
             composite1.addPart(composite2)
             composite1.addPart(leaf)
             composite2.addPart(composite1)
-            [composite1, composite2, leaf]*.idAsString
+            [composite1, composite2, leaf]*.id*.value
         }
 
         then: "the elements can be retrieved"
@@ -102,7 +102,7 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
         def composite1Id = txTemplate.execute {
             assetDataRepository.save(newAsset(unit) {
                 addPart(it)
-            }).id.uuidValue()
+            }).dbId
         }
 
         then:

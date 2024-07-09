@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -54,7 +55,7 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @Column(name = "name")
   @ToString.Include

@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,5 +34,5 @@ public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, 
           + "where l.target.dbId IN ?1 "
           + "and s.dbId not in ?1")
   @Transactional(readOnly = true)
-  Set<CustomLinkData> findLinksFromOtherElementsByTargetIds(Set<String> targetIDs);
+  Set<CustomLinkData> findLinksFromOtherElementsByTargetIds(Set<UUID> targetIDs);
 }

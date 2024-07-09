@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -35,13 +36,13 @@ public interface CompositeEntityDataRepository<T extends ElementData>
           + "inner join e.parts p "
           + "where p.dbId IN ?1")
   @SuppressWarnings("PMD.MethodNamingConventions")
-  List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
+  List<T> findDistinctByParts_DbId_In(Set<UUID> dbIds);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"parts"})
-  List<T> findAllWithPartsByDbIdIn(List<String> ids);
+  List<T> findAllWithPartsByDbIdIn(List<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"composites", "composites.parts"})
-  List<T> findAllWithCompositesAndCompositesPartsByDbIdIn(List<String> ids);
+  List<T> findAllWithCompositesAndCompositesPartsByDbIdIn(List<UUID> ids);
 }

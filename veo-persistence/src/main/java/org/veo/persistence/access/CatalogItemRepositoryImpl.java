@@ -97,14 +97,14 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
         .flatMap(
             entry -> {
               var namespaceType = entry.getKey().getType();
-              var namespaceId = entry.getKey().getId();
+              var namespaceId = UUID.fromString(entry.getKey().getId());
               var symIds =
                   entry.getValue().stream()
                       .map(ITypedSymbolicId::getSymbolicId)
                       .collect(Collectors.toSet());
               if (namespaceType.equals(Domain.class)) {
                 return catalogItemDataRepository
-                    .findAllByIdsAndDomain(symIds, namespaceId, client.getIdAsString())
+                    .findAllByIdsAndDomain(symIds, namespaceId, client.getIdAsUUID())
                     .stream();
               }
               if (namespaceType.equals(DomainTemplate.class)) {
@@ -148,7 +148,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
 
   @Override
   public Set<SubTypeCount> getCountsBySubType(Domain domain) {
-    return catalogItemDataRepository.getCountsBySubType(domain.getIdAsString());
+    return catalogItemDataRepository.getCountsBySubType(domain.getIdAsUUID());
   }
 
   @Override

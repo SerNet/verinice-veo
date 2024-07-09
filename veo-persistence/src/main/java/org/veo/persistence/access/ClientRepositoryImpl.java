@@ -58,7 +58,7 @@ public class ClientRepositoryImpl
   @Override
   public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
     return clientDataRepository
-        .findWithCatalogsAndItemsByDbId(id.uuidValue())
+        .findWithCatalogsAndItemsByDbId(id.value())
         .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
@@ -66,14 +66,14 @@ public class ClientRepositoryImpl
   @Override
   public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
     return clientDataRepository
-        .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.uuidValue())
+        .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.value())
         .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
 
   @Override
   public Optional<Client> findByIdFetchTranslations(Key<UUID> id) {
-    return clientDataRepository.findWithTranslationsByDbId(id.uuidValue()).map(Client.class::cast);
+    return clientDataRepository.findWithTranslationsByDbId(id.value()).map(Client.class::cast);
   }
 
   @Override
@@ -86,7 +86,7 @@ public class ClientRepositoryImpl
   @Override
   public Set<Client> findAllActiveWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId) {
     return clientDataRepository
-        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId.uuidValue())
+        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId.value())
         .stream()
         .map(Client.class::cast)
         .collect(Collectors.toSet());
@@ -95,8 +95,8 @@ public class ClientRepositoryImpl
   @Override
   public void delete(Client client) {
     userConfigurationDataRepository.deleteAll(
-        userConfigurationDataRepository.findUserConfigurationsByClient(client.getIdAsString()));
-    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getIdAsString()));
+        userConfigurationDataRepository.findUserConfigurationsByClient(client.getIdAsUUID()));
+    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getIdAsUUID()));
     client.setDomains(Set.of());
     super.delete(client);
   }

@@ -40,7 +40,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
-import org.veo.persistence.access.jpa.AssetDataRepository
 
 import groovy.util.logging.Slf4j
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -399,7 +398,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "we change the l6 element"
         log.debug("---------------------------------------------")
         listasset6 = executeInTransaction {
-            listasset6 = assetDataRepository.findById(listasset6.getIdAsString()).get()
+            listasset6 = assetDataRepository.findById(listasset6.idAsUUID).get()
             listasset6.setImpactValues(domain, impactValues1)
             assetDataRepository.save(listasset6)
         }
@@ -437,7 +436,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         def result = executeInTransaction {
-            a1 = assetDataRepository.findById(a1.getIdAsString()).get()
+            a1 = assetDataRepository.findById(a1.idAsUUID).get()
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, a1)
         }
         def queryCounts = QueryCountHolder.grandTotal
@@ -483,12 +482,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def c5 = buildAssetListOpposite(c4, unit, domain,"c5",impactValuesEmpty)
 
         b4 = executeInTransaction {
-            b4 = assetDataRepository.findById(b4.getIdAsString()).get()
+            b4 = assetDataRepository.findById(b4.idAsUUID).get()
             b4.applyLink(newCustomLink(c4, "asset_asset_app", domain))
             assetDataRepository.save(b4)
         }
         c2 = executeInTransaction {
-            c2 = assetDataRepository.findById(c2.getIdAsString()).get()
+            c2 = assetDataRepository.findById(c2.idAsUUID).get()
             c2.applyLink(newCustomLink(b3, "asset_asset_app", domain))
             assetDataRepository.save(c2)
         }
@@ -496,7 +495,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "We change the impact of b2"
         log.debug("---------------------------------------------")
         b2 = executeInTransaction {
-            b2 = assetDataRepository.findById(b2.getIdAsString()).get()
+            b2 = assetDataRepository.findById(b2.idAsUUID).get()
             b2.setImpactValues(domain, impactValues1)
             assetDataRepository.save(b2)
         }
@@ -531,7 +530,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         log.debug("---------------------------------------------")
         QueryCountHolder.clear()
         result = executeInTransaction {
-            c2 = assetDataRepository.findById(c2.getIdAsString()).get()
+            c2 = assetDataRepository.findById(c2.idAsUUID).get()
             impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, c2)
         }
         queryCounts = QueryCountHolder.grandTotal
@@ -561,7 +560,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "We change the impact of c1 to 3"
         log.debug("---------------------------------------------")
         c1 = executeInTransaction {
-            c1 = assetDataRepository.findById(c1.getIdAsString()).get()
+            c1 = assetDataRepository.findById(c1.idAsUUID).get()
             c1.setImpactValues(domain, impactValues2)
             assetDataRepository.save(c1)
         }
@@ -598,7 +597,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "We change the impact of b1"
         log.debug("---------------------------------------------")
         b1 = executeInTransaction {
-            b1 = assetDataRepository.findById(b1.getIdAsString()).get()
+            b1 = assetDataRepository.findById(b1.idAsUUID).get()
             b1.setImpactValues(domain, impactValues3)
             assetDataRepository.save(b1)
         }
@@ -661,27 +660,27 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def c5 = buildAssetListOpposite(c4, unit, domain,"c5",impactValuesEmpty)
 
         executeInTransaction {
-            def a = assetDataRepository.findById(b1.getIdAsString()).get()
-            a.applyLink(newCustomLink(assetDataRepository.findById(a1.getIdAsString()).get(), "asset_asset_app", domain))
+            def a = assetDataRepository.findById(b1.idAsUUID).get()
+            a.applyLink(newCustomLink(assetDataRepository.findById(a1.idAsUUID).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
-            a= assetDataRepository.findById(b2.getIdAsString()).get()
-            a.applyLink(newCustomLink(assetDataRepository.findById(a2.getIdAsString()).get(), "asset_asset_app", domain))
+            a= assetDataRepository.findById(b2.idAsUUID).get()
+            a.applyLink(newCustomLink(assetDataRepository.findById(a2.idAsUUID).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
-            a= assetDataRepository.findById(b3.getIdAsString()).get()
-            a.applyLink(newCustomLink(assetDataRepository.findById(c2.getIdAsString()).get(), "asset_asset_app", domain))
+            a= assetDataRepository.findById(b3.idAsUUID).get()
+            a.applyLink(newCustomLink(assetDataRepository.findById(c2.idAsUUID).get(), "asset_asset_app", domain))
             assetDataRepository.save(a )
-            a = assetDataRepository.findById(a4.getIdAsString()).get()
-            a.applyLink(newCustomLink(assetDataRepository.findById(b4.getIdAsString()).get(), "asset_asset_app", domain))
+            a = assetDataRepository.findById(a4.idAsUUID).get()
+            a.applyLink(newCustomLink(assetDataRepository.findById(b4.idAsUUID).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
-            a = assetDataRepository.findById(b4.getIdAsString()).get()
-            a.applyLink(newCustomLink(assetDataRepository.findById(c4.getIdAsString()).get(), "asset_asset_app", domain))
+            a = assetDataRepository.findById(b4.idAsUUID).get()
+            a.applyLink(newCustomLink(assetDataRepository.findById(c4.idAsUUID).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
         }
 
         when: "We change the impact of b1"
         log.debug("---------------------------------------------")
         b1 = executeInTransaction {
-            b1 = assetDataRepository.findById(b1.getIdAsString()).get()
+            b1 = assetDataRepository.findById(b1.idAsUUID).get()
             b1.setImpactValues(domain, impactValues1)
             assetDataRepository.save(b1)
         }
@@ -724,7 +723,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "We change the impact of c1"
         log.debug("---------------------------------------------")
         c1 = executeInTransaction {
-            c1 = assetDataRepository.findById(c1.getIdAsString()).get()
+            c1 = assetDataRepository.findById(c1.idAsUUID).get()
             c1.setImpactValues(domain, impactValues2)
             assetDataRepository.save(c1)
         }
@@ -757,7 +756,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         when: "We change the impact of b3"
         log.debug("---------------------------------------------")
         b3 = executeInTransaction {
-            b3 = assetDataRepository.findById(b3.getIdAsString()).get()
+            b3 = assetDataRepository.findById(b3.idAsUUID).get()
             b3.setImpactValues(domain, impactValues3)
             assetDataRepository.save(b3)
         }
@@ -863,7 +862,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         when: "change the impact of process p-1-100"
         process = executeInTransaction {
-            process = processDataRepository.findById(processes1[99].getIdAsString()).get()
+            process = processDataRepository.findById(processes1[99].idAsUUID).get()
             process.setImpactValues(domain, impactValues1)
             processDataRepository.save(process)
         }
@@ -892,12 +891,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         when: "recalculate the impact of a simple Asset"
         a0 = executeInTransaction {
-            a0 = assetDataRepository.findById(a0.getIdAsString()).get()
+            a0 = assetDataRepository.findById(a0.idAsUUID).get()
             a0.setImpactValues(domain, impactValues2)
             assetDataRepository.save(a0)
         }
         simpleAsset = executeInTransaction {
-            simpleAsset = assetDataRepository.findById(simpleAsset.getIdAsString()).get()
+            simpleAsset = assetDataRepository.findById(simpleAsset.idAsUUID).get()
             simpleAsset.setImpactValues(domain, impactValues2)
             assetDataRepository.save(simpleAsset)
         }
@@ -925,7 +924,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         when: "recalculate the impact of a A-50"
         def asset50 = executeInTransaction {
-            Asset n = assetDataRepository.findById(assets[50].getIdAsString()).get()
+            Asset n = assetDataRepository.findById(assets[50].idAsUUID).get()
             n.setImpactValues(domain, impactValues2)
             assetDataRepository.save(n)
         }
@@ -999,7 +998,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         when: "recalculate the impact of a A-50"
         def asset50 = executeInTransaction {
-            Asset n = assetDataRepository.findById(assetsA[49].getIdAsString()).get()
+            Asset n = assetDataRepository.findById(assetsA[49].idAsUUID).get()
             n.setImpactValues(domain, impactValues2)
             assetDataRepository.save(n)
         }
@@ -1117,13 +1116,13 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         txTemplate.execute {
 
             def first = this.dataDrivenAssets[firstAsset]
-            first = assetDataRepository.findById(first.idAsString).get()
+            first = assetDataRepository.findById(first.idAsUUID).get()
             first.setImpactValues(domain, newImpactValue(confidentialityRef, firstImpact as String))
             first = assetDataRepository.save(first)
             log.debug("-> {}", first.name)
 
             def second = this.dataDrivenAssets[secondAsset]
-            second = assetDataRepository.findById(second.idAsString).get()
+            second = assetDataRepository.findById(second.idAsUUID).get()
             second.setImpactValues(domain, newImpactValue(confidentialityRef, secondImpact as String))
             second = assetDataRepository.save(second)
 
@@ -1134,7 +1133,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
             this.dataDrivenAssets = this.dataDrivenAssets
                     .collect {
-                        assetDataRepository.findById(it.idAsString).get()
+                        assetDataRepository.findById(it.idAsUUID).get()
                     }
             this.dataDrivenAssets*.getImpactValues(domain) // hydrate values
         }
@@ -1223,13 +1222,13 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         txTemplate.execute {
 
             def first = this.dataDrivenAssets[firstAsset]
-            first = assetDataRepository.findById(first.idAsString).get()
+            first = assetDataRepository.findById(first.idAsUUID).get()
             first.setImpactValues(domain, newImpactValue(confidentialityRef, firstImpact as String))
             first = assetDataRepository.save(first)
             log.debug("-> {}", first.name)
 
             def second = this.dataDrivenAssets[secondAsset]
-            second = assetDataRepository.findById(second.idAsString).get()
+            second = assetDataRepository.findById(second.idAsUUID).get()
             second.setImpactValues(domain, newImpactValue(confidentialityRef, secondImpact as String))
             second = assetDataRepository.save(second)
 
@@ -1244,7 +1243,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
             this.dataDrivenAssets = this.dataDrivenAssets
                     .collect {
-                        assetDataRepository.findById(it.idAsString).get()
+                        assetDataRepository.findById(it.idAsUUID).get()
                     }
             this.dataDrivenAssets*.getImpactValues(domain) // hydrate values
         }

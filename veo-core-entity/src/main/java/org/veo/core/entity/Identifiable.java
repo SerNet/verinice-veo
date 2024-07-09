@@ -25,6 +25,8 @@ public interface Identifiable extends Entity {
 
   String getIdAsString();
 
+  UUID getIdAsUUID();
+
   void setId(Key<UUID> id);
 
   @Override

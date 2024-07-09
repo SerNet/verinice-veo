@@ -56,7 +56,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
     this.domain = domain;
   }
 
-  @Id @ToString.Include private String dbId = UUID.randomUUID().toString();
+  @Id @ToString.Include private UUID dbId = UUID.randomUUID();
 
   @ToString.Include private String type;
 
@@ -90,7 +90,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 

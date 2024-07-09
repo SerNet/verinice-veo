@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
@@ -83,7 +84,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private String dbId;
+  private UUID dbId;
 
   @Column(name = "name")
   @ToString.Include

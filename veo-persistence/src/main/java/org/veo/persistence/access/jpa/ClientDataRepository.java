@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -28,17 +29,17 @@ import org.veo.persistence.entity.jpa.ClientData;
 public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
   @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
-  Optional<ClientData> findById(String id);
+  Optional<ClientData> findById(UUID id);
 
   @EntityGraph(attributePaths = {"domains.catalogItems"})
-  Optional<ClientData> findWithCatalogsAndItemsByDbId(String id);
+  Optional<ClientData> findWithCatalogsAndItemsByDbId(UUID id);
 
   @EntityGraph(
       attributePaths = {"domains.catalogItems", "domains.catalogItems.tailoringReferences"})
-  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(String id);
+  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(UUID id);
 
   @EntityGraph(attributePaths = {"domains.elementTypeDefinitions.translations"})
-  Optional<ClientData> findWithTranslationsByDbId(String id);
+  Optional<ClientData> findWithTranslationsByDbId(UUID id);
 
   @Query(
       """
@@ -46,5 +47,5 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
                    where c.state = org.veo.core.entity.ClientState.ACTIVATED
                    and not exists (select d from domain d where d.owner = c and d.domainTemplate.dbId = ?1)
           """)
-  Set<ClientData> findAllActiveWhereDomainTemplateNotApplied(String domainTemplateId);
+  Set<ClientData> findAllActiveWhereDomainTemplateNotApplied(UUID uuid);
 }

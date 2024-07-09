@@ -104,7 +104,7 @@ public interface ElementQuery<T extends Element> extends Query<T> {
 
   void whereAbbreviationMatchesIgnoreCase(QueryCondition<String> abbreviation);
 
-  void whereIdIn(QueryCondition<String> ids);
+  void whereIdIn(QueryCondition<UUID> ids);
 
   void whereElementTypeMatches(QueryCondition<String> elementType);
 }

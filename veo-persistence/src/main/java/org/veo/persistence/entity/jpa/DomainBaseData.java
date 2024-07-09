@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,7 +59,7 @@ import lombok.ToString;
 @Data
 public abstract class DomainBaseData extends IdentifiableVersionedData
     implements DomainBase, Nameable {
-  @Id @ToString.Include private String dbId;
+  @Id @ToString.Include private UUID dbId;
 
   @Column(name = "name")
   @ToString.Include

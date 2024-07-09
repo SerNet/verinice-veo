@@ -67,7 +67,7 @@ abstract class AbstractIdentifiableVersionedRepository<
 
   @Override
   public Optional<T> findById(Key<UUID> id) {
-    return (Optional<T>) dataRepository.findById(id.uuidValue());
+    return (Optional<T>) dataRepository.findById(id.value());
   }
 
   @Override
@@ -79,17 +79,17 @@ abstract class AbstractIdentifiableVersionedRepository<
   @Override
   @Transactional
   public void deleteById(Key<UUID> id) {
-    dataRepository.deleteById(id.uuidValue());
+    dataRepository.deleteById(id.value());
   }
 
   @Override
   public boolean exists(Key<UUID> id) {
-    return dataRepository.existsById(id.uuidValue());
+    return dataRepository.existsById(id.value());
   }
 
   @Override
   public Set<T> findByIds(Set<Key<UUID>> ids) {
-    var idStrings = ids.stream().map(Key::uuidValue).toList();
+    var idStrings = ids.stream().map(Key::value).toList();
     return StreamSupport.stream(dataRepository.findAllById(idStrings).spliterator(), false)
         .map(e -> (T) e)
         .collect(Collectors.toSet());
@@ -112,6 +112,6 @@ abstract class AbstractIdentifiableVersionedRepository<
 
   @Override
   public Optional<Long> getVersion(Key<UUID> id) {
-    return dataRepository.getVersion(id.uuidValue());
+    return dataRepository.getVersion(id.value());
   }
 }

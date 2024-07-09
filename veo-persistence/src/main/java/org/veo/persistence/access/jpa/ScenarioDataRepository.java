@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -31,7 +32,7 @@ public interface ScenarioDataRepository extends CompositeEntityDataRepository<Sc
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  List<ScenarioData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
+  List<ScenarioData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
 
   @Query("SELECT e FROM #{#entityName} as e RIGHT JOIN FETCH e.riskValuesAspects")
   Set<ScenarioData> findByDomainWhereRiskValuesExist(Domain domain);

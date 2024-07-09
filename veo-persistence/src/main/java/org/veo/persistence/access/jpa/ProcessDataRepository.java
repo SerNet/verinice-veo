@@ -20,6 +20,7 @@ package org.veo.persistence.access.jpa;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -43,7 +44,7 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "
           + "where p.dbId IN ?1")
-  Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
+  Set<ProcessData> findByIdsWithRiskValues(Set<UUID> dbIds);
 
   @Query(
       """
@@ -66,9 +67,9 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
          inner join fetch r.scenario s
          left join fetch s.riskValuesAspects
          where e.dbId in ?1""")
-  Set<ProcessData> findWithRisksAndScenariosByDbIdIn(Iterable<String> ids);
+  Set<ProcessData> findWithRisksAndScenariosByDbIdIn(Iterable<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  Set<ProcessData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
+  Set<ProcessData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
 }

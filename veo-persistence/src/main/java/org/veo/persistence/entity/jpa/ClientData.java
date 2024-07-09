@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,7 +53,7 @@ import lombok.ToString;
 @EntityListeners({VersionedEntityListener.class})
 public class ClientData extends IdentifiableVersionedData implements Client, Nameable {
 
-  @Id @ToString.Include private String dbId;
+  @Id @ToString.Include private UUID dbId;
 
   @Column(name = "name")
   @ToString.Include

@@ -103,7 +103,7 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
             typeRepository.save(composite)
             scopeDataRepository.save(scope)
         }
-        assert scopeDataRepository.findById(scope.id.uuidValue()).get().members.size()>0
+        assert scopeDataRepository.findById(scope.dbId).get().members.size()>0
 
         when: "the composite is removed"
         txTemplate.execute{
@@ -115,7 +115,7 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
         typeRepository.findById(composite.id).empty
 
         and: "the member was removed from the scope"
-        def persistedScope = scopeDataRepository.findById(scope.id.uuidValue())
+        def persistedScope = scopeDataRepository.findById(scope.dbId)
         persistedScope.present
         persistedScope.get().members.empty
 

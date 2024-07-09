@@ -20,6 +20,7 @@ package org.veo.persistence.access.jpa;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
 
@@ -36,7 +37,7 @@ import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.entity.jpa.ElementData;
 
 public interface ElementDataRepository<T extends ElementData>
-    extends JpaRepository<T, String>,
+    extends JpaRepository<T, UUID>,
         JpaSpecificationExecutor<T>,
         IdentifiableVersionedDataRepository<T> {
 
@@ -51,7 +52,7 @@ public interface ElementDataRepository<T extends ElementData>
           + "where e.dbId = ?1")
   @Override
   @Nonnull
-  Optional<T> findById(@Nonnull String id);
+  Optional<T> findById(@Nonnull UUID id);
 
   @Query(
       "select e from #{#entityName} as e "
@@ -63,27 +64,27 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch e.links "
           + "where e.dbId = ?1 and e.owner.client.dbId = ?2")
   @Nonnull
-  Optional<T> findById(@Nonnull String id, @Nonnull String clientId);
+  Optional<T> findById(@Nonnull UUID id, @Nonnull UUID clientId);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"domains", "links", "decisionResultsAspects"})
-  List<T> findAllWithDomainsLinksDecisionsByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithDomainsLinksDecisionsByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"customAspects", "customAspects.domain"})
-  List<T> findAllWithCustomAspectsByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithCustomAspectsByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "subTypeAspects")
-  List<T> findAllWithSubtypeAspectsByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithSubtypeAspectsByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "appliedCatalogItems")
-  List<T> findAllWithAppliedCatalogItemsByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithAppliedCatalogItemsByDbIdIn(Iterable<UUID> ids);
 
   @Override
   @Nonnull
@@ -96,9 +97,9 @@ public interface ElementDataRepository<T extends ElementData>
           + "where e.owner.dbId = ?1 "
           + "and a.domain.id = ?2 "
           + "group by e.elementType, a.subType, a.status")
-  Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
+  Set<SubTypeStatusCount> getCountsBySubType(UUID unitId, UUID uuid);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"scopes", "scopes.members"})
-  List<T> findAllWithScopesAndScopeMembersByDbIdIn(List<String> ids);
+  List<T> findAllWithScopesAndScopeMembersByDbIdIn(List<UUID> ids);
 }

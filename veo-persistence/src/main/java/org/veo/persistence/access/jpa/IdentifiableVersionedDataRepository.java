@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
 
@@ -29,9 +30,9 @@ import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 
 @NoRepositoryBean
 public interface IdentifiableVersionedDataRepository<T extends IdentifiableVersionedData>
-    extends CrudRepository<T, String> {
+    extends CrudRepository<T, UUID> {
 
   @Query("select version from #{#entityName} where dbId = ?1")
   @Nonnull
-  Optional<Long> getVersion(@Nonnull String id);
+  Optional<Long> getVersion(@Nonnull UUID id);
 }

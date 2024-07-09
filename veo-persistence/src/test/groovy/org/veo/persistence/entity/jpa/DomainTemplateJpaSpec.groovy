@@ -255,7 +255,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         def domainId = newDomain(client) {
             name = "main"
             templateVersion = "0.1.0"
-        }.idAsString
+        }.dbId
         clientRepository.save(client)
 
         expect: "template queries to ignore the domain"

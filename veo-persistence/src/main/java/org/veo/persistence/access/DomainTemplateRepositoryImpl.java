@@ -66,12 +66,12 @@ public class DomainTemplateRepositoryImpl
 
   @Override
   public List<Key<UUID>> getDomainTemplateIds(String name) {
-    return dataRepository.findTemplateIdsByName(name).stream().map(Key::uuidFrom).toList();
+    return dataRepository.findTemplateIdsByName(name).stream().map(Key::from).toList();
   }
 
   @Override
   public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
-    return dataRepository.findLatestTemplateIdByName(name).map(Key::uuidFrom);
+    return dataRepository.findLatestTemplateIdByName(name).map(Key::from);
   }
 
   @Override
@@ -93,7 +93,7 @@ public class DomainTemplateRepositoryImpl
   @Override
   public Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id) {
     return dataRepository
-        .findByIdWithProfilesAndRiskDefinitions(id.uuidValue())
+        .findByIdWithProfilesAndRiskDefinitions(id.value())
         .map(DomainTemplate.class::cast);
   }
 
@@ -101,10 +101,10 @@ public class DomainTemplateRepositoryImpl
   public DomainTemplate getByIdWithRiskDefinitionsProfilesAndCatalogItems(Key<UUID> id) {
     var dt =
         dataRepository
-            .findByIdWithProfilesAndRiskDefinitions(id.uuidValue())
+            .findByIdWithProfilesAndRiskDefinitions(id.value())
             .orElseThrow(() -> new NotFoundException(id, DomainTemplate.class));
-    catalogItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.uuidValue());
-    profileItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.uuidValue());
+    catalogItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.value());
+    profileItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.value());
     return dt;
   }
 }

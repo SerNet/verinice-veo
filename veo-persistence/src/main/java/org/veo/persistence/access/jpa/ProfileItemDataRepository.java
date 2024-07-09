@@ -36,7 +36,7 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
          select pi from #{#entityName} pi
            where pi.owner.dbId = ?2 and pi.symbolicDbId in ?1 and pi.owner.domain.owner = ?3
          """)
-  Set<ProfileItemData> findAllByIds(Iterable<String> symIds, String profileId, Client client);
+  Set<ProfileItemData> findAllByIds(Iterable<String> symIds, UUID profileId, Client client);
 
   @Query(
       """
@@ -55,7 +55,7 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
                join p.domainTemplate as dt
                where dt.dbId = ?1
              """)
-  Set<ProfileItemData> findAllByDomainTemplateFetchTailoringReferences(String s);
+  Set<ProfileItemData> findAllByDomainTemplateFetchTailoringReferences(UUID s);
 
   @Query("select pi from #{#entityName} pi where pi.owner = ?1 and pi.elementType= ?2")
   Set<ProfileItemData> findAllByProfile(Profile profile, String type);

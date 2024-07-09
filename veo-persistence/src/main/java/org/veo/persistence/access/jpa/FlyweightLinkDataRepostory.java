@@ -20,6 +20,7 @@ package org.veo.persistence.access.jpa;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,12 +47,12 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
       nativeQuery = true)
   Set<FlyweightLink> findAllLinks(
       @Param("types") Set<String> types,
-      @Param("domainId") String domainId,
-      @Param("unitId") String unitId,
-      @Param("clientId") String clientId);
+      @Param("domainId") UUID domainId,
+      @Param("unitId") UUID unitId,
+      @Param("clientId") UUID clientId);
 
   default Set<FlyweightElement> findAllLinksGroupedByElement(
-      Set<String> types, String domainId, String unitId, String clientId) {
+      Set<String> types, UUID domainId, UUID unitId, UUID clientId) {
     Set<FlyweightLink> allFlyweightElements = findAllLinks(types, domainId, unitId, clientId);
     Map<String, FlyweightElement> elementsById =
         allFlyweightElements.stream()

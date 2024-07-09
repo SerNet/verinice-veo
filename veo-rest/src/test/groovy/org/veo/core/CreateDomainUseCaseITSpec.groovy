@@ -57,7 +57,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
 
         then: "it has been persisted"
         def domain = domainRepository
-                .findAllActiveByClient(client.idAsString)
+                .findAllActiveByClient(client.idAsUUID)
                 .find { it.name == "do-main" }
         domain.abbreviation == "dom"
         domain.description == "it's great"

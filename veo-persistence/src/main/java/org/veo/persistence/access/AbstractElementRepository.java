@@ -90,8 +90,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Transactional
   public void deleteAll(Set<T> elements) {
-    Set<String> elementIds =
-        elements.stream().map(Element::getIdAsString).collect(Collectors.toSet());
+    Set<UUID> elementIds = elements.stream().map(Element::getIdAsUUID).collect(Collectors.toSet());
     deleteLinksByTargets(elementIds);
 
     elements.forEach(e -> e.getLinks().clear());
@@ -102,7 +101,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Override
   public Optional<T> findById(Key<UUID> id, Key<UUID> clientId) {
-    return dataRepository.findById(id.uuidValue(), clientId.uuidValue()).map(e -> (T) e);
+    return dataRepository.findById(id.value(), clientId.value()).map(e -> (T) e);
   }
 
   @Override
@@ -113,17 +112,16 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   @Transactional
   public void deleteById(Key<UUID> id) {
-    deleteLinksByTargets(Set.of(id.uuidValue()));
+    deleteLinksByTargets(Set.of(id.value()));
 
     // remove element from scope members:
-    Set<Scope> scopes =
-        scopeDataRepository.findDistinctOthersByMemberIds(singleton(id.uuidValue()));
+    Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(singleton(id.value()));
     scopes.stream().map(ScopeData.class::cast).forEach(scopeData -> scopeData.removeMemberById(id));
 
-    dataRepository.deleteById(id.uuidValue());
+    dataRepository.deleteById(id.value());
   }
 
-  private void deleteLinksByTargets(Set<String> targetElementIds) {
+  private void deleteLinksByTargets(Set<UUID> targetElementIds) {
     // using deleteAll() to utilize batching and optimistic locking:
     var links = linkDataRepository.findLinksFromOtherElementsByTargetIds(targetElementIds);
     linkDataRepository.deleteAll(links);

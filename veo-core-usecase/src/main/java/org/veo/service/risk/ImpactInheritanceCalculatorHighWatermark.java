@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -536,10 +537,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     long startTime = System.currentTimeMillis();
     Set<FlyweightElement> allLinksGroupedByElement =
         flyweightRepo.findAllLinksGroupedByElement(
-            linkTypes,
-            domain.getIdAsString(),
-            unit.getIdAsString(),
-            domain.getOwner().getIdAsString());
+            linkTypes, domain.getIdAsUUID(), unit.getIdAsUUID(), domain.getOwner().getIdAsUUID());
 
     long timeNeeded = System.currentTimeMillis() - startTime;
     log.debug("loadFlyweightElements in {} ms", timeNeeded);
@@ -547,7 +545,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   }
 
   /** Loads all elements with in the given ids Set, uses unit and domain as a filter. */
-  private Set<RiskAffected<?, ?>> loadRiskElements(Unit unit, Domain domain, Set<String> ids) {
+  private Set<RiskAffected<?, ?>> loadRiskElements(Unit unit, Domain domain, Set<UUID> ids) {
     long startTime = System.currentTimeMillis();
 
     HashSet<RiskAffected<?, ?>> allElements = new HashSet<RiskAffected<?, ?>>(ids.size());
@@ -579,21 +577,21 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       Unit unit,
       Domain domain,
       RiskAffectedRepository<? extends RiskAffected<?, ?>, ?> repository,
-      Set<String> ids) {
+      Set<UUID> ids) {
     ElementQuery<? extends RiskAffected<?, ?>> query = repository.query(unit.getClient());
     query.whereOwnerIs(unit);
     query.whereDomainsContain(domain);
     if (ids != null) {
-      query.whereIdIn(new QueryCondition<String>(ids));
+      query.whereIdIn(new QueryCondition<>(ids));
     }
 
     return query.execute(PagingConfiguration.UNPAGED).getResultPage().stream().toList();
   }
 
   private Set<RiskAffected<?, ?>> mapIdsToRiskAffected(
-      Set<RiskAffected<?, ?>> allRiskElements, Set<String> ids) {
+      Set<RiskAffected<?, ?>> allRiskElements, Set<UUID> ids) {
     return allRiskElements.stream()
-        .filter(r -> ids.contains(r.getIdAsString()))
+        .filter(r -> ids.contains(r.getIdAsUUID()))
         .collect(Collectors.toSet());
   }
 
@@ -683,8 +681,11 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     return nodes.stream().map(Nameable::getName).collect(Collectors.joining(", "));
   }
 
-  private Set<String> toIds(Collection<FlyweightElement> rootElementsForSubGraph) {
-    return rootElementsForSubGraph.stream().map(f -> f.sourceId()).collect(Collectors.toSet());
+  private Set<UUID> toIds(Collection<FlyweightElement> rootElementsForSubGraph) {
+    return rootElementsForSubGraph.stream()
+        .map(f -> f.sourceId())
+        .map(UUID::fromString)
+        .collect(Collectors.toSet());
   }
 
   private String toLinkName(CustomLink l) {

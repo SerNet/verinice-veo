@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,7 +95,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  private String dbId;
+  private UUID dbId;
 
   @Column(name = "designator")
   @ToString.Include
@@ -176,7 +177,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 

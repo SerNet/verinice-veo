@@ -20,6 +20,7 @@ package org.veo.persistence.access.jpa;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
 
@@ -55,7 +56,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
          left join fetch r.riskOwner
          left join fetch r.riskAspects
          where e.dbId in ?1""")
-  List<T> findAllWithRisksByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithRisksByDbIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
@@ -64,7 +65,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
         left join fetch e.controlImplementations
         where e.dbId in ?1
         """)
-  Set<T> findAllWithCIs(Iterable<String> ids);
+  Set<T> findAllWithCIs(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
@@ -73,7 +74,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
         left join fetch e.requirementImplementations
         where e.dbId in ?1
         """)
-  Set<T> findAllWithRIs(Iterable<String> ids);
+  Set<T> findAllWithRIs(Iterable<UUID> ids);
 
   // RIs must be joined twice, because the non-matching RIs would be missing from the returned
   // elements if the join-fetched RIs were used in the `where` clause.

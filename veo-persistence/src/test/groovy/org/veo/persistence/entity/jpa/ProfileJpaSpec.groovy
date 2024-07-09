@@ -70,11 +70,11 @@ class ProfileJpaSpec extends AbstractJpaSpec{
                     item1,
                     item2
                 ]
-            }).idAsString
+            }).dbId
         }
 
         when:
-        def profile = profileRepository.findById(client.idAsString, profileId).get()
+        def profile = profileRepository.findById(client.dbId, profileId).get()
 
         then:
         profile.items.size() == 2

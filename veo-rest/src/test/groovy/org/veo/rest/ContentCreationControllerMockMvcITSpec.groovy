@@ -21,7 +21,6 @@ import static org.veo.core.entity.TailoringReferenceType.RISK
 import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
 
 import java.nio.charset.StandardCharsets
-import java.util.UUID
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -43,7 +42,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
 import groovy.json.JsonSlurper
-import jdk.dynalink.linker.support.Lookup
 
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
@@ -440,7 +438,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "create catalog items in a domain from a unit"() {
         given: "a domain and a unit with elements"
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def domainId = domain.idAsString
+        def domainId = domain.idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
 
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -569,7 +567,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
         def asset = txTemplate.execute {
-            assetDataRepository.findById(assetId).get()
+            assetDataRepository.findById(UUID.fromString(assetId)).get()
         }
 
         def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}
@@ -595,7 +593,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [:], 204)
 
         asset = txTemplate.execute {
-            assetDataRepository.findById(assetId).get()
+            assetDataRepository.findById(UUID.fromString(assetId)).get()
         }
 
         then: "the reference to the updated catalog item is intact"
@@ -629,13 +627,13 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         def modifiedScenario = txTemplate.execute {
-            scenarioDataRepository.findById(existingScenarioInNewUnitId).get().tap {
+            scenarioDataRepository.findById(UUID.fromString(existingScenarioInNewUnitId)).get().tap {
                 parts.collect { it.parts.size() }
                 composites.collect { it.composites.size() }
             }
         }
         def newScenario1 = txTemplate.execute {
-            def q = scenarioDataRepository.findById(elementList[0].targetUri.split('/' ).last()).get()
+            def q = scenarioDataRepository.findById(UUID.fromString(elementList[0].targetUri.split('/' ).last())).get()
                     .tap {
                         parts.collect { it.parts.size() }
                         composites.collect { it.composites.size() }
@@ -671,7 +669,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create an empty profile in a domain"() {
         given: "a domain"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
 
         when: "we create a new empty profile"
         post("/content-creation/domains/${domainId}/profiles",
@@ -822,7 +820,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "update a profile in a domain"() {
         given: "a domain and a unit"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
         def unitId = createUnitWithElements(domainId).first()
 
         when: "we create a new profile"
@@ -922,7 +920,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "export and import a profile from a domain"() {
         given: "a domain and a unit"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         when: "we incarnate one linked catalog item"
@@ -1003,7 +1001,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(exportedProfile.items.find{it.name == "Control-2" }) {
             abbreviation == 'c-2'
             appliedCatalogItem.name == 'Control-2'
-            appliedCatalogItem.namespaceId == domainId
+            appliedCatalogItem.namespaceId == domainId.toString()
         }
         with(exportedProfile.items.find{it.name == "process" }) {
             tailoringReferences.size() == 2
@@ -1016,7 +1014,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 exportedProfile)).id
 
         def dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
+            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{dt1->
                 dt1.profiles.size()
                 dt1.profiles[0].items.size()
                 dt1.profiles[0].items.size()
@@ -1046,7 +1044,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         profileInTemplateId = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
                 exportedProfile)).id
         dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
+            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{dt1->
                 dt1.profiles.size()
                 dt1.profiles[0].items.size()
                 dt1.profiles[0].items.each{
@@ -1076,7 +1074,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when:
         delete("/content-creation/domain-templates/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/profiles/$profileInTemplateId")
         dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{
+            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{
                 profiles.size()
             }
         }
@@ -1156,7 +1154,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create profile in a domain from a unit"() {
         given: "a domain and a unit with elements"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -1321,7 +1319,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a profile in a domain from a unit with applied items "() {
         given: "a domain and a unit with elements"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
 
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -1426,7 +1424,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "risks are not supported for catalog items"() {
         given: "a unit with risks"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         when: "trying to create catalog items from the unit"
@@ -1440,7 +1438,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def unitId = createUnitWithElements(domain.idAsString, true).first()
+        def unitId = createUnitWithElements(domain.idAsUUID, true).first()
 
         given: "a number of existing templates"
         def initialTemplateCount = txTemplate.execute {
@@ -1545,7 +1543,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "Profile metadata are optional"() {
         given:
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def unitId = createUnitWithElements(domain.idAsString).first()
+        def unitId = createUnitWithElements(domain.idAsUUID).first()
 
         when: "a template is created"
         post("/content-creation/domains/${domain.id.uuidValue()}/template", [

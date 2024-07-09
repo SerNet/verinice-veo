@@ -73,6 +73,6 @@ class CompositeElementQueryImpl<
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
                     root.join("composites", JoinType.INNER).get("dbId"),
-                    condition.getValue().uuidValue()));
+                    condition.getValue().value()));
   }
 }

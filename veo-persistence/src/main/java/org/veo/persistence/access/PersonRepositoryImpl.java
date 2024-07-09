@@ -80,7 +80,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
 
   @Override
   public void deleteById(Key<UUID> id) {
-    delete(dataRepository.findById(id.uuidValue()).orElseThrow());
+    delete(dataRepository.findById(id.value()).orElseThrow());
   }
 
   @Override

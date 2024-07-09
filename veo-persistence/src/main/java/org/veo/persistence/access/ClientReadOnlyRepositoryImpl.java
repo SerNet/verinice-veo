@@ -39,6 +39,6 @@ public class ClientReadOnlyRepositoryImpl implements ClientReadOnlyRepository {
 
   @Override
   public Optional<Client> findById(Key<UUID> id) {
-    return clientDataRepository.findById(id.uuidValue()).map(Client.class::cast);
+    return clientDataRepository.findById(id.value()).map(Client.class::cast);
   }
 }

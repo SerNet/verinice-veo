@@ -23,7 +23,7 @@ class ContentSpec extends VeoMvcSpec {
     public static final String PROBLEM = "In computer science, there are only three hard problems: " +
     "Cache invalidation, naming things, and off-by-one errors."
 
-    protected createUnitWithElements(String domainId, boolean addRisks = false, boolean addRiskValues = false) {
+    protected createUnitWithElements(UUID domainId, boolean addRisks = false, boolean addRiskValues = false) {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [

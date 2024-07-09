@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +49,7 @@ public class UserConfigurationData implements UserConfiguration {
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @ToString.Include
-  private String dbId;
+  private UUID dbId;
 
   @ToString.Include private String userName;
   @ToString.Include private String applicationId;
@@ -84,7 +85,7 @@ public class UserConfigurationData implements UserConfiguration {
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    String dbId = getDbId();
+    UUID dbId = getDbId();
     return dbId != null && dbId.equals(other.getDbId());
   }
 
