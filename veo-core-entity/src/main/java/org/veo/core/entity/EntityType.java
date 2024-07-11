@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import static java.util.function.Function.identity;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -95,35 +99,33 @@ public enum EntityType {
           Scenario.TYPE_DESIGNATOR,
           Scope.TYPE_DESIGNATOR);
 
+  private static final Map<String, Class<? extends Entity>> TYPE_BY_PLURAL_TERM =
+      Stream.of(values()).collect(Collectors.toMap(EntityType::getPluralTerm, EntityType::getType));
+
+  private static final Map<String, EntityType> ENTITY_TYPE_BY_SINGULAR_TERM =
+      Stream.of(values()).collect(Collectors.toMap(EntityType::getSingularTerm, identity()));
+
+  private static final Map<Class<? extends Entity>, String> SINGULAR_TERM_BY_TYPE =
+      Stream.of(values())
+          .collect(Collectors.toMap(EntityType::getType, EntityType::getSingularTerm));
+
+  private static final Map<Class<? extends Entity>, String> PLURAL_TERM_BY_TYPE =
+      Stream.of(values()).collect(Collectors.toMap(EntityType::getType, EntityType::getPluralTerm));
+
   public static Class<? extends Entity> getTypeForPluralTerm(String pluralTerm) {
-    return Stream.of(values())
-        .filter(et -> et.pluralTerm.equals(pluralTerm))
-        .map(et -> et.type)
-        .findFirst()
-        .orElseThrow();
+    return Optional.ofNullable(TYPE_BY_PLURAL_TERM.get(pluralTerm)).orElseThrow();
   }
 
   public static EntityType getBySingularTerm(String singularTerm) {
-    return Stream.of(values())
-        .filter(et -> et.singularTerm.equals(singularTerm))
-        .findFirst()
-        .orElseThrow();
+    return Optional.ofNullable(ENTITY_TYPE_BY_SINGULAR_TERM.get(singularTerm)).orElseThrow();
   }
 
   public static String getSingularTermByType(Class<? extends Entity> type) {
-    return Stream.of(values())
-        .filter(et -> et.type.equals(type))
-        .findFirst()
-        .orElseThrow()
-        .getSingularTerm();
+    return Optional.ofNullable(SINGULAR_TERM_BY_TYPE.get(type)).orElseThrow();
   }
 
   public static String getPluralTermByType(Class<? extends Entity> type) {
-    return Stream.of(values())
-        .filter(et -> et.type.equals(type))
-        .findFirst()
-        .orElseThrow()
-        .getPluralTerm();
+    return Optional.ofNullable(PLURAL_TERM_BY_TYPE.get(type)).orElseThrow();
   }
 
   public static void validateElementType(String elementType) {
