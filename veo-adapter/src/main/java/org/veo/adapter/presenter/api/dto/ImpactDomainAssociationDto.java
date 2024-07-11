@@ -20,6 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.validation.Valid;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +33,7 @@ public class ImpactDomainAssociationDto extends DomainAssociationDto {
   @Schema(
       description =
           "Key is risk definition ID, value contains impact values in the context of that risk definition.")
+  @Valid
   protected Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
   public ImpactDomainAssociationDto() {

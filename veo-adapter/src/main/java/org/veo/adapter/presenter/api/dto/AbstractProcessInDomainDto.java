@@ -77,6 +77,7 @@ public abstract class AbstractProcessInDomainDto
       description =
           "Key is risk definition ID, value contains impact values in the context of that risk definition.")
   @Deprecated
+  @Valid
   Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();

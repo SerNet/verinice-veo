@@ -87,6 +87,7 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
   @Schema(
       description =
           "Key is risk definition ID, value contains impact values in the context of that risk definition.")
+  @Valid
   Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();

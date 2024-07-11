@@ -20,6 +20,7 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.RiskConsistencyException
@@ -405,7 +406,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             ]
         ])).resourceId
 
-        when:
+        when: "omitting the maps"
         get("/domains/$domainId/processes/$processId").with{
             def body = parseJson(it)
             body.riskValues.myFirstRiskDefinition.remove("potentialImpacts")
@@ -413,11 +414,24 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             put(body._self, body, ["If-Match": getETag(it)])
         }
 
-        then:
+        then: "empty maps are used by default"
         with(parseJson(get("/domains/$domainId/processes/$processId")).riskValues.myFirstRiskDefinition) {
             potentialImpacts == [:]
             potentialImpactReasons == [:]
         }
+
+        when: "explicitly using null"
+        get("/domains/$domainId/processes/$processId").with{
+            def body = parseJson(it)
+            body.riskValues.myFirstRiskDefinition.potentialImpacts = null
+            body.riskValues.myFirstRiskDefinition.potentialImpactReasons = null
+            put(body._self, body, ["If-Match": getETag(it)], 400)
+        }
+
+        then:
+        def ex = thrown(MethodArgumentNotValidException)
+        ex.message.contains(".potentialImpacts]]; default message [must not be null]")
+        ex.message.contains(".potentialImpactReasons]]; default message [must not be null]")
     }
 
     def "null values are removed from maps"() {
