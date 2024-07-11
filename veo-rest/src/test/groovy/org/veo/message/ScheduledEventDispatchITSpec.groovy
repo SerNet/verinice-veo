@@ -196,7 +196,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
             def profileId = dsgvoTestDomain.profiles.first().id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoTestDomain.id, null, profileId)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoTestDomain.id, null, profileId, false)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(new ApplyProfileIncarnationDescriptionUseCase.InputData(
                     client,

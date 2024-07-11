@@ -66,7 +66,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             def profileId = domain.profiles.first().id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions))

@@ -552,7 +552,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 Key.uuidFrom(unitId),
                 Key.uuidFrom(id),
                 null,
-                Key.uuidFrom(profileId)),
+                Key.uuidFrom(profileId),
+                true),
             out ->
                 out.references().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)

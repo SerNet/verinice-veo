@@ -29,8 +29,11 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -63,6 +66,7 @@ public class GetProfileIncarnationDescriptionUseCase
 
     validateInput(input);
 
+    var distinctTailoringRefKeys = new HashSet<String>();
     var incarnationDescriptions =
         Optional.ofNullable(input.profileId)
             .map(
@@ -78,11 +82,57 @@ public class GetProfileIncarnationDescriptionUseCase
                 catalogItem ->
                     new TemplateItemIncarnationDescription<>(
                         catalogItem,
-                        toParameters(catalogItem.getTailoringReferences(), Collections.emptyMap())))
+                        toParameters(
+                            input.mergeBidirectionalReferences
+                                ? catalogItem.getTailoringReferences().stream()
+                                    .filter(tr -> distinctTailoringRefKeys.add(toKey(tr)))
+                                    .toList()
+                                : catalogItem.getTailoringReferences(),
+                            Collections.emptyMap())))
             .toList();
 
     log.debug("IncarnationDescriptions: {}", incarnationDescriptions);
     return new OutputData(incarnationDescriptions, unit);
+  }
+
+  private String toKey(TailoringReference<?, ?> tailoringReference) {
+    String origin = tailoringReference.getOwner().getSymbolicIdAsString();
+    String target = tailoringReference.getTargetRef().getSymbolicId();
+    return switch (tailoringReference.getReferenceType()) {
+      case LINK ->
+          toKey(
+              TailoringReferenceType.LINK,
+              origin,
+              target,
+              ((LinkTailoringReference<?, ?>) tailoringReference).getLinkType());
+      case LINK_EXTERNAL ->
+          toKey(
+              TailoringReferenceType.LINK,
+              target,
+              origin,
+              ((LinkTailoringReference<?, ?>) tailoringReference).getLinkType());
+      case PART -> toKey(TailoringReferenceType.PART, origin, target, "");
+      case COMPOSITE -> toKey(TailoringReferenceType.PART, target, origin, "");
+      case SCOPE -> toKey(TailoringReferenceType.SCOPE, origin, target, "");
+      case MEMBER -> toKey(TailoringReferenceType.SCOPE, target, origin, "");
+      case RISK -> toKey(TailoringReferenceType.RISK, origin, target, "");
+      case CONTROL_IMPLEMENTATION ->
+          toKey(TailoringReferenceType.CONTROL_IMPLEMENTATION, origin, target, "");
+      default ->
+          throw new IllegalArgumentException(
+              "Unexpected tailoring reference type %s"
+                  .formatted(tailoringReference.getReferenceType()));
+    };
+  }
+
+  private String toKey(
+      TailoringReferenceType type, String sourceId, String targetId, String linkType) {
+    return new StringBuffer()
+        .append(type.name())
+        .append(sourceId)
+        .append(targetId)
+        .append(linkType)
+        .toString();
   }
 
   private void validateInput(InputData input) {
@@ -118,7 +168,8 @@ public class GetProfileIncarnationDescriptionUseCase
       Key<UUID> unitId,
       Key<UUID> domainId,
       List<Key<UUID>> profileItemIds,
-      Key<UUID> profileId)
+      Key<UUID> profileId,
+      boolean mergeBidirectionalReferences)
       implements UseCase.InputData {}
 
   @Valid

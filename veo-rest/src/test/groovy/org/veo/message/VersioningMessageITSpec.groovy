@@ -68,7 +68,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             def unit = unitDataRepository.save(newUnit(client))
             def profileId = dsgvo.profiles.find { it.name == "Beispielorganisation" }.id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId, false)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions)
