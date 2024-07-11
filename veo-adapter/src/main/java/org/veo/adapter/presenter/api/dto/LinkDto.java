@@ -19,6 +19,8 @@ package org.veo.adapter.presenter.api.dto;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;
 
@@ -33,6 +35,7 @@ import lombok.NoArgsConstructor;
 public class LinkDto {
 
   @NotNull(message = "A target must be present.")
+  @JsonProperty(required = true)
   private ElementInDomainIdRef<Element> target;
 
   @Schema(

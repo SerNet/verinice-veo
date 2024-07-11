@@ -288,6 +288,78 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
     }
 
+    def "essential properties are required for #type.pluralTerm"() {
+        given:
+        createElementTypeDefinition(type.singularTerm)
+        def element = [
+            links: [
+                LA: [
+                    [:]
+                ]
+            ]
+        ]
+
+        expect:
+        validate(element, type.singularTerm)*.message ==~ [
+            "\$: required property 'name' not found",
+            "\$: required property 'subType' not found",
+            "\$: required property 'status' not found",
+            "\$: required property 'owner' not found",
+            "\$.links.LA[0]: required property 'target' not found",
+        ]
+
+        when:
+        element.name = null
+        element.subType = null
+        element.status = null
+        element.owner = null
+        element.links.LA[0].target = null
+
+        then:
+        validate(element, type.singularTerm)*.message ==~ [
+            "\$.name: null found, string expected",
+            "\$.owner: null found, object expected",
+            "\$.status: null found, string expected",
+            "\$.status: does not have a value in the enumeration [A1, A2, B1, B2]",
+            "\$.subType: null found, string expected",
+            "\$.subType: does not have a value in the enumeration [A, B]",
+            "\$.links.LA[0].target: null found, object expected",
+        ]
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
+    def "potential impact maps are not required for #type.pluralTerm"() {
+        given:
+        createElementTypeDefinition(type.singularTerm)
+        def element = [
+            name: "impactless",
+            subType: "A",
+            status: "A1",
+            owner: [targetUri: "http://localhost/units/..."],
+            riskValues: [
+                noRiskNoFun: [:]
+            ]
+        ]
+
+        expect:
+        validate(element, type.singularTerm).empty
+
+        when:
+        element.riskValues.noRiskNoFun.potentialImpacts = null
+        element.riskValues.noRiskNoFun.potentialImpactReasons = null
+
+        then:
+        validate(element, type.singularTerm)*.message ==~ [
+            "\$.riskValues.noRiskNoFun.potentialImpacts: null found, object expected",
+            "\$.riskValues.noRiskNoFun.potentialImpactReasons: null found, object expected",
+        ]
+
+        where:
+        type << EntityType.RISK_AFFECTED_TYPES
+    }
+
     private Set<ValidationMessage> validate(Map element, String elementType) {
         getSchema(domain, elementType).validate(om.valueToTree(element))
     }

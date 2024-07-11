@@ -91,6 +91,8 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @JsonIgnore private TypedId<Domain> domain;
 
   @Size(max = NAME_MAX_LENGTH)
+  @NotNull
+  @JsonProperty(required = true)
   private String name;
 
   @Size(max = ABBREVIATION_MAX_LENGTH)
@@ -104,16 +106,19 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
 
   @Schema(description = "Unit that this element belongs to", implementation = IdRefOwner.class)
   @NotNull(message = "An owner must be present.")
+  @JsonProperty(required = true)
   private IdRef<Unit> owner;
 
   @Schema(description = SUB_TYPE_DESCRIPTION)
   @NotNull(message = SUB_TYPE_NOT_NULL_MESSAGE)
   @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
+  @JsonProperty(required = true)
   private String subType;
 
   @Schema(description = STATUS_DESCRIPTION)
   @NotNull(message = STATUS_NOT_NULL_MESSAGE)
   @Size(min = 1, max = STATUS_MAX_LENGTH)
+  @JsonProperty(required = true)
   private String status;
 
   @Schema(

@@ -29,8 +29,8 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfig;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
+import com.github.victools.jsonschema.module.jackson.JacksonOption;
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationModule;
-import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationOption;
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,9 +58,8 @@ public class SchemaProvider {
   }
 
   private SchemaGenerator createSchemaGenerator() {
-    JacksonModule jacksonModule = new JacksonModule();
-    JakartaValidationModule jakartaValidationModule =
-        new JakartaValidationModule(JakartaValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
+    JacksonModule jacksonModule = new JacksonModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED);
+    JakartaValidationModule jakartaValidationModule = new JakartaValidationModule();
     Module swagger2Module = new Swagger2Module();
 
     SchemaGeneratorConfigBuilder configBuilder =
