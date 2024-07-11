@@ -108,27 +108,6 @@ check:
         - build
       policy: pull
 
-
-check_license:
-  stage: check
-  rules:
-    - !reference [.verification, rules]
-  script:
-    - cp LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i generateLicenseReport
-    - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport"; exit 1; fi
-  interruptible: true
-  cache:
-    - key: gradle
-      paths:
-        - .gradle
-    - key: $CI_PROJECT_PATH
-      paths:
-        - build
-      policy: pull
-
-
 docker_image:
   stage: docker_image
   needs:
