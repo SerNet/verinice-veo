@@ -39,6 +39,96 @@ class ProfileRestTest extends VeoRestTest {
         unitId = postNewUnit().resourceId
     }
 
+    def "apply simple profile"() {
+        given: "dsgvo with a profile"
+        def profiles = get("/domains/${dsgvoDomainId}/profiles").body
+        def profileId = profiles.find { it.name == "Beispielorganisation" }.id
+
+        post("/domains/$dsgvoDomainId/profiles/$profileId/incarnation?unit=$unitId", null, 204)
+
+        expect:
+        with(get("/domains/$dsgvoDomainId/element-status-count?unit=$unitId").body) {
+            person.PER_Person.NEW == 5
+            control.CTL_TOM.NEW == 1
+            scenario.SCN_Scenario.NEW == 1
+            scope.SCP_Scope.IN_PROGRESS == 1
+            process.PRO_DataProcessing.NEW == 1
+        }
+
+        and: "elements part are correct created"
+        with(get("/domains/$dsgvoDomainId/persons?unit=$unitId").body) {
+            items.size() == 5
+            with (items.find { it.name == "IT-Team" }) {
+                links.size() == 0
+                parts.size() == 1
+                parts[0].name == "Hans Meiser"
+            }
+            with(items.find { it.name == "Personal" }) {
+                links.size() == 0
+                parts.size() == 3
+                parts.name ==~ [
+                    "Hans Meiser",
+                    "Jürgen Toast",
+                    "Harald Wald"
+                ]
+            }
+            with(items.find { it.name == "Hans Meiser" }) {
+                links.size() == 0
+                parts.size() == 1
+                parts[0].name == "Harald Wald"
+            }
+            with(items.find { it.name == "Jürgen Toast" }) {
+                links.size() == 1
+                links.person_favoriteScope.target.name == ["Data GmbH"]
+                parts.size() == 0
+            }
+            with(items.find { it.name == "Harald Wald" }) {
+                links.size() == 0
+                parts.size() == 0
+            }
+        }
+
+        and: "scope members are correct created also links"
+        with(get("/domains/$dsgvoDomainId/scopes?unit=$unitId").body) {
+            items.size() == 1
+            with (items.find { it.name == "Data GmbH" }) {
+                members.size() == 1
+                members[0].name == "Durchführung Befragungen"
+                links.size() == 2
+                links.scope_informationSecurityOfficer.target.name == ["Jürgen Toast"]
+                links.scope_headOfDataProcessing.target.name == ["Hans Meiser"]
+            }
+        }
+
+        and: "process members are correct created also links"
+        with(get("/domains/$dsgvoDomainId/processes?unit=$unitId").body) {
+            items.size() == 1
+            with(items.find { it.name == "Durchführung Befragungen" }) {
+                links.size() == 2
+                links.process_PIAProcessOwner.target.name == ["Hans Meiser"]
+                links.process_PIAOOtherOrganisationsInvolved.target.name == ["Data GmbH"]
+            }
+        }
+
+        and:
+        with(get("/domains/$dsgvoDomainId/controls?unit=$unitId").body) {
+            items.size() == 1
+            with(items.find { it.name == "TOM 1" }) {
+                links.size() == 0
+                parts.size() == 0
+                riskValues.DSRA.implementationStatus == 2
+            }
+        }
+        with(get("/domains/$dsgvoDomainId/scenarios?unit=$unitId").body) {
+            items.size() == 1
+            with(items.find { it.name == "GefÃ¤hrdung 1" }) {
+                links.size() == 0
+                parts.size() == 0
+                riskValues.DSRA.potentialProbability == 1
+            }
+        }
+    }
+
     def "create profile from multi-domain unit"() {
         given: "assets associated with different domains"
         get("/units/$unitId").with {
