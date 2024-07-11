@@ -25,7 +25,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -45,7 +45,7 @@ public abstract class CatalogReferenceData
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   private String dbId;
 
   @ManyToOne(targetEntity = CatalogItemData.class)

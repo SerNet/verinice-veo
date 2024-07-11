@@ -30,8 +30,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.UserConfiguration;
@@ -46,7 +46,7 @@ import lombok.ToString;
 public class UserConfigurationData implements UserConfiguration {
   @Id
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   @ToString.Include
   private String dbId;
 

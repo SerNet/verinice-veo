@@ -30,7 +30,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Displayable;
@@ -58,7 +58,7 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   @EqualsAndHashCode.Include
   private String dbId;
 

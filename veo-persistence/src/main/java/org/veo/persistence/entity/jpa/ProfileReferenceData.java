@@ -26,7 +26,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
@@ -46,7 +46,7 @@ public abstract class ProfileReferenceData
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   private String dbId;
 
   @ManyToOne(targetEntity = ProfileItemData.class, fetch = FetchType.LAZY)

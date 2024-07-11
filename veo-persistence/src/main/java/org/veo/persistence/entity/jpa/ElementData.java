@@ -42,7 +42,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
@@ -82,7 +82,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   private String dbId;
 
   @Column(name = "name")

@@ -31,8 +31,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TranslationMap;
@@ -53,7 +53,7 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   private String dbId;
 
   @NotNull private String elementType;

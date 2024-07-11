@@ -30,8 +30,8 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
@@ -63,7 +63,7 @@ public abstract class TemplateItemData<
 
   @Id
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   private String dbId;
 
   @NotNull @ToString.Include private String symbolicDbId;
