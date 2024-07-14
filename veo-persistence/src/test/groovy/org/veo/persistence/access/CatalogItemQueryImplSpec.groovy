@@ -23,6 +23,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.repository.CatalogItemQuery
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
 import org.veo.persistence.access.jpa.CatalogItemDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -83,6 +84,45 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         then:
         result.totalResults == 2
         result.resultPage*.name == ["my CI 1", "my CI 2"]
+    }
+
+    def 'catalog items are sorted naturally'() {
+        given:
+        repo.saveAll([
+            newCatalogItem(domain) {
+                name = "1 One"
+                abbreviation = '1 O'
+                elementType = "asset"
+                subType = "server"
+                status = "up"
+            },
+            newCatalogItem(domain) {
+                name = "2 Two"
+                abbreviation = '2 T'
+                elementType = "asset"
+                subType = "server"
+                status = "up"
+            },
+            newCatalogItem(domain) {
+                name = "10 Ten"
+                abbreviation = '10 T'
+                elementType = "asset"
+                subType = "server"
+                status = "up"
+            }
+        ])
+
+        when:
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage*.name == ["1 One", "2 Two", "10 Ten"]
+
+        when:
+        result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "abbreviation", SortOrder.ASCENDING))
+
+        then:
+        result.resultPage*.abbreviation == ["1 O", "2 T", "10 T"]
     }
 
     def 'queries by element properties'() {
