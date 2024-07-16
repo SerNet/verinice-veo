@@ -43,7 +43,7 @@ public record TemplateItemAspects(
     scenarioRiskValues = immutableCopy(scenarioRiskValues);
   }
 
-  private static <TKey, TValue> @Nullable Map<TKey, TValue> immutableCopy(
+  private static @Nullable <TKey, TValue> Map<TKey, TValue> immutableCopy(
       @Nullable Map<TKey, TValue> map) {
     return Optional.ofNullable(map).map(Map::copyOf).orElse(null);
   }

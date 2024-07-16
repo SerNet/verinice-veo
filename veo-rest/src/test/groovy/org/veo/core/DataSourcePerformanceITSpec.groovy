@@ -548,7 +548,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
     }
 
-    Scope saveScope(String name, List<CompositeElement<CompositeElement>> members = []) {
+    Scope saveScope(String name, List<CompositeElement> members = []) {
         executeInTransaction {
             return scopeRepository.save(newScope(unit).tap {
                 it.name = name
