@@ -58,9 +58,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public Domain createDomain(Client client, String templateId) {
+    return createDomain(client, templateId, true);
+  }
+
+  @Override
+  public Domain createDomain(Client client, String templateId, boolean copyProfiles) {
     DomainTemplate domainTemplate = getTemplate(client, Key.uuidFrom(templateId));
 
-    var domain = domainStateMapper.toDomain(domainTemplate);
+    var domain = domainStateMapper.toDomain(domainTemplate, copyProfiles);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);

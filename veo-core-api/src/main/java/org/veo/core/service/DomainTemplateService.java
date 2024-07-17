@@ -45,6 +45,8 @@ public interface DomainTemplateService {
    */
   Domain createDomain(Client client, String templateId);
 
+  Domain createDomain(Client client, String templateId, boolean copyProfiles);
+
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
 
   void copyProfileToDomain(Profile profile, Domain domain);

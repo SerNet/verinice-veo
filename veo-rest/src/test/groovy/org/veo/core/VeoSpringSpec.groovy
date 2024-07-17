@@ -175,9 +175,9 @@ abstract class VeoSpringSpec extends VeoSpec {
         clientRepository.deleteById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
     }
 
-    Domain createTestDomain(Client client, String templateId) {
+    Domain createTestDomain(Client client, String templateId, boolean copyProfiles = true) {
         return txTemplate.execute {
-            return domainTemplateCreator.createDomainFromTemplate(templateId, client)
+            return domainTemplateCreator.createDomainFromTemplate(templateId, client, copyProfiles)
         }
     }
 

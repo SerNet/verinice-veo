@@ -48,8 +48,8 @@ class DefaultDomainCreatorSpec extends Specification {
         then: 'both templates are incarnated in the client'
         1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.of(dsgvoTemplateId)
         1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
-        1 * domainTemplateService.createDomain(client, dsgvoTemplateId.uuidValue()) >> dsgvoDomain
-        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue()) >> isoDomain
+        1 * domainTemplateService.createDomain(client, dsgvoTemplateId.uuidValue(), true) >> dsgvoDomain
+        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), true) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
         1 * client.addToDomains(isoDomain)
     }
@@ -64,12 +64,12 @@ class DefaultDomainCreatorSpec extends Specification {
         def isoDomain = Mock(Domain)
 
         when: 'default domains are created'
-        defaultDomainCreator.addDefaultDomains(client)
+        defaultDomainCreator.addDefaultDomains(client, false)
 
         then: 'only the present domain template is incarnated'
         1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.empty()
         1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
-        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue()) >> isoDomain
+        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), false) >> isoDomain
         1 * client.addToDomains(isoDomain)
     }
 
@@ -80,7 +80,7 @@ class DefaultDomainCreatorSpec extends Specification {
         }
 
         when: 'default domains are created'
-        defaultDomainCreator.addDefaultDomains(client)
+        defaultDomainCreator.addDefaultDomains(client, true)
 
         then: 'an exception is thrown'
         thrown(IllegalArgumentException)

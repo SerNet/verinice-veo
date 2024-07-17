@@ -45,7 +45,7 @@ public class CreateDomainFromTemplateUseCase
       throw new MissingAdminPrivilegesException();
     }
     var client = clientRepository.getActiveById(Key.uuidFrom(input.clientId));
-    domainTemplateService.createDomain(client, input.domainTemplateId);
+    domainTemplateService.createDomain(client, input.domainTemplateId, input.copyProfiles);
     clientRepository.save(client);
     return EmptyOutput.INSTANCE;
   }
@@ -56,7 +56,8 @@ public class CreateDomainFromTemplateUseCase
   }
 
   @Valid
-  public record InputData(String domainTemplateId, String clientId) implements UseCase.InputData {}
+  public record InputData(String domainTemplateId, String clientId, boolean copyProfiles)
+      implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid Domain domain) implements UseCase.OutputData {}

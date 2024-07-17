@@ -111,7 +111,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             }
         }""", 1, Instant.now()))
 
-        then: "the client is created, activated, the initial unit and domains exist"
+        then: "the client is created, activated, the initial domains exist"
         defaultPolling.eventually {
             repository.exists(cId)
             with(repository.findById(cId).get()) {
@@ -119,22 +119,12 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 state == ACTIVATED
                 name == clientName
             }
-            def units = executeInTransaction {
-                unitDataRepository.findByClientId(cId.value()).tap {
-                    // force lazy proxy initialization
-                    it*.domains.collect { it.name }
-                }
-            }
-            with(units) {
-                it.size() == 2
-                it*.name ==~ ['Unit 1', 'Demo']
-                it.each {
-                    with(it) {
-                        it.domains*.name ==~ ['test-domain', 'DS-GVO']
-                    }
-                }
-            }
         }
+
+        and: "no units are created"
+        executeInTransaction {
+            unitDataRepository.findByClientId(cId.value())
+        }.size() == 0
 
         when:"we send a change -> add a domain"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{

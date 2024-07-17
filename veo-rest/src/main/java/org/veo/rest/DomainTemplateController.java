@@ -130,7 +130,7 @@ public class DomainTemplateController extends AbstractEntityController {
                       useCaseInteractor.execute(
                           createDomainFromTemplateUseCase,
                           new CreateDomainFromTemplateUseCase.InputData(
-                              domainTemplateId, clientId.uuidValue()),
+                              domainTemplateId, clientId.uuidValue(), true),
                           out -> void.class))
               .thenApply(
                   nothing -> {

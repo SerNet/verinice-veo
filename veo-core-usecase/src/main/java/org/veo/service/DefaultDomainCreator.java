@@ -40,13 +40,17 @@ public class DefaultDomainCreator {
   private final DomainTemplateRepository domainTemplateRepository;
 
   public void addDefaultDomains(Client client) {
+    addDefaultDomains(client, true);
+  }
+
+  public void addDefaultDomains(Client client, boolean copyProfiles) {
     if (!client.getDomains().isEmpty()) {
       throw new IllegalArgumentException("The client already owns domains.");
     }
-    defaultDomainTemplateNames.forEach(name -> addDomain(client, name));
+    defaultDomainTemplateNames.forEach(name -> addDomain(client, name, copyProfiles));
   }
 
-  public void addDomain(Client client, String templateName) {
+  public void addDomain(Client client, String templateName, boolean copyProfiles) {
     domainTemplateRepository
         .getLatestDomainTemplateId(templateName)
         .ifPresentOrElse(
@@ -56,7 +60,8 @@ public class DefaultDomainCreator {
                   templateId,
                   templateName,
                   client.getIdAsString());
-              client.addToDomains(domainService.createDomain(client, templateId.uuidValue()));
+              client.addToDomains(
+                  domainService.createDomain(client, templateId.uuidValue(), copyProfiles));
             },
             () -> {
               log.warn("Default domain template {} not found.", templateName);

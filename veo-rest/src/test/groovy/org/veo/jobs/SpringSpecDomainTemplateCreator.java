@@ -63,14 +63,15 @@ public class SpringSpecDomainTemplateCreator {
    * is attempted to create the domain template from the corresponding test domain template resource
    * file first.
    */
-  public Domain createDomainFromTemplate(String templateId, Client client) {
+  public Domain createDomainFromTemplate(String templateId, Client client, boolean copyProfiles) {
     if (!domainTemplateRepository.exists(Key.uuidFrom(templateId))) {
       createTestTemplate(templateId);
     }
     AsSystemUser.runAsAdmin(
         () -> {
           createDomainFromTemplateUseCase.execute(
-              new CreateDomainFromTemplateUseCase.InputData(templateId, client.getIdAsString()));
+              new CreateDomainFromTemplateUseCase.InputData(
+                  templateId, client.getIdAsString(), copyProfiles));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()
         .filter(

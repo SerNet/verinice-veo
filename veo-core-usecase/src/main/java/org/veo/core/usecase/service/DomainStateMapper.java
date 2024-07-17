@@ -57,11 +57,11 @@ public class DomainStateMapper {
   private final EntityFactory entityFactory;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
-  public Domain toDomain(DomainBaseState source) {
+  public Domain toDomain(DomainBaseState source, boolean copyProfiles) {
     var target =
         entityFactory.createDomain(
             source.getName(), source.getAuthority(), source.getTemplateVersion());
-    map(source, target);
+    map(source, target, copyProfiles);
     return target;
   }
 
@@ -74,7 +74,7 @@ public class DomainStateMapper {
             Key.uuidFrom(
                 domainTemplateIdGenerator.createDomainTemplateId(
                     source.getName(), source.getTemplateVersion())));
-    map(source, target);
+    map(source, target, true);
     return target;
   }
 
@@ -88,7 +88,7 @@ public class DomainStateMapper {
     return target;
   }
 
-  private void map(DomainBaseState source, DomainBase target) {
+  private void map(DomainBaseState source, DomainBase target, boolean copyProfiles) {
     var resolver = refResolverFactory.local();
     var domainRef = TypedId.from(source.getSelfId(), source.getModelInterface());
     target.setAbbreviation(source.getAbbreviation());
@@ -124,11 +124,12 @@ public class DomainStateMapper {
                     resolver.resolve(
                         TypedSymbolicId.from(ciState.getSelfId(), CatalogItem.class, domainRef)),
                     resolver));
-
-    target.setProfiles(
-        source.getProfileStates().stream()
-            .map(profileState -> toProfile(profileState, resolver, target))
-            .collect(Collectors.toSet()));
+    if (copyProfiles) {
+      target.setProfiles(
+          source.getProfileStates().stream()
+              .map(profileState -> toProfile(profileState, resolver, target))
+              .collect(Collectors.toSet()));
+    }
   }
 
   public Profile toProfile(ProfileState source, DomainBase owner) {

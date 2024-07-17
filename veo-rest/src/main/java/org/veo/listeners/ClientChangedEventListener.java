@@ -126,7 +126,7 @@ public class ClientChangedEventListener {
                     .filter(hasDomainTemplate())
                     .noneMatch(referenceDomainTemplate(dn))) {
                   log.info("create Domain {} for client {}", dn, client.getName());
-                  defaultDomainCreator.addDomain(client, dn);
+                  defaultDomainCreator.addDomain(client, dn, false);
                   if (save) {
                     repository.save(client);
                   }
