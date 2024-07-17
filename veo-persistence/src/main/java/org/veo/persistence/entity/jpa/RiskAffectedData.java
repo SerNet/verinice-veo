@@ -80,7 +80,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       mappedBy = "origin",
       fetch = FetchType.LAZY)
   @Valid
-  protected final Set<RequirementImplementationData> requirementImplementations = new HashSet<>();
+  protected final Set<RequirementImplementation> requirementImplementations = new HashSet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -89,7 +89,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  protected final Set<ControlImplementationData> controlImplementations = new HashSet<>();
+  protected final Set<ControlImplementation> controlImplementations = new HashSet<>();
 
   @Override
   public void setImpactValues(Domain domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {
@@ -168,7 +168,10 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   @Override
   public void disassociateControl(Control control) {
     new HashSet<>(controlImplementations)
-        .stream().filter(ci -> ci.getControl().equals(control)).forEach(this::remove);
+        .stream()
+            .filter(ci -> ci.getControl().equals(control))
+            .map(ControlImplementationData.class::cast)
+            .forEach(this::remove);
   }
 
   @Override
@@ -254,7 +257,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
    * @param ri the requirem ent-iomplementation that should be added
    * @return the added requirement implementation or the existing one if one was already present
    */
-  RequirementImplementationData addRequirementImplementation(RequirementImplementationData ri) {
+  RequirementImplementation addRequirementImplementation(RequirementImplementation ri) {
     var existingRi =
         requirementImplementations.stream()
             .filter(myRI -> myRI.getControl().equals(ri.getControl()))
@@ -268,7 +271,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       return existingRi.get();
     }
 
-    this.requirementImplementations.add((RequirementImplementationData) ri);
+    this.requirementImplementations.add(ri);
     ri.setOrigin(this);
     return ri;
   }
@@ -279,16 +282,12 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public Set<ControlImplementation> getControlImplementations() {
-    return controlImplementations.stream()
-        .map(ControlImplementation.class::cast)
-        .collect(Collectors.toSet());
+    return controlImplementations;
   }
 
   @Override
   public Set<RequirementImplementation> getRequirementImplementations() {
-    return requirementImplementations.stream()
-        .map(RequirementImplementation.class::cast)
-        .collect(Collectors.toSet());
+    return requirementImplementations;
   }
 
   @Override

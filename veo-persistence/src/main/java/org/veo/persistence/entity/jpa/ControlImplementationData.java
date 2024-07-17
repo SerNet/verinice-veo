@@ -185,7 +185,7 @@ public class ControlImplementationData implements ControlImplementation {
   @Override
   public void addRequirement(Control control) {
     // create new RI for the control:
-    var reqImpl = RequirementImplementationData.createNew(control);
+    RequirementImplementation reqImpl = RequirementImplementationData.createNew(control);
     // associated it with the owner of this CI - or recover existing RI:
     reqImpl = ((RiskAffectedData<?, ?>) owner).addRequirementImplementation(reqImpl);
     // store the reference to it:

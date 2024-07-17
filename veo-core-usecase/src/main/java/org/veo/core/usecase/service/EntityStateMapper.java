@@ -205,7 +205,7 @@ public class EntityStateMapper {
       RiskAffectedState<?> source, RiskAffected<?, ?> target, IdRefResolver idRefResolver) {
 
     // Remove old CIs that are absent in list of new CIs
-    target.getControlImplementations().stream()
+    Set.copyOf(target.getControlImplementations()).stream()
         .map(ControlImplementation::getControl)
         .filter(isNotPresentIn(source))
         .forEach(target::disassociateControl);
