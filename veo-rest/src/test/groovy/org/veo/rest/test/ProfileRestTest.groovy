@@ -18,9 +18,12 @@
 package org.veo.rest.test
 
 import static java.util.UUID.randomUUID
-import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
+
+import org.veo.core.entity.event.ClientEvent.ClientChangeType
+
+import spock.util.concurrent.PollingConditions
 
 class ProfileRestTest extends VeoRestTest {
     String newDomainName
@@ -211,7 +214,16 @@ class ProfileRestTest extends VeoRestTest {
         def templateUri = post("/content-creation/domains/$newDomainId/template", [
             version: "1.0.0",
         ], 201, CONTENT_CREATOR).body.targetUri
-        post("/domain-templates/"+uriToId(templateUri)+"/createdomains", null, 204, ADMIN)
+
+        sendClientChangeEvent([clientId: veoClientId, type: ClientChangeType.MODIFICATION,
+            domainProducts : [(newDomainName): ["To serve man"]]])
+        sendClientChangeEvent([clientId: veoSecondaryClientId, type: ClientChangeType.MODIFICATION,
+            domainProducts : [(newDomainName): ["To serve man"]]])
+
+        new PollingConditions().within(10) {
+            get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{it.name == newDomainName }
+            getDomains().find{it.name == newDomainName }
+        }
 
         and: "applying the profile in secondary client"
         def secondaryClientDomainId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find {
