@@ -42,9 +42,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
-import org.veo.jobs.CreateClientUnitsJob;
 import org.veo.service.DefaultDomainCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -60,7 +58,6 @@ public class ClientChangedEventListener {
   private final DomainRepository domainRepository;
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
-  private final CreateUnitUseCase createUnitUseCase;
 
   @EventListener()
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -103,10 +100,9 @@ public class ClientChangedEventListener {
       client.setMaxUnits(DEFAULT_MAX_UNITS);
     }
     client.updateState(ClientChangeType.ACTIVATION);
-    defaultDomainCreator.addDefaultDomains(client);
     addDomains(client, event.getDomainProducts(), false);
     addProfiles(client, event.getDomainProducts(), false);
-    new CreateClientUnitsJob(createUnitUseCase) {}.createUnitsForClient(repository.save(client));
+    repository.save(client);
   }
 
   private void modifyClient(Client client, ClientChangedEvent event) {
@@ -117,6 +113,7 @@ public class ClientChangedEventListener {
     }
     addDomains(client, event.getDomainProducts(), true);
     addProfiles(client, event.getDomainProducts(), true);
+    repository.save(client);
   }
 
   private void addDomains(Client client, Map<String, List<String>> domainProducts, boolean save) {
@@ -125,7 +122,9 @@ public class ClientChangedEventListener {
           .keySet()
           .forEach(
               dn -> {
-                if (client.getDomains().stream().noneMatch(referenceDomainTemplate(dn))) {
+                if (client.getDomains().stream()
+                    .filter(hasDomainTemplate())
+                    .noneMatch(referenceDomainTemplate(dn))) {
                   log.info("create Domain {} for client {}", dn, client.getName());
                   defaultDomainCreator.addDomain(client, dn);
                   if (save) {
@@ -138,8 +137,8 @@ public class ClientChangedEventListener {
 
   private void addProfiles(Client client, Map<String, List<String>> products, boolean save) {
     if (products != null && !products.isEmpty()) {
-      client
-          .getDomains()
+      client.getDomains().stream()
+          .filter(hasDomainTemplate())
           .forEach(
               domain -> {
                 products.getOrDefault(domain.getName(), Collections.emptyList()).stream()
@@ -179,5 +178,9 @@ public class ClientChangedEventListener {
 
   private Predicate<? super Profile> isProfile(String profileName) {
     return profile -> profile.getName().equals(profileName);
+  }
+
+  private Predicate<? super Domain> hasDomainTemplate() {
+    return d -> d.getDomainTemplate() != null;
   }
 }
