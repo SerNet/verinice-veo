@@ -30,8 +30,10 @@ import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 
+import groovy.json.JsonSlurper
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
@@ -51,6 +53,9 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private DeleteUnitUseCase deleteUnitUseCase
+
+    @Autowired
+    private StoredEventDataRepository storedEventDataRepository
 
     @DynamicPropertySource
     static void setRowCount(DynamicPropertyRegistry registry) {
@@ -87,6 +92,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.time < 1000
             // 115 is the currently observed count of 108 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 115
+            storedDeleteEvents.size() == 10
         }
     }
 
@@ -186,7 +192,12 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.time < 6000
             // 16500 is the currently observed count of 15824 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 16500
+            storedDeleteEvents.size() == 1100
         }
+    }
+
+    def getStoredDeleteEvents() {
+        storedEventDataRepository.findAll().findAll{it.content != null && new JsonSlurper().parseText(it.content).type == 'HARD_DELETION'}
     }
 
     def runUseCase(Unit unit) {
