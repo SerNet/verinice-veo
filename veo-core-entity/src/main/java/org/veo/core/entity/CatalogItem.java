@@ -35,8 +35,8 @@ import org.veo.core.entity.exception.UnprocessableDataException;
  */
 public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, DomainBase> {
 
-  String SINGULAR_TERM = "catalogitem";
-  String PLURAL_TERM = "catalogitems";
+  String SINGULAR_TERM = "catalog-item";
+  String PLURAL_TERM = "catalog-items";
 
   Comparator<? super CatalogItem> BY_CATALOGITEMS =
       Comparator.comparing(SymIdentifiable::getSymbolicIdAsString);

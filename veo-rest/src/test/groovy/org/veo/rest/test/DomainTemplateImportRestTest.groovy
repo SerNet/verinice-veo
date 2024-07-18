@@ -201,7 +201,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Missing symbolic ID for catalogitem in domain-template $template.id")
+        response.message.endsWith("Missing symbolic ID for catalog-item in domain-template $template.id")
     }
 
     def "cannot import template with duplicate catalog item ID"() {
@@ -215,7 +215,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Duplicate key: catalogitem $item1.id in domain-template $template.id")
+        response.message.endsWith("Duplicate key: catalog-item $item1.id in domain-template $template.id")
     }
 
     def "cannot import template with invalid catalog item sub type"() {
