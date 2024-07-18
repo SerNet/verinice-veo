@@ -113,7 +113,9 @@ public enum EntityType {
       Stream.of(values()).collect(Collectors.toMap(EntityType::getType, EntityType::getPluralTerm));
 
   public static Class<? extends Entity> getTypeForPluralTerm(String pluralTerm) {
-    return Optional.ofNullable(TYPE_BY_PLURAL_TERM.get(pluralTerm)).orElseThrow();
+    return Optional.ofNullable(TYPE_BY_PLURAL_TERM.get(pluralTerm))
+        .orElseThrow(
+            () -> new IllegalArgumentException("Unknown entity type '%s'".formatted(pluralTerm)));
   }
 
   public static EntityType getBySingularTerm(String singularTerm) {
