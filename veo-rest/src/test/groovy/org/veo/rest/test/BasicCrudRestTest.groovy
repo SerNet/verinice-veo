@@ -159,7 +159,7 @@ class BasicCrudRestTest extends VeoRestTest {
         when: "creating a new person within a domain"
         def creationResponse = post("/domains/$dsgvoDomainId/persons", [
             name: "test person",
-            owner: [targetUri: "/units/$unitId`"],
+            owner: [targetUri: "/units/$unitId"],
             subType: "PER_Person",
             status: "NEW"
         ])
