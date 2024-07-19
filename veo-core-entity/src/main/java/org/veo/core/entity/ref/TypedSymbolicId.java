@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.UUID;
+
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.SymIdentifiable;
@@ -43,6 +45,14 @@ public class TypedSymbolicId<
       throw new IllegalArgumentException(
           "Missing symbolic ID for %s in %s"
               .formatted(EntityType.getSingularTermByType(type), ownerRef));
+    }
+    // TODO #3027 use UUID type instead of String
+    try {
+      UUID.fromString(symbolicId);
+    } catch (IllegalArgumentException illEx) {
+      throw new IllegalArgumentException(
+          "Invalid UUID '%s' for '%s' in '%s'"
+              .formatted(symbolicId, EntityType.getSingularTermByType(type), ownerRef));
     }
     return new TypedSymbolicId<>(symbolicId, type, (ITypedId<TNamespace>) ownerRef);
   }

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.UUID;
+
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 
@@ -37,6 +39,13 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
     if (id == null) {
       throw new IllegalArgumentException(
           "Missing ID for %s".formatted(EntityType.getSingularTermByType(type)));
+    }
+    // TODO #3027 use UUID type instead of String
+    try {
+      UUID.fromString(id);
+    } catch (IllegalArgumentException illEx) {
+      throw new IllegalArgumentException(
+          "Invalid UUID '%s' for '%s'".formatted(id, EntityType.getSingularTermByType(type)));
     }
     return new TypedId<>(id, type);
   }
