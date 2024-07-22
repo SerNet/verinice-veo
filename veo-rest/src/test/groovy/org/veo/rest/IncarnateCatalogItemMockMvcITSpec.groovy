@@ -28,13 +28,9 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException
 import spock.lang.Ignore
 import spock.lang.Issue
 
+@WithUserDetails("user@domain.example")
 class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
-    def basePath ="units"
-
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info "() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server"
         def result = getIncarnationDescriptions([item1], "MANUAL")
 
@@ -42,10 +38,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 1
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for two items"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server"
         def result = getIncarnationDescriptions([item1, item2], "MANUAL")
 
@@ -53,10 +46,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for a anotner client's unit"() {
-        given: "the created catalogitems"
-
         when: "trying to retrieve incarnation descriptions for other client's unit"
         get("/units/$unitSecondClient.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$item1.symbolicIdAsString", 404)
 
@@ -64,21 +54,15 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         thrown(ClientBoundaryViolationException)
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info of another client's catalog item"() {
-        given: "the created catalog items"
-
         when: "trying to retrieve incarnation descriptions for another client's catalog item"
-        get("/${basePath}/${unit.id.uuidValue()}/domains/$domain3.idAsString/incarnation-descriptions?itemIds=${otherItem.symbolicIdAsString}", 404)
+        get("/units/$unit.idAsString/domains/$domain3.idAsString/incarnation-descriptions?itemIds=${otherItem.symbolicIdAsString}", 404)
 
         then:
         thrown(NotFoundException)
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item3 and post"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server"
         def result = getIncarnationDescriptions([item3], "MANUAL")
 
@@ -92,10 +76,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         postResult.size() == 3
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item4 and post"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server to create a c-3 element"
         def result = getIncarnationDescriptions([item3], "MANUAL")
 
@@ -137,7 +118,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         elementList.contains(processResult.links.link_to_item_2.target.targetUri[0])
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item4, relink and post"() {
         given: "the created catalogitems c-1 c-2 c-3"
         def result = getIncarnationDescriptions([item3], "MANUAL")
@@ -163,10 +143,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.links.link_to_item_2.target.targetUri[0] == elementList[0]
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item5 and post"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server to create a p2 element"
         def result = getIncarnationDescriptions([item5], "MANUAL")
 
@@ -188,7 +165,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item6 and post"() {
         given: "the created catalogitems and the control c1"
         def result = getIncarnationDescriptions([item1], "MANUAL")
@@ -226,7 +202,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item7 and post"() {
         given: "the created catalogitems and the control p1, also the linked controls"
         def incarnationDescriptions = getIncarnationDescriptions([item1, item2], "MANUAL")
@@ -304,10 +279,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.links.externallinktest.target.targetUri[0] == postResult[0].targetUri
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item3 and post in other client's unit"() {
-        given: "the created catalogitems"
-
         when: "retrieving incarnation descriptions for item 3"
         def result = getIncarnationDescriptions([item3], "MANUAL")
 
@@ -315,16 +287,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 3
 
         when: "posting the incarnation descriptions in other client's unit"
-        post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 404)
+        post("/units/$unitSecondClient.idAsString/incarnations",result, 404)
 
         then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for zz1 und zz2 post in one step"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server"
         def result = getIncarnationDescriptions([zz1, zz2], "MANUAL")
 
@@ -386,10 +355,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.first().referencedElement.targetUri == zz2Result._self
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for zz1 und c1 post for an incomplete set"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server"
         def result = getIncarnationDescriptions([zz1, item1], "MANUAL")
 
@@ -397,16 +363,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
 
         when: "post the data"
-        post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 422)
+        post("/units/$unit.idAsString/incarnations",result, 422)
 
         then: "the data is rejected"
         thrown(UnprocessableDataException)
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for processImpactExample and post"() {
-        given: "the created catalogitems"
-
         when: "a request is made to the server to create a processImpactExample element"
         def result = getIncarnationDescriptions([processImpactExample], "MANUAL")
 
@@ -428,7 +391,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for scenarioProbabilityExample and post"() {
         when: "a request is made to the server to create a scenarioProbabilityExample element"
         def result = getIncarnationDescriptions([scenarioProbabilityExample])
@@ -456,10 +418,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for part and composite and post"() {
-        given: "the created catalogitems"
-
         when: "requesting incarnation descriptions for a composite and part"
         def result = getIncarnationDescriptions([itemComposite, itemPart], "MANUAL")
 
@@ -483,10 +442,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         composite.parts[0].targetUri == part._self
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for part and post"() {
-        given: "the created catalogitems"
-
         when: "fetching incarnation descriptions for a part"
         def getResult = getIncarnationDescriptions([itemPart], "MANUAL")
 
@@ -494,7 +450,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         getResult.parameters.size() == 1
 
         when: "we post an incomplete description"
-        post("/${basePath}/${unit.id.uuidValue()}/incarnations",getResult, 422)
+        post("/units/$unit.idAsString/incarnations",getResult, 422)
 
         then: "can not apply"
         def upEx = thrown(UnprocessableDataException)
@@ -590,14 +546,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.size() == 0
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for part linked to existing composite"() {
         when: "we create the composite by removing the part reference"
         def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
         incarnationDescriptions.parameters.first().references.clear()
 
         and: "post"
-        def elementRefs = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+        def elementRefs = parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions, 201))
 
         then: "the composite is created"
         elementRefs.size() == 1
@@ -611,14 +566,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRefs.targetUri.first()
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for part linked to existing composite in manual mode"() {
         when: "we create the composite by removing the part reference"
         def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
         incarnationDescriptions.parameters.first().references.clear()
 
         and: "post"
-        def elementRefs = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+        def elementRefs = parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions, 201))
 
         then: "the composite is created"
         elementRefs.size() == 1
@@ -632,14 +586,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRefs.targetUri.first()
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for composite linked to existing part"() {
         when: "we create the part by removing the composite reference"
         def incarnationDescriptions = getIncarnationDescriptions([itemPart], "MANUAL")
         incarnationDescriptions.parameters.first().references.clear()
 
         and: "post"
-        def elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+        def elementRef = parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions, 201))
 
         then: "the part is created"
         elementRef.size() == 1
@@ -653,13 +606,12 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRef.targetUri.first()
     }
 
-    @WithUserDetails("user@domain.example")
     def "reapply in normal mode"() {
         when: "creating incarnation descriptions for a composite with part"
         def incarnationDescriptions = getIncarnationDescriptions([itemComposite], "DEFAULT", "ALWAYS")
 
         and: "post"
-        def elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+        def elementRef = parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions, 201))
 
         then: "the part is created"
         elementRef.size() == 2
@@ -682,7 +634,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.first().references.size() == 1
 
         when: "incarnating"
-        elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+        elementRef = parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions, 201))
 
         then: "the part is created"
         with(parseJson(get(elementRef[0].targetUri))) {
@@ -704,7 +656,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.size() == 0;
     }
 
-    @WithUserDetails("user@domain.example")
     def "apply item with scope"() {
         when: "applying an item that has a scope reference"
         def memberUri = postIncarnationDescriptions(getIncarnationDescriptions([itemMember]))[0].targetUri
@@ -722,7 +673,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         scopes[0].members[0].targetUri == memberUri
     }
 
-    @WithUserDetails("user@domain.example")
     def "apply processImpactExample"() {
         when: "applying process and control with scenario"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -747,7 +697,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result[0].name == "scenarioProbabilityExample"
     }
 
-    @WithUserDetails("user@domain.example")
     def "apply processImpact without scenario"() {
         when: "incarnating a process"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -775,7 +724,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @Ignore @Issue('verinice-veo#2969')
-    @WithUserDetails("user@domain.example")
     def "apply processImpact serveral control incarnations"() {
         when: "incarnating a process"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -810,7 +758,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         controls.items[2].links.control_relevantAppliedThreat[0].target.name == result[0].name
     }
 
-    @WithUserDetails("user@domain.example")
     def "threat overview"() {
         when: "incarnating a process"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -855,7 +802,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         control.links.control_relevantAppliedThreat[0].target.name == "scenarioProbabilityExample"
     }
 
-    @WithUserDetails("user@domain.example")
     def "threat overview and existing scenario"() {
         when: "applying a process, an unlinked control and a scenario"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -901,7 +847,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         control.links.control_relevantAppliedThreat[0].target.name == scenario.name
     }
 
-    @WithUserDetails("user@domain.example")
     def "threat overview two processes"() {
         when: "incarnating a process"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -989,7 +934,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @Ignore @Issue('verinice-veo#852')
-    @WithUserDetails("user@domain.example")
     def "apply processImpact and existing scenario"() {
         when: "applying a process, an unlinked control and a scenario"
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
@@ -1026,7 +970,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     private postIncarnationDescriptions(incarnationDescriptions) {
-        parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions))
+        parseJson(post("/units/$unit.idAsString/incarnations",incarnationDescriptions))
     }
 
     private validateNewElementAgainstCatalogItem(element, CatalogItem catalogItem, Domain domain) {
