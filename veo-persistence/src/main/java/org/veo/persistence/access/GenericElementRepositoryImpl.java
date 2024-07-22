@@ -142,7 +142,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     var riskAffecteds =
         elements.stream()
             .filter(RiskAffected.class::isInstance)
-            .map(RiskAffected.class::cast)
+            .map(it -> (RiskAffected<?, ?>) it)
             .collect(Collectors.toSet());
     if (!riskAffecteds.isEmpty()) {
       removeCIsAndRIsFrom(riskAffecteds);
@@ -184,13 +184,16 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         .forEach(dataRepository::deleteAll);
   }
 
-  private void removeCIsAndRIsFrom(Set<? extends RiskAffected> riskAffecteds) {
+  private void removeCIsAndRIsFrom(Set<? extends RiskAffected<?, ?>> riskAffecteds) {
     riskAffecteds.forEach(
         ra -> {
           removeRIs(ra);
           removeCIs(ra);
-          ra.getRequirementImplementations().clear();
-          ra.getControlImplementations().clear();
+
+          Set.copyOf(ra.getControlImplementations())
+              .forEach(ci -> ci.getOwner().disassociateControl(ci.getControl()));
+          ra.getRequirementImplementations()
+              .forEach(ri -> ri.getOrigin().removeRequirementImplementation(ri.getControl()));
         });
   }
 
