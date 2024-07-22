@@ -188,7 +188,16 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
   private void remove(ControlImplementationData ci) {
     this.controlImplementations.remove(ci);
-    ((RiskAffectedData<T, R>) ci.getOwner()).removeUnedited(ci.getRequirementImplementations());
+    ((RiskAffectedData<T, R>) ci.getOwner())
+        .removeUnedited(
+            ci.getRequirementImplementations().stream()
+                .filter(
+                    it ->
+                        controlImplementations.stream()
+                            .noneMatch(
+                                remainingCi ->
+                                    remainingCi.getRequirementImplementations().contains(it)))
+                .collect(Collectors.toSet()));
     ci.remove();
   }
 

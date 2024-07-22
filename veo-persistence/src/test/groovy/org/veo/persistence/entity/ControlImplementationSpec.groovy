@@ -159,6 +159,31 @@ class ControlImplementationSpec extends VeoSpec {
         type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
+    def "disassociate controls with a shared RI"() {
+        given:
+        def asset = newAsset(unit)
+        def parentControl1 = newControl(unit) {id = Key.newUuid()}
+        def parentControl2 = newControl(unit) {id = Key.newUuid()}
+        def childControl = newControl(unit) {id = Key.newUuid()}
+
+        asset.implementControl(parentControl1).addRequirement(childControl)
+        asset.implementControl(parentControl2).addRequirement(childControl)
+
+        when:
+        asset.disassociateControl(parentControl1)
+
+        then:
+        asset.controlImplementations*.control ==~ [parentControl2]
+        asset.requirementImplementations*.control ==~ [parentControl2, childControl]
+
+        when:
+        asset.disassociateControl(parentControl2)
+
+        then:
+        asset.controlImplementations.empty
+        asset.requirementImplementations.empty
+    }
+
     def "existing implemented requirements are recognized for a #type"() {
         given: "a #type implementing control A.1.1"
         def elmt = makeType(type)
