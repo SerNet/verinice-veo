@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
@@ -59,19 +58,6 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
     return catalogItemDataRepository
         .findAllByIdsFetchTailoringReferences(idStrings, domain)
         .stream()
-        .map(CatalogItem.class::cast)
-        .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(
-      Set<Key<UUID>> symIds, Client client) {
-    var idStrings = symIds.stream().map(Key::uuidValue).toList();
-    return StreamSupport.stream(
-            catalogItemDataRepository
-                .findAllByIdsFetchDomainAndTailoringReferences(idStrings, client)
-                .spliterator(),
-            false)
         .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());
   }

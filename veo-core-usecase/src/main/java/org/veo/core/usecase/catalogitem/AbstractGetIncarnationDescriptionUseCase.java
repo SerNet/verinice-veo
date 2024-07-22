@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.IncarnationConfiguration;
@@ -35,7 +35,6 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.exception.RuntimeModelException;
-import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
 public class AbstractGetIncarnationDescriptionUseCase<
@@ -94,20 +93,15 @@ public class AbstractGetIncarnationDescriptionUseCase<
   }
 
   protected IncarnationConfiguration createConfig(
-      List<CatalogItem> requestedItems,
       IncarnationRequestModeType requestType,
       IncarnationLookup useExistingIncarnations,
       Set<TailoringReferenceType> exclude,
-      Set<TailoringReferenceType> include) {
-    var domains = requestedItems.stream().map(TemplateItem::getDomainBase).distinct().toList();
-    if (domains.size() > 1) {
-      throw new UnprocessableDataException(
-          "Cannot incarnate items from different domains in a single request");
-    }
+      Set<TailoringReferenceType> include,
+      DomainBase domain) {
     // Include and exclude lists are so closely related that it makes no sense to override them
     // individually.
     var overrideTailoringRefs = include != null || exclude != null;
-    var defaultConfig = domains.getFirst().getIncarnationConfiguration();
+    var defaultConfig = domain.getIncarnationConfiguration();
     return new IncarnationConfiguration(
         Optional.ofNullable(requestType).orElse(defaultConfig.mode()),
         Optional.ofNullable(useExistingIncarnations)

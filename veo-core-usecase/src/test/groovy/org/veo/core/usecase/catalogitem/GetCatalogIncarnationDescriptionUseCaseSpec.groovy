@@ -36,8 +36,8 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
     def setup() {
         genericElementRepository.query(existingClient) >> emptyQuery
 
-        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.symbolicId] as Set, existingClient) >> [item1]
-        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(_, existingClient) >> []
+        catalogItemRepository.findAllByIdsFetchTailoringReferences([item1.symbolicId], existingDomain) >> [item1]
+        catalogItemRepository.findAllByIdsFetchTailoringReferences(_, existingDomain) >> []
     }
 
     def "get the apply information for a catalog-item without tailorref"() {

@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import javax.annotation.Nullable;
-
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -77,20 +75,18 @@ public class GetCatalogIncarnationDescriptionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    log.info("unid: {}, items: {}", input.unitId, input.catalogItemIds);
+    log.info(
+        "Creating incarnation descriptions for items {} from domain {} in unit: {}",
+        input.catalogItemIds,
+        input.domainId,
+        input.unitId);
     Unit unit = unitRepository.getByIdFetchClient(input.unitId);
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
-
-    var domain =
-        Optional.ofNullable(input.domainId)
-            .map(
-                domainId ->
-                    domainRepository.getActiveById(domainId, input.authenticatedClient.getId()))
-            .orElse(null);
-    var requestedItems = loadCatalogItems(input.catalogItemIds, domain, input.authenticatedClient);
+    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var requestedItems = loadCatalogItems(input.catalogItemIds, domain);
     var config =
-        createConfig(requestedItems, input.requestType, input.lookup, input.exclude, input.include);
+        createConfig(input.requestType, input.lookup, input.exclude, input.include, domain);
     var tailoringReferenceFilter = config.createTailoringReferenceFilter();
     var itemsToElements =
         collectAllItems(
@@ -125,19 +121,9 @@ public class GetCatalogIncarnationDescriptionUseCase
     return new OutputData(incarnationDescriptions, unit);
   }
 
-  private List<CatalogItem> loadCatalogItems(
-      List<Key<UUID>> catalogItemIds, @Nullable Domain domain, Client client) {
-    // TODO #2831 always use proper domain ref
-    var domainRef =
-        Optional.ofNullable(domain).map(TypedId::from).orElse(TypedId.from("", Domain.class));
+  private List<CatalogItem> loadCatalogItems(List<Key<UUID>> catalogItemIds, Domain domain) {
     var catalogItemsById =
-        Optional.ofNullable(domain)
-            .map(d -> catalogItemRepository.findAllByIdsFetchTailoringReferences(catalogItemIds, d))
-            .orElseGet(
-                () ->
-                    catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(
-                        new HashSet<>(catalogItemIds), client))
-            .stream()
+        catalogItemRepository.findAllByIdsFetchTailoringReferences(catalogItemIds, domain).stream()
             .collect(Collectors.toMap(CatalogItem::getSymbolicId, Function.identity()));
     return catalogItemIds.stream()
         .map(
@@ -145,7 +131,7 @@ public class GetCatalogIncarnationDescriptionUseCase
               var catalogItem = catalogItemsById.get(id);
               if (catalogItem == null) {
                 throw new NotFoundException(
-                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, domainRef));
+                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, TypedId.from(domain)));
               }
               return catalogItem;
             })
@@ -268,8 +254,7 @@ public class GetCatalogIncarnationDescriptionUseCase
   public record InputData(
       Client authenticatedClient,
       @NotNull Key<UUID> unitId,
-      // TODO #2831 always use, make @NotNull
-      Key<UUID> domainId,
+      @NotNull Key<UUID> domainId,
       @NotNull List<Key<UUID>> catalogItemIds,
       IncarnationRequestModeType requestType,
       IncarnationLookup lookup,

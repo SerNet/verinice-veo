@@ -61,19 +61,6 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
               left join fetch ci.domainTemplate
               left join fetch ci.tailoringReferences tr
               left join fetch tr.target
-              where ci.symbolicDbId in ?1 and ci.domain.owner = ?2
-          """)
-  @Deprecated
-  Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(
-      Iterable<String> ids, Client client);
-
-  @Query(
-      """
-            select ci from #{#entityName} ci
-              left join fetch ci.domain
-              left join fetch ci.domainTemplate
-              left join fetch ci.tailoringReferences tr
-              left join fetch tr.target
               where ci.symbolicDbId in ?1 and ci.domain = ?2
           """)
   Set<CatalogItemData> findAllByIdsFetchTailoringReferences(Iterable<String> symIds, Domain domain);

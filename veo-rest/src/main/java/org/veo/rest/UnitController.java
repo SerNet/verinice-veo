@@ -138,51 +138,6 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final UnitImportUseCase unitImportUseCase;
 
-  // TODO #2831 remove
-  @GetMapping(value = "/{unitId}/incarnations")
-  @Operation(
-      summary =
-          "Get the information to incarnate a set of catalogItems in a unit. DEPRECATED - use GET /units/{unitId}/domains/{domainId}/incarnation-descriptions instead.",
-      tags = "modeling",
-      deprecated = true)
-  @ApiResponse(
-      responseCode = "200",
-      description = "incarnation description provided",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = IncarnateDescriptionsDto.class)))
-  @ApiResponse(responseCode = "404", description = "incarnation description not found")
-  public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>> getIncarnations(
-      @Parameter(hidden = true) Authentication auth,
-      @Parameter(description = "The target unit for the catalog items.") @PathVariable
-          String unitId,
-      @Parameter(description = "The list of catalog items to create in the unit.") @RequestParam()
-          List<String> itemIds,
-      @Parameter(
-              description =
-                  "The request mode allows to control the included items in the incarnation description.")
-          @RequestParam(name = "mode", required = false)
-          IncarnationRequestModeType requestMode,
-      @Parameter(
-              description =
-                  "Specify when existing incarnations in the unit should be used instead of creating a new incarnation")
-          @RequestParam(required = false)
-          IncarnationLookup useExistingIncarnations,
-      @Parameter(
-              description =
-                  "The request mode allows to control the included references in the incarnation description.")
-          @RequestParam(name = "include", required = false)
-          Set<TailoringReferenceType> include,
-      @Parameter(
-              description =
-                  "The request mode allows to control the excluded references in the incarnation description.")
-          @RequestParam(name = "exclude", required = false)
-          Set<TailoringReferenceType> exclude) {
-    return getIncarnationDescriptions(
-        auth, unitId, null, itemIds, requestMode, useExistingIncarnations, include, exclude);
-  }
-
   @GetMapping(value = "/{unitId}/domains/{domainId}/incarnation-descriptions")
   @Operation(
       summary = "Get the information to incarnate a set of catalogItems in a unit.",
