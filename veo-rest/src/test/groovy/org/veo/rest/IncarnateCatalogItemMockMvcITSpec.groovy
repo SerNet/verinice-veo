@@ -46,7 +46,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
     }
 
-    def "retrieve the apply info for a anotner client's unit"() {
+    def "retrieve the apply info for a another client's unit"() {
         when: "trying to retrieve incarnation descriptions for other client's unit"
         get("/units/$unitSecondClient.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$item1.symbolicIdAsString", 404)
 
