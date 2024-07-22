@@ -58,7 +58,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "trying to retrieve incarnation descriptions for other client's unit"
-        get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.symbolicIdAsString}", 404)
+        get("/units/$unitSecondClient.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$item1.symbolicIdAsString", 404)
 
         then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
@@ -143,7 +143,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def result = getIncarnationDescriptions([item3], "MANUAL")
         def postResult = postIncarnationDescriptions(result)
         def elementList = postResult.collect{it.targetUri}
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${item4.symbolicIdAsString}&mode=MANUAL"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$item4.symbolicIdAsString&mode=MANUAL"))
 
         when: "post the data to create item4 with the altered links set to c-3"
         result.parameters[0].references[0].referencedElement.targetUri = elementList[0]
@@ -359,7 +359,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
 
         when: "we get zz1 in resolve all mode"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.symbolicIdAsString}"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$zz1.symbolicIdAsString"))
 
         then: "only zz1 is included and the reference ist set to the corresponding element in the unit."
         result.parameters.size() == 1
@@ -367,19 +367,19 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references[0].referencedElement.id == zz2Result.id
 
         when: "we get zz1 in resolve all mode but exclude links"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.symbolicIdAsString}&exclude=LINK"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$zz1.symbolicIdAsString&exclude=LINK"))
 
         then: "only zz1 is included"
         result.parameters.size() == 1
 
         when: "we get zz1 in resolve all mode but only include parts"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.symbolicIdAsString}&include=PART"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$zz1.symbolicIdAsString&include=PART"))
 
         then: "only zz1 is included"
         result.parameters.size() == 1
 
         when: "we get zz1 in resolve manual mode"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${zz1.symbolicIdAsString}&mode=MANUAL"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$zz1.symbolicIdAsString&mode=MANUAL"))
 
         then: "only zz1 is included and the reference ist set to the corresponding element in the unit."
         result.parameters.size() == 1
@@ -534,7 +534,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         newComposite.parts[0].targetUri == composite._self
 
         when: "we get itemPart in resolve all mode"
-        def result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}"))
+        def result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemPart.symbolicIdAsString"))
 
         then: "only the part is included with a reference to the existing composite element"
         result.parameters.size() == 1
@@ -542,7 +542,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemComposite/
 
         when: "we get itemPart in resolve all mode but exclude links"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}&exclude=LINK"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemPart.symbolicIdAsString&exclude=LINK"))
 
         then: "only the part is included with a reference to the existing composite element"
         result.parameters.size() == 1
@@ -550,7 +550,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemComposite/
 
         when: "we get itemPart in resolve all mode but exclude composite"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}&exclude=COMPOSITE"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemPart.symbolicIdAsString&exclude=COMPOSITE"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
@@ -558,7 +558,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.size() == 0
 
         when: "we get itemPart in manual mode but exclude composite"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemPart.symbolicIdAsString}&exclude=COMPOSITE&mode=MANUAL"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemPart.symbolicIdAsString&exclude=COMPOSITE&mode=MANUAL"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
@@ -566,7 +566,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.size() == 0
 
         when: "we get itemComposite in resolve all mode but exclude links"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.symbolicIdAsString}&exclude=LINK"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemComposite.symbolicIdAsString&exclude=LINK"))
 
         then: "only the composite is included with a reference to the existing part element"
         result.parameters.size() == 1
@@ -574,7 +574,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references[0].referencedElement.displayName ==~ /CTL-\d+ itemPart/
 
         when: "we get itemComposite in resolve all mode but exclude PART"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.symbolicIdAsString}&exclude=PART"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemComposite.symbolicIdAsString&exclude=PART"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
@@ -582,7 +582,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.size() == 0
 
         when: "we get itemComposite in manual mode but exclude PART"
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${itemComposite.symbolicIdAsString}&exclude=PART&mode=MANUAL"))
+        result = parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$itemComposite.symbolicIdAsString&exclude=PART&mode=MANUAL"))
 
         then: "one is included without reference"
         result.parameters.size() == 1
@@ -754,7 +754,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         and:"create the control without scenario"
         def result = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
                 )
 
         def controlUri = result[0].targetUri
@@ -783,7 +783,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         and:"create the control without scenario"
         3.times {
             postIncarnationDescriptions(
-                    parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                    parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
                     )
         }
 
@@ -817,7 +817,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         and:"create the control without scenario"
         def result = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
                 )
 
         def controlUri = result[0].targetUri
@@ -861,10 +861,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
 
         def controlUri = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
                 )[0].targetUri
         def scenarioUri = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${scenarioProbabilityExample.symbolicIdAsString}&exclude=LINK_EXTERNAL"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$scenarioProbabilityExample.symbolicIdAsString&exclude=LINK_EXTERNAL"))
                 )[0].targetUri
 
         and: "fetching the elements"
@@ -908,7 +908,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         and:"create the control without scenario"
         def result = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample1.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample1.symbolicIdAsString&exclude=LINK"))
                 )
 
         def controlUri1 = result[0].targetUri
@@ -950,7 +950,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         and: "another control linked with another scenario"
         def controlUri2 = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample2.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample2.symbolicIdAsString&exclude=LINK"))
                 )[0].targetUri
 
         and: "we add a controlImplementation to the process"
@@ -995,10 +995,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def processUri = postIncarnationDescriptions(getIncarnationDescriptions([processImpactExample]))[0].targetUri
 
         def result = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${controlImpactExample.symbolicIdAsString}&exclude=LINK"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
                 )
         def scenarioUri = postIncarnationDescriptions(
-                parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${scenarioProbabilityExample.symbolicIdAsString}&exclude=LINK_EXTERNAL"))
+                parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$scenarioProbabilityExample.symbolicIdAsString&exclude=LINK_EXTERNAL"))
                 )[0].targetUri
 
         and: "fetching the control"
@@ -1022,7 +1022,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     private getIncarnationDescriptions(Collection<CatalogItem> items, String mode = "DEFAULT",  String useExistingIncarnations="FOR_REFERENCED_ITEMS") {
-        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.symbolicIdAsString}.join(',')}&mode=$mode&useExistingIncarnations=$useExistingIncarnations"))
+        parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=${items.collect{it.symbolicIdAsString}.join(',')}&mode=$mode&useExistingIncarnations=$useExistingIncarnations"))
     }
 
     private postIncarnationDescriptions(incarnationDescriptions) {

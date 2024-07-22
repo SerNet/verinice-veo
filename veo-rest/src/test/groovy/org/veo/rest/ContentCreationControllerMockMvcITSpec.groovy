@@ -546,7 +546,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
-        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsId}"))
+        def incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsId"))
         def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         then: "all linked elements are created"
@@ -562,7 +562,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
-        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
+        incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsIds"))
         elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
@@ -607,7 +607,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.symbolicIdAsString}.join(',')
-        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL"))
+        incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$scenarioItemIds&mode=MANUAL"))
         def references = incarnationDescription.parameters.references.first()
 
         then:
@@ -648,7 +648,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newScenario1.composites[0] == modifiedScenario
 
         when: "we only include PART"
-        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL&include=PART"))
+        incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$scenarioItemIds&mode=MANUAL&include=PART"))
         references = incarnationDescription.parameters.references.first()
 
         then: "only PART is returned"
@@ -657,7 +657,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         references.referenceType == ["PART"]
 
         when: "we exclude PART"
-        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL&exclude=PART"))
+        incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$scenarioItemIds&mode=MANUAL&exclude=PART"))
         references = incarnationDescription.parameters.references.first()
 
         then: "only COMPOSITE is returned"
@@ -931,7 +931,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
         def catalogItemsId = catalogItems.find{it.name == "Control-2" }.symbolicIdAsString
 
-        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsId}"))
+        def incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsId"))
         post("/units/${unitId}/incarnations", incarnationDescription)
 
         and: "we link the process with the asset"
@@ -1361,7 +1361,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
-        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
+        def incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsIds"))
         def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
         assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
         scenarioId = elementList.find {it.targetUri.contains('scenarios')}.targetUri.split('/' ).last()

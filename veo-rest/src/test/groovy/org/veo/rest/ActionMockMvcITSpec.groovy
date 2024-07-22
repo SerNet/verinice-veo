@@ -175,7 +175,7 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
                 .items
                 .find { it -> it.name == itemName }
                 .id
-        def descs = parseJson(get("/units/$unitId/incarnations?itemIds=$id&exclude=${exclude.join(",")}"))
+        def descs = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$id&exclude=${exclude.join(",")}"))
         return parseJson(post("/units/$unitId/incarnations", descs)).first().id
     }
 }

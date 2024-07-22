@@ -368,7 +368,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "endpoint documentation is correct for GetIncarnationDescriptionUseCase"() {
         when: "retrieving the information about the endpoint"
-        def endPointInfo = parsedApiDocs.paths["/units/{unitId}/incarnations"]
+        def endPointInfo = parsedApiDocs.paths["/units/{unitId}/domains/{domainId}/incarnation-descriptions"]
 
         then: "the information is found"
         endPointInfo != null
@@ -377,7 +377,7 @@ class SwaggerSpec extends VeoSpringSpec {
         endPointInfo.get != null
 
         and: 'it contains information about the query parameters'
-        with(endPointInfo.get.parameters[1]) {
+        with(endPointInfo.get.parameters[2]) {
             name == 'itemIds'
             it.in == 'query'
             required == true
