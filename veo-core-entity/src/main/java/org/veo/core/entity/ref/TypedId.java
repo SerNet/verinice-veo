@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.veo.core.entity.EntityType;
@@ -56,16 +57,18 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
 
   @Override
   public boolean equals(Object other) {
-    return ITypedId.equals(this, other);
+    return other instanceof ITypedId<?> b
+        && getId().equals(b.getId())
+        && getType().equals(b.getType());
   }
 
   @Override
   public int hashCode() {
-    return ITypedId.hashCode(this);
+    return Objects.hash(getId(), getType());
   }
 
   @Override
   public String toString() {
-    return ITypedId.toString(this);
+    return "%s %s".formatted(EntityType.getSingularTermByType(getType()), getId());
   }
 }

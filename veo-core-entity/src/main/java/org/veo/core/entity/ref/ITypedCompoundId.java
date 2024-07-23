@@ -17,12 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.CompoundIdentifiable;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 
 public interface ITypedCompoundId<
@@ -54,25 +51,5 @@ public interface ITypedCompoundId<
   @JsonIgnore
   default ITypedId<TSecond> getSecondRef() {
     return TypedId.from(getSecondId(), getSecondType());
-  }
-
-  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
-  static <T extends Identifiable> boolean equals(ITypedCompoundId<?, ?, ?> a, Object other) {
-    return other instanceof ITypedCompoundId b
-        && a.getFirstRef().equals(b.getFirstRef())
-        && a.getSecondRef().equals(b.getSecondRef())
-        && a.getType().equals(b.getType());
-  }
-
-  static <T extends Identifiable> int hashCode(ITypedCompoundId<?, ?, ?> typedId) {
-    return Objects.hash(typedId.getFirstRef(), typedId.getSecondRef(), typedId.getType());
-  }
-
-  static String toString(ITypedCompoundId<?, ?, ?> typedId) {
-    return "%s for %s & %s"
-        .formatted(
-            EntityType.getSingularTermByType(typedId.getType()),
-            typedId.getFirstRef(),
-            typedId.getSecondRef());
   }
 }

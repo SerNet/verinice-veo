@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.SymIdentifiable;
@@ -47,31 +45,5 @@ public interface ITypedSymbolicId<
   @JsonIgnore
   default ITypedId<TNamespace> getNamespaceRef() {
     return TypedId.from(getNamespaceId(), getNamespaceType());
-  }
-
-  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
-  static boolean equals(ITypedSymbolicId<?, ?> a, Object other) {
-    return other instanceof ITypedSymbolicId b
-        && a.getSymbolicId().equals(b.getSymbolicId())
-        && a.getType().equals(b.getType())
-        && a.getNamespaceId().equals(b.getNamespaceId())
-        && a.getNamespaceType().equals(b.getNamespaceType());
-  }
-
-  static int hashCode(ITypedSymbolicId<?, ?> typedId) {
-    return Objects.hash(
-        typedId.getSymbolicId(),
-        typedId.getType(),
-        typedId.getNamespaceId(),
-        typedId.getNamespaceType());
-  }
-
-  static String toString(ITypedSymbolicId<?, ?> typedSymbolicId) {
-    return "%s %s in %s %s"
-        .formatted(
-            EntityType.getSingularTermByType(typedSymbolicId.getType()),
-            typedSymbolicId.getSymbolicId(),
-            EntityType.getSingularTermByType(typedSymbolicId.getNamespaceType()),
-            typedSymbolicId.getNamespaceId());
   }
 }

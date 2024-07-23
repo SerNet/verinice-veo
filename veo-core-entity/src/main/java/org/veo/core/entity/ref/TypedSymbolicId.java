@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.veo.core.entity.EntityType;
@@ -77,16 +78,25 @@ public class TypedSymbolicId<
 
   @Override
   public boolean equals(Object other) {
-    return ITypedSymbolicId.equals(this, other);
+    return other instanceof ITypedSymbolicId<?, ?> b
+        && getSymbolicId().equals(b.getSymbolicId())
+        && getType().equals(b.getType())
+        && getNamespaceId().equals(b.getNamespaceId())
+        && getNamespaceType().equals(b.getNamespaceType());
   }
 
   @Override
   public int hashCode() {
-    return ITypedSymbolicId.hashCode(this);
+    return Objects.hash(getSymbolicId(), getType(), getNamespaceId(), getNamespaceType());
   }
 
   @Override
   public String toString() {
-    return ITypedSymbolicId.toString(this);
+    return "%s %s in %s %s"
+        .formatted(
+            EntityType.getSingularTermByType(getType()),
+            getSymbolicId(),
+            EntityType.getSingularTermByType(getNamespaceType()),
+            getNamespaceId());
   }
 }

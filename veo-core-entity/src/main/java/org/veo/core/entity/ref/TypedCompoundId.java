@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.Objects;
+
 import org.veo.core.entity.CompoundIdentifiable;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 
 import lombok.AccessLevel;
@@ -81,16 +84,20 @@ public class TypedCompoundId<
 
   @Override
   public boolean equals(Object other) {
-    return ITypedCompoundId.equals(this, other);
+    return other instanceof ITypedCompoundId<?, ?, ?> b
+        && getFirstRef().equals(b.getFirstRef())
+        && getSecondRef().equals(b.getSecondRef())
+        && getType().equals(b.getType());
   }
 
   @Override
   public int hashCode() {
-    return ITypedCompoundId.hashCode(this);
+    return Objects.hash(getFirstRef(), getSecondRef(), getType());
   }
 
   @Override
   public String toString() {
-    return ITypedCompoundId.toString(this);
+    return "%s for %s & %s"
+        .formatted(EntityType.getSingularTermByType(getType()), getFirstRef(), getSecondRef());
   }
 }

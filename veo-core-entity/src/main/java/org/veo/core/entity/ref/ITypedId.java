@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
@@ -35,20 +33,5 @@ public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
   default Key<UUID> toKey() {
     return Key.uuidFrom(getId());
-  }
-
-  @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
-  static <T extends Identifiable> boolean equals(ITypedId<?> a, Object other) {
-    return other instanceof ITypedId b
-        && a.getId().equals(b.getId())
-        && a.getType().equals(b.getType());
-  }
-
-  static <T extends Identifiable> int hashCode(ITypedId<?> typedId) {
-    return Objects.hash(typedId.getId(), typedId.getType());
-  }
-
-  static String toString(ITypedId<?> typedId) {
-    return "%s %s".formatted(EntityType.getSingularTermByType(typedId.getType()), typedId.getId());
   }
 }
