@@ -985,7 +985,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       if (requestAttributes instanceof ServletRequestAttributes sra) {
         return ServletUriComponentsBuilder.fromContextPath(sra.getRequest());
       } else {
-        throw new IllegalArgumentException("No current ServletRequestAttributes");
+        throw new IllegalStateException("No current ServletRequestAttributes");
       }
     } else {
       return UriComponentsBuilder.fromPath("/");
