@@ -25,8 +25,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.CompoundIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -102,7 +100,6 @@ public class ScopeRiskDto extends AbstractRiskDto {
   }
 
   @Override
-  @JsonIgnore
   public ITypedId<Scope> getOwnerRef() {
     return scope;
   }

@@ -139,6 +139,14 @@ class SwaggerSpec extends VeoSpringSpec {
         ]
     }
 
+    def "abstract risk is mapped correctly"() {
+        given:
+        def riskSchema = parsedApiDocs.components.schemas.AbstractRiskDto
+
+        expect:
+        riskSchema.properties.ownerRef == null
+    }
+
     def "control risk values are mapped correctly"() {
         given:
         def schemas = parsedApiDocs.components.schemas

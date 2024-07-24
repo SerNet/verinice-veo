@@ -173,6 +173,10 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   @Override
   @JsonIgnore
+  public abstract ITypedId getOwnerRef();
+
+  @Override
+  @JsonIgnore
   public ITypedId<Scenario> getScenarioRef() {
     return scenario;
   }
