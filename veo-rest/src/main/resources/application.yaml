@@ -56,7 +56,6 @@ spring:
   jndi:
     ignore: true
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     ## Turn OSIV off - only the business layer decides the fetching strategy for a particular use case:
