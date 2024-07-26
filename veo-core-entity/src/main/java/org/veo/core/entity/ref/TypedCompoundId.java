@@ -97,7 +97,10 @@ public class TypedCompoundId<
 
   @Override
   public String toString() {
-    return "%s for %s & %s"
-        .formatted(EntityType.getSingularTermByType(getType()), getFirstRef(), getSecondRef());
+    return EntityType.getSingularTermByType(getType())
+        + " for "
+        + getFirstRef()
+        + " & "
+        + getSecondRef();
   }
 }

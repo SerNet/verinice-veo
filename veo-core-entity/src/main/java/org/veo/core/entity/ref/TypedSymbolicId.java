@@ -92,11 +92,12 @@ public class TypedSymbolicId<
 
   @Override
   public String toString() {
-    return "%s %s in %s %s"
-        .formatted(
-            EntityType.getSingularTermByType(getType()),
-            getSymbolicId(),
-            EntityType.getSingularTermByType(getNamespaceType()),
-            getNamespaceId());
+    return EntityType.getSingularTermByType(getType())
+        + " "
+        + getSymbolicId()
+        + " in "
+        + EntityType.getSingularTermByType(getNamespaceType())
+        + " "
+        + getNamespaceId();
   }
 }

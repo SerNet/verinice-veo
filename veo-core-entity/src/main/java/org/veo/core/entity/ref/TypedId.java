@@ -69,6 +69,6 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
 
   @Override
   public String toString() {
-    return "%s %s".formatted(EntityType.getSingularTermByType(getType()), getId());
+    return EntityType.getSingularTermByType(getType()) + " " + getId();
   }
 }
