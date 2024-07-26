@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
@@ -62,6 +63,7 @@ import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
@@ -83,6 +85,7 @@ public class ElementInDomainService {
   private final DomainRepository domainRepository;
   private final EntitySchemaService entitySchemaService;
   private final GetAvailableActionsUseCase getAvailableActionsUseCase;
+  private final GetControlImplementationsUseCase getControlImplementationsByControlUseCase;
   private final PerformActionUseCase performActionUseCase;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
@@ -290,5 +293,23 @@ public class ElementInDomainService {
             actionId,
             clientLookup.getClient(auth).getId()),
         o -> ResponseEntity.ok(entityToDtoTransformer.transformActionResult2Dto(o.result())));
+  }
+
+  public <TElement extends Element>
+      Future<PageDto<ControlImplementationDto>> getControlImplementations(
+          String domainId, GetControlImplementationsUseCase.InputData input) {
+    return useCaseInteractor.execute(
+        getControlImplementationsByControlUseCase,
+        input,
+        output ->
+            PagingMapper.toPage(
+                output.page(),
+                e ->
+                    entityToDtoTransformer.mapControlImplementation(
+                        e,
+                        e.getOwner().getDomains().stream()
+                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .findFirst()
+                            .orElseThrow())));
   }
 }

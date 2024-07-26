@@ -24,4 +24,6 @@ import org.veo.core.entity.compliance.ControlImplementation;
 
 public interface ControlImplementationQuery extends Query<ControlImplementation> {
   void whereControlIdIn(Key<UUID> controlId);
+
+  void whereRiskAffectedIs(UUID riskAffectedId);
 }

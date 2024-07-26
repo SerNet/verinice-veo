@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ControlImplementationQuery
 import org.veo.core.repository.PagingConfiguration
@@ -31,6 +30,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository
+import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.access.query.ControlImplementationQueryImpl
@@ -50,10 +50,13 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
     AssetDataRepository assetDataRepository
     @Autowired
     ScopeDataRepository scopeDataRepository
+    @Autowired
+    PersonDataRepository personDataRepository
 
     ClientData client
     Domain domain
     Unit unit
+    Asset asset
 
     ControlImplementationQuery query
 
@@ -71,23 +74,41 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
                 })
         control1.associateWithDomain(domain, "control", "NEW")
 
-        assetDataRepository.save(newAsset(unit).tap {
-            implementControl(control1);
+        def person1 = personDataRepository.save(newPerson(unit).tap {
+            name = 'Jane Doe'
+        })
+        def person2 = personDataRepository.save(newPerson(unit).tap {
+            name = 'John Doe'
+        })
+        def person3 = personDataRepository.save(newPerson(unit).tap {
+            name = 'Mary Doe'
+        })
+
+        asset = assetDataRepository.save(newAsset(unit).tap {
+            implementControl(control1).tap {
+                responsible = person1
+            }
             abbreviation = "ABB1"
             associateWithDomain(domain, "asset", "NEW")
         })
+
         scopeDataRepository.save(newScope(unit).tap {
-            implementControl(control1)
+            implementControl(control1).tap {
+                responsible = person1
+            }
             abbreviation = "ABB3"
             associateWithDomain(domain, "scope", "NEW")
         })
         scopeDataRepository.save(newScope(unit).tap {
             implementControl(control1)
+                    .tap {
+                        responsible = person3
+                    }
             abbreviation = "ABB2"
             associateWithDomain(domain, "scope", "NEW")
         })
 
-        query = new ControlImplementationQueryImpl(controlImplementationRepository, client, domain.getId());
+        query = new ControlImplementationQueryImpl(controlImplementationRepository, client, domain.getId())
     }
 
     def 'sort CIs by Risk Affected abbreviation'() {
@@ -97,5 +118,24 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
         then:
         result.totalResults == 3
         result.resultPage*.owner*.abbreviation == ["ABB3", "ABB2", "ABB1"]
+    }
+
+    def 'filter CIs by risk-affected'() {
+        when:
+        query.whereRiskAffectedIs(asset.idAsUUID)
+        def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "control.name", SortOrder.ASCENDING))
+
+        then:
+        result.totalResults == 1
+        result.resultPage*.owner*.abbreviation == ["ABB1"]
+    }
+
+    def 'sort CIs by responsible name'() {
+        when:
+        def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "responsible.name", SortOrder.ASCENDING))
+
+        then:
+        result.totalResults == 3
+        result.resultPage*.owner*.abbreviation == ["ABB1", "ABB3", "ABB2"]
     }
 }

@@ -77,6 +77,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
@@ -89,10 +90,13 @@ import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
+import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -410,5 +414,53 @@ public class ScopeInDomainController implements ElementInDomainResource {
           String uuid,
       @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
     return elementService.performAction(domainId, uuid, Scope.class, actionId, auth);
+  }
+
+  @Operation(summary = "Loads control implementations for a scope")
+  @GetMapping(UUID_PARAM_SPEC + "/control-implementations")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Control implementations loaded",
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+  @ApiResponse(responseCode = "404", description = "Scope not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public Future<PageDto<ControlImplementationDto>> getControlImplementations(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = "controlAbbreviation")
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return elementService.getControlImplementations(
+        domainId,
+        new GetControlImplementationsUseCase.InputData(
+            clientLookup.getClient(auth),
+            null,
+            Key.uuidFrom(domainId),
+            TypedId.from(uuid, Scope.class),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 }

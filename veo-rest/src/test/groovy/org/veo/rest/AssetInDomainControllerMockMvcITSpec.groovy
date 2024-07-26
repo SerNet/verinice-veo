@@ -23,16 +23,27 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.AssetRepository
+import org.veo.core.repository.ControlRepository
+import org.veo.core.repository.DomainRepository
+import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+
     @Autowired
     private AssetRepository assetRepository
+    @Autowired
+    private ControlRepository controlRepository
+    @Autowired
+    private DomainRepository domainRepository
+    @Autowired
+    private PersonRepository personRepository
 
     private String unitId
     private String testDomainId
@@ -267,6 +278,105 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "asset $randomAssetId not found"
+    }
+
+    def "retrieve control implementations for an asset"() {
+        given:
+        def unit = unitRepository.getByIdFetchClient(Key.uuidFrom(unitId))
+        def testDomain = domainRepository.getById(Key.uuidFrom(testDomainId))
+        def targetAsset = txTemplate.execute {
+            def person1 = personRepository.save(newPerson(unit) {
+                name = "Jane Doe"
+            })
+            def person2 = personRepository.save(newPerson(unit) {
+                name = "John Doe"
+            })
+            def control1 = controlRepository.save(newControl(unit) {
+                associateWithDomain(testDomain, 'remote-control', 'new')
+                name = "Control 1"
+                abbreviation = "c1"
+            })
+            def control2 = controlRepository.save(newControl(unit) {
+                associateWithDomain(testDomain, 'banana', 'old')
+                name = "Control 2"
+                abbreviation = "c2"
+            })
+            assetRepository.save(newAsset(unit).tap {
+                associateWithDomain(testDomain, 'server', 'very good')
+                implementControl(control1).tap {
+                    setResponsible(person1)
+                    setDescription("Implement the first control")
+                }
+                implementControl(control2).tap {
+                    setResponsible(person2)
+                    setDescription("Implement the second control")
+                }
+            })
+        }
+
+        expect:
+        with(parseJson(get("/domains/$testDomainId/assets/${targetAsset.idAsString}/control-implementations"))) {
+            totalItemCount == 2
+            items*.description == [
+                'Implement the first control',
+                'Implement the second control'
+            ]
+        }
+        with(parseJson(get("/domains/$testDomainId/assets/${targetAsset.idAsString}/control-implementations?sortBy=controlAbbreviation&sortOrder=desc"))) {
+            totalItemCount == 2
+            items*.description == [
+                'Implement the second control',
+                'Implement the first control'
+            ]
+        }
+        with(parseJson(get("/domains/$testDomainId/assets/${targetAsset.idAsString}/control-implementations?sortBy=controlName&sortOrder=desc"))) {
+            totalItemCount == 2
+            items*.description == [
+                'Implement the second control',
+                'Implement the first control'
+            ]
+        }
+        with(parseJson(get("/domains/$testDomainId/assets/${targetAsset.idAsString}/control-implementations?sortBy=description"))) {
+            totalItemCount == 2
+            items*.description == [
+                'Implement the first control',
+                'Implement the second control'
+            ]
+        }
+        with(parseJson(get("/domains/$testDomainId/assets/${targetAsset.idAsString}/control-implementations?sortBy=responsibleName"))) {
+            totalItemCount == 2
+            items*.description == [
+                'Implement the first control',
+                'Implement the second control'
+            ]
+        }
+    }
+
+    def "retrieving control implementations for a missing asset returns 404"() {
+        given:
+        def randomAssetId = randomUUID()
+
+        when:
+        get("/domains/$testDomainId/assets/$randomAssetId/control-implementations", 404)
+
+        then:
+        def nfEx = thrown(NotFoundException)
+        nfEx.message == "asset $randomAssetId not found"
+    }
+
+    def "retrieving control implementations for an asset without the domain associated returns 404"() {
+        given:
+        def unit = unitRepository.getByIdFetchClient(Key.uuidFrom(unitId))
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit))
+        }
+
+        when:
+        get("/domains/$testDomainId/assets/${asset.idAsString}/control-implementations", 404)
+
+        then:
+        def nfEx = thrown(NotFoundException)
+        nfEx.message == "Asset ${asset.idAsString} is not associated with domain $testDomainId"
     }
 
     def "risk values can be updated"() {

@@ -701,9 +701,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetControlImplementationsUseCase retrieveGetControlImplementationsUseCase(
-      ControlImplementationRepository controlImplementationRepository) {
-    return new GetControlImplementationsUseCase(controlImplementationRepository);
+  public GetControlImplementationsUseCase retrieveGetControlImplementationsByControlUseCase(
+      ControlImplementationRepository controlImplementationRepository,
+      GenericElementRepository genericElementRepository) {
+    return new GetControlImplementationsUseCase(
+        controlImplementationRepository, genericElementRepository);
   }
 
   @Bean

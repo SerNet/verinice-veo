@@ -25,9 +25,13 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.ControlImplementationQuery;
 import org.veo.core.repository.ControlImplementationRepository;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -42,6 +46,7 @@ public class GetControlImplementationsUseCase
         GetControlImplementationsUseCase.InputData, GetControlImplementationsUseCase.OutputData> {
 
   private final ControlImplementationRepository controlImplementationRepository;
+  private final GenericElementRepository genericElementRepository;
 
   @Override
   public OutputData execute(InputData input) {
@@ -53,6 +58,18 @@ public class GetControlImplementationsUseCase
 
   private void applyAdditionalQueryParameters(InputData input, ControlImplementationQuery query) {
     Optional.ofNullable(input.control).ifPresent(query::whereControlIdIn);
+    Optional.ofNullable(input.riskAffectedId)
+        .ifPresent(
+            id -> {
+              RiskAffected<?, ?> ra =
+                  genericElementRepository.getById(
+                      id.toKey(), id.getType(), input.authenticatedClient);
+              if (ra.getDomains().stream().noneMatch(d -> d.getId().equals(input.domainId))) {
+                throw NotFoundException.elementNotAssociatedWithDomain(
+                    ra, input.domainId.uuidValue());
+              }
+              query.whereRiskAffectedIs(id.toKey().value());
+            });
   }
 
   @Valid
@@ -60,6 +77,7 @@ public class GetControlImplementationsUseCase
       @NotNull Client authenticatedClient,
       Key<UUID> control,
       @NotNull Key<UUID> domainId,
+      TypedId<? extends RiskAffected<?, ?>> riskAffectedId,
       @NotNull PagingConfiguration pagingConfiguration)
       implements UseCase.InputData {}
 

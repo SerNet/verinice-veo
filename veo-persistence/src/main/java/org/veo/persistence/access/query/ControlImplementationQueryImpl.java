@@ -71,6 +71,14 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
                 criteriaBuilder.equal(root.get("control").get("id"), controlId.value()));
   }
 
+  @Override
+  public void whereRiskAffectedIs(UUID riskAffectedId) {
+    spec =
+        spec.and(
+            (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("owner").get("id"), riskAffectedId));
+  }
+
   private Specification<ControlImplementationData> createSpecification(
       Client client, Key<UUID> domainId) {
     return (root, query, criteriaBuilder) -> {
