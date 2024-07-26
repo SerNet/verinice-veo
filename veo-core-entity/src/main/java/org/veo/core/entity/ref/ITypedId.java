@@ -28,7 +28,6 @@ import org.veo.core.entity.Key;
 
 public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
-  @JsonIgnore
   String getId();
 
   @JsonIgnore
