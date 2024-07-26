@@ -30,14 +30,10 @@ import org.veo.core.entity.ref.ITypedCompoundId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompoundIdRef<
@@ -47,18 +43,14 @@ public class CompoundIdRef<
     implements ITypedCompoundId<T, TFirst, TSecond>, IIdRef {
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @ToString.Include
-  @EqualsAndHashCode.Include
   private final String firstId;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @ToString.Include
-  @EqualsAndHashCode.Include
   private final String secondId;
 
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<TFirst> firstType;
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<TSecond> secondType;
+  @JsonIgnore private final Class<T> type;
+  @JsonIgnore private final Class<TFirst> firstType;
+  @JsonIgnore private final Class<TSecond> secondType;
 
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 

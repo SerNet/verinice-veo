@@ -31,27 +31,21 @@ import org.veo.core.entity.ref.ITypedId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonFilter(VeoConstants.JSON_FILTER_IDREF)
 public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @ToString.Include
-  @EqualsAndHashCode.Include
   private final String id;
 
-  @ToString.Include private final String displayName;
+  private final String displayName;
 
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
+  @JsonIgnore private final Class<T> type;
 
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 

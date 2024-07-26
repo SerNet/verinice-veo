@@ -29,29 +29,25 @@ import org.veo.core.entity.ref.ITypedSymbolicId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     implements IIdRef, ITypedSymbolicId<T, TNamespace> {
 
   @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-  @EqualsAndHashCode.Include
   private final String symbolicId;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @EqualsAndHashCode.Include
   private final String namespaceId;
 
   private final String displayName;
 
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
-  @JsonIgnore @EqualsAndHashCode.Include private final Class<TNamespace> namespaceType;
+  @JsonIgnore private final Class<T> type;
+  @JsonIgnore private final Class<TNamespace> namespaceType;
 
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 
