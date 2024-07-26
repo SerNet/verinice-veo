@@ -85,7 +85,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
 
         then:
         validate(element, elementType)*.message ==~ [
-            '$.subType: does not have a value in the enumeration [A, B]'
+            '$.subType: does not have a value in the enumeration ["A", "B"]'
         ]
 
         when: "using a sub type that does not define the current status"
@@ -93,7 +93,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
 
         then:
         validate(element, elementType)*.message ==~ [
-            '$.status: does not have a value in the enumeration [B1, B2]'
+            '$.status: does not have a value in the enumeration ["B1", "B2"]'
         ]
 
         where:
@@ -223,8 +223,8 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
             '$.riskValues.noRiskNoFun.potentialImpacts.A: does not have a value in the enumeration [0, 1]',
             '$.riskValues.noRiskNoFun.potentialImpactsCalculated.A: does not have a value in the enumeration [0, 1]',
             '$.riskValues.noRiskNoFun.potentialImpactsEffective.A: does not have a value in the enumeration [0, 1]',
-            '$.riskValues.noRiskNoFun.potentialImpactReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual]',
-            '$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A: does not have a value in the enumeration [impact_reason_cumulative, impact_reason_distributive, impact_reason_manual, impact_method_high_water_mark]',
+            '$.riskValues.noRiskNoFun.potentialImpactReasons.A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual"]',
+            '$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual", "impact_method_high_water_mark"]',
             '$.riskValues.noRiskNoFun.potentialImpactExplanations.A: integer found, string expected',
             '''$.riskValues.noRiskNoFun.potentialImpacts: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
             '''$.riskValues.noRiskNoFun.potentialImpactsCalculated: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
@@ -284,7 +284,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
 
         then:
         validate(element, "scope")*.message ==~ [
-            '$.riskDefinition: does not have a value in the enumeration [noRiskNoFun]'
+            '$.riskDefinition: does not have a value in the enumeration ["noRiskNoFun"]'
         ]
     }
 
@@ -320,9 +320,9 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
             '$.name: null found, string expected',
             '$.owner: null found, object expected',
             '$.status: null found, string expected',
-            '$.status: does not have a value in the enumeration [A1, A2, B1, B2]',
+            '$.status: does not have a value in the enumeration ["A1", "A2", "B1", "B2"]',
             '$.subType: null found, string expected',
-            '$.subType: does not have a value in the enumeration [A, B]',
+            '$.subType: does not have a value in the enumeration ["A", "B"]',
             '$.links.LA[0].target: null found, object expected',
         ]
 
