@@ -58,7 +58,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
-        unit.getId() >> Key.uuidFrom(unitId)
+        unit.getIdAsString() >> unitId
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
         unit.getDisplayName() >> unitName
@@ -77,7 +77,8 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
         compositeAsset.getOwner() >> unit
         compositeAsset.getName() >> "Composite Asset"
-        compositeAsset.getId() >> Key.newUuid()
+        compositeAsset.getIdAsString() >> randomUUID()
+        compositeAsset.getModelInterface() >> Asset.class
         compositeAsset.getDomains() >> []
         compositeAsset.getLinks() >> []
         compositeAsset.getLinks() >> []

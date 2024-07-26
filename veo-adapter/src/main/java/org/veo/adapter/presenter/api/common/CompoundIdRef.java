@@ -26,6 +26,7 @@ import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ref.ITypedCompoundId;
+import org.veo.core.entity.ref.TypedCompoundId;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,15 +43,35 @@ public class CompoundIdRef<
         TSecond extends Identifiable>
     implements ITypedCompoundId<T, TFirst, TSecond>, IIdRef {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private final String firstId;
+  @JsonIgnore private final ITypedCompoundId<T, TFirst, TSecond> ref;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private final String secondId;
+  public String getFirstId() {
+    return ref.getFirstId();
+  }
 
-  @JsonIgnore private final Class<T> type;
-  @JsonIgnore private final Class<TFirst> firstType;
-  @JsonIgnore private final Class<TSecond> secondType;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getSecondId() {
+    return ref.getSecondId();
+  }
+
+  @JsonIgnore
+  @Override
+  public Class<T> getType() {
+    return ref.getType();
+  }
+
+  @JsonIgnore
+  @Override
+  public Class<TFirst> getFirstType() {
+    return ref.getFirstType();
+  }
+
+  @JsonIgnore
+  @Override
+  public Class<TSecond> getSecondType() {
+    return ref.getSecondType();
+  }
 
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 
@@ -67,15 +88,7 @@ public class CompoundIdRef<
           TSecond extends Identifiable>
       CompoundIdRef<T, TFirst, TSecond> from(T entity, @NonNull ReferenceAssembler urlAssembler) {
     if (entity == null) return null;
-    return new CompoundIdRef<>(
-        entity.getFirstIdAsString(),
-        entity.getSecondIdAsString(),
-        (Class<T>) entity.getModelInterface(),
-        (Class<TFirst>) entity.getFirstRelation().getModelInterface(),
-        (Class<TSecond>) entity.getSecondRelation().getModelInterface(),
-        urlAssembler,
-        null,
-        entity);
+    return new CompoundIdRef<>(TypedCompoundId.from(entity), urlAssembler, null, entity);
   }
 
   @Override
@@ -130,16 +143,16 @@ public class CompoundIdRef<
 
   @Override
   public boolean equals(Object other) {
-    return ITypedCompoundId.equals(this, other);
+    return ref.equals(other);
   }
 
   @Override
   public int hashCode() {
-    return ITypedCompoundId.hashCode(this);
+    return ref.hashCode();
   }
 
   @Override
   public String toString() {
-    return ITypedCompoundId.toString(this);
+    return ref.toString();
   }
 }

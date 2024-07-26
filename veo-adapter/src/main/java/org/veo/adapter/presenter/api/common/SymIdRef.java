@@ -24,7 +24,10 @@ import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,18 +40,8 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     implements IIdRef, ITypedSymbolicId<T, TNamespace> {
-
-  @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-  private final String symbolicId;
-
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private final String namespaceId;
-
+  @JsonIgnore private final ITypedSymbolicId<T, TNamespace> ref;
   private final String displayName;
-
-  @JsonIgnore private final Class<T> type;
-  @JsonIgnore private final Class<TNamespace> namespaceType;
-
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 
   @JsonIgnore
@@ -58,24 +51,16 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
   @JsonIgnore private final T entity;
 
   private SymIdRef(
+      ITypedSymbolicId<T, TNamespace> ref,
       T entity,
-      String id,
-      String namespaceId,
       String displayName,
-      Class<T> type,
-      Class<TNamespace> namespaceType,
       ReferenceAssembler referenceAssembler) {
-    this(id, namespaceId, displayName, type, namespaceType, referenceAssembler, null, entity);
+    this(ref, displayName, referenceAssembler, null, entity);
   }
 
   private SymIdRef(
-      String uri,
-      String id,
-      String namespaceId,
-      Class<T> type,
-      Class<TNamespace> namespaceType,
-      ReferenceAssembler referenceAssembler) {
-    this(id, namespaceId, null, type, namespaceType, referenceAssembler, uri, null);
+      String uri, ITypedSymbolicId<T, TNamespace> ref, ReferenceAssembler referenceAssembler) {
+    this(ref, null, referenceAssembler, uri, null);
   }
 
   /** Create an IdRef for the given entity. */
@@ -83,24 +68,51 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
       SymIdRef<T, TNamespace> from(T entity, @NonNull ReferenceAssembler urlAssembler) {
     if (entity == null) return null;
     return new SymIdRef<>(
+        TypedSymbolicId.from(entity),
         entity,
-        entity.getSymbolicIdAsString(),
-        entity.getNamespace().getIdAsString(),
         ((Displayable) entity).getDisplayName(),
-        (Class<T>) entity.getModelInterface(),
-        (Class<TNamespace>) entity.getNamespace().getModelInterface(),
         urlAssembler);
   }
 
-  public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
-      SymIdRef<T, TNamespace> fromUri(String uri, @NonNull ReferenceAssembler urlAssembler) {
+  public static SymIdRef<?, ?> fromUri(String uri, @NonNull ReferenceAssembler urlAssembler) {
     return new SymIdRef<>(
         uri,
-        urlAssembler.parseId(uri),
-        urlAssembler.parseNamespaceId(uri),
-        (Class<T>) urlAssembler.parseType(uri),
-        (Class<TNamespace>) urlAssembler.parseNamespaceType(uri),
+        TypedSymbolicId.from(
+            urlAssembler.parseId(uri),
+            (Class) urlAssembler.parseType(uri),
+            TypedId.from(
+                urlAssembler.parseNamespaceId(uri), (Class) urlAssembler.parseNamespaceType(uri))),
         urlAssembler);
+  }
+
+  @Override
+  @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+  public String getSymbolicId() {
+    return ref.getSymbolicId();
+  }
+
+  @Override
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getNamespaceId() {
+    return ref.getNamespaceId();
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedId<TNamespace> getNamespaceRef() {
+    return ITypedSymbolicId.super.getNamespaceRef();
+  }
+
+  @Override
+  @JsonIgnore
+  public Class<TNamespace> getNamespaceType() {
+    return ref.getNamespaceType();
+  }
+
+  @Override
+  @JsonIgnore
+  public Class<T> getType() {
+    return ref.getType();
   }
 
   @Override
@@ -140,16 +152,16 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
 
   @Override
   public boolean equals(Object other) {
-    return ITypedSymbolicId.equals(this, other);
+    return ref.equals(other);
   }
 
   @Override
   public int hashCode() {
-    return ITypedSymbolicId.hashCode(this);
+    return ref.hashCode();
   }
 
   @Override
   public String toString() {
-    return ITypedSymbolicId.toString(this);
+    return ref.toString();
   }
 }

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ref.TypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
@@ -39,15 +40,14 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
   private final String subType;
 
   protected ElementInDomainIdRef(
-      String id,
+      TypedId<TElement> ref,
       Domain domain,
       String displayName,
-      Class<TElement> type,
       ReferenceAssembler urlAssembler,
       String uri,
       TElement element,
       String subType) {
-    super(id, displayName, type, urlAssembler, uri, element);
+    super(ref, displayName, urlAssembler, uri, element);
     this.element = element;
     this.domain = domain;
     this.subType = subType;
@@ -56,10 +56,9 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
   public static ElementInDomainIdRef<?> fromTargetUri(
       String targetUri, ReferenceAssembler urlAssembler) {
     return new ElementInDomainIdRef<>(
-        urlAssembler.parseId(targetUri),
+        TypedId.from(urlAssembler.parseId(targetUri), (Class) urlAssembler.parseType(targetUri)),
         null,
         null,
-        (Class<Element>) urlAssembler.parseType(targetUri),
         urlAssembler,
         targetUri,
         null,
@@ -68,12 +67,12 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
 
   public static ElementInDomainIdRef<?> fromTargetInDomainUri(
       String targetInDomainUri, ReferenceAssembler urlAssembler) {
-    var type = urlAssembler.parseElementTypeInDomain(targetInDomainUri);
     return new ElementInDomainIdRef<>(
-        urlAssembler.parseElementIdInDomain(targetInDomainUri),
+        TypedId.from(
+            urlAssembler.parseElementIdInDomain(targetInDomainUri),
+            (Class) urlAssembler.parseType(targetInDomainUri)),
         null,
         null,
-        type,
         urlAssembler,
         null,
         null,
@@ -96,10 +95,9 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
       return null;
     }
     return new ElementInDomainIdRef<>(
-        element.getIdAsString(),
+        TypedId.from(element),
         domain,
         element.getDisplayName(),
-        (Class<T>) element.getModelInterface(),
         urlAssembler,
         null,
         element,

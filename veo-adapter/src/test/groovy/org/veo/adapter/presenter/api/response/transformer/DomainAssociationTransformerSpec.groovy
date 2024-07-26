@@ -46,6 +46,8 @@ class DomainAssociationTransformerSpec extends Specification {
     def "maps sub types from entity to DTO"() {
         given: "a process with different sub types in two domains"
         Person linkTargetPerson = Mock(Person) {
+            idAsString >> randomUUID()
+            modelInterface >> Person
             findSubType(domain1) >> Optional.of("SuperOverseer")
         }
         referenceAssembler.targetReferenceOf(linkTargetPerson) >> "/persons/123"

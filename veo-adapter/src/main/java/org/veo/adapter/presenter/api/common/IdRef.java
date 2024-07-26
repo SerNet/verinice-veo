@@ -27,6 +27,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.TypedId;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,14 +40,8 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonFilter(VeoConstants.JSON_FILTER_IDREF)
 public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
-
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private final String id;
-
+  @JsonIgnore private final ITypedId<T> ref;
   private final String displayName;
-
-  @JsonIgnore private final Class<T> type;
-
   @JsonIgnore protected final ReferenceAssembler urlAssembler;
 
   @JsonIgnore
@@ -55,35 +50,21 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
 
   @JsonIgnore private final Identifiable entity;
 
-  private IdRef(
-      Identifiable entity,
-      String id,
-      String displayName,
-      Class<T> type,
-      ReferenceAssembler referenceAssembler) {
-    this(id, displayName, type, referenceAssembler, null, entity);
-  }
-
-  private IdRef(String uri, String id, Class<T> type, ReferenceAssembler referenceAssembler) {
-    this(id, null, type, referenceAssembler, uri, null);
-  }
-
   /** Create a IdRef for the given entity. */
   public static <T extends Identifiable> IdRef<T> from(
       T entity, @NonNull ReferenceAssembler urlAssembler) {
     if (entity == null) return null;
     return new IdRef<>(
-        entity,
-        entity.getIdAsString(),
-        ((Displayable) entity).getDisplayName(),
-        (Class<T>) entity.getModelInterface(),
-        urlAssembler);
+        TypedId.from(entity), ((Displayable) entity).getDisplayName(), urlAssembler, null, entity);
   }
 
-  public static <T extends Identifiable> IdRef<T> fromUri(
-      String uri, @NonNull ReferenceAssembler urlAssembler) {
+  public static IdRef<?> fromUri(String uri, @NonNull ReferenceAssembler urlAssembler) {
     return new IdRef<>(
-        uri, urlAssembler.parseId(uri), (Class<T>) urlAssembler.parseType(uri), urlAssembler);
+        TypedId.from(urlAssembler.parseId(uri), (Class) urlAssembler.parseType(uri)),
+        null,
+        urlAssembler,
+        uri,
+        null);
   }
 
   @Override
@@ -94,14 +75,24 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
     return uri;
   }
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getId() {
+    return ref.getId();
+  }
+
+  @JsonIgnore
+  public Class<T> getType() {
+    return ref.getType();
+  }
+
   @Override
   public String getSearchesUri() {
-    return urlAssembler.searchesReferenceOf(type);
+    return urlAssembler.searchesReferenceOf(getType());
   }
 
   @Override
   public String getResourcesUri() {
-    return urlAssembler.resourcesReferenceOf(type);
+    return urlAssembler.resourcesReferenceOf(getType());
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -130,16 +121,16 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
 
   @Override
   public boolean equals(Object other) {
-    return ITypedId.equals(this, other);
+    return ref.equals(other);
   }
 
   @Override
   public int hashCode() {
-    return ITypedId.hashCode(this);
+    return ref.hashCode();
   }
 
   @Override
   public String toString() {
-    return ITypedId.toString(this);
+    return ref.toString();
   }
 }

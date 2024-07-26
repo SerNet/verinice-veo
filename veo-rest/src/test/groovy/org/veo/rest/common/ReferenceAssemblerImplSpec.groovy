@@ -46,6 +46,7 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.ScopeRisk
 import org.veo.core.entity.compliance.ControlImplementation
+import org.veo.core.entity.ref.TypedId
 import org.veo.rest.common.marshalling.ReferenceAssemblerImpl
 import org.veo.rest.configuration.TypeExtractor
 
@@ -285,7 +286,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create a key for a reference to a #type with id #id "() {
         expect:
-        referenceAssembler.toKey(new IdRef(null, id, type, referenceAssembler)) == key
+        referenceAssembler.toKey(new IdRef(TypedId.from(id, type), null, referenceAssembler, null, null)) == key
 
         where:
         type     | id                                     | key
@@ -300,8 +301,8 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
         expect:
         def refs = referenceAssembler.toKeys([
-            new IdRef(null, id1, type, referenceAssembler),
-            new IdRef(null, id2, type, referenceAssembler)
+            new IdRef(TypedId.from(id1, type), null, referenceAssembler, null, null),
+            new IdRef(TypedId.from(id2, type), null, referenceAssembler, null, null)
         ] as Set
         )
         refs.contains(Key.uuidFrom(id1))
