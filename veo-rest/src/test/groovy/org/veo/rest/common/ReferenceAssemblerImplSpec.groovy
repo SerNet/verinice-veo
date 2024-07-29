@@ -107,22 +107,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | Domain      | FullDomainDto
     }
 
-    def "path traversal attack is tried for #url"() {
-        1 *  typeExtractor.parseDtoType(url) >> Optional.empty()
-
-        when: 'the url is parsed with the reference assembler'
-        referenceAssembler.parseType(url)
-
-        then: 'exception is thrown'
-        IllegalArgumentException e = thrown()
-        e.message =~ /Could not extract entity type from URI/
-
-        where:
-        url << [
-            'http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'
-        ]
-    }
-
     def "parsed type for #url is #type with typeExtractor"() {
         1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
 

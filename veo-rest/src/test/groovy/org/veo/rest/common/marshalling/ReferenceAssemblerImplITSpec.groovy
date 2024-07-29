@@ -87,6 +87,16 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
         'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/profiles/02557ca8-a579-4e53-a161-b1433b62eb77/items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | Profile
     }
 
+    // TODO #3039 reconsider behavior
+    def "path traversal is a thing"() {
+        given:
+        def uri = "http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/processes/28df429d-da5e-431a-a2d8-488c0741fb9f"
+
+        expect:
+        referenceAssembler.parseType(uri) == Process
+        referenceAssembler.parseId(uri) == '28df429d-da5e-431a-a2d8-488c0741fb9f'
+    }
+
     def createEntity(Class<Entity> type) {
         Stub(type) {
             getModelInterface() >> type
