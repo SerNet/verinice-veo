@@ -31,8 +31,6 @@ import static org.veo.rest.ControllerConstants.ANY_USER;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -47,7 +45,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -57,6 +54,7 @@ import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
@@ -80,6 +78,9 @@ import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedId;
+import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
@@ -105,32 +106,15 @@ import org.veo.rest.ScopeInDomainController;
 import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
 import org.veo.rest.UserConfigurationController;
-import org.veo.rest.configuration.TypeExtractor;
 import org.veo.rest.schemas.controller.EntitySchemaController;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AllArgsConstructor;
 
 @Component
-@AllArgsConstructor
 @SuppressFBWarnings(
     value = "NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS",
     justification = "The controller method invocations are just dummies")
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
-
-  private static final String UUID_REGEX =
-      "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-
-  private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
-  private static final Pattern LAST_UUID_PATTERN = Pattern.compile(".+/(" + UUID_REGEX + ")");
-
-  private static final Pattern PANULTIMATE_UUID_PATTERN =
-      Pattern.compile(".+/(" + UUID_REGEX + ")/[^/]+/" + UUID_PATTERN);
-  private static final Pattern ELEMENT_IN_DOMAIN_URI_PATTERN =
-      Pattern.compile("/" + Domain.PLURAL_TERM + "/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
-
-  private final TypeExtractor typeExtractor;
-
   private static final String DUMMY_UUID_STRING = Key.NIL_UUID.uuidValue();
 
   private static final UriComponents GET_ASSET =
@@ -452,24 +436,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public String inspectionReferenceOf(String id, Domain domain) {
     return buildUri(GET_INSPECTION, domain.getIdAsString(), id);
-  }
-
-  @Override
-  public Class<? extends Identifiable> parseNamespaceType(String uri) {
-    var entityType = parseType(uri);
-    if (ProfileItem.class.isAssignableFrom(entityType)) {
-      return Profile.class;
-    }
-    if (CatalogItem.class.isAssignableFrom(entityType)) {
-      var controllerType = typeExtractor.parseControllerType(uri);
-      if (DomainController.class.isAssignableFrom(controllerType)) {
-        return Domain.class;
-      }
-      if (DomainTemplateController.class.isAssignableFrom(controllerType)) {
-        return DomainTemplate.class;
-      }
-    }
-    throw new UnprocessableDataException(String.format("No mapping found for URI: %s", uri));
   }
 
   @Override
@@ -864,59 +830,62 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         "Unsupported collection reference type %s".formatted(entity.getModelType()));
   }
 
-  /**
-   * Compares the given URI with all mapped request methods of type "GET". Extracts the DTO type
-   * used in the methods return value. Then returns the corresponding entity type.
-   *
-   * @param uriString the URI string received as a reference, i.e. via JSON representation of an
-   *     entity
-   * @return the class of the entity that is mapped by the DTO
-   */
   @Override
-  public Class<? extends Entity> parseType(String uriString) {
-    if (uriString.contains("/" + UserConfiguration.PLURAL_TERM)) {
-      return UserConfiguration.class;
-    }
-    Class<? extends ModelDto> modelType =
-        typeExtractor
-            .parseDtoType(uriString)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        String.format("Could not extract entity type from URI: %s", uriString)));
+  public TypedId<?> parseIdentifiableRef(String uri) {
+    return parseIdentifiableRef(uri, Identifiable.class);
+  }
+
+  @Override
+  public TypedId<? extends Element> parseElementRef(String url) {
+    return parseIdentifiableRef(url, Element.class);
+  }
+
+  private <T extends Identifiable> TypedId<T> parseIdentifiableRef(String uri, Class<T> superType) {
     try {
-      return modelType.getDeclaredConstructor().newInstance().getModelInterface();
-    } catch (ReflectiveOperationException | IllegalArgumentException e) {
-      throw new IllegalArgumentException(
-          String.format("Could not extract entity type from URI: %s", uriString));
+      var segments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
+      var size = segments.size();
+      var idSeg = segments.get(size - 1);
+      var typeSeg = segments.get(size - 2);
+      if (typeSeg.equals(Client.PLURAL_TERM)) {
+        throw invalidReference(uri);
+      }
+      return TypedId.from(idSeg, parseType(typeSeg, superType));
+    } catch (IllegalArgumentException | IndexOutOfBoundsException ex) {
+      throw invalidReference(uri);
     }
   }
 
   @Override
-  public String parseId(String uriString) {
-    String pathComponent = UriComponentsBuilder.fromUriString(uriString).build().getPath();
-    if (pathComponent == null) {
-      throw invalidReference(uriString);
+  public ITypedSymbolicId<?, ?> parseSymIdentifiableUri(String uri) {
+    try {
+      var segments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
+      var size = segments.size();
+      var namespaceTypeSeg = segments.get(size - 4);
+      var namespaceIdSeg = segments.get(size - 3);
+      var typeSeg = segments.get(size - 2);
+      var symIdSeg = segments.get(size - 1);
+      if (typeSeg.equals(CatalogItem.PLURAL_TERM)) {
+        return TypedSymbolicId.from(
+            symIdSeg,
+            CatalogItem.class,
+            TypedId.from(namespaceIdSeg, parseType(namespaceTypeSeg, DomainBase.class)));
+      }
+      if (namespaceTypeSeg.equals(Profile.PLURAL_TERM) && typeSeg.equals("items")) {
+        return TypedSymbolicId.from(
+            symIdSeg, ProfileItem.class, TypedId.from(namespaceIdSeg, Profile.class));
+      }
+      throw new IllegalArgumentException();
+    } catch (IllegalArgumentException | IndexOutOfBoundsException ex) {
+      throw invalidReference(uri);
     }
-    Matcher matcher = LAST_UUID_PATTERN.matcher(pathComponent);
-    if (!matcher.find()) {
-      throw invalidReference(uriString);
-    }
-    return matcher.group(1);
-    // TODO: VEO-585: handle compound IDs
   }
 
-  @Override
-  public String parseNamespaceId(String uri) {
-    String pathComponent = UriComponentsBuilder.fromUriString(uri).build().getPath();
-    if (pathComponent == null) {
-      throw invalidReference(uri);
+  private <T extends Entity> Class<T> parseType(String pathSeg, Class<T> superType) {
+    var type = EntityType.getTypeForPluralTerm(pathSeg);
+    if (superType.isAssignableFrom(type)) {
+      return (Class<T>) type;
     }
-    Matcher matcher = PANULTIMATE_UUID_PATTERN.matcher(pathComponent);
-    if (!matcher.find()) {
-      throw invalidReference(uri);
-    }
-    return matcher.group(1);
+    throw new IllegalArgumentException();
   }
 
   @Override
@@ -937,28 +906,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                 .getSchema(ANY_AUTH, typeSingularTerm, ANY_STRING_LIST))
         .withSelfRel()
         .getHref();
-  }
-
-  @Override
-  public String parseElementIdInDomain(String targetInDomainUri) {
-    var matcher =
-        ELEMENT_IN_DOMAIN_URI_PATTERN.matcher(
-            UriComponentsBuilder.fromUriString(targetInDomainUri).build().getPath());
-    if (matcher.find()) {
-      return matcher.group(2);
-    }
-    throw invalidReference(targetInDomainUri);
-  }
-
-  @Override
-  public Class<Element> parseElementTypeInDomain(String targetInDomainUri) {
-    var matcher =
-        ELEMENT_IN_DOMAIN_URI_PATTERN.matcher(
-            UriComponentsBuilder.fromUriString(targetInDomainUri).build().getPath());
-    if (matcher.find()) {
-      return (Class<Element>) EntityType.getTypeForPluralTerm(matcher.group(1));
-    }
-    throw invalidReference(targetInDomainUri);
   }
 
   private UnprocessableDataException invalidReference(String uri) {

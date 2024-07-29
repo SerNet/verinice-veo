@@ -59,12 +59,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   public static IdRef<?> fromUri(String uri, @NonNull ReferenceAssembler urlAssembler) {
-    return new IdRef<>(
-        TypedId.from(urlAssembler.parseId(uri), (Class) urlAssembler.parseType(uri)),
-        null,
-        urlAssembler,
-        uri,
-        null);
+    return new IdRef<>(urlAssembler.parseIdentifiableRef(uri), null, urlAssembler, uri, null);
   }
 
   @Override

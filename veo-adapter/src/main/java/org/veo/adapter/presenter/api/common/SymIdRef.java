@@ -26,7 +26,6 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.ref.ITypedSymbolicId;
-import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
 
 import lombok.AccessLevel;
@@ -75,14 +74,7 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
   }
 
   public static SymIdRef<?, ?> fromUri(String uri, @NonNull ReferenceAssembler urlAssembler) {
-    return new SymIdRef<>(
-        uri,
-        TypedSymbolicId.from(
-            urlAssembler.parseId(uri),
-            (Class) urlAssembler.parseType(uri),
-            TypedId.from(
-                urlAssembler.parseNamespaceId(uri), (Class) urlAssembler.parseNamespaceType(uri))),
-        urlAssembler);
+    return new SymIdRef<>(uri, urlAssembler.parseSymIdentifiableUri(uri), urlAssembler);
   }
 
   @Override

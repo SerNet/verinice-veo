@@ -56,27 +56,7 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
   public static ElementInDomainIdRef<?> fromTargetUri(
       String targetUri, ReferenceAssembler urlAssembler) {
     return new ElementInDomainIdRef<>(
-        TypedId.from(urlAssembler.parseId(targetUri), (Class) urlAssembler.parseType(targetUri)),
-        null,
-        null,
-        urlAssembler,
-        targetUri,
-        null,
-        null);
-  }
-
-  public static ElementInDomainIdRef<?> fromTargetInDomainUri(
-      String targetInDomainUri, ReferenceAssembler urlAssembler) {
-    return new ElementInDomainIdRef<>(
-        TypedId.from(
-            urlAssembler.parseElementIdInDomain(targetInDomainUri),
-            (Class) urlAssembler.parseType(targetInDomainUri)),
-        null,
-        null,
-        urlAssembler,
-        null,
-        null,
-        null);
+        urlAssembler.parseElementRef(targetUri), null, null, urlAssembler, targetUri, null, null);
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)

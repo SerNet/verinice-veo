@@ -19,108 +19,61 @@ package org.veo.rest.common
 
 import static java.util.UUID.randomUUID
 
-import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto
-import org.veo.adapter.presenter.api.dto.full.FullAssetDto
-import org.veo.adapter.presenter.api.dto.full.FullControlDto
-import org.veo.adapter.presenter.api.dto.full.FullDomainDto
-import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
-import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
-import org.veo.adapter.presenter.api.dto.full.FullScopeDto
-import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
+import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
+import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
+import org.veo.core.entity.Profile
+import org.veo.core.entity.ProfileItem
 import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.ScopeRisk
+import org.veo.core.entity.SymIdentifiable
 import org.veo.core.entity.compliance.ControlImplementation
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.ref.TypedId
+import org.veo.core.entity.ref.TypedSymbolicId
 import org.veo.rest.common.marshalling.ReferenceAssemblerImpl
-import org.veo.rest.configuration.TypeExtractor
 
 import spock.lang.Specification
 
 class ReferenceAssemblerImplSpec extends Specification {
 
-    TypeExtractor typeExtractor = Mock(TypeExtractor)
+    ReferenceAssembler referenceAssembler = new ReferenceAssemblerImpl()
 
-    ReferenceAssembler referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
+    def "#type #id is extracted from #url"() {
+        when:
+        def ref = referenceAssembler.parseIdentifiableRef(url)
 
-    def "parsed entity id for #url is #parsedId"() {
-        expect:
-        referenceAssembler.parseId(url) == parsedId
+        then:
+        ref.id == id
+        ref.type == type
 
-        where:
-        url                                                                                                              | parsedId
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | '40331ed5-be07-4c69-bf99-553811ce5454'
-        'http://localhost:9000/assets/e24e5c51-eb30-4150-8009-06ead941b321?foo=bar'                                      | 'e24e5c51-eb30-4150-8009-06ead941b321'
-        // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a'   | '59d3c21d-2f21-4085-950d-1273056d664a'
-        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
-        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | '59d3c21d-2f21-4085-950d-1273056d664a'
-        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
-        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
-        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | '28df429d-da5e-431a-a2d8-488c0741fb9f'
-        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | '47799d6d-7887-48d5-9cd2-1af23e0b467a'
-        'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/catalogs/ec2f0c9b-4a2b-429d-95af-83f107f07946/items/7688ddc3-6914-4899-a96a-067cc74cded1' | '7688ddc3-6914-4899-a96a-067cc74cded1'
-        'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/domains/753dcdd6-597a-4f6d-9096-6e3b2cf8059e/profiles/065e7d6c-0dff-4b1f-9244-90a0c745d7f1/items/3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9' | '3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9'
-    }
-
-    def "parsed owner id for #url is #parsedId"() {
-        expect:
-        referenceAssembler.parseNamespaceId(url) == parsedId
+        and:
+        referenceAssembler.parseIdentifiableRef('http://localhost:9000' + url) == ref
+        referenceAssembler.parseIdentifiableRef('http://localhost:9000/apps/veo' + url) == ref
 
         where:
-        url                                                                                                                     | parsedId
-        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/catalog-items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | '37aa44d5-3707-416a-864c-839f97535a06'
-        'http://localhost:9000/domains/37aa44d5-3707-416a-864c-839f97535a06/profiles/02557ca8-a579-4e53-a161-b1433b62eb77/items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | '02557ca8-a579-4e53-a161-b1433b62eb77'
-    }
-
-    def "parsed type for #url is #type"() {
-        1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
-
-        expect:
-        referenceAssembler.parseType(url) == type
-
-        where:
-        url                                                                                                              | type        | dtoType
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | Asset       | FullAssetDto
-        'http://localhost:9000/assets/8cdff5d7-3e17-4b80-80f6-e20a2cd4e673?foo=bar'                                      | Asset       | FullAssetDto
-        // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
-        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | Control     | FullControlDto
-        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | Scope       | FullScopeDto
-        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | Scenario    | FullScenarioDto
-        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | Incident    | FullIncidentDto
-        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | Domain      | FullDomainDto
-    }
-
-    def "parsed type for #url is #type with typeExtractor"() {
-        1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
-
-        expect:
-        referenceAssembler.parseType(url) == type
-
-        where:
-        url                                                                                                                    | type        | dtoType
-        // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'         | Asset       | FullAssetDto
-        'http://localhost:9000/domains/37dccbdc-7d58-4929-9d96-df8c533ea5a5/catalo-items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | ShortCatalogItemDto
-        // TODO #2504 remove legacy URL support
-        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a'       | CatalogItem | FullCatalogItemDto
-        'http://localhost:9000/catalogitems/47799d6d-7887-48d5-9cd2-1af23e0b467a'                                              | CatalogItem | FullCatalogItemDto
+        url                                                    | type     | id
+        '/assets/40331ed5-be07-4c69-bf99-553811ce5454'         | Asset    | '40331ed5-be07-4c69-bf99-553811ce5454'
+        '/assets/e24e5c51-eb30-4150-8009-06ead941b321?foo=bar' | Asset    | 'e24e5c51-eb30-4150-8009-06ead941b321'
+        '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'       | Control  | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
+        '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'         | Scope    | '59d3c21d-2f21-4085-950d-1273056d664a'
+        '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'      | Scenario | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
+        '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'      | Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
+        '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'        | Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
     def "target reference for #type and #id is #reference"() {
@@ -270,7 +223,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create a key for a reference to a #type with id #id "() {
         expect:
-        referenceAssembler.toKey(new IdRef(TypedId.from(id, type), null, referenceAssembler, null, null)) == key
+        referenceAssembler.toKey(TypedId.from(id, type)) == key
 
         where:
         type     | id                                     | key
@@ -285,8 +238,8 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
         expect:
         def refs = referenceAssembler.toKeys([
-            new IdRef(TypedId.from(id1, type), null, referenceAssembler, null, null),
-            new IdRef(TypedId.from(id2, type), null, referenceAssembler, null, null)
+            TypedId.from(id1, type),
+            TypedId.from(id2, type),
         ] as Set
         )
         refs.contains(Key.uuidFrom(id1))
@@ -305,5 +258,130 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create an empty key reference"() {
         expect:
         referenceAssembler.toKey(null) == null
+    }
+
+    def "creates and parses URLs for identifiable #type.simpleName"() {
+        given:
+        def entity = Stub(type) {
+            modelInterface >> type
+            id >> Key.newUuid()
+            idAsString >> it.id.uuidValue()
+            if (it instanceof Profile) {
+                owner >> Stub(DomainBase) {
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+        }
+
+        when: "creating a target URL"
+        def targetUrl = referenceAssembler.targetReferenceOf(entity)
+
+        then: "it can be parsed back"
+        if(targetUrl != null) {
+            assert referenceAssembler.parseIdentifiableRef(targetUrl) == TypedId.from(entity)
+        }
+
+        where:
+        type << EntityType.TYPES.findAll { Identifiable.isAssignableFrom(it) }
+    }
+
+    def "creates and parses URLs for sym-identifiable #type.simpleName"() {
+        given:
+        def entity = Spy(type) {
+            modelInterface >> type
+            symbolicId >> Key.newUuid()
+            symbolicIdAsString >> it.symbolicId.uuidValue()
+            if (it instanceof CatalogItem) {
+                domainBase >> Stub(Domain) {
+                    modelInterface >> Domain
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+            if (it instanceof ProfileItem) {
+                owner >> Stub(Profile) {
+                    modelInterface >> Profile
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+                domainBase >> Stub(Domain) {
+                    modelInterface >> Domain
+                    id >> Key.newUuid()
+                    idAsString >> it.id.uuidValue()
+                }
+            }
+        }
+
+        when: "creating a target URL"
+        def targetUrl = referenceAssembler.targetReferenceOf(entity)
+
+        then: "it can be parsed back"
+        if(targetUrl != null) {
+            assert referenceAssembler.parseSymIdentifiableUri(targetUrl) == TypedSymbolicId.from(entity)
+        }
+
+        where:
+        type << EntityType.TYPES.findAll { SymIdentifiable.isAssignableFrom(it) }
+    }
+
+    def "generates collection and search refs for #type"() {
+        when: "generating collection & search URLs"
+        referenceAssembler.resourcesReferenceOf(type)
+        referenceAssembler.searchesReferenceOf(type)
+
+        then:
+        notThrown(Exception)
+
+        where:
+        type << EntityType.TYPES
+    }
+
+    def "parsed sym ID ref for #url is #type #id in #namespaceType #namespaceId"() {
+        when:
+        def ref = referenceAssembler.parseSymIdentifiableUri(url)
+
+        then:
+        ref.namespaceType == namespaceType
+        ref.namespaceId == namespaceId
+        ref.type == type
+        ref.symbolicId == id
+
+        and:
+        referenceAssembler.parseSymIdentifiableUri('http://localhost:9000'+url) == ref
+        referenceAssembler.parseSymIdentifiableUri('http://localhost:9000/api/veo'+url) == ref
+
+        where:
+        url                                                                                                                                      | type        | id                                     | namespaceType | namespaceId
+        '/domains/37aa44d5-3707-416a-864c-839f97535a06/catalog-items/a149f709-3055-40a2-867a-aaf6b2ccc36d'                                       | CatalogItem | 'a149f709-3055-40a2-867a-aaf6b2ccc36d' | Domain        | '37aa44d5-3707-416a-864c-839f97535a06'
+        '/domains/37aa44d5-3707-416a-864c-839f97535a06/profiles/02557ca8-a579-4e53-a161-b1433b62eb77/items/a149f709-3055-40a2-867a-aaf6b2ccc36d' | ProfileItem | 'a149f709-3055-40a2-867a-aaf6b2ccc36d' | Profile       | '02557ca8-a579-4e53-a161-b1433b62eb77'
+    }
+
+    def "invalid URI #uri is rejected"() {
+        when:
+        referenceAssembler.parseIdentifiableRef(uri)
+
+        then:
+        def error = thrown UnprocessableDataException
+        error.message == "Invalid entity reference: $uri"
+
+        where:
+        uri << [
+            '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f/templates/28df429d-da5e-431a-a2d8-488c0741fb9f',
+            '/clients/28df429d-da5e-431a-a2d8-488c0741fb9f',
+            'http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/nothing',
+        ]
+    }
+
+    // TODO #3039 reconsider behavior
+    def "path traversal is a thing"() {
+        given:
+        def uri = "http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/processes/28df429d-da5e-431a-a2d8-488c0741fb9f"
+
+        expect:
+        with(referenceAssembler.parseIdentifiableRef(uri)) {
+            type == Process
+            id == '28df429d-da5e-431a-a2d8-488c0741fb9f'
+        }
     }
 }

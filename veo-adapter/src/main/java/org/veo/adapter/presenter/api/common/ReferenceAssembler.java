@@ -24,7 +24,6 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.SymIdentifiable;
@@ -32,6 +31,8 @@ import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
+import org.veo.core.entity.ref.TypedId;
 
 /**
  * Construct and deconstruct references to {@link Identifiable} & {@link AbstractRisk} objects.
@@ -101,26 +102,9 @@ public interface ReferenceAssembler {
 
   String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity);
 
-  /**
-   * Extract the objects type from the given URI.
-   *
-   * @param uri the URI which may be a URL.
-   * @return The class of the specific {@link Identifiable} type.
-   */
-  Class<? extends Entity> parseType(String uri);
+  TypedId<?> parseIdentifiableRef(String url);
 
-  /**
-   * Extract the objects ID from the given URI.
-   *
-   * @param uri the URI which may be a URL
-   */
-  String parseId(String uri);
-
-  /** Extracts the UUID of the namespace (parent entity) of a {@link SymIdentifiable} entity. */
-  String parseNamespaceId(String uri);
-
-  /** Extracts the type of the namespace (parent entity) of a {@link SymIdentifiable} entity. */
-  Class<? extends Identifiable> parseNamespaceType(String uri);
+  TypedId<? extends Element> parseElementRef(String url);
 
   /** Transforms the given adapter layer reference to an entity key. */
   Key<UUID> toKey(ITypedId<? extends Identifiable> reference);
@@ -130,13 +114,11 @@ public interface ReferenceAssembler {
 
   String schemaReferenceOf(String typeSingularTerm);
 
-  String parseElementIdInDomain(String targetInDomainUri);
-
-  Class<Element> parseElementTypeInDomain(String targetInDomainUri);
-
   String targetReferenceOf(RequirementImplementation requirementImplementation);
 
   String requirementImplementationsOf(ControlImplementation controlImplementation);
 
   String inspectionReferenceOf(String id, Domain domain);
+
+  ITypedSymbolicId<?, ?> parseSymIdentifiableUri(String uri);
 }
