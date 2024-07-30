@@ -1,4 +1,4 @@
-# 2. Domains auf einen Katalog begrenzen
+# 2. Limit domains to one catalog
 
 Date: 2023-03-24
 
