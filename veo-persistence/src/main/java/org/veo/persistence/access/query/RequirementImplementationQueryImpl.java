@@ -68,7 +68,8 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   private Specification<RequirementImplementationData> createSpecification(Client client) {
     return (root, query, criteriaBuilder) -> {
       query.distinct(true);
-      return criteriaBuilder.equal(root.join("control").join("owner").get("client"), client);
+      root.fetch("control");
+      return criteriaBuilder.equal(root.get("control").get("owner").get("client"), client);
     };
   }
 

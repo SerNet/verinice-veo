@@ -128,7 +128,14 @@ public interface RiskAffectedResource {
               defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
           Integer pageNumber,
       @RequestParam(value = SORT_COLUMN_PARAM, required = false, defaultValue = "status")
-          @Parameter(schema = @Schema(allowableValues = {"status", "implementationStatement"}))
+          @Parameter(
+              schema =
+                  @Schema(
+                      allowableValues = {
+                        "status",
+                        "implementationStatement",
+                        "control.abbreviation"
+                      }))
           String sortColumn,
       @RequestParam(
               value = SORT_ORDER_PARAM,
