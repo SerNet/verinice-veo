@@ -206,6 +206,18 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "update the element type schema in a domain with an object schema"() {
         given:
+        testDomain.applyElementTypeDefinition(newElementTypeDefinition("scope", testDomain) {
+            subTypes = [
+                SCP_Scope: newSubTypeDefinition {
+                    sortKey = 1
+                },
+                SCP_Controller: newSubTypeDefinition {
+                    sortKey = 2
+                },
+            ]
+        })
+        client = clientRepository.save(client)
+
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
             new JsonSlurper().parse(it)
         }
@@ -239,6 +251,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     'SCP_JointController',
                     'SCP_ResponsibleBody'
                 ] as Set
+                it.SCP_Scope.sortKey == 1
+                it.SCP_Controller.sortKey == 2
+                it.SCP_Processor.sortKey == 0
             }
             with(it.translations) {
                 it.size() == 2
@@ -267,7 +282,12 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def schemaJson = [
             subTypes:[
                 SCP_Container:[
-                    statuses:['Empty', 'Full']
+                    statuses:['Empty', 'Full'],
+                    sortKey : 1
+                ],
+                SCP_Location:[
+                    statuses:['Hidden', 'Revealed'],
+                    sortKey : 2
                 ]
             ],
             customAspects:[
@@ -289,6 +309,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     scope_SCP_Container_plural: 'Containers',
                     scope_SCP_Container_status_Empty: 'Empty',
                     scope_SCP_Container_status_Full: 'Full',
+                    scope_SCP_Location_singular: 'Location',
+                    scope_SCP_Location_plural: 'Locations',
+                    scope_SCP_Location_status_Hidden: 'Hidden',
+                    scope_SCP_Location_status_Revealed: 'Revealed',
                     container_lid_present: 'Lid present?',
                     container_owner: 'Owner'
                 ]
@@ -315,8 +339,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() ==~ [
-                    'SCP_Container'
+                    'SCP_Container',
+                    'SCP_Location'
                 ]
+                it.SCP_Location.sortKey == 2
             }
             with(it.translations) {
                 it.size() == 1

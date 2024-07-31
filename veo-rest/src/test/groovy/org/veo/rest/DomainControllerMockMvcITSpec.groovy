@@ -58,8 +58,12 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 name = "Domain 1"
                 applyElementTypeDefinition(newElementTypeDefinition("person", it) {
                     subTypes = [
-                        Team: newSubTypeDefinition {},
-                        Employee: newSubTypeDefinition {},
+                        Team: newSubTypeDefinition {
+                            sortKey = 1
+                        },
+                        Employee: newSubTypeDefinition {
+                            sortKey = 2
+                        },
                     ]
                 })
                 applyDecision('isBigTeam', newDecision('person', 'Team') {
@@ -159,6 +163,9 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             'document',
             'incident'
         ]
+        with(result.elementTypeDefinitions.person) {
+            subTypes.Team.sortKey == 1
+        }
         with(result.decisions.isBigTeam) {
             name.en == "Big team"
             elementSubType == "Team"

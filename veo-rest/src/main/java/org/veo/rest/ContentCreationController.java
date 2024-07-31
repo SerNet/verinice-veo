@@ -187,7 +187,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,
         new UpdateElementTypeDefinitionUseCase.InputData(
-            client, Key.uuidFrom(id), type, elementTypeDefinitionDto),
+            client, Key.uuidFrom(id), type, elementTypeDefinitionDto, false),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -210,7 +210,7 @@ public class ContentCreationController extends AbstractVeoController {
       return useCaseInteractor.execute(
           updateElementTypeDefinitionUseCase,
           new UpdateElementTypeDefinitionUseCase.InputData(
-              client, Key.uuidFrom(id), type, typeDefinition),
+              client, Key.uuidFrom(id), type, typeDefinition, true),
           out -> ResponseEntity.noContent().build());
     } catch (JsonProcessingException e) {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());

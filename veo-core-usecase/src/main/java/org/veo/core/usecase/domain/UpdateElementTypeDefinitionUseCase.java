@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -59,6 +60,24 @@ public class UpdateElementTypeDefinitionUseCase
     var elementTypeDefinition =
         domainStateMapper.toElementTypeDefinition(
             input.entityType.getSingularTerm(), input.elementTypeDefinition, domain);
+
+    // TODO #3042: remove this when we remove support for JSON schema
+    if (input.preserveSortKeys) {
+      elementTypeDefinition
+          .getSubTypes()
+          .forEach(
+              (subTypeId, subTypeDefinition) ->
+                  domain
+                      .findElementTypeDefinition(input.entityType.getSingularTerm())
+                      .ifPresent(
+                          existingDefinition ->
+                              Optional.ofNullable(existingDefinition.getSubTypes().get(subTypeId))
+                                  .ifPresent(
+                                      existingSubtypeDefinition ->
+                                          subTypeDefinition.setSortKey(
+                                              existingSubtypeDefinition.getSortKey()))));
+    }
+
     domain.applyElementTypeDefinition(elementTypeDefinition);
     return EmptyOutput.INSTANCE;
   }
@@ -73,6 +92,8 @@ public class UpdateElementTypeDefinitionUseCase
       @Valid Client authenticatedClient,
       Key<UUID> domainId,
       EntityType entityType,
-      ElementTypeDefinitionState elementTypeDefinition)
+      ElementTypeDefinitionState elementTypeDefinition,
+      // TODO #3042: remove this when we remove support for JSON schema
+      boolean preserveSortKeys)
       implements UseCase.InputData {}
 }
