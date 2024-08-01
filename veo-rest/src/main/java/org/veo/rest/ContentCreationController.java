@@ -197,6 +197,7 @@ public class ContentCreationController extends AbstractVeoController {
           "Updates a domain with an entity schema. Deprecated, use PUT /domains/{id}/element-type-definitions/{type}",
       deprecated = true)
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
+  // TODO #3042: remove this when we remove support for JSON schema
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,
       @PathVariable String id,

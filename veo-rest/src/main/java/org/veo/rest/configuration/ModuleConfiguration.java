@@ -947,6 +947,7 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  // TODO #3042: remove this when we remove support for JSON schema
   public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
     return new ObjectSchemaParser(entityFactory);
   }

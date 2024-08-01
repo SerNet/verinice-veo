@@ -53,6 +53,8 @@ import org.veo.core.entity.transform.EntityFactory;
  * used by the Object Schema Editor. It can update an existing element type definition with a
  * Jackson node representing the schema.
  */
+// TODO #3042: remove this when we remove support for JSON schema
+@Deprecated
 public class ObjectSchemaParser {
 
   private static final ObjectMapper OBJECTMAPPER =

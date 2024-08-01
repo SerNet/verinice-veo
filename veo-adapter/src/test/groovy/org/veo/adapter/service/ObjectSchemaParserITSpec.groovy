@@ -32,7 +32,7 @@ import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
-
+//TODO #3042: remove this when we remove support for JSON schema
 class ObjectSchemaParserITSpec extends Specification {
 
     EntityFactory entityFactory = Mock()
