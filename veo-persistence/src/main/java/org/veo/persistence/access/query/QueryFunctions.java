@@ -63,4 +63,12 @@ public class QueryFunctions {
         (root, query, criteriaBuilder) ->
             QueryFunctions.in(root.get(propertyName), condition.getValues(), criteriaBuilder));
   }
+
+  static <T, V> Specification<T> andNotIn(
+      Specification<T> spec, String propertyName, QueryCondition<V> condition) {
+    return spec.and(
+        (root, query, criteriaBuilder) ->
+            criteriaBuilder.not(
+                QueryFunctions.in(root.get(propertyName), condition.getValues(), criteriaBuilder)));
+  }
 }

@@ -103,10 +103,8 @@ class ControlImplementationRestTest extends VeoRestTest {
             implementationStatus == "UNKNOWN"
             description == "I have my reasons"
             with(owner.get(_requirementImplementations).body) {
-                totalItemCount == 3
-                with(items.find { it.control.displayName.endsWith("root control 1") }) {
-                    status == "UNKNOWN"
-                }
+                // TODO #3052 shouldn't the RI for root control 1 be here, too?
+                totalItemCount == 2
                 with(items.find { it.control.displayName.endsWith("sub control 1") }) {
                     status == "UNKNOWN"
                 }
@@ -119,10 +117,8 @@ class ControlImplementationRestTest extends VeoRestTest {
             implementationStatus == "UNKNOWN"
             responsible.displayName.endsWith("person 1")
             with(owner.get(_requirementImplementations).body) {
-                totalItemCount == 2
-                with(items.find { it.control.displayName.endsWith("root control 2") }) {
-                    status == "UNKNOWN"
-                }
+                // TODO #3052 shouldn't the RI for root control 2 be here, too?
+                totalItemCount == 1
                 with(items.find { it.control.displayName.endsWith("sub control 3") }) {
                     status == "UNKNOWN"
                 }
@@ -146,19 +142,17 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         then: "changes have been applied"
-        with(get("/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations").body) {
-            with(items.find { it.control.displayName.endsWith("root control 1") }) {
-                status == "PARTIAL"
-                implementationStatement == "It's a start"
-                responsible.displayName.endsWith("person 2")
-                implementationUntil == '1970-01-01'
-            }
-            with(items.find { it.control.displayName.endsWith("sub control 2") }) {
-                status == "YES"
-                implementationStatement == "Done!"
-                responsible.displayName.endsWith("person 2")
-                implementationUntil == '3000-01-01'
-            }
+        with(get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").body) {
+            status == "PARTIAL"
+            implementationStatement == "It's a start"
+            responsible.displayName.endsWith("person 2")
+            implementationUntil == '1970-01-01'
+        }
+        with(get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").body) {
+            status == "YES"
+            implementationStatement == "Done!"
+            responsible.displayName.endsWith("person 2")
+            implementationUntil == '3000-01-01'
         }
 
         and: "implementation status is reflected in CI"

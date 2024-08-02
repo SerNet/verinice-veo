@@ -18,6 +18,7 @@
 package org.veo.persistence.access.query;
 
 import static org.veo.persistence.access.query.QueryFunctions.andIn;
+import static org.veo.persistence.access.query.QueryFunctions.andNotIn;
 
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.repository.PagedResult;
@@ -63,6 +65,11 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   @Override
   public void whereIdsIn(QueryCondition<Key<UUID>> ids) {
     spec = andIn(spec, "id", ids.map(Key::value));
+  }
+
+  @Override
+  public void whereControlNotIn(QueryCondition<Control> controls) {
+    spec = andNotIn(spec, "control", controls);
   }
 
   private Specification<RequirementImplementationData> createSpecification(Client client) {

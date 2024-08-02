@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.compliance;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -64,6 +65,8 @@ public class GetRequirementImplementationsByControlImplementationUseCase
 
     var query = requirementImplementationRepository.query(input.authenticatedClient);
     query.whereIdsIn(new QueryCondition<>(riIds));
+    // TODO #3052 Make hiding the top RI conditional or remove the top RI altogether.
+    query.whereControlNotIn(new QueryCondition<>(Set.of(control)));
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
