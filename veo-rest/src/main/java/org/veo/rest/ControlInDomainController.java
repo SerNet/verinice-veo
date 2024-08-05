@@ -73,6 +73,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlInDomainDto;
@@ -83,8 +84,11 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
+import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -115,6 +119,8 @@ public class ControlInDomainController implements ElementInDomainResource {
   private final UpdateControlInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final EntityToDtoTransformer entityToDtoTransformer;
+  private final UseCaseInteractor useCaseInteractor;
+  private final GetControlImplementationsUseCase getControlImplementationsUseCase;
 
   @Operation(summary = "Loads a control from the viewpoint of a domain")
   @ApiResponse(
@@ -210,6 +216,74 @@ public class ControlInDomainController implements ElementInDomainResource {
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformControl2Dto,
         Control.class);
+  }
+
+  @Operation(summary = "Loads the control implementations of a control")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Control implementations loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ControlImplementationDto.class)))
+  @ApiResponse(responseCode = "404", description = "Control not found")
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/control-implementations")
+  public @Valid Future<PageDto<ControlImplementationDto>> getControlImplementations(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(value = SORT_COLUMN_PARAM, required = false, defaultValue = "id")
+          @Parameter(
+              schema =
+                  @Schema(
+                      allowableValues = {
+                        "id",
+                        "control.name",
+                        "control.abbreviation",
+                        "owner.name",
+                        "owner.abbreviation",
+                        "responsible.name"
+                      }))
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    var client = clientLookup.getClient(auth);
+    return useCaseInteractor.execute(
+        getControlImplementationsUseCase,
+        new GetControlImplementationsUseCase.InputData(
+            client,
+            Key.uuidFrom(uuid),
+            Key.uuidFrom(domainId),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        out ->
+            PagingMapper.toPage(
+                out.page(),
+                ci ->
+                    entityToDtoTransformer.mapControlImplementation(
+                        ci,
+                        ci.getOwner().getDomains().stream()
+                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .findFirst()
+                            .orElseThrow())));
   }
 
   @Operation(summary = "Loads the parts of a control in a domain")

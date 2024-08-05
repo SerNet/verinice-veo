@@ -19,25 +19,35 @@ package org.veo.adapter.presenter.api.dto;
 
 import jakarta.validation.constraints.Size;
 
+import javax.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.state.ControlImplementationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ControlImplementationDto implements ControlImplementationState {
   IdRef<Control> control;
 
@@ -58,5 +68,35 @@ public class ControlImplementationDto implements ControlImplementationState {
   @JsonProperty(value = "_requirementImplementations", access = JsonProperty.Access.READ_ONLY)
   String getRequirementImplementationsUri() {
     return requirementImplementationsRef.getUrl();
+  }
+
+  @Schema(description = "Owner of the control implementation")
+  IdRef<RiskAffected<?, ?>> owner;
+
+  public static ControlImplementationDto from(
+      ControlImplementation entity,
+      ReferenceAssembler referenceAssembler,
+      @Nullable Domain domain) {
+    return ControlImplementationDto.builder()
+        .control(ref(entity.getControl(), referenceAssembler, domain))
+        .description(entity.getDescription())
+        .responsible(ref(entity.getResponsible(), referenceAssembler, domain))
+        .requirementImplementationsRef(
+            RequirementImplementationsRef.from(entity, referenceAssembler))
+        .owner(ref(entity.getOwner(), referenceAssembler, domain))
+        .implementationStatus(
+            entity.getOwner().getRequirementImplementations().stream()
+                .filter(ri -> ri.getControl().equals(entity.getControl()))
+                .findAny()
+                .get()
+                .getStatus())
+        .build();
+  }
+
+  private static <T extends Element> IdRef<T> ref(
+      T element, ReferenceAssembler referenceAssembler, @Nullable Domain domain) {
+    return domain != null
+        ? ElementInDomainIdRef.from(element, domain, referenceAssembler)
+        : IdRef.from(element, referenceAssembler);
   }
 }

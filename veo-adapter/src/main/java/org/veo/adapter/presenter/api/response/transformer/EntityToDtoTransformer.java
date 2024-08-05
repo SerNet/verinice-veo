@@ -38,7 +38,6 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
-import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -539,18 +538,9 @@ public final class EntityToDtoTransformer {
     mapRiskAffectedProperties(source, target, null);
   }
 
-  private ControlImplementationDto mapControlImplementation(
-      RiskAffected<?, ?> riskAffected, ControlImplementation source, @Nullable Domain domain) {
-    return new ControlImplementationDto(
-        ref(source.getControl(), domain),
-        riskAffected.getRequirementImplementations().stream()
-            .filter(ri -> ri.getControl().equals(source.getControl()))
-            .findAny()
-            .get()
-            .getStatus(),
-        source.getDescription(),
-        ref(source.getResponsible(), domain),
-        RequirementImplementationsRef.from(source, referenceAssembler));
+  public ControlImplementationDto mapControlImplementation(
+      ControlImplementation source, @Nullable Domain domain) {
+    return ControlImplementationDto.from(source, referenceAssembler, domain);
   }
 
   private <T extends Element> IdRef<T> ref(T element, @Nullable Domain domain) {
@@ -725,7 +715,7 @@ public final class EntityToDtoTransformer {
       TElement source, RiskAffectedDto<TElement> target, Domain domain) {
     target.setControlImplementations(
         source.getControlImplementations().stream()
-            .map(ci -> mapControlImplementation(source, ci, domain))
+            .map(ci -> mapControlImplementation(ci, domain))
             .collect(toSet()));
   }
 

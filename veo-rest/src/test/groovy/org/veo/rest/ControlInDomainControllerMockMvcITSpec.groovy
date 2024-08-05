@@ -188,6 +188,48 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         controlInTestdomain.customAspects.control_dataProtection == null
     }
 
+    def "get all control implementations of a control in a domain"() {
+        given: "15 control and one scope in the domain"
+        def controlId = parseJson(post("/domains/$testDomainId/controls", [
+            name: "End-to-end encryption",
+            abbreviation: "E2EE",
+            description: "A security method that keeps messages secure",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "TOM",
+            status: "NEW",
+        ])).resourceId
+
+        (1..15).forEach {
+            post("/domains/$testDomainId/scopes", [
+                name: "Risky scope $it",
+                owner: [targetUri: "/units/$unitId"],
+                subType: "Company",
+                status: "NEW",
+                controlImplementations: [
+                    [control: ["targetUri": "/controls/$controlId"]],
+                ]
+            ])
+        }
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domains/$testDomainId/controls/$controlId/control-implementations?size=10&sortBy=owner.name"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.owner.name == (1..10).collect { "Risky scope $it" }
+            items*.owner.subType =~ ["Company"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domains/$testDomainId/controls/$controlId/control-implementations?size=10&page=1&sortBy=owner.name"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.owner.name == (11..15).collect { "Risky scope $it" }
+            items*.owner.subType =~ ["Company"]
+        }
+    }
+
     def "get all controls in a domain"() {
         given: "15 controls in the domain & one unassociated control"
         (1..15).forEach {
