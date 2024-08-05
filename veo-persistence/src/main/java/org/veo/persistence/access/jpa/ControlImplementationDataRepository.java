@@ -21,7 +21,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +36,13 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.persistence.entity.jpa.ControlImplementationData;
 
+import lombok.NonNull;
+
 @Transactional(readOnly = true)
 @Repository
 public interface ControlImplementationDataRepository
-    extends JpaRepository<ControlImplementationData, Long> {
+    extends JpaRepository<ControlImplementationData, Long>,
+        JpaSpecificationExecutor<ControlImplementationData> {
 
   @Query(
       """
@@ -49,6 +58,10 @@ public interface ControlImplementationDataRepository
           where ci.control.dbId in ?1
          """)
   Set<ControlImplementation> findByControlIdWithOwner(Set<String> controlIds);
+
+  @Nonnull
+  Page<ControlImplementationData> findAll(
+      Specification<ControlImplementationData> spec, @NonNull Pageable pageable);
 
   @Query(
       """
