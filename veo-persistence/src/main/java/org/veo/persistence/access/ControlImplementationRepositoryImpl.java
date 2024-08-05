@@ -18,15 +18,20 @@
 package org.veo.persistence.access;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.repository.ControlImplementationQuery;
 import org.veo.core.repository.ControlImplementationRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
+import org.veo.persistence.access.query.ControlImplementationQueryImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +44,11 @@ public class ControlImplementationRepositoryImpl implements ControlImplementatio
   public Set<ControlImplementation> findByControls(Set<Control> removedControls) {
     return dataRepo.findByControlIdWithOwner(
         removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet()));
+  }
+
+  @Override
+  public ControlImplementationQuery query(Client client, Key<UUID> domainId) {
+    return new ControlImplementationQueryImpl(dataRepo, client, domainId);
   }
 
   @Override

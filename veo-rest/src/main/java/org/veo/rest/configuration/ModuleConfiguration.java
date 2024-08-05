@@ -118,6 +118,7 @@ import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
+import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
@@ -697,6 +698,12 @@ public class ModuleConfiguration {
           RequirementImplementationRepository requirementImplementationRepository) {
     return new GetRequirementImplementationsByControlImplementationUseCase(
         repositoryProvider, requirementImplementationRepository);
+  }
+
+  @Bean
+  public GetControlImplementationsUseCase retrieveGetControlImplementationsUseCase(
+      ControlImplementationRepository controlImplementationRepository) {
+    return new GetControlImplementationsUseCase(controlImplementationRepository);
   }
 
   @Bean
