@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.UnitRepository
@@ -37,9 +38,10 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
+    private Client client
 
     def setup() {
-        def client = createTestClient()
+        client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
         dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         client = clientRepository.getById(client.id)
@@ -228,6 +230,27 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             items*.owner.name == (11..15).collect { "Risky scope $it" }
             items*.owner.subType =~ ["Company"]
         }
+
+        when: "request with a control not associated with the domain returns 404"
+        def nonAssociatedDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        get("/domains/$nonAssociatedDomainId/controls/$controlId/control-implementations?size=10&sortBy=owner.name", 404)
+
+        then:
+        thrown(NotFoundException)
+
+        when: "request with non existing domain returns 404"
+        def nonExistingDomainId = randomUUID().toString()
+        get("/domains/$nonExistingDomainId/controls/$controlId/control-implementations?size=10&sortBy=owner.name", 404)
+
+        then:
+        thrown(NotFoundException)
+
+        when: "request with non existing control returns 404"
+        def nonExistingControlId = randomUUID().toString()
+        get("/domains/$testDomainId/controls/$nonExistingControlId/control-implementations?size=10&sortBy=owner.name", 404)
+
+        then:
+        thrown(NotFoundException)
     }
 
     def "get all controls in a domain"() {

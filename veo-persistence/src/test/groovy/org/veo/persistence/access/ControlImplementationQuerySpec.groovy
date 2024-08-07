@@ -18,6 +18,7 @@
 package org.veo.persistence.access
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mapping.PropertyReferenceException
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
@@ -118,6 +119,12 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
         then:
         result.totalResults == 3
         result.resultPage*.owner*.abbreviation == ["ABB3", "ABB2", "ABB1"]
+
+        when: 'sorting with an invalid parameter results in an error'
+        result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "owner.nonExistingProp", SortOrder.DESCENDING))
+
+        then:
+        thrown(PropertyReferenceException)
     }
 
     def 'filter CIs by risk-affected'() {

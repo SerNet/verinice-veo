@@ -227,6 +227,8 @@ public class ControlInDomainController implements ElementInDomainResource {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ControlImplementationDto.class)))
   @ApiResponse(responseCode = "404", description = "Control not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Control not associated with domain")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/control-implementations")
   public @Valid Future<PageDto<ControlImplementationDto>> getControlImplementations(
       @Parameter(hidden = true) Authentication auth,

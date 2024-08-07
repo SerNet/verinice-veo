@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -31,6 +33,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.ControlImplementationQuery;
 import org.veo.core.repository.ControlImplementationRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
@@ -47,24 +50,37 @@ public class GetControlImplementationsUseCase
 
   private final ControlImplementationRepository controlImplementationRepository;
   private final GenericElementRepository genericElementRepository;
+  private final DomainRepository domainRepository;
 
   @Override
   public OutputData execute(InputData input) {
     var query = controlImplementationRepository.query(input.authenticatedClient, input.domainId);
-    applyAdditionalQueryParameters(input, query);
+    Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
+    applyAdditionalQueryParameters(input, domain, query);
     PagedResult<ControlImplementation> result = query.execute(input.pagingConfiguration);
     return new OutputData(result);
   }
 
-  private void applyAdditionalQueryParameters(InputData input, ControlImplementationQuery query) {
-    Optional.ofNullable(input.control).ifPresent(query::whereControlIdIn);
+  private void applyAdditionalQueryParameters(
+      InputData input, Domain domain, ControlImplementationQuery query) {
+    Optional.ofNullable(input.control)
+        .ifPresent(
+            id -> {
+              Control control =
+                  genericElementRepository.getById(id, Control.class, input.authenticatedClient);
+              if (!control.isAssociatedWithDomain(domain)) {
+                throw NotFoundException.elementNotAssociatedWithDomain(
+                    control, input.domainId.uuidValue());
+              }
+              query.whereControlIdIn(id);
+            });
     Optional.ofNullable(input.riskAffectedId)
         .ifPresent(
             id -> {
               RiskAffected<?, ?> ra =
                   genericElementRepository.getById(
                       id.toKey(), id.getType(), input.authenticatedClient);
-              if (ra.getDomains().stream().noneMatch(d -> d.getId().equals(input.domainId))) {
+              if (!ra.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
                     ra, input.domainId.uuidValue());
               }
