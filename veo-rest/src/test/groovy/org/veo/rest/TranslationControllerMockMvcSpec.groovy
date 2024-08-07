@@ -59,6 +59,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         translations.lang.de.scopes == 'Scopes'
         translations.lang.en.control == 'control'
         translations.lang.en.persons == 'persons'
+        translations.lang.en.person_plural == 'persons'
     }
 
     @WithUserDetails("user@domain.example")
