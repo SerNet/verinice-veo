@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityManager;
+
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,7 @@ import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
@@ -59,6 +62,7 @@ import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
+import org.veo.persistence.access.query.LinkQueryImpl;
 import org.veo.persistence.entity.jpa.ControlImplementationData;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.RequirementImplementationData;
@@ -80,6 +84,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   private final ControlImplementationDataRepository ciRepository;
 
   private final RequirementImplementationDataRepository riRepository;
+  private final EntityManager em;
 
   @Override
   public ElementQuery<Element> query(Client client) {
@@ -98,6 +103,11 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         .findById(elementId.value(), clientId.value())
         .filter(e -> e.getModelInterface() == elementType)
         .map(e -> (T) e);
+  }
+
+  @Override
+  public LinkQuery queryLinks(Element element, Domain domain) {
+    return new LinkQueryImpl(em, dataRepository, element, domain);
   }
 
   @Override

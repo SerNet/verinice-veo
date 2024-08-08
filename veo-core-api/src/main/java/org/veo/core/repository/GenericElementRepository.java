@@ -49,4 +49,6 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
 
   <T extends Element> Optional<T> findById(
       Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId);
+
+  LinkQuery queryLinks(Element element, Domain domain);
 }
