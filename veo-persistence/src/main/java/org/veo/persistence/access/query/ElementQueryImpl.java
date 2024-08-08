@@ -333,7 +333,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   @Override
   @Transactional(readOnly = true)
-  public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
+  public PagedResult<TInterface, String> execute(PagingConfiguration<String> pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
     List<UUID> ids = items.stream().map(ElementData::getDbId).toList();
     fullyLoadItems(ids);
@@ -473,7 +473,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     throw new UnsupportedOperationException("Cannot filter by child elements");
   }
 
-  private static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+  private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
         pagingConfiguration.getPageNumber(),
         pagingConfiguration.getPageSize(),

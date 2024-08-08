@@ -32,7 +32,7 @@ import org.veo.core.entity.Unit;
  *
  * @param <T> Entity type
  */
-public interface ElementQuery<T extends Element> extends Query<T> {
+public interface ElementQuery<T extends Element> extends Query<T, String> {
 
   void whereUnitIn(Set<Unit> units);
 

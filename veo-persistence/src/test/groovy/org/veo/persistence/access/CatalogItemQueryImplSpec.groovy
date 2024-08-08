@@ -119,7 +119,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         result.resultPage*.name == ["1 One", "2 Two", "10 Ten"]
 
         when:
-        result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "abbreviation", SortOrder.ASCENDING))
+        result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "abbreviation", SortOrder.ASCENDING))
 
         then:
         result.resultPage*.abbreviation == ["1 O", "2 T", "10 T"]

@@ -48,7 +48,7 @@ public class CatalogItemQueryImpl implements CatalogItemQuery {
 
   @Override
   @Transactional(readOnly = true)
-  public PagedResult<CatalogItem> execute(PagingConfiguration pagingConfiguration) {
+  public PagedResult<CatalogItem, String> execute(PagingConfiguration<String> pagingConfiguration) {
     var items = repo.findAll(spec, toPageable(pagingConfiguration));
     return new PagedResult<>(
         pagingConfiguration,
@@ -89,7 +89,7 @@ public class CatalogItemQueryImpl implements CatalogItemQuery {
     };
   }
 
-  private static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+  private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
         pagingConfiguration.getPageNumber(),
         pagingConfiguration.getPageSize(),

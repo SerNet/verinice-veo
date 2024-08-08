@@ -23,9 +23,9 @@ import lombok.Data;
 
 /** A page of results from a repository query */
 @Data
-public class PagedResult<T> {
+public class PagedResult<T, TSortCriterion> {
 
-  private final PagingConfiguration pagingConfiguration;
+  private final PagingConfiguration<TSortCriterion> pagingConfiguration;
   private final List<T> resultPage;
   private final long totalResults;
   private final int totalPages;

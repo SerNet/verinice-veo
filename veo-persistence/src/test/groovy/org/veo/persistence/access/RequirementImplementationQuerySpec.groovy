@@ -82,7 +82,7 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
         query.whereIdsIn(new QueryCondition(asset.controlImplementations.collectMany {
             it.requirementImplementations
         }.collect { it.toKey() } as Set))
-        def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
+        def result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
 
         then:
         result.totalResults == 2
@@ -91,7 +91,7 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
 
     def 'sort RIs by control abbreviation'() {
         when:
-        def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
+        def result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
 
         then:
         result.totalResults == 2

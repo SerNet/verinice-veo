@@ -75,10 +75,10 @@ public class GetRequirementImplementationsByControlImplementationUseCase
       @NotNull Client authenticatedClient,
       @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
       @NotNull ITypedId<Control> control,
-      @NotNull PagingConfiguration pagingConfiguration)
+      @NotNull PagingConfiguration<String> pagingConfiguration)
       implements UseCase.InputData {}
 
   @Valid
-  public record OutputData(@NotNull PagedResult<RequirementImplementation> result)
+  public record OutputData(@NotNull PagedResult<RequirementImplementation, String> result)
       implements UseCase.OutputData {}
 }

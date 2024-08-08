@@ -21,14 +21,14 @@ import lombok.Data;
 
 /** Used to limit the results from a repository to a number of items */
 @Data
-public class PagingConfiguration {
+public class PagingConfiguration<TSortCriterion> {
 
-  public static final PagingConfiguration UNPAGED =
-      new PagingConfiguration(Integer.MAX_VALUE, 0, "name", SortOrder.ASCENDING);
+  public static final PagingConfiguration<String> UNPAGED =
+      new PagingConfiguration<>(Integer.MAX_VALUE, 0, "name", SortOrder.ASCENDING);
 
   private final int pageSize;
   private final int pageNumber;
-  private final String sortColumn;
+  private final TSortCriterion sortColumn;
   private final SortOrder sortOrder;
 
   public enum SortOrder {

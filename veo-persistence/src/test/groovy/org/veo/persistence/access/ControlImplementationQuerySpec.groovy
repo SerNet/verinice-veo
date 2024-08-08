@@ -114,7 +114,7 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
 
     def 'sort CIs by Risk Affected abbreviation'() {
         when:
-        def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "owner.abbreviation", SortOrder.DESCENDING))
+        def result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "owner.abbreviation", SortOrder.DESCENDING))
 
         then:
         result.totalResults == 3

@@ -54,7 +54,8 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
 
   @Override
   @Transactional(readOnly = true)
-  public PagedResult<ControlImplementation> execute(PagingConfiguration pagingConfiguration) {
+  public PagedResult<ControlImplementation, String> execute(
+      PagingConfiguration<String> pagingConfiguration) {
     var items = repo.findAll(spec, toPageable(pagingConfiguration));
     return new PagedResult<>(
         pagingConfiguration,
@@ -123,7 +124,7 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
         || criteriaQuery.getResultType() == long.class;
   }
 
-  private static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+  private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
         pagingConfiguration.getPageNumber(),
         pagingConfiguration.getPageSize(),

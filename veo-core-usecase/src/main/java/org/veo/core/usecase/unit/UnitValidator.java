@@ -50,7 +50,7 @@ public class UnitValidator {
     query.whereDomainsContain(removedDomain);
     var associatedElementsPage =
         query.execute(
-            new PagingConfiguration(10, 0, "name", PagingConfiguration.SortOrder.ASCENDING));
+            new PagingConfiguration<>(10, 0, "name", PagingConfiguration.SortOrder.ASCENDING));
     if (associatedElementsPage.getTotalResults() > 0) {
       throw new UnprocessableDataException(
           "Cannot remove domain %s from unit. %s element(s) in the unit are associated with it, including: %s"

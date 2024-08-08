@@ -32,7 +32,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
 
     GenericElementRepository repo = Mock()
     ElementQuery<Person> query = Mock()
-    PagingConfiguration pagingConfiguration = Mock()
+    PagingConfiguration<String> pagingConfiguration = Mock()
     RepositoryProvider repositoryProvider = Mock()
 
     GetElementsUseCase usecase = new GetElementsUseCase(clientRepository, repo, repositoryProvider, unitHierarchyProvider)

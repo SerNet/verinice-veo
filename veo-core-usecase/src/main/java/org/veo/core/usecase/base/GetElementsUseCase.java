@@ -164,11 +164,11 @@ public class GetElementsUseCase
       QueryCondition<String> name,
       QueryCondition<String> abbreviation,
       QueryCondition<String> updatedBy,
-      PagingConfiguration pagingConfiguration,
+      PagingConfiguration<String> pagingConfiguration,
       boolean embedRisks)
       implements UseCase.InputData {}
 
   @Valid
-  public record OutputData(@Valid PagedResult<? extends Element> elements)
+  public record OutputData(@Valid PagedResult<? extends Element, String> elements)
       implements UseCase.OutputData {}
 }

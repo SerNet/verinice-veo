@@ -25,8 +25,8 @@ import org.veo.core.repository.PagingConfiguration;
 
 public class PagingMapper {
 
-  public static <TDto, TItem> PageDto<TDto> toPage(
-      PagedResult<TItem> input, Function<TItem, TDto> mapper) {
+  public static <TDto, TItem, TSortCriterion> PageDto<TDto> toPage(
+      PagedResult<TItem, TSortCriterion> input, Function<TItem, TDto> mapper) {
     return new PageDto<>(
         input.getResultPage().stream().map(mapper).toList(),
         input.getTotalResults(),
@@ -34,9 +34,9 @@ public class PagingMapper {
         input.getPagingConfiguration().getPageNumber());
   }
 
-  public static PagingConfiguration toConfig(
-      int pageSize, int pageNumber, String sortColumn, String sortOrder) {
-    return new PagingConfiguration(pageSize, pageNumber, sortColumn, getSortOrder(sortOrder));
+  public static <TSortCriterion> PagingConfiguration<TSortCriterion> toConfig(
+      int pageSize, int pageNumber, TSortCriterion sortColumn, String sortOrder) {
+    return new PagingConfiguration<>(pageSize, pageNumber, sortColumn, getSortOrder(sortOrder));
   }
 
   private static PagingConfiguration.SortOrder getSortOrder(String sortOrder) {

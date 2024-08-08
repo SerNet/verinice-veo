@@ -711,7 +711,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when: "querying processes sorted by name ascending"
-        def result = query.execute(new PagingConfiguration(3, 0, 'name', SortOrder.ASCENDING))
+        def result = query.execute(new PagingConfiguration<>(3, 0, 'name', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -722,7 +722,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
 
         when: "querying processes sorted by name descending"
-        result = query.execute( new PagingConfiguration(3, 0, 'name', SortOrder.DESCENDING))
+        result = query.execute( new PagingConfiguration<>(3, 0, 'name', SortOrder.DESCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -733,7 +733,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
 
         when: "querying processes sorted by description ascending"
-        result = query.execute( new PagingConfiguration(3, 0, 'description', SortOrder.ASCENDING))
+        result = query.execute( new PagingConfiguration<>(3, 0, 'description', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -750,7 +750,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def query = new ElementQueryImpl(dataRepository, dataRepository, null, null, null, null, null, null, null, client)
 
         when:
-        query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
+        query.execute(new PagingConfiguration<>(2, 0, 'foo', SortOrder.ASCENDING))
 
         then:
         1 * dataRepository.findAll(_, { Pageable pageable->
@@ -774,7 +774,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when: "querying processes sorted by designator ascending"
         def query = elementQueryFactory.queryPersons(client)
 
-        def result = query.execute(new PagingConfiguration(100, 0, 'designator', SortOrder.ASCENDING))
+        def result = query.execute(new PagingConfiguration<>(100, 0, 'designator', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -810,7 +810,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         when: "querying persons sorted by abbreviation ascending"
         def query = elementQueryFactory.queryPersons(client)
-        def result = query.execute(new PagingConfiguration(10, 0, 'abbreviation', SortOrder.ASCENDING))
+        def result = query.execute(new PagingConfiguration<>(10, 0, 'abbreviation', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         result.resultPage*.abbreviation == [
@@ -842,7 +842,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         when: "querying assets sorted by abbreviation ascending"
         def query = elementQueryFactory.queryAssets(client)
-        def result = query.execute(new PagingConfiguration(10, 0, 'name', SortOrder.ASCENDING))
+        def result = query.execute(new PagingConfiguration<>(10, 0, 'name', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         result.resultPage*.name == [

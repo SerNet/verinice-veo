@@ -23,7 +23,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
-public interface RequirementImplementationQuery extends Query<RequirementImplementation> {
+public interface RequirementImplementationQuery extends Query<RequirementImplementation, String> {
   void whereIdsIn(QueryCondition<Key<UUID>> ids);
 
   void whereControlNotIn(QueryCondition<Control> controls);

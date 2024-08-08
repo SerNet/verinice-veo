@@ -57,7 +57,7 @@ public class GetControlImplementationsUseCase
     var query = controlImplementationRepository.query(input.authenticatedClient, input.domainId);
     Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
     applyAdditionalQueryParameters(input, domain, query);
-    PagedResult<ControlImplementation> result = query.execute(input.pagingConfiguration);
+    var result = query.execute(input.pagingConfiguration);
     return new OutputData(result);
   }
 
@@ -94,9 +94,9 @@ public class GetControlImplementationsUseCase
       Key<UUID> control,
       @NotNull Key<UUID> domainId,
       TypedId<? extends RiskAffected<?, ?>> riskAffectedId,
-      @NotNull PagingConfiguration pagingConfiguration)
+      @NotNull PagingConfiguration<String> pagingConfiguration)
       implements UseCase.InputData {}
 
-  public record OutputData(@Valid PagedResult<ControlImplementation> page)
+  public record OutputData(@Valid PagedResult<ControlImplementation, String> page)
       implements UseCase.OutputData {}
 }

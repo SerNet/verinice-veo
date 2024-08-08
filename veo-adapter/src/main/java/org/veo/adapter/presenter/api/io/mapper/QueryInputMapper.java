@@ -58,7 +58,7 @@ public class QueryInputMapper {
       String name,
       String abbreviation,
       String updatedBy,
-      PagingConfiguration pagingConfiguration) {
+      PagingConfiguration<String> pagingConfiguration) {
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
         .abbreviation(whereIn(abbreviation))
@@ -81,7 +81,7 @@ public class QueryInputMapper {
   }
 
   public static GetElementsUseCase.InputData map(
-      Client client, SearchQueryDto searchQuery, PagingConfiguration pagingConfiguration) {
+      Client client, SearchQueryDto searchQuery, PagingConfiguration<String> pagingConfiguration) {
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
         .childElementIds(transformUuidCondition(searchQuery.getChildElementIds()))
@@ -104,7 +104,7 @@ public class QueryInputMapper {
       String domainId,
       String scopeId,
       Set<String> elementTypes,
-      PagingConfiguration config) {
+      PagingConfiguration<String> config) {
     Optional.ofNullable(elementTypes)
         .ifPresent(types -> types.forEach(EntityType::validateElementType));
     return GetElementsUseCase.InputData.builder()
@@ -124,7 +124,7 @@ public class QueryInputMapper {
       String abbreviation,
       String name,
       String description,
-      PagingConfiguration config) {
+      PagingConfiguration<String> config) {
     return new QueryCatalogItemsUseCase.InputData(
         client.getId(),
         Key.uuidFrom(domainId),

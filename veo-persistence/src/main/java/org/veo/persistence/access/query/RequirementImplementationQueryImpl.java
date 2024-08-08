@@ -53,7 +53,8 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
 
   @Override
   @Transactional(readOnly = true)
-  public PagedResult<RequirementImplementation> execute(PagingConfiguration pagingConfiguration) {
+  public PagedResult<RequirementImplementation, String> execute(
+      PagingConfiguration<String> pagingConfiguration) {
     var items = repo.findAll(spec, toPageable(pagingConfiguration));
     return new PagedResult<>(
         pagingConfiguration,
@@ -80,7 +81,7 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
     };
   }
 
-  private static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+  private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
         pagingConfiguration.getPageNumber(),
         pagingConfiguration.getPageSize(),

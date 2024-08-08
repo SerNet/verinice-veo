@@ -51,7 +51,6 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
-import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
@@ -295,7 +294,7 @@ public class PerformActionUseCase
     query.whereAppliedItemsContain(items);
     query.whereOwnerIs(unit);
     query.fetchAppliedCatalogItems();
-    PagedResult<Element> result = query.execute(PagingConfiguration.UNPAGED);
+    var result = query.execute(PagingConfiguration.UNPAGED);
     return result.getResultPage();
   }
 

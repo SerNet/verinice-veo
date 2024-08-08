@@ -22,7 +22,7 @@ import java.util.UUID;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.ControlImplementation;
 
-public interface ControlImplementationQuery extends Query<ControlImplementation> {
+public interface ControlImplementationQuery extends Query<ControlImplementation, String> {
   void whereControlIdIn(Key<UUID> controlId);
 
   void whereRiskAffectedIs(UUID riskAffectedId);

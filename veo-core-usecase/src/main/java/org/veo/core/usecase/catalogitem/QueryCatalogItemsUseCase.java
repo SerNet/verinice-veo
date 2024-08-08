@@ -59,7 +59,7 @@ public class QueryCatalogItemsUseCase
   public record InputData(
       @NotNull Key<UUID> clientId,
       @NotNull Key<UUID> domainId,
-      @NotNull PagingConfiguration pagingConfiguration,
+      @NotNull PagingConfiguration<String> pagingConfiguration,
       QueryCondition<String> elementTypes,
       QueryCondition<String> subTypes,
       QueryCondition<String> abbreviation,
@@ -67,5 +67,6 @@ public class QueryCatalogItemsUseCase
       QueryCondition<String> description)
       implements UseCase.InputData {}
 
-  public record OutputData(@Valid PagedResult<CatalogItem> page) implements UseCase.OutputData {}
+  public record OutputData(@Valid PagedResult<CatalogItem, String> page)
+      implements UseCase.OutputData {}
 }
