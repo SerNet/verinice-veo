@@ -58,11 +58,8 @@ public class GetElementUseCase<T extends Element>
         .map(
             domain -> {
               if (!element.isAssociatedWithDomain(domain)) {
-                throw new NotFoundException(
-                    "%s %s is not associated with domain %s",
-                    element.getModelInterface().getSimpleName(),
-                    element.getIdAsString(),
-                    domain.getIdAsString());
+                throw NotFoundException.elementNotAssociatedWithDomain(
+                    element, domain.getIdAsString());
               }
               return domain;
             });

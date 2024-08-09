@@ -20,6 +20,7 @@ package org.veo.core.entity.exception;
 import java.util.UUID;
 
 import org.veo.core.entity.DomainException;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.IEntityRef;
@@ -50,5 +51,11 @@ public class NotFoundException extends DomainException {
 
   public NotFoundException(String messageTemplate, Object... arguments) {
     super(String.format(messageTemplate, arguments));
+  }
+
+  public static NotFoundException elementNotAssociatedWithDomain(Element element, String domainId) {
+    return new NotFoundException(
+        "%s %s is not associated with domain %s",
+        element.getModelInterface().getSimpleName(), element.getIdAsString(), domainId);
   }
 }
