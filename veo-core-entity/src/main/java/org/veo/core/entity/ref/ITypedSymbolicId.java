@@ -28,17 +28,17 @@ import org.veo.core.entity.SymIdentifiable;
 public interface ITypedSymbolicId<
         T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     extends IEntityRef<T> {
-  String getSymbolicId();
+  UUID getSymbolicId();
 
   default Key<UUID> getSymbolicKey() {
-    return Key.uuidFrom(getSymbolicId());
+    return Key.from(getSymbolicId());
   }
 
   default Key<UUID> getOwnerKey() {
-    return Key.uuidFrom(getNamespaceId());
+    return Key.from(getNamespaceId());
   }
 
-  String getNamespaceId();
+  UUID getNamespaceId();
 
   Class<TNamespace> getNamespaceType();
 

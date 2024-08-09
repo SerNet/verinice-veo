@@ -81,10 +81,10 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
         .flatMap(
             entry -> {
               var namespaceType = entry.getKey().getType();
-              var namespaceId = UUID.fromString(entry.getKey().getId());
+              var namespaceId = entry.getKey().getId();
               var symIds =
                   entry.getValue().stream()
-                      .map(it -> it.getSymbolicKey().value())
+                      .map(ITypedSymbolicId::getSymbolicId)
                       .collect(Collectors.toSet());
               if (namespaceType.equals(Domain.class)) {
                 return catalogItemDataRepository

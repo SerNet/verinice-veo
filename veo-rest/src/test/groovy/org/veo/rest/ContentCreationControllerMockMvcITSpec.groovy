@@ -27,7 +27,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -445,13 +445,13 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.1"], 400)
 
         then:
-        thrown(HandlerMethodValidationException)
+        thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a prerelease label"
         post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.1-prerelease3"], 400)
 
         then:
-        thrown(HandlerMethodValidationException)
+        thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a higher version"
         post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.1"])

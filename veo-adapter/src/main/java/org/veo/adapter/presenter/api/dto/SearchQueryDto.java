@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.UUID;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
@@ -56,7 +57,7 @@ import lombok.extern.jackson.Jacksonized;
 public class SearchQueryDto {
 
   @Schema(description = "The ID of the unit of which the searches elements must be a member.")
-  UuidQueryConditionDto unitId;
+  QueryConditionDto<UUID> unitId;
 
   @Schema(description = "A substring of the description of an element.")
   QueryConditionDto<String> description;
@@ -80,7 +81,7 @@ public class SearchQueryDto {
   QueryConditionDto<String> status;
 
   @Schema(description = "IDs of an element's child elements.")
-  QueryConditionDto<String> childElementIds;
+  QueryConditionDto<UUID> childElementIds;
 
   @Schema(
       description = "Whether the elements must / mustn't have child elements (members or parts)")

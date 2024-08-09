@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
-import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
@@ -43,16 +42,16 @@ public class QueryInputMapper {
 
   public static GetElementsUseCase.InputData map(
       Client client,
-      String unitUuid,
-      String domainId,
+      UUID unitUuid,
+      UUID domainId,
       String displayName,
       String subType,
       String status,
-      List<String> childElementIds,
+      List<UUID> childElementIds,
       Boolean hasChildElements,
       Boolean hasParentElements,
-      String compositeId,
-      String scopeId,
+      UUID compositeId,
+      UUID scopeId,
       String description,
       String designator,
       String name,
@@ -63,16 +62,16 @@ public class QueryInputMapper {
         .authenticatedClient(client)
         .abbreviation(whereIn(abbreviation))
         .childElementIds(whereUuidIn(childElementIds))
-        .compositeId(whereEquals(Key.uuidFrom(compositeId)))
+        .compositeId(whereEquals(Optional.ofNullable(compositeId).map(Key::from).orElse(null)))
         .description(whereIn(description))
         .designator(whereIn(designator))
         .displayName(whereIn(displayName))
-        .domainId(whereEquals(Key.uuidFrom(domainId)))
+        .domainId(whereEquals(Optional.ofNullable(domainId).map(Key::from).orElse(null)))
         .hasChildElements(whereEquals(hasChildElements))
         .hasParentElements(whereEquals(hasParentElements))
         .name(whereIn(name))
         .pagingConfiguration(pagingConfiguration)
-        .scopeId(whereEquals(Key.uuidFrom(scopeId)))
+        .scopeId(whereEquals(Optional.ofNullable(scopeId).map(Key::from).orElse(null)))
         .status(whereEqualsOrNull(status))
         .subType(whereEqualsOrNull(subType))
         .unitUuid(whereUuidIn(unitUuid))
@@ -94,15 +93,15 @@ public class QueryInputMapper {
         .pagingConfiguration(pagingConfiguration)
         .status(transformCondition(searchQuery.getStatus()))
         .subType(transformCondition(searchQuery.getSubType()))
-        .unitUuid(transformCondition(searchQuery.getUnitId()))
+        .unitUuid(transformUuidCondition(searchQuery.getUnitId()))
         .updatedBy(transformCondition(searchQuery.getUpdatedBy()))
         .build();
   }
 
   public static GetElementsUseCase.InputData map(
       Client client,
-      String domainId,
-      String scopeId,
+      UUID domainId,
+      UUID scopeId,
       Set<String> elementTypes,
       PagingConfiguration<String> config) {
     Optional.ofNullable(elementTypes)
@@ -110,15 +109,15 @@ public class QueryInputMapper {
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
         .elementTypes(whereIn(elementTypes))
-        .domainId(whereEquals(Key.uuidFrom(domainId)))
+        .domainId(whereEquals(Key.from(domainId)))
         .pagingConfiguration(config)
-        .scopeId(whereEquals(Key.uuidFrom(scopeId)))
+        .scopeId(whereEquals(Key.from(scopeId)))
         .build();
   }
 
   public static QueryCatalogItemsUseCase.InputData map(
       Client client,
-      String domainId,
+      UUID domainId,
       String elementType,
       String subType,
       String abbreviation,
@@ -127,7 +126,7 @@ public class QueryInputMapper {
       PagingConfiguration<String> config) {
     return new QueryCatalogItemsUseCase.InputData(
         client.getId(),
-        Key.uuidFrom(domainId),
+        Key.from(domainId),
         config,
         whereEqualsOrNull(elementType),
         whereEqualsOrNull(subType),
@@ -143,20 +142,12 @@ public class QueryInputMapper {
     return null;
   }
 
-  static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
-    if (filterDto != null) {
-      return new QueryCondition<>(
-          filterDto.getValues().stream().map(Key::uuidFrom).collect(Collectors.toSet()));
-    }
-    return null;
-  }
-
-  static QueryCondition<Key<UUID>> transformUuidCondition(QueryConditionDto<String> condition) {
+  static QueryCondition<Key<UUID>> transformUuidCondition(QueryConditionDto<UUID> condition) {
     if (condition == null) {
       return null;
     }
     return new QueryCondition<>(
-        condition.getValues().stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+        condition.getValues().stream().map(Key::from).collect(Collectors.toSet()));
   }
 
   static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
@@ -187,16 +178,16 @@ public class QueryInputMapper {
     return null;
   }
 
-  static QueryCondition<Key<UUID>> whereUuidIn(List<String> ids) {
+  static QueryCondition<Key<UUID>> whereUuidIn(List<UUID> ids) {
     if (ids != null) {
-      return new QueryCondition<>(ids.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+      return new QueryCondition<>(ids.stream().map(Key::from).collect(Collectors.toSet()));
     }
     return null;
   }
 
-  static QueryCondition<Key<UUID>> whereUuidIn(String id) {
+  static QueryCondition<Key<UUID>> whereUuidIn(UUID id) {
     if (id != null) {
-      return new QueryCondition<>(Set.of(Key.uuidFrom(id)));
+      return new QueryCondition<>(Set.of(Key.from(id)));
     }
     return null;
   }

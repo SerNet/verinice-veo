@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,7 +40,7 @@ public class ExportCatalogItemDto extends FullCatalogItemDto
     implements TemplateItemState<CatalogItem, DomainBase>, IdentifiableDto {
   @Override
   @JsonIgnore
-  public String getSelfId() {
+  public UUID getSelfId() {
     return getId();
   }
 

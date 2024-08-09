@@ -32,27 +32,20 @@ import lombok.Value;
 @Value
 public class TypedId<T extends Identifiable> implements ITypedId<T> {
 
-  @NonNull private final String id;
+  @NonNull private final UUID id;
 
   @NonNull private final Class<T> type;
 
-  public static <T extends Identifiable> TypedId<T> from(String id, Class<T> type) {
+  public static <T extends Identifiable> TypedId<T> from(UUID id, Class<T> type) {
     if (id == null) {
       throw new IllegalArgumentException(
           "Missing ID for %s".formatted(EntityType.getSingularTermByType(type)));
-    }
-    // TODO #3027 use UUID type instead of String
-    try {
-      UUID.fromString(id);
-    } catch (IllegalArgumentException illEx) {
-      throw new IllegalArgumentException(
-          "Invalid UUID '%s' for '%s'".formatted(id, EntityType.getSingularTermByType(type)));
     }
     return new TypedId<>(id, type);
   }
 
   public static <T extends Identifiable> TypedId<T> from(T entity) {
-    return TypedId.from(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
+    return TypedId.from(entity.getIdAsUUID(), (Class<T>) entity.getModelInterface());
   }
 
   @Override

@@ -128,7 +128,7 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   }
 
   @Override
-  public String getSelfId() {
-    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
+  public UUID getSelfId() {
+    return getDbId();
   }
 }

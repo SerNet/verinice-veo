@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.unit;
 
+import java.util.UUID;
+
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -28,8 +30,8 @@ public class GetRequirementImplementationsByControlImplementationInputMapper {
   public static GetRequirementImplementationsByControlImplementationUseCase.InputData map(
       Client authenticatedClient,
       Class<? extends RiskAffected<?, ?>> clazz,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       Integer pageSize,
       Integer pageNumber,
       String sortColumn,

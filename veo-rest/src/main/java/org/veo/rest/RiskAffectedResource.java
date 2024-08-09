@@ -30,6 +30,7 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import jakarta.validation.constraints.Min;
@@ -70,10 +71,10 @@ public interface RiskAffectedResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String riskAffectedId,
+          UUID riskAffectedId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String controlId);
+          UUID controlId);
 
   @PutMapping(
       "/{riskAffectedId:"
@@ -91,10 +92,10 @@ public interface RiskAffectedResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String riskAffectedId,
+          UUID riskAffectedId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String controlId,
+          UUID controlId,
       @RequestBody RequirementImplementationDto dto);
 
   @GetMapping(
@@ -112,10 +113,10 @@ public interface RiskAffectedResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String riskAffectedId,
+          UUID riskAffectedId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String controlId,
+          UUID controlId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,

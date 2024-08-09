@@ -18,6 +18,7 @@
 package org.veo.rest.common;
 
 import java.net.URI;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.springframework.http.HttpStatus;
@@ -70,13 +71,13 @@ public class RestApiResponse {
       description =
           "A response body for a new element that was created within a domain, containing resource ID, success message & Location header.")
   public static ResponseEntity<ApiResponseBody> created(
-      Element element, String domainId, ReferenceAssembler refAssembler) {
+      Element element, UUID domainId, ReferenceAssembler refAssembler) {
     return ResponseEntity.created(
             URI.create(
                 refAssembler.elementInDomainRefOf(
                     element,
                     element.getDomains().stream()
-                        .filter(d -> d.getIdAsString().equals(domainId))
+                        .filter(d -> d.getIdAsUUID().equals(domainId))
                         .findFirst()
                         .orElseThrow())))
         .body(CreateOutputMapper.map(element));

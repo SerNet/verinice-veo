@@ -21,6 +21,7 @@ import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -73,7 +74,7 @@ public interface ProcessRiskResource {
   })
   @Valid
   Future<List<ProcessRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable String processId);
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID processId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Retrieves an process risk")
@@ -90,8 +91,8 @@ public interface ProcessRiskResource {
   @Valid
   Future<ResponseEntity<ProcessRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String processId,
-      @PathVariable String scenarioId);
+      @PathVariable UUID processId,
+      @PathVariable UUID scenarioId);
 
   @Operation(summary = "Creates a risk")
   @PostMapping(value = RELPATH)
@@ -99,7 +100,7 @@ public interface ProcessRiskResource {
   CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody ProcessRiskDto dto,
-      @PathVariable String processId);
+      @PathVariable UUID processId);
 
   @PutMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Updates a risk")
@@ -110,8 +111,8 @@ public interface ProcessRiskResource {
   @Valid
   CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String processId,
-      @PathVariable String scenarioId,
+      @PathVariable UUID processId,
+      @PathVariable UUID scenarioId,
       @Valid @NotNull @RequestBody ProcessRiskDto processDto,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag);
@@ -124,6 +125,6 @@ public interface ProcessRiskResource {
   })
   CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String processId,
-      @PathVariable String scenarioId);
+      @PathVariable UUID processId,
+      @PathVariable UUID scenarioId);
 }

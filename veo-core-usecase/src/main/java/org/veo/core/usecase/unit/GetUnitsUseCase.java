@@ -58,7 +58,7 @@ public class GetUnitsUseCase
 
     if (input.parentUuid.isEmpty()) return new OutputData(unitRepository.findByClient(client));
     else {
-      Key<UUID> parentId = Key.uuidFrom(input.parentUuid.get());
+      Key<UUID> parentId = Key.from(input.parentUuid.get());
       Unit parentUnit =
           unitRepository
               .findById(parentId)
@@ -68,7 +68,7 @@ public class GetUnitsUseCase
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, Optional<String> parentUuid)
+  public record InputData(Client authenticatedClient, Optional<UUID> parentUuid)
       implements UseCase.InputData {}
 
   @Valid

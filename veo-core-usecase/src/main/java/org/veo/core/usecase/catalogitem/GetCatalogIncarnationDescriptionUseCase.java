@@ -131,7 +131,7 @@ public class GetCatalogIncarnationDescriptionUseCase
               var catalogItem = catalogItemsById.get(id);
               if (catalogItem == null) {
                 throw new NotFoundException(
-                    TypedSymbolicId.from(id.uuidValue(), CatalogItem.class, TypedId.from(domain)));
+                    TypedSymbolicId.from(id.value(), CatalogItem.class, TypedId.from(domain)));
               }
               return catalogItem;
             })

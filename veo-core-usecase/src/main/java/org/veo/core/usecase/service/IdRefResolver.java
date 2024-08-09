@@ -18,6 +18,7 @@
 package org.veo.core.usecase.service;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
@@ -47,7 +48,7 @@ public interface IdRefResolver {
   /**
    * @see IdRefResolver#resolve(ITypedId)
    */
-  default <TEntity extends Identifiable> TEntity resolve(String id, Class<TEntity> type)
+  default <TEntity extends Identifiable> TEntity resolve(UUID id, Class<TEntity> type)
       throws NotFoundException {
     return resolve(TypedId.from(id, type));
   }

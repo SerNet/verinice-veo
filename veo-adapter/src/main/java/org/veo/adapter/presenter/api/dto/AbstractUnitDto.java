@@ -21,6 +21,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
@@ -65,7 +66,7 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
 
   @Override
   @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-  public String getSelfId() {
+  public UUID getSelfId() {
     return null;
   }
 }

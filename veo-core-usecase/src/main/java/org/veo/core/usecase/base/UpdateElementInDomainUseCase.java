@@ -52,7 +52,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   public OutputData<T> execute(InputData<T> input) {
     var idRefResolver = refResolverFactory.db(input.authenticatedClient);
 
-    var domain = idRefResolver.resolve(input.domainId.uuidValue(), Domain.class);
+    var domain = idRefResolver.resolve(input.domainId.value(), Domain.class);
     var inputElement = input.element;
     var storedElement = repo.getById(input.id, input.authenticatedClient.getId());
     storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net

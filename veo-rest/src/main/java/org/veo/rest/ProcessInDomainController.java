@@ -50,6 +50,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -141,10 +142,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return elementService.getElement(
         auth,
@@ -162,12 +163,12 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+          UUID domainId,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -236,10 +237,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -300,11 +301,11 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Valid @NotNull @RequestBody CreateProcessInDomainDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
     return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
@@ -318,10 +319,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
         auth, domainId, uuid, dto, Process.class, entityToDtoTransformer::transformProcess2Dto);
@@ -336,12 +337,12 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Valid @NotNull @RequestBody FullProcessInDomainDto dto) {
     return elementService.update(
         auth,
@@ -363,10 +364,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -402,10 +403,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
     return elementService.addLinks(auth, domainId, uuid, links, Process.class);
   }
@@ -426,7 +427,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Valid @RequestBody FullProcessInDomainDto dto) {
     return elementService.evaluate(auth, dto, domainId);
   }
@@ -434,7 +435,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
   @Operation(summary = "Returns domain-specific process JSON schema")
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, String domainId) {
+      Authentication auth, UUID domainId) {
     return elementService.getJsonSchema(auth, domainId, Process.SINGULAR_TERM);
   }
 
@@ -444,10 +445,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     return elementService.getActions(domainId, uuid, Process.class, auth);
   }
 
@@ -457,10 +458,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
     return elementService.performAction(domainId, uuid, Process.class, actionId, auth);
   }
@@ -477,10 +478,10 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -508,7 +509,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
         new GetControlImplementationsUseCase.InputData(
             clientLookup.getClient(auth),
             null,
-            Key.uuidFrom(domainId),
+            Key.from(domainId),
             TypedId.from(uuid, Process.class),
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }

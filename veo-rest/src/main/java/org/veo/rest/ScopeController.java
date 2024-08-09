@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -206,11 +207,11 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<PageDto<FullScopeDto>> getScopes(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -282,7 +283,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam,
@@ -295,7 +296,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
+            new GetElementUseCase.InputData(Key.from(uuid), client, embedRisks),
             output ->
                 entityToDtoTransformer.transformScope2Dto(output.element(), false, embedRisks));
     return scopeFuture.thenApply(
@@ -316,7 +317,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     if (getEtag(Scope.class, uuid).map(request::checkNotModified).orElse(false)) {
@@ -324,7 +325,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
+        new GetElementUseCase.InputData(Key.from(uuid), client),
         output -> {
           Scope scope = output.element();
           return ResponseEntity.ok()
@@ -344,7 +345,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Valid @NotNull @RequestBody CreateScopeDto createScopeDto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
     return useCaseInteractor.execute(
         createScopeUseCase,
         CreateElementInputMapper.map(createScopeDto, getClient(user), scopeIds),
@@ -367,7 +368,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
           String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Valid @NotNull @RequestBody FullScopeDto scopeDto) {
     scopeDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
@@ -377,7 +378,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         output -> {
           var scope = output.entity();
           return ResponseEntity.ok()
-              .eTag(ETag.from(uuid, scope.getVersion()))
+              .eTag(ETag.from(uuid.toString(), scope.getVersion()))
               .body(entityToDtoTransformer.transformScope2Dto(scope, false));
         });
   }
@@ -456,10 +457,10 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public Future<List<ScopeRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, String scopeId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID scopeId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetScopeRisksUseCase.InputData(client, Key.uuidFrom(scopeId));
+    var input = new GetScopeRisksUseCase.InputData(client, Key.from(scopeId));
 
     return useCaseInteractor.execute(
         getScopeRisksUseCase,
@@ -472,16 +473,15 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public Future<ResponseEntity<ScopeRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID scopeId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     return getRisk(client, scopeId, scenarioId);
   }
 
   private CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
-      Client client, String scopeId, String scenarioId) {
-    var input =
-        new GetScopeRiskUseCase.InputData(client, Key.uuidFrom(scopeId), Key.uuidFrom(scenarioId));
+      Client client, UUID scopeId, UUID scenarioId) {
+    var input = new GetScopeRiskUseCase.InputData(client, Key.from(scopeId), Key.from(scenarioId));
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -502,12 +502,12 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull ScopeRiskDto dto, String scopeId) {
+      ApplicationUser user, @Valid @NotNull ScopeRiskDto dto, UUID scopeId) {
 
     var input =
         new CreateScopeRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.uuidFrom(scopeId),
+            Key.from(scopeId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -537,12 +537,12 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, String scopeId, String scenarioId) {
+      ApplicationUser user, UUID scopeId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     var input =
         new DeleteRiskUseCase.InputData(
-            Scope.class, client, Key.uuidFrom(scopeId), Key.uuidFrom(scenarioId));
+            Scope.class, client, Key.from(scopeId), Key.from(scenarioId));
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -562,8 +562,8 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+          UUID uuid,
+      @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
     return inspect(auth, uuid, domainId, Scope.class);
   }
 
@@ -587,13 +587,13 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
-      ApplicationUser user, String scopeId, String scenarioId, ScopeRiskDto dto, String eTag) {
+      ApplicationUser user, UUID scopeId, UUID scenarioId, ScopeRiskDto dto, String eTag) {
 
     var client = getClient(user.getClientId());
     var input =
         new UpdateScopeRiskUseCase.InputData(
             client,
-            Key.uuidFrom(scopeId),
+            Key.from(scopeId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -609,7 +609,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      Authentication auth, String riskAffectedId, String controlId) {
+      Authentication auth, UUID riskAffectedId, UUID controlId) {
     return useCaseInteractor.execute(
         getRequirementImplementationUseCase,
         new GetRequirementImplementationUseCase.InputData(
@@ -628,8 +628,8 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
       String eTag,
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
@@ -645,8 +645,8 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       Integer pageSize,
       Integer pageNumber,
       String sortColumn,

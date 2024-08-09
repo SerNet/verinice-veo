@@ -34,7 +34,7 @@ import spock.lang.Specification
 
 class CompositeElementDtoTransformerSpec extends Specification {
     def unitName = "Test unit"
-    def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
+    def unitId = UUID.fromString("2e63d3f8-b326-4304-84e6-c12efbbcaaa4")
     def subUnitName = "Test subunit"
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
 
@@ -58,7 +58,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
-        unit.getIdAsString() >> unitId
+        unit.idAsUUID >> unitId
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
         unit.getDisplayName() >> unitName
@@ -77,7 +77,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
         compositeAsset.getOwner() >> unit
         compositeAsset.getName() >> "Composite Asset"
-        compositeAsset.getIdAsString() >> randomUUID()
+        compositeAsset.idAsUUID >> randomUUID()
         compositeAsset.getModelInterface() >> Asset.class
         compositeAsset.getDomains() >> []
         compositeAsset.getLinks() >> []
@@ -102,19 +102,19 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element with parts to DTO"() {
         given: "A composite element with two parts"
         Asset asset1 = Mock(Asset) {
-            it.idAsString >> randomUUID()
+            it.idAsUUID >> randomUUID()
             it.displayName >> "Asset 1"
             it.modelInterface >> Asset
         }
 
         Asset asset2 = Mock(Asset) {
-            it.idAsString >> randomUUID()
+            it.idAsUUID >> randomUUID()
             it.displayName >> "Asset 2"
             it.modelInterface >> Asset
         }
 
         Asset compositeAsset = Mock(Asset) {
-            it.idAsString >> randomUUID()
+            it.idAsUUID >> randomUUID()
             it.name >> "Composite Asset"
             it.domains >> []
             it.links >> []
@@ -144,7 +144,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element that contains itself"() {
         given: "A composite element that contains itself"
         Asset compositeAsset = Mock()
-        compositeAsset.idAsString >> randomUUID()
+        compositeAsset.idAsUUID >> randomUUID()
         compositeAsset.name >> "Composite Asset"
         compositeAsset.domains >> []
         compositeAsset.links >> []

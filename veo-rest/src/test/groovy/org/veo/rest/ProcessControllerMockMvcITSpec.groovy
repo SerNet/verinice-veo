@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
@@ -952,7 +953,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         get("/processes/${process.idAsString}/inspection?domain=foobar", 400)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(MethodArgumentTypeMismatchException)
     }
 
     private List createRisk() {

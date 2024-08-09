@@ -45,7 +45,7 @@ public class GetUnitsUseCaseSpec extends Specification {
         existingUnit.getDomains() >> []
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
-        existingUnit.getIdAsString() >> randomUUID()
+        existingUnit.getIdAsUUID() >> randomUUID()
 
         existingClient.getUnits >> [existingUnit]
         existingClient.getUnit(_)>> Optional.of(existingUnit)
@@ -72,7 +72,7 @@ public class GetUnitsUseCaseSpec extends Specification {
 
         when: "a request is made with a parent-ID"
         def input = new GetUnitsUseCase.InputData(existingClient,
-                Optional.of(existingUnit.idAsString))
+                Optional.of(existingUnit.idAsUUID))
         def sot = new GetUnitsUseCase(clientRepo, unitRepo)
         def output = sot.execute(input)
 

@@ -19,13 +19,12 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.Patterns;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Constraints;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,13 +51,7 @@ public class CreateDomainTemplateFromDomainParameterDto {
 
   @Data
   public static class ProfileCreationParameters {
-    @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-    @NotNull
-    @Schema(
-        description = VeoConstants.UUID_MESSAGE,
-        example = "adf037f1-0089-48ad-9177-92269918758b",
-        format = "uuid")
-    private String unitId;
+    @NotNull private UUID unitId;
 
     @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
     @Schema(description = "A name for the profile", example = "My profile")

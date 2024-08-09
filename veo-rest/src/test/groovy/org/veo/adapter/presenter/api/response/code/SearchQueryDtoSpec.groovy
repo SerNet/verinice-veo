@@ -17,20 +17,20 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
+import org.veo.adapter.presenter.api.dto.QueryConditionDto
 import org.veo.adapter.presenter.api.dto.SearchQueryDto
-import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto
 
 import spock.lang.Specification
 
 class SearchQueryDtoSpec extends Specification {
     def LEGACY_SEARCH_ID = "q1Yqzcss8UxRsqpWKkvMKU0tVrKKVjI0tDBMTjM01U1JsTTSNTY2N9NNMjI20k1LMUsysLBMM0kytVSKrdVRSsksLshJrPRLzE1VssorzcmpBQA="
 
-    def unitUuid = UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString()
+    def unitUuid = UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes)
 
     def "encode search query"() {
         given: "a search query"
         def q = SearchQueryDto.builder()
-                .unitId(new UuidQueryConditionDto().tap{
+                .unitId(new QueryConditionDto().tap{
                     values = [unitUuid] as Set
                 })
                 .build()
@@ -52,7 +52,7 @@ class SearchQueryDtoSpec extends Specification {
     def "encoded search query must not contain reserved URI characters"() {
         given: "a search object that leads to a '/' character in base64 encoding:"
         def q = SearchQueryDto.builder()
-                .unitId(new UuidQueryConditionDto().tap{
+                .unitId(new QueryConditionDto().tap{
                     values = [unitUuid] as Set
                 })
                 .build()

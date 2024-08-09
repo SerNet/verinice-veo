@@ -19,14 +19,12 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import jakarta.validation.constraints.Pattern;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
@@ -37,7 +35,6 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -50,7 +47,6 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -74,13 +70,7 @@ import lombok.ToString;
 })
 public class ExportElementDto implements IdentifiableDto {
 
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+  @ToString.Include private UUID id;
 
   private IdRef<Unit> owner;
 

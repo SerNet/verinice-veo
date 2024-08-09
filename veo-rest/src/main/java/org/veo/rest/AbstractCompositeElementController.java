@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import jakarta.validation.Valid;
@@ -54,14 +55,14 @@ public abstract class AbstractCompositeElementController<
   }
 
   public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
-      Authentication auth, String uuid, WebRequest request) {
+      Authentication auth, UUID uuid, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
+        new GetElementUseCase.InputData(Key.from(uuid), client),
         output -> {
           T element = output.element();
           return ResponseEntity.ok()

@@ -19,6 +19,7 @@ package org.veo.core.entity;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -41,8 +42,8 @@ public interface TemplateItem<
   Map<String, Map<String, Object>> getCustomAspects();
 
   @Override
-  default String getSelfId() {
-    return getSymbolicIdAsString();
+  default UUID getSelfId() {
+    return getSymbolicId().value();
   }
 
   @Override

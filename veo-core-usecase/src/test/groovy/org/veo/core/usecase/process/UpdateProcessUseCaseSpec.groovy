@@ -28,7 +28,6 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.service.EntityStateMapper
-import org.veo.core.usecase.service.RefResolverFactory
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
@@ -69,7 +68,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
         when:
         def eTag = ETag.from(id.uuidValue(), 0)
-        def output = usecase.execute(new InputData(id.uuidValue(), process, existingClient, eTag, "max"))
+        def output = usecase.execute(new InputData(id.value(), process, existingClient, eTag, "max"))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository

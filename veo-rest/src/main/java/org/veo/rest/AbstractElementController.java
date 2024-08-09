@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -70,7 +71,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
    * @return the element for the given ID if one was found. Null otherwise.
    */
   public @Valid Future<ResponseEntity<E>> getElement(
-      Authentication auth, String uuid, WebRequest request) {
+      Authentication auth, UUID uuid, WebRequest request) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
     if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
@@ -79,7 +80,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
     CompletableFuture<E> entityFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
+            new GetElementUseCase.InputData(Key.from(uuid), client),
             output -> entity2Dto(output.element()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -108,12 +109,12 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   }
 
   public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      Authentication auth, String elementId, String domainId, Class<T> elementType) {
+      Authentication auth, UUID elementId, UUID domainId, Class<T> elementType) {
     var client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         inspectElementUseCase,
         new InspectElementUseCase.InputData(
-            client, elementType, Key.uuidFrom(elementId), Key.uuidFrom(domainId)),
+            client, elementType, Key.from(elementId), Key.from(domainId)),
         output -> ResponseEntity.ok().body(output.findings()));
   }
 

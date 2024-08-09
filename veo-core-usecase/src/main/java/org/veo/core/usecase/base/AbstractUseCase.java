@@ -68,8 +68,8 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
     var e =
         repositoryProvider
             .getRepositoryFor(ref.getType())
-            .findById(Key.uuidFrom(ref.getId()))
-            .orElseThrow(() -> new NotFoundException(Key.uuidFrom(ref.getId()), ref.getType()));
+            .findById(Key.from(ref.getId()))
+            .orElseThrow(() -> new NotFoundException(Key.from(ref.getId()), ref.getType()));
     checkSameClient(client, e);
     return e;
   }

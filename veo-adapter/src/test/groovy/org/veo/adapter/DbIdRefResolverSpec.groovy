@@ -50,7 +50,7 @@ class DbIdRefResolverSpec extends Specification {
         given: "an asset"
         def asset = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Asset
         }
 
@@ -66,27 +66,27 @@ class DbIdRefResolverSpec extends Specification {
         given: "two assets and two persons"
         def asset1 = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Asset
         }
         def asset2 = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Asset
         }
         def asset3 = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Asset
         }
         def person1 = Mock(Person) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Person
         }
         def person2 = Mock(Person) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.getModelInterface() >> Person
         }
 

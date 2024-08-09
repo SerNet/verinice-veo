@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -215,7 +216,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam,
@@ -229,7 +230,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     CompletableFuture<FullProcessDto> entityFuture =
         useCaseInteractor.execute(
             getProcessUseCase,
-            new GetProcessUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
+            new GetProcessUseCase.InputData(Key.from(uuid), client, embedRisks),
             output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -250,7 +251,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
   }
@@ -263,7 +264,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Valid @NotNull @RequestBody CreateProcessDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
 
     return useCaseInteractor.execute(
         createProcessUseCase,
@@ -282,7 +283,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @RequestBody FullProcessDto processDto) {
     processDto.applyResourceId(id);
     return useCaseInteractor.execute(
@@ -311,11 +312,11 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @Operation(summary = "Loads all processes")
   public @Valid Future<PageDto<FullProcessDto>> getProcesses(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -449,10 +450,10 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public Future<List<ProcessRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, String processId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID processId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetProcessRisksUseCase.InputData(client, Key.uuidFrom(processId));
+    var input = new GetProcessRisksUseCase.InputData(client, Key.from(processId));
 
     return useCaseInteractor.execute(
         getProcessRisksUseCase,
@@ -465,17 +466,16 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public Future<ResponseEntity<ProcessRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user, String processId, String scenarioId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID processId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     return getRisk(client, processId, scenarioId);
   }
 
   private CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
-      Client client, String processId, String scenarioId) {
+      Client client, UUID processId, UUID scenarioId) {
     var input =
-        new GetProcessRiskUseCase.InputData(
-            client, Key.uuidFrom(processId), Key.uuidFrom(scenarioId));
+        new GetProcessRiskUseCase.InputData(client, Key.from(processId), Key.from(scenarioId));
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -496,11 +496,11 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull ProcessRiskDto dto, String processId) {
+      ApplicationUser user, @Valid @NotNull ProcessRiskDto dto, UUID processId) {
     var input =
         new CreateProcessRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.uuidFrom(processId),
+            Key.from(processId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -530,12 +530,12 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, String processId, String scenarioId) {
+      ApplicationUser user, UUID processId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     var input =
         new DeleteRiskUseCase.InputData(
-            Process.class, client, Key.uuidFrom(processId), Key.uuidFrom(scenarioId));
+            Process.class, client, Key.from(processId), Key.from(scenarioId));
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -543,12 +543,12 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
-      ApplicationUser user, String processId, String scenarioId, ProcessRiskDto dto, String eTag) {
+      ApplicationUser user, UUID processId, UUID scenarioId, ProcessRiskDto dto, String eTag) {
     var client = getClient(user.getClientId());
     var input =
         new UpdateProcessRiskUseCase.InputData(
             client,
-            Key.uuidFrom(processId),
+            Key.from(processId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -576,14 +576,14 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+          UUID uuid,
+      @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
     return inspect(auth, uuid, domainId, Process.class);
   }
 
   @Override
   public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      Authentication auth, String riskAffectedId, String controlId) {
+      Authentication auth, UUID riskAffectedId, UUID controlId) {
     return useCaseInteractor.execute(
         getRequirementImplementationUseCase,
         new GetRequirementImplementationUseCase.InputData(
@@ -602,8 +602,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
       String eTag,
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
@@ -619,8 +619,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       Integer pageSize,
       Integer pageNumber,
       String sortColumn,

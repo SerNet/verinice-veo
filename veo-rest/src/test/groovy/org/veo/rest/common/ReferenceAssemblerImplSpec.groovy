@@ -58,7 +58,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         def ref = referenceAssembler.parseIdentifiableRef(url)
 
         then:
-        ref.id == id
+        ref.id.toString() == id
         ref.type == type
 
         and:
@@ -79,7 +79,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "target reference for #type and #id is #reference"() {
         given:
         def entity = Stub(type) {
-            getIdAsString () >> id
+            getIdAsUUID () >> UUID.fromString(id)
             getModelInterface() >> type
         }
 
@@ -99,14 +99,14 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create #entityType.singularTerm references in domain"() {
         given:
         def clazz = entityType.type as Class<Element>
-        def elementId = randomUUID().toString()
-        def domainId = randomUUID().toString()
+        def elementId = randomUUID()
+        def domainId = randomUUID()
         def element = Stub(clazz) {
-            idAsString >> elementId
+            idAsUUID >> elementId
             modelInterface >> clazz
         }
         def domain = Stub(Domain) {
-            idAsString >> domainId
+            idAsUUID >> domainId
         }
 
         expect:
@@ -118,10 +118,10 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create target URI for catalog item"() {
         given:
-        def domainId = '371c5f43-cd7c-4e4f-b45b-59a7337bf489'
+        def domainId = UUID.fromString('371c5f43-cd7c-4e4f-b45b-59a7337bf489')
         def itemId = 'ccf66944-e782-4221-8e2a-65209d2826f1'
         Domain domain = Stub {
-            idAsString >> domainId
+            idAsUUID >> domainId
         }
         CatalogItem catalogItem = Stub {
             symbolicIdAsString >> itemId
@@ -151,7 +151,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "compound-identifiable resources reference for #type is #reference"() {
         given:
         def entity = Mock(type) {
-            firstIdAsString >> 'a90f5269-e268-469d-b342-920a7255a471'
+            firstIdAsUUID >> UUID.fromString('a90f5269-e268-469d-b342-920a7255a471')
         }
 
         expect:
@@ -201,10 +201,10 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def controlImplementation = Spy(ControlImplementation) {
             owner >> Spy(type as Class<RiskAffected>) {
-                idAsString >> "aff15bfa-7259-4044-a396-59db2e16b0e0"
+                idAsUUID >> UUID.fromString("aff15bfa-7259-4044-a396-59db2e16b0e0")
             }
             control >> Spy(Control) {
-                idAsString >> "da8f6256-15e0-4fd3-a11b-4a76c916abe5"
+                idAsUUID >>  UUID.fromString("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
             }
         }
 
@@ -222,28 +222,36 @@ class ReferenceAssemblerImplSpec extends Specification {
     }
 
     def "create a key for a reference to a #type with id #id "() {
+        given:
+        def uuid = UUID.fromString(id)
+        def key = Key.from(uuid)
+
         expect:
-        referenceAssembler.toKey(TypedId.from(id, type)) == key
+        referenceAssembler.toKey(TypedId.from(uuid, type)) == key
 
         where:
-        type     | id                                     | key
-        Asset    | '40331ed5-be07-4c69-bf99-553811ce5454' | Key.uuidFrom('40331ed5-be07-4c69-bf99-553811ce5454')
-        Control  | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | Key.uuidFrom('c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6')
-        Scenario | 'f05ab334-c605-456e-8a78-9e1bc85b8509' | Key.uuidFrom('f05ab334-c605-456e-8a78-9e1bc85b8509')
-        Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | Key.uuidFrom('7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac')
-        Scope    | '59d3c21d-2f21-4085-950d-1273056d664a' | Key.uuidFrom('59d3c21d-2f21-4085-950d-1273056d664a')
-        Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | Key.uuidFrom('28df429d-da5e-431a-a2d8-488c0741fb9f')
+        type     | id
+        Asset    | '40331ed5-be07-4c69-bf99-553811ce5454'
+        Control  | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
+        Scenario | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
+        Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
+        Scope    | '59d3c21d-2f21-4085-950d-1273056d664a'
+        Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
+        given:
+        def uuid1 = UUID.fromString(id1)
+        def uuid2 = UUID.fromString(id2)
+
         expect:
         def refs = referenceAssembler.toKeys([
-            TypedId.from(id1, type),
-            TypedId.from(id2, type),
+            TypedId.from(uuid1, type),
+            TypedId.from(uuid2, type),
         ] as Set
         )
-        refs.contains(Key.uuidFrom(id1))
-        refs.contains(Key.uuidFrom(id2))
+        refs.contains(Key.from(uuid1))
+        refs.contains(Key.from(uuid2))
 
         where:
         type     | id1                                    | id2
@@ -265,11 +273,11 @@ class ReferenceAssemblerImplSpec extends Specification {
         def entity = Stub(type) {
             modelInterface >> type
             id >> Key.newUuid()
-            idAsString >> it.id.uuidValue()
+            idAsUUID >> it.id.value()
             if (it instanceof Profile) {
                 owner >> Stub(DomainBase) {
                     id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
+                    idAsUUID >> it.id.value()
                 }
             }
         }
@@ -296,19 +304,19 @@ class ReferenceAssemblerImplSpec extends Specification {
                 domainBase >> Stub(Domain) {
                     modelInterface >> Domain
                     id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
+                    idAsUUID >> it.id.value()
                 }
             }
             if (it instanceof ProfileItem) {
                 owner >> Stub(Profile) {
                     modelInterface >> Profile
                     id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
+                    idAsUUID >> it.id.value()
                 }
                 domainBase >> Stub(Domain) {
                     modelInterface >> Domain
                     id >> Key.newUuid()
-                    idAsString >> it.id.uuidValue()
+                    idAsUUID >> it.id.value()
                 }
             }
         }
@@ -343,9 +351,9 @@ class ReferenceAssemblerImplSpec extends Specification {
 
         then:
         ref.namespaceType == namespaceType
-        ref.namespaceId == namespaceId
+        ref.namespaceId.toString() == namespaceId
         ref.type == type
-        ref.symbolicId == id
+        ref.symbolicId == UUID.fromString(id)
 
         and:
         referenceAssembler.parseSymIdentifiableUri('http://localhost:9000'+url) == ref
@@ -381,7 +389,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         expect:
         with(referenceAssembler.parseIdentifiableRef(uri)) {
             type == Process
-            id == '28df429d-da5e-431a-a2d8-488c0741fb9f'
+            id.toString() == '28df429d-da5e-431a-a2d8-488c0741fb9f'
         }
     }
 }

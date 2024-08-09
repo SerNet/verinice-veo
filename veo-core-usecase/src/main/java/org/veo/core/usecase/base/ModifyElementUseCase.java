@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -55,8 +56,8 @@ public abstract class ModifyElementUseCase<T extends Element>
     ElementState<T> entity = input.element;
     ElementRepository<T> repo = repositoryProvider.getElementRepositoryFor(elementClass);
     var storedEntity =
-        repo.findById(Key.uuidFrom(input.id))
-            .orElseThrow(() -> new NotFoundException(Key.uuidFrom(input.id), elementClass));
+        repo.findById(Key.from(input.id))
+            .orElseThrow(() -> new NotFoundException(Key.from(input.id), elementClass));
     ETag.validate(input.eTag, storedEntity);
     checkClientBoundaries(input, storedEntity);
     entityStateMapper.mapState(
@@ -66,8 +67,7 @@ public abstract class ModifyElementUseCase<T extends Element>
 
     storedEntity.setUpdatedAt(Instant.now());
     repo.save(storedEntity);
-    return new OutputData<>(
-        repo.getById(Key.uuidFrom(input.id), input.authenticatedClient.getId()));
+    return new OutputData<>(repo.getById(Key.from(input.id), input.authenticatedClient.getId()));
   }
 
   private void evaluateDecisions(T entity) {
@@ -97,7 +97,7 @@ public abstract class ModifyElementUseCase<T extends Element>
 
   @Valid
   public record InputData<T extends Element>(
-      String id,
+      UUID id,
       @Valid ElementState<T> element,
       @Valid Client authenticatedClient,
       String eTag,

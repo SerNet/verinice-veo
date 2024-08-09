@@ -46,10 +46,10 @@ class EntityStateMapperSpec extends Specification {
     Domain domain0 = Mock(Domain) { it.id >> domain0Id }
     Domain domain1 = Mock(Domain) { it.id >> domain1Id }
     IdRefResolver idRefResolver = Mock() {
-        resolve(domain0Id.uuidValue(), Domain) >> domain0
-        resolve(TypedId.from(domain0Id.uuidValue(), Domain)) >> domain0
-        resolve(domain1Id.uuidValue(), Domain) >> domain1
-        resolve(TypedId.from(domain1Id.uuidValue(), Domain)) >> domain1
+        resolve(domain0Id.value(), Domain) >> domain0
+        resolve(TypedId.from(domain0Id.value(), Domain)) >> domain0
+        resolve(domain1Id.value(), Domain) >> domain1
+        resolve(TypedId.from(domain1Id.value(), Domain)) >> domain1
     }
     EntityFactory entityFactory = Mock()
     EventPublisher eventPublisher = Mock()
@@ -67,7 +67,7 @@ class EntityStateMapperSpec extends Specification {
                 subType >> "foo"
                 status >> "NEW_FOO"
                 riskValues >> [:]
-                domain >> TypedId.from(domain0Id.uuidValue(), Domain)
+                domain >> TypedId.from(domain0Id.value(), Domain)
                 customLinkStates >> []
                 customAspectStates >> []
             },
@@ -75,7 +75,7 @@ class EntityStateMapperSpec extends Specification {
                 subType >> "bar"
                 status >> "NEW_BAR"
                 riskValues >> [:]
-                domain >> TypedId.from(domain1Id.uuidValue(), Domain)
+                domain >> TypedId.from(domain1Id.value(), Domain)
                 customLinkStates >> []
                 customAspectStates >> []
             }
@@ -111,7 +111,7 @@ class EntityStateMapperSpec extends Specification {
 
         def compositeAssetId = Key.newUuid()
         def compositeAssetDto = new FullAssetDto().tap {
-            id = compositeAssetId.uuidValue()
+            id = compositeAssetId.value()
             name = "Composite Asset"
             setParts([
                 asset1Ref,
@@ -138,8 +138,8 @@ class EntityStateMapperSpec extends Specification {
 
         def compositeAssetId = Key.newUuid()
         def dto = new FullDocumentDto().tap {
-            id = compositeAssetId.uuidValue()
-            domains = [(domain0.id.uuidValue()): new DomainAssociationDto().tap {
+            id = compositeAssetId.value()
+            domains = [(domain0.id.value()): new DomainAssociationDto().tap {
                     subType = "contract"
                     status = "CONCLUDED"
                 } ]

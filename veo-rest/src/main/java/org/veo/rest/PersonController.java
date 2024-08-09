@@ -57,6 +57,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -152,11 +153,11 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @Operation(summary = "Loads all persons")
   public @Valid Future<PageDto<FullPersonDto>> getPersons(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -224,7 +225,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElement(auth, uuid, request);
   }
@@ -244,7 +245,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
   }
@@ -257,7 +258,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
       @Valid @NotNull @RequestBody CreatePersonDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
     return useCaseInteractor.execute(
         createPersonUseCase,
         CreateElementInputMapper.map(dto, getClient(user), scopeIds),
@@ -277,7 +278,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
           String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Valid @NotNull @RequestBody FullPersonDto personDto) {
     personDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
@@ -295,11 +296,11 @@ public class PersonController extends AbstractCompositeElementController<Person,
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Person.class, Key.uuidFrom(uuid), client),
+        new DeleteElementUseCase.InputData(Person.class, Key.from(uuid), client),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -384,8 +385,8 @@ public class PersonController extends AbstractCompositeElementController<Person,
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+          UUID uuid,
+      @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
     return inspect(auth, uuid, domainId, Person.class);
   }
 

@@ -19,6 +19,7 @@ package org.veo.core.entity.state;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -32,7 +33,7 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface DomainBaseState extends EntityState {
 
-  String getSelfId();
+  UUID getSelfId();
 
   @NotNull
   String getAuthority();

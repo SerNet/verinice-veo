@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -54,7 +55,7 @@ public class ExportProfileItemDto extends FullProfileItemDto
 
   @Override
   @JsonIgnore
-  public String getSelfId() {
+  public UUID getSelfId() {
     return getId();
   }
 

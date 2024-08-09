@@ -35,39 +35,32 @@ public class TypedSymbolicId<
         T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     implements ITypedSymbolicId<T, TNamespace> {
 
-  @NonNull String symbolicId;
+  @NonNull UUID symbolicId;
   @NonNull Class<T> type;
   @NonNull ITypedId<TNamespace> ownerRef;
 
   public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
       TypedSymbolicId<T, TNamespace> from(
-          String symbolicId, Class<T> type, ITypedId<? extends TNamespace> ownerRef) {
+          UUID symbolicId, Class<T> type, ITypedId<? extends TNamespace> ownerRef) {
     if (symbolicId == null) {
       throw new IllegalArgumentException(
           "Missing symbolic ID for %s in %s"
               .formatted(EntityType.getSingularTermByType(type), ownerRef));
     }
-    // TODO #3027 use UUID type instead of String
-    try {
-      UUID.fromString(symbolicId);
-    } catch (IllegalArgumentException illEx) {
-      throw new IllegalArgumentException(
-          "Invalid UUID '%s' for '%s' in '%s'"
-              .formatted(symbolicId, EntityType.getSingularTermByType(type), ownerRef));
-    }
+
     return new TypedSymbolicId<>(symbolicId, type, (ITypedId<TNamespace>) ownerRef);
   }
 
   public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
       TypedSymbolicId<T, TNamespace> from(T entity) {
     return TypedSymbolicId.from(
-        entity.getSymbolicIdAsString(),
+        entity.getSymbolicId().value(),
         (Class<T>) entity.getModelInterface(),
         TypedId.from(entity.getNamespace()));
   }
 
   @Override
-  public String getNamespaceId() {
+  public UUID getNamespaceId() {
     return ownerRef.getId();
   }
 

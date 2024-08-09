@@ -43,19 +43,19 @@ class RefSpec extends Specification {
     def "ref equals & hashcode is implemented correctly"() {
         given:
         def unit1 = Spy(Unit) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def unit1Doppelganger = Spy(Unit) {
-            idAsString >> unit1.idAsString
+            idAsUUID >> unit1.idAsUUID
             displayName >> ""
         }
         def unit2 = Spy(Unit) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def assetWithSameId = Spy(Asset) {
-            idAsString >> unit1.idAsString
+            idAsUUID >> unit1.idAsUUID
             displayName >> ""
         }
 
@@ -106,30 +106,30 @@ class RefSpec extends Specification {
     def "sym ref equals & hashcode is implemented correctly"() {
         given:
         def domain = Spy(Domain) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def domain2 = Spy(Domain) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def ci = Spy(CatalogItem) {
-            symbolicIdAsString >> randomUUID()
+            symbolicId >> Key.newUuid()
             displayName >> ""
             domainBase >> domain
         }
         def ci2 = Spy(CatalogItem) {
-            symbolicIdAsString >> randomUUID()
+            symbolicId >> Key.newUuid()
             displayName >> ""
             domainBase >> domain
         }
         def ciDoppelganger = Spy(CatalogItem) {
-            symbolicIdAsString >> ci.symbolicIdAsString
+            symbolicId >> ci.symbolicId
             displayName >> ""
             domainBase >> domain
         }
         def ciWithSameIdInOtherDomain = Spy(CatalogItem) {
-            symbolicIdAsString >> ci.symbolicIdAsString
+            symbolicId >> ci.symbolicId
             displayName >> ""
             domainBase >> domain2
         }
@@ -181,19 +181,19 @@ class RefSpec extends Specification {
     def "compound ref equals & hashcode is implemented correctly"() {
         given:
         def asset1 = Spy(Asset) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def asset2 = Spy(Asset) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def scenario1 = Spy(Scenario) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def scenario2 = Spy(Scenario) {
-            idAsString >> randomUUID()
+            idAsUUID >> randomUUID()
             displayName >> ""
         }
         def risk = Spy(AssetRisk) {

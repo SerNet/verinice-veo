@@ -50,13 +50,13 @@ public final class CreateUnitInputMapper {
   public static CreateUnitUseCase.InputData map(
       CreateUnitDto dto, String clientId, Integer maxUnits) {
     Optional<Key<UUID>> parentId =
-        Optional.ofNullable(dto.getParent()).map(IdRef::getId).map(Key::uuidFrom);
+        Optional.ofNullable(dto.getParent()).map(IdRef::getId).map(Key::from);
 
     return new InputData(
         new NameableInputData(dto.getName(), dto.getAbbreviation(), dto.getDescription()),
         Key.uuidFrom(clientId),
         parentId,
         maxUnits,
-        dto.getDomains().stream().map(IdRef::getId).map(Key::uuidFrom).collect(Collectors.toSet()));
+        dto.getDomains().stream().map(IdRef::getId).map(Key::from).collect(Collectors.toSet()));
   }
 }

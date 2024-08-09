@@ -140,7 +140,7 @@ public class DomainStateMapper {
             ciRef ->
                 resolver.inject(
                     owner
-                        .findCatalogItem(Key.uuidFrom(ciRef.getSymbolicId()))
+                        .findCatalogItem(Key.from(ciRef.getSymbolicId()))
                         .orElseThrow(
                             () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
                     ciRef));
@@ -186,7 +186,7 @@ public class DomainStateMapper {
       void mapTemplateItem(
           TemplateItemState<T, TNamespace> source, T target, IdRefResolver resolver) {
     EntityStateMapper.mapNameableProperties(source, target);
-    target.setSymbolicId(Key.uuidFrom(source.getSelfId()));
+    target.setSymbolicId(Key.from(source.getSelfId()));
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
     target.setSubType(source.getSubType());

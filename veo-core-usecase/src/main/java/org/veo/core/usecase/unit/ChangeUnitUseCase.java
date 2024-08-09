@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
@@ -50,13 +52,13 @@ public abstract class ChangeUnitUseCase
   public OutputData execute(InputData input) {
     log.info("Updating unit with id {}", input.id);
 
-    var storedUnit = unitRepository.getById(Key.uuidFrom(input.id));
+    var storedUnit = unitRepository.getById(Key.from(input.id));
     checkSameClient(storedUnit, input);
     ETag.validate(input.eTag, storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     save(updatedUnit, input);
-    return output(unitRepository.getById(Key.uuidFrom(input.id)));
+    return output(unitRepository.getById(Key.from(input.id)));
   }
 
   protected abstract Unit update(Unit storedUnit, InputData input);
@@ -97,7 +99,7 @@ public abstract class ChangeUnitUseCase
 
   @Valid
   public record InputData(
-      String id, UnitState changedUnit, Client authenticatedClient, String eTag, String username)
+      UUID id, UnitState changedUnit, Client authenticatedClient, String eTag, String username)
       implements UseCase.InputData {}
 
   @Valid

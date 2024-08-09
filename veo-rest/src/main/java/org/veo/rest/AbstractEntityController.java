@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -63,7 +64,7 @@ public abstract class AbstractEntityController extends AbstractVeoController {
   }
 
   protected <T extends Identifiable & Versioned> Optional<String> getEtag(
-      Class<T> entityClass, String id) {
-    return etagService.getEtag(entityClass, id);
+      Class<T> entityClass, UUID id) {
+    return etagService.getEtag(entityClass, id.toString());
   }
 }

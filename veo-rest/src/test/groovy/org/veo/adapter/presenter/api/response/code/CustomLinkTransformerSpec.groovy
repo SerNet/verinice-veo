@@ -38,12 +38,12 @@ class CustomLinkTransformerSpec extends Specification {
         given: "a custom link"
         def domain = Mock(Domain) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.modelInterface >> Domain
         }
         def targetAsset = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.idAsString >> it.id.uuidValue()
+            it.idAsUUID >> it.id.value()
             it.modelInterface >> Asset
         }
         def link = Mock(CustomLink) {
@@ -60,7 +60,7 @@ class CustomLinkTransformerSpec extends Specification {
         with(dto) {
             target == IdRef.from(targetAsset, referenceAssembler)
             attributes == link.attributes
-            domains*.id ==~ [domain.id.uuidValue()]
+            domains*.id ==~ [domain.id.value()]
         }
     }
 }

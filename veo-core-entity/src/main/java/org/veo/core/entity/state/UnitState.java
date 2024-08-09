@@ -18,6 +18,7 @@
 package org.veo.core.entity.state;
 
 import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,7 +28,7 @@ import org.veo.core.entity.ref.ITypedId;
 
 public interface UnitState extends EntityState {
   @JsonIgnore
-  String getSelfId();
+  UUID getSelfId();
 
   ITypedId<Unit> getParent();
 

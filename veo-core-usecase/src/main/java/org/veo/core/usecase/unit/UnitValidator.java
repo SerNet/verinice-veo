@@ -38,7 +38,7 @@ public class UnitValidator {
         .filter(
             d ->
                 changedunit.getDomains().stream()
-                    .noneMatch(idAndType -> idAndType.getId().equals(d.getIdAsString())))
+                    .noneMatch(idAndType -> idAndType.getId().equals(d.getIdAsUUID())))
         .toList()
         .forEach(removedDomain -> validateDomainRemoval(storedUnit, removedDomain));
   }

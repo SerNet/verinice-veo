@@ -20,6 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -30,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.Ref;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.VeoConstants;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -52,13 +52,7 @@ public class DomainTemplateMetadataDto implements IdentifiableDto {
     return Optional.ofNullable(selfRef).map(Ref::getTargetUri).orElse(null);
   }
 
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+  @ToString.Include private UUID id;
 
   @Schema(description = "The name / standard for the DomainTemplate.", example = "ISO 27001")
   private String name;

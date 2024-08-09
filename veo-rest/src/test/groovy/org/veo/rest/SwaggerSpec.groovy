@@ -587,6 +587,16 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "Unit parameter in profile update endpoint is documented"() {
+        when:
+        def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{domainId}/profiles/{profileId}"]
+
+        then:
+        with(endPointInfo.put.parameters.find{it.name == 'unit'}) {
+            description == 'Pass a unit ID to overwrite all items in the profile with new profile items created from the elements in that unit. Omit unit ID to leave current profile items untouched.'
+        }
+    }
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

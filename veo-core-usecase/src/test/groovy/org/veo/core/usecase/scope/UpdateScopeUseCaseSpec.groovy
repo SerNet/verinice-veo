@@ -66,7 +66,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
         when:
         def eTag = ETag.from(scopeId.uuidValue(), 0)
-        def output = usecase.execute(new ModifyElementUseCase.InputData(scopeId.uuidValue(), scope, existingClient,  eTag, USER_NAME))
+        def output = usecase.execute(new ModifyElementUseCase.InputData(scopeId.value(), scope, existingClient,  eTag, USER_NAME))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository

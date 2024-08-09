@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -86,7 +87,7 @@ public class DomainAssociationTransformer {
   }
 
   public void mapDomainsToDto(Control source, AbstractControlDto target, boolean newStructure) {
-    Map<String, ControlDomainAssociationDto> extractDomainAssociations =
+    Map<UUID, ControlDomainAssociationDto> extractDomainAssociations =
         extractDomainAssociations(
             source,
             domain -> {
@@ -220,17 +221,17 @@ public class DomainAssociationTransformer {
     return source.getRiskDefinition(domain).map(RiskDefinitionRef::getIdRef).orElse(null);
   }
 
-  private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
+  private <T extends DomainAssociationDto> Map<UUID, T> extractDomainAssociations(
       Element source, Supplier<T> supplier, boolean newStructure) {
     return extractDomainAssociations(source, domain -> supplier.get(), newStructure);
   }
 
-  private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
+  private <T extends DomainAssociationDto> Map<UUID, T> extractDomainAssociations(
       Element source, Function<Domain, T> supplier, boolean newStructure) {
     return source.getDomains().stream()
         .collect(
             toMap(
-                domain -> domain.getIdAsString(),
+                domain -> domain.getIdAsUUID(),
                 domain -> {
                   var association = supplier.apply(domain);
                   association.setSubType(source.getSubType(domain));

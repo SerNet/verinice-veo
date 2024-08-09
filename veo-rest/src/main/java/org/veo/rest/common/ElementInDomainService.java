@@ -19,6 +19,7 @@ package org.veo.rest.common;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -101,37 +102,39 @@ public class ElementInDomainService {
           TFullDto extends AbstractElementInDomainDto<TElement> & IdentifiableDto>
       Future<ResponseEntity<TFullDto>> getElement(
           Authentication auth,
-          String domainId,
-          String uuid,
+          UUID domainId,
+          UUID uuid,
           WebRequest request,
           Class<TElement> modelType,
           GetElementUseCase<TElement> getElementUseCase,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
     var client = clientLookup.getClient(auth);
-    if (etagService.getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
+    if (etagService
+        .getEtag(modelType, uuid.toString())
+        .map(request::checkNotModified)
+        .orElse(false)) {
       return null;
     }
     return useCaseInteractor
         .execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, Key.uuidFrom(domainId)),
+            new GetElementUseCase.InputData(Key.from(uuid), client, Key.from(domainId)),
             output -> toDtoMapper.apply(output.element(), output.domain()))
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
   public @Valid <TElement extends Element> boolean ensureElementExists(
-      Client client, String domainId, String uuid, GetElementUseCase<TElement> getElementUseCase) {
+      Client client, UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
     return runner.run(
             () ->
                 getElementUseCase.execute(
-                    new GetElementUseCase.InputData(
-                        Key.uuidFrom(uuid), client, Key.uuidFrom(domainId))))
+                    new GetElementUseCase.InputData(Key.from(uuid), client, Key.from(domainId))))
         != null;
   }
 
   public <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
       Future<PageDto<TFullDto>> getElements(
-          String domainId,
+          UUID domainId,
           GetElementsUseCase.InputData input,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper,
           Class<TElement> type) {
@@ -143,7 +146,7 @@ public class ElementInDomainService {
   }
 
   public <TFullDto> CompletableFuture<PageDto<TFullDto>> getElements(
-      String domainId,
+      UUID domainId,
       GetElementsUseCase.InputData input,
       BiFunction<Element, Domain, TFullDto> toDtoMapper) {
     return useCaseInteractor.execute(
@@ -156,7 +159,7 @@ public class ElementInDomainService {
                     toDtoMapper.apply(
                         e,
                         e.getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .filter(d -> d.getIdAsUUID().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
   }
@@ -164,9 +167,9 @@ public class ElementInDomainService {
   public <TElement extends Element, TBaseDto extends AbstractElementInDomainDto<TElement>>
       CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
           ApplicationUser user,
-          String domainId,
+          UUID domainId,
           TBaseDto dto,
-          List<String> scopeIds,
+          List<UUID> scopeIds,
           CreateElementUseCase<TElement> createUseCase) {
     dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
@@ -178,8 +181,8 @@ public class ElementInDomainService {
   public <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
       CompletableFuture<ResponseEntity<TFullDto>> associateElementWithDomain(
           Authentication auth,
-          String domainId,
-          String uuid,
+          UUID domainId,
+          UUID uuid,
           CreateDomainAssociationDto dto,
           Class<TElement> modelType,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
@@ -188,8 +191,8 @@ public class ElementInDomainService {
         new AssociateElementWithDomainUseCase.InputData(
             clientLookup.getClient(auth),
             modelType,
-            Key.uuidFrom(uuid),
-            Key.uuidFrom(domainId),
+            Key.from(uuid),
+            Key.from(domainId),
             dto.getSubType(),
             dto.getStatus()),
         o -> ResponseEntity.ok().body(toDtoMapper.apply((TElement) o.element(), o.domain())));
@@ -200,9 +203,9 @@ public class ElementInDomainService {
           TFullDto extends AbstractElementInDomainDto<TElement> & IdentifiableDto>
       CompletableFuture<ResponseEntity<TFullDto>> update(
           Authentication auth,
-          String domainId,
+          UUID domainId,
           String eTag,
-          String id,
+          UUID id,
           TFullDto dto,
           UpdateElementInDomainUseCase<TElement> updateUseCase,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
@@ -213,45 +216,44 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         updateUseCase,
         new UpdateElementInDomainUseCase.InputData<>(
-            Key.uuidFrom(id), dto, Key.uuidFrom(domainId), client, eTag, user.getUsername()),
+            Key.from(id), dto, Key.from(domainId), client, eTag, user.getUsername()),
         output ->
             toResponseEntity(
                 output.entity(),
                 toDtoMapper,
                 output.entity().getDomains().stream()
-                    .filter(d -> d.getIdAsString().equals(domainId))
+                    .filter(d -> d.getIdAsUUID().equals(domainId))
                     .findFirst()
                     .orElseThrow()));
   }
 
   public @Valid <TElement extends Element, TDto extends AbstractElementInDomainDto<TElement>>
       CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-          Authentication auth, @Valid TDto dto, String domainId) {
+          Authentication auth, @Valid TDto dto, UUID domainId) {
     dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(
-            clientLookup.getClient(auth), Key.uuidFrom(domainId), dto),
+        new EvaluateElementUseCase.InputData(clientLookup.getClient(auth), Key.from(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
       Authentication auth,
-      String domainId,
-      String elementId,
+      UUID domainId,
+      UUID elementId,
       LinkMapDto links,
       Class<? extends Element> assetClass) {
     return useCaseInteractor.execute(
         addLinksUseCase,
         new AddLinksUseCase.InputData(
-            Key.uuidFrom(elementId),
+            Key.from(elementId),
             assetClass,
-            Key.uuidFrom(domainId),
+            Key.from(domainId),
             links.getCustomLinkStates(),
             clientLookup.getClient(auth)),
         out ->
             ResponseEntity.noContent()
-                .eTag(ETag.from(elementId, out.entity().getVersion()))
+                .eTag(ETag.from(elementId.toString(), out.entity().getVersion()))
                 .build());
   }
 
@@ -264,36 +266,36 @@ public class ElementInDomainService {
   }
 
   public CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, String domainId, String elementType) {
+      Authentication auth, UUID domainId, String elementType) {
     return CompletableFuture.supplyAsync(
         () -> {
           var domain =
               domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
-                  Key.uuidFrom(domainId), clientLookup.getClient(auth).getId());
+                  Key.from(domainId), clientLookup.getClient(auth).getId());
           return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
         });
   }
 
   public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
-      String domainId, String uuid, Class<? extends Element> type, Authentication auth) {
+      UUID domainId, UUID uuid, Class<? extends Element> type, Authentication auth) {
     return useCaseInteractor.execute(
         getAvailableActionsUseCase,
         new GetAvailableActionsUseCase.InputData(
-            Key.uuidFrom(domainId), Key.uuidFrom(uuid), type, clientLookup.getClient(auth).getId()),
+            Key.from(domainId), Key.from(uuid), type, clientLookup.getClient(auth).getId()),
         o -> ResponseEntity.ok(entityToDtoTransformer.transformActions2Dtos(o.actions())));
   }
 
   public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
-      String domainId,
-      String uuid,
+      UUID domainId,
+      UUID uuid,
       Class<? extends Element> elementType,
       String actionId,
       Authentication auth) {
     return useCaseInteractor.execute(
         performActionUseCase,
         new PerformActionUseCase.InputData(
-            Key.uuidFrom(domainId),
-            Key.uuidFrom(uuid),
+            Key.from(domainId),
+            Key.from(uuid),
             elementType,
             actionId,
             clientLookup.getClient(auth).getId()),
@@ -302,7 +304,7 @@ public class ElementInDomainService {
 
   public <TElement extends Element>
       Future<PageDto<ControlImplementationDto>> getControlImplementations(
-          String domainId, GetControlImplementationsUseCase.InputData input) {
+          UUID domainId, GetControlImplementationsUseCase.InputData input) {
     return useCaseInteractor.execute(
         getControlImplementationsByControlUseCase,
         input,
@@ -313,15 +315,15 @@ public class ElementInDomainService {
                     entityToDtoTransformer.mapControlImplementation(
                         e,
                         e.getOwner().getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .filter(d -> d.getIdAsUUID().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
   }
 
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
       Authentication auth,
-      String domainId,
-      String uuid,
+      UUID domainId,
+      UUID uuid,
       Class<? extends Element> elementType,
       @Min(1) Integer pageSize,
       Integer pageNumber,

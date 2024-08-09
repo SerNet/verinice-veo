@@ -110,7 +110,7 @@ public class SpringSpecDomainTemplateCreator {
                         throw new RuntimeException(e);
                       }
                     })
-                .collect(Collectors.toMap(dto -> dto.getId(), dto -> dto));
+                .collect(Collectors.toMap(dto -> dto.getId().toString(), dto -> dto));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

@@ -17,14 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import jakarta.validation.constraints.Pattern;
+import java.util.UUID;
 
-import org.veo.adapter.presenter.api.Patterns;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -33,13 +30,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase> {
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+
+  @ToString.Include private UUID id;
 
   @Override
   public Class<CatalogItem> getModelInterface() {

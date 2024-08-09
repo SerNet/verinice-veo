@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.profile;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
@@ -29,10 +31,10 @@ import lombok.AllArgsConstructor;
 public abstract class AbstractProfileUseCase {
   protected final ProfileRepository profileRepo;
 
-  void checkClientOwnsDomain(Client client, String id) {
+  void checkClientOwnsDomain(Client client, UUID id) {
     client.getDomains().stream()
-        .filter(d -> d.getIdAsString().equals(id))
+        .filter(d -> d.getIdAsUUID().equals(id))
         .findAny()
-        .orElseThrow(() -> new NotFoundException(Key.uuidFrom(id), Domain.class));
+        .orElseThrow(() -> new NotFoundException(Key.from(id), Domain.class));
   }
 }

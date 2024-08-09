@@ -24,7 +24,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.state.ElementState
-import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.service.EventPublisher
@@ -55,7 +54,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         personState = Mock() {
             modelInterface >> Person
             name >> "John"
-            owner >> TypedId.from(existingUnit.idAsString, Unit)
+            owner >> TypedId.from(existingUnit.idAsUUID, Unit)
         }
 
         repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
@@ -83,7 +82,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         given: "a scope for another client"
         def scope = Spy(Scope)
         scope.id >> Key.newUuid()
-        scope.idAsString >> scope.id.uuidValue()
+        scope.idAsUUID >> scope.id.value()
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 

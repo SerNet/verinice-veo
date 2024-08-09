@@ -49,7 +49,7 @@ public class GetProfileUseCase extends AbstractProfileUseCase
                     input.profile.toKey(), input.authenticatedClient.getId())
                 : profileRepo.findById(input.authenticatedClient.getId(), input.profile.toKey()))
             .orElseThrow(
-                () -> new NotFoundException(Key.uuidFrom(input.profile.getId()), Profile.class));
+                () -> new NotFoundException(Key.from(input.profile.getId()), Profile.class));
     log.info("profile: {}", profile);
 
     return new OutputData(profile);

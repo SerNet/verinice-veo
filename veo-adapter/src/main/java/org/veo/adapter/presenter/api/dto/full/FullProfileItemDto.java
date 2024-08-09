@@ -19,18 +19,16 @@ package org.veo.adapter.presenter.api.dto.full;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
@@ -47,13 +45,7 @@ import lombok.ToString;
 public class FullProfileItemDto extends AbstractProfileItemDto
     implements FullTemplateItemDto<ProfileItem, Profile> {
 
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+  @ToString.Include private UUID id;
 
   @Valid @NotNull private TemplateItemAspects aspects = new TemplateItemAspects();
 

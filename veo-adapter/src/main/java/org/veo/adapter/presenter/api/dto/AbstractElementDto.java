@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -56,7 +57,7 @@ public abstract class AbstractElementDto<T extends Element>
   @Override
   @JsonIgnore
   @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-  public String getSelfId() {
+  public UUID getSelfId() {
     return null;
   }
 
@@ -103,7 +104,7 @@ public abstract class AbstractElementDto<T extends Element>
 
   public abstract void clearDomains();
 
-  public abstract void transferToDomain(String sourceDomainId, String targetDomainId);
+  public abstract void transferToDomain(UUID sourceDomainId, UUID targetDomainId);
 
   private Set<CustomAspectState> getCustomAspectStates() {
     return customAspects.entrySet().stream()
@@ -126,7 +127,7 @@ public abstract class AbstractElementDto<T extends Element>
         .collect(Collectors.toSet());
   }
 
-  public abstract Map<String, ? extends DomainAssociationDto> getDomains();
+  public abstract Map<UUID, ? extends DomainAssociationDto> getDomains();
 
   @JsonIgnore
   @Override

@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.response.transformer
 import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.service.IdRefResolver
 
@@ -30,9 +29,9 @@ import spock.lang.Specification
 class TransformerSpec extends Specification {
 
     def unitName = "Test unit"
-    def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
+    def unitId = UUID.fromString("2e63d3f8-b326-4304-84e6-c12efbbcaaa4")
     def subUnitName = "Test subunit"
-    def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
+    def subUnitId = UUID.fromString("fb329c3e-b87b-44d2-a680-e2d12539f3f7")
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(DomainAssociationTransformer))
     def idRefResolver = Mock(IdRefResolver)
@@ -43,7 +42,7 @@ class TransformerSpec extends Specification {
         subUnit.getClient() >> null
         subUnit.getDomains() >> []
         subUnit.getName() >> subUnitName
-        subUnit.getIdAsString() >> subUnitId
+        subUnit.idAsUUID >> subUnitId
         subUnit.getUnits() >> []
         subUnit.getModelInterface() >> Unit.getClass()
 
@@ -52,7 +51,7 @@ class TransformerSpec extends Specification {
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
-        unit.getIdAsString() >> unitId
+        unit.idAsUUID >> unitId
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.getClass()
         unit.createdAt >> Instant.now()

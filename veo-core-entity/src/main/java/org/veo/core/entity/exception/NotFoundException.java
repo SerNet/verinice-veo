@@ -46,7 +46,7 @@ public class NotFoundException extends DomainException {
   }
 
   public NotFoundException(Key<UUID> id, Class<? extends Identifiable> type) {
-    this(TypedId.from(id.uuidValue(), type));
+    this(TypedId.from(id.value(), type));
   }
 
   public NotFoundException(String messageTemplate, Object... arguments) {

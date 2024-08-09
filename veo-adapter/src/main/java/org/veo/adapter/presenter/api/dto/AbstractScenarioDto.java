@@ -22,6 +22,7 @@ import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -84,7 +85,7 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario>
   }
 
   @Override
-  public void transferToDomain(String sourceDomainId, String targetDomainId) {
+  public void transferToDomain(UUID sourceDomainId, UUID targetDomainId) {
     renameKey(domains, sourceDomainId, targetDomainId);
   }
 
@@ -92,5 +93,5 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario>
   @Schema(
       description =
           "Details about this element's association with domains. Domain ID is key, association object is value.")
-  private Map<String, ScenarioDomainAssociationDto> domains = new HashMap<>();
+  private Map<UUID, ScenarioDomainAssociationDto> domains = new HashMap<>();
 }

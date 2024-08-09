@@ -42,6 +42,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -189,7 +190,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<FullDomainDto>> getDomain(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     if (getEtag(Domain.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
@@ -197,7 +198,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     CompletableFuture<FullDomainDto> domainFuture =
         useCaseInteractor.execute(
             getDomainUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(id), client),
+            new UseCase.IdAndClient(Key.from(id), client),
             output -> entityToDtoTransformer.transformDomain2Dto(output.domain()));
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
@@ -231,11 +232,11 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId) {
+          UUID domainId) {
     return useCaseInteractor.execute(
         getIncarnationConfigurationUseCase,
         new GetIncarnationConfigurationUseCase.InputData(
-            getAuthenticatedClient(auth), Key.uuidFrom(domainId)),
+            getAuthenticatedClient(auth), Key.from(domainId)),
         GetIncarnationConfigurationUseCase.OutputData::incarnationConfiguration);
   }
 
@@ -245,7 +246,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId) {
+          UUID domainId) {
     return useCaseInteractor.execute(
         getProfilesUseCase,
         new GetProfilesUseCase.InputData(
@@ -260,10 +261,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String profileId,
+          UUID profileId,
       WebRequest request) {
     if (getEtag(Profile.class, profileId).map(request::checkNotModified).orElse(false)) {
       return null;
@@ -288,10 +289,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String profileId,
+          UUID profileId,
       WebRequest request) {
     return useCaseInteractor.execute(
         getProfileItemsUseCase,
@@ -311,13 +312,13 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String profileId,
+          UUID profileId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String itemId,
+          UUID itemId,
       WebRequest request) {
     return useCaseInteractor.execute(
         getProfileItemUseCase,
@@ -338,10 +339,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String profileId,
+          UUID profileId,
       WebRequest request) {
 
     return useCaseInteractor
@@ -363,7 +364,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) String elementType,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
@@ -416,15 +417,15 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String itemId,
+          UUID itemId,
       WebRequest request) {
     return useCaseInteractor.execute(
         getCatalogItemUseCase,
         new GetCatalogItemUseCase.InputData(
-            Key.uuidFrom(itemId), Key.uuidFrom(domainId), getAuthenticatedClient(auth)),
+            Key.from(itemId), Key.from(domainId), getAuthenticatedClient(auth)),
         out ->
             RestApiResponse.okOrNotModified(
                 out.catalogItem(), entityToDtoTransformer::transformShortCatalogItem2Dto, request));
@@ -481,12 +482,12 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponse(responseCode = "200", description = "Inspections found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<List<ShortInspectionDto>>> getInspections(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String domainId) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID domainId) {
     return useCaseInteractor
         .execute(
             getInspectionsUseCase,
             new GetInspectionsUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), Key.uuidFrom(domainId)),
+                getAuthenticatedClient(auth).getId(), Key.from(domainId)),
             out ->
                 entityToDtoTransformer.transformInspections2ShortDtos(
                     out.inspections(), out.domain()))
@@ -501,13 +502,13 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponse(responseCode = "404", description = "Inspection not found")
   public @Valid Future<ResponseEntity<Inspection>> getInspection(
       @Parameter(hidden = true) Authentication auth,
-      @PathVariable String domainId,
+      @PathVariable UUID domainId,
       @PathVariable @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH) String inspectionId) {
     return useCaseInteractor
         .execute(
             getInspectionUseCase,
             new GetInspectionUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), Key.uuidFrom(domainId), inspectionId),
+                getAuthenticatedClient(auth).getId(), Key.from(domainId), inspectionId),
             GetInspectionUseCase.OutputData::inspection)
         .thenApply(
             inspection -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(inspection));
@@ -524,12 +525,12 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = CatalogItemsTypeCount.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<CatalogItemsTypeCount>> getCatalogItemsTypeCount(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             getCatalogItemsTypeCountUseCase,
-            new GetCatalogItemsTypeCountUseCase.InputData(Key.uuidFrom(id), client),
+            new GetCatalogItemsTypeCountUseCase.InputData(Key.from(id), client),
             GetCatalogItemsTypeCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }

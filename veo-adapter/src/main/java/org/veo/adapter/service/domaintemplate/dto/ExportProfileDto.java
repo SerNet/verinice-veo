@@ -19,16 +19,13 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
-
-import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractProfileDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.state.ProfileItemState;
 
@@ -40,20 +37,15 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ExportProfileDto extends AbstractProfileDto implements IdentifiableDto, ProfileState {
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+
+  @ToString.Include private UUID id;
 
   @Schema(description = "The profile-items for the Profile.")
   private Set<ExportProfileItemDto> items = new HashSet<>();
 
   @Override
   @JsonIgnore
-  public String getSelfId() {
+  public UUID getSelfId() {
     return id;
   }
 

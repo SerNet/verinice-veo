@@ -18,6 +18,7 @@
 package org.veo.core.entity.state;
 
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -29,7 +30,7 @@ import org.veo.core.entity.TemplateItemAspects;
 public interface TemplateItemState<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends Nameable {
-  String getSelfId();
+  UUID getSelfId();
 
   @NotNull
   String getElementType();

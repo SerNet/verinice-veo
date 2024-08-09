@@ -26,12 +26,12 @@ import org.veo.core.entity.Key;
 
 public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
-  String getId();
+  UUID getId();
 
   @JsonIgnore
   Class<T> getType();
 
   default Key<UUID> toKey() {
-    return Key.uuidFrom(getId());
+    return Key.from(getId());
   }
 }

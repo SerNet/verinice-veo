@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -46,12 +48,12 @@ public class CompoundIdRef<
   @JsonIgnore private final ITypedCompoundId<T, TFirst, TSecond> ref;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  public String getFirstId() {
+  public UUID getFirstId() {
     return ref.getFirstId();
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  public String getSecondId() {
+  public UUID getSecondId() {
     return ref.getSecondId();
   }
 

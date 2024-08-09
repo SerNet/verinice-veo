@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -79,13 +81,13 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
 
   @Override
   @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-  public String getSymbolicId() {
+  public UUID getSymbolicId() {
     return ref.getSymbolicId();
   }
 
   @Override
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  public String getNamespaceId() {
+  public UUID getNamespaceId() {
     return ref.getNamespaceId();
   }
 

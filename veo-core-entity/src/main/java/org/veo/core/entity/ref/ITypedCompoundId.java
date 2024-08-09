@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.ref;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.CompoundIdentifiable;
@@ -35,7 +37,7 @@ public interface ITypedCompoundId<
   Class<TFirst> getFirstType();
 
   @JsonIgnore
-  String getFirstId();
+  UUID getFirstId();
 
   @JsonIgnore
   default ITypedId<TFirst> getFirstRef() {
@@ -46,7 +48,7 @@ public interface ITypedCompoundId<
   Class<TSecond> getSecondType();
 
   @JsonIgnore
-  String getSecondId();
+  UUID getSecondId();
 
   @JsonIgnore
   default ITypedId<TSecond> getSecondRef() {

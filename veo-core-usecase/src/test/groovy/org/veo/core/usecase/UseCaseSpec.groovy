@@ -78,6 +78,7 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.getName() >> "Existing unit"
         existingUnit.getId() >> id
         existingUnit.getIdAsString() >> id.uuidValue()
+        existingUnit.idAsUUID >> id.value()
         existingUnit.getModelInterface() >> Unit
         existingUnit.getVersion() >> 0
 

@@ -31,14 +31,14 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
   public static <T extends Element> CreateElementUseCase.InputData<T> map(
-      ElementState<T> state, Client client, List<String> scopeIds) {
+      ElementState<T> state, Client client, List<UUID> scopeIds) {
     return new CreateElementUseCase.InputData<>(state, client, mapIds(scopeIds));
   }
 
-  private static Set<Key<UUID>> mapIds(List<String> ids) {
+  private static Set<Key<UUID>> mapIds(List<UUID> ids) {
     if (ids == null) {
       return Set.of();
     }
-    return ids.stream().map(Key::uuidFrom).collect(Collectors.toSet());
+    return ids.stream().map(Key::from).collect(Collectors.toSet());
   }
 }

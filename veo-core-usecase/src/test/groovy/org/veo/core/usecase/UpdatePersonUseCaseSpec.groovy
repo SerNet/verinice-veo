@@ -60,7 +60,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
         when:
         def eTag = ETag.from(person.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(id.uuidValue(), personState, existingClient, eTag, "max"))
+        def output = usecase.execute(new InputData(id.value(), personState, existingClient, eTag, "max"))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository

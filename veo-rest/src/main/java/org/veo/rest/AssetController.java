@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -201,11 +202,11 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @Operation(summary = "Loads all assets")
   public @Valid Future<PageDto<FullAssetDto>> getAssets(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -278,7 +279,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam,
@@ -292,7 +293,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     CompletableFuture<FullAssetDto> entityFuture =
         useCaseInteractor.execute(
             getAssetUseCase,
-            new GetAssetUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
+            new GetAssetUseCase.InputData(Key.from(uuid), client, embedRisks),
             output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -313,7 +314,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
   }
@@ -326,7 +327,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Valid @NotNull @RequestBody CreateAssetDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
 
     return useCaseInteractor.execute(
         createAssetUseCase,
@@ -345,7 +346,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @NotNull @RequestBody FullAssetDto assetDto) {
     assetDto.applyResourceId(id);
     return useCaseInteractor.execute(
@@ -362,12 +363,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Asset.class, Key.uuidFrom(uuid), client),
+        new DeleteElementUseCase.InputData(Asset.class, Key.from(uuid), client),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -447,10 +448,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<List<AssetRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, String assetId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID assetId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
+    var input = new GetAssetRisksUseCase.InputData(client, Key.from(assetId));
 
     return useCaseInteractor.execute(
         getAssetRisksUseCase,
@@ -463,16 +464,15 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<ResponseEntity<AssetRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
+      @Parameter(hidden = true) ApplicationUser user, UUID assetId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     return getRisk(client, assetId, scenarioId);
   }
 
   private CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
-      Client client, String assetId, String scenarioId) {
-    var input =
-        new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId), Key.uuidFrom(scenarioId));
+      Client client, UUID assetId, UUID scenarioId) {
+    var input = new GetAssetRiskUseCase.InputData(client, Key.from(assetId), Key.from(scenarioId));
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -493,12 +493,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull AssetRiskDto dto, String assetId) {
+      ApplicationUser user, @Valid @NotNull AssetRiskDto dto, UUID assetId) {
 
     var input =
         new CreateAssetRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.uuidFrom(assetId),
+            Key.from(assetId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -528,12 +528,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, String assetId, String scenarioId) {
+      ApplicationUser user, UUID assetId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
     var input =
         new DeleteRiskUseCase.InputData(
-            Asset.class, client, Key.uuidFrom(assetId), Key.uuidFrom(scenarioId));
+            Asset.class, client, Key.from(assetId), Key.from(scenarioId));
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -541,12 +541,12 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
-      ApplicationUser user, String assetId, String scenarioId, AssetRiskDto dto, String eTag) {
+      ApplicationUser user, UUID assetId, UUID scenarioId, AssetRiskDto dto, String eTag) {
     var client = getClient(user.getClientId());
     var input =
         new UpdateAssetRiskUseCase.InputData(
             client,
-            Key.uuidFrom(assetId),
+            Key.from(assetId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -574,14 +574,14 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+          UUID uuid,
+      @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
     return inspect(auth, uuid, domainId, Asset.class);
   }
 
   @Override
   public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      Authentication auth, String riskAffectedId, String controlId) {
+      Authentication auth, UUID riskAffectedId, UUID controlId) {
     return useCaseInteractor.execute(
         getRequirementImplementationUseCase,
         new GetRequirementImplementationUseCase.InputData(
@@ -600,8 +600,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
       String eTag,
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
@@ -617,8 +617,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       Authentication auth,
-      String riskAffectedId,
-      String controlId,
+      UUID riskAffectedId,
+      UUID controlId,
       Integer pageSize,
       Integer pageNumber,
       String sortColumn,

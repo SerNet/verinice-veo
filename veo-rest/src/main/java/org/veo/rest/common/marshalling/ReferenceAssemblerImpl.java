@@ -28,6 +28,8 @@ import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
 import static org.veo.rest.ControllerConstants.ANY_USER;
+import static org.veo.rest.ControllerConstants.ANY_UUID;
+import static org.veo.rest.ControllerConstants.ANY_UUID_LIST;
 
 import java.util.Set;
 import java.util.UUID;
@@ -115,136 +117,123 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
     value = "NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS",
     justification = "The controller method invocations are just dummies")
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
-  private static final String DUMMY_UUID_STRING = Key.NIL_UUID.uuidValue();
+  private static final UUID DUMMY_UUID = Key.NIL_UUID.value();
+  private static final String DUMMY_UUID_STRING = DUMMY_UUID.toString();
 
   private static final UriComponents GET_ASSET =
       createTemplate(
           linkTo(
                   methodOn(AssetController.class)
-                      .getAsset(ANY_AUTH, DUMMY_UUID_STRING, ANY_BOOLEAN, ANY_REQUEST))
+                      .getAsset(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
               .withRel(AssetController.URL_BASE_PATH));
 
   private static final UriComponents GET_CONTROL =
       createTemplate(
-          linkTo(
-                  methodOn(ControlController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(ControlController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(ControlController.URL_BASE_PATH));
 
   private static final UriComponents GET_DOCUMENT =
       createTemplate(
-          linkTo(
-                  methodOn(DocumentController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(DocumentController.URL_BASE_PATH));
   private static final UriComponents GET_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(DomainController.class)
-                      .getDomain(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(DomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_DOMAIN_TEMPLATE =
       createTemplate(
-          linkTo(
-                  methodOn(ContentCreationController.class)
-                      .getDomainTemplate(ANY_AUTH, DUMMY_UUID_STRING))
+          linkTo(methodOn(ContentCreationController.class).getDomainTemplate(ANY_AUTH, DUMMY_UUID))
               .withRel(DomainTemplateController.URL_BASE_PATH));
 
   private static final UriComponents GET_INCIDENT =
       createTemplate(
-          linkTo(
-                  methodOn(IncidentController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(IncidentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(IncidentController.URL_BASE_PATH));
 
   private static final UriComponents GET_PROFILE =
       createTemplate(
           linkTo(
                   methodOn(DomainController.class)
-                      .getProfile(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getProfile(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(DomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_PERSON =
       createTemplate(
-          linkTo(
-                  methodOn(PersonController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(PersonController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(PersonController.URL_BASE_PATH));
 
   private static final UriComponents GET_PROCESS =
       createTemplate(
           linkTo(
                   methodOn(ProcessController.class)
-                      .getProcess(ANY_AUTH, DUMMY_UUID_STRING, ANY_BOOLEAN, ANY_REQUEST))
+                      .getProcess(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
               .withRel(ProcessController.URL_BASE_PATH));
 
   private static final UriComponents GET_SCENARIO =
       createTemplate(
-          linkTo(
-                  methodOn(ScenarioController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(ScenarioController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(ScenarioController.URL_BASE_PATH));
 
   private static final UriComponents GET_SCOPE =
       createTemplate(
           linkTo(
                   methodOn(ScopeController.class)
-                      .getScope(ANY_AUTH, DUMMY_UUID_STRING, ANY_BOOLEAN, ANY_REQUEST))
+                      .getScope(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
               .withRel(ScopeController.URL_BASE_PATH));
 
   private static final UriComponents GET_UNIT =
       createTemplate(
-          linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID_STRING, ANY_REQUEST))
+          linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
               .withRel(UnitController.URL_BASE_PATH));
 
   private static final UriComponents GET_ASSET_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(AssetInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(AssetInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_CONTROL_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(ControlInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(ControlInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_DOCUMENT_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(DocumentInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(DocumentInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_INCIDENT_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(IncidentInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(IncidentInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_PERSON_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(PersonInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(PersonInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_PROCESS_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(ProcessInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(ProcessInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_SCENARIO_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(ScenarioInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(ScenarioInDomainController.URL_BASE_PATH));
   private static final UriComponents GET_SCOPE_IN_DOMAIN =
       createTemplate(
           linkTo(
                   methodOn(ScopeInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(ScopeInDomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_ASSET_RI =
@@ -277,60 +266,49 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(
           linkTo(
                   methodOn(DomainController.class)
-                      .getInspection(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING))
+                      .getInspection(ANY_AUTH, DUMMY_UUID, DUMMY_UUID_STRING))
               .withRel(DomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_CATALOG_ITEM =
       createTemplate(
           linkTo(
                   methodOn(DomainController.class)
-                      .getCatalogItem(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING, ANY_REQUEST))
+                      .getCatalogItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(DomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_PROFILE_ITEM =
       createTemplate(
           linkTo(
                   methodOn(DomainController.class)
-                      .getProfileItem(
-                          ANY_AUTH,
-                          DUMMY_UUID_STRING,
-                          DUMMY_UUID_STRING,
-                          DUMMY_UUID_STRING,
-                          ANY_REQUEST))
+                      .getProfileItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
               .withRel(DomainController.URL_BASE_PATH));
 
   private static final UriComponents GET_ASSET_RISK =
       createTemplate(
-          linkTo(
-                  methodOn(AssetController.class)
-                      .getRisk(ANY_USER, DUMMY_UUID_STRING, DUMMY_UUID_STRING))
+          linkTo(methodOn(AssetController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
               .withRel(AssetController.URL_BASE_PATH + AssetRiskResource.RELPATH));
 
   private static final UriComponents GET_PROCESS_RISK =
       createTemplate(
-          linkTo(
-                  methodOn(ProcessController.class)
-                      .getRisk(ANY_USER, DUMMY_UUID_STRING, DUMMY_UUID_STRING))
+          linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
               .withRel(ProcessController.URL_BASE_PATH + ProcessRiskResource.RELPATH));
 
   private static final UriComponents GET_SCOPE_RISK =
       createTemplate(
-          linkTo(
-                  methodOn(ScopeController.class)
-                      .getRisk(ANY_USER, DUMMY_UUID_STRING, DUMMY_UUID_STRING))
+          linkTo(methodOn(ScopeController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
               .withRel(ScopeController.URL_BASE_PATH + ScopeRiskResource.RELPATH));
 
   private static final UriComponents GET_USER_CONFIGURATION =
       createTemplate(
           linkTo(
                   methodOn(UserConfigurationController.class)
-                      .getUserConfiguration(ANY_USER, DUMMY_UUID_STRING))
+                      .getUserConfiguration(ANY_USER, ANY_STRING))
               .withRel(UserConfigurationController.URL_BASE_PATH));
 
   @Override
   public String targetReferenceOf(Identifiable identifiable) {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
-    String id = identifiable.getIdAsString();
+    UUID id = identifiable.getIdAsUUID();
     if (Scope.class.isAssignableFrom(type)) {
       return buildUri(GET_SCOPE, id);
     }
@@ -368,7 +346,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       Profile profile = (Profile) identifiable;
       // TODO #2497 introduce endpoint for profiles in domain
       // templates
-      return buildUri(GET_PROFILE, profile.getOwner().getIdAsString(), id);
+      return buildUri(GET_PROFILE, profile.getOwner().getIdAsUUID(), id);
     }
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type) || TemplateItemReference.class.isAssignableFrom(type)) {
@@ -382,28 +360,28 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String elementInDomainRefOf(Element element, Domain domain) {
     var type = element.getModelInterface();
     if (Asset.class.isAssignableFrom(type)) {
-      return buildUri(GET_ASSET_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_ASSET_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Control.class.isAssignableFrom(type)) {
-      return buildUri(GET_CONTROL_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_CONTROL_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Document.class.isAssignableFrom(type)) {
-      return buildUri(GET_DOCUMENT_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_DOCUMENT_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Incident.class.isAssignableFrom(type)) {
-      return buildUri(GET_INCIDENT_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_INCIDENT_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Person.class.isAssignableFrom(type)) {
-      return buildUri(GET_PERSON_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_PERSON_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Process.class.isAssignableFrom(type)) {
-      return buildUri(GET_PROCESS_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_PROCESS_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Scenario.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCENARIO_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_SCENARIO_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     if (Scope.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCOPE_IN_DOMAIN, domain.getIdAsString(), element.getIdAsString());
+      return buildUri(GET_SCOPE_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
     }
     throw new NotImplementedException(
         "%s references in domain context not supported".formatted(type.getSimpleName()));
@@ -411,8 +389,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String targetReferenceOf(RequirementImplementation requirementImplementation) {
-    String originId = requirementImplementation.getOrigin().getIdAsString();
-    String controlId = requirementImplementation.getControl().getIdAsString();
+    UUID originId = requirementImplementation.getOrigin().getIdAsUUID();
+    UUID controlId = requirementImplementation.getControl().getIdAsUUID();
     return switch (requirementImplementation.getOrigin().getModelType()) {
       case Asset.SINGULAR_TERM -> buildUri(GET_ASSET_RI, originId, controlId);
       case Process.SINGULAR_TERM -> buildUri(GET_PROCESS_RI, originId, controlId);
@@ -423,8 +401,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String requirementImplementationsOf(ControlImplementation controlImplementation) {
-    String ownerId = controlImplementation.getOwner().getIdAsString();
-    String controlId = controlImplementation.getControl().getIdAsString();
+    UUID ownerId = controlImplementation.getOwner().getIdAsUUID();
+    UUID controlId = controlImplementation.getControl().getIdAsUUID();
     return switch (controlImplementation.getOwner().getModelType()) {
       case Asset.SINGULAR_TERM -> buildUri(GET_ASSET_RIS, ownerId, controlId);
       case Process.SINGULAR_TERM -> buildUri(GET_PROCESS_RIS, ownerId, controlId);
@@ -435,7 +413,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String inspectionReferenceOf(String id, Domain domain) {
-    return buildUri(GET_INSPECTION, domain.getIdAsString(), id);
+    return buildUri(GET_INSPECTION, domain.getIdAsUUID(), id);
   }
 
   @Override
@@ -445,7 +423,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
       return buildUri(
           GET_CATALOG_ITEM,
-          catalogItem.getDomainBase().getIdAsString(),
+          catalogItem.getDomainBase().getIdAsUUID(),
           catalogItem.getSymbolicIdAsString());
     }
     if (entity instanceof ProfileItem profileItem) {
@@ -453,8 +431,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       // templates
       return buildUri(
           GET_PROFILE_ITEM,
-          profileItem.getDomainBase().getIdAsString(),
-          profileItem.getOwner().getIdAsString(),
+          profileItem.getDomainBase().getIdAsUUID(),
+          profileItem.getOwner().getIdAsUUID(),
           profileItem.getSymbolicIdAsString());
     }
     throw new NotImplementedException();
@@ -468,8 +446,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   private static WebMvcLinkBuilder linkToRequirementImplementation(
       Class<? extends RiskAffectedResource> controller) {
     return linkTo(
-        methodOn(controller)
-            .getRequirementImplementation(ANY_AUTH, DUMMY_UUID_STRING, DUMMY_UUID_STRING));
+        methodOn(controller).getRequirementImplementation(ANY_AUTH, DUMMY_UUID, DUMMY_UUID));
   }
 
   private static WebMvcLinkBuilder linkToRequirementImplementations(
@@ -477,13 +454,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     return linkTo(
         methodOn(controller)
             .getRequirementImplementations(
-                ANY_AUTH,
-                DUMMY_UUID_STRING,
-                DUMMY_UUID_STRING,
-                ANY_INT,
-                ANY_INT,
-                ANY_STRING,
-                ANY_STRING));
+                ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING));
   }
 
   /**
@@ -588,11 +559,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(ScopeController.class)
                   .getScopes(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -613,11 +584,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(AssetController.class)
                   .getAssets(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -638,11 +609,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(DocumentController.class)
                   .getDocuments(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -658,7 +629,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     if (Unit.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(UnitController.class).getUnits(ANY_AUTH, ANY_STRING, ANY_STRING))
+      return linkTo(methodOn(UnitController.class).getUnits(ANY_AUTH, ANY_UUID, ANY_STRING))
           .withSelfRel()
           .getHref();
     }
@@ -667,11 +638,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(ProcessController.class)
                   .getProcesses(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -692,11 +663,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(PersonController.class)
                   .getPersons(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -716,11 +687,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(ControlController.class)
                   .getControls(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -740,11 +711,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(ScenarioController.class)
                   .getScenarios(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -764,11 +735,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(IncidentController.class)
                   .getIncidents(
                       ANY_AUTH,
+                      ANY_UUID,
                       ANY_STRING,
                       ANY_STRING,
                       ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING_LIST,
+                      ANY_UUID_LIST,
                       ANY_BOOLEAN,
                       ANY_BOOLEAN,
                       ANY_STRING,
@@ -811,18 +782,17 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity) {
     if (entity instanceof AssetRisk) {
-      return linkTo(methodOn(AssetController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+      return linkTo(methodOn(AssetController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
           .withSelfRel()
           .getHref();
     }
     if (entity instanceof ProcessRisk) {
-      return linkTo(
-              methodOn(ProcessController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+      return linkTo(methodOn(ProcessController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
           .withSelfRel()
           .getHref();
     }
     if (entity instanceof ScopeRisk) {
-      return linkTo(methodOn(ScopeController.class).getRisks(ANY_USER, entity.getFirstIdAsString()))
+      return linkTo(methodOn(ScopeController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
           .withSelfRel()
           .getHref();
     }
@@ -849,7 +819,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       if (typeSeg.equals(Client.PLURAL_TERM)) {
         throw invalidReference(uri);
       }
-      return TypedId.from(idSeg, parseType(typeSeg, superType));
+      return TypedId.from(UUID.fromString(idSeg), parseType(typeSeg, superType));
     } catch (IllegalArgumentException | IndexOutOfBoundsException ex) {
       throw invalidReference(uri);
     }
@@ -863,16 +833,19 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       var namespaceTypeSeg = segments.get(size - 4);
       var namespaceIdSeg = segments.get(size - 3);
       var typeSeg = segments.get(size - 2);
-      var symIdSeg = segments.get(size - 1);
+      var symIdSeg = UUID.fromString(segments.get(size - 1));
       if (typeSeg.equals(CatalogItem.PLURAL_TERM)) {
         return TypedSymbolicId.from(
             symIdSeg,
             CatalogItem.class,
-            TypedId.from(namespaceIdSeg, parseType(namespaceTypeSeg, DomainBase.class)));
+            TypedId.from(
+                UUID.fromString(namespaceIdSeg), parseType(namespaceTypeSeg, DomainBase.class)));
       }
       if (namespaceTypeSeg.equals(Profile.PLURAL_TERM) && typeSeg.equals("items")) {
         return TypedSymbolicId.from(
-            symIdSeg, ProfileItem.class, TypedId.from(namespaceIdSeg, Profile.class));
+            symIdSeg,
+            ProfileItem.class,
+            TypedId.from(UUID.fromString(namespaceIdSeg), Profile.class));
       }
       throw new IllegalArgumentException();
     } catch (IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -891,7 +864,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public Key<UUID> toKey(ITypedId<? extends Identifiable> reference) {
     if (reference == null) return null;
-    return Key.uuidFrom(reference.getId());
+    return Key.from(reference.getId());
   }
 
   @Override
@@ -918,10 +891,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         .build();
   }
 
-  private String buildUri(UriComponents template, String... params) {
+  private String buildUri(UriComponents template, Object... params) {
     UriComponentsBuilder b = createUriComponentsBuilder();
     return b.pathSegment(template.getPathSegments().toArray(String[]::new))
-        .buildAndExpand((Object[]) params)
+        .buildAndExpand(params)
         .toUriString();
   }
 

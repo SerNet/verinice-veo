@@ -251,7 +251,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
   public @Valid Future<List<FullUnitDto>> getUnits(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
+      @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) UUID parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     Client client = getAuthenticatedClient(auth);
 
@@ -277,14 +277,14 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               schema = @Schema(implementation = FullUnitDto.class)))
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
     if (getEtag(Unit.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<FullUnitDto> unitFuture =
         useCaseInteractor.execute(
             getUnitUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
+            new UseCase.IdAndClient(Key.from(id), getAuthenticatedClient(auth)),
             output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
@@ -383,7 +383,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @RequestBody FullUnitDto unitDto) {
     unitDto.applyResourceId(id);
     return useCaseInteractor.execute(

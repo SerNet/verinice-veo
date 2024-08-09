@@ -21,6 +21,7 @@ import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -69,7 +70,7 @@ public interface AssetRiskResource {
   })
   @Valid
   Future<List<AssetRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable String assetId);
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID assetId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Retrieves an asset risk")
@@ -86,8 +87,8 @@ public interface AssetRiskResource {
   @Valid
   Future<ResponseEntity<AssetRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String assetId,
-      @PathVariable String scenarioId);
+      @PathVariable UUID assetId,
+      @PathVariable UUID scenarioId);
 
   @Operation(summary = "Creates a risk")
   @PostMapping(value = RELPATH)
@@ -95,7 +96,7 @@ public interface AssetRiskResource {
   CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody AssetRiskDto dto,
-      @PathVariable String assetId);
+      @PathVariable UUID assetId);
 
   @PutMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Updates a risk")
@@ -106,8 +107,8 @@ public interface AssetRiskResource {
   @Valid
   CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String assetId,
-      @PathVariable String scenarioId,
+      @PathVariable UUID assetId,
+      @PathVariable UUID scenarioId,
       @Valid @NotNull @RequestBody AssetRiskDto assetDto,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag);
@@ -120,6 +121,6 @@ public interface AssetRiskResource {
   })
   CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
       @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable String assetId,
-      @PathVariable String scenarioId);
+      @PathVariable UUID assetId,
+      @PathVariable UUID scenarioId);
 }

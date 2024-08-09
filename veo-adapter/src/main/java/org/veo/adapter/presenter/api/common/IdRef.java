@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -71,7 +73,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  public String getId() {
+  public UUID getId() {
     return ref.getId();
   }
 

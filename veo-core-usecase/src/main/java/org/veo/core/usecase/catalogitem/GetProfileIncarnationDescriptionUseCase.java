@@ -97,7 +97,7 @@ public class GetProfileIncarnationDescriptionUseCase
 
   private String toKey(TailoringReference<?, ?> tailoringReference) {
     String origin = tailoringReference.getOwner().getSymbolicIdAsString();
-    String target = tailoringReference.getTargetRef().getSymbolicId();
+    String target = tailoringReference.getTargetRef().getSymbolicId().toString();
     return switch (tailoringReference.getReferenceType()) {
       case LINK ->
           toKey(

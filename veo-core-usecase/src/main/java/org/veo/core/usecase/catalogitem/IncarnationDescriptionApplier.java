@@ -42,7 +42,6 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
@@ -90,7 +89,7 @@ public class IncarnationDescriptionApplier {
   }
 
   private static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
-      Map<String, T> loadItems(
+      Map<UUID, T> loadItems(
           List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
           AbstractTemplateItemRepository<T, TNamespace> repository,
           Client client) {
@@ -101,7 +100,7 @@ public class IncarnationDescriptionApplier {
                 .collect(Collectors.toSet()),
             client)
         .stream()
-        .collect(Collectors.toMap(SymIdentifiable::getSymbolicIdAsString, identity()));
+        .collect(Collectors.toMap(it -> it.getSymbolicId().value(), identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -122,7 +121,7 @@ public class IncarnationDescriptionApplier {
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
-      Map<String, Element> loadReferencedElements(
+      Map<UUID, Element> loadReferencedElements(
           List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
           Client client) {
     return descriptions.stream()
@@ -131,16 +130,16 @@ public class IncarnationDescriptionApplier {
         .map(o -> o.orElse(null))
         .filter(Objects::nonNull)
         .distinct()
-        .map(ref -> elementRepository.getById(Key.uuidFrom(ref.getId()), ref.getType(), client))
-        .collect(Collectors.toMap(Element::getIdAsString, identity()));
+        .map(ref -> elementRepository.getById(Key.from(ref.getId()), ref.getType(), client))
+        .collect(Collectors.toMap(Element::getIdAsUUID, identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
       List<Element> incarnate(
           List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
           Unit unit,
-          Map<String, T> itemsById,
-          Map<String, Element> referencedElementsById,
+          Map<UUID, T> itemsById,
+          Map<UUID, Element> referencedElementsById,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     var elementsByItemId =
         itemsById.values().stream()
@@ -170,7 +169,7 @@ public class IncarnationDescriptionApplier {
           TemplateItem<T, TNamespace> item,
           Element element,
           List<TailoringReferenceParameterState> parameters,
-          Map<String, Element> referencedElementsById,
+          Map<UUID, Element> referencedElementsById,
           Map<String, Element> elementsByItemId,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     parameters.forEach(

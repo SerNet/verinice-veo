@@ -24,12 +24,13 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
@@ -53,7 +54,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
@@ -65,7 +65,6 @@ import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
@@ -168,10 +167,10 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String id) {
+          UUID id) {
     return useCaseInteractor.execute(
         deleteDomainUseCase,
-        new IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
+        new IdAndClient(Key.from(id), getAuthenticatedClient(auth)),
         output -> RestApiResponse.noContent());
   }
 
@@ -180,14 +179,14 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Element type definition updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
       Authentication auth,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @PathVariable EntityType type,
       @Valid @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,
         new UpdateElementTypeDefinitionUseCase.InputData(
-            client, Key.uuidFrom(id), type, elementTypeDefinitionDto, false),
+            client, Key.from(id), type, elementTypeDefinitionDto, false),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -200,7 +199,7 @@ public class ContentCreationController extends AbstractVeoController {
   // TODO #3042: remove this when we remove support for JSON schema
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @PathVariable EntityType type,
       @RequestBody JsonNode schemaNode) {
     Client client = getAuthenticatedClient(auth);
@@ -210,7 +209,7 @@ public class ContentCreationController extends AbstractVeoController {
       return useCaseInteractor.execute(
           updateElementTypeDefinitionUseCase,
           new UpdateElementTypeDefinitionUseCase.InputData(
-              client, Key.uuidFrom(id), type, typeDefinition, true),
+              client, Key.from(id), type, typeDefinition, true),
           out -> ResponseEntity.noContent().build());
     } catch (JsonProcessingException e) {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
@@ -228,12 +227,12 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @RequestBody IncarnationConfiguration incarnationConfiguration) {
     return useCaseInteractor.execute(
         saveIncarnationConfigurationUseCase,
         new SaveIncarnationConfigurationUseCase.InputData(
-            getClient(user), Key.uuidFrom(domainId), incarnationConfiguration),
+            getClient(user), Key.from(domainId), incarnationConfiguration),
         empty -> ResponseEntity.noContent().build());
   }
 
@@ -246,7 +245,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "dpiaMandatory",
@@ -257,7 +256,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveDecisionUseCase,
         new SaveDecisionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey, decision),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), decisionKey, decision),
         out ->
             out.newDecision()
                 ? RestApiResponse.created(request.getRequest().getRequestURI(), "Decision created")
@@ -273,7 +272,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "dpiaMandatory",
@@ -283,7 +282,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         deleteDecisionUseCase,
         new DeleteDecisionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), decisionKey),
         out -> RestApiResponse.noContent());
   }
 
@@ -296,7 +295,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "dpiaMandatory",
@@ -308,7 +307,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveInspectionUseCase,
         new SaveInspectionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), inspectionId, inspection),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), inspectionId, inspection),
         out ->
             out.newInspection()
                 ? RestApiResponse.created(
@@ -325,7 +324,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "dpiaMandatory",
@@ -336,7 +335,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         deleteInspectionUseCase,
         new DeleteInspectionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), inspectionId),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), inspectionId),
         out -> RestApiResponse.noContent());
   }
 
@@ -352,7 +351,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "DSRA",
@@ -364,10 +363,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveRiskDefinitionUseCase,
         new SaveRiskDefinitionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()),
-            Key.uuidFrom(domainId),
-            riskDefinitionId,
-            riskDefinition),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), riskDefinitionId, riskDefinition),
         out ->
             out.newRiskDefinition()
                 ? RestApiResponse.created(
@@ -384,7 +380,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @Parameter(
               required = true,
               example = "DSRA",
@@ -394,7 +390,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         deleteRiskDefinitionUseCase,
         new DeleteRiskDefinitionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), riskDefinitionKey),
+            Key.uuidFrom(user.getClientId()), Key.from(domainId), riskDefinitionKey),
         out -> RestApiResponse.noContent());
   }
 
@@ -405,16 +401,14 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createCatalogForDomain(
       Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
-          String domainId,
+      @PathVariable UUID domainId,
       @Parameter(description = "The id of the unit containing the catalog elements.")
           @RequestParam(name = UNIT_PARAM)
-          String unitId) {
+          UUID unitId) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         createCatalogForDomainUseCase,
-        new CreateCatalogFromUnitUseCase.InputData(
-            Key.uuidFrom(domainId), client, Key.uuidFrom(unitId)),
+        new CreateCatalogFromUnitUseCase.InputData(Key.from(domainId), client, Key.from(unitId)),
         out -> RestApiResponse.noContent());
   }
 
@@ -423,23 +417,17 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Profile created")
   public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomain(
       Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
-          String domainId,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message =
-                  "Pass a unit ID to initialize the profile with profile items created from the elements in that unit.")
-          @RequestParam(name = UNIT_PARAM, required = false)
-          String unitId,
+      @PathVariable UUID domainId,
+      @RequestParam(name = UNIT_PARAM, required = false) UUID unitId,
       @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             createProfileFromUnitUseCase,
             new CreateProfileFromUnitUseCase.InputData(
-                Key.uuidFrom(domainId),
+                Key.from(domainId),
                 client,
-                Key.uuidFrom(unitId),
+                Optional.ofNullable(unitId).map(Key::from).orElse(null),
                 null,
                 createParameter.getName(),
                 createParameter.getDescription(),
@@ -453,27 +441,24 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Profile updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateProfileForDomain(
       Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
-          String domainId,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable @NotNull
-          String profileId,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message =
+      @PathVariable UUID domainId,
+      @PathVariable @NotNull UUID profileId,
+      @Parameter(
+              description =
                   "Pass a unit ID to overwrite all items in the profile with "
                       + "new profile items created from the elements in that unit. "
                       + "Omit unit ID to leave current profile items untouched.")
           @RequestParam(name = UNIT_PARAM, required = false)
-          String unitId,
+          UUID unitId,
       @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         createProfileFromUnitUseCase,
         new CreateProfileFromUnitUseCase.InputData(
-            Key.uuidFrom(domainId),
+            Key.from(domainId),
             client,
-            Key.uuidFrom(unitId),
-            Key.uuidFrom(profileId),
+            Optional.ofNullable(unitId).map(Key::from).orElse(null),
+            Key.from(profileId),
             createParameter.getName(),
             createParameter.getDescription(),
             createParameter.getLanguage()),
@@ -486,22 +471,11 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "404", description = "Profile not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProfile(
-      Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
-          String domainId,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
-          @NotNull
-          String profileId) {
+      Authentication auth, @PathVariable UUID domainId, @PathVariable @NotNull UUID profileId) {
     return useCaseInteractor.execute(
         deleteProfileUseCase,
         new DeleteProfileUseCase.InputData(
-            Key.uuidFrom(domainId), Key.uuidFrom(profileId), getAuthenticatedClient(auth)),
+            Key.from(domainId), Key.from(profileId), getAuthenticatedClient(auth)),
         out -> RestApiResponse.noContent());
   }
 
@@ -513,7 +487,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "422", description = "Version is lower than current template version")
   public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
       Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
     Client client = getAuthenticatedClient(auth);
     if (createParameter == null) {
@@ -523,7 +497,7 @@ public class ContentCreationController extends AbstractVeoController {
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client),
+                Key.from(id), parseVersion(createParameter.getVersion()), client),
             out -> IdRef.from(out.newDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -533,14 +507,13 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Profile created")
   public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomainTemplate(
       Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @NotNull @RequestBody ExportProfileDto profileDto) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             createProfileInDomainTemplate,
-            new CreateProfileInDomainTemplateUseCase.InputData(
-                client, Key.uuidFrom(id), profileDto),
+            new CreateProfileInDomainTemplateUseCase.InputData(client, Key.from(id), profileDto),
             out -> IdRef.from(out.profile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -549,14 +522,11 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Delete a profile in a domain template")
   @ApiResponse(responseCode = "204", description = "Profile deleted")
   public Future<ResponseEntity<Void>> deleteProfileInDomainTemplate(
-      Authentication auth,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable String id,
-      @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE) @PathVariable
-          String profileId) {
+      Authentication auth, @PathVariable UUID id, @PathVariable UUID profileId) {
     return useCaseInteractor.execute(
         deleteProfileInDomainTemplateUseCase,
         new DeleteProfileInDomainTemplateUseCase.InputData(
-            getAuthenticatedClient(auth), Key.uuidFrom(id), Key.uuidFrom(profileId)),
+            getAuthenticatedClient(auth), Key.from(id), Key.from(profileId)),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -572,11 +542,11 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Domain template not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
   public @Valid Future<ResponseEntity<ExportDomainTemplateDto>> getDomainTemplate(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id) {
     return useCaseInteractor
         .execute(
             getDomainTemplateUseCase,
-            new IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
+            new IdAndClient(Key.from(id), getAuthenticatedClient(auth)),
             output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.domainTemplate()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));

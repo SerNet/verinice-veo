@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -40,13 +41,13 @@ import lombok.NonNull;
 public interface FullTemplateItemDto<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends NameableDto {
-  String getId();
+  UUID getId();
 
   String getStatus();
 
   CustomAspectMapDto getCustomAspects();
 
-  void setId(String id);
+  void setId(UUID id);
 
   void setStatus(String status);
 

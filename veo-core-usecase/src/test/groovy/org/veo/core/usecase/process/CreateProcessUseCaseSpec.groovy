@@ -25,7 +25,6 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.state.ProcessState
-import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.service.EventPublisher
@@ -61,7 +60,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     def setup() {
         processState.name >> "John's process"
         processState.modelInterface >> Process
-        processState.owner >> TypedId.from(existingUnit.idAsString, Unit)
+        processState.owner >> TypedId.from(existingUnit.idAsUUID, Unit)
 
         repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         repositoryProvider.getElementRepositoryFor(Process) >> processRepository
@@ -94,7 +93,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         given: "a scope for another client"
         def scope = Spy(Scope)
         scope.id >> Key.newUuid()
-        scope.idAsString >> scope.id.uuidValue()
+        scope.idAsUUID >> scope.id.value()
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 

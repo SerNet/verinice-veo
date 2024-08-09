@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.SymIdentifiable;
@@ -43,7 +44,7 @@ public final class ETag {
 
   public static <T extends SymIdentifiable<?, ?> & Versioned> String fromSymIdentifiable(T entity) {
     return from(
-        entity.getSymbolicIdAsString()
+        entity.getSymbolicId().value()
             + entity.getNamespace().getModelType()
             + entity.getNamespace().getIdAsString(),
         entity.getVersion());
@@ -57,7 +58,7 @@ public final class ETag {
     }
   }
 
-  public static String from(String compoundId1, String compundId2, long version) {
+  public static String from(UUID compoundId1, UUID compundId2, long version) {
     return from(compoundId1 + "_" + compundId2, version);
   }
 

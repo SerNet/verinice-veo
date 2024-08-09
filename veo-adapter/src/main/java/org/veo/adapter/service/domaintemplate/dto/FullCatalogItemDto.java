@@ -19,19 +19,17 @@ package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TailoringReference;
@@ -50,13 +48,7 @@ import lombok.ToString;
 public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase>
     implements IdentifiableDto, FullTemplateItemDto<CatalogItem, DomainBase> {
 
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+  @ToString.Include private UUID id;
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")

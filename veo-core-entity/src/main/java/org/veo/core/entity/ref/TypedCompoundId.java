@@ -18,6 +18,7 @@
 package org.veo.core.entity.ref;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.EntityType;
@@ -68,7 +69,7 @@ public class TypedCompoundId<
   }
 
   @Override
-  public String getFirstId() {
+  public UUID getFirstId() {
     return firstRef.getId();
   }
 
@@ -78,7 +79,7 @@ public class TypedCompoundId<
   }
 
   @Override
-  public String getSecondId() {
+  public UUID getSecondId() {
     return secondRef.getId();
   }
 

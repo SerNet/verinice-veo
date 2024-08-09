@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -84,7 +85,7 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset>
   }
 
   @Override
-  public void transferToDomain(String sourceDomainId, String targetDomainId) {
+  public void transferToDomain(UUID sourceDomainId, UUID targetDomainId) {
     renameKey(domains, sourceDomainId, targetDomainId);
   }
 
@@ -92,7 +93,7 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset>
   @Schema(
       description =
           "Details about this element's association with domains. Domain ID is key, association object is value.")
-  private Map<String, AssetDomainAssociationDto> domains = new HashMap<>();
+  private Map<UUID, AssetDomainAssociationDto> domains = new HashMap<>();
 
   @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
   @Valid private Set<RequirementImplementationDto> requirementImplementations = new HashSet<>();

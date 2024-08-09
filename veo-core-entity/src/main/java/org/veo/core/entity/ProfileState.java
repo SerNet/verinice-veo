@@ -18,11 +18,12 @@
 package org.veo.core.entity;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.state.ProfileItemState;
 
 public interface ProfileState {
-  String getSelfId();
+  UUID getSelfId();
 
   String getName();
 

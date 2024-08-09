@@ -24,9 +24,5 @@ public final class Patterns {
   public static final String DATETIME =
       "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,6})?([zZ]|[+-]\\d{2}:\\d{2}))";
 
-  /** Case-insensitive pattern for UUIDs, e.g. "88dd3913-83b1-4f0f-b0e6-4d6b03586d84" */
-  public static final String UUID =
-      "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-
   private Patterns() {}
 }

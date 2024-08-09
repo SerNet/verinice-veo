@@ -28,6 +28,7 @@ import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_NOT_NULL_MESSAG
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -72,7 +73,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @Override
   @JsonIgnore
   @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-  public String getSelfId() {
+  public UUID getSelfId() {
     return null;
   }
 

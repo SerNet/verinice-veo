@@ -17,21 +17,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import jakarta.validation.constraints.Pattern;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.SymIdRef;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.state.TailoringReferenceState;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -48,13 +45,8 @@ import lombok.ToString;
 public class TailoringReferenceDto<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends AbstractVersionedDto implements TailoringReferenceState<T, TNamespace> {
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+
+  @ToString.Include private UUID id;
 
   private TailoringReferenceType referenceType;
 

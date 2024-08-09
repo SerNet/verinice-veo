@@ -57,6 +57,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -153,11 +154,11 @@ public class DocumentController
   @Operation(summary = "Loads all documents")
   public @Valid Future<PageDto<FullDocumentDto>> getDocuments(
       @Parameter(hidden = true) Authentication auth,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = STATUS_PARAM, required = false) String status,
-      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<UUID> childElementIds,
       @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
       @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
@@ -225,7 +226,7 @@ public class DocumentController
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElement(auth, uuid, request);
   }
@@ -245,7 +246,7 @@ public class DocumentController
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
   }
@@ -258,7 +259,7 @@ public class DocumentController
       @Valid @NotNull @RequestBody CreateDocumentDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<String> scopeIds) {
+          List<UUID> scopeIds) {
     return useCaseInteractor.execute(
         createDocumentUseCase,
         CreateElementInputMapper.map(dto, getClient(user), scopeIds),
@@ -276,7 +277,7 @@ public class DocumentController
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @Valid @NotNull @RequestBody FullDocumentDto documentDto) {
     documentDto.applyResourceId(id);
     return useCaseInteractor.execute(
@@ -293,12 +294,12 @@ public class DocumentController
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Document.class, Key.uuidFrom(uuid), client),
+        new DeleteElementUseCase.InputData(Document.class, Key.from(uuid), client),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -383,8 +384,8 @@ public class DocumentController
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+          UUID uuid,
+      @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
     return inspect(auth, uuid, domainId, Document.class);
   }
 

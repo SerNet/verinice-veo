@@ -17,19 +17,15 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import jakarta.validation.constraints.Pattern;
+import java.util.UUID;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractScopeInDomainDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.VeoConstants;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,16 +33,10 @@ import lombok.ToString;
 @Data
 public class FullScopeInDomainDto extends AbstractScopeInDomainDto implements IdentifiableDto {
 
-  @Pattern(regexp = Patterns.UUID, message = VeoConstants.UUID_MESSAGE)
-  @Schema(
-      description = VeoConstants.UUID_MESSAGE,
-      example = "adf037f1-0089-48ad-9177-92269918758b",
-      format = "uuid")
-  @ToString.Include
-  private String id;
+  private UUID id;
 
   @Override
-  public String getSelfId() {
+  public UUID getSelfId() {
     return id;
   }
 }
