@@ -220,10 +220,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             uri == "/documents/$documentId"
             author == "user@domain.example"
             changeNumber == 2
-            with(content) {
-                id == documentId
-                name == "super doc"
-            }
+            content == null
         }
 
         when: "the document is retrieved"

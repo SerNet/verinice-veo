@@ -37,6 +37,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.VersioningEvent;
+import org.veo.core.entity.event.VersioningEvent.ModificationType;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.entity.jpa.StoredEventData;
@@ -137,8 +138,10 @@ public class MessageCreatorImpl implements MessageCreator {
     tree.put("time", time.toString());
     tree.put("author", author);
     tree.put("clientId", entity.getOwningClient().get().getIdAsString());
-    tree.set(
-        "content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity, true)));
+    if (type != ModificationType.REMOVE) {
+      tree.set(
+          "content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity, true)));
+    }
     return tree;
   }
 

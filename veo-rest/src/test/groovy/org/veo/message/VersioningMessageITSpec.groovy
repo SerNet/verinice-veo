@@ -97,7 +97,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         })
 
         and: "there are no searches or resources uris in the content"
-        with(messages.find{it.uri?.contains('/persons/')}) {
+        with(messages.find{it.type != 'HARD_DELETION' && it.uri?.contains('/persons/')}) {
             with(content.owner) {
                 it.containsKey 'targetUri'
                 !it.containsKey('searchesUri')
