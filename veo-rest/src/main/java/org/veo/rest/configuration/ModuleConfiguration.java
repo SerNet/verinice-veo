@@ -85,6 +85,7 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
+import org.veo.core.usecase.GetLinksByElementUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
@@ -344,6 +345,12 @@ public class ModuleConfiguration {
       UnitHierarchyProvider unitHierarchyProvider) {
     return new GetElementsUseCase(
         clientRepository, elementRepository, repositoryProvider, unitHierarchyProvider);
+  }
+
+  @Bean
+  public GetLinksByElementUseCase getLinksByElementUseCase(
+      DomainRepository domainRepository, GenericElementRepository elementRepository) {
+    return new GetLinksByElementUseCase(domainRepository, elementRepository);
   }
 
   @Bean

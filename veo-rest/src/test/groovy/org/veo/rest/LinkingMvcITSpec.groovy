@@ -59,6 +59,10 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     subTypes["Nice"] = new SubTypeDefinition().tap{
                         it.statuses = ["NEW"]
                     }
+                    links["favScope"] = new LinkDefinition().tap{
+                        targetType = Scope.SINGULAR_TERM
+                        targetSubType = "Normal"
+                    }
                 })
                 applyElementTypeDefinition(newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
                     subTypes["Normal"] = new SubTypeDefinition().tap{
@@ -155,6 +159,73 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             "http://localhost/persons/$person2",
             "http://localhost/persons/$person3",
         ]*.toString()
+    }
+
+    def "fetch links for an element"() {
+        given: "a scope with inbound and outbound links"
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
+            name: "scope of hope",
+            subType: "Normal",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ])).resourceId
+        post("/domains/$domainId/persons", [
+            name: "person 1",
+            subType: "Normal",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            links: [
+                favScope: [
+                    [target: [targetUri: "/scopes/$scopeId"]]
+                ]
+            ],
+        ])
+        post("/domains/$domainId/persons", [
+            name: "person 2",
+            subType: "Normal",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            links: [
+                favScope: [
+                    [target: [targetUri: "/scopes/$scopeId"]]
+                ]
+            ],
+        ])
+        def person3Id = parseJson(post("/domains/$domainId/persons", [
+            name: "person 3",
+            subType: "Normal",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ])).resourceId
+        post("/domains/$domainId/scopes/$scopeId/links", [
+            linkToNormalPerson: [
+                [target: [targetUri: "/persons/$person3Id"]],
+            ]
+        ], 204)
+
+        when:
+        def scopeLinkPage = parseJson(get("/domains/$domainId/scopes/$scopeId/links?sortBy=LINKED_ELEMENT_NAME"))
+
+        then:
+        scopeLinkPage.totalItemCount == 3
+        with(scopeLinkPage.items[0]) {
+            direction == "INBOUND"
+            linkType == "favScope"
+            linkedElement.name == "person 1"
+            linkedElementType == "person"
+        }
+        with(scopeLinkPage.items[1]) {
+            direction == "INBOUND"
+            linkType == "favScope"
+            linkedElement.name == "person 2"
+            linkedElementType == "person"
+        }
+        with(scopeLinkPage.items[2]) {
+            direction == "OUTBOUND"
+            linkType == "linkToNormalPerson"
+            linkedElement.name == "person 3"
+            linkedElementType == "person"
+        }
     }
 
     def "link target type is validated"() {

@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -51,9 +53,11 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
+import org.veo.core.usecase.GetLinksByElementUseCase;
 import org.veo.core.usecase.PerformActionUseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.AddLinksUseCase;
@@ -80,6 +84,7 @@ public class ElementInDomainService {
   private final GetElementsUseCase getElementsUseCase;
   private final AssociateElementWithDomainUseCase associateUseCase;
   private final ReferenceAssembler referenceAssembler;
+  private final GetLinksByElementUseCase getLinksByElementUseCase;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final AddLinksUseCase addLinksUseCase;
   private final DomainRepository domainRepository;
@@ -311,5 +316,29 @@ public class ElementInDomainService {
                             .filter(d -> d.getIdAsString().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
+  }
+
+  public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
+      Authentication auth,
+      String domainId,
+      String uuid,
+      Class<? extends Element> elementType,
+      @Min(1) Integer pageSize,
+      Integer pageNumber,
+      LinkQuery.SortCriterion sortColumn,
+      String sortOrder) {
+    return useCaseInteractor
+        .execute(
+            getLinksByElementUseCase,
+            new GetLinksByElementUseCase.InputData(
+                clientLookup.getClient(auth),
+                TypedId.from(uuid, elementType),
+                TypedId.from(domainId, Domain.class),
+                PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+            p ->
+                PagingMapper.toPage(
+                    p.page(),
+                    link -> InOrOutboundLinkDto.from(link, p.domain(), referenceAssembler)))
+        .thenApply(ResponseEntity::ok);
   }
 }

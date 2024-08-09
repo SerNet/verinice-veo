@@ -80,9 +80,11 @@ import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
+import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -342,6 +344,43 @@ public class DocumentInDomainController implements ElementInDomainResource {
         dto,
         updateUseCase,
         entityToDtoTransformer::transformDocument2Dto);
+  }
+
+  @Operation(summary = "Retrieve inbound and outbound links for a document in a domain")
+  @GetMapping(UUID_PARAM_SPEC + "/links")
+  @ApiResponse(responseCode = "200", description = "Links loaded")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Document not found")
+  @ApiResponse(responseCode = "404", description = "Document not associated with domain")
+  public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(value = SORT_COLUMN_PARAM, required = false, defaultValue = "DIRECTION")
+          LinkQuery.SortCriterion sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return elementService.getLinks(
+        auth, domainId, uuid, Document.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing document")
