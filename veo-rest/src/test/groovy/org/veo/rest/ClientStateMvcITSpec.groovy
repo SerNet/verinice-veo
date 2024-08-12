@@ -44,7 +44,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
         def client = createTestClient()
         executeInTransaction {
-            defaultDomainCreator.addDefaultDomains(client)
+            defaultDomainCreator.addDomain(client, "ISO", false)
             clientRepository.save(client)
         }
 
@@ -69,7 +69,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
         def client = createTestClient()
         executeInTransaction {
-            defaultDomainCreator.addDefaultDomains(client)
+            defaultDomainCreator.addDomain(client, "ISO", false)
             clientRepository.save(client)
         }
 

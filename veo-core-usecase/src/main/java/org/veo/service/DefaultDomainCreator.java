@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.service;
 
-import java.util.Set;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
@@ -35,20 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultDomainCreator {
-  private final Set<String> defaultDomainTemplateNames;
   private final DomainTemplateService domainService;
   private final DomainTemplateRepository domainTemplateRepository;
-
-  public void addDefaultDomains(Client client) {
-    addDefaultDomains(client, true);
-  }
-
-  public void addDefaultDomains(Client client, boolean copyProfiles) {
-    if (!client.getDomains().isEmpty()) {
-      throw new IllegalArgumentException("The client already owns domains.");
-    }
-    defaultDomainTemplateNames.forEach(name -> addDomain(client, name, copyProfiles));
-  }
 
   public void addDomain(Client client, String templateName, boolean copyProfiles) {
     domainTemplateRepository

@@ -62,7 +62,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         when: "creating a client and applying example profile"
         def client = createTestClient()
         executeInTransaction {
-            defaultDomainCreator.addDefaultDomains(client)
+            defaultDomainCreator.addDomain(client,"DS-GVO", true)
             client = clientRepository.save(client)
             var dsgvo = client.domains.find { it.name == "DS-GVO" }
             def unit = unitDataRepository.save(newUnit(client))

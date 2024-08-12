@@ -29,7 +29,7 @@ class DefaultDomainCreatorSpec extends Specification {
 
     DomainTemplateService domainTemplateService = Mock()
     DomainTemplateRepository domainTemplateRepo = Mock()
-    DefaultDomainCreator defaultDomainCreator = new DefaultDomainCreator(Set.of("DS-GVO", "ISO"), domainTemplateService, domainTemplateRepo)
+    DefaultDomainCreator defaultDomainCreator = new DefaultDomainCreator(domainTemplateService, domainTemplateRepo)
 
     def "adds default domains"() {
         given: 'a client, one DS-GVO template and an ISO template'
@@ -42,47 +42,16 @@ class DefaultDomainCreatorSpec extends Specification {
         def isoTemplateId = Key.newUuid()
         def isoDomain = Mock(Domain)
 
-        when: 'default domains are created'
-        defaultDomainCreator.addDefaultDomains(client)
+        when: 'domains are created'
+        defaultDomainCreator.addDomain(client,"DS-GVO", true)
+        defaultDomainCreator.addDomain(client,"ISO", false)
 
         then: 'both templates are incarnated in the client'
         1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.of(dsgvoTemplateId)
         1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
         1 * domainTemplateService.createDomain(client, dsgvoTemplateId.uuidValue(), true) >> dsgvoDomain
-        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), true) >> isoDomain
+        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), false) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
         1 * client.addToDomains(isoDomain)
-    }
-
-    def "ignores missing domain template"() {
-        given: "a client and an ISO template"
-        def client = Mock(Client) {
-            domains >> []
-        }
-
-        def isoTemplateId = Key.newUuid()
-        def isoDomain = Mock(Domain)
-
-        when: 'default domains are created'
-        defaultDomainCreator.addDefaultDomains(client, false)
-
-        then: 'only the present domain template is incarnated'
-        1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.empty()
-        1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
-        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), false) >> isoDomain
-        1 * client.addToDomains(isoDomain)
-    }
-
-    def "don't create domain when client has domain"() {
-        given: "a client with a domain"
-        def client = Mock(Client) {
-            domains >> [Mock(Domain)]
-        }
-
-        when: 'default domains are created'
-        defaultDomainCreator.addDefaultDomains(client, true)
-
-        then: 'an exception is thrown'
-        thrown(IllegalArgumentException)
     }
 }

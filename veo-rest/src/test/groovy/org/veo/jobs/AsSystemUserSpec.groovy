@@ -64,7 +64,7 @@ class AsSystemUserSpec extends VeoSpringSpec {
             client = newClient {
                 id = Key.uuidFrom(clientId)
             }
-            defaultDomainCreator.addDefaultDomains(client)
+            defaultDomainCreator.addDomain(client, "ISO", false)
             clientRepository.save(client)
         }
         userSwitcher.revokeUser()

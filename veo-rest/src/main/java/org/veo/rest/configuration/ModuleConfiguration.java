@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -1076,10 +1073,7 @@ public class ModuleConfiguration {
       @Value("${veo.default.domaintemplate.names}") String[] defaultDomainTemplateIds,
       DomainTemplateService domainService,
       DomainTemplateRepository domainTemplateRepository) {
-    return new DefaultDomainCreator(
-        Arrays.stream(defaultDomainTemplateIds).collect(Collectors.toSet()),
-        domainService,
-        domainTemplateRepository);
+    return new DefaultDomainCreator(domainService, domainTemplateRepository);
   }
 
   @Bean
