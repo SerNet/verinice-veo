@@ -36,7 +36,7 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
          select pi from #{#entityName} pi
            where pi.owner.dbId = ?2 and pi.symbolicDbId in ?1 and pi.owner.domain.owner = ?3
          """)
-  Set<ProfileItemData> findAllByIds(Iterable<String> symIds, UUID profileId, Client client);
+  Set<ProfileItemData> findAllByIds(Iterable<UUID> symIds, UUID profileId, Client client);
 
   @Query(
       """

@@ -42,7 +42,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           where i.symbolicDbId = ?2 and p.dbId= ?1 and d.owner.dbId = ?3
                       """)
   Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
-      UUID profileId, String itemId, UUID clientId);
+      UUID profileId, UUID itemId, UUID clientId);
 
   @Query(
       """
@@ -63,7 +63,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           where i.symbolicDbId in ?1 and i.owner.domain.owner = ?2
                       """)
   Iterable<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
-      Iterable<String> ids, Client client);
+      Iterable<UUID> ids, Client client);
 
   @Query(
       """

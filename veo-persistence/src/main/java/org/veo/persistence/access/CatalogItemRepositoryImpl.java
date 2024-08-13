@@ -54,10 +54,8 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
   @Override
   public Set<CatalogItem> findAllByIdsFetchTailoringReferences(
       Collection<Key<UUID>> symIds, Domain domain) {
-    var idStrings = symIds.stream().map(Key::uuidValue).toList();
-    return catalogItemDataRepository
-        .findAllByIdsFetchTailoringReferences(idStrings, domain)
-        .stream()
+    var ids = symIds.stream().map(Key::value).toList();
+    return catalogItemDataRepository.findAllByIdsFetchTailoringReferences(ids, domain).stream()
         .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());
   }
@@ -65,7 +63,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
   @Override
   public CatalogItem getByIdInDomain(Key<UUID> catalogItemId, Domain domain) {
     return catalogItemDataRepository
-        .findByIdInDomain(catalogItemId.uuidValue(), (DomainData) domain)
+        .findByIdInDomain(catalogItemId.value(), (DomainData) domain)
         .orElseThrow(
             () ->
                 new NotFoundException(
@@ -86,7 +84,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
               var namespaceId = UUID.fromString(entry.getKey().getId());
               var symIds =
                   entry.getValue().stream()
-                      .map(ITypedSymbolicId::getSymbolicId)
+                      .map(it -> it.getSymbolicKey().value())
                       .collect(Collectors.toSet());
               if (namespaceType.equals(Domain.class)) {
                 return catalogItemDataRepository

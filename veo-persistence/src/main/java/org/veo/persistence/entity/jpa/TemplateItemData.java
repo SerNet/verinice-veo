@@ -66,21 +66,21 @@ public abstract class TemplateItemData<
   @UuidGenerator
   private UUID dbId;
 
-  @NotNull @ToString.Include private String symbolicDbId;
+  @NotNull @ToString.Include private UUID symbolicDbId;
 
   @Override
   public Key<UUID> getSymbolicId() {
-    return Optional.ofNullable(symbolicDbId).map(Key::uuidFrom).orElse(null);
+    return Optional.ofNullable(symbolicDbId).map(Key::from).orElse(null);
   }
 
   @Override
   public String getSymbolicIdAsString() {
-    return symbolicDbId;
+    return symbolicDbId.toString();
   }
 
   @Override
   public void setSymbolicId(Key<UUID> symbolicId) {
-    symbolicDbId = symbolicId.uuidValue();
+    symbolicDbId = symbolicId.value();
   }
 
   @NotNull

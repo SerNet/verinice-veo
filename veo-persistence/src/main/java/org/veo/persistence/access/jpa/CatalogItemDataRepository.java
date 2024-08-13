@@ -43,7 +43,7 @@ import org.veo.persistence.entity.jpa.DomainData;
 public interface CatalogItemDataRepository extends CrudRepository<CatalogItemData, Key<UUID>> {
 
   @Query("select e from #{#entityName} e where e.symbolicDbId = ?1 and e.domain = ?2")
-  Optional<CatalogItem> findByIdInDomain(String id, DomainData domain);
+  Optional<CatalogItem> findByIdInDomain(UUID id, DomainData domain);
 
   @Query(
       """
@@ -52,7 +52,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
            left join fetch ci.domainTemplate
            where ci.symbolicDbId in ?1 and ci.domain.owner = ?2
          """)
-  Set<CatalogItemData> findAllByIdsFetchDomain(Iterable<String> ids, Client client);
+  Set<CatalogItemData> findAllByIdsFetchDomain(Iterable<UUID> ids, Client client);
 
   @Query(
       """
@@ -63,7 +63,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
               left join fetch tr.target
               where ci.symbolicDbId in ?1 and ci.domain = ?2
           """)
-  Set<CatalogItemData> findAllByIdsFetchTailoringReferences(Iterable<String> symIds, Domain domain);
+  Set<CatalogItemData> findAllByIdsFetchTailoringReferences(Iterable<UUID> symIds, Domain domain);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);
@@ -106,12 +106,12 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
         where ci.symbolicDbId in ?1 and ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3
   """)
   Set<CatalogItem> findAllByIdsAndDomain(
-      Collection<String> symbolicIds, UUID domainId, UUID clientId);
+      Collection<UUID> symbolicIds, UUID domainId, UUID clientId);
 
   @Query(
       """
     select ci from catalogitem ci
         where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2
   """)
-  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<String> symbolicIds, UUID domainTemplateId);
+  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<UUID> symbolicIds, UUID domainTemplateId);
 }

@@ -59,10 +59,10 @@ public class ProfileRepositoryImpl
   @Override
   public List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Set<Key<UUID>> profileItemIds, Client client) {
-    var idStrings = profileItemIds.stream().map(Key::uuidValue).toList();
+    var ids = profileItemIds.stream().map(Key::value).toList();
     return StreamSupport.stream(
             profileDataRepository
-                .findItemsByIdsFetchDomainAndTailoringReferences(idStrings, client)
+                .findItemsByIdsFetchDomainAndTailoringReferences(ids, client)
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
@@ -73,7 +73,7 @@ public class ProfileRepositoryImpl
   public Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
       Key<UUID> profileId, Key<UUID> itemId, Key<UUID> clientId) {
     return profileDataRepository.findProfileItemByIdFetchTailoringReferences(
-        profileId.value(), itemId.uuidValue(), clientId.value());
+        profileId.value(), itemId.value(), clientId.value());
   }
 
   @Override
