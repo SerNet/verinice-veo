@@ -18,9 +18,9 @@
 package org.veo.service;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -94,31 +94,37 @@ public class ElementMigrationService {
 
   public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain) {
     Map<RiskDefinitionRef, ImpactValues> impactValues = ra.getImpactValues(domain);
-    Iterator<Entry<RiskDefinitionRef, ImpactValues>> it = impactValues.entrySet().iterator();
-    while (it.hasNext()) {
-      Entry<RiskDefinitionRef, ImpactValues> e = it.next();
-      domain
-          .getRiskDefinition(e.getKey().getIdRef())
-          .ifPresentOrElse(
-              rd -> migrateRiskAffected(ra, domain, rd),
-              () -> {
-                // TODO remove risk values for deleted risk definitions
-              });
-    }
+    impactValues
+        .entrySet()
+        .forEach(
+            e -> {
+              domain
+                  .getRiskDefinition(e.getKey().getIdRef())
+                  .ifPresentOrElse(
+                      rd -> migrateRiskAffected(ra, domain, rd),
+                      () -> removeRiskDefinition(ra, domain, e.getKey()));
+            });
   }
 
-  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
-    // TODO &54: remove risk values for removed categories
-    // TODO &53: remove risk values that are not present
-    RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
+  private void removeRiskDefinition(RiskAffected<?, ?> ra, Domain domain, RiskDefinitionRef rd) {
+    ra.removeRiskDefinition(rd, domain);
     ra.getRisks()
         .forEach(
             risk -> {
-              // TODO &54: remove risk values for removed categories
+              risk.removeRiskDefinition(rd, domain);
+            });
+  }
+
+  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
+    RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
+    migrateImpacts(ra, domain, rd);
+
+    ra.getRisks()
+        .forEach(
+            risk -> {
               rd.getCategories()
                   .forEach(
                       cat -> {
-                        // TODO &53: remove risk values that are not present
                         if (!cat.isRiskValuesSupported()) {
                           risk.removeRiskCategory(
                               RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
@@ -128,6 +134,14 @@ public class ElementMigrationService {
                               RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
                         }
                       });
+
+              if (risk.getRiskDefinitions(domain).contains(rdRef)) {
+                List<CategoryRef> availableCats =
+                    rd.getCategories().stream().map(CategoryRef::from).toList();
+                risk.getImpactProvider(rdRef, domain).getAvailableCategories().stream()
+                    .filter(c -> !availableCats.contains(c))
+                    .forEach(cat -> risk.removeRiskCategory(rdRef, cat, domain));
+              }
             });
   }
 
@@ -180,5 +194,27 @@ public class ElementMigrationService {
   private boolean isValidTarget(Element target, Domain domain, LinkDefinition linkDef) {
     return linkDef.getTargetType().equals(target.getModelType())
         && linkDef.getTargetSubType().equals(target.findSubType(domain).orElse(null));
+  }
+
+  private void migrateImpacts(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
+    var rdRef = RiskDefinitionRef.from(rd);
+    var impactsForDomain = ra.getImpactValues(domain);
+    var oldImpacts = impactsForDomain.getOrDefault(rdRef, null);
+    if (oldImpacts == null) return;
+    var validCats = rd.getCategories().stream().map(CategoryRef::from).toList();
+    impactsForDomain.put(
+        rdRef,
+        new ImpactValues(
+            removeInvalidKeys(oldImpacts.potentialImpacts(), validCats),
+            removeInvalidKeys(oldImpacts.potentialImpactsCalculated(), validCats),
+            removeInvalidKeys(oldImpacts.potentialImpactReasons(), validCats),
+            removeInvalidKeys(oldImpacts.potentialImpactExplanations(), validCats)));
+  }
+
+  private <TKey, TValue> Map<TKey, TValue> removeInvalidKeys(
+      Map<TKey, TValue> map, List<TKey> validKeys) {
+    return map.entrySet().stream()
+        .filter(e -> validKeys.contains(e.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

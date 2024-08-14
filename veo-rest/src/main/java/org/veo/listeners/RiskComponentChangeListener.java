@@ -111,15 +111,16 @@ public class RiskComponentChangeListener {
     RiskDefinition rd = event.getRiskDefinition();
     Domain domain = event.getDomain();
     Client client = event.getClient();
-    ElementQuery<Element> query = elementRepository.query(client);
-    query.whereDomainsContain(domain);
-    query.whereElementTypeMatches(
-        new QueryCondition<>(
-            Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
-    List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
-
-    elements.forEach(
-        e -> elementMigrationService.migrateRiskAffected((RiskAffected<?, ?>) e, domain, rd));
+    if (event.isMigrateElements()) {
+      ElementQuery<Element> query = elementRepository.query(client);
+      query.whereDomainsContain(domain);
+      query.whereElementTypeMatches(
+          new QueryCondition<>(
+              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      elements.forEach(
+          e -> elementMigrationService.migrateRiskAffected((RiskAffected<?, ?>) e, domain, rd));
+    }
 
     if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
       List<Unit> units = unitRepository.findByDomain(domain.getId());

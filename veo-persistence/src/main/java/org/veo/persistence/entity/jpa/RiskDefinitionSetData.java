@@ -20,9 +20,7 @@ package org.veo.persistence.entity.jpa;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,8 +33,6 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.exception.UnprocessableDataException;
-import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -49,6 +45,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @Entity(name = "risk_definition_set")
 public class RiskDefinitionSetData {
+
   @Id
   @GeneratedValue(strategy = SEQUENCE, generator = "seq_risk_definition_sets")
   @SequenceGenerator(name = "seq_risk_definition_sets")
@@ -88,43 +85,7 @@ public class RiskDefinitionSetData {
    *     risk definition has been updated
    */
   public boolean apply(String riskDefinitionRef, RiskDefinition riskDefinition) {
-    // TODO VEO-2258 Allow more modifications on an existing risk definition.
-    if (riskDefinitions.containsKey(riskDefinitionRef)) {
-      var oldRiskDef = riskDefinitions.get(riskDefinitionRef);
-      if (!categoriesAddedOrUnchangedOrOnlyMatrixesDeleted(riskDefinition, oldRiskDef)
-          || !oldRiskDef.getRiskValues().equals(riskDefinition.getRiskValues())
-          || !oldRiskDef
-              .getImplementationStateDefinition()
-              .equals(riskDefinition.getImplementationStateDefinition())
-          || !oldRiskDef.getProbability().equals(riskDefinition.getProbability()))
-        throw new UnprocessableDataException(
-            "Your modifications on this existing risk definition are not supported yet. Currently, only the impact-inheriting links can be modified.");
-    }
     return riskDefinitions.put(riskDefinitionRef, riskDefinition) == null;
-  }
-
-  private boolean categoriesAddedOrUnchangedOrOnlyMatrixesDeleted(
-      RiskDefinition newRiskDef, RiskDefinition oldRiskDef) {
-    for (CategoryDefinition oldCategoryDef : oldRiskDef.getCategories()) {
-      Optional<CategoryDefinition> newCategoryDefOpt =
-          newRiskDef.getCategory(oldCategoryDef.getId());
-      if (newCategoryDefOpt.isEmpty()) {
-        return false;
-      }
-      CategoryDefinition newCategoryDef = newCategoryDefOpt.get();
-      if (!oldCategoryDef.equals(newCategoryDef)) {
-        if (oldCategoryDef.isRiskValuesSupported() && !newCategoryDef.isRiskValuesSupported()) {
-          newCategoryDef.setValueMatrix(List.copyOf(oldCategoryDef.getValueMatrix()));
-          boolean onlyRiskMatrixRemoved = oldCategoryDef.equals(newCategoryDef);
-          newCategoryDef.setValueMatrix(null);
-          if (onlyRiskMatrixRemoved) {
-            continue;
-          }
-        }
-        return false;
-      }
-    }
-    return true;
   }
 
   public void remove(String riskDefinitionKey) {

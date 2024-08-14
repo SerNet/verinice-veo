@@ -31,6 +31,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.risk.CategorizedImpactValueProvider
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
@@ -382,6 +383,10 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
+            getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
+                getAvailableCategories() >> [CategoryRef.from(category)]
+            }
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
         }
 
         def element = Mock(Asset) {
@@ -392,7 +397,12 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
             getImpactValues(domain)>> [
-                (riskDefinitionRef): Mock(ImpactValues)
+                (riskDefinitionRef): Mock(ImpactValues) {
+                    potentialImpacts() >> [:]
+                    potentialImpactsCalculated() >> [:]
+                    potentialImpactReasons() >> [:]
+                    potentialImpactExplanations() >> [:]
+                }
             ]
             risks >> [risk]
         }
@@ -432,6 +442,9 @@ class ElementMigrationServiceSpec extends Specification{
             getRiskDefinitions(domain) >> [
                 riskDefinitionRef
             ]
+            getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
+                getAvailableCategories() >> [CategoryRef.from(category)]
+            }
         }
 
         def element = Mock(Asset) {
@@ -442,7 +455,12 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
             getImpactValues(domain)>> [
-                (riskDefinitionRef): Mock(ImpactValues)
+                (riskDefinitionRef): Mock(ImpactValues) {
+                    potentialImpacts() >> [:]
+                    potentialImpactsCalculated() >> [:]
+                    potentialImpactReasons() >> [:]
+                    potentialImpactExplanations() >> [:]
+                }
             ]
             risks >> [risk]
         }
@@ -482,6 +500,9 @@ class ElementMigrationServiceSpec extends Specification{
             getRiskDefinitions(domain) >> [
                 riskDefinitionRef
             ]
+            getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
+                getAvailableCategories() >> [CategoryRef.from(category)]
+            }
         }
 
         def element = Mock(Asset) {
@@ -492,7 +513,12 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
             getImpactValues(domain)>> [
-                (riskDefinitionRef): Mock(ImpactValues)
+                (riskDefinitionRef): Mock(ImpactValues) {
+                    potentialImpacts() >> [:]
+                    potentialImpactsCalculated() >> [:]
+                    potentialImpactReasons() >> [:]
+                    potentialImpactExplanations() >> [:]
+                }
             ]
             risks >> [risk]
         }
@@ -530,6 +556,9 @@ class ElementMigrationServiceSpec extends Specification{
 
         def risk = Mock(AssetRisk) {
             getRiskDefinitions(domain) >> []
+            getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
+                getAvailableCategories() >> [CategoryRef.from(category)]
+            }
         }
 
         def element = Mock(Asset) {
@@ -540,7 +569,12 @@ class ElementMigrationServiceSpec extends Specification{
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
             getImpactValues(domain)>> [
-                (riskDefinitionRef): Mock(ImpactValues)
+                (riskDefinitionRef): Mock(ImpactValues) {
+                    potentialImpacts() >> [:]
+                    potentialImpactsCalculated() >> [:]
+                    potentialImpactReasons() >> [:]
+                    potentialImpactExplanations() >> [:]
+                }
             ]
             risks >> [risk]
         }

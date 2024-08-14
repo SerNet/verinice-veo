@@ -95,12 +95,8 @@ class RiskMatrixSpec extends Specification {
         ]
         def probabilities = new ProbabilityDefinition(probabilityLevels)
 
-        when:"validate"
+        expect: "validation to pass"
         cd.validateRiskCategory(riskValues, probabilities)
-
-        then: "illegal Argument exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Category 1 does not support risk values."
 
         when: "we add a risk matrix"
         def rmatrix = [
@@ -119,7 +115,7 @@ class RiskMatrixSpec extends Specification {
         cd.validateRiskCategory(riskValues, probabilities)
 
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        IllegalArgumentException ex = thrown()
         ex.message == "Value matrix for category 1 does not conform to impacts."
 
         when: "we create and set the impact level"

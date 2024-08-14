@@ -22,6 +22,11 @@ import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
+import org.veo.core.entity.TranslationMap
+import org.veo.core.entity.riskdefinition.CategoryLevel
+
+import spock.lang.IgnoreRest
+
 class DomainCreationRestTest extends DomainRestTest {
     String unitId
 
@@ -214,16 +219,6 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "the change has been applied"
         exportDomain(newDomainId).riskDefinitions.simpleDef.impactInheritingLinks.scenario == ["requiredScenario"]
 
-        when: "making other risk definition modifications"
-        definition.categories[1].with{
-            potentialImpacts.removeLast()
-            valueMatrix.removeLast()
-        }
-
-        then: "the update should fail (for now)"
-        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)
-                .body.message ==~ /Your modifications on this existing risk definition are not supported yet.+/
-
         when: "deleting the risk definition"
         delete("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", 204, CONTENT_CREATOR)
 
@@ -338,7 +333,7 @@ class DomainCreationRestTest extends DomainRestTest {
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
             definition.categories[0].valueMatrix = []
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Risk matrix for category C is empty."
+                body.message == "Value matrix for category C does not conform to impacts."
             }
         }
 
@@ -387,6 +382,344 @@ class DomainCreationRestTest extends DomainRestTest {
             ]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)) {
                 body.message == "Link type 'myImaginaryFriend' does not exist for persons"
+            }
+        }
+    }
+
+    def "risk definition can have no riskMatrix"() {
+        given: "the a new domain"
+        def domainName = "Risk definition validation test ${randomUUID()}"
+        def newDomainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "rdvt",
+            description: "let's test risk definition validation",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        when: "adding a copy of DSRA without any risk matrices to the new domain"
+        get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.with { definition ->
+            definition.impactInheritingLinks = [:]
+            definition.categories.each { it.valueMatrix = null }
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)) {
+                body.message == "Risk definition created"
+            }
+        }
+
+        then: "it is perstisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {definition->
+            definition.categories.each { it.valueMatrix == null }
+        }
+    }
+
+    def "impact values are updated when category is removed or added"() {
+        given: "some elements with risks"
+        def domainId = copyDomain(dsgvoDomainId)
+
+        get("/units/$unitId").with{
+            body.domains.add([targetUri: "/domains/$domainId"])
+            put("/units/$unitId", body, getETag())
+        }
+
+        def elementWithImpactId = post("/domains/$domainId/$type", [
+            name: "asset-0",
+            subType: (subtype),
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 2,
+                        "I": 2,
+                        "A": 2,
+                        "R": 2
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        def scenarioId = post("/domains/$domainId/scenarios", [
+            name: "$type risk test scenario",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskValues: [
+                DSRA : [
+                    potentialProbability: 2,
+                    potentialProbabilityExplanation: "When it happens",
+                ]
+            ]
+        ]).body.resourceId
+
+        post("/$type/$elementWithImpactId/risks", [
+            scenario: [ targetUri: "/scenarios/$scenarioId"],
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "/domains/$domainId"],
+                    riskDefinitions: [
+                        DSRA: [
+                            impactValues: [
+                                [
+                                    category      : "C",
+                                    specificImpact: 2,
+                                ],
+                                [
+                                    category      : "A",
+                                    specificImpact: 2,
+                                ],
+                                [
+                                    category      : "I",
+                                    specificImpact: 2,
+                                ],
+                                [
+                                    category      : "R",
+                                    specificImpact: 2,
+                                ],
+                            ],
+                            riskValues  : [
+                                [
+                                    category               : "R",
+                                    userDefinedResidualRisk: 0,
+                                ],
+                                [
+                                    category               : "C",
+                                    userDefinedResidualRisk: 1,
+                                ],
+                                [
+                                    category               : "A",
+                                    userDefinedResidualRisk: 1,
+                                ],
+                                [
+                                    category               : "I",
+                                    userDefinedResidualRisk: 2,
+                                ],
+                            ]
+                        ]
+                    ]
+                ]]])
+
+        when: "removing r"
+        get("/domains/$domainId").body.riskDefinitions.DSRA.with { definition ->
+            definition.categories.removeLast()
+            with(put("/content-creation/domains/$domainId/risk-definitions/DSRA", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "r is gone in the ra"
+        with(get("/domains/$domainId/$type/$elementWithImpactId").body.riskValues.DSRA.potentialImpacts) {
+            C == 2
+            I == 2
+            A == 2
+            R == null
+        }
+
+        and: "in the scenario nothing changes"
+        with(get("/domains/$domainId/scenarios/$scenarioId").body.riskValues.DSRA) {
+            potentialProbability == 2
+            potentialProbabilityExplanation == "When it happens"
+        }
+
+        and:"r is missing in the risk"
+        with(get("/$type/$elementWithImpactId/risks/$scenarioId").body.domains.(domainId).riskDefinitions.DSRA) {
+            riskValues*.category ==~ ["C", "I", "A"]
+            impactValues*.category ==~ ["C", "I", "A"]
+        }
+
+        when: "remove a"
+        get("/domains/$domainId").body.riskDefinitions.DSRA.with { definition ->
+            definition.categories.removeLast()
+            with(put("/content-creation/domains/$domainId/risk-definitions/DSRA", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "a is gone"
+        with(get("/domains/$domainId/$type/$elementWithImpactId").body.riskValues.DSRA.potentialImpacts) {
+            C == 2
+            I == 2
+        }
+
+        and:
+        with(get("/$type/$elementWithImpactId/risks/$scenarioId").body.domains.(domainId).riskDefinitions.DSRA) {
+            riskValues*.category ==~ ["C", "I"]
+            impactValues*.category ==~ ["C", "I"]
+        }
+
+        when: "adding a category to the riskdefinition"
+        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find { it.id == "C" }
+        newCategory.id = "newCat"
+        newCategory.translations.de.name = "my new Cat"
+
+        get("/domains/$domainId").body.riskDefinitions.DSRA.with { definition ->
+            definition.categories.add(newCategory)
+            with(put("/content-creation/domains/$domainId/risk-definitions/DSRA", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "potential impacts haven't changed"
+        with(get("/domains/$domainId/$type/$elementWithImpactId").body.riskValues.DSRA.potentialImpacts) {
+            C == 2
+            I == 2
+        }
+
+        and: "the new category is available on the risk"
+        with(get("/$type/$elementWithImpactId/risks/$scenarioId").body.domains.(domainId).riskDefinitions.DSRA) {
+            riskValues*.category ==~ ["C", "I", "newCat"]
+            impactValues*.category ==~ ["C", "I", "newCat"]
+        }
+
+        when: "adding a new element"
+        def newElementWithImpactId = post("/domains/$domainId/$type", [
+            name: "asset-0",
+            subType: (subtype),
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 2,
+                        "I": 2,
+                        "newCat": 1
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        then: "newCat-1 there"
+        with(get("/domains/$domainId/$type/$newElementWithImpactId").body.riskValues.DSRA.potentialImpacts) {
+            C == 2
+            I == 2
+            newCat == 1
+        }
+
+        where:
+        type|subtype
+        "assets"|"AST_Datatype"
+        "scopes"|"SCP_Processor"
+        "processes"|"PRO_DPIA"
+    }
+
+    def "risk definition can be updated"() {
+        given: "a new domain"
+        def domainName = "Risk definition validation test ${randomUUID()}"
+        def newDomainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "rdvt",
+            description: "let's test risk definition validation",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        put("/content-creation/domains/$newDomainId/element-type-definitions/asset",  [
+            subTypes:[
+                server:[
+                    statuses:['on', 'off'],
+                    sortKey : 1
+                ]
+            ],
+            links:[
+                serverLink :[
+                    targetType: 'asset',
+                    targetSubType: 'server',
+                ]
+            ],
+            translations: [
+                en: [
+                    asset_server_singular: "Server",
+                    asset_server_plural: "Servers",
+                    asset_server_status_off: "off",
+                    asset_server_status_on: "on",
+                    serverLink: "link"
+                ]
+            ]
+        ], "", 204, CONTENT_CREATOR)
+
+        when: "adding a modified copy of DSRA to the new domain"
+        get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.with { definition ->
+            definition.impactInheritingLinks = ["asset":  ['serverLink']]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)) {
+                body.message == "Risk definition created"
+            }
+        }
+
+        and: "changing impactInheritingLinks"
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+            definition.impactInheritingLinks = [:]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "the change is persisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            it.impactInheritingLinks == [:]
+        }
+
+        when: "changing translations"
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+            definition.riskValues[0].htmlColor = "#44444"
+            definition.riskValues[0].translations.de.name = "Risk name 1"
+            definition.riskValues[0].translations.de.description = "risk description"
+            definition.probability.translations.de.name = "a new name"
+            definition.probability.translations.de.description = "a new description"
+
+            definition.implementationStateDefinition.translations.de.name = "a new name"
+            definition.categories.find { it.id == "C" }.translations.de.name = "a new name"
+            definition.categories.find { it.id == "C" }.potentialImpacts[0].translations.de.name = "a new name"
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "the change is persisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            it.riskValues[0].htmlColor == "#44444"
+            it.riskValues[0].translations.de.name == "Risk name 1"
+            it.probability.translations.de.name == "a new name"
+            it.probability.translations.de.description == "a new description"
+            it.implementationStateDefinition.translations.de.name == "a new name"
+            it.categories.find { it.id == "C" }.translations.de.name == "a new name"
+            it.categories.find { it.id == "C" }.potentialImpacts[0].translations.de.name == "a new name"
+        }
+
+        when: "removing a category"
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+            definition.categories.removeLast()
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        then: "the change is persisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            it.categories.size() == 3
+            it.categories.find { it.id == "R"  } == null
+        }
+
+        when:
+        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find { it.id == "C" }
+        newCategory.id = "newCat-1"
+        newCategory.translations.de.name = "my new Cat"
+
+        then: "adding a category"
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+            definition.categories.add(newCategory)
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+
+        and: "the change is persisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            it.categories.size() == 4
+            it.categories.find { it.id == newCategory.id }.translations.de.name == newCategory.translations.de.name
+        }
+
+        expect: "a changed value in a risk matrix to be illegal"
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+            definition.categories[0].valueMatrix[0][0] = definition.categories[0].valueMatrix[3][3]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)) {
+                body.message ==~ /Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed.*/
             }
         }
     }

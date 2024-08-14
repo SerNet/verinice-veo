@@ -20,6 +20,7 @@ package org.veo.core.entity.riskdefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,13 +79,18 @@ public class CategoryDefinition extends DimensionDefinition {
 
   /** returns a risk value from the matrix for the ProbabilityLevel and the CategoryLevel. */
   public RiskValue getRiskValue(ProbabilityLevel plevel, CategoryLevel clevel) {
-    if (!potentialImpacts.contains(clevel)) {
+    ensureRiskValuesSupported();
+    if (potentialImpacts.stream()
+        .filter(pi -> pi.getOrdinalValue() == clevel.getOrdinalValue())
+        .findAny()
+        .isEmpty()) {
       throw new IllegalArgumentException("CategoryLevel not part of potentialImpacts: " + clevel);
     }
     return getRiskValue(ProbabilityRef.from(plevel), ImpactRef.from(clevel));
   }
 
   public RiskValue getRiskValue(ProbabilityRef effectiveProbability, ImpactRef effectiveImpact) {
+    ensureRiskValuesSupported();
     int categoryOrdinalValue = effectiveImpact.getIdRef().intValue();
     if (categoryOrdinalValue > valueMatrix.size() - 1) {
       throw new IllegalArgumentException("No risk value for category: " + categoryOrdinalValue);
@@ -112,17 +118,28 @@ public class CategoryDefinition extends DimensionDefinition {
    */
   public void validateRiskCategory(
       @NotNull List<RiskValue> riskValues, @NotNull ProbabilityDefinition probability) {
-    ensureRiskValuesSupported();
-    Set<RiskValue> containedValues =
-        valueMatrix.stream().flatMap(Collection::stream).collect(Collectors.toSet());
-    if (containedValues.isEmpty())
-      throw new IllegalArgumentException("Risk matrix for category " + getId() + " is empty.");
-
-    containedValues.removeAll(riskValues);
-    if (!containedValues.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Invalid risk values for category " + getId() + ": " + containedValues);
+    if (!isRiskValuesSupported()) {
+      return;
     }
+
+    Map<Integer, String> ordinalToSymbolicMap =
+        riskValues.stream()
+            .collect(Collectors.toMap(rv -> rv.getOrdinalValue(), rv -> rv.getSymbolicRisk()));
+    Set<RiskValue> undefinedRiskValues =
+        valueMatrix.stream()
+            .flatMap(Collection::stream)
+            .filter(
+                rv ->
+                    !ordinalToSymbolicMap
+                        .getOrDefault(rv.getOrdinalValue(), "")
+                        .equals(rv.getSymbolicRisk()))
+            .collect(Collectors.toSet());
+
+    if (!undefinedRiskValues.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Invalid risk values for category " + getId() + ": " + undefinedRiskValues);
+    }
+
     if (valueMatrix.size() != potentialImpacts.size()) {
       throw new IllegalArgumentException(
           "Value matrix for category " + getId() + " does not conform to impacts.");

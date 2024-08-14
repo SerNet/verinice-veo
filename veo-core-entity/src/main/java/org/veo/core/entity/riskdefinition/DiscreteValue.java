@@ -55,9 +55,11 @@ public class DiscreteValue implements TranslationProvider {
 
   @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
   @ToString.Include
+  @EqualsAndHashCode.Include
   private String htmlColor;
 
-  @ToString.Exclude @NotNull @Valid private TranslationMap translations = new TranslationMap();
+  @EqualsAndHashCode.Include @ToString.Exclude @NotNull @Valid
+  private TranslationMap translations = new TranslationMap();
 
   public Map<Locale, Map<String, String>> getTranslations() {
     return translations.getTranslations();

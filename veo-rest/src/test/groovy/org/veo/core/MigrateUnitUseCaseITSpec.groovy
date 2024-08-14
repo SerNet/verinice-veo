@@ -103,6 +103,8 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             dsgvoDomain.riskDefinitions.xyz = createRiskDefinition("xyz")
             dsgvoDomainV2 = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
+            dsgvoDomainV2.riskDefinitions.xyz = createRiskDefinition("xyz")//TODO: this must be done in the domain migration #3077
+
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)

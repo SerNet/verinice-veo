@@ -38,12 +38,19 @@ public class RiskDefinitionChangedEvent implements DomainEvent {
   Domain domain;
   RiskDefinition riskDefinition;
   Client client;
+  boolean migrateElements;
   Object source;
 
   public static RiskDefinitionChangedEvent from(
       Domain domain, RiskDefinition riskDefinition, Object source) {
     return new RiskDefinitionChangedEvent(
-        domain, riskDefinition, domain.getOwningClient().orElseThrow(), source);
+        domain, riskDefinition, domain.getOwningClient().orElseThrow(), true, source);
+  }
+
+  public static RiskDefinitionChangedEvent from(
+      Domain domain, RiskDefinition riskDefinition, boolean migrateElements, Object source) {
+    return new RiskDefinitionChangedEvent(
+        domain, riskDefinition, domain.getOwningClient().orElseThrow(), migrateElements, source);
   }
 
   @Override
