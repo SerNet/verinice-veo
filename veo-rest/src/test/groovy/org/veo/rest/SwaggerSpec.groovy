@@ -597,6 +597,20 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "No component schema for #type"() {
+        given:
+        def componentSchemas = parsedApiDocs.components.schemas
+
+        expect:
+        componentSchemas[type] == null
+
+        where:
+        type << [
+            'MappingJacksonValue',
+            'KeyUUID'
+        ]
+    }
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

@@ -30,10 +30,12 @@ public interface ITypedSymbolicId<
     extends IEntityRef<T> {
   UUID getSymbolicId();
 
+  @JsonIgnore
   default Key<UUID> getSymbolicKey() {
     return Key.from(getSymbolicId());
   }
 
+  @JsonIgnore
   default Key<UUID> getOwnerKey() {
     return Key.from(getNamespaceId());
   }
