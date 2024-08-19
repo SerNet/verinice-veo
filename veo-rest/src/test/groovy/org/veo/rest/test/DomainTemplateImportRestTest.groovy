@@ -43,10 +43,10 @@ class DomainTemplateImportRestTest extends VeoRestTest {
 
         and: "the domain contains the risk definition"
         with(domain.riskDefinitions.RD1) {
-            it.probability.levels[1].name == "often"
-            it.implementationStateDefinition.levels[0].name == "yes"
+            it.probability.levels[1].translations.en.name == "often"
+            it.implementationStateDefinition.levels[0].translations.en.name == "yes"
             it.riskValues[2].symbolicRisk == 'r-3'
-            it.categories[0].valueMatrix[0][1].name == "medium"
+            it.categories[0].valueMatrix[0][1].translations.en.name == "medium"
         }
 
         when: "fetching the process schema in the new domain"
@@ -539,44 +539,68 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     ],
                     'probability': [
                         'id': 'prob',
-                        'name': 'whatever',
-                        'abbreviation': 'p',
-                        'description': "the properbility",
+                        'translations': [
+                            'en': [
+                                'name': 'whatever',
+                                'abbreviation': 'p',
+                                'description': "the properbility",
+                            ],
+                        ],
                         'levels': [
                             [
                                 'ordinalValue': 0,
-                                'name': 'selten',
-                                'abbreviation': '1',
-                                'description': "Almost never",
+                                'translations': [
+                                    'en': [
+                                        'name': 'selten',
+                                        'abbreviation': '1',
+                                        'description': "Almost never",
+                                    ],
+                                ],
                                 'htmlColor': '#004643'
                             ],
                             [
                                 'ordinalValue': 1,
-                                'name': 'often',
-                                'abbreviation': '2',
-                                'description': 'All the time',
+                                'translations': [
+                                    'en': [
+                                        'name': 'often',
+                                        'abbreviation': '2',
+                                        'description': 'All the time',
+                                    ],
+                                ],
                                 'htmlColor': '#004643'
                             ],
                         ],
                     ],
                     'implementationStateDefinition': [
                         'id': 'imp',
-                        'name': 'whatever',
-                        'abbreviation': 'c',
-                        'description': '',
+                        'translations': [
+                            'en': [
+                                'name': 'whatever',
+                                'abbreviation': 'c',
+                                'description': '',
+                            ],
+                        ],
                         'levels': [
                             [
                                 'ordinalValue': 0,
-                                'name': 'yes',
-                                'abbreviation': 'Y',
-                                'description': 'Implemented',
+                                'translations': [
+                                    'en': [
+                                        'name': 'yes',
+                                        'abbreviation': 'Y',
+                                        'description': 'Implemented',
+                                    ],
+                                ],
                                 'htmlColor': '#12AE0F'
                             ],
                             [
                                 'ordinalValue': 1,
-                                'name': 'no',
-                                'abbreviation': 'N',
-                                'description': 'Not implemented',
+                                'translations': [
+                                    'en': [
+                                        'name': 'no',
+                                        'abbreviation': 'N',
+                                        'description': 'Not implemented',
+                                    ],
+                                ],
                                 'htmlColor': '#AE0D11'
                             ],
                         ]
@@ -584,20 +608,32 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     'categories': [
                         [
                             'id': 'C',
-                            'name': 'Vertraulichkeit',
-                            'abbreviation': 'c',
-                            'description': '',
+                            'translations': [
+                                'en': [
+                                    'name': 'Vertraulichkeit',
+                                    'abbreviation': 'c',
+                                    'description': '',
+                                ],
+                            ],
                             'valueMatrix': [
                                 [
                                     [
                                         'ordinalValue': 0,
-                                        'name': 'low',
+                                        'translations': [
+                                            'en': [
+                                                'name': 'low',
+                                            ],
+                                        ],
                                         'htmlColor': '#A0CF11',
                                         'symbolicRisk': 'r-1'
                                     ],
                                     [
                                         'ordinalValue': 1,
-                                        'name': 'medium',
+                                        'translations': [
+                                            'en': [
+                                                'name': 'medium',
+                                            ],
+                                        ],
                                         'htmlColor': '#A0CF11',
                                         'symbolicRisk': 'r-2'
                                     ],
@@ -605,13 +641,21 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 [
                                     [
                                         'ordinalValue': 0,
-                                        'name': 'medium',
+                                        'translations': [
+                                            'en': [
+                                                'name': 'medium',
+                                            ],
+                                        ],
                                         'htmlColor': '#A0CF11',
                                         'symbolicRisk': 'r-1'
                                     ],
                                     [
                                         'ordinalValue': 1,
-                                        'name': 'high',
+                                        'translations': [
+                                            'en': [
+                                                'name': 'high',
+                                            ],
+                                        ],
                                         'htmlColor': '#A0CF11',
                                         'symbolicRisk': 'r-2'
                                     ],
@@ -620,16 +664,24 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                             'potentialImpacts': [
                                 [
                                     'ordinalValue': 0,
-                                    'name': 'peanuts',
-                                    'abbreviation': 'p',
-                                    'description': 'Not a big deal',
+                                    'translations': [
+                                        'en': [
+                                            'name': 'peanuts',
+                                            'abbreviation': 'p',
+                                            'description': 'Not a big deal',
+                                        ],
+                                    ],
                                     'htmlColor': '#004643'
                                 ],
                                 [
                                     'ordinalValue': 1,
-                                    'name': 'devastating',
-                                    'abbreviation': 'd',
-                                    'description': 'Just terrible',
+                                    'translations': [
+                                        'en': [
+                                            'name': 'devastating',
+                                            'abbreviation': 'd',
+                                            'description': 'Just terrible',
+                                        ],
+                                    ],
                                     'htmlColor': '#004643'
                                 ]
                             ]
@@ -639,25 +691,37 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                         [
                             'symbolicRisk': 'r-1',
                             'ordinalValue': 0,
-                            'name': 'low',
-                            'abbreviation': 'l',
-                            'description': 'Pretty low',
+                            'translations': [
+                                'en': [
+                                    'name': 'low',
+                                    'abbreviation': 'l',
+                                    'description': 'Pretty low',
+                                ],
+                            ],
                             'htmlColor': '#A0CF11',
                         ],
                         [
                             'symbolicRisk': 'r-2',
                             'ordinalValue': 1,
-                            'name': 'medium',
-                            'abbreviation': 'm',
-                            'description': 'Kind of medium',
+                            'translations': [
+                                'en': [
+                                    'name': 'medium',
+                                    'abbreviation': 'm',
+                                    'description': 'Kind of medium',
+                                ],
+                            ],
                             'htmlColor': '#FFFF13',
                         ],
                         [
                             'symbolicRisk': 'r-3',
                             'ordinalValue': 2,
-                            'name': 'high',
-                            'abbreviation': 'h',
-                            'description': 'Pretty high',
+                            'translations': [
+                                'en': [
+                                    'name': 'high',
+                                    'abbreviation': 'h',
+                                    'description': 'Pretty high',
+                                ],
+                            ],
                             'htmlColor': '#FFFF13',
                         ],
                     ]

@@ -333,14 +333,14 @@ class RiskMatrixSpec extends Specification {
 
         when: "content differs"
         rd1.riskMethod = new RiskMethod()
-        rd1.riskMethod.setOldValues("impactMethod", "sum")
+        rd1.riskMethod.translations.put(Locale.of("DE"), ["impactMethod": "sum"])
 
         then: "not equals"
         rd1 != rd2
 
         when: "content is the same"
         rd2.riskMethod = new RiskMethod()
-        rd2.riskMethod.setOldValues("impactMethod", "sum")
+        rd2.riskMethod.translations.put(Locale.of("DE"), ["impactMethod": "sum"])
 
         then: "both are equals"
         rd1 == rd2

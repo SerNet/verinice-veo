@@ -17,13 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
@@ -40,58 +37,14 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// when all domains are migrated to the new structure this ignoreProperties can be removed
+@JsonIgnoreProperties({"description", "impactMethod"})
 public class RiskMethod implements TranslationProvider {
   @ToString.Include @EqualsAndHashCode.Include
   private TranslationMap translations = new TranslationMap();
 
-  /**
-   * Provide compatibility with old clients and data structure. This will read the old data and
-   * transform it to the new data.
-   */
-  @Deprecated
-  @JsonAnySetter
-  // TODO: VEO-1739 remove
-  public void setOldValues(String name, String value) {
-    if (value == null) {
-      return;
-    }
-    if ("impactMethod".equals(name)) {
-      getDefaultTranslation().put(name, value);
-    } else if ("description".equals(name)) {
-      getDefaultTranslation().put(name, value);
-    } else {
-      throw new IllegalArgumentException("No property " + name);
-    }
-  }
-
+  @Override
   public Map<Locale, Map<String, String>> getTranslations() {
     return translations.getTranslations();
-  }
-
-  @Deprecated
-  private Map<String, String> getDefaultTranslation() {
-    return translations
-        .getTranslations()
-        .computeIfAbsent(new Locale.Builder().setLanguage("de").build(), t -> new HashMap<>());
-  }
-
-  /**
-   * Provide compatibility with old clients and data structure. This will provide the old data
-   * transformed by the new data.
-   */
-  @Deprecated
-  @JsonProperty(access = Access.READ_ONLY)
-  public String getDescription() {
-    return getDefaultTranslation().get("description");
-  }
-
-  /**
-   * Provide compatibility with old clients and data structure. This will provide the old data
-   * transformed by the new data.
-   */
-  @Deprecated
-  @JsonProperty(access = Access.READ_ONLY)
-  public String getImpactMethod() {
-    return getDefaultTranslation().get("impactMethod");
   }
 }

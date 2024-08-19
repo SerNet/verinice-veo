@@ -33,6 +33,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
+// when all domains are migrated to the new structure this ignoreProperties can be removed
 @JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class ImplementationStateDefinition extends DimensionDefinition {
   public ImplementationStateDefinition(List<CategoryLevel> levels) {

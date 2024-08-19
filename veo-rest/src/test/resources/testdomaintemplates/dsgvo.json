@@ -855,216 +855,324 @@
       "id": "DSRA",
       "probability": {
         "id": "Prob",
-        "name": "prop-1",
-        "abbreviation": "pro-name-1",
-        "description": "",
+        "translations": {
+          "de": {
+            "name": "prop-1",
+            "description": "",
+            "abbreviation": "pro-name-1"
+          }
+        },
         "levels": [
           {
             "ordinalValue": 0,
-            "name": "selten",
-            "abbreviation": "1",
-            "description": "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.",
-            "htmlColor": "#004643"
+            "htmlColor": "#004643",
+            "translations": {
+              "de": {
+                "name": "selten",
+                "description": "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.",
+                "abbreviation": "1"
+              }
+            }
           },
           {
             "ordinalValue": 1,
-            "name": "mittel",
-            "abbreviation": "2",
-            "description": "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.",
-            "htmlColor": "#004643"
+            "htmlColor": "#004643",
+            "translations": {
+              "de": {
+                "name": "mittel",
+                "description": "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.",
+                "abbreviation": "2"
+              }
+            }
           },
           {
             "ordinalValue": 2,
-            "name": "häufig",
-            "abbreviation": "3",
-            "description": "Ereignis tritt einmal im Jahr bis einmal pro Monat ein.",
-            "htmlColor": "#004643"
+            "htmlColor": "#004643",
+            "translations": {
+              "de": {
+                "name": "häufig",
+                "description": "Ereignis tritt einmal im Jahr bis einmal pro Monat ein.",
+                "abbreviation": "3"
+              }
+            }
           },
           {
             "ordinalValue": 3,
-            "name": "sehr häufig",
-            "abbreviation": "4",
-            "description": "Ereignis tritt mehrmals im Monat ein.",
-            "htmlColor": "#004643"
+            "htmlColor": "#004643",
+            "translations": {
+              "de": {
+                "name": "sehr häufig",
+                "description": "Ereignis tritt mehrmals im Monat ein.",
+                "abbreviation": "4"
+              }
+            }
           }
         ]
       },
       "implementationStateDefinition": {
         "id": "Ctr",
-        "name": "prop-1",
-        "abbreviation": "pro-name-1",
-        "description": "",
+        "translations": {
+          "de": {
+            "name": "prop-1",
+            "description": "",
+            "abbreviation": "pro-name-1"
+          }
+        },
         "levels": [
           {
             "ordinalValue": 0,
-            "name": "ja",
-            "abbreviation": "J",
-            "description": "Die Maßnahme ist vollständig umgesetzt.",
-            "htmlColor": "#12AE0F"
+            "htmlColor": "#12AE0F",
+            "translations": {
+              "de": {
+                "name": "ja",
+                "description": "Die Maßnahme ist vollständig umgesetzt.",
+                "abbreviation": "J"
+              }
+            }
           },
           {
             "ordinalValue": 1,
-            "name": "nein",
-            "abbreviation": "N",
-            "description": "Die Maßnahme ist nicht umgesetzt.",
-            "htmlColor": "#AE0D11"
+            "htmlColor": "#AE0D11",
+            "translations": {
+              "de": {
+                "name": "nein",
+                "description": "Die Maßnahme ist nicht umgesetzt.",
+                "abbreviation": "N"
+              }
+            }
           },
           {
             "ordinalValue": 2,
-            "name": "teilweise",
-            "abbreviation": "Tw",
-            "description": "Die Maßnahme ist nicht vollständig umgesetzt.",
-            "htmlColor": "#EDE92F"
+            "htmlColor": "#EDE92F",
+            "translations": {
+              "de": {
+                "name": "teilweise",
+                "description": "Die Maßnahme ist nicht vollständig umgesetzt.",
+                "abbreviation": "Tw"
+              }
+            }
           },
           {
             "ordinalValue": 3,
-            "name": "nicht anwendbar",
-            "abbreviation": "NA",
-            "description": "Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.",
-            "htmlColor": "#49A2ED"
+            "htmlColor": "#49A2ED",
+            "translations": {
+              "de": {
+                "name": "nicht anwendbar",
+                "description": "Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.",
+                "abbreviation": "NA"
+              }
+            }
           }
         ]
       },
       "categories": [
         {
           "id": "C",
-          "name": "Vertraulichkeit",
-          "abbreviation": "c",
-          "description": "",
+          "translations": {
+            "de": {
+              "name": "Vertraulichkeit",
+              "description": "",
+              "abbreviation": "c"
+            }
+          },
           "valueMatrix": [
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               }
             ],
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ]
@@ -1072,173 +1180,257 @@
           "potentialImpacts": [
             {
               "ordinalValue": 0,
-              "name": "vernachlässigbar",
-              "abbreviation": "1",
-              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "vernachlässigbar",
+                  "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+                  "abbreviation": "1"
+                }
+              }
             },
             {
               "ordinalValue": 1,
-              "name": "begrenzt",
-              "abbreviation": "2",
-              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "begrenzt",
+                  "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+                  "abbreviation": "2"
+                }
+              }
             },
             {
               "ordinalValue": 2,
-              "name": "beträchtlich",
-              "abbreviation": "3",
-              "description": "Die Schadensauswirkungen können beträchtlich sein.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "beträchtlich",
+                  "description": "Die Schadensauswirkungen können beträchtlich sein.",
+                  "abbreviation": "3"
+                }
+              }
             },
             {
               "ordinalValue": 3,
-              "name": "existenzbedrohend",
-              "abbreviation": "4",
-              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "existenzbedrohend",
+                  "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+                  "abbreviation": "4"
+                }
+              }
             }
           ]
         },
         {
           "id": "I",
-          "name": "Integrität",
-          "abbreviation": "i",
-          "description": "",
+          "translations": {
+            "de": {
+              "name": "Integrität",
+              "description": "",
+              "abbreviation": "i"
+            }
+          },
           "valueMatrix": [
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               }
             ],
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ]
@@ -1246,173 +1438,257 @@
           "potentialImpacts": [
             {
               "ordinalValue": 0,
-              "name": "vernachlässigbar",
-              "abbreviation": "1",
-              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "vernachlässigbar",
+                  "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+                  "abbreviation": "1"
+                }
+              }
             },
             {
               "ordinalValue": 1,
-              "name": "begrenzt",
-              "abbreviation": "2",
-              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "begrenzt",
+                  "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+                  "abbreviation": "2"
+                }
+              }
             },
             {
               "ordinalValue": 2,
-              "name": "beträchtlich",
-              "abbreviation": "3",
-              "description": "Die Schadensauswirkungen können beträchtlich sein.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "beträchtlich",
+                  "description": "Die Schadensauswirkungen können beträchtlich sein.",
+                  "abbreviation": "3"
+                }
+              }
             },
             {
               "ordinalValue": 3,
-              "name": "existenzbedrohend",
-              "abbreviation": "4",
-              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "existenzbedrohend",
+                  "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+                  "abbreviation": "4"
+                }
+              }
             }
           ]
         },
         {
           "id": "A",
-          "name": "Verfügbarkeit",
-          "abbreviation": "a",
-          "description": "",
+          "translations": {
+            "de": {
+              "name": "Verfügbarkeit",
+              "description": "",
+              "abbreviation": "a"
+            }
+          },
           "valueMatrix": [
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               }
             ],
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ]
@@ -1420,173 +1696,257 @@
           "potentialImpacts": [
             {
               "ordinalValue": 0,
-              "name": "vernachlässigbar",
-              "abbreviation": "1",
-              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "vernachlässigbar",
+                  "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+                  "abbreviation": "1"
+                }
+              }
             },
             {
               "ordinalValue": 1,
-              "name": "begrenzt",
-              "abbreviation": "2",
-              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "begrenzt",
+                  "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+                  "abbreviation": "2"
+                }
+              }
             },
             {
               "ordinalValue": 2,
-              "name": "beträchtlich",
-              "abbreviation": "3",
-              "description": "Die Schadensauswirkungen können beträchtlich sein.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "beträchtlich",
+                  "description": "Die Schadensauswirkungen können beträchtlich sein.",
+                  "abbreviation": "3"
+                }
+              }
             },
             {
               "ordinalValue": 3,
-              "name": "existenzbedrohend",
-              "abbreviation": "4",
-              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "existenzbedrohend",
+                  "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+                  "abbreviation": "4"
+                }
+              }
             }
           ]
         },
         {
           "id": "R",
-          "name": "Belastbarkeit",
-          "abbreviation": "r",
-          "description": "",
+          "translations": {
+            "de": {
+              "name": "Belastbarkeit",
+              "description": "",
+              "abbreviation": "r"
+            }
+          },
           "valueMatrix": [
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               }
             ],
             [
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 0,
-                "name": "gering",
-                "abbreviation": "1",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
                 "htmlColor": "#A0CF11",
+                "translations": {
+                  "de": {
+                    "name": "gering",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                    "abbreviation": "1"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_1"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ],
             [
               {
                 "ordinalValue": 1,
-                "name": "mittel",
-                "abbreviation": "2",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
                 "htmlColor": "#FFFF13",
+                "translations": {
+                  "de": {
+                    "name": "mittel",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                    "abbreviation": "2"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_2"
               },
               {
                 "ordinalValue": 2,
-                "name": "hoch",
-                "abbreviation": "3",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
                 "htmlColor": "#FF8E43",
+                "translations": {
+                  "de": {
+                    "name": "hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                    "abbreviation": "3"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_3"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               },
               {
                 "ordinalValue": 3,
-                "name": "sehr hoch",
-                "abbreviation": "4",
-                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
                 "htmlColor": "#FF1212",
+                "translations": {
+                  "de": {
+                    "name": "sehr hoch",
+                    "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                    "abbreviation": "4"
+                  }
+                },
                 "symbolicRisk": "symbolic_risk_4"
               }
             ]
@@ -1594,31 +1954,47 @@
           "potentialImpacts": [
             {
               "ordinalValue": 0,
-              "name": "vernachlässigbar",
-              "abbreviation": "1",
-              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "vernachlässigbar",
+                  "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+                  "abbreviation": "1"
+                }
+              }
             },
             {
               "ordinalValue": 1,
-              "name": "begrenzt",
-              "abbreviation": "2",
-              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "begrenzt",
+                  "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+                  "abbreviation": "2"
+                }
+              }
             },
             {
               "ordinalValue": 2,
-              "name": "beträchtlich",
-              "abbreviation": "3",
-              "description": "Die Schadensauswirkungen können beträchtlich sein.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "beträchtlich",
+                  "description": "Die Schadensauswirkungen können beträchtlich sein.",
+                  "abbreviation": "3"
+                }
+              }
             },
             {
               "ordinalValue": 3,
-              "name": "existenzbedrohend",
-              "abbreviation": "4",
-              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-              "htmlColor": "#004643"
+              "htmlColor": "#004643",
+              "translations": {
+                "de": {
+                  "name": "existenzbedrohend",
+                  "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+                  "abbreviation": "4"
+                }
+              }
             }
           ]
         }
@@ -1626,38 +2002,60 @@
       "riskValues": [
         {
           "ordinalValue": 0,
-          "name": "gering",
-          "abbreviation": "1",
-          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
           "htmlColor": "#A0CF11",
+          "translations": {
+            "de": {
+              "name": "gering",
+              "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+              "abbreviation": "1"
+            }
+          },
           "symbolicRisk": "symbolic_risk_1"
         },
         {
           "ordinalValue": 1,
-          "name": "mittel",
-          "abbreviation": "2",
-          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
           "htmlColor": "#FFFF13",
+          "translations": {
+            "de": {
+              "name": "mittel",
+              "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+              "abbreviation": "2"
+            }
+          },
           "symbolicRisk": "symbolic_risk_2"
         },
         {
           "ordinalValue": 2,
-          "name": "hoch",
-          "abbreviation": "3",
-          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
           "htmlColor": "#FF8E43",
+          "translations": {
+            "de": {
+              "name": "hoch",
+              "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+              "abbreviation": "3"
+            }
+          },
           "symbolicRisk": "symbolic_risk_3"
         },
         {
           "ordinalValue": 3,
-          "name": "sehr hoch",
-          "abbreviation": "4",
-          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
           "htmlColor": "#FF1212",
+          "translations": {
+            "de": {
+              "name": "sehr hoch",
+              "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+              "abbreviation": "4"
+            }
+          },
           "symbolicRisk": "symbolic_risk_4"
         }
       ],
       "riskMethod": {
+        "translations": {
+          "de": {
+            "impactMethod": "highwatermark",
+            "description": "description"
+          }
+        },
         "impactMethod": "highwatermark",
         "description": "description"
       },
