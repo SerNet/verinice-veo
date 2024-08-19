@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.TranslationMap;
 
 import lombok.NoArgsConstructor;
@@ -24,6 +26,7 @@ import lombok.ToString;
 
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class CategoryLevel extends DiscreteValue {
   public CategoryLevel(String htmlColor) {
     super(htmlColor);

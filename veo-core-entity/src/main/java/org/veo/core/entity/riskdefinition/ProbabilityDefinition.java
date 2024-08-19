@@ -23,6 +23,8 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.TranslationMap;
 
 import lombok.Data;
@@ -33,6 +35,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class ProbabilityDefinition extends DimensionDefinition {
 
   public ProbabilityDefinition(TranslationMap translations, List<ProbabilityLevel> levels) {

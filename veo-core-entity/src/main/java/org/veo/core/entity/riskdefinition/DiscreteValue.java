@@ -17,21 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
-import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
-import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
-
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationMap;
@@ -68,50 +59,7 @@ public class DiscreteValue implements TranslationProvider {
 
   @ToString.Exclude @NotNull @Valid private TranslationMap translations = new TranslationMap();
 
-  /**
-   * Provide compatibility with old clients and data structure. This will read the old data and
-   * transform it to the new data.
-   */
-  @JsonAnySetter
-  @Deprecated
-  // TODO: VEO-1739 remove
-  public void setOldValues(String name, String value) {
-    if (value == null) {
-      return;
-    }
-    if (DeprecatedAttributes.DEPRECATED_ATTRIBUTES.contains(name)) {
-      getDefaultTranslation().put(name, value);
-    } else {
-      throw new IllegalArgumentException("No property " + name);
-    }
-  }
-
   public Map<Locale, Map<String, String>> getTranslations() {
     return translations.getTranslations();
-  }
-
-  @Deprecated
-  private Map<String, String> getDefaultTranslation() {
-    return translations
-        .getTranslations()
-        .computeIfAbsent(Locale.forLanguageTag("de"), t -> new HashMap<>());
-  }
-
-  @Deprecated
-  @JsonProperty(access = Access.READ_ONLY)
-  public String getName() {
-    return getDefaultTranslation().get(NAME);
-  }
-
-  @Deprecated
-  @JsonProperty(access = Access.READ_ONLY)
-  public String getAbbreviation() {
-    return getDefaultTranslation().get(ABBREVIATION);
-  }
-
-  @Deprecated
-  @JsonProperty(access = Access.READ_ONLY)
-  public String getDescription() {
-    return getDefaultTranslation().get(DESCRIPTION);
   }
 }

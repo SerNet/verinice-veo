@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.TranslationMap;
 
 import lombok.Data;
@@ -28,6 +30,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class ProbabilityLevel extends DiscreteValue {
   public ProbabilityLevel(int ordinalValue, String htmlColor, TranslationMap translations) {
     super(ordinalValue, htmlColor, translations);

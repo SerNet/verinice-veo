@@ -22,6 +22,8 @@ import static org.veo.core.entity.Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TranslationMap;
 
@@ -41,6 +43,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class RiskValue extends DiscreteValue {
 
   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")

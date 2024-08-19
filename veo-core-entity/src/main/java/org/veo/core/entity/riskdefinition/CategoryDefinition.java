@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ProbabilityRef;
@@ -46,6 +48,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class CategoryDefinition extends DimensionDefinition {
   public CategoryDefinition(
       String id,
