@@ -171,6 +171,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 target.targetUri != null
                 target.id != null
                 target.name != null
+                target.type == "catalog-item"
             }
         }
 
@@ -186,6 +187,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 target.targetUri != null
                 !target.containsKey("id")
                 !target.containsKey("name")
+                !target.containsKey("type")
             }
         }
 

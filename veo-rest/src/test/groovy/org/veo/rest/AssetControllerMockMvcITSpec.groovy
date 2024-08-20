@@ -291,6 +291,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             id == targetAsset.idAsString
             designator ==~ /AST-\d+/
             name == "asset null"
+            type == "asset"
             targetUri == "http://localhost/assets/${targetAsset.id.uuidValue()}"
         }
 

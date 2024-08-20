@@ -116,6 +116,11 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
     return null;
   }
 
+  @JsonProperty(value = "type", access = JsonProperty.Access.READ_ONLY)
+  public String getModelType() {
+    return entity.getModelType();
+  }
+
   @Override
   public boolean equals(Object other) {
     return ref.equals(other);

@@ -144,6 +144,11 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
     return null;
   }
 
+  @JsonProperty(value = "type", access = JsonProperty.Access.READ_ONLY)
+  public String getModelType() {
+    return entity.getModelType();
+  }
+
   @Override
   public boolean equals(Object other) {
     return ref.equals(other);
