@@ -59,14 +59,17 @@ public class RiskComponentChangeListener {
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskAffectingElementChangeEvent event) {
-    Element element =
-        elementRepository.getById(event.getEntityId(), event.getEntityType(), event.getClientId());
-    riskService.evaluateChangedRiskComponent(element);
-    if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
-      if (element instanceof RiskAffected<?, ?> ra) {
-        impactInheritanceCalculator.calculateImpactInheritance(ra);
-      }
-    }
+    elementRepository
+        .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
+        .ifPresent(
+            element -> {
+              riskService.evaluateChangedRiskComponent(element);
+              if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
+                if (element instanceof RiskAffected<?, ?> ra) {
+                  impactInheritanceCalculator.calculateImpactInheritance(ra);
+                }
+              }
+            });
   }
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
