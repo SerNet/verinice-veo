@@ -19,12 +19,17 @@ package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
 import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.IMPACT_LIST_RESIZE;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.PROBABILITY_LIST_RESIZE;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_MATRIX_DIFF;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_VALUE_LIST_RESIZE;
 import static org.veo.rest.ControllerConstants.DEFAULT_CACHE_CONTROL;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -363,7 +368,15 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveRiskDefinitionUseCase,
         new SaveRiskDefinitionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()), Key.from(domainId), riskDefinitionId, riskDefinition),
+            Key.uuidFrom(user.getClientId()),
+            Key.from(domainId),
+            riskDefinitionId,
+            riskDefinition,
+            Set.of(
+                IMPACT_LIST_RESIZE,
+                PROBABILITY_LIST_RESIZE,
+                RISK_MATRIX_DIFF,
+                RISK_VALUE_LIST_RESIZE)),
         out ->
             out.newRiskDefinition()
                 ? RestApiResponse.created(

@@ -64,12 +64,6 @@ public class SaveRiskDefinitionUseCase
 
   private final DomainRepository repository;
   private final EventPublisher eventPublisher;
-  private final Set<RiskDefinitionChangeType> forbiddenChanges =
-      Set.of(IMPACT_LIST_RESIZE, PROBABILITY_LIST_RESIZE, RISK_MATRIX_DIFF, RISK_VALUE_LIST_RESIZE);
-  private final List<RiskDefinitionChangeType> allowedChanges =
-      Arrays.stream(RiskDefinitionChangeType.values())
-          .filter(ct -> !forbiddenChanges.contains(ct))
-          .toList();
 
   @Override
   public OutputData execute(InputData input) {
@@ -84,11 +78,13 @@ public class SaveRiskDefinitionUseCase
             rd -> detectedChanges.addAll(detectChanges(rd, input.riskDefinition)),
             () -> detectedChanges.add(NEW_RISK_DEFINITION));
 
-    if (detectedChanges.stream().anyMatch(forbiddenChanges::contains))
+    if (detectedChanges.stream().anyMatch(input.forbiddenChanges::contains)) {
       throw new UnprocessableDataException(
           "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: "
-              + allowedChanges);
-
+              + Arrays.stream(RiskDefinitionChangeType.values())
+                  .filter(r -> !input.forbiddenChanges.contains(r))
+                  .toList());
+    }
     domain.applyRiskDefinition(input.riskDefinitionRef, input.riskDefinition);
     // todo: handle the forbidden cases in #3137
     if (detectedChanges.contains(CATEGORY_LIST_RESIZE)
@@ -215,7 +211,8 @@ public class SaveRiskDefinitionUseCase
       Key<UUID> authenticatedClientId,
       Key<UUID> domainId,
       String riskDefinitionRef,
-      RiskDefinition riskDefinition)
+      RiskDefinition riskDefinition,
+      Set<RiskDefinitionChangeType> forbiddenChanges)
       implements UseCase.InputData {}
 
   @Valid
