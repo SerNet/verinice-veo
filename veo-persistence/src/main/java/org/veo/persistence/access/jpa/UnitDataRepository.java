@@ -36,4 +36,6 @@ public interface UnitDataRepository extends IdentifiableVersionedDataRepository<
 
   @EntityGraph(attributePaths = {"client"})
   Optional<UnitData> findWithClientByDbId(UUID uuidValue);
+
+  List<UnitData> findByDomainsId(UUID domainId);
 }

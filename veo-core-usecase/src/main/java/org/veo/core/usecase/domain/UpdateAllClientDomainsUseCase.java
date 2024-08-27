@@ -25,6 +25,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.MigrateDomainUseCase;
+import org.veo.core.usecase.MigrationFailedException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
@@ -46,11 +47,19 @@ public class UpdateAllClientDomainsUseCase
     log.info("Migrating {} clients to new domain template {}", count, input.domainTemplateId);
     int migrationsDone = 0;
     for (Key<UUID> newDomainId : newDomainIds) {
-      migrateDomainUseCase.execute(new MigrateDomainUseCase.InputData(newDomainId));
-      migrationsDone++;
-      log.info("{} of {} migrations performed", migrationsDone, count);
+      try {
+        migrateDomainUseCase.execute(new MigrateDomainUseCase.InputData(newDomainId));
+        migrationsDone++;
+        log.info("{} of {} migrations performed", migrationsDone, count);
+      } catch (MigrationFailedException e) {
+        log.error("Error migrating {} units to domain {}", e.getFailureCount(), newDomainId, e);
+      }
     }
 
+    if (migrationsDone != newDomainIds.size()) {
+      throw MigrationFailedException.forClient(
+          newDomainIds.size(), newDomainIds.size() - migrationsDone);
+    }
     return EmptyOutput.INSTANCE;
   }
 

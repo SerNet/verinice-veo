@@ -47,4 +47,6 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
   default Unit getByIdFetchClient(Key<UUID> unitId) {
     return findByIdFetchClient(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
   }
+
+  List<Unit> findByDomain(Key<UUID> domainId);
 }

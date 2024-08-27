@@ -189,6 +189,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
+import org.veo.core.usecase.unit.MigrateUnitUseCase;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
@@ -1055,12 +1056,25 @@ public class ModuleConfiguration {
   @Bean
   public MigrateDomainUseCase migrateDomainUseCase(
       DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
       UnitRepository unitRepository,
+      MigrateUnitUseCase migrateUnitUseCase,
+      Decider decider) {
+    return new MigrateDomainUseCase(domainRepository, unitRepository, migrateUnitUseCase);
+  }
+
+  @Bean
+  public MigrateUnitUseCase migrateUnitUseCase(
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      GenericElementRepository genericElementRepository,
       ElementMigrationService elementMigrationService,
       Decider decider) {
-    return new MigrateDomainUseCase(
-        domainRepository, repositoryProvider, elementMigrationService, decider, unitRepository);
+    return new MigrateUnitUseCase(
+        domainRepository,
+        elementMigrationService,
+        genericElementRepository,
+        decider,
+        unitRepository);
   }
 
   @Bean

@@ -60,4 +60,9 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   public Optional<Unit> findByIdFetchClient(Key<UUID> id) {
     return dataRepository.findWithClientByDbId(id.value()).map(Unit.class::cast);
   }
+
+  @Override
+  public List<Unit> findByDomain(Key<UUID> domainId) {
+    return dataRepository.findByDomainsId(domainId.value()).stream().map(Unit.class::cast).toList();
+  }
 }

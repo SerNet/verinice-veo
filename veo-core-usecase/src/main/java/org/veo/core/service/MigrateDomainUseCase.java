@@ -27,17 +27,14 @@ import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.MigrationFailedException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.decision.Decider;
-import org.veo.service.ElementMigrationService;
+import org.veo.core.usecase.unit.MigrateUnitUseCase;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,10 +49,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MigrateDomainUseCase
     implements TransactionalUseCase<MigrateDomainUseCase.InputData, UseCase.EmptyOutput> {
   private final DomainRepository domainRepository;
-  private final RepositoryProvider repositoryProvider;
-  private final ElementMigrationService elementMigrationService;
-  private final Decider decider;
   private final UnitRepository unitRepository;
+  private final MigrateUnitUseCase migrateUnitUseCase;
 
   @Override
   public boolean isReadOnly() {
@@ -97,32 +92,22 @@ public class MigrateDomainUseCase
         domainToUpdate,
         newDomain,
         client.getIdAsString());
-    List<Unit> unitsToUpdate = unitRepository.findByClient(client);
+
+    List<Unit> unitsToUpdate = unitRepository.findByDomain(domainToUpdate.getId());
+    int failureCount = 0;
     for (Unit unit : unitsToUpdate) {
-      if (unit.removeFromDomains(domainToUpdate)) {
-        unit.addToDomains(newDomain);
+      try {
+        migrateUnitUseCase.execute(
+            new MigrateUnitUseCase.InputData(
+                unit.getId(), domainToUpdate.getId(), newDomain.getId()));
+      } catch (Exception e) {
+        failureCount++;
+        log.error("Error migrating unit {}", unit, e);
       }
     }
-
-    var elements =
-        EntityType.ELEMENT_TYPES.stream()
-            .map(t -> (Class<Element>) t.getType())
-            .map(repositoryProvider::getElementRepositoryFor)
-            .flatMap(repo -> repo.findByDomain(domainToUpdate).stream())
-            .toList();
-
-    log.info(
-        "Transferring domain-specific information on {} elements from old domain to new domain",
-        elements.size());
-    elements.forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
-
-    // Mercilessly remove all information from the elements that is no longer valid under the new
-    // domain. This must happen after all elements have been transferred, because link targets are
-    // also validated and must have been transferred beforehand.
-    elements.forEach(element -> elementMigrationService.migrate(element, newDomain));
-
-    elements.forEach(
-        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
+    if (failureCount != 0) {
+      throw MigrationFailedException.forDomain(unitsToUpdate.size(), failureCount);
+    }
   }
 
   public record InputData(Key<UUID> domainId) implements UseCase.InputData {}
