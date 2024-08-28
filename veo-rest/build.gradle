@@ -9,10 +9,6 @@ plugins {
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
-configurations {
-    loggingImpl
-}
-
 dependencies {
     implementation project(":veo-adapter")
     implementation project(":veo-persistence")
@@ -27,36 +23,29 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.jsonwebtoken:jjwt-api'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
-    implementation 'io.swagger.core.v3:swagger-core-jakarta'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    implementation 'com.github.zafarkhaja:java-semver'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
+    implementation 'org.apache.commons:commons-lang3'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
 
-    testImplementation "org.testcontainers:spock"
-    testImplementation 'com.h2database:h2'
+    testImplementation "org.testcontainers:testcontainers"
     testImplementation 'org.keycloak:keycloak-authz-client'
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.networknt:json-schema-validator'
-    testImplementation 'commons-codec:commons-codec'
     testImplementation project(":veo-test")
     testImplementation 'org.apache.groovy:groovy-json'
 
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
+    testRuntimeOnly "org.testcontainers:spock"
     testRuntimeOnly 'org.testcontainers:postgresql'
-
-    loggingImpl 'org.slf4j:slf4j-simple'
 }
 
 jar {

@@ -11,12 +11,13 @@ dependencies {
     // Using JTA transaction annotations currently.
     // The alternative would be to use spring transactional annotations.
     // These would support readonly transactions among other additional features.
-    implementation 'jakarta.transaction:jakarta.transaction-api'
+    api 'jakarta.transaction:jakarta.transaction-api'
 
     implementation 'com.github.zafarkhaja:java-semver'
     implementation 'org.jgrapht:jgrapht-core'
     implementation 'org.jgrapht:jgrapht-io'
-    testImplementation 'org.spockframework:spock-spring'
+
+    testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'commons-codec:commons-codec'
 }

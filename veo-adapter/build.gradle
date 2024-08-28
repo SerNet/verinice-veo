@@ -4,7 +4,6 @@ apply plugin: 'java-library'
 dependencies {
 
     api project(":veo-core-usecase")
-    api 'com.fasterxml.uuid:java-uuid-generator'
 
     implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'com.github.victools:jsonschema-generator'
@@ -15,13 +14,13 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-common'
     implementation 'com.github.zafarkhaja:java-semver'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
+    implementation 'com.fasterxml.uuid:java-uuid-generator'
 
     compileOnly('org.projectlombok:lombok')
-    compileOnly 'io.swagger.core.v3:swagger-core-jakarta'
 
     testImplementation 'com.networknt:json-schema-validator'
     testImplementation 'io.swagger.core.v3:swagger-core-jakarta'
-    testImplementation 'org.spockframework:spock-spring'
+    testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.apache.groovy:groovy-json'
 }

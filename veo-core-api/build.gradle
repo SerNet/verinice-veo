@@ -4,5 +4,5 @@ apply plugin: 'java-library'
 dependencies {
 
     api project(":veo-core-entity")
-    implementation 'com.github.zafarkhaja:java-semver'
+    api 'com.github.zafarkhaja:java-semver'
 }

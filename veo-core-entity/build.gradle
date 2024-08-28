@@ -6,7 +6,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
 
-    testImplementation 'org.spockframework:spock-spring'
+    testImplementation 'org.spockframework:spock-core'
     testImplementation 'jakarta.validation:jakarta.validation-api'
     testImplementation 'org.hibernate.validator:hibernate-validator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
