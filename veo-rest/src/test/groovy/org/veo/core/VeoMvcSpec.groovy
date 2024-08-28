@@ -98,8 +98,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     ResultActions get(String url, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
-        doRequest(MockMvcRequestBuilders.get(url)
-                .accept(mediaType), expectedStatusCode)
+        doRequest(MockMvcRequestBuilders.get(url).tap {b->
+            mediaType?.with{b.accept(it)}
+        }, expectedStatusCode)
     }
 
     ResultActions put(String url, Map content, Map headers, int expectedStatusCode = 200) {

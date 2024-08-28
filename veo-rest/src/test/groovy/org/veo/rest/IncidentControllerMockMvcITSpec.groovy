@@ -127,6 +127,29 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "regular JSON is returned if Accept header is missing"() {
+        given:
+        def incident = txTemplate.execute {
+            incidentRepository.save(newIncident(unit) {
+                name = 'Test incident-1'
+            })
+        }
+
+        when:
+        def results = get("/incidents/${incident.idAsString}", 200, null)
+
+        then:
+        results.andReturn().request.getHeader('Accept') == null
+        results.andReturn().response.getHeader('Content-Type') == 'application/json'
+
+        when:
+        def result = parseJson(results)
+
+        then:
+        result._self == "http://localhost/incidents/${incident.idAsString}"
+    }
+
+    @WithUserDetails("user@domain.example")
     def "retrieve all incidents for a unit"() {
         given: "a saved incident"
         def incident = newIncident(unit) {
