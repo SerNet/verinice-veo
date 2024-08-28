@@ -217,7 +217,6 @@ import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
-import org.veo.rest.VeoRestConstants;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.CatalogMigrationService;
@@ -1001,16 +1000,7 @@ public class ModuleConfiguration {
       ReferenceAssembler referenceAssembler,
       EntityToDtoTransformer entityToDtoTransformer) {
     return new MessageCreatorImpl(
-        storedEventRepository,
-        objectMapper
-            .copy()
-            .setFilterProvider(
-                new SimpleFilterProvider()
-                    .addFilter(
-                        VeoConstants.JSON_FILTER_IDREF,
-                        VeoRestConstants.JSON_FILTER_EXCLUDE_SEARCHES_AND_RESOURCES)),
-        referenceAssembler,
-        entityToDtoTransformer);
+        storedEventRepository, objectMapper, referenceAssembler, entityToDtoTransformer);
   }
 
   @Bean

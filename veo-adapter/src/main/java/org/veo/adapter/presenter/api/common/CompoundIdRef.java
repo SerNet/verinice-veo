@@ -101,16 +101,6 @@ public class CompoundIdRef<
     return uri;
   }
 
-  @Override
-  public String getSearchesUri() {
-    return null;
-  }
-
-  @Override
-  public String getResourcesUri() {
-    return urlAssembler.resourcesReferenceOf(entity);
-  }
-
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getDesignator() {
     if (entity instanceof Designated designated) {

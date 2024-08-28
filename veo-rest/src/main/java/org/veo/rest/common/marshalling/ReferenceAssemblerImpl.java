@@ -780,27 +780,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   }
 
   @Override
-  public String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity) {
-    if (entity instanceof AssetRisk) {
-      return linkTo(methodOn(AssetController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
-          .withSelfRel()
-          .getHref();
-    }
-    if (entity instanceof ProcessRisk) {
-      return linkTo(methodOn(ProcessController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
-          .withSelfRel()
-          .getHref();
-    }
-    if (entity instanceof ScopeRisk) {
-      return linkTo(methodOn(ScopeController.class).getRisks(ANY_USER, entity.getFirstIdAsUUID()))
-          .withSelfRel()
-          .getHref();
-    }
-    throw new NotImplementedException(
-        "Unsupported collection reference type %s".formatted(entity.getModelType()));
-  }
-
-  @Override
   public TypedId<?> parseIdentifiableRef(String uri) {
     return parseIdentifiableRef(uri, Identifiable.class);
   }

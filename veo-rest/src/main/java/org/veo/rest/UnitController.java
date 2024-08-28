@@ -42,7 +42,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,9 +57,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -72,7 +68,6 @@ import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
@@ -306,23 +301,12 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiResponseBody.class)))
-  public CompletableFuture<MappingJacksonValue> exportUnit(
+  public CompletableFuture<UnitDumpDto> exportUnit(
       @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         UnitDumpMapper.mapInput(id),
-        out -> {
-          Object o = UnitDumpMapper.mapOutput(out, entityToDtoTransformer);
-
-          MappingJacksonValue result = new MappingJacksonValue(o);
-          FilterProvider filter =
-              new SimpleFilterProvider()
-                  .addFilter(
-                      VeoConstants.JSON_FILTER_IDREF,
-                      VeoRestConstants.JSON_FILTER_EXCLUDE_SEARCHES_AND_RESOURCES);
-          result.setFilters(filter);
-          return result;
-        });
+        out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
   @PostMapping(value = "/import", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -38,19 +38,6 @@ public interface IIdRef extends Ref {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String getDisplayName();
 
-  /**
-   * Returns a URI of searches for the target type that can be used for discovery. It may be a URL.
-   */
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  String getSearchesUri();
-
-  /**
-   * Returns a URI of a collection of objects for the target type that may be used for discovery. It
-   * may be a URL.
-   */
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  String getResourcesUri();
-
   static <T extends Entity> IIdRef from(T entity, ReferenceAssembler urlAssembler) {
     if (entity instanceof Identifiable i) {
       return IdRef.from(i, urlAssembler);

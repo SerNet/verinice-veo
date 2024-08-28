@@ -104,7 +104,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the parameter object is returned"
         postResult.size() == 1
-        postResult[0].searchesUri == "http://localhost/processes/searches"
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
@@ -133,7 +132,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the parameter object is returned"
         postResult.size() == 1
-        postResult[0].searchesUri == "http://localhost/processes/searches"
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
@@ -581,7 +579,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions = getIncarnationDescriptions([itemPart], "MANUAL")
 
         then: "the parameter is set to the existing composite"
-        incarnationDescriptions.parameters.size() == 1;
+        incarnationDescriptions.parameters.size() == 1
         incarnationDescriptions.parameters.first().references.size() == 1
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRefs.targetUri.first()
     }
@@ -601,7 +599,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions = getIncarnationDescriptions([itemComposite], "MANUAL")
 
         then: "the parameter is set to the existing part"
-        incarnationDescriptions.parameters.size() == 1;
+        incarnationDescriptions.parameters.size() == 1
         incarnationDescriptions.parameters.first().references.size() == 1
         incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRef.targetUri.first()
     }
@@ -653,7 +651,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions = getIncarnationDescriptions([itemComposite], "DEFAULT", "ALWAYS")
 
         then: "nothing would be incarnated"
-        incarnationDescriptions.parameters.size() == 0;
+        incarnationDescriptions.parameters.size() == 0
     }
 
     def "apply item with scope"() {

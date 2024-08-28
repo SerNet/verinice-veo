@@ -82,16 +82,6 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
     return ref.getType();
   }
 
-  @Override
-  public String getSearchesUri() {
-    return urlAssembler.searchesReferenceOf(getType());
-  }
-
-  @Override
-  public String getResourcesUri() {
-    return urlAssembler.resourcesReferenceOf(getType());
-  }
-
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getDesignator() {
     if (entity instanceof Element designated) {

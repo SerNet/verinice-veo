@@ -100,8 +100,6 @@ public interface ReferenceAssembler {
    */
   String resourcesReferenceOf(Class<? extends Identifiable> type);
 
-  String resourcesReferenceOf(CompoundIdentifiable<?, ?> entity);
-
   TypedId<?> parseIdentifiableRef(String url);
 
   TypedId<? extends Element> parseElementRef(String url);

@@ -117,17 +117,6 @@ public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace exten
     return uri;
   }
 
-  @Override
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  public String getSearchesUri() {
-    return null;
-  }
-
-  @Override
-  public String getResourcesUri() {
-    return null;
-  }
-
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getName() {
     if (entity instanceof Nameable nameable) {
