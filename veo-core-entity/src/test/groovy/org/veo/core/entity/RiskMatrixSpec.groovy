@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.Validation
+
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator
 
 import org.veo.core.entity.riskdefinition.CategoryDefinition
@@ -29,8 +32,6 @@ import org.veo.core.entity.riskdefinition.RiskMethod
 import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.specification.TranslationValidator
 
-import jakarta.validation.ConstraintViolation
-import jakarta.validation.Validation
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -100,7 +101,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
-        ex.message == "Risk matrix is empty."
+        ex.message == "Risk matrix for category 1 is empty."
 
         when: "we add a risk matrix"
         def rmatrix = [
@@ -120,7 +121,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         ex = thrown()
-        ex.message == "Value matrix does not conform to impacts."
+        ex.message == "Value matrix for category 1 does not conform to impacts."
 
         when: "we create and set the impact level"
         def impacts = [
@@ -143,7 +144,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         ex = thrown()
-        ex.message == "Value matrix does not conform to impacts."
+        ex.message == "Value matrix for category 1 does not conform to impacts."
 
         when: "we change the risk matrix to the Category"
         cd.valueMatrix = [
@@ -166,7 +167,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         ex = thrown()
-        ex.message == "Value matrix does not conform to probability."
+        ex.message == "Value matrix for category 1 does not conform to probability."
 
         when: "we create a complete CategoryDefinition"
         CategoryDefinition cd1 = new CategoryDefinition("2",rmatrix,impacts)
@@ -434,7 +435,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         IllegalArgumentException iae = thrown()
-        iae.message == "Risk matrix is empty."
+        iae.message == "Risk matrix for category c is empty."
 
         when: "we add a risk matrix for cd"
         cd.valueMatrix = [
@@ -468,7 +469,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         iae = thrown()
-        iae.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_5)]"
+        iae.message == "Invalid risk values for category c: [RiskValue(symbolicRisk=symbolic_risk_5)]"
 
         when: "we fix the definition"
         cd.valueMatrix = [
@@ -495,7 +496,7 @@ class RiskMatrixSpec extends Specification {
 
         then: "illegal Argument exception is thrown"
         iae = thrown()
-        iae.message == "Value matrix does not conform to impacts."
+        iae.message == "Value matrix for category c does not conform to impacts."
 
         when: "we fix the definition"
         cd.valueMatrix = [

@@ -113,20 +113,24 @@ public class CategoryDefinition extends DimensionDefinition {
       @NotNull List<RiskValue> riskValues, @NotNull ProbabilityDefinition probability) {
     Set<RiskValue> containedValues =
         valueMatrix.stream().flatMap(Collection::stream).collect(Collectors.toSet());
-    if (containedValues.isEmpty()) throw new IllegalArgumentException("Risk matrix is empty.");
+    if (containedValues.isEmpty())
+      throw new IllegalArgumentException("Risk matrix for category " + getId() + " is empty.");
 
     containedValues.removeAll(riskValues);
     if (!containedValues.isEmpty()) {
-      throw new IllegalArgumentException("Invalid risk values: " + containedValues);
+      throw new IllegalArgumentException(
+          "Invalid risk values for category " + getId() + ": " + containedValues);
     }
     if (valueMatrix.size() != potentialImpacts.size()) {
-      throw new IllegalArgumentException("Value matrix does not conform to impacts.");
+      throw new IllegalArgumentException(
+          "Value matrix for category " + getId() + " does not conform to impacts.");
     }
     valueMatrix.stream()
         .forEach(
             l -> {
               if (l.size() != probability.getLevels().size()) {
-                throw new IllegalArgumentException("Value matrix does not conform to probability.");
+                throw new IllegalArgumentException(
+                    "Value matrix for category " + getId() + " does not conform to probability.");
               }
             });
   }

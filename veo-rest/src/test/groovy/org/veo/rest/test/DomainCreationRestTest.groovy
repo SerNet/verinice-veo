@@ -325,7 +325,7 @@ class DomainCreationRestTest extends DomainRestTest {
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
             definition.categories[0].valueMatrix = []
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Risk matrix is empty."
+                body.message == "Risk matrix for category C is empty."
             }
         }
 
@@ -336,7 +336,7 @@ class DomainCreationRestTest extends DomainRestTest {
                 symbolicRisk: "symbolic_risk_99",
             ]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_99)]"
+                body.message == "Invalid risk values for category C: [RiskValue(symbolicRisk=symbolic_risk_99)]"
             }
         }
 
@@ -347,7 +347,7 @@ class DomainCreationRestTest extends DomainRestTest {
                 symbolicRisk: "symbolic_risk_1",
             ]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_1)]"
+                body.message == "Invalid risk values for category C: [RiskValue(symbolicRisk=symbolic_risk_1)]"
             }
         }
 
@@ -355,7 +355,7 @@ class DomainCreationRestTest extends DomainRestTest {
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
             definition.categories.find { it.id == "C" }.valueMatrix.removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Value matrix does not conform to impacts."
+                body.message == "Value matrix for category C does not conform to impacts."
             }
         }
 
@@ -363,7 +363,7 @@ class DomainCreationRestTest extends DomainRestTest {
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
             definition.categories.find { it.id == "C" }.valueMatrix[1].removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Value matrix does not conform to probability."
+                body.message == "Value matrix for category C does not conform to probability."
             }
         }
 
