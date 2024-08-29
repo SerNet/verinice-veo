@@ -203,7 +203,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a request is made to the server"
-        def result = parseJson(get("/units/${unit.id.uuidValue()}"))
+        def result = parseJson(get("/units/${unit.idAsString}"))
 
         then: "the unit is returned"
         result.name == "Test unit"
@@ -224,7 +224,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the units are returned"
         result.size() == 1
-        result.first()._self == "http://localhost/units/${unit.id.uuidValue()}"
+        result.first()._self == "http://localhost/units/${unit.idAsString}"
         result.first().name == "Test unit foo"
     }
 
@@ -253,23 +253,23 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the unit is updated by changing the name and adding a domain"
         Map request = [
-            id          : unit.id.uuidValue(),
+            id          : unit.idAsString,
             name        : 'New unit-2',
             abbreviation: 'u-2',
             description : 'desc',
             domains     : [
                 [
-                    targetUri  : 'http://localhost/domains/' + client.domains.first().id.uuidValue(),
+                    targetUri  : 'http://localhost/domains/' + client.domains.first().idAsString,
                     displayName: 'test ddd'
                 ]
             ]
         ]
 
         Map headers = [
-            'If-Match': ETag.from(unit.id.uuidValue(), 0)
+            'If-Match': ETag.from(unit.idAsString, 0)
         ]
 
-        def result = parseJson(put("/units/${unit.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/units/${unit.idAsString}", request, headers))
 
         then: "the unit is updated"
         result.name == "New unit-2"
@@ -284,23 +284,23 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the unit is updated first by changing the name and adding a domain"
         Map request1 = [
-            id: unit.id.uuidValue(),
+            id: unit.idAsString,
             name: 'New unit-2',
             abbreviation: 'u-2',
             description: 'desc',
             domains: [
                 [
-                    targetUri: 'http://localhost/domains/'+client.domains.first().id.uuidValue(),
+                    targetUri: 'http://localhost/domains/'+client.domains.first().idAsString,
                     displayName: 'test ddd'
                 ]
             ]
         ]
 
         Map headers = [
-            'If-Match': ETag.from(unit.id.uuidValue(), 0)
+            'If-Match': ETag.from(unit.idAsString, 0)
         ]
 
-        def request1Result = parseJson(put("/units/${unit.id.uuidValue()}", request1, headers))
+        def request1Result = parseJson(put("/units/${unit.idAsString}", request1, headers))
 
         then: "the unit was correctly modified the first time"
         request1Result.name == "New unit-2"
@@ -309,17 +309,17 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the unit is updated secondly by changing the name and removing a domain"
         Map request2 = [
-            id: unit.id.uuidValue(),
+            id: unit.idAsString,
             name: 'New unit-3',
             abbreviation: 'u-3',
             description: 'desc',
             domains: []]
 
         headers = [
-            'If-Match': ETag.from(unit.id.uuidValue(), 1)
+            'If-Match': ETag.from(unit.idAsString, 1)
         ]
 
-        def request2Result = parseJson(put("/units/${unit.id.uuidValue()}", request2, headers))
+        def request2Result = parseJson(put("/units/${unit.idAsString}", request2, headers))
 
         then: "the unit was correctly modified the second time"
         request2Result.name == "New unit-3"
@@ -441,7 +441,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         loadedUnit.present
 
         when: "the unit is deleted"
-        delete("/units/${unit.id.uuidValue()}")
+        delete("/units/${unit.idAsString}")
 
         and: "the unit is loaded again"
         loadedUnit = txTemplate.execute {
@@ -474,7 +474,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
         def createProcessResponse = post('/processes', createProcessRequest)
@@ -486,11 +486,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (domain.id.uuidValue()): [
+                (domain.idAsString): [
                     subType: "PRO_DataProcessing",
                     status: "NEW",
                 ]
@@ -528,7 +528,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         loadedUnit.present
 
         when: "the unit is deleted"
-        delete("/units/${unit.id.uuidValue()}")
+        delete("/units/${unit.idAsString}")
 
         and: "the unit is loaded again"
         loadedUnit = txTemplate.execute {
@@ -569,10 +569,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update unit 1 using the ID of unit 2"
         Map headers = [
-            'If-Match': getETag(get("/units/${unit1.id.uuidValue()}"))
+            'If-Match': getETag(get("/units/${unit1.idAsString}"))
         ]
-        put("/units/${unit2.id.uuidValue()}", [
-            id: unit1.id.uuidValue(),
+        put("/units/${unit2.idAsString}", [
+            id: unit1.idAsString,
             name: "new name 1"
         ], headers, 400)
 
@@ -656,7 +656,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when:
-        def result = parseJson(get("/units/${unit.id.uuidValue()}/export"))
+        def result = parseJson(get("/units/${unit.idAsString}/export"))
 
         then:
         with(result.unit) {
@@ -684,7 +684,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def otherClientsUnit = urepository.save(newUnit(otherClient))
 
         when:
-        get("/units/${otherClientsUnit.id.uuidValue()}/export", 404)
+        get("/units/${otherClientsUnit.idAsString}/export", 404)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)

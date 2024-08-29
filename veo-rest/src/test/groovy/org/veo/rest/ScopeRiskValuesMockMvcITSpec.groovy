@@ -242,7 +242,7 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         when: "the process is requested with embedded risks"
         def response = parseJson(
-                get("/scopes/${scope.id.uuidValue()}?embedRisks=true"))
+                get("/scopes/${scope.idAsString}?embedRisks=true"))
 
         then: "the risk values are embedded in the response"
         response.name == "scope null"
@@ -479,7 +479,7 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def searchUrl = parseJson(post("/scopes/searches", [
             unitId: [
                 values: [
-                    unit.id.uuidValue()
+                    unit.idAsString
                 ]
             ]
         ])).searchUrl

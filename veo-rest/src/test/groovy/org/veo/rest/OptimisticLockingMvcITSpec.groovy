@@ -61,7 +61,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
         def postResult = post('/assets', request)
@@ -79,7 +79,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server Berlin',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ], headers)
 
@@ -91,7 +91,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server Hamburg',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ], headers, 412)
 

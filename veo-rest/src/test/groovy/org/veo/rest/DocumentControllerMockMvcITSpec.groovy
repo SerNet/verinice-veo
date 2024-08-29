@@ -91,7 +91,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Document',
             owner: [
                 displayName: 'documentDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -133,16 +133,16 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/documents/${document.id.uuidValue()}")
+        def results = get("/documents/${document.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/documents/${document.id.uuidValue()}"
+        result._self == "http://localhost/documents/${document.idAsString}"
         result.name == 'Test document-1'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -159,7 +159,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "all documents in the unit are requested"
-        def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/documents?unit=${unit.idAsString}"))
 
         then:
         result.items*.name.sort() == [
@@ -181,7 +181,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/documents?unit=${unit.idAsString}"))
 
         then: "the documents are returned"
         result.items*.name as Set == [
@@ -205,10 +205,10 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [
+                (domain.idAsString): [
                     subType: "Manual",
                     status: "NEW",
                 ]
@@ -217,19 +217,19 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(document.id.uuidValue(), document.version)
+            'If-Match': ETag.from(document.idAsString, document.version)
         ]
-        def result = parseJson(put("/documents/${document.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/documents/${document.idAsString}", request, headers))
 
         then: "the document is found"
         result.name == 'New document-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [
+        result.domains[domain.idAsString] == [
             subType: "Manual",
             status: "NEW",
             decisionResults: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -240,7 +240,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/documents/${document.id.uuidValue()}")
+        delete("/documents/${document.idAsString}")
 
         then: "the document is deleted"
         documentRepository.findById(document.id).empty
@@ -262,12 +262,12 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update document 1 using the ID of document 2"
         Map headers = [
-            'If-Match': ETag.from(document1.id.uuidValue(), 1)
+            'If-Match': ETag.from(document1.idAsString, 1)
         ]
-        put("/documents/${document2.id.uuidValue()}", [
-            id: document1.id.uuidValue(),
+        put("/documents/${document2.idAsString}", [
+            id: document1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -279,7 +279,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new document"
         def id = parseJson(post("/documents", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/documents/$id")
 
@@ -295,7 +295,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         post("/documents", [
             description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ], 400)
 
         then:
@@ -317,7 +317,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/documents/${document.id.uuidValue()}")
+        delete("/documents/${document.idAsString}")
 
         then: "the document is deleted"
         documentRepository.findById(document.id).empty

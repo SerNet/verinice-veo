@@ -45,8 +45,8 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             def domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-            domainId = domain.id.uuidValue()
-            unitId = unitRepository.save(newUnit(client)).id.uuidValue()
+            domainId = domain.idAsString
+            unitId = unitRepository.save(newUnit(client)).idAsString
         }
     }
 

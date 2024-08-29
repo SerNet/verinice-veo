@@ -44,7 +44,7 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
-            unitId = unitRepository.save(newUnit(client)).id.uuidValue()
+            unitId = unitRepository.save(newUnit(client)).idAsString
         }
     }
 

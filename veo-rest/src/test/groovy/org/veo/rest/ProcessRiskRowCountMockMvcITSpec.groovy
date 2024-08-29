@@ -139,7 +139,7 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
         def searchUrl = parseJson(post("/processes/searches", [
             unitId: [
                 values: [
-                    unit.id.uuidValue()
+                    unit.idAsString
                 ]
             ]
         ])).searchUrl

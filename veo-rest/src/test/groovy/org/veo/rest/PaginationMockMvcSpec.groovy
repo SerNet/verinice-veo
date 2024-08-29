@@ -53,7 +53,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
                 name: "a good entity",
                 abbreviation: "$i",
                 owner: [
-                    targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                    targetUri: "http://localhost/units/${unit.idAsString}"
                 ]
             ])
         }

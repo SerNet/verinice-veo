@@ -89,7 +89,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Incident',
             owner: [
                 displayName: 'incidentDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -114,16 +114,16 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/incidents/${incident.id.uuidValue()}")
+        def results = get("/incidents/${incident.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/incidents/${incident.id.uuidValue()}"
+        result._self == "http://localhost/incidents/${incident.idAsString}"
         result.name == 'Test incident-1'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -140,7 +140,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "requesting all incidents in the unit"
-        def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/incidents?unit=${unit.idAsString}"))
 
         then: "the incidents are returned"
         result.items*.name.sort() == [
@@ -162,7 +162,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "requesting all incidents in the unit"
-        def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/incidents?unit=${unit.idAsString}"))
 
         then: "the incidents are returned"
         result.items*.name as Set == [
@@ -186,11 +186,11 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (domain.id.uuidValue()): [
+                (domain.idAsString): [
                     subType: "NormalIncident",
                     status: "NEW",
                 ]
@@ -199,19 +199,19 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(incident.id.uuidValue(), incident.version)
+            'If-Match': ETag.from(incident.idAsString, incident.version)
         ]
-        def result = parseJson(put("/incidents/${incident.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/incidents/${incident.idAsString}", request, headers))
 
         then: "the incident is found"
         result.name == 'New incident-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [
+        result.domains[domain.idAsString] == [
             subType: "NormalIncident",
             status: "NEW",
             decisionResults: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -222,7 +222,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/incidents/${incident.id.uuidValue()}")
+        delete("/incidents/${incident.idAsString}")
 
         then: "the incident is deleted"
         incidentRepository.findById(incident.id).empty
@@ -244,12 +244,12 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update incident 1 using the ID of incident 2"
         Map headers = [
-            'If-Match': ETag.from(incident1.id.uuidValue(), 1)
+            'If-Match': ETag.from(incident1.idAsString, 1)
         ]
-        put("/incidents/${incident2.id.uuidValue()}", [
-            id: incident1.id.uuidValue(),
+        put("/incidents/${incident2.idAsString}", [
+            id: incident1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -261,7 +261,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new incident"
         def id = parseJson(post("/incidents", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/incidents/$id")
 
@@ -282,10 +282,10 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'Composite incident',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ],
             parts: [
-                [targetUri : "http://localhost/incidents/${incident.id.uuidValue()}"]
+                [targetUri : "http://localhost/incidents/${incident.idAsString}"]
             ]
         ]
 
@@ -313,7 +313,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is asked to delete b"
-        delete("/incidents/${b.id.uuidValue()}")
+        delete("/incidents/${b.idAsString}")
 
         then: "b is deleted"
         incidentRepository.findById(b.id).empty

@@ -93,7 +93,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Scope',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ]
         ]
 
@@ -120,10 +120,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ],
             members: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+                [targetUri : "http://localhost/assets/${asset.idAsString}"]
             ]
         ]
 
@@ -172,12 +172,12 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the scope"
-        def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
+        def result = parseJson(get("/scopes/${scope.idAsString}"))
 
         then: "the scope is found"
-        result._self == "http://localhost/scopes/${scope.id.uuidValue()}"
+        result._self == "http://localhost/scopes/${scope.idAsString}"
         result.name == 'Test scope'
-        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.idAsString}"
 
         and: "is has the correct members"
         result.members.size() == 1
@@ -206,32 +206,32 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the scope"
-        def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
+        def result = parseJson(get("/scopes/${scope.idAsString}"))
 
         then: "the scope is found"
         result.name == 'Test scope'
         result.members.empty
 
         when: "the server is queried for the scope's members"
-        def membersResult = parseJson(get("/scopes/${scope.id.uuidValue()}/members"))
+        def membersResult = parseJson(get("/scopes/${scope.idAsString}/members"))
 
         then:
         membersResult.empty
 
         when: "Updating the scope's members"
         result.members = [
-            [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"],
-            [targetUri : "http://localhost/scenarios/${scenario.id.uuidValue()}"]
+            [targetUri : "http://localhost/assets/${asset.idAsString}"],
+            [targetUri : "http://localhost/scenarios/${scenario.idAsString}"]
         ]
-        put("/scopes/${scope.id.uuidValue()}", result, [
-            "If-Match": getETag(get("/scopes/${scope.id.uuidValue()}"))
+        put("/scopes/${scope.idAsString}", result, [
+            "If-Match": getETag(get("/scopes/${scope.idAsString}"))
         ])
 
         then:
         txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
 
         when: "querying the members again"
-        def members = parseJson(get("/scopes/${scope.id.uuidValue()}/members"))
+        def members = parseJson(get("/scopes/${scope.idAsString}/members"))
 
         then:
         with(members.sort{it.name}) {
@@ -284,13 +284,13 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 }
 
         when: "a request is made to the server for all scopes of a unit"
-        def result = parseJson(get("/scopes?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/scopes?unit=${unit.idAsString}"))
 
         then: "the respective scope is returned"
         result.items*.name == ['Test scope 1']
 
         when: "a request is made to the server for all scopes of another unit"
-        result = parseJson(get("/scopes?unit=${unit2.id.uuidValue()}"))
+        result = parseJson(get("/scopes?unit=${unit2.idAsString}"))
 
         then: "the respective scope is returned"
         result.items*.name == ['Test scope 2']
@@ -312,10 +312,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}",
+                targetUri: "http://localhost/units/${unit.idAsString}",
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "SCP_Scope",
                     status: "NEW",
                 ]
@@ -334,20 +334,20 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the new scope data is sent to the server"
         Map headers = [
-            'If-Match': ETag.from(scope.id.uuidValue(), scope.version)
+            'If-Match': ETag.from(scope.idAsString, scope.version)
         ]
-        def result = parseJson(put("/scopes/${scope.id.uuidValue()}",request, headers))
+        def result = parseJson(put("/scopes/${scope.idAsString}",request, headers))
 
         then: "the scope is found"
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "SCP_Scope",
             status: "NEW",
             decisionResults: [:],
             riskValues:[:]
         ]
-        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.idAsString}"
 
         when:
         def entity = txTemplate.execute {
@@ -379,12 +379,12 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update scope 1 using the ID of scope 2"
         Map headers = [
-            'If-Match': ETag.from(scope2.id.uuidValue(), 1)
+            'If-Match': ETag.from(scope2.idAsString, 1)
         ]
-        put("/scopes/${scope2.id.uuidValue()}", [
-            id: scope1.id.uuidValue(),
+        put("/scopes/${scope2.idAsString}", [
+            id: scope1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -396,7 +396,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new scope"
         def id = parseJson(post("/scopes", [
             name: 'My Scope',
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/scopes/$id")
 
@@ -420,10 +420,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ],
             members: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+                [targetUri : "http://localhost/assets/${asset.idAsString}"]
             ]
         ]
 
@@ -458,10 +458,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the asset is deleted"
-        delete("/assets/${asset.id.uuidValue()}")
+        delete("/assets/${asset.idAsString}")
 
         and: "the server is queried for the scope"
-        def members = parseJson(get("/scopes/${scope.id.uuidValue()}")).members
+        def members = parseJson(get("/scopes/${scope.idAsString}")).members
 
         then: "the scope is found"
         members.size() == 1
@@ -483,7 +483,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is asked to delete b"
-        delete("/scopes/${b.id.uuidValue()}")
+        delete("/scopes/${b.idAsString}")
 
         then: "b is deleted"
         scopeRepository.findById(b.id).empty

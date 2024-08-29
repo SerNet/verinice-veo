@@ -75,7 +75,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -97,7 +97,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ],
             domains: [
                 (dsgvoDomain.idAsString): [
@@ -149,16 +149,16 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/controls/${control.id.uuidValue()}")
+        def results = get("/controls/${control.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/controls/${control.id.uuidValue()}"
+        result._self == "http://localhost/controls/${control.idAsString}"
         result.name == 'Test control-1'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -181,11 +181,11 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the composite control"
-        def result = parseJson(get("/controls/${compositeControl.id.uuidValue()}"))
+        def result = parseJson(get("/controls/${compositeControl.idAsString}"))
 
         then: "the composite control is found"
         result.name == 'Test composite control'
-        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.idAsString}"
         result.parts.size() == 2
         result.parts*.displayName as Set == [
             'CTL-1 c1',
@@ -207,7 +207,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/controls?unit=${unit.idAsString}"))
 
         then: "the controls are returned"
         result.items*.name.sort() == [
@@ -229,7 +229,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/controls?unit=${unit.idAsString}"))
 
         then: "the controls are returned"
         result.items*.name as Set == [
@@ -253,11 +253,11 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "CTL_TOM",
                     status: "NEW",
                 ]
@@ -266,20 +266,20 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(control.id.uuidValue(), control.version)
+            'If-Match': ETag.from(control.idAsString, control.version)
         ]
-        def result = parseJson(put("/controls/${control.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/controls/${control.idAsString}", request, headers))
 
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "CTL_TOM",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -298,10 +298,10 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "CTL_TOM",
                     status: "NEW",
                 ]
@@ -321,20 +321,20 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(control.id.uuidValue(), control.version)
+            'If-Match': ETag.from(control.idAsString, control.version)
         ]
-        def result = parseJson(put("/controls/${control.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/controls/${control.idAsString}", request, headers))
 
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             decisionResults: [:],
             subType: "CTL_TOM",
             status: "NEW",
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -345,7 +345,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/controls/${control.id.uuidValue()}")
+        delete("/controls/${control.idAsString}")
 
         then: "the control is deleted"
         controlRepository.findById(control.id).empty
@@ -367,12 +367,12 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update control 1 using the ID of control 2"
         Map headers = [
-            'If-Match': ETag.from(control1.id.uuidValue(), 1)
+            'If-Match': ETag.from(control1.idAsString, 1)
         ]
-        put("/controls/${control2.id.uuidValue()}", [
-            id: control1.id.uuidValue(),
+        put("/controls/${control2.idAsString}", [
+            id: control1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -384,7 +384,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new control"
         def id = parseJson(post("/controls", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/controls/$id")
 

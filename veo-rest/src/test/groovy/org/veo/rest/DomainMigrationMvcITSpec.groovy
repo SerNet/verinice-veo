@@ -107,10 +107,10 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                 subTypes.NormalScenario = newSubTypeDefinition()
             })
         }
-        domainId = domain.id.uuidValue()
+        domainId = domain.idAsString
         clientRepo.save(client)
 
-        unitId = unitRepo.save(newUnit(client)).id.uuidValue()
+        unitId = unitRepo.save(newUnit(client)).idAsString
     }
 
     @WithUserDetails("content-creator")

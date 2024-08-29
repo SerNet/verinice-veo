@@ -134,10 +134,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to move the asset to the user's unit"
         Map headers = [
-            'If-Match': ETag.from(otherClientsUnit.id.uuidValue(), 0)
+            'If-Match': ETag.from(otherClientsUnit.idAsString, 0)
         ]
-        put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.id.uuidValue() , [
-            id: '' + otherClientsUnit.id.uuidValue(),
+        put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString , [
+            id: '' + otherClientsUnit.idAsString,
             name: 'hijacked-unit',
             parent: [displayName: 'Test unit',
                 targetUri: 'http://localhost//units/' + unit.dbId]
@@ -356,7 +356,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         post('/processes', [
             name : 'My process',
             owner: [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.idAsString
             ],
             domains: [
                 (domainId): [

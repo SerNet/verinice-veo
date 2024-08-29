@@ -102,7 +102,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -124,7 +124,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ],
             createdAt: 'Hello World'
         ]
@@ -148,10 +148,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ],
             parts: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+                [targetUri : "http://localhost/assets/${asset.idAsString}"]
             ]
         ]
 
@@ -192,7 +192,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a GET request is made to the server"
-        def results = get("/assets/${asset.id.uuidValue()}")
+        def results = get("/assets/${asset.idAsString}")
 
         then: "the eTag is set"
         String eTag = getETag(results)
@@ -204,7 +204,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "the response contains the expected data"
         with(parseJson(results)) {
-            _self == "http://localhost/assets/${asset.id.uuidValue()}"
+            _self == "http://localhost/assets/${asset.idAsString}"
             customAspects.asset_details.attributes.asset_details_number == 42
             customAspects.asset_details.domains[0].targetUri == "http://localhost/domains/$owner.dsgvoDomain.idAsString"
             designator == asset.designator
@@ -225,7 +225,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the asset is requested from the server again"
         results =
-                mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.id.uuidValue()}").accept(MediaType.APPLICATION_JSON).header(
+                mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.idAsString}").accept(MediaType.APPLICATION_JSON).header(
                 HttpHeaders.IF_NONE_MATCH, eTag
                 ))
 
@@ -239,7 +239,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map search = [
             unitId: [
                 values: [
-                    unit.id.uuidValue()
+                    unit.idAsString
                 ]
             ],
         ]
@@ -256,7 +256,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def searchResult = parseJson(get(new URI(postSearchResponse.searchUrl)))
 
         then: "the response contains the expected data"
-        searchResult.items*.id == [asset.id.uuidValue()]
+        searchResult.items*.id == [asset.idAsString]
     }
 
     @WithUserDetails("user@domain.example")
@@ -276,7 +276,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/assets/${sourceAsset.id.uuidValue()}")
+        def results = get("/assets/${sourceAsset.idAsString}")
 
         then: "the asset is found"
         getETag(results) != null
@@ -292,7 +292,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             designator ==~ /AST-\d+/
             name == "asset null"
             type == "asset"
-            targetUri == "http://localhost/assets/${targetAsset.id.uuidValue()}"
+            targetUri == "http://localhost/assets/${targetAsset.idAsString}"
         }
 
         when: "all assets are queried"
@@ -326,9 +326,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def sortedItems = result.items.sort { it.name }
         sortedItems.size() == 2
         sortedItems[0].name == 'Test asset-1'
-        sortedItems[0].owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
+        sortedItems[0].owner.targetUri == "http://localhost/units/" + unit.idAsString
         sortedItems[1].name == 'Test asset-2'
-        sortedItems[1].owner.targetUri == "http://localhost/units/" + unit2.id.uuidValue()
+        sortedItems[1].owner.targetUri == "http://localhost/units/" + unit2.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -347,13 +347,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "all assets in the first unit is queried"
-        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/assets?unit=${unit.idAsString}"))
 
         then: "asset 1 is returned"
         result.items*.name == ['Test asset-1']
 
         when: "a request is made to the server"
-        result = parseJson(get("/assets?unit=${unit2.id.uuidValue()}"))
+        result = parseJson(get("/assets?unit=${unit2.idAsString}"))
 
         then: "the asset of unit 2 is returned"
         result.items*.name == ['Test asset-2']
@@ -377,7 +377,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "all assets for the root unit are queried"
-        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/assets?unit=${unit.idAsString}"))
 
         then: "both assets from the unit's hierarchy are returned"
         result.items*.name.sort() == ['asset 0', 'asset 1']
@@ -401,7 +401,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "all assets for the root unit matching the filter"
-        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=sset 1"))
+        def result = parseJson(get("/assets?unit=${unit.idAsString}&displayName=sset 1"))
 
         then: "only the matching asset from the unit's hierarchy is returned"
         result.items*.name == ["asset 1"]
@@ -425,7 +425,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "all assets for the root unit matching the filter"
-        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=ballverein Äächen 1"))
+        def result = parseJson(get("/assets?unit=${unit.idAsString}&displayName=ballverein Äächen 1"))
 
         then: "only the matching asset from the unit's hierarchy is returned"
         result.items*.name == ["Fußballverein Äächen 1"]
@@ -447,11 +447,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "AST_Datatype",
                     status: "NEW",
                     riskValues: [:]
@@ -461,21 +461,21 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(asset.id.uuidValue(), 0)
+            'If-Match': ETag.from(asset.idAsString, 0)
         ]
-        def resultActions = put("/assets/${asset.id.uuidValue()}", request, headers)
+        def resultActions = put("/assets/${asset.idAsString}", request, headers)
         def result = parseJson(resultActions)
 
         then: "the asset is found"
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "AST_Datatype",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
         getETag(resultActions) == ETag.from(asset.idAsString, 1)
     }
 
@@ -496,11 +496,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "AST_Application",
                     status: "NEW",
                 ]
@@ -520,20 +520,20 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
+            'If-Match': ETag.from(asset.idAsString, asset.version)
         ]
-        def result = parseJson(put("/assets/${asset.id.uuidValue()}",request, headers))
+        def result = parseJson(put("/assets/${asset.idAsString}",request, headers))
 
         then: "the asset is found"
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "AST_Application",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         when:
         def entity = txTemplate.execute {
@@ -564,7 +564,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/assets/${asset.id.uuidValue()}")
+        delete("/assets/${asset.idAsString}")
 
         then: "the asset is deleted"
         assetRepository.findById(asset.id).empty
@@ -588,7 +588,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"
-        delete("/assets/${targetAsset.id.uuidValue()}")
+        delete("/assets/${targetAsset.idAsString}")
 
         then: "the asset is deleted"
         assetRepository.findById(targetAsset.id).empty
@@ -606,7 +606,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/assets/${composite.id.uuidValue()}")
+        delete("/assets/${composite.idAsString}")
 
         then: "the composite is deleted"
         assetRepository.findById(composite.id).empty
@@ -631,12 +631,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update asset 1 using the ID of asset 2"
         Map headers = [
-            'If-Match': ETag.from(asset1.id.uuidValue(), 1)
+            'If-Match': ETag.from(asset1.idAsString, 1)
         ]
-        put("/assets/${asset2.id.uuidValue()}", [
-            id: asset1.id.uuidValue(),
+        put("/assets/${asset2.idAsString}", [
+            id: asset1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -648,7 +648,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new asset"
         def id = parseJson(post("/assets", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/assets/$id")
 
@@ -669,10 +669,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'Composite asset',
             owner: [
-                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ],
             parts: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+                [targetUri : "http://localhost/assets/${asset.idAsString}"]
             ]
         ]
 
@@ -702,8 +702,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a new risk can be created successfully"
         def domainId = dsgvoDomain.getIdAsString()
-        def json = parseJson(post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.id.uuidValue() ],
+        def json = parseJson(post("/assets/"+asset.idAsString+"/risks", [
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.idAsString ],
             domains: [
                 (domainId) : [
                     reference: [ targetUri: 'http://localhost/domains/'+ domainId]
@@ -728,17 +728,17 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risk is requested"
         def getResult = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString))
 
         then: "the correct object is returned"
         getResult != null
         with(getResult) {
-            it.asset.targetUri ==~ /.*${asset.id.uuidValue()}.*/
-            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.asset.targetUri ==~ /.*${asset.idAsString}.*/
+            it.scenario.targetUri ==~ /.*${scenario.idAsString}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
             it.domains.values().first().reference.displayName == this.dsgvoDomain
                     .displayName
-            it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*assets\/${asset.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
             it.createdBy == "user@domain.example"
@@ -760,29 +760,29 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
-        post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario2.id.uuidValue() ],
+        post("/assets/"+asset.idAsString+"/risks", [
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario2.idAsString ],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
                     reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                        .id.uuidValue() ]
+                        .idAsString ]
                 ]
 
             ]
         ] as Map)
-        post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario3.id.uuidValue() ],
+        post("/assets/"+asset.idAsString+"/risks", [
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario3.idAsString ],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
                     reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                        .id.uuidValue() ]
+                        .idAsString ]
                 ]
             ]
         ] as Map)
 
         when: "The risks are queried"
         def getResult = parseJson(
-                get("/assets/${asset.id.uuidValue()}/risks"))
+                get("/assets/${asset.idAsString}/risks"))
 
         then: "The risks are retreived"
         getResult.size() == 3
@@ -794,7 +794,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def (Asset asset, ScenarioData scenario, Object postResult) = createRisk()
 
         when: "the risk is deleted"
-        delete("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}")
+        delete("/assets/${asset.idAsString}/risks/${scenario.idAsString}")
 
         then: "the risk has been removed"
         assetRepository.findByRisk(scenario).isEmpty()
@@ -825,37 +825,37 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "the created risk is retrieved"
-        def getResponse = get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
+        def getResponse = get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString)
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
 
         when: "The risk is updated"
         def beforeUpdate = Instant.now()
         def putBody = getResult + [
-            mitigation: [targetUri: 'http://localhost/controls/' + control.id.uuidValue()],
-            riskOwner: [targetUri: 'http://localhost/persons/' + person.id.uuidValue()]
+            mitigation: [targetUri: 'http://localhost/controls/' + control.idAsString],
+            riskOwner: [targetUri: 'http://localhost/persons/' + person.idAsString]
         ]
         Map headers = [
             'If-Match': eTag
         ]
 
-        put("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}", putBody as Map, headers)
+        put("/assets/${asset.idAsString}/risks/${scenario.idAsString}", putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString))
 
         then: "the information was persisted"
         eTag.length() > 0
         riskJson != null
         with(riskJson) {
-            it.mitigation.targetUri ==~ /.*${control.id.uuidValue()}.*/
-            it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
-            it.asset.targetUri ==~ /.*${asset.id.uuidValue()}.*/
-            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.mitigation.targetUri ==~ /.*${control.idAsString}.*/
+            it.riskOwner.targetUri ==~ /.*${person.idAsString}.*/
+            it.asset.targetUri ==~ /.*${asset.idAsString}.*/
+            it.scenario.targetUri ==~ /.*${scenario.idAsString}.*/
             it.domains.values().first().reference.displayName == this.dsgvoDomain
                     .displayName
-            it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*assets\/${asset.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
@@ -865,15 +865,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the person and control are removed"
         beforeUpdate = Instant.now()
-        delete("/persons/${person.id.uuidValue()}")
-        delete("/controls/${control.id.uuidValue()}")
+        delete("/persons/${person.idAsString}")
+        delete("/controls/${control.idAsString}")
         riskJson = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString))
 
         then: "their references are removed from the risk"
         riskJson != null
         with(riskJson) {
-            it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*assets\/${asset.idAsString}\/risks\/${scenario.idAsString}.*/
             it.mitigation == null
             it.riskOwner == null
             Instant.parse(it.createdAt) > beforeCreation
@@ -884,10 +884,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the scenario is removed"
-        delete("/scenarios/${scenario.id.uuidValue()}")
+        delete("/scenarios/${scenario.idAsString}")
 
         and: "the risk is requested"
-        get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(), 404)
+        get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString, 404)
 
         then: "the risk was removed as well"
         thrown(NotFoundException)
@@ -905,12 +905,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         def postResult = parseJson(
-                post("/assets/" + asset.id.uuidValue() + "/risks", [
-                    scenario: [targetUri: 'http://localhost/scenarios/' + scenario.id.uuidValue()],
+                post("/assets/" + asset.idAsString + "/risks", [
+                    scenario: [targetUri: 'http://localhost/scenarios/' + scenario.idAsString],
                     domains : [
                         (dsgvoDomain.getIdAsString()): [
                             reference: [targetUri: 'http://localhost/domains/' + dsgvoDomain
-                                .id.uuidValue()]
+                                .idAsString]
                         ]
                     ]
                 ]))

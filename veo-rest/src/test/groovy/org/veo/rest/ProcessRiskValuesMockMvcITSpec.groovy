@@ -239,7 +239,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         when: "the process is requested with embedded risks"
         def response = parseJson(
-                get("/processes/${process.id.uuidValue()}?embedRisks=true"))
+                get("/processes/${process.idAsString}?embedRisks=true"))
 
         then: "the risk values are embedded in the response"
         response.name == "process null"
@@ -476,7 +476,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def searchUrl = parseJson(post("/processes/searches", [
             unitId: [
                 values: [
-                    unit.id.uuidValue()
+                    unit.idAsString
                 ]
             ]
         ])).searchUrl

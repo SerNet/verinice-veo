@@ -77,7 +77,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Person',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -102,16 +102,16 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/persons/${person.id.uuidValue()}")
+        def results = get("/persons/${person.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/persons/${person.id.uuidValue()}"
+        result._self == "http://localhost/persons/${person.idAsString}"
         result.name == 'Test person-1'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -129,7 +129,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def result = parseJson(get("/persons?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/persons?unit=${unit.idAsString}"))
 
         then: "the persons are returned"
         result.items*.name.sort() == [
@@ -151,11 +151,11 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PER_Person",
                     status: "NEW",
                 ]
@@ -164,19 +164,19 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(person.id.uuidValue(), 0)
+            'If-Match': ETag.from(person.idAsString, 0)
         ]
-        def result = parseJson(put("/persons/${person.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/persons/${person.idAsString}", request, headers))
 
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PER_Person",
             status: "NEW",
             decisionResults: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -196,10 +196,10 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PER_Person",
                     status: "NEW",
                 ]
@@ -218,19 +218,19 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(person.id.uuidValue(), person.version)
+            'If-Match': ETag.from(person.idAsString, person.version)
         ]
-        def result = parseJson(put("/persons/${person.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/persons/${person.idAsString}", request, headers))
 
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PER_Person",
             status: "NEW",
             decisionResults: [:]
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         when:
         def entity = txTemplate.execute {
@@ -260,7 +260,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/persons/${person.id.uuidValue()}")
+        delete("/persons/${person.idAsString}")
 
         then: "the person is deleted"
         !personRepository.exists(person.id)
@@ -282,12 +282,12 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update person 1 using the ID of person 2"
         Map headers = [
-            'If-Match': ETag.from(person1.id.uuidValue(), 1)
+            'If-Match': ETag.from(person1.idAsString, 1)
         ]
-        put("/persons/${person2.id.uuidValue()}", [
-            id: person1.id.uuidValue(),
+        put("/persons/${person2.idAsString}", [
+            id: person1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -299,7 +299,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new person"
         def id = parseJson(post("/persons", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/persons/$id")
 

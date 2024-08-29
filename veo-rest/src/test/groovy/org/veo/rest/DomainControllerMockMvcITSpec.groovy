@@ -143,14 +143,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         given: "a saved domain"
 
         when: "a request is made to the server"
-        def results = get("/domains/${testDomain.id.uuidValue()}")
+        def results = get("/domains/${testDomain.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
+        result._self == "http://localhost/domains/${testDomain.idAsString}"
         result.name == testDomain.name
         result.elementTypeDefinitions.size() == 8
         result.elementTypeDefinitions.keySet() =~ [
@@ -182,7 +182,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         given: "a saved domain"
 
         when: "trying to retrieve the other client's domain"
-        get("/domains/${domainSecondClient.id.uuidValue()}", 404)
+        get("/domains/${domainSecondClient.idAsString}", 404)
 
         then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
@@ -203,7 +203,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         given: "a saved domain"
 
         when: "a request is made to the server"
-        def results = get("/domains/${completeDomain.id.uuidValue()}/export")
+        def results = get("/domains/${completeDomain.idAsString}/export")
         def result = parseJson(results)
 
         then: "the domain is exported"
@@ -216,7 +216,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "get all Profiles and items"() {
         when: "get the profiles"
-        def result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles"))
+        def result = parseJson(get("/domains/${completeDomain.idAsString}/profiles"))
         def orderedProfiles = result.sort{ it.name }
 
         then:
@@ -233,7 +233,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "get the profile items"
-        result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles/${orderedProfiles[0].id}/items"))
+        result = parseJson(get("/domains/${completeDomain.idAsString}/profiles/${orderedProfiles[0].id}/items"))
 
         then:
         result.size() == 1
@@ -244,7 +244,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "get a single profile item"
-        result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles/${orderedProfiles[0].id}/items/${result[0].id}"))
+        result = parseJson(get("/domains/${completeDomain.idAsString}/profiles/${orderedProfiles[0].id}/items/${result[0].id}"))
 
         then:
         with(result) {

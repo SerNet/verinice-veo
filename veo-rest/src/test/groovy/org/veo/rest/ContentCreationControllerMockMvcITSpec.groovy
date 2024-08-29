@@ -225,7 +225,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "a request is made to the server"
-        def result = post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 204)
+        def result = post("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/scope/object-schema", schemaJson, 204)
 
         then: "the domains are returned"
         result.andReturn().response.getContentAsString(StandardCharsets.UTF_8) == ''
@@ -272,7 +272,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def schemaJson = [:]
 
         when:
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 400)
+        post("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/scope/object-schema", schemaJson, 400)
 
         then:
         thrown(IllegalArgumentException)
@@ -322,7 +322,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ]
 
         when: "updating the scope definition"
-        put("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
+        put("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/scope", schemaJson, 204)
 
         and: 'reloading the updated domain from the database'
         def updatedDomain = txTemplate.execute {
@@ -392,7 +392,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "a request is made to the server"
-        def status = postUnauthorized("/content-creation/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/object-schema", schemaJson)
+        def status = postUnauthorized("/content-creation/domains/${testDomain.idAsString}/elementtypedefinitions/scope/object-schema", schemaJson)
 
         then: "it is forbidden"
         status.andReturn().response.status == 403
@@ -401,7 +401,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "cannot update element type definition as regular user"() {
         when:
-        def response = putUnauthorized("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", [:])
+        def response = putUnauthorized("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/scope", [:])
 
         then:
         response.andReturn().response.status == 403
@@ -415,7 +415,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "a template is created"
-        def result = parseJson(post("/content-creation/domains/${testDomain.id.uuidValue()}/template",[version : "1.0.0"]))
+        def result = parseJson(post("/content-creation/domains/${testDomain.idAsString}/template",[version : "1.0.0"]))
 
         then: "a result is returned"
         result != null
@@ -432,31 +432,31 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         dt.templateVersion == "1.0.0"
 
         when: "trying to create another domain template with the same version"
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.0"], 409)
+        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.0"], 409)
 
         then:
         thrown(EntityAlreadyExistsException)
 
         when: "trying to create another domain template with a lower version"
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "0.5.3"], 422)
+        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "0.5.3"], 422)
 
         then:
         thrown(UnprocessableDataException)
 
         when: "trying to create another domain template with an invalid version"
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.1"], 400)
+        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.1"], 400)
 
         then:
         thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a prerelease label"
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.1-prerelease3"], 400)
+        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.1-prerelease3"], 400)
 
         then:
         thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a higher version"
-        post("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.1"])
+        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.1"])
 
         then:
         notThrown(Exception)
@@ -1114,7 +1114,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "import a profile into a domain template"() {
         given: "an empty domain template"
-        def domainTemplate = parseJson(post("/content-creation/domains/${testDomain.id.uuidValue()}/template",[version : "1.0.0"]))
+        def domainTemplate = parseJson(post("/content-creation/domains/${testDomain.idAsString}/template",[version : "1.0.0"]))
 
         when: "we add a profile"
         def result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles",
@@ -1267,7 +1267,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we get the profile"
-        def profiles = parseJson(get("/domains/${domain1.id.uuidValue()}/profiles"))
+        def profiles = parseJson(get("/domains/${domain1.idAsString}/profiles"))
 
         then: "the profile is returned"
         profiles.size() == 1
@@ -1278,7 +1278,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we get the profile items"
-        def profileItems = parseJson(get("/domains/${domain1.id.uuidValue()}/profiles/${profiles[0].id}/items"))
+        def profileItems = parseJson(get("/domains/${domain1.idAsString}/profiles/${profiles[0].id}/items"))
 
         then:
         profileItems.size() == 10
@@ -1479,7 +1479,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             description: 'All the good stuff',
             language: 'de_DE',
         ])
-        def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
+        def result = parseJson(post("/content-creation/domains/${domain.idAsString}/template", [
             version : "1.2.3"
         ]))
 
@@ -1520,8 +1520,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "creating and exporting the domain"
-        Domain newDomain = createTestDomain(client, dt.id.uuidValue())
-        def results = get("/domains/${newDomain.id.uuidValue()}/export")
+        Domain newDomain = createTestDomain(client, dt.idAsString)
+        def results = get("/domains/${newDomain.idAsString}/export")
         def exportedDomain = parseJson(results)
 
         then:" the export file contains the profile data"
@@ -1574,7 +1574,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def unitId = createUnitWithElements(domain.idAsUUID).first()
 
         when: "a template is created"
-        post("/content-creation/domains/${domain.id.uuidValue()}/template", [
+        post("/content-creation/domains/${domain.idAsString}/template", [
             version : "1.2.3",
             profiles: [
                 exampleOrganization: [
@@ -1592,7 +1592,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         given: "a saved domain"
 
         when: "a request is made to the server"
-        def status = postUnauthorized("/content-creation/domains/${testDomain.id.uuidValue()}/template", [version : "1.0.0"])
+        def status = postUnauthorized("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.0"])
 
         then: "it is forbidden"
         status.andReturn().response.status == 403

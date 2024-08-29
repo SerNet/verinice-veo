@@ -118,7 +118,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         links.size() == 1
         links.first().type == 'process_dataType'
-        links.first().target.id.uuidValue() == assetId
+        links.first().target.idAsString == assetId
 
         when:
         def memberScopeId = parseJson(post('/scopes', [

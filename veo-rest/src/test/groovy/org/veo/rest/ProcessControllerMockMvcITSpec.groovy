@@ -109,7 +109,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -151,12 +151,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def result = parseJson(get("/processes/${process.id.uuidValue()}"))
+        def result = parseJson(get("/processes/${process.idAsString}"))
 
         then: "the process is found"
-        result._self == "http://localhost/processes/${process.id.uuidValue()}"
+        result._self == "http://localhost/processes/${process.idAsString}"
         result.name == 'Test process'
-        result.owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/" + unit.idAsString
 
         and: "the risks property is not present"
         result.risks == null
@@ -177,20 +177,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.idAsString): [:]
             ]
         ]
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), 1)
+            'If-Match': ETag.from(process.idAsString, 1)
         ]
-        put("/processes/${process.id.uuidValue()}", request, headers, 400)
+        put("/processes/${process.idAsString}", request, headers, 400)
 
         then: "the process is not updated"
         MethodArgumentNotValidException ex = thrown()
@@ -214,12 +214,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -228,20 +228,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), process.version)
+            'If-Match': ETag.from(process.idAsString, process.version)
         ]
-        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/processes/${process.idAsString}", request, headers))
 
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PRO_DataTransfer",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -254,7 +254,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/processes/${process.id.uuidValue()}")
+        delete("/processes/${process.idAsString}")
 
         then: "the process is deleted"
         !processRepository.exists(process.id)
@@ -276,12 +276,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -302,20 +302,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), process.version)
+            'If-Match': ETag.from(process.idAsString, process.version)
         ]
-        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/processes/${process.idAsString}", request, headers))
 
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PRO_DataTransfer",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         when:
         def entity = txTemplate.execute {
@@ -356,12 +356,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -378,20 +378,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), process.version)
+            'If-Match': ETag.from(process.idAsString, process.version)
         ]
-        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/processes/${process.idAsString}", request, headers))
 
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PRO_DataTransfer",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         when:
         def entity = txTemplate.execute {
@@ -423,7 +423,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ])).resourceId
 
@@ -431,7 +431,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -444,12 +444,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [
+                (dsgvoDomain.idAsString): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -482,13 +482,13 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [
+        result.domains[dsgvoDomain.idAsString] == [
             subType: "PRO_DataTransfer",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         and: 'there is one type of links'
         def links = result.links
@@ -511,13 +511,13 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             owner: [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.idAsString
             ]
         ])).resourceId
         def processId = parseJson(post('/processes', [
             name : 'My process',
             owner: [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.idAsString
             ],
             domains: [
                 (dsgvoDomain.idAsString): [
@@ -542,7 +542,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 //need to be in the open session
                 size() == 1
                 first().type == 'process_dataType'
-                first().target.id.uuidValue() == assetId
+                first().target.idAsString == assetId
             }
             return process
         }
@@ -571,9 +571,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.name
         }
         sortedItems[0].name == 'Test process-1'
-        sortedItems[0].owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        sortedItems[0].owner.targetUri == "http://localhost/units/${unit.idAsString}"
         sortedItems[1].name == 'Test process-2'
-        sortedItems[1].owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
+        sortedItems[1].owner.targetUri == "http://localhost/units/${unit2.idAsString}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -589,20 +589,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "all processes in the first unit are requested"
-        def result = parseJson(get("/processes?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/processes?unit=${unit.idAsString}"))
 
         then:
         result.items.size() == 1
         result.items.first().name == 'Test process-1'
-        result.items.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items.first().owner.targetUri == "http://localhost/units/"+unit.idAsString
 
         when: "all processes in unit 2 are requested"
-        result = parseJson(get("/processes?unit=${unit2.id.uuidValue()}"))
+        result = parseJson(get("/processes?unit=${unit2.idAsString}"))
 
         then:
         result.items.size() == 1
         result.items.first().name == 'Test process-2'
-        result.items.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
+        result.items.first().owner.targetUri == "http://localhost/units/"+unit2.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -653,12 +653,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update process 1 using the ID of process 2"
         Map headers = [
-            'If-Match': ETag.from(process1.id.uuidValue(), 1)
+            'If-Match': ETag.from(process1.idAsString, 1)
         ]
-        put("/processes/${process2.id.uuidValue()}", [
-            id: process1.id.uuidValue(),
+        put("/processes/${process2.idAsString}", [
+            id: process1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -670,7 +670,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new process"
         def id = parseJson(post("/processes", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/processes/$id")
 
@@ -696,11 +696,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a new risk can be created successfully"
-        def json = parseJson(post("/processes/"+process.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
+        def json = parseJson(post("/processes/"+process.idAsString+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario.idAsString ],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
                 ]
             ]
         ] as Map))
@@ -722,16 +722,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risk is requested"
         def getResult = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/processes/" + process.idAsString + "/risks/" + scenario.idAsString))
 
         then: "the correct object is returned"
         getResult != null
         with(getResult) {
-            it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
-            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.process.targetUri ==~ /.*${process.idAsString}.*/
+            it.scenario.targetUri ==~ /.*${scenario.idAsString}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
             it.domains.values().first().reference.displayName == this.dsgvoDomain.displayName
-            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*processes\/${process.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
             it.createdBy == "user@domain.example"
@@ -747,7 +747,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risks are queried"
         def getResult = parseJson(
-                get("/processes/${process.id.uuidValue()}/risks"))
+                get("/processes/${process.idAsString}/risks"))
 
         then: "the risks are retreived"
         getResult.size() == 3
@@ -764,19 +764,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
-        post("/processes/"+process.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
+        post("/processes/"+process.idAsString+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario2.idAsString ],
             domains: [
                 (dsgvoDomain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
                 ]
             ]
         ] as Map)
-        post("/processes/"+process.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
+        post("/processes/"+process.idAsString+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario3.idAsString ],
             domains: [
                 (dsgvoDomain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
                 ]
             ]
         ] as Map)
@@ -790,7 +790,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the embedded risks are queried"
         def response = parseJson(
-                get("/processes/${process.id.uuidValue()}?embedRisks=true"))
+                get("/processes/${process.idAsString}?embedRisks=true"))
 
         then: "the risks are retreived"
         response.name == "process null"
@@ -806,7 +806,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
 
         when: "the risk is deleted"
-        delete("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}")
+        delete("/processes/${process.idAsString}/risks/${scenario.idAsString}")
 
         then: "the risk has been removed"
         processRepository.findByRisk(scenario).isEmpty()
@@ -837,36 +837,36 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "the created risk is retrieved"
-        def getResponse = get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
+        def getResponse = get("/processes/" + process.idAsString + "/risks/" + scenario.idAsString)
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
 
         when: "the risk is updated"
         def beforeUpdate = Instant.now()
         def putBody = getResult + [
-            mitigation: [targetUri: '/controls/' + control.id.uuidValue()],
-            riskOwner: [targetUri: '/persons/' + person.id.uuidValue()]
+            mitigation: [targetUri: '/controls/' + control.idAsString],
+            riskOwner: [targetUri: '/persons/' + person.idAsString]
         ]
         Map headers = [
             'If-Match': eTag
         ]
 
-        put("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}", putBody as Map, headers)
+        put("/processes/${process.idAsString}/risks/${scenario.idAsString}", putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/processes/" + process.idAsString + "/risks/" + scenario.idAsString))
 
         then: "the information was persisted"
         eTag.length() > 0
         riskJson != null
         with(riskJson) {
-            it.mitigation.targetUri ==~ /.*${control.id.uuidValue()}.*/
-            it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
-            it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
-            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.mitigation.targetUri ==~ /.*${control.idAsString}.*/
+            it.riskOwner.targetUri ==~ /.*${person.idAsString}.*/
+            it.process.targetUri ==~ /.*${process.idAsString}.*/
+            it.scenario.targetUri ==~ /.*${scenario.idAsString}.*/
             it.domains.values().first().reference.displayName == this.dsgvoDomain.displayName
-            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*processes\/${process.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
@@ -876,15 +876,15 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the person and control are removed"
         beforeUpdate = Instant.now()
-        delete("/persons/${person.id.uuidValue()}")
-        delete("/controls/${control.id.uuidValue()}")
+        delete("/persons/${person.idAsString}")
+        delete("/controls/${control.idAsString}")
         riskJson = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
+                get("/processes/" + process.idAsString + "/risks/" + scenario.idAsString))
 
         then: "their references are removed from the risk"
         riskJson != null
         with(riskJson) {
-            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it._self ==~ /.*processes\/${process.idAsString}\/risks\/${scenario.idAsString}.*/
             it.mitigation == null
             it.riskOwner == null
             Instant.parse(it.createdAt) > beforeCreation
@@ -895,10 +895,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the scenario is removed"
-        delete("/scenarios/${scenario.id.uuidValue()}")
+        delete("/scenarios/${scenario.idAsString}")
 
         and: "the risk is requested"
-        get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+        get("/processes/" + process.idAsString + "/risks/" + scenario.idAsString,
                 404)
 
         then: "the risk was removed as well"
@@ -968,11 +968,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         def postResult = parseJson(
-                post("/processes/" + process.id.uuidValue() + "/risks", [
-                    scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
+                post("/processes/" + process.idAsString + "/risks", [
+                    scenario: [targetUri: '/scenarios/' + scenario.idAsString],
                     domains : [
                         (dsgvoDomain.getIdAsString()) : [
-                            reference: [targetUri: '/domains/' + dsgvoDomain.id.uuidValue()]
+                            reference: [targetUri: '/domains/' + dsgvoDomain.idAsString]
                         ]
                     ]
                 ]))

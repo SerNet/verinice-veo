@@ -248,7 +248,7 @@ class AssetRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         when: "the process is requested with embedded risks"
         def response = parseJson(
-                get("/assets/${asset.id.uuidValue()}?embedRisks=true"))
+                get("/assets/${asset.idAsString}?embedRisks=true"))
 
         then: "the risk values are embedded in the response"
         response.name == "asset null"
@@ -485,7 +485,7 @@ class AssetRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def searchUrl = parseJson(post("/assets/searches", [
             unitId: [
                 values: [
-                    unit.id.uuidValue()
+                    unit.idAsString
                 ]
             ]
         ])).searchUrl

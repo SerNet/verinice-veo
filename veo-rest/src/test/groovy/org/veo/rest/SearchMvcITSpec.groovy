@@ -41,9 +41,9 @@ class SearchMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         client = createTestClient()
-        domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id.uuidValue()
+        domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         client = clientRepository.getById(client.id)
-        unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
+        unitId = unitDataRepository.save(newUnit(client)).idAsString
     }
 
     def "search subtype and domain"() {
@@ -66,9 +66,9 @@ class SearchMvcITSpec extends VeoMvcSpec {
 
         client = clientRepository.save(client)
         def testDomain = client.domains.find{it.name == "Domain 1"}
-        def testDomainId = testDomain.id.uuidValue()
+        def testDomainId = testDomain.idAsString
 
-        unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
+        unitId = unitDataRepository.save(newUnit(client)).idAsString
         def scopeId1 = parseJson(post("/domains/$domainId/scopes", [
             name: "Scope-1",
             abbreviation: "DT",

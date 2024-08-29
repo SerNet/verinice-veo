@@ -47,7 +47,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def setup() {
         executeInTransaction {
             client = createTestClient()
-            domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).id.uuidValue()
+            domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsString
             unitId = unitRepository.save(newUnit(client)).dbId
         }
     }

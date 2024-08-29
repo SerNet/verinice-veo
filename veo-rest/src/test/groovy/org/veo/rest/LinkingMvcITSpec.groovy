@@ -82,7 +82,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     }
                 })
             }.idAsString
-            unitId = unitRepository.save(newUnit(client)).id.uuidValue()
+            unitId = unitRepository.save(newUnit(client)).idAsString
         }
     }
 

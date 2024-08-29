@@ -162,7 +162,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the process is created and the subtype is set"
         validateNewElementAgainstCatalogItem(processResult, item5, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
+        processResult.domains[domain.idAsString].subType == "MY_SUBTYPE"
     }
 
     def "retrieve the apply info for item6 and post"() {
@@ -188,8 +188,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the process is created and all the features are set"
         validateNewElementAgainstCatalogItem(processResult, item6, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
-        processResult.domains[domain.id.uuidValue()].status == "START"
+        processResult.domains[domain.idAsString].subType == "MY_SUBTYPE"
+        processResult.domains[domain.idAsString].status == "START"
         with(processResult) {
             customAspects.size() == 2
             with(customAspects) {
@@ -233,8 +233,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the tom is created and all the features are set"
         validateNewElementAgainstCatalogItem(tomResult, item7, domain)
         tomResult.owner.displayName == 'Test unit'
-        tomResult.domains[domain.id.uuidValue()].subType == "CTL_TOM"
-        tomResult.domains[domain.id.uuidValue()].status == "NEW1"
+        tomResult.domains[domain.idAsString].subType == "CTL_TOM"
+        tomResult.domains[domain.idAsString].status == "NEW1"
 
         when: "we get the linked process"
         def processResult = parseJson(get(processUri))
@@ -269,7 +269,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the tom is created and all the features are set"
         validateNewElementAgainstCatalogItem(tomResult, item7, domain)
         tomResult.owner.displayName == 'Test unit'
-        tomResult.domains[domain.id.uuidValue()].subType == "CTL_TOM"
+        tomResult.domains[domain.idAsString].subType == "CTL_TOM"
 
         when: "we get the linked process"
         processResult = parseJson(get(processUri))
@@ -388,7 +388,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the process is created and the risk values are set"
         validateNewElementAgainstCatalogItem(processResult, processImpactExample, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
+        processResult.domains[domain.idAsString].riskValues.id.potentialImpacts.C == 2
     }
 
     def "retrieve the apply info for scenarioProbabilityExample and post"() {
@@ -410,12 +410,12 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the control is created and the risk values are set"
         validateNewElementAgainstCatalogItem(controlResult, controlImpactExample, domain)
-        controlResult.domains[domain.id.uuidValue()].riskValues.id.implementationStatus == 1
+        controlResult.domains[domain.idAsString].riskValues.id.implementationStatus == 1
 
         and: "the scenario is created and the risk values are set"
         validateNewElementAgainstCatalogItem(scenarioResult, scenarioProbabilityExample, domain)
         scenarioResult.owner.displayName == 'Test unit'
-        scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3
+        scenarioResult.domains[domain.idAsString].riskValues.id.potentialProbability == 3
     }
 
     def "retrieve the apply info for part and composite and post"() {
@@ -745,7 +745,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def result = postIncarnationDescriptions(getIncarnationDescriptions([controlImpactExample],"DEFAULT","ALWAYS"))
         def scenario = parseJson(get(result[0].targetUri))
 
-        def controls = parseJson(get("/domains/${domain.id.uuidValue()}/controls"))
+        def controls = parseJson(get("/domains/${domain.idAsString}/controls"))
 
         then: "the scenario is created"
         result.size() == 1
@@ -777,7 +777,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         process.name == "processImpactExample"
 
         when: "we add a controlImplementation to the process"
-        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+        get("/domains/${domain.idAsString}/processes/${process.id}").with{
             def body = parseJson(it)
             body.controlImplementations= [
                 [
@@ -789,7 +789,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
 
         and : "we execute the threatOverview action"
-        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+        result = parseJson(post("/domains/${domain.idAsString}/processes/${process.id}/actions/threatOverview/execution",null, 200))
 
         then: "the scenario and risk is created"
         result.createdEntities.size() == 2
@@ -822,7 +822,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         control.links.size() == 0
 
         when: "we add a controlImplementation to the process"
-        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+        get("/domains/${domain.idAsString}/processes/${process.id}").with{
             def body = parseJson(it)
             body.controlImplementations= [
                 [
@@ -834,7 +834,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
 
         and : "we execute the threatOverview action"
-        def result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+        def result = parseJson(post("/domains/${domain.idAsString}/processes/${process.id}/actions/threatOverview/execution",null, 200))
 
         then: "the risk is created"
         result.createdEntities.size() == 1
@@ -865,7 +865,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         process.name == "processImpactExample"
 
         when: "we add a controlImplementation to the process"
-        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+        get("/domains/${domain.idAsString}/processes/${process.id}").with{
             def body = parseJson(it)
             body.controlImplementations= [
                 [
@@ -877,7 +877,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
 
         and : "we execute the threatOverview action"
-        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+        result = parseJson(post("/domains/${domain.idAsString}/processes/${process.id}/actions/threatOverview/execution",null, 200))
 
         then: "the scenario and risk are created"
         result.createdEntities.size() == 2
@@ -899,7 +899,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
                 )[0].targetUri
 
         and: "we add a controlImplementation to the process"
-        get("/domains/${domain.id.uuidValue()}/processes/${process.id}").with{
+        get("/domains/${domain.idAsString}/processes/${process.id}").with{
             def body = parseJson(it)
             body.controlImplementations= [
                 [
@@ -915,7 +915,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
 
         and : "we execute the threatOverview action"
-        result = parseJson(post("/domains/${domain.id.uuidValue()}/processes/${process.id}/actions/threatOverview/execution",null, 200))
+        result = parseJson(post("/domains/${domain.idAsString}/processes/${process.id}/actions/threatOverview/execution",null, 200))
 
         then: "the risks are created and the missing scenario"
         result.createdEntities.size() == 3
@@ -982,15 +982,15 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
         verifyAll(element) {
             it.domains.size() == 1
-            it.domains[domain.id.uuidValue()] != null
+            it.domains[domain.idAsString] != null
         }
         element.links.each {
             assert it.value.domains.size() == 1
-            assert it.value.domains[0].targetUri[0].endsWith(domain.id.uuidValue())
+            assert it.value.domains[0].targetUri[0].endsWith(domain.idAsString)
         }
         element.customAspects.each {
             assert it.value.domains.size() == 1
-            assert it.value.domains[0].targetUri.endsWith(domain.id.uuidValue())
+            assert it.value.domains[0].targetUri.endsWith(domain.idAsString)
         }
         true
     }

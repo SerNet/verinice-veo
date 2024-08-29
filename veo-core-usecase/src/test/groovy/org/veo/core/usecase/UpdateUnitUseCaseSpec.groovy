@@ -36,7 +36,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     def "Update an existing unit" () {
         given: "starting values for a unit"
         def newUnit = Mock(UnitState) {
-            it.id >> this.existingUnit.id.uuidValue()
+            it.id >> this.existingUnit.idAsString
             it.name >> "Name changed"
             domains >> []
         }

@@ -46,7 +46,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def document = documentRepo.save(newDocument(unit1))
 
         when: "deleting the client"
-        delete("/admin/client/${client.id.uuidValue()}")
+        delete("/admin/client/${client.idAsString}")
 
         then:
         !clientRepo.exists(client.id)

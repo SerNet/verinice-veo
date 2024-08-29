@@ -96,7 +96,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Scenario',
             owner: [
                 displayName: 'scenarioDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
 
@@ -121,16 +121,16 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/scenarios/${scenario.id.uuidValue()}")
+        def results = get("/scenarios/${scenario.idAsString}")
 
         then: "the eTag is set"
         getETag(results) != null
 
         and:
         def result = parseJson(results)
-        result._self == "http://localhost/scenarios/${scenario.id.uuidValue()}"
+        result._self == "http://localhost/scenarios/${scenario.idAsString}"
         result.name == 'Test scenario-1'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -147,10 +147,10 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "requesting all scenarios in the unit"
-        def result = parseJson(get("/scenarios?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/scenarios?unit=${unit.idAsString}"))
 
         then: "the scenarios are returned"
-        def expectedUnitUri = "http://localhost/units/${unit.id.uuidValue()}"
+        def expectedUnitUri = "http://localhost/units/${unit.idAsString}"
         with(result.items.sort{it.name}) {
             size() == 2
             it[0].name == 'Test scenario-1'
@@ -173,7 +173,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "requesting all scenarios in the unit"
-        def result = parseJson(get("/scenarios?unit=${unit.id.uuidValue()}"))
+        def result = parseJson(get("/scenarios?unit=${unit.idAsString}"))
 
         then: "the scenarios are returned"
         result.items*.name as Set == [
@@ -197,10 +197,10 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [
+                (domain.idAsString): [
                     subType: "WorstCase",
                     status: "NEW",
                 ]
@@ -209,20 +209,20 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(scenario.id.uuidValue(), scenario.version)
+            'If-Match': ETag.from(scenario.idAsString, scenario.version)
         ]
-        def result = parseJson(put("/scenarios/${scenario.id.uuidValue()}", request, headers))
+        def result = parseJson(put("/scenarios/${scenario.idAsString}", request, headers))
 
         then: "the scenario is found"
         result.name == 'New scenario-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [
+        result.domains[domain.idAsString] == [
             subType: "WorstCase",
             status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -233,7 +233,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        delete("/scenarios/${scenario.id.uuidValue()}")
+        delete("/scenarios/${scenario.idAsString}")
 
         then: "the scenario is deleted"
         scenarioRepository.findById(scenario.id).empty
@@ -291,12 +291,12 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a put request tries to update scenario 1 using the ID of scenario 2"
         Map headers = [
-            'If-Match': ETag.from(scenario1.id.uuidValue(), 1)
+            'If-Match': ETag.from(scenario1.idAsString, 1)
         ]
-        put("/scenarios/${scenario2.id.uuidValue()}", [
-            id: scenario1.id.uuidValue(),
+        put("/scenarios/${scenario2.idAsString}", [
+            id: scenario1.idAsString,
             name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
         ], headers, 400)
 
         then: "an exception is thrown"
@@ -308,7 +308,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new scenario"
         def id = parseJson(post("/scenarios", [
             name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
         ])).resourceId
         def getResult = get("/scenarios/$id")
 
@@ -336,7 +336,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the scenario's parts"
-        def result = parseJson(get("/scenarios/${compositeScenario.id.uuidValue()}/parts"))
+        def result = parseJson(get("/scenarios/${compositeScenario.idAsString}/parts"))
 
         then: "the parts are found"
         result.size() == 2
@@ -355,7 +355,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "inspections are performed on the scenario"
-        def result = parseJson(get("/scenarios/${scenario.id.uuidValue()}/inspection?domain=${domain.idAsString}"))
+        def result = parseJson(get("/scenarios/${scenario.idAsString}/inspection?domain=${domain.idAsString}"))
 
         then: "there are no results"
         result.empty
