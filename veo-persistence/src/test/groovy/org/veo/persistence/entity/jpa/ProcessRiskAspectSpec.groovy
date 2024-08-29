@@ -59,10 +59,10 @@ class ProcessRiskAspectSpec extends VeoSpec {
         def categories = risk.getImpactProvider(rdRef, domain).getAvailableCategories()
 
         then: "the expected categories are returned"
-        categories*.idRef.toSet() == ["C", "I", "A", "R"] as Set
+        categories*.idRef ==~ ["D"]
     }
 
-    def "Potential probability/impact #potProb/#potC and specific values #specProb/#specC are evaluated to effective values: #effProb/#effC"() {
+    def "Potential probability/impact #potProb/#potD and specific values #specProb/#specD are evaluated to effective values: #effProb/#effD"() {
         given: "a process risk"
         def process = newProcess(unit)
         process.associateWithDomain(domain, "NormalProcess", "NEW")
@@ -75,17 +75,17 @@ class ProcessRiskAspectSpec extends VeoSpec {
         probability.potentialProbability = factory.createProbabilityRef(potProb)
         probability.specificProbability = factory.createProbabilityRef(specProb)
 
-        def confidentiality = factory.createCategoryRef("C")
+        def confidentiality = factory.createCategoryRef("D")
         def impact = risk.getImpactProvider(rdRef, domain)
-        impact.setPotentialImpact(confidentiality, factory.createImpactRef(potC))
-        impact.setSpecificImpact(confidentiality, factory.createImpactRef(specC))
+        impact.setPotentialImpact(confidentiality, factory.createImpactRef(potD))
+        impact.setSpecificImpact(confidentiality, factory.createImpactRef(specD))
 
         then: "specific values override the default ones"
         probability.effectiveProbability == factory.createProbabilityRef(effProb)
-        impact.getEffectiveImpact(confidentiality) == factory.createImpactRef(effC)
+        impact.getEffectiveImpact(confidentiality) == factory.createImpactRef(effD)
 
         where:
-        potProb   | specProb   | effProb   | potC   | specC   | effC
+        potProb   | specProb   | effProb   | potD   | specD   | effD
         0         | null       | 0         | 0      | null    | 0
         null      | 1          | 1         | null   | 2       | 2
         0         | 1          | 1         | 0      | 1       | 1

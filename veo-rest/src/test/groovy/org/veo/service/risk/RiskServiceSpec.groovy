@@ -96,7 +96,7 @@ class RiskServiceSpec extends VeoSpec {
         scenario.setPotentialProbability(domain, [
             (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
         ])
-        def categoryRef = new CategoryRef("C")
+        def categoryRef = new CategoryRef("D")
         risk.getRiskProvider(riskDefRef, domain)
                 .getCategorizedRisks()
                 .find({ it.category == categoryRef })
@@ -165,7 +165,7 @@ class RiskServiceSpec extends VeoSpec {
     @Unroll
     def "Risk events are generated when probability #prob and risk #riskVal changed from (#previousProb/#previousRiskVal)"() {
         when:
-        def categoryRef = new CategoryRef("C")
+        def categoryRef = new CategoryRef("D")
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability =
                 previousProb?.with { new ProbabilityRef(it) }
         risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, new ImpactRef(1))
@@ -255,19 +255,19 @@ class RiskServiceSpec extends VeoSpec {
 
         where:
         cat | prob | imp  | riskVal | previousRiskVal
-        "C" | 2    | 2    | 2       | 0
-        "C" | 2    | 1    | 1       | 0
-        "C" | 1    | 2    | 1       | 0
-        "C" | 0    | 3    | 1       | 0
-        "I" | 0    | 0    | 0       | null
-        "I" | 2    | 1    | 1       | null
-        "I" | 1    | 2    | 1       | 2
-        "A" | 2    | 1    | 1       | 2
-        "A" | 1    | 2    | 1       | 2
-        "R" | 2    | 1    | 1       | 2
-        "R" | 1    | 2    | 1       | 2
-        "C" | null | 3    | null    | 0
-        "C" | 0    | null | null    | 0
+        "D" | 2    | 2    | 2       | 0
+        "D" | 2    | 1    | 1       | 0
+        "D" | 1    | 2    | 1       | 0
+        "D" | 0    | 3    | 1       | 0
+        "D" | 0    | 0    | 0       | null
+        "D" | 2    | 1    | 1       | null
+        "D" | 1    | 2    | 1       | 2
+        "D" | 2    | 1    | 1       | 2
+        "D" | 1    | 2    | 1       | 2
+        "D" | 2    | 1    | 1       | 2
+        "D" | 1    | 2    | 1       | 2
+        "D" | null | 3    | null    | 0
+        "D" | 0    | null | null    | 0
     }
 
     @Unroll
@@ -290,17 +290,17 @@ class RiskServiceSpec extends VeoSpec {
 
         where:
         cat | prob | imp  | riskVal | previousRiskVal
-        "C" | 0    | 0    | 0       | 0
-        "C" | 3    | 0    | 0       | 0
-        "C" | 3    | 3    | 3       | 3
-        "I" | 3    | null | null    | null
-        "A" | null | 0    | null    | null
-        "R" | null | null | null    | null
+        "D" | 0    | 0    | 0       | 0
+        "D" | 3    | 0    | 0       | 0
+        "D" | 3    | 3    | 3       | 3
+        "D" | 3    | null | null    | null
+        "D" | null | 0    | null    | null
+        "D" | null | null | null    | null
     }
 
     def "Risk events are published for multiple risks"() {
         when:
-        def categoryRef = new CategoryRef("C")
+        def categoryRef = new CategoryRef("D")
         def scenario2 = newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
         }

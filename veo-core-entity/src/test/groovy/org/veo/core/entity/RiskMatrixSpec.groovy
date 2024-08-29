@@ -795,7 +795,8 @@ class RiskMatrixSpec extends Specification {
             new CategoryDefinition("2", riskMatrix, potentialImpacts),
             new CategoryDefinition("3", riskMatrix, potentialImpacts),
             new CategoryDefinition("4", riskMatrix, potentialImpacts),
-            new CategoryDefinition("5", riskMatrix, potentialImpacts)
+            new CategoryDefinition("5", riskMatrix, potentialImpacts),
+            new CategoryDefinition("6", null, potentialImpacts)
         ]
 
         rd.implementationStateDefinition.levels = [

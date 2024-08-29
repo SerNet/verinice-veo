@@ -43,7 +43,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             riskValues: [
                 riskyDef: [
                     potentialImpacts: [
-                        C: 1
+                        D: 1
                     ]
                 ]
             ]
@@ -83,7 +83,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             riskValues: [
                 riskyDef: [
                     potentialImpacts: [
-                        C: 0
+                        D: 0
                     ]
                 ]
             ]
@@ -124,7 +124,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             riskValues: [
                 riskyDef: [
                     potentialImpacts: [
-                        C: 1
+                        D: 1
                     ]
                 ]
             ]
@@ -144,14 +144,14 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                             ],
                             impactValues: [
                                 [
-                                    category: "C",
+                                    category: "D",
                                     specificImpact: 2,
                                     specificImpactExplanation: "Because I say so."
                                 ]
                             ],
                             riskValues: [
                                 [
-                                    category: "C",
+                                    category: "D",
                                     userDefinedResidualRisk: 3,
                                     residualRiskExplanation: "It's gonna be terrible.",
                                     riskTreatments: ["RISK_TREATMENT_AVOIDANCE"],
@@ -201,7 +201,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         with(get("/domains/$newDomainInOtherClientId/assets", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
             get(0).name == "asset enough?"
-            get(0).riskValues.riskyDef.potentialImpacts.C == 1
+            get(0).riskValues.riskyDef.potentialImpacts.D == 1
         }
         with(get("/domains/$newDomainInOtherClientId/controls", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
@@ -211,7 +211,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         with(get("/domains/$newDomainInOtherClientId/processes", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
             get(0).name == "process processing process"
-            get(0).riskValues.riskyDef.potentialImpacts.C == 0
+            get(0).riskValues.riskyDef.potentialImpacts.D == 0
             get(0).links.necessaryData[0].target.displayName.endsWith("asset enough?")
             get(0).links.necessaryData[0].target.id != originalAssetId
             get(0).links.necessaryData[0].attributes.essential
@@ -226,11 +226,11 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 with(get(0).domains[newDomainInOtherClientId].riskDefinitions.riskyDef) {
                     probability.specificProbability == 1
                     probability.specificProbabilityExplanation == "The risk owner is a control freak who uses freaky controls, which mitigates the likelihood of this risk."
-                    with(impactValues.find { it.category == "C" }) {
+                    with(impactValues.find { it.category == "D" }) {
                         specificImpact == 2
                         specificImpactExplanation == "Because I say so."
                     }
-                    with(riskValues.find { it.category == "C" }) {
+                    with(riskValues.find { it.category == "D" }) {
                         userDefinedResidualRisk == 3
                         residualRiskExplanation == "It's gonna be terrible."
                         riskTreatments == ["RISK_TREATMENT_AVOIDANCE"]
@@ -259,7 +259,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 responsible.name == "poster person"
                 description == "Everything is under control"
             }
-            get(0).riskValues.riskyDef.potentialImpacts.C == 1
+            get(0).riskValues.riskyDef.potentialImpacts.D == 1
         }
     }
 }

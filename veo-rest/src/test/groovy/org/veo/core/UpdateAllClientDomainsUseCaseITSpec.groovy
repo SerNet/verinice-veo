@@ -101,10 +101,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         executeInTransaction {
             client = newClient()
             dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            dsgvoDomain.riskDefinitions = [
-                "DSRA":createRiskDefinition("DSRA"),
-                "xyz":createRiskDefinition("xyz")
-            ]
+            dsgvoDomain.riskDefinitions.xyz = createRiskDefinition("xyz")
             dsgvoDomainV2 = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)

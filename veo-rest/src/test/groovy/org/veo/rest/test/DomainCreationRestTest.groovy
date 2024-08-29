@@ -202,7 +202,7 @@ class DomainCreationRestTest extends DomainRestTest {
         exportDomain(newDomainId).riskDefinitions.simpleDef.impactInheritingLinks.scenario == ["requiredScenario"]
 
         when: "making other risk definition modifications"
-        definition.categories[0].with{
+        definition.categories[1].with{
             potentialImpacts.removeLast()
             valueMatrix.removeLast()
         }
@@ -331,39 +331,39 @@ class DomainCreationRestTest extends DomainRestTest {
 
         and: "undefined symbolic risk in matrix to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.categories.find { it.id == "C" }.valueMatrix[0][0] = [
+            definition.categories.find { it.id == "D" }.valueMatrix[0][0] = [
                 ordinalValue: 0,
                 symbolicRisk: "symbolic_risk_99",
             ]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Invalid risk values for category C: [RiskValue(symbolicRisk=symbolic_risk_99)]"
+                body.message == "Invalid risk values for category D: [RiskValue(symbolicRisk=symbolic_risk_99)]"
             }
         }
 
         and: "non-matching ordinal value and symbolic risk in matrix to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.categories.find { it.id == "C" }.valueMatrix[0][0] = [
+            definition.categories.find { it.id == "D" }.valueMatrix[0][0] = [
                 ordinalValue: 2,
                 symbolicRisk: "symbolic_risk_1",
             ]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Invalid risk values for category C: [RiskValue(symbolicRisk=symbolic_risk_1)]"
+                body.message == "Invalid risk values for category D: [RiskValue(symbolicRisk=symbolic_risk_1)]"
             }
         }
 
         and: "missing impact in matrix to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.categories.find { it.id == "C" }.valueMatrix.removeLast()
+            definition.categories.find { it.id == "D" }.valueMatrix.removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Value matrix for category C does not conform to impacts."
+                body.message == "Value matrix for category D does not conform to impacts."
             }
         }
 
         and: "missing probability in matrix to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.categories.find { it.id == "C" }.valueMatrix[1].removeLast()
+            definition.categories.find { it.id == "D" }.valueMatrix[1].removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body.message == "Value matrix for category C does not conform to probability."
+                body.message == "Value matrix for category D does not conform to probability."
             }
         }
 

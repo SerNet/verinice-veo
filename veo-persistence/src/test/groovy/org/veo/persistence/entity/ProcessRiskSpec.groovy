@@ -273,12 +273,12 @@ class ProcessRiskSpec extends VeoSpec {
                         new RiskValue(1,"","high")
                     ]
                     categories = [
-                        newCategoryDefinition("C") {
+                        newCategoryDefinition("D") {
                             potentialImpacts = [
                                 new CategoryLevel(),
                                 new CategoryLevel()
                             ]
-                            valueMatrix = []
+                            valueMatrix = [] // will be filled by the factory method
                         }
                     ]
                     probability.levels = [
@@ -297,13 +297,13 @@ class ProcessRiskSpec extends VeoSpec {
                         new RiskValue("high")
                     ]
                     categories = [
-                        newCategoryDefinition("C") {
+                        newCategoryDefinition("D") {
                             potentialImpacts = [
                                 new CategoryLevel(),
                                 new CategoryLevel(),
                                 new CategoryLevel(),
                             ]
-                            valueMatrix = []
+                            valueMatrix = [] // will be filled by the factory method
                         }
                     ]
                     probability.levels = [
@@ -338,7 +338,7 @@ class ProcessRiskSpec extends VeoSpec {
 
         when: "setting distinct risk values for the two domains"
         def riskDefRef = new RiskDefinitionRef(riskDefId)
-        def cat = new CategoryRef("C")
+        def cat = new CategoryRef("D")
         process.updateRisk(domain0Risk, [domain0, domain1] as Set, null, null, [
             newRiskValues(riskDefRef, domain0) {
                 probability = new ProbabilityImpl().tap{

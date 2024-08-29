@@ -478,6 +478,80 @@
               }
             }
           ],
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "I",
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            },
+            {
+              "ordinalValue": 1,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            }
+          ],
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "D",
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            },
+            {
+              "ordinalValue": 1,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            },
+            {
+              "ordinalValue": 2,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            }
+          ],
           "valueMatrix": [
             [
               {
@@ -519,68 +593,6 @@
               {
                 "ordinalValue": 3,
                 "symbolicRisk": "symbolic_risk_4"
-              }
-            ]
-          ],
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
-        },
-        {
-          "id": "I",
-          "potentialImpacts": [
-            {
-              "ordinalValue": 0,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
-            },
-            {
-              "ordinalValue": 1,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
-            }
-          ],
-          "valueMatrix": [
-            [
-              {
-                "ordinalValue": 0,
-                "symbolicRisk": "symbolic_risk_1"
-              },
-              {
-                "ordinalValue": 0,
-                "symbolicRisk": "symbolic_risk_1"
-              },
-              {
-                "ordinalValue": 1,
-                "symbolicRisk": "symbolic_risk_2"
-              }
-            ],
-            [
-              {
-                "ordinalValue": 1,
-                "symbolicRisk": "symbolic_risk_2"
-              },
-              {
-                "ordinalValue": 2,
-                "symbolicRisk": "symbolic_risk_3"
-              },
-              {
-                "ordinalValue": 2,
-                "symbolicRisk": "symbolic_risk_3"
               }
             ]
           ],

@@ -361,21 +361,25 @@ abstract class VeoSpec extends Specification {
         ] as List
 
         rd.categories = [
-            new CategoryDefinition("C",riskMatrix,
+            new CategoryDefinition("C",null,
             createDefaultCategoryLevels(),
             TranslationMap.of([(DE): ["name": "Vertraulichkeit", "abbreviation": "c", "description": ""]])
             ),
-            new CategoryDefinition("I",riskMatrix,
+            new CategoryDefinition("I",null,
             createDefaultCategoryLevels(),
             TranslationMap.of([(DE): ["name": "Integrität", "abbreviation": "i", "description": ""]])
             ),
-            new CategoryDefinition("A", riskMatrix,
+            new CategoryDefinition("A", null,
             createDefaultCategoryLevels(),
             TranslationMap.of([(DE): ["name": "Belastbarkeit", "abbreviation": "r", "description": ""]])
             ),
-            new CategoryDefinition("R", riskMatrix,
+            new CategoryDefinition("R", null,
             createDefaultCategoryLevels(),
             TranslationMap.of([(DE): ["name": "Vertraulichkeit", "abbreviation": "c", "description": ""]])
+            ),
+            new CategoryDefinition("D", riskMatrix,
+            createDefaultCategoryLevels(),
+            TranslationMap.of([(DE): ["name": "Schadenshöhe", "abbreviation": "d", "description": ""]])
             )
         ] as List
 

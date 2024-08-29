@@ -84,7 +84,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         given: "A risk definition, a process with a risk and a scenario"
         def riskDef = domain.getRiskDefinitions().values().first()
         def riskDefRef = RiskDefinitionRef.from(riskDef)
-        def confidentiality = new CategoryRef("C")
+        def extentOfDamage = new CategoryRef("D")
 
         def scenario1 = scenarioRepository.save(newScenario(unit))
         domain = domainRepository.save(domain)
@@ -141,16 +141,16 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             }
 
             process.risks.first().getImpactProvider(riskDefRef, domain).with {
-                it.setPotentialImpact(confidentiality, new ImpactRef(1))
-                it.setSpecificImpact(confidentiality, new ImpactRef(3))
-                it.setSpecificImpactExplanation(confidentiality, MURPHYS_LAW)
+                it.setPotentialImpact(extentOfDamage, new ImpactRef(1))
+                it.setSpecificImpact(extentOfDamage, new ImpactRef(3))
+                it.setSpecificImpactExplanation(extentOfDamage, MURPHYS_LAW)
             }
 
             process.risks.first().getRiskProvider(riskDefRef, domain).with {
-                it.setUserDefinedResidualRisk(confidentiality, new RiskRef(0))
-                it.setResidualRiskExplanation(confidentiality, NO_RISK_NO_FUN)
-                it.setRiskTreatmentExplanation(confidentiality, RISK_ACCEPTANCE)
-                it.setRiskTreatments(confidentiality, [
+                it.setUserDefinedResidualRisk(extentOfDamage, new RiskRef(0))
+                it.setResidualRiskExplanation(extentOfDamage, NO_RISK_NO_FUN)
+                it.setRiskTreatmentExplanation(extentOfDamage, RISK_ACCEPTANCE)
+                it.setRiskTreatments(extentOfDamage, [
                     RISK_TREATMENT_ACCEPTANCE,
                     RISK_TREATMENT_REDUCTION
                 ] as Set )
@@ -173,16 +173,16 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         }
 
         with(retrievedRisk2.getImpactProvider(riskDefRef, domain)) {
-            it.getPotentialImpact(confidentiality) == new ImpactRef(1)
-            it.getSpecificImpact(confidentiality) == new ImpactRef(3)
-            it.getSpecificImpactExplanation(confidentiality) == MURPHYS_LAW
+            it.getPotentialImpact(extentOfDamage) == new ImpactRef(1)
+            it.getSpecificImpact(extentOfDamage) == new ImpactRef(3)
+            it.getSpecificImpactExplanation(extentOfDamage) == MURPHYS_LAW
         }
 
         with(retrievedRisk2.getRiskProvider(riskDefRef, domain)) {
-            it.getUserDefinedResidualRisk(confidentiality) ==  new RiskRef(0)
-            it.getResidualRiskExplanation(confidentiality) == NO_RISK_NO_FUN
-            it.getRiskTreatmentExplanation(confidentiality) == RISK_ACCEPTANCE
-            it.getRiskTreatments(confidentiality) == [
+            it.getUserDefinedResidualRisk(extentOfDamage) ==  new RiskRef(0)
+            it.getResidualRiskExplanation(extentOfDamage) == NO_RISK_NO_FUN
+            it.getRiskTreatmentExplanation(extentOfDamage) == RISK_ACCEPTANCE
+            it.getRiskTreatments(extentOfDamage) == [
                 RISK_TREATMENT_ACCEPTANCE,
                 RISK_TREATMENT_REDUCTION
             ] as Set
