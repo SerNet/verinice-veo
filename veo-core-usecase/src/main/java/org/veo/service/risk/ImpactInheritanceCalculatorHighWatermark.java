@@ -594,7 +594,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     if (ids != null) {
       query.whereIdIn(new QueryCondition<>(ids));
     }
-
+    query.fetchRiskValuesAspects();
     return query.execute(PagingConfiguration.UNPAGED).getResultPage().stream().toList();
   }
 
