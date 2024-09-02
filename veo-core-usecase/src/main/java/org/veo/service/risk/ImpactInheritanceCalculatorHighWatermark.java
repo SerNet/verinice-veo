@@ -188,7 +188,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       Set<FlyweightElement> cycles = new CycleDetector<>(data.completeGraph).findCycles();
       Set<RiskAffected<?, ?>> elementsInCycle =
           mapIdsToRiskAffected(allRiskElements, toIds(cycles));
-      log.info("no roots, may be circles: {}", listNodes(elementsInCycle));
+      log.atInfo()
+          .setMessage("no roots, may be circles: {}")
+          .addArgument(() -> listNodes(elementsInCycle))
+          .log();
       clearCalculatedImpactsInCycle(elementsInCycle, domain, data.definitionRef);
       return elementsInCycle;
     }
@@ -238,8 +241,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     Set<RiskAffected<?, ?>> allRootsOfGraph =
         mapIdsToRiskAffected(parameter.riskAffectedCache, toIds(rootElementsForSubGraph));
-    log.debug("all roots in subgraph: {} ", listNodes(allRootsOfGraph));
-
+    log.atDebug()
+        .setMessage("all roots in subgraph: {} ")
+        .addArgument(() -> listNodes(allRootsOfGraph))
+        .log();
     allRootsOfGraph.stream()
         .sorted(comparing(Nameable::getName)) // walk roots in predictable manner
         .forEach(
@@ -288,10 +293,11 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     UpdateAffectedGraphParameter parameter = createParameter(data, flyweightElement, null);
     if (parameter.detectCyclesContainingVertex(affectedElement)) {
       Set<Element> elementsInCycle = parameter.findCyclesContainingVertex(affectedElement);
-      log.debug(
-          "{} is direct part of a cycle: {}",
-          affectedElement.getName(),
-          listNodes(elementsInCycle));
+      log.atDebug()
+          .setMessage("{} is direct part of a cycle: {}")
+          .addArgument(affectedElement.getName())
+          .addArgument(() -> listNodes(elementsInCycle))
+          .log();
       clearCalculatedImpactsInCycle(elementsInCycle, domain, data.definitionRef);
       return Collections.emptyList();
     }
@@ -316,11 +322,14 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     Set<CustomLink> outgoingEdges = graphData.elementGraph.outgoingEdgesOf(affectedElement);
     Set<CustomLink> incomingEdges = graphData.elementGraph.incomingEdgesOf(affectedElement);
 
-    log.debug(
-        "updateAffectedGraph: {} incomingEdges: {} outgoingEdges: {}",
-        affectedElement.getName(),
-        incomingEdges.stream().map(this::toLinkName).collect(Collectors.joining(", ")),
-        outgoingEdges.stream().map(this::toLinkName).collect(Collectors.joining(", ")));
+    log.atDebug()
+        .setMessage("updateAffectedGraph: {} incomingEdges: {} outgoingEdges: {}")
+        .addArgument(affectedElement.getName())
+        .addArgument(
+            () -> incomingEdges.stream().map(this::toLinkName).collect(Collectors.joining(", ")))
+        .addArgument(
+            () -> outgoingEdges.stream().map(this::toLinkName).collect(Collectors.joining(", ")))
+        .log();
 
     Map<CategoryRef, ImpactRef> maxImpactPerCategorie =
         getMaxImpactPerCategory(
@@ -342,10 +351,11 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     if (graphData.detectCyclesContainingVertex(affectedElement)) {
       Set<Element> elementsPartOfCycle = graphData.findCyclesContainingVertex(affectedElement);
-      log.debug(
-          "{} is direct part of a cycle: {}",
-          affectedElement.getName(),
-          listNodes(elementsPartOfCycle));
+      log.atDebug()
+          .setMessage("{} is direct part of a cycle: {}")
+          .addArgument(affectedElement.getName())
+          .addArgument(() -> listNodes(elementsPartOfCycle))
+          .log();
       clearCalculatedImpactsInCycle(
           elementsPartOfCycle, graphData.domain, graphData.riskDefinitionRef);
       // TODO: #2588 we could also return the already affected elements
@@ -626,8 +636,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
   private void clearCalculatedImpactsInCycle(
       Set<? extends Element> elementsInCycle, Domain domain, RiskDefinitionRef riskDefinitionRef) {
-    log.debug("clear calculated impact in elements : {}", listNodes(elementsInCycle));
-
+    log.atDebug()
+        .setMessage("clear calculated impact in elements : {}")
+        .addArgument(() -> listNodes(elementsInCycle))
+        .log();
     elementsInCycle.stream()
         .map(RiskAffected.class::cast)
         .forEach(
