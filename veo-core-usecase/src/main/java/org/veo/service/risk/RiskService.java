@@ -164,14 +164,16 @@ public class RiskService {
 
     // Iterate over impact categories:
     for (CategoryDefinition categoryDefinition : riskDefinition.getCategories()) {
-      calculateValuesForCategory(
-          process,
-          risk,
-          domain,
-          riskDefRef,
-          riskEvent,
-          riskValueEffectiveProbability,
-          categoryDefinition);
+      if (categoryDefinition.isRiskValuesSupported()) {
+        calculateValuesForCategory(
+            process,
+            risk,
+            domain,
+            riskDefRef,
+            riskEvent,
+            riskValueEffectiveProbability,
+            categoryDefinition);
+      }
     }
 
     if (!riskEvent.getChanges().isEmpty()) {
@@ -216,13 +218,12 @@ public class RiskService {
       RiskChangedEvent riskEvent,
       ProbabilityRef riskValueEffectiveProbability,
       CategoryDefinition categoryDefinition) {
+
     CategoryRef categoryRef = CategoryRef.from(categoryDefinition);
     var riskValueImpact = risk.getImpactProvider(riskDefinitionRef, domain);
-
     ImpactRef effectiveImpact =
         calculateImpact(
             process, domain, riskDefinitionRef, riskEvent, riskValueImpact, categoryRef);
-
     calculateRisk(
         risk,
         riskDefinitionRef,

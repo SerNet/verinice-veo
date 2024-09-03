@@ -302,7 +302,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
           var riskDefinition =
               domain
                   .getRiskDefinition(newValues.getRiskDefinitionId().value())
-                  .map(RiskDefinitionRef::from)
                   .orElseThrow(
                       () ->
                           new ReferenceTargetNotFoundException(
@@ -311,10 +310,12 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
                                   newValues.getRiskDefinitionId().value(),
                                   domain.getIdAsString())));
 
-          var ra = getOrCreateRiskAspect(domain, riskDefinition);
+          var riskDefinitionRef = RiskDefinitionRef.from(riskDefinition);
+
+          var ra = getOrCreateRiskAspect(domain, riskDefinitionRef);
           var validator =
               new DomainRiskReferenceValidator(
-                  DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinition);
+                  DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinitionRef);
 
           var probability = ra.getProbability();
           updateProbability(probability, newValues, validator);

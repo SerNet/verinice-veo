@@ -278,6 +278,7 @@ class ProcessRiskSpec extends VeoSpec {
                                 new CategoryLevel(),
                                 new CategoryLevel()
                             ]
+                            valueMatrix = []
                         }
                     ]
                     probability.levels = [
@@ -302,6 +303,7 @@ class ProcessRiskSpec extends VeoSpec {
                                 new CategoryLevel(),
                                 new CategoryLevel(),
                             ]
+                            valueMatrix = []
                         }
                     ]
                     probability.levels = [

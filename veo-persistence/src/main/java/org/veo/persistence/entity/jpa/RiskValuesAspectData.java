@@ -47,6 +47,7 @@ import org.veo.core.entity.risk.Impact;
 import org.veo.core.entity.risk.ImpactImpl;
 import org.veo.core.entity.risk.ProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -82,7 +83,10 @@ public class RiskValuesAspectData implements RiskValuesAspect {
                             riskDefinition.getIdRef(), domain.getId())));
 
     var categoryRefs =
-        domainRiskDefinition.getCategories().stream().map(CategoryRef::from).collect(toSet());
+        domainRiskDefinition.getCategories().stream()
+            .filter(CategoryDefinition::isRiskValuesSupported)
+            .map(CategoryRef::from)
+            .collect(toSet());
 
     this.impactCategories = categoryRefs.stream().map(ImpactImpl::new).toList();
 

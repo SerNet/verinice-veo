@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.core.entity.TranslationMap;
@@ -72,7 +73,7 @@ public class CategoryDefinition extends DimensionDefinition {
     initLevel(potentialImpacts);
   }
 
-  @EqualsAndHashCode.Include private List<List<RiskValue>> valueMatrix = new ArrayList<>();
+  @EqualsAndHashCode.Include private List<List<RiskValue>> valueMatrix;
   @EqualsAndHashCode.Include private List<CategoryLevel> potentialImpacts = new ArrayList<>();
 
   /** returns a risk value from the matrix for the ProbabilityLevel and the CategoryLevel. */
@@ -104,13 +105,14 @@ public class CategoryDefinition extends DimensionDefinition {
   }
 
   /**
-   * For a {@link CategoryDefinition} to be valid it needs a matrix of {@link RiskValue}'s where
-   * each value need to be present in the supplied riskValues and the matrix dimensions need to
-   * match the {@link CategoryDefinition#potentialImpacts} size and the {@link
-   * ProbabilityDefinition#getLevels()} size.
+   * A valid matrix contains {@link RiskValue}s where each value needs to be present in the supplied
+   * riskValues and the matrix dimensions need to match the {@link
+   * CategoryDefinition#potentialImpacts} size and the {@link ProbabilityDefinition#getLevels()}
+   * size.
    */
   public void validateRiskCategory(
       @NotNull List<RiskValue> riskValues, @NotNull ProbabilityDefinition probability) {
+    ensureRiskValuesSupported();
     Set<RiskValue> containedValues =
         valueMatrix.stream().flatMap(Collection::stream).collect(Collectors.toSet());
     if (containedValues.isEmpty())
@@ -133,6 +135,17 @@ public class CategoryDefinition extends DimensionDefinition {
                     "Value matrix for category " + getId() + " does not conform to probability.");
               }
             });
+  }
+
+  public void ensureRiskValuesSupported() {
+    if (!isRiskValuesSupported()) {
+      throw new IllegalArgumentException("Category " + getId() + " does not support risk values.");
+    }
+  }
+
+  @JsonIgnore
+  public boolean isRiskValuesSupported() {
+    return valueMatrix != null;
   }
 
   public Optional<CategoryLevel> getLevel(int ordinalValue) {

@@ -108,7 +108,9 @@ public class RiskDefinition {
    * valid.
    */
   public void validateRiskDefinition(DomainBase domain) {
-    categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+    categories.stream()
+        .filter(CategoryDefinition::isRiskValuesSupported)
+        .forEach(cd -> cd.validateRiskCategory(riskValues, probability));
     impactInheritingLinks.forEach(
         (elementType, links) -> {
           var elementTypeDefinition = domain.getElementTypeDefinition(elementType);

@@ -415,7 +415,7 @@ abstract class VeoSpec extends Specification {
         rd.id = id
         execute(rd, init)
         rd.categories.forEach {
-            if(it.valueMatrix.empty) {
+            if(it.valueMatrix?.empty) {
                 // Initialize value matrix with the lowest risk level for each combination of impact & probability
                 def defaultRiskLevel = rd.riskValues[0]
                 it.potentialImpacts.forEach {impact ->
