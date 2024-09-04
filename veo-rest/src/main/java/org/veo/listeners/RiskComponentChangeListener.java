@@ -29,10 +29,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.event.DomainImpactRecalculateEvent;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
 import org.veo.core.repository.GenericElementRepository;
@@ -96,7 +96,7 @@ public class RiskComponentChangeListener {
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void handle(DomainImpactRecalculateEvent event) {
+  public void handle(RiskDefinitionChangedEvent event) {
     Domain domain = event.getDomain();
     List<Unit> units = unitRepository.findByClient(event.getClient());
     units.stream()

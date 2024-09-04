@@ -22,7 +22,10 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
@@ -30,20 +33,17 @@ import lombok.Value;
  * units it is associated with.
  */
 @Value
-public class DomainImpactRecalculateEvent implements DomainEvent {
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+public class RiskDefinitionChangedEvent implements DomainEvent {
   Domain domain;
+  RiskDefinition riskDefinition;
   Client client;
   Object source;
 
-  DomainImpactRecalculateEvent(Domain domain, Client client, Object source) {
-    this.domain = domain;
-    this.source = source;
-    this.client = client;
-  }
-
-  /** Recalculate the impact for all units associated with this domain. * */
-  public static DomainImpactRecalculateEvent from(Domain domain, Object source) {
-    return new DomainImpactRecalculateEvent(domain, domain.getOwningClient().orElseThrow(), source);
+  public static RiskDefinitionChangedEvent from(
+      Domain domain, RiskDefinition riskDefinition, Object source) {
+    return new RiskDefinitionChangedEvent(
+        domain, riskDefinition, domain.getOwningClient().orElseThrow(), source);
   }
 
   @Override

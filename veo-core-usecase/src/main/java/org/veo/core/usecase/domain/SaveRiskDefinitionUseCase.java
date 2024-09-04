@@ -22,7 +22,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.event.DomainImpactRecalculateEvent;
+import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
@@ -47,7 +47,7 @@ public class SaveRiskDefinitionUseCase
       throw new NotFoundException("Domain is inactive.");
     }
     boolean isNew = domain.applyRiskDefinition(input.riskDefinitionRef, input.riskDefinition);
-    eventPublisher.publish(DomainImpactRecalculateEvent.from(domain, this));
+    eventPublisher.publish(RiskDefinitionChangedEvent.from(domain, input.riskDefinition, this));
     return new OutputData(isNew);
   }
 
