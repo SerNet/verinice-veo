@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.Column;
@@ -34,6 +35,7 @@ import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -88,7 +90,7 @@ public class RiskDefinitionSetData {
     // TODO VEO-2258 Allow more modifications on an existing risk definition.
     if (riskDefinitions.containsKey(riskDefinitionRef)) {
       var oldRiskDef = riskDefinitions.get(riskDefinitionRef);
-      if (!oldRiskDef.getCategories().equals(riskDefinition.getCategories())
+      if (!categoriesUnchangedOrOnlyMatrixesDeleted(riskDefinition, oldRiskDef)
           || !oldRiskDef.getRiskValues().equals(riskDefinition.getRiskValues())
           || !oldRiskDef
               .getImplementationStateDefinition()
@@ -98,6 +100,29 @@ public class RiskDefinitionSetData {
             "Your modifications on this existing risk definition are not supported yet. Currently, only the impact-inheriting links can be modified.");
     }
     return riskDefinitions.put(riskDefinitionRef, riskDefinition) == null;
+  }
+
+  private boolean categoriesUnchangedOrOnlyMatrixesDeleted(
+      RiskDefinition newRiskDef, RiskDefinition oldRiskDef) {
+    if (oldRiskDef.getCategories().size() != newRiskDef.getCategories().size()) {
+      return false;
+    }
+    for (int i = 0; i < oldRiskDef.getCategories().size(); i++) {
+      CategoryDefinition oldCategoryDef = oldRiskDef.getCategories().get(i);
+      CategoryDefinition newCategoryDef = newRiskDef.getCategories().get(i);
+      if (!oldCategoryDef.equals(newCategoryDef)) {
+        if (oldCategoryDef.isRiskValuesSupported() && !newCategoryDef.isRiskValuesSupported()) {
+          newCategoryDef.setValueMatrix(List.copyOf(oldCategoryDef.getValueMatrix()));
+          boolean onlyRiskMatrixRemoved = oldCategoryDef.equals(newCategoryDef);
+          newCategoryDef.setValueMatrix(null);
+          if (onlyRiskMatrixRemoved) {
+            continue;
+          }
+        }
+        return false;
+      }
+    }
+    return true;
   }
 
   public void remove(String riskDefinitionKey) {

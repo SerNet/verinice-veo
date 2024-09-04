@@ -40,6 +40,7 @@ import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.usecase.domain.DomainInUseException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
+import org.veo.persistence.entity.jpa.ProcessRiskData
 
 import groovy.json.JsonSlurper
 
@@ -1596,5 +1597,95 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "it is forbidden"
         status.andReturn().response.status == 403
+    }
+
+    @WithUserDetails("content-creator")
+    def "remove risk value matrix from a risk category"() {
+        given:
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
+
+        when:
+        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        def riskDefinition = domain.riskDefinitions.DSRA
+
+        then:
+        with(riskDefinition.categories) {
+            it.size() == 4
+            it.find{it.id == 'C'}?.riskValuesSupported
+        }
+
+        when:
+        def process = processDataRepository.findWithRisksAndScenariosByDbIdIn([processId]).first()
+        def risk = process.risks.first() as ProcessRiskData
+
+        then:
+        with(process.riskValuesAspects) {
+            it.size() == 1
+            with(first()) {
+                it.values.size() == 1
+                with (it.values.entrySet().first()) {
+                    it.key.idRef == 'DSRA'
+                    with (it.value.potentialImpacts) {
+                        it.keySet()*.idRef ==~ ['C', 'I']
+                    }
+                }
+            }
+        }
+        with(risk.riskAspects) {
+            it.size() == 1
+            with(first()) {
+                with(it.impactCategories) {
+                    it*.category*.idRef ==~ ['C', 'I', 'A', 'R']
+                }
+                with(it.riskCategories) {
+                    it*.category*.idRef ==~ ['C', 'I', 'A', 'R']
+                }
+            }
+        }
+
+        when:
+        def riskDefinitionJson = parseJson(get("/domains/$domainId")).with {
+            it.riskDefinitions.DSRA
+        }
+        riskDefinitionJson.categories.find{it.id == 'C'}.valueMatrix = null
+        put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
+        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        riskDefinition = domain.riskDefinitions.DSRA
+
+        then:
+        with(riskDefinition.categories) {
+            it.size() == 4
+            !it.find{it.id == 'C'}.riskValuesSupported
+        }
+
+        when:
+        process = processDataRepository.findWithRisksAndScenariosByDbIdIn([processId]).first()
+        risk = process.risks.first() as ProcessRiskData
+
+        then:
+        with(process.riskValuesAspects) {
+            it.size() == 1
+            with(first()) {
+                it.values.size() == 1
+                with (it.values.entrySet().first()) {
+                    it.key.idRef == 'DSRA'
+                    with (it.value.potentialImpacts) {
+                        it.keySet()*.idRef ==~ ['C', 'I']
+                    }
+                }
+            }
+        }
+        with(risk.riskAspects) {
+            it.size() == 1
+            with(first()) {
+                with(it.impactCategories) {
+                    it*.category*.idRef ==~ ['I', 'A', 'R']
+                }
+                with(it.riskCategories) {
+                    it*.category*.idRef ==~ ['I', 'A', 'R']
+                }
+            }
+        }
     }
 }
