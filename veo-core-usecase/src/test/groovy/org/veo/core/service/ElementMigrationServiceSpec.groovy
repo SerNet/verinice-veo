@@ -357,7 +357,7 @@ class ElementMigrationServiceSpec extends Specification{
         1 * element.setStatus('NEW', domain)
     }
 
-    def 'removes risk values from risks'() {
+    def 'removes risk values from risks if risk values are not supported'() {
         given:
         def category = Mock(CategoryDefinition) {
             id >> 'C'
@@ -367,6 +367,8 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinition = Mock(RiskDefinition) {
             id >> 'rd'
             getCategories() >> [category]
+            getCategory('C') >> Optional.of(category)
+            getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
 
@@ -414,6 +416,74 @@ class ElementMigrationServiceSpec extends Specification{
         1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
     }
 
+    def 'removes risk values from risks if category is removed'() {
+        given:
+        def category = Mock(CategoryDefinition) {
+            id >> 'C'
+            riskValuesSupported >> true
+        }
+
+        def category2 = Mock(CategoryDefinition) {
+            id >> 'X'
+            riskValuesSupported >> true
+        }
+
+        def riskDefinition = Mock(RiskDefinition) {
+            id >> 'rd'
+            getCategories() >> [category]
+            getCategory('C') >> Optional.of(category)
+            getCategory(_) >> Optional.empty()
+        }
+        def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+            customAspects >> []
+            links >> []
+            subTypes >> [
+                AST_Server: Mock(SubTypeDefinition) {
+                    statuses >> ["NEW"]
+                }
+            ]
+        }
+        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+
+        def risk = Mock(AssetRisk) {
+            getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
+                getAvailableCategories() >> [
+                    CategoryRef.from(category),
+                    CategoryRef.from(category2)
+                ]
+            }
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
+        }
+
+        def element = Mock(Asset) {
+            it.idAsString >> randomUUID()
+            modelType >> "asset"
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "NEW"
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
+            getImpactValues(domain)>> [
+                (riskDefinitionRef): Mock(ImpactValues) {
+                    potentialImpacts() >> [:]
+                    potentialImpactsCalculated() >> [:]
+                    potentialImpactReasons() >> [:]
+                    potentialImpactExplanations() >> [:]
+                }
+            ]
+            risks >> [risk]
+        }
+
+        when:
+        elementMigrationService.migrate(element, domain)
+
+        then:
+        1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category2), domain)
+        0 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
+    }
+
     def 'adds risk category to risk aspect if it supports risks'() {
         given:
         def category = Mock(CategoryDefinition) {
@@ -424,6 +494,8 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinition = Mock(RiskDefinition) {
             id >> 'rd'
             getCategories() >> [category]
+            getCategory('C') >> Optional.of(category)
+            getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
 
@@ -483,6 +555,8 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinition = Mock(RiskDefinition) {
             id >> 'rd'
             getCategories() >> [category]
+            getCategory('C') >> Optional.of(category)
+            getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
 

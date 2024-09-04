@@ -1782,7 +1782,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "add risk category"() {
+    def "add/remove risk category"() {
         given:
         def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
@@ -1919,6 +1919,29 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then:
         riskDsraRiskValues.impactValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
         riskDsraRiskValues.riskValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+
+        when:
+        riskDefinitionJson.categories.removeAll { it.id == 'I' }
+        put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
+        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.id).get()
+        riskDefinition = domain.riskDefinitions.DSRA
+
+        then:
+        with(riskDefinition.categories) {
+            it.size() == 4
+            it*.id ==~ ['C', 'A', 'R', 'C2']
+        }
+
+        when:
+        getProcessRiskResponse = get("/processes/$processId/risks/$scenarioId")
+        retrievedProcessRisk = parseJson(getProcessRiskResponse)
+
+        riskDomainRiskValues = retrievedProcessRisk.domains.get(domainId as String)
+        riskDsraRiskValues = riskDomainRiskValues.riskDefinitions.DSRA
+
+        then:
+        riskDsraRiskValues.impactValues*.category ==~ ['C', 'A', 'R', 'C2']
+        riskDsraRiskValues.riskValues*.category ==~ ['C', 'A', 'R', 'C2']
     }
 
     @WithUserDetails("content-creator")
