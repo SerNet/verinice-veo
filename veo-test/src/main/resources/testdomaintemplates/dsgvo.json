@@ -4839,6 +4839,7 @@
       "name": "Beispielorganisation",
       "description": "So wird's gemacht",
       "language": "de_DE",
+      "productId": "EXAMPLE_ORGANIZATION",
       "id": "ace1182e-2c93-4309-95e8-e16386e51bbd",
       "items": [
         {

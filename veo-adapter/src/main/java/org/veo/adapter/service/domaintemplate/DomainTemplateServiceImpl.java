@@ -80,7 +80,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         domain.getName(),
         domain.getTemplateVersion());
 
-    if (domain.getProfiles().stream().anyMatch(pr -> pr.getName().equals(profile.getName()))) {
+    if (domain.getProfiles().stream().anyMatch(profile::matches)) {
       log.info(
           "Profile {} already present in domain {}, skip", profile.getName(), domain.getName());
       return;

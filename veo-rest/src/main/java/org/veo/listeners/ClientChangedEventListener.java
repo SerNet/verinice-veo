@@ -144,11 +144,10 @@ public class ClientChangedEventListener {
                 products.getOrDefault(domain.getName(), Collections.emptyList()).stream()
                     .distinct()
                     .forEach(
-                        profileName -> {
+                        productId -> {
                           domain.getDomainTemplate().getProfiles().stream()
-                              .filter(isProfile(profileName))
-                              .findAny()
-                              .ifPresent(profile -> copyProfileToDomain(save, profile, domain));
+                              .filter(isProfile(productId))
+                              .forEach(profile -> copyProfileToDomain(save, profile, domain));
                         });
               });
     }
@@ -177,8 +176,8 @@ public class ClientChangedEventListener {
     return domain -> domain.getDomainTemplate().getName().equals(templateName);
   }
 
-  private Predicate<? super Profile> isProfile(String profileName) {
-    return profile -> profile.getName().equals(profileName);
+  private Predicate<? super Profile> isProfile(String productId) {
+    return profile -> productId.equals(profile.getProductId());
   }
 
   private Predicate<? super Domain> hasDomainTemplate() {

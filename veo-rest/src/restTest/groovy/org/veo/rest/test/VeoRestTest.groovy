@@ -179,9 +179,9 @@ class VeoRestTest extends Specification {
         domainTemplateCreator.create('test-domain', this)
         if (!clientsCreated) {
             sendClientChangeEvent([clientId: veoClientId, name: 'veo REST test client', type: ClientChangeType.CREATION,
-                domainProducts : ["DS-GVO": ["Beispielorganisation"], "test-domain": []]])
+                domainProducts : ["DS-GVO": ["EXAMPLE_ORGANIZATION"], "test-domain": []]])
             sendClientChangeEvent([clientId: veoSecondaryClientId, name: 'veo second REST test client', type: ClientChangeType.CREATION,
-                domainProducts : ["DS-GVO": ["Beispielorganisation"], "test-domain": []]])
+                domainProducts : ["DS-GVO": ["EXAMPLE_ORGANIZATION"], "test-domain": []]])
             new PollingConditions().within(10) {
                 getDomains()
                 get("/domains", 200, UserType.SECONDARY_CLIENT_USER)

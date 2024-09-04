@@ -210,15 +210,16 @@ class ProfileRestTest extends VeoRestTest {
             name: "To serve man",
             description: "It's a cookbook!",
             language: "en_us",
+            productId: "TO_SERVE_MAN",
         ])
         def templateUri = post("/content-creation/domains/$newDomainId/template", [
             version: "1.0.0",
         ], 201, CONTENT_CREATOR).body.targetUri
 
         sendClientChangeEvent([clientId: veoClientId, type: ClientChangeType.MODIFICATION,
-            domainProducts : [(newDomainName): ["To serve man"]]])
+            domainProducts : [(newDomainName): ["TO_SERVE_MAN"]]])
         sendClientChangeEvent([clientId: veoSecondaryClientId, type: ClientChangeType.MODIFICATION,
-            domainProducts : [(newDomainName): ["To serve man"]]])
+            domainProducts : [(newDomainName): ["TO_SERVE_MAN"]]])
 
         new PollingConditions().within(10) {
             get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{it.name == newDomainName }

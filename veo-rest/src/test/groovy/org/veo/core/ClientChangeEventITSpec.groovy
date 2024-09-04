@@ -106,7 +106,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "type": "CREATION",
             "name": "${clientName}",
             "domainProducts": {
-                "DS-GVO" : ["Beispielorganisation"],
+                "DS-GVO" : ["EXAMPLE_ORGANIZATION"],
                 "test-domain": []
             }
         }""", 1, Instant.now()))
@@ -162,8 +162,19 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 .findByIdWithProfilesAndRiskDefinitions(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get()
 
         dt.profiles.add(newProfile(dt) {
-            name = 'the new profile'
-            language = 'DE_de'
+            name = 'The New Profile'
+            language = 'en_US'
+            productId = 'NEW_PROFILE'
+        })
+        dt.profiles.add(newProfile(dt) {
+            name = 'Das neue Profil'
+            language = 'de_DE'
+            productId = 'NEW_PROFILE'
+        })
+        dt.profiles.add(newProfile(dt) {
+            name = 'The Other Profile'
+            language = 'en_US'
+            productId = 'OTHER_PROFILE'
         })
         domainTemplateDataRepository.save(dt)
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
@@ -171,7 +182,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "${cId.uuidValue()}",
             "type": "MODIFICATION",
             "domainProducts": {
-                "DSGVO-test" : ["the new profile"]
+                "DSGVO-test" : ["NEW_PROFILE"]
             }
         }""",3,Instant.now()))
 
@@ -185,8 +196,10 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 }
             }
             with(client.domains.find { it.name == 'DSGVO-test' }) {
-                profiles.size() == 1
-                profiles[0].name ==  'the new profile'
+                profiles*.name ==~  [
+                    'The New Profile',
+                    'Das neue Profil'
+                ]
             }
             client.domains.size() == 3
             client.domains*.name ==~ [
