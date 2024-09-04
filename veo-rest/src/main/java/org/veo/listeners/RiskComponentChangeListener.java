@@ -35,6 +35,7 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.decision.Decider;
@@ -97,14 +98,16 @@ public class RiskComponentChangeListener {
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskDefinitionChangedEvent event) {
-    Domain domain = event.getDomain();
-    List<Unit> units = unitRepository.findByClient(event.getClient());
-    units.stream()
-        .filter(u -> u.getDomains().contains(domain))
-        .forEach(
-            unit -> {
-              impactInheritanceCalculator.updateAllRootNodes(unit, domain);
-            });
+    RiskDefinition rd = event.getRiskDefinition();
+    if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
+      Domain domain = event.getDomain();
+      List<Unit> units = unitRepository.findByDomain(domain.getId());
+      units.stream()
+          .forEach(
+              unit -> {
+                impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId());
+              });
+    }
   }
 
   @TransactionalEventListener
