@@ -18,7 +18,6 @@
 package org.veo.core.usecase.domaintemplate;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import jakarta.validation.Valid;
 
@@ -59,7 +58,7 @@ public class CreateProfileInDomainTemplateUseCase
       throw new MissingAdminPrivilegesException();
     }
     domainTemplate.getProfiles().stream()
-        .filter(sameProfile(input.profile))
+        .filter(p -> p.matches(input.profile))
         .findFirst()
         .ifPresent(
             oldProfile -> {
@@ -85,11 +84,6 @@ public class CreateProfileInDomainTemplateUseCase
         domainTemplate.getName(),
         domainTemplate.getIdAsString());
     return true;
-  }
-
-  private Predicate<? super Profile> sameProfile(ProfileState input) {
-    // TODO: verinice-veo#2860 use the product key here
-    return p -> p.getName().equals(input.getName()) && p.getLanguage().equals(input.getLanguage());
   }
 
   @Override

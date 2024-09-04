@@ -1155,29 +1155,30 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "the profile exist"
         dt.profiles.size() == 1
 
-        when: "we add a profile"
-        result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles",
-                [ "name" : "export-test",
+        when: "we overwrite the profile"
+        result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles", [
+            "name" : "export-test improved",
+            "id": "${UUID.randomUUID()}",
+            "description" : "All the good stuff",
+            "language" : "de_DE",
+            "productId" : "EXPORT_TEST",
+            "items" : [
+                [
+                    "name" : "asset1",
                     "id": "${UUID.randomUUID()}",
-                    "description" : "All the good stuff",
-                    "language" : "de_DE",
-                    "items" : [
-                        [
-                            "name" : "asset1",
-                            "id": "${UUID.randomUUID()}",
-                            "elementType" : "asset",
-                            "subType" : "AST_Application",
-                            "status" : "NEW",
-                        ],
-                        [
-                            "name" : "asset2",
-                            "id": "${UUID.randomUUID()}",
-                            "elementType" : "asset",
-                            "subType" : "AST_Application",
-                            "status" : "NEW",
-                        ],
-                    ]
-                ]))
+                    "elementType" : "asset",
+                    "subType" : "AST_Application",
+                    "status" : "NEW",
+                ],
+                [
+                    "name" : "asset2",
+                    "id": "${UUID.randomUUID()}",
+                    "elementType" : "asset",
+                    "subType" : "AST_Application",
+                    "status" : "NEW",
+                ],
+            ]
+        ]))
 
         then:
         result != null
@@ -1192,6 +1193,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the profile exist"
         dt.profiles.size() == 1
+        dt.profiles[0].productId == 'EXPORT_TEST'
         dt.profiles[0].items.size() == 2
         dt.profiles[0].items.name ==~ ['asset1', 'asset2']
     }

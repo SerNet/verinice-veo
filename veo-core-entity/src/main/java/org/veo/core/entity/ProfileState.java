@@ -48,4 +48,15 @@ public interface ProfileState {
   String getLanguage();
 
   Set<ProfileItemState> getItemStates();
+
+  /**
+   * Determines whether product ID & language match with the other profile. The combination of these
+   * attributes must be unique within a domain (template).
+   */
+  default boolean matches(ProfileState profile) {
+    return profile.getProductId() != null
+        && profile.getProductId().equals(getProductId())
+        && profile.getLanguage() != null
+        && profile.getLanguage().equals(getLanguage());
+  }
 }
