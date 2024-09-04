@@ -42,6 +42,7 @@ import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractProfileDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
@@ -172,9 +173,7 @@ public final class EntityToDtoTransformer {
   public ExportProfileDto transformProfile2ExportDto(Profile profile) {
     ExportProfileDto profileDto = new ExportProfileDto();
     profileDto.setId(profile.getIdAsUUID());
-    profileDto.setName(profile.getName());
-    profileDto.setDescription(profile.getDescription());
-    profileDto.setLanguage(profile.getLanguage());
+    mapProfile(profile, profileDto);
     profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2ExportDto));
     return profileDto;
   }
@@ -182,9 +181,7 @@ public final class EntityToDtoTransformer {
   public FullProfileDto transformProfile2Dto(Profile profile) {
     FullProfileDto profileDto = new FullProfileDto();
     profileDto.setId(profile.getIdAsUUID());
-    profileDto.setName(profile.getName());
-    profileDto.setDescription(profile.getDescription());
-    profileDto.setLanguage(profile.getLanguage());
+    mapProfile(profile, profileDto);
     profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2Dto));
     return profileDto;
   }
@@ -192,9 +189,7 @@ public final class EntityToDtoTransformer {
   public ShortProfileDto transformProfile2ListDto(Profile profile) {
     ShortProfileDto profileDto = new ShortProfileDto();
     profileDto.setId(profile.getIdAsUUID());
-    profileDto.setName(profile.getName());
-    profileDto.setDescription(profile.getDescription());
-    profileDto.setLanguage(profile.getLanguage());
+    mapProfile(profile, profileDto);
     return profileDto;
   }
 
@@ -778,5 +773,11 @@ public final class EntityToDtoTransformer {
     target.setCreatedEntities(
         source.createdEntities().stream().map(e -> IIdRef.from(e, referenceAssembler)).toList());
     return target;
+  }
+
+  private static void mapProfile(Profile source, AbstractProfileDto target) {
+    target.setName(source.getName());
+    target.setDescription(source.getDescription());
+    target.setLanguage(source.getLanguage());
   }
 }
