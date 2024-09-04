@@ -19,15 +19,20 @@ package org.veo.listeners;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
@@ -36,9 +41,13 @@ import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.service.ElementMigrationService;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
 
@@ -56,6 +65,7 @@ public class RiskComponentChangeListener {
   private final GenericElementRepository elementRepository;
   private final UnitRepository unitRepository;
   private final Decider decider;
+  private final ElementMigrationService elementMigrationService;
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -99,8 +109,19 @@ public class RiskComponentChangeListener {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskDefinitionChangedEvent event) {
     RiskDefinition rd = event.getRiskDefinition();
+    Domain domain = event.getDomain();
+    Client client = event.getClient();
+    ElementQuery<Element> query = elementRepository.query(client);
+    query.whereDomainsContain(domain);
+    query.whereElementTypeMatches(
+        new QueryCondition<>(
+            Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+    List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+
+    elements.forEach(
+        e -> elementMigrationService.migrateRiskAffected((RiskAffected<?, ?>) e, domain, rd));
+
     if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
-      Domain domain = event.getDomain();
       List<Unit> units = unitRepository.findByDomain(domain.getId());
       units.stream()
           .forEach(
