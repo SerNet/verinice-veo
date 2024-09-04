@@ -20,8 +20,6 @@ package org.veo.rest.test
 import static java.util.UUID.randomUUID
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
-import org.springframework.security.test.context.support.WithUserDetails
-
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -89,7 +87,6 @@ class DomainRestTestITSpec extends DomainRestTest {
         response.body ==~ /.*Issues were found in the translations: Language 'de': MISSING: process_controller ; SUPERFLUOUS: superfluous_key.*/
     }
 
-    @WithUserDetails("user@domain.example")
     def "retrieve sub type statistic for the stored DS-GVO catalog items"() {
         given:
         def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
@@ -240,7 +237,6 @@ class DomainRestTestITSpec extends DomainRestTest {
         result.elementTypeDefinitions.process.translations.de.process_PRO_DataTransfer_plural == "Datenübertragungen"
     }
 
-    @WithUserDetails("content-creator")
     def "existing catalog items can be modified"() {
         given: "a unit with two elements"
         def domainId = post("/content-creation/domains", [
