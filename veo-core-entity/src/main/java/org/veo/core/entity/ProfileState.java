@@ -25,6 +25,7 @@ import org.veo.core.entity.state.ProfileItemState;
 public interface ProfileState {
   UUID getSelfId();
 
+  /** Human-readable profile name in the profile's language */
   String getName();
 
   String getDescription();

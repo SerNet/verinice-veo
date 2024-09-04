@@ -37,7 +37,7 @@ public abstract class AbstractProfileDto extends AbstractVersionedSelfReferencin
     implements ModelDto {
 
   @Schema(
-      description = "The name for the Profile.",
+      description = "Human readable profile name in the profile's language",
       example = "example organization",
       requiredMode = REQUIRED)
   @ToString.Include
