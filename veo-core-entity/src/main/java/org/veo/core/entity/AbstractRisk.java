@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategorizedRiskValueProvider;
+import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
@@ -133,4 +134,11 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
   default Scenario getSecondRelation() {
     return getScenario();
   }
+
+  /**
+   * Removes any data related to given risk definition category from this entity
+   *
+   * @return {@code true} if anything was removed, otherwise {@code false}
+   */
+  boolean removeRiskCategory(RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain);
 }

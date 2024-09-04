@@ -413,6 +413,21 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
+  public boolean removeRiskCategory(
+      RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
+        .map(
+            ra -> {
+              boolean result = ra.removeCategory(category);
+              if (ra.getAvailableCategories().isEmpty()) {
+                riskAspects.remove(ra);
+              }
+              return result;
+            })
+        .orElse(false);
+  }
+
+  @Override
   public Map<RiskDefinitionRef, RiskTailoringReferenceValues> getTailoringReferenceValues(
       Domain domain) {
     return getRiskDefinitions(domain).stream()

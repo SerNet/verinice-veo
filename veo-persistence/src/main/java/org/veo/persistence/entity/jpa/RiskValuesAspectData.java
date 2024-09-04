@@ -179,4 +179,10 @@ public class RiskValuesAspectData implements RiskValuesAspect {
               setRiskTreatmentExplanation(category, categoryValues.riskTreatmentExplanation());
             });
   }
+
+  public boolean removeCategory(CategoryRef category) {
+    boolean impactValuesRemoved = impactCategories.removeIf(c -> c.getCategory().equals(category));
+    boolean riskValuesRemoved = riskCategories.removeIf(c -> c.getCategory().equals(category));
+    return impactValuesRemoved || riskValuesRemoved;
+  }
 }

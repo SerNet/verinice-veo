@@ -19,6 +19,8 @@ package org.veo.core.service
 
 import static java.util.UUID.randomUUID
 
+import org.veo.core.entity.Asset
+import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
@@ -29,6 +31,11 @@ import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ImpactValues
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.entity.riskdefinition.CategoryDefinition
+import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.service.ElementMigrationService
 
 import spock.lang.Specification
@@ -348,5 +355,52 @@ class ElementMigrationServiceSpec extends Specification{
 
         then:
         1 * element.setStatus('NEW', domain)
+    }
+
+    def 'removes risk values from risks'() {
+        given:
+        def category = Mock(CategoryDefinition) {
+            id >> 'C'
+            riskValuesSupported >> false
+        }
+
+        def riskDefinition = Mock(RiskDefinition) {
+            id >> 'rd'
+            getCategories() >> [category]
+        }
+        def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+            customAspects >> []
+            links >> []
+            subTypes >> [
+                AST_Server: Mock(SubTypeDefinition) {
+                    statuses >> ["NEW"]
+                }
+            ]
+        }
+        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+
+        def risk = Mock(AssetRisk) {
+        }
+
+        def element = Mock(Asset) {
+            it.idAsString >> randomUUID()
+            modelType >> "asset"
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "NEW"
+            getImpactValues(domain)>> [
+                (riskDefinitionRef): Mock(ImpactValues)
+            ]
+            risks >> [risk]
+        }
+
+        when:
+        elementMigrationService.migrate(element, domain)
+
+        then:
+        1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
     }
 }

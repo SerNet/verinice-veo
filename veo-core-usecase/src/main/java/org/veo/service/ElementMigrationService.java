@@ -18,13 +18,20 @@
 package org.veo.service;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
+import org.veo.core.entity.risk.CategoryRef;
+import org.veo.core.entity.risk.ImpactValues;
+import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.base.AttributeValidator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,13 +83,53 @@ public class ElementMigrationService {
               }
               migrateAttributes(link.getAttributes(), linkDefinition.getAttributeDefinitions());
             });
-    migrateSubType(domain, definition, element);
+    boolean stillInDomain = migrateSubType(domain, definition, element);
+
+    if (stillInDomain && element instanceof RiskAffected<?, ?> ra) {
+      migrateRiskAffected(ra, domain);
+    }
+    // TODO: remove scenario probability values for deleted risk definitions
+
   }
 
-  private void migrateSubType(Domain domain, ElementTypeDefinition definition, Element element) {
-    element
+  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain) {
+    Map<RiskDefinitionRef, ImpactValues> impactValues = ra.getImpactValues(domain);
+    Iterator<Entry<RiskDefinitionRef, ImpactValues>> it = impactValues.entrySet().iterator();
+    while (it.hasNext()) {
+      Entry<RiskDefinitionRef, ImpactValues> e = it.next();
+      domain
+          .getRiskDefinition(e.getKey().getIdRef())
+          .ifPresentOrElse(
+              rd -> migrateRiskAffected(ra, domain, rd),
+              () -> {
+                // TODO remove risk values for deleted risk definitions
+              });
+    }
+  }
+
+  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
+    // TODO &54: remove risk values for removed categories
+    // TODO &53: remove risk values that are not present
+    ra.getRisks()
+        .forEach(
+            risk -> {
+              // TODO &54: remove risk values for removed categories
+              rd.getCategories()
+                  .forEach(
+                      cat -> {
+                        // TODO &53: remove risk values that are not present
+                        if (!cat.isRiskValuesSupported()) {
+                          risk.removeRiskCategory(
+                              RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
+                        }
+                      });
+            });
+  }
+
+  private boolean migrateSubType(Domain domain, ElementTypeDefinition definition, Element element) {
+    return element
         .findSubType(domain)
-        .ifPresent(
+        .map(
             subType -> {
               var subTypeDefinition = definition.getSubTypes().get(subType);
               if (subTypeDefinition == null) {
@@ -91,7 +138,7 @@ public class ElementMigrationService {
                     subType,
                     element.getIdAsString());
                 element.removeFromDomains(domain);
-                return;
+                return false;
               }
               var status = element.getStatus(domain);
               if (!subTypeDefinition.getStatuses().contains(status)) {
@@ -104,7 +151,9 @@ public class ElementMigrationService {
                     fallbackStatus);
                 element.setStatus(fallbackStatus, domain);
               }
-            });
+              return true;
+            })
+        .orElse(false);
   }
 
   /** Removes all invalid attributes from given custom aspect / link attributes. */
