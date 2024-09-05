@@ -33,6 +33,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
@@ -79,6 +80,14 @@ public class CreateProfileFromUnitUseCase
     profile.setDescription(input.description);
     profile.setLanguage(input.language);
     profile.setProductId(input.productId);
+
+    if (domain.getProfiles().stream()
+        .filter(p -> !p.equals(profile))
+        .anyMatch(p -> p.matches(profile))) {
+      throw new EntityAlreadyExistsException(
+          "A profile with product ID '%s' in language '%s' already exists in domain '%s'"
+              .formatted(profile.getProductId(), profile.getLanguage(), domain.getName()));
+    }
 
     if (input.unitId != null) {
       cleanProfile(profile);

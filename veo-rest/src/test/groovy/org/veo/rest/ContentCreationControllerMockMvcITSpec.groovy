@@ -1366,6 +1366,48 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "profile product ID + language must be unique"() {
+        given:
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsUUID
+
+        when: "trying to use an existing product ID + language"
+        post("/content-creation/domains/$domainId/profiles", [
+            name: "Neue Beispielorganisation",
+            productId: "EXAMPLE_ORGANIZATION",
+            language: "de_DE",
+        ], 409)
+
+        then:
+        def creationEx = thrown(Exception)
+        creationEx.message == "A profile with product ID 'EXAMPLE_ORGANIZATION' in language 'de_DE' already exists in domain 'DS-GVO'"
+
+        expect: "a different language to work"
+        def newProfileId = parseJson(post("/content-creation/domains/$domainId/profiles", [
+            name: "New example organization",
+            productId: "EXAMPLE_ORGANIZATION",
+            language: "en_US",
+        ])).id
+
+        when: "trying to update the profile with the original profile's language"
+        put("/content-creation/domains/$domainId/profiles/$newProfileId", [
+            name: "Sprachwechsel leicht gemacht",
+            productId: "EXAMPLE_ORGANIZATION",
+            language: "de_DE",
+        ], 409)
+
+        then:
+        def updateEx = thrown(Exception)
+        updateEx.message == "A profile with product ID 'EXAMPLE_ORGANIZATION' in language 'de_DE' already exists in domain 'DS-GVO'"
+
+        expect: "a different product ID to work"
+        put("/content-creation/domains/$domainId/profiles/$newProfileId", [
+            name: "Sprachwechsel leicht gemacht",
+            productId: "LANGUAGE_SWITCH_NOW_EASY",
+            language: "de_DE",
+        ], 204)
+    }
+
+    @WithUserDetails("content-creator")
     def "create a profile in a domain from a unit with applied items "() {
         given: "a domain and a unit with elements"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
