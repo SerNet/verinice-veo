@@ -46,6 +46,9 @@ public interface Profile extends Versioned, Identifiable, ClientOwned, ProfileSt
 
   void setLanguage(String language);
 
+  /** {@link ProfileState#getProductId()} */
+  void setProductId(String productId);
+
   Set<ProfileItem> getItems();
 
   void setItems(Set<ProfileItem> items);

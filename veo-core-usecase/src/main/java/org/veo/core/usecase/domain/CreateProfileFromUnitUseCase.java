@@ -78,6 +78,7 @@ public class CreateProfileFromUnitUseCase
     profile.setName(input.name);
     profile.setDescription(input.description);
     profile.setLanguage(input.language);
+    profile.setProductId(input.productId);
 
     if (input.unitId != null) {
       cleanProfile(profile);
@@ -130,7 +131,8 @@ public class CreateProfileFromUnitUseCase
       Key<UUID> profileId,
       String name,
       String description,
-      String language)
+      String language,
+      String productId)
       implements UseCase.InputData {}
 
   @Valid

@@ -23,7 +23,9 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ProfileState;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +38,13 @@ public class ClientChangedEvent implements ClientEvent {
   @NotNull private final ClientChangeType type;
   private final Integer maxUnits;
   private final String name;
-  // a list of domain names and profiles of these domains to add to the client
+
+  /**
+   * A list of domain names and profile product IDs that the client is licensed to use.
+   *
+   * <p>Keys are domain names ({@link Domain#getName()}), values are lists of profile product IDs
+   * ({@link ProfileState#getProductId()}). When the client is created, the domains and profiles
+   * specified here are added to the client.
+   */
   private Map<String, List<String>> domainProducts;
 }

@@ -25,6 +25,7 @@ import jakarta.validation.constraints.Size;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -54,6 +55,14 @@ public abstract class AbstractProfileDto extends AbstractVersionedSelfReferencin
   @Schema(description = "The language  of the Profile.", example = "de_DE")
   @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
   private String language;
+
+  @Schema(
+      description = "Technical key for licensing purposes",
+      example = "EXAMPLE_ORGANIZATION",
+      requiredMode = REQUIRED)
+  @ToString.Include
+  @Size(max = ProfileState.PRODUCT_ID_MAX_LENGTH)
+  private String productId;
 
   @Override
   public Class<Profile> getModelInterface() {

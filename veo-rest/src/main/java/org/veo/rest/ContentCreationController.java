@@ -431,7 +431,8 @@ public class ContentCreationController extends AbstractVeoController {
                 null,
                 createParameter.getName(),
                 createParameter.getDescription(),
-                createParameter.getLanguage()),
+                createParameter.getLanguage(),
+                createParameter.getProductId()),
             out -> IdRef.from(out.profile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -461,7 +462,8 @@ public class ContentCreationController extends AbstractVeoController {
             Key.from(profileId),
             createParameter.getName(),
             createParameter.getDescription(),
-            createParameter.getLanguage()),
+            createParameter.getLanguage(),
+            createParameter.getProductId()),
         out -> RestApiResponse.noContent());
   }
 

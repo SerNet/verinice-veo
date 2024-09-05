@@ -154,6 +154,7 @@ public class DomainStateMapper {
     target.setName(source.getName());
     target.setDescription(source.getDescription());
     target.setLanguage(source.getLanguage());
+    target.setProductId(source.getProductId());
 
     // Create all profile items and register them in the resolver before mapping them, because they
     // may reference each other.

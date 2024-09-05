@@ -708,7 +708,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test',
                     description: 'All the good stuff',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'TEST',
                 ], 201)
 
         Domain domain1 = txTemplate.execute {
@@ -723,6 +724,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == "test"
             description == "All the good stuff"
             language == "de_DE"
+            productId == "TEST"
         }
 
         when: "we update the empty profile"
@@ -731,7 +733,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test1',
                     description: 'All the good stuff, but better.',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'TEST_1',
                 ], 204)
 
         domain1 = txTemplate.execute {
@@ -746,6 +749,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == "test1"
             description == "All the good stuff, but better."
             language == "de_DE"
+            productId == "TEST_1"
         }
 
         when: "deleting the profile"
@@ -860,7 +864,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test',
                     description: 'All the good stuff',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'TEST',
                 ], 201)
 
         Domain domain1 = txTemplate.execute {
@@ -880,6 +885,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == "test"
             description == "All the good stuff"
             language == "de_DE"
+            productId == "TEST"
             items.size() == 8
         }
 
@@ -889,7 +895,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test1',
                     description: 'All the good stuff, but better.',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: "TEST_1",
                 ], 204)
 
         domain1 = txTemplate.execute {
@@ -909,6 +916,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == "test1"
             description == "All the good stuff, but better."
             language == "de_DE"
+            productId == "TEST_1"
             items.size() == 8
         }
 
@@ -925,7 +933,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test1',
                     description: 'All the good stuff, but much better.',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'TEST_1',
                 ], 204)
 
         domain1 = txTemplate.execute {
@@ -945,6 +954,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == "test1"
             description == "All the good stuff, but much better."
             language == "de_DE"
+            productId == "TEST_1"
             items.size() == 9
         }
     }
@@ -1019,7 +1029,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'export-test',
                     description: 'All the good stuff',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'EXPORT_TEST',
                 ], 201)).id
 
         def exportedProfile = parseJson(get("/domains/${domainId}/profiles/${profileId}/export"))
@@ -1028,6 +1039,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(exportedProfile) {
             name == 'export-test'
             description == 'All the good stuff'
+            productId == 'EXPORT_TEST'
             items.size() == 11
         }
         with(exportedProfile.items.find{it.name == "Control-2" }) {
@@ -1121,13 +1133,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def domainTemplate = parseJson(post("/content-creation/domains/${testDomain.idAsString}/template",[version : "1.0.0"]))
 
         when: "we add a profile"
-        def result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles",
-                [ "name" : "export-test",
-                    "id": "${UUID.randomUUID()}",
-                    "description" : "All the good stuff",
-                    "language" : "de_DE",
-                    "items" : []
-                ]))
+        def result = parseJson(post("/content-creation/domain-templates/${domainTemplate.id}/profiles", [
+            "name" : "export-test",
+            "id": "${UUID.randomUUID()}",
+            "description" : "All the good stuff",
+            "language" : "de_DE",
+            "productId": "EXPORT_TEST",
+            "items" : []
+        ]))
 
         then:
         result != null
@@ -1221,7 +1234,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [
                     name: 'test',
                     description: 'All the good stuff',
-                    language: 'de_DE'
+                    language: 'de_DE',
+                    productId: 'TEST',
                 ], 201))
 
         then: "the resource is returned"
@@ -1279,6 +1293,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name == 'test'
             description == 'All the good stuff'
             language == 'de_DE'
+            productId == 'TEST'
         }
 
         when: "we get the profile items"
@@ -1482,6 +1497,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name: 'Example elements',
             description: 'All the good stuff',
             language: 'de_DE',
+            productId: 'EXAMPLE_ELEMENTS',
         ])
         def result = parseJson(post("/content-creation/domains/${domain.idAsString}/template", [
             version : "1.2.3"
@@ -1509,6 +1525,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         with(dt.profiles.find { it.name == "Example elements" }) {
             description == 'All the good stuff'
             language == 'de_DE'
+            productId == 'EXAMPLE_ELEMENTS'
 
             items*.elementType ==~ [
                 "asset",

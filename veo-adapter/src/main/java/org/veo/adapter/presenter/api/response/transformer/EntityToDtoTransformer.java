@@ -779,5 +779,6 @@ public final class EntityToDtoTransformer {
     target.setName(source.getName());
     target.setDescription(source.getDescription());
     target.setLanguage(source.getLanguage());
+    target.setProductId(source.getProductId());
   }
 }

@@ -30,6 +30,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -41,6 +43,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.ProfileState;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
@@ -51,6 +54,15 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "profile")
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "UK_domain_product_id_language",
+          columnNames = {"product_id", "language", "domain_db_id"}),
+      @UniqueConstraint(
+          name = "UK_domain_template_product_id_language",
+          columnNames = {"product_id", "language", "domain_template_db_id"}),
+    })
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -72,6 +84,9 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
 
   @Column(name = "language", length = 20)
   private String language;
+
+  @Column(length = ProfileState.PRODUCT_ID_MAX_LENGTH)
+  private String productId;
 
   public void setItems(Set<ProfileItem> items) {
     items.stream().map(i -> (ProfileItemData) i).forEach(i -> i.setOwner(this));

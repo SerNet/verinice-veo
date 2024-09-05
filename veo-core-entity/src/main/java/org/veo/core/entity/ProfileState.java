@@ -20,13 +20,28 @@ package org.veo.core.entity;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.state.ProfileItemState;
 
 public interface ProfileState {
+  int PRODUCT_ID_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+
   UUID getSelfId();
 
   /** Human-readable profile name in the profile's language */
   String getName();
+
+  /**
+   * Technical key for licensing purposes.
+   *
+   * <p>This ID is not unique. Multiple profiles can share the same product ID, even in the same
+   * domain (e.g., when a profile exists in different languages).
+   *
+   * <p>A client can obtain a license for a profile product ID, allowing them to receive a copy of
+   * all available profiles with that product ID (see {@link
+   * ClientChangedEvent#getDomainProducts()}).
+   */
+  String getProductId();
 
   String getDescription();
 
