@@ -212,19 +212,19 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             direction == "INBOUND"
             linkType == "favScope"
             linkedElement.name == "person 1"
-            linkedElementType == "person"
+            linkedElement.type == "person"
         }
         with(scopeLinkPage.items[1]) {
             direction == "INBOUND"
             linkType == "favScope"
             linkedElement.name == "person 2"
-            linkedElementType == "person"
+            linkedElement.type == "person"
         }
         with(scopeLinkPage.items[2]) {
             direction == "OUTBOUND"
             linkType == "linkToNormalPerson"
             linkedElement.name == "person 3"
-            linkedElementType == "person"
+            linkedElement.type == "person"
         }
     }
 

@@ -38,10 +38,6 @@ public class InOrOutboundLinkDto {
   String linkType;
   ElementInDomainIdRef<Element> linkedElement;
 
-  public String getLinkedElementType() {
-    return linkedElement.getEntity().getModelType();
-  }
-
   public static InOrOutboundLinkDto from(
       InOrOutboundLink source, Domain domain, ReferenceAssembler referenceAssembler) {
     return new InOrOutboundLinkDto(
