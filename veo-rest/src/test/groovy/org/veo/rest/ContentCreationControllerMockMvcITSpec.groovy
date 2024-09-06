@@ -37,6 +37,9 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ImpactValues
+import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.usecase.domain.DomainInUseException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -1687,5 +1690,145 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 }
             }
         }
+    }
+
+    @WithUserDetails("content-creator")
+    def "add risk category"() {
+        given:
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
+
+        when:
+        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        def riskDefinition = domain.riskDefinitions.DSRA
+        def rdRef = RiskDefinitionRef.from(riskDefinition)
+
+        then:
+        with(riskDefinition.categories) {
+            it.size() == 4
+        }
+
+        when:
+        def riskDefinitionJson = parseJson(get("/domains/$domainId")).with {
+            it.riskDefinitions.DSRA
+        }
+        riskDefinitionJson.categories << riskDefinitionJson.categories.find{it.id == 'C'}.clone().tap {
+            id = 'C2'
+        }
+        put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
+        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        riskDefinition = domain.riskDefinitions.DSRA
+        def c2Ref = CategoryRef.from(riskDefinition.getCategory('C2').get())
+
+        then:
+        with(riskDefinition.categories) {
+            it.size() == 5
+            it.find{it.id == 'C2'}.riskValuesSupported
+        }
+
+        when:
+        def getProcessResponse = get("/processes/$processId")
+        def processETag = getETag(getProcessResponse)
+        def retrievedProcess = parseJson(getProcessResponse)
+
+        def processDomainRiskValues = retrievedProcess.domains.get(domainId as String)
+        def processDsraRiskValues = processDomainRiskValues.riskValues.DSRA
+
+        then:
+        processDsraRiskValues.potentialImpacts.keySet() ==~ ['C', 'I']
+
+        when:
+        def getProcessRiskResponse = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk = parseJson(getProcessRiskResponse)
+
+        def riskDomainRiskValues = retrievedProcessRisk.domains.get(domainId as String)
+        def riskDsraRiskValues = riskDomainRiskValues.riskDefinitions.DSRA
+
+        then:
+        riskDsraRiskValues.impactValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+        riskDsraRiskValues.riskValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+
+        when:
+        processDsraRiskValues.potentialImpacts.C2 = 1
+        Map headers = [
+            'If-Match': processETag
+        ]
+
+        put("/processes/$processId",retrievedProcess, headers)
+        def process = processDataRepository.findWithRisksAndScenariosByDbIdIn([processId]).first()
+
+        ImpactValues impactValues = process.getImpactValues(domain, rdRef).get()
+
+        then:
+        impactValues.potentialImpactsEffective[c2Ref].idRef == 1
+
+        when:
+        getProcessResponse = get("/processes/$processId")
+        processETag = getETag(getProcessResponse)
+        retrievedProcess = parseJson(getProcessResponse)
+
+        processDomainRiskValues = retrievedProcess.domains.get(domainId as String)
+        processDsraRiskValues = processDomainRiskValues.riskValues.DSRA
+
+        then:
+        processDsraRiskValues.potentialImpacts.keySet() ==~ ['C', 'I', 'C2']
+
+        when:
+        getProcessRiskResponse = get("/processes/$processId/risks/$scenarioId")
+        def riskETag = getETag(getProcessRiskResponse)
+        retrievedProcessRisk = parseJson(getProcessRiskResponse)
+
+        riskDomainRiskValues = retrievedProcessRisk.domains.get(domainId as String)
+        riskDsraRiskValues = riskDomainRiskValues.riskDefinitions.DSRA
+
+        then:
+        riskDsraRiskValues.impactValues*.category ==~  ['C', 'I', 'A', 'R', 'C2']
+        riskDsraRiskValues.riskValues*.category ==~  ['C', 'I', 'A', 'R', 'C2']
+
+        when:
+        def riskDsraRiskValuesImpactC2 = riskDsraRiskValues.impactValues.find{it.category == 'C2'}
+        def riskDsraRiskValuesRiskC2 = riskDsraRiskValues.riskValues.find{it.category == 'C2'}
+
+        then:
+        riskDsraRiskValuesImpactC2.specificImpact == null
+        riskDsraRiskValuesRiskC2.userDefinedResidualRisk == null
+
+        when:
+        riskDsraRiskValuesImpactC2.specificImpact = 1
+        riskDsraRiskValuesRiskC2.userDefinedResidualRisk = 2
+
+        headers = [
+            'If-Match': riskETag
+        ]
+
+        put("/processes/$processId/risks/$scenarioId",retrievedProcessRisk, headers)
+        process = processDataRepository.findWithRisksAndScenariosByDbIdIn([processId]).first()
+        def risk = process.risks.first() as ProcessRiskData
+
+        def impactProvider = risk.getImpactProvider(rdRef, domain)
+        def categorizedImpact = impactProvider.categorizedImpacts.find{it.category == c2Ref}
+
+        then:
+        categorizedImpact.specificImpact.idRef == 1
+        categorizedImpact.effectiveImpact.idRef == 1
+
+        when:
+        def riskProvider = risk.getRiskProvider(rdRef, domain)
+        def determinedRisk = riskProvider.getCategorizedRisks().find{it.category == c2Ref}
+
+        then:
+        determinedRisk.inherentRisk.idRef == 1
+        determinedRisk.userDefinedResidualRisk.idRef == 2
+
+        when:
+        getProcessRiskResponse = get("/processes/$processId/risks/$scenarioId")
+        retrievedProcessRisk = parseJson(getProcessRiskResponse)
+
+        riskDomainRiskValues = retrievedProcessRisk.domains.get(domainId as String)
+        riskDsraRiskValues = riskDomainRiskValues.riskDefinitions.DSRA
+
+        then:
+        riskDsraRiskValues.impactValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+        riskDsraRiskValues.riskValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
     }
 }

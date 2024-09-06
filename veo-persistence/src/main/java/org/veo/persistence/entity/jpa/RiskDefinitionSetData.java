@@ -22,6 +22,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -90,7 +91,7 @@ public class RiskDefinitionSetData {
     // TODO VEO-2258 Allow more modifications on an existing risk definition.
     if (riskDefinitions.containsKey(riskDefinitionRef)) {
       var oldRiskDef = riskDefinitions.get(riskDefinitionRef);
-      if (!categoriesUnchangedOrOnlyMatrixesDeleted(riskDefinition, oldRiskDef)
+      if (!categoriesAddedOrUnchangedOrOnlyMatrixesDeleted(riskDefinition, oldRiskDef)
           || !oldRiskDef.getRiskValues().equals(riskDefinition.getRiskValues())
           || !oldRiskDef
               .getImplementationStateDefinition()
@@ -102,14 +103,15 @@ public class RiskDefinitionSetData {
     return riskDefinitions.put(riskDefinitionRef, riskDefinition) == null;
   }
 
-  private boolean categoriesUnchangedOrOnlyMatrixesDeleted(
+  private boolean categoriesAddedOrUnchangedOrOnlyMatrixesDeleted(
       RiskDefinition newRiskDef, RiskDefinition oldRiskDef) {
-    if (oldRiskDef.getCategories().size() != newRiskDef.getCategories().size()) {
-      return false;
-    }
-    for (int i = 0; i < oldRiskDef.getCategories().size(); i++) {
-      CategoryDefinition oldCategoryDef = oldRiskDef.getCategories().get(i);
-      CategoryDefinition newCategoryDef = newRiskDef.getCategories().get(i);
+    for (CategoryDefinition oldCategoryDef : oldRiskDef.getCategories()) {
+      Optional<CategoryDefinition> newCategoryDefOpt =
+          newRiskDef.getCategory(oldCategoryDef.getId());
+      if (newCategoryDefOpt.isEmpty()) {
+        return false;
+      }
+      CategoryDefinition newCategoryDef = newCategoryDefOpt.get();
       if (!oldCategoryDef.equals(newCategoryDef)) {
         if (oldCategoryDef.isRiskValuesSupported() && !newCategoryDef.isRiskValuesSupported()) {
           newCategoryDef.setValueMatrix(List.copyOf(oldCategoryDef.getValueMatrix()));
