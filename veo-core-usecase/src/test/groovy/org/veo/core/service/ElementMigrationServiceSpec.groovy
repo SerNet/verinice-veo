@@ -403,4 +403,152 @@ class ElementMigrationServiceSpec extends Specification{
         then:
         1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
     }
+
+    def 'adds risk category to risk aspect if it supports risks'() {
+        given:
+        def category = Mock(CategoryDefinition) {
+            id >> 'C'
+            riskValuesSupported >> true
+        }
+
+        def riskDefinition = Mock(RiskDefinition) {
+            id >> 'rd'
+            getCategories() >> [category]
+        }
+        def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+            customAspects >> []
+            links >> []
+            subTypes >> [
+                AST_Server: Mock(SubTypeDefinition) {
+                    statuses >> ["NEW"]
+                }
+            ]
+        }
+        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+
+        def risk = Mock(AssetRisk) {
+            getRiskDefinitions(domain) >> [
+                riskDefinitionRef
+            ]
+        }
+
+        def element = Mock(Asset) {
+            it.idAsString >> randomUUID()
+            modelType >> "asset"
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "NEW"
+            getImpactValues(domain)>> [
+                (riskDefinitionRef): Mock(ImpactValues)
+            ]
+            risks >> [risk]
+        }
+
+        when:
+        elementMigrationService.migrate(element, domain)
+
+        then:
+        1 * risk.addRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
+    }
+
+    def 'does not add risk category to risk aspect if it does not support risks'() {
+        given:
+        def category = Mock(CategoryDefinition) {
+            id >> 'C'
+            riskValuesSupported >> false
+        }
+
+        def riskDefinition = Mock(RiskDefinition) {
+            id >> 'rd'
+            getCategories() >> [category]
+        }
+        def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+            customAspects >> []
+            links >> []
+            subTypes >> [
+                AST_Server: Mock(SubTypeDefinition) {
+                    statuses >> ["NEW"]
+                }
+            ]
+        }
+        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+
+        def risk = Mock(AssetRisk) {
+            getRiskDefinitions(domain) >> [
+                riskDefinitionRef
+            ]
+        }
+
+        def element = Mock(Asset) {
+            it.idAsString >> randomUUID()
+            modelType >> "asset"
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "NEW"
+            getImpactValues(domain)>> [
+                (riskDefinitionRef): Mock(ImpactValues)
+            ]
+            risks >> [risk]
+        }
+
+        when:
+        elementMigrationService.migrate(element, domain)
+
+        then:
+        0 * risk.addRiskCategory(_)
+    }
+
+    def 'does not add risk category if aspect for rd does not exist'() {
+        given:
+        def category = Mock(CategoryDefinition) {
+            id >> 'C'
+            riskValuesSupported >> true
+        }
+
+        def riskDefinition = Mock(RiskDefinition) {
+            id >> 'rd'
+            getCategories() >> [category]
+        }
+        def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+            customAspects >> []
+            links >> []
+            subTypes >> [
+                AST_Server: Mock(SubTypeDefinition) {
+                    statuses >> ["NEW"]
+                }
+            ]
+        }
+        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+
+        def risk = Mock(AssetRisk) {
+            getRiskDefinitions(domain) >> []
+        }
+
+        def element = Mock(Asset) {
+            it.idAsString >> randomUUID()
+            modelType >> "asset"
+            getCustomAspects(domain) >> ([] as Set)
+            getLinks(domain) >> ([] as Set)
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "NEW"
+            getImpactValues(domain)>> [
+                (riskDefinitionRef): Mock(ImpactValues)
+            ]
+            risks >> [risk]
+        }
+
+        when:
+        elementMigrationService.migrate(element, domain)
+
+        then:
+        0 * risk.addRiskCategory(_)
+    }
 }

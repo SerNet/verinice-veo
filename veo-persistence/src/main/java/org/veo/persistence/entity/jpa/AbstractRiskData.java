@@ -428,6 +428,21 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
+  public boolean addRiskCategory(
+      RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
+        .map(
+            ra -> {
+              if (!ra.getAvailableCategories().contains(category)) {
+                ra.addCategory(category);
+                return true;
+              }
+              return false;
+            })
+        .orElse(false);
+  }
+
+  @Override
   public Map<RiskDefinitionRef, RiskTailoringReferenceValues> getTailoringReferenceValues(
       Domain domain) {
     return getRiskDefinitions(domain).stream()

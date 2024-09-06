@@ -141,4 +141,6 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
    * @return {@code true} if anything was removed, otherwise {@code false}
    */
   boolean removeRiskCategory(RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain);
+
+  boolean addRiskCategory(RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain);
 }

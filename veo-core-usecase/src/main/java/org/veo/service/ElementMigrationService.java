@@ -110,6 +110,7 @@ public class ElementMigrationService {
   public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
     // TODO &54: remove risk values for removed categories
     // TODO &53: remove risk values that are not present
+    RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
     ra.getRisks()
         .forEach(
             risk -> {
@@ -120,6 +121,10 @@ public class ElementMigrationService {
                         // TODO &53: remove risk values that are not present
                         if (!cat.isRiskValuesSupported()) {
                           risk.removeRiskCategory(
+                              RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
+                        } else if (cat.isRiskValuesSupported()
+                            && risk.getRiskDefinitions(domain).contains(rdRef)) {
+                          risk.addRiskCategory(
                               RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
                         }
                       });

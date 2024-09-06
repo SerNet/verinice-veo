@@ -185,4 +185,9 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     boolean riskValuesRemoved = riskCategories.removeIf(c -> c.getCategory().equals(category));
     return impactValuesRemoved || riskValuesRemoved;
   }
+
+  public void addCategory(CategoryRef category) {
+    impactCategories.add(new ImpactImpl(category));
+    riskCategories.add(new DeterminedRiskImpl(category));
+  }
 }
