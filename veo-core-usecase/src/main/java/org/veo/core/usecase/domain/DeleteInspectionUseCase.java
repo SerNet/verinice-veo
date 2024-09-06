@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -38,6 +39,7 @@ public class DeleteInspectionUseCase
   public EmptyOutput execute(InputData input) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
     domain.removeInspection(input.inspectionId);
+    domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }
 

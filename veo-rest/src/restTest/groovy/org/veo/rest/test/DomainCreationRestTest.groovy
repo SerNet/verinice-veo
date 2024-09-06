@@ -51,12 +51,20 @@ class DomainCreationRestTest extends DomainRestTest {
 
         when: "defining an element type, decision, inspection & incarnation config in the domain"
         postAssetObjectSchema(domainId)
+        def domainUpdatedBeforeDecisionUpdate = get("/domains/$domainId").body.updatedAt
+
         put("/content-creation/domains/${domainId}/decisions/truthy", [
             name: [en: "Decision that always outputs true"],
             elementType: "asset",
             elementSubType: "server",
             defaultResultValue: true,
         ], null, 201, CONTENT_CREATOR)
+        def domainUpdatedAfterDecisionUpdate = get("/domains/$domainId").body.updatedAt
+
+        then:
+        domainUpdatedAfterDecisionUpdate > domainUpdatedBeforeDecisionUpdate
+
+        when:
         put("/content-creation/domains/${domainId}/inspections/alwaysAddPart", [
             description: [en: "You should always add a part, no matter what"],
             severity: "HINT",
@@ -70,6 +78,11 @@ class DomainCreationRestTest extends DomainRestTest {
                 [type: "addPart"]
             ]
         ], null, 201, CONTENT_CREATOR)
+
+        then:
+        get("/domains/$domainId").body.updatedAt > domainUpdatedAfterDecisionUpdate
+
+        when:
         get("/domains/$domainId/incarnation-configuration").with {
             body.exclude = ["COMPOSITE"]
             put("/content-creation/domains/$domainId/incarnation-configuration", body, getETag(), 204, CONTENT_CREATOR)

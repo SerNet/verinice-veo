@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -107,6 +108,7 @@ public class CreateProfileFromUnitUseCase
         profile.getName(),
         domain.getName(),
         profile.getItems().size());
+    domain.setUpdatedAt(Instant.now());
     return new OutputData(p);
   }
 

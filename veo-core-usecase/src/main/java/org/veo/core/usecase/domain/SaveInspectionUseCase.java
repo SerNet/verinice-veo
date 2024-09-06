@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -39,7 +40,9 @@ public class SaveInspectionUseCase
   @Override
   public OutputData execute(InputData input) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
-    return new OutputData(domain.applyInspection(input.inspectionId, input.inspection));
+    boolean isNew = domain.applyInspection(input.inspectionId, input.inspection);
+    domain.setUpdatedAt(Instant.now());
+    return new OutputData(isNew);
   }
 
   @Override

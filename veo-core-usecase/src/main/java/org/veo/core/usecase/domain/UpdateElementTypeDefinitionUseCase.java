@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,6 +80,7 @@ public class UpdateElementTypeDefinitionUseCase
     }
 
     domain.applyElementTypeDefinition(elementTypeDefinition);
+    domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }
 

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class CreateCatalogFromUnitUseCase
     catalogItemRepository.saveAll(new HashSet<>(elementsToCatalogItems.values()));
     log.info(
         "new catalog in domain {} with {} elements created", domain.getName(), elements.size());
+    domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }
 

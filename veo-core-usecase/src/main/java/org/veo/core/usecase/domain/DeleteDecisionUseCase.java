@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -42,6 +43,7 @@ public class DeleteDecisionUseCase
       throw new NotFoundException("Domain is inactive.");
     }
     domain.removeDecision(input.decisionKey);
+    domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }
 

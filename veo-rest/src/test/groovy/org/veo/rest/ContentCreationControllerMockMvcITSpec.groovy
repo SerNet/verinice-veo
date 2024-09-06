@@ -223,7 +223,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         })
         client = clientRepository.save(client)
-
+        testDomain = client.domains.find{it.name == "Domain 1"}
+        def lastVersion = testDomain.version
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
             new JsonSlurper().parse(it)
         }
@@ -248,6 +249,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: 'the entity schemas are updated'
+        updatedDomain.version > lastVersion
         with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() == [
@@ -285,6 +287,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "update an element type definition in a domain"() {
         given:
+        def lastUpdate = testDomain.updatedAt
+        def lastVersion = testDomain.version
+
+        testDomain = client.domains.find{it.name == "Domain 1"}
         def schemaJson = [
             subTypes:[
                 SCP_Container:[
@@ -342,6 +348,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: 'the entity schemas are updated'
+        updatedDomain.version > lastVersion
         with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() ==~ [
@@ -472,7 +479,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def domainId = domain.idAsUUID
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
-
+        def firstVersion = domain.version
         post("/domains/${domainId}/processes/${processId}/links", [
             process_requiredApplications: [
                 [
@@ -525,11 +532,18 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
                 [:], 204)
 
-        def catalogItems = txTemplate.execute {
-            domainDataRepository.findById(domainId).get().catalogItems.each {
-                it.tailoringReferences.size()
+        domain = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().tap {
+                it.catalogItems*.tailoringReferences*.size()
             }
         }
+        def newVersion = domain.version
+
+        then:
+        newVersion > firstVersion
+
+        when:
+        def catalogItems = domain.catalogItems
 
         then:
         catalogItems.size() == 12
@@ -631,12 +645,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "the reference to the updated catalog item is intact"
         asset.appliedCatalogItems.size() == 1
 
-        when: "we incarnate scenario 1 and link the composite feature to the first scenario"
-        catalogItems = txTemplate.execute {
-            domainDataRepository.findById(domainId).get().catalogItems.each {
-                it.tailoringReferences.size()
+        when:
+        domain = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().tap {
+                it.catalogItems*.tailoringReferences*.size()
             }
         }
+        def finalVersion = domain.version
+
+        then:
+        finalVersion > newVersion
+
+        when: "we incarnate scenario 1 and link the composite feature to the first scenario"
+        catalogItems = catalogItems = domain.catalogItems
 
         def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.symbolicIdAsString}.join(',')
         incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$scenarioItemIds&mode=MANUAL"))
@@ -701,7 +722,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create an empty profile in a domain"() {
         given: "a domain"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        def domainId = domain.idAsUUID
+        def firstVersion = domain.version
 
         when: "we create a new empty profile"
         post("/content-creation/domains/${domainId}/profiles",
@@ -717,8 +740,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             d.profiles.size()
             d
         }
+        def newVersion = domain1.version
 
         then: "the profile is created"
+        newVersion > firstVersion
         domain1.getProfiles().size()==1
         with(domain1.getProfiles().first()) {
             name == "test"
@@ -742,8 +767,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             d.profiles.size()
             d
         }
+        def thirdVersion = domain1.version
 
         then: "the profile is updated"
+        thirdVersion > newVersion
         domain1.getProfiles().size()==1
         with(domain1.getProfiles().first()) {
             name == "test1"

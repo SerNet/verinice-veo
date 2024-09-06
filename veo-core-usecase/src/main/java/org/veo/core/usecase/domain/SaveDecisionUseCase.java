@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -42,7 +43,9 @@ public class SaveDecisionUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    return new OutputData(domain.applyDecision(input.decisionRef, input.decision));
+    boolean isNew = domain.applyDecision(input.decisionRef, input.decision);
+    domain.setUpdatedAt(Instant.now());
+    return new OutputData(isNew);
   }
 
   @Override
