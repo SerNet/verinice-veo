@@ -97,8 +97,8 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .accept(APPLICATION_JSON), expectedStatusCode)
     }
 
-    ResultActions get(String url, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
-        doRequest(MockMvcRequestBuilders.get(url).tap {b->
+    ResultActions get(CharSequence url, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
+        doRequest(MockMvcRequestBuilders.get(url.toString()).tap {b->
             mediaType?.with{b.accept(it)}
         }, expectedStatusCode)
     }

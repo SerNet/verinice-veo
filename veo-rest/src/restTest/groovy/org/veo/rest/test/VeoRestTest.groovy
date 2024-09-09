@@ -196,8 +196,8 @@ class VeoRestTest extends Specification {
         eventDispatcher.send(exchange, new EventMessage("${routingKeyPrefix}client_change", JsonOutput.toJson(data+[eventType: 'client_change']), 1, Instant.now()))
     }
 
-    Response get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT, MediaType mediaType = MediaType.APPLICATION_JSON) {
-        def resp = exchange(uri, HttpMethod.GET, new HttpHeaders().tap{
+    Response get(CharSequence uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT, MediaType mediaType = MediaType.APPLICATION_JSON) {
+        def resp = exchange(uri.toString(), HttpMethod.GET, new HttpHeaders().tap{
             put("accept", [mediaType.toString()])
         }, null, userType)
         assertStatusCode?.tap{
