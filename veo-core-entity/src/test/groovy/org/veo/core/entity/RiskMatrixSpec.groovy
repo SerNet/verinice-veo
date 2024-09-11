@@ -510,35 +510,6 @@ class RiskMatrixSpec extends Specification {
 
         then: "it validates nicely"
         rd.validateRiskDefinition()
-
-        and: "we get some values from the risk matrix of the category"
-        cd.getRiskValue(rd.probability.levels[0], cd.potentialImpacts[0]) == rd.riskValues[1]
-        cd.getRiskValue(rd.probability.levels[0], cd.potentialImpacts[2]) == rd.riskValues[0]
-
-        when: "the probability is not right"
-        ProbabilityLevel pl = new ProbabilityLevel("color-1")
-        pl.ordinalValue = 10
-        cd.getRiskValue(pl,  cd.potentialImpacts[0])
-
-        then: "illegal Argument exception is thrown"
-        iae = thrown()
-        iae.message == "No risk value for probability: 10"
-
-        when: "the implact level is not right"
-        CategoryLevel cl = new CategoryLevel("color-1")
-        cl.setOrdinalValue(10)
-        cd.getRiskValue(rd.probability.levels[0], cl)
-
-        then: "illegal Argument exception is thrown"
-        iae = thrown()
-        iae.message == "CategoryLevel not part of potentialImpacts: CategoryLevel(super=DiscreteValue(ordinalValue=10, htmlColor=color-1))"
-
-        when: "the implact level is right"
-        cl = new CategoryLevel("color-4")
-        cl.setOrdinalValue(0)
-
-        then: "the value is returned"
-        cd.getRiskValue(rd.probability.levels[0], cl) == rd.riskValues[1]
     }
 
     private <T> Set<ConstraintViolation<T>> getJakartaViolations(T object) {

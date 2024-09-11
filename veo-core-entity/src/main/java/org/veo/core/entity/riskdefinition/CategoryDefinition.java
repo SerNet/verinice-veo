@@ -77,18 +77,6 @@ public class CategoryDefinition extends DimensionDefinition {
   @EqualsAndHashCode.Include private List<List<RiskValue>> valueMatrix;
   @EqualsAndHashCode.Include private List<CategoryLevel> potentialImpacts = new ArrayList<>();
 
-  /** returns a risk value from the matrix for the ProbabilityLevel and the CategoryLevel. */
-  public RiskValue getRiskValue(ProbabilityLevel plevel, CategoryLevel clevel) {
-    ensureRiskValuesSupported();
-    if (potentialImpacts.stream()
-        .filter(pi -> pi.getOrdinalValue() == clevel.getOrdinalValue())
-        .findAny()
-        .isEmpty()) {
-      throw new IllegalArgumentException("CategoryLevel not part of potentialImpacts: " + clevel);
-    }
-    return getRiskValue(ProbabilityRef.from(plevel), ImpactRef.from(clevel));
-  }
-
   public RiskValue getRiskValue(ProbabilityRef effectiveProbability, ImpactRef effectiveImpact) {
     ensureRiskValuesSupported();
     int categoryOrdinalValue = effectiveImpact.getIdRef().intValue();
