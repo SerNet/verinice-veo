@@ -22,6 +22,8 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.EntityType;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,5 +42,19 @@ public abstract class AbstractCompositeElementInDomainDto<T extends CompositeEle
   @Schema(description = "Elements contained in this composite element")
   public Set<ElementInDomainIdRef<T>> getParts() {
     return parts;
+  }
+
+  public void setParts(Set<ElementInDomainIdRef<T>> parts) {
+    parts.forEach(
+        p -> {
+          if (!p.getType().equals(getModelInterface())) {
+            throw new UnprocessableDataException(
+                EntityType.getPluralTermByType(p.getType())
+                    + " cannot be parts of "
+                    + EntityType.getPluralTermByType(getModelInterface())
+                    + ".");
+          }
+        });
+    this.parts = parts;
   }
 }

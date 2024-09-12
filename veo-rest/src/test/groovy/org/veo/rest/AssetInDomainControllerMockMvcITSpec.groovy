@@ -20,6 +20,7 @@ package org.veo.rest
 import static java.util.UUID.randomUUID
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
@@ -406,5 +407,36 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         with(parseJson(get("/domains/$testDomainId/assets/$assetId"))) {
             riskValues.riskyDef.potentialImpacts.C == 1
         }
+    }
+
+    def "scope can not be an asset's part"() {
+        given:
+        def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
+            name: "The Company",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW"
+        ])).resourceId
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
+            name: "Truth",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Information",
+            status: "CURRENT"
+        ])).resourceId
+        def assetResponse = get("/domains/$testDomainId/assets/$assetId")
+        def etag = getETag(assetResponse)
+        def asset = parseJson(assetResponse)
+
+        when:
+        asset.parts = [
+            [targetUri: "/domains/$testDomainId/scopes/$scopeId"]
+        ]
+        put("/domains/$testDomainId/assets/$assetId", asset, [
+            'If-Match': etag
+        ], 422)
+
+        then:
+        HttpMessageNotReadableException e = thrown()
+        e.message == 'JSON parse error: scopes cannot be parts of assets.'
     }
 }
