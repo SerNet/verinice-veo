@@ -31,6 +31,7 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.base.AttributeValidator;
 
@@ -119,29 +120,19 @@ public class ElementMigrationService {
     RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
     migrateImpacts(ra, domain, rd);
 
-    ra.getRisks()
+    var availableCats =
+        rd.getCategories().stream()
+            .filter(CategoryDefinition::isRiskValuesSupported)
+            .map(CategoryRef::from)
+            .toList();
+    ra.getRisks().stream()
+        .filter(r -> r.getRiskDefinitions(domain).contains(rdRef))
         .forEach(
             risk -> {
-              rd.getCategories()
-                  .forEach(
-                      cat -> {
-                        if (!cat.isRiskValuesSupported()) {
-                          risk.removeRiskCategory(
-                              RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
-                        } else if (cat.isRiskValuesSupported()
-                            && risk.getRiskDefinitions(domain).contains(rdRef)) {
-                          risk.addRiskCategory(
-                              RiskDefinitionRef.from(rd), CategoryRef.from(cat), domain);
-                        }
-                      });
-
-              if (risk.getRiskDefinitions(domain).contains(rdRef)) {
-                List<CategoryRef> availableCats =
-                    rd.getCategories().stream().map(CategoryRef::from).toList();
-                risk.getImpactProvider(rdRef, domain).getAvailableCategories().stream()
-                    .filter(c -> !availableCats.contains(c))
-                    .forEach(cat -> risk.removeRiskCategory(rdRef, cat, domain));
-              }
+              availableCats.forEach(goodCat -> risk.addRiskCategory(rdRef, goodCat, domain));
+              risk.getImpactProvider(rdRef, domain).getAvailableCategories().stream()
+                  .filter(c -> !availableCats.contains(c))
+                  .forEach(badCat -> risk.removeRiskCategory(rdRef, badCat, domain));
             });
   }
 
