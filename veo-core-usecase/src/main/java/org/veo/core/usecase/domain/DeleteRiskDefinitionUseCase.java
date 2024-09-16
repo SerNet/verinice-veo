@@ -23,7 +23,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.repository.DomainRepository;
@@ -45,16 +44,6 @@ public class DeleteRiskDefinitionUseCase
     var domain = domainRepository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
-    }
-    // If the risk definition has already been published in a domain template, deleting it from this
-    // domain could be dangerous. It would mean that when this domain is published as new domain
-    // template and a client wants to migrate to that new template version, the risk definition has
-    // to be removed from the client's elements & risks. We have no migration code to handle that
-    // situation.
-    if (domain.getDomainTemplate() != null
-        && domain.getDomainTemplate().getRiskDefinition(input.riskDefinitionRef).isPresent()) {
-      throw new EntityAlreadyExistsException(
-          "Deleting a risk definition that is part of a domain template is currently not supported.");
     }
     var riskDefRef =
         DomainRiskReferenceProvider.referencesForDomain(domain)

@@ -1660,6 +1660,22 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "risk definition from domain template can be deleted"() {
+        given:
+        def dsgvoId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsString
+        def dsgvoUpdatedAt = parseJson(get("/domains/$dsgvoId")).updatedAt
+
+        when: "deleting the risk definition"
+        delete("/content-creation/domains/$dsgvoId/risk-definitions/DSRA")
+
+        then: "it's gone"
+        with(parseJson(get("/domains/$dsgvoId"))) {
+            riskDefinitions == [:]
+            updatedAt > dsgvoUpdatedAt
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "Profile metadata are optional"() {
         given:
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)

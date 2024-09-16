@@ -257,11 +257,6 @@ class DomainCreationRestTest extends DomainRestTest {
             probability.levels[2].ordinalValue == 2
         }
     }
-    def "cannot delete risk definition from a template"() {
-        expect: "trying to delete the DS-GVO risk definition to be illegal"
-        delete("/content-creation/domains/$dsgvoDomainId/risk-definitions/DSRA", 409, CONTENT_CREATOR)
-                .body.message == "Deleting a risk definition that is part of a domain template is currently not supported."
-    }
 
     def "risk definition is validated"() {
         given: "a new domain"
