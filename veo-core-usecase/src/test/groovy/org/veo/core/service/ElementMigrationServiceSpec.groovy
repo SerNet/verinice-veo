@@ -396,6 +396,7 @@ class ElementMigrationServiceSpec extends Specification{
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
             getImpactValues(domain)>> [
                 (riskDefinitionRef): Mock(ImpactValues) {
                     potentialImpacts() >> [:]
@@ -454,6 +455,7 @@ class ElementMigrationServiceSpec extends Specification{
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
             getImpactValues(domain)>> [
                 (riskDefinitionRef): Mock(ImpactValues) {
                     potentialImpacts() >> [:]
@@ -512,6 +514,7 @@ class ElementMigrationServiceSpec extends Specification{
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
             getImpactValues(domain)>> [
                 (riskDefinitionRef): Mock(ImpactValues) {
                     potentialImpacts() >> [:]
@@ -568,6 +571,7 @@ class ElementMigrationServiceSpec extends Specification{
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
             getStatus(domain) >> "NEW"
+            getRiskDefinitions(domain) >> [riskDefinitionRef]
             getImpactValues(domain)>> [
                 (riskDefinitionRef): Mock(ImpactValues) {
                     potentialImpacts() >> [:]

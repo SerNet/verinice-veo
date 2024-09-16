@@ -87,34 +87,21 @@ public class ElementMigrationService {
             });
     boolean stillInDomain = migrateSubType(domain, definition, element);
 
-    if (stillInDomain && element instanceof RiskAffected<?, ?> ra) {
-      migrateRiskAffected(ra, domain);
+    if (stillInDomain && element instanceof RiskRelated rrl) {
+      migrateRiskRelated(rrl, domain);
     }
-    // TODO: remove scenario probability values for deleted risk definitions
-
   }
 
-  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain) {
-    Map<RiskDefinitionRef, ImpactValues> impactValues = ra.getImpactValues(domain);
-    impactValues
-        .entrySet()
+  public void migrateRiskRelated(RiskRelated riskRelated, Domain domain) {
+    riskRelated
+        .getRiskDefinitions(domain)
         .forEach(
-            e -> {
-              domain
-                  .getRiskDefinition(e.getKey().getIdRef())
-                  .ifPresentOrElse(
-                      rd -> migrateRiskAffected(ra, domain, rd),
-                      () -> removeRiskDefinition(ra, domain, e.getKey()));
-            });
-  }
-
-  private void removeRiskDefinition(RiskAffected<?, ?> ra, Domain domain, RiskDefinitionRef rd) {
-    ra.removeRiskDefinition(rd, domain);
-    ra.getRisks()
-        .forEach(
-            risk -> {
-              risk.removeRiskDefinition(rd, domain);
-            });
+            rdRef ->
+                domain
+                    .getRiskDefinition(rdRef.getIdRef())
+                    .ifPresentOrElse(
+                        rd -> migrateRiskRelated(riskRelated, domain, rd),
+                        () -> riskRelated.removeRiskDefinition(rdRef, domain)));
   }
 
   public void migrateRiskRelated(RiskRelated riskRelated, Domain domain, RiskDefinition rd) {

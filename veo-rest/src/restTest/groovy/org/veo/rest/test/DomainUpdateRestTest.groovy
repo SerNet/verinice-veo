@@ -185,6 +185,64 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
     }
 
+    def "removes risk values for deleted risk definition"() {
+        given:
+        createOldAndNewTemplate { it.riskDefinitions = [:] }
+
+        and:
+        def scopeId = post("/domains/$oldDomainId/scopes", [
+            name: "scp",
+            subType: "SCP_ResponsibleBody",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskDefinition: "definitelyRisky",
+            riskValues: [
+                definitelyRisky: [
+                    potentialImpacts: [
+                        nyanCat: 0
+                    ]
+                ]
+            ],
+        ]).body.resourceId
+        def scenarioId = post("/domains/$oldDomainId/scenarios", [
+            name: "scn",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskValues: [
+                definitelyRisky: [
+                    potentialProbability: 0
+                ]
+            ],
+        ]).body.resourceId
+        post("/scopes/$scopeId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains: [
+                (oldDomainId): [
+                    reference: [targetUri: "/domains/$oldDomainId"],
+                    riskDefinitions: [
+                        definitelyRisky: [
+                            probability: [
+                                specificProbability: 0
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ])
+
+        when:
+        def newDomainId = migrateToNewDomain()
+
+        then:
+        with(get("/domains/$newDomainId/scopes/$scopeId").body) {
+            riskDefinition == null
+            riskValues == [:]
+        }
+        get("/domains/$newDomainId/scenarios/$scenarioId").body.riskValues == [:]
+        get("/scopes/$scopeId/risks/$scenarioId").body.domains[newDomainId].riskDefinitions == [:]
+    }
+
     private createOldAndNewTemplate(Consumer<Map> updateTemplate) {
         templateName = "domain update test template ${UUID.randomUUID()}"
 
@@ -339,6 +397,21 @@ class DomainUpdateRestTest extends VeoRestTest {
                         ]
                     ],
                     defaultResultValue: true
+                ]
+            ],
+            riskDefinitions: [
+                definitelyRisky: [
+                    id: "definitelyRisky",
+                    riskValues: [[symbolicRisk: "one"]],
+                    probability: [levels: [[:]]],
+                    categories: [
+                        [
+                            id: "nyanCat",
+                            potentialImpacts: [[:]],
+                            valueMatrix: [[[symbolicRisk: "one"]]]
+                        ]
+                    ],
+                    riskMethod: [:]
                 ]
             ]
         ]
