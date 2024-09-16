@@ -20,6 +20,8 @@ package org.veo.rest.test
 import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
+import java.util.function.Consumer
+
 class DomainUpdateRestTest extends VeoRestTest {
 
     String oldDomainTemplateId
@@ -28,22 +30,11 @@ class DomainUpdateRestTest extends VeoRestTest {
     String unitId
     String oldDomainId
 
-    def setup() {
-        templateName = "domain update test template ${UUID.randomUUID()}"
-
-        def template = getTemplate()
-        oldDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-
-        template.templateVersion = "1.1.0"
-        newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-
-        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
-        unitId = postNewUnit().resourceId
-        oldDomainId = get("/domains").body.find { it.name == templateName }.id
-    }
-
     def "updates client to new domain template version and migrates elements"() {
-        given: "a scope and a process linked to it in the old domain"
+        given:
+        createOldAndNewTemplate {}
+
+        and: "a scope and a process linked to it in the old domain"
         def scopeId = post("/scopes", [
             name: "target scope",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -142,7 +133,10 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "information in other domains is untouched during migration"() {
-        given: "a document associated with two domains"
+        given:
+        createOldAndNewTemplate {}
+
+        and: "a document associated with two domains"
         def targetPersonId = post("/domains/$testDomainId/persons", [
             name: "Manuel el autor",
             subType: "MasterOfDisaster",
@@ -189,6 +183,21 @@ class DomainUpdateRestTest extends VeoRestTest {
             links.author[0].target.name == "Manuel el autor"
             links.author[0].attributes.writingFinished == "2024-04-01"
         }
+    }
+
+    private createOldAndNewTemplate(Consumer<Map> updateTemplate) {
+        templateName = "domain update test template ${UUID.randomUUID()}"
+
+        def template = getTemplate()
+        oldDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
+
+        updateTemplate(template)
+        template.templateVersion = "1.1.0"
+        newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
+
+        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
+        unitId = postNewUnit().resourceId
+        oldDomainId = get("/domains").body.find { it.name == templateName }.id
     }
 
     private LinkedHashMap<String, Serializable> getTemplate() {
