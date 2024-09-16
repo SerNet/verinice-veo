@@ -28,11 +28,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -61,13 +59,5 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
   @Override
   ProcessRisk createRisk(Scenario scenario) {
     return new ProcessRiskData(this, scenario);
-  }
-
-  @Override
-  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
-    return super.removeRiskDefinition(riskDefinition, domain)
-        | findAspectByDomain(riskValuesAspects, domain)
-            .map(a -> a.values.remove(riskDefinition) != null)
-            .orElse(false);
   }
 }

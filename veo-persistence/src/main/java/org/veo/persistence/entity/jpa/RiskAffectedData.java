@@ -245,9 +245,12 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   @Override
   public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
     return getRisks().stream()
-        .map(r -> r.removeRiskDefinition(riskDefinition, domain))
-        .toList()
-        .contains(true);
+            .map(r -> r.removeRiskDefinition(riskDefinition, domain))
+            .toList()
+            .contains(true)
+        | findAspectByDomain(riskValuesAspects, domain)
+            .map(a -> a.values.remove(riskDefinition) != null)
+            .orElse(false);
   }
 
   /**
