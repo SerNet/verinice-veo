@@ -32,6 +32,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ElementEvent;
@@ -114,12 +115,13 @@ public class RiskComponentChangeListener {
     if (event.isMigrateElements()) {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
+      // TODO #3142 migrate scenarios
       query.whereElementTypeMatches(
           new QueryCondition<>(
               Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       elements.forEach(
-          e -> elementMigrationService.migrateRiskAffected((RiskAffected<?, ?>) e, domain, rd));
+          e -> elementMigrationService.migrateRiskRelated((RiskRelated) e, domain, rd));
     }
 
     if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {

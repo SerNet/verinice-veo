@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
@@ -116,7 +117,14 @@ public class ElementMigrationService {
             });
   }
 
-  public void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
+  public void migrateRiskRelated(RiskRelated riskRelated, Domain domain, RiskDefinition rd) {
+    if (riskRelated instanceof RiskAffected<?, ?> ra) {
+      migrateRiskAffected(ra, domain, rd);
+    }
+    // TODO #3142 migrate potential probabilities on scenarios
+  }
+
+  private void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
     RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
     migrateImpacts(ra, domain, rd);
 
