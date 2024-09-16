@@ -98,8 +98,6 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
 
   CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition, Domain domain);
 
-  Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
-
   void defineRiskValues(Set<RiskValues> riskAspects);
 
   /**

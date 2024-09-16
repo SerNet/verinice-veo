@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -240,6 +241,15 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
     setImpactValues(
         domain, Optional.ofNullable(itemAspects.impactValues()).orElse(new HashMap<>()));
+  }
+
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
+    return Stream.concat(
+            findAspectByDomain(riskValuesAspects, domain).stream()
+                .flatMap(a -> a.values.keySet().stream()),
+            risks.stream().flatMap(r -> r.getRiskDefinitions(domain).stream()))
+        .collect(Collectors.toSet());
   }
 
   @Override

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -100,6 +101,13 @@ public class ControlData extends ElementData implements Control {
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     super.transferToDomain(oldDomain, newDomain);
+  }
+
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
+    return findAspectByDomain(riskValuesAspects, domain).stream()
+        .flatMap(a -> a.values.keySet().stream())
+        .collect(Collectors.toSet());
   }
 
   @Override

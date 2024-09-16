@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -59,6 +61,13 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   @Valid
   @Getter
   private final Set<Element> members = new HashSet<>();
+
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
+    return Stream.concat(
+            super.getRiskDefinitions(domain).stream(), getRiskDefinition(domain).stream())
+        .collect(Collectors.toSet());
+  }
 
   @Override
   public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {

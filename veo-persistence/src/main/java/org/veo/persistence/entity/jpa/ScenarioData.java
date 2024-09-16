@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -98,6 +99,13 @@ public class ScenarioData extends ElementData implements Scenario {
                   return newRiskValues;
                 });
     aspect.setPotentialProbability(potentialProbability);
+  }
+
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
+    return findAspectByDomain(riskValuesAspects, domain).stream()
+        .flatMap(a -> a.potentialProbability.keySet().stream())
+        .collect(Collectors.toSet());
   }
 
   @Override

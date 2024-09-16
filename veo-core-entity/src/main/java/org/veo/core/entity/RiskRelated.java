@@ -17,10 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Set;
+
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /** Something that holds data related to risk definitions. */
 public interface RiskRelated {
+
+  /** Finds all risk definitions used by this entity in given domain. */
+  Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
+
   /**
    * Removes any data related to given risk definition from this entity
    *
