@@ -60,6 +60,19 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   @Getter
   private final Set<Element> members = new HashSet<>();
 
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return super.removeRiskDefinition(riskDefinition, domain)
+        | getRiskDefinition(domain)
+            .filter(riskDefinition::equals)
+            .map(
+                rd -> {
+                  setRiskDefinition(domain, null);
+                  return true;
+                })
+            .orElse(false);
+  }
+
   public boolean removeMemberById(Key<UUID> id) {
     return removeMembersById(Set.of(id));
   }
