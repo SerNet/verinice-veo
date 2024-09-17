@@ -46,23 +46,37 @@ public class RequirementImplementationRepositoryImpl
 
   @Override
   public Set<RequirementImplementation> findByPerson(Person responsible) {
-    return dataRepo.findByPerson(responsible);
+    return dataRepo.findByPerson(responsible).stream()
+        .map(RequirementImplementation.class::cast)
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Set<RequirementImplementation> findByPersons(Set<Person> responsibles) {
-    return dataRepo.findByPersons(responsibles);
+    return dataRepo.findByPersons(responsibles).stream()
+        .map(RequirementImplementation.class::cast)
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Set<RequirementImplementation> findByControls(Set<Control> removedControls) {
-    return dataRepo.findAllByControlIds(
-        removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet()));
+    return dataRepo
+        .findAllByControlIds(
+            removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet()))
+        .stream()
+        .map(RequirementImplementation.class::cast)
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Set<RequirementImplementation> findAllByRef(Set<ReqImplRef> requirementImplementations) {
-    return dataRepo.findAllByUUID(
-        requirementImplementations.stream().map(ReqImplRef::getUUID).collect(Collectors.toSet()));
+    return dataRepo
+        .findAllByUUID(
+            requirementImplementations.stream()
+                .map(ReqImplRef::getUUID)
+                .collect(Collectors.toSet()))
+        .stream()
+        .map(RequirementImplementation.class::cast)
+        .collect(Collectors.toSet());
   }
 }

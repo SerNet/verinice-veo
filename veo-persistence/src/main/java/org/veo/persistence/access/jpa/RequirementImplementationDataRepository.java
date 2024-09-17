@@ -31,7 +31,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Person;
-import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.persistence.entity.jpa.RequirementImplementationData;
 
 @Transactional(readOnly = true)
@@ -43,7 +42,7 @@ public interface RequirementImplementationDataRepository
           select distinct ri from requirement_implementation ri
           where ri.id in (:uuids)
          """)
-  Set<RequirementImplementation> findAllByUUID(@Param("uuids") Set<UUID> uuids);
+  Set<RequirementImplementationData> findAllByUUID(@Param("uuids") Set<UUID> uuids);
 
   @Query(
       """
@@ -52,7 +51,7 @@ public interface RequirementImplementationDataRepository
                       join fetch ri.responsible
                       where ri.responsible = ?1
                      """)
-  Set<RequirementImplementation> findByPerson(Person responsible);
+  Set<RequirementImplementationData> findByPerson(Person responsible);
 
   @Query(
       """
@@ -61,11 +60,11 @@ public interface RequirementImplementationDataRepository
                       join fetch ri.responsible
                       where ri.responsible in ?1
                      """)
-  Set<RequirementImplementation> findByPersons(Set<Person> responsible);
+  Set<RequirementImplementationData> findByPersons(Set<Person> responsible);
 
   @Nonnull
   @Transactional(readOnly = true)
-  Page<RequirementImplementation> findAll(
+  Page<RequirementImplementationData> findAll(
       Specification<RequirementImplementationData> specification, Pageable pageable);
 
   @Query(
@@ -73,5 +72,5 @@ public interface RequirementImplementationDataRepository
          select distinct ri from requirement_implementation  ri
          where ri.control.dbId in ?1
          """)
-  Set<RequirementImplementation> findAllByControlIds(Set<String> controlIDs);
+  Set<RequirementImplementationData> findAllByControlIds(Set<String> controlIDs);
 }
