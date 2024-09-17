@@ -97,4 +97,17 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
         result.totalResults == 2
         result.resultPage*.control*.name == ["Control 2", "Control 1"]
     }
+
+    def 'paginates'() {
+        expect:
+        with(query.execute(new PagingConfiguration<>(1, 0, "control.name", SortOrder.ASCENDING))) {
+            totalResults == 2
+            resultPage*.control*.name == ["Control 1"]
+        }
+
+        with(query.execute(new PagingConfiguration<>(1, 1, "control.name", SortOrder.ASCENDING))) {
+            totalResults == 2
+            resultPage*.control*.name == ["Control 2"]
+        }
+    }
 }

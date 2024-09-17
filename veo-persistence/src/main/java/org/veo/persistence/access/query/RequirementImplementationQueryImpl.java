@@ -20,14 +20,17 @@ package org.veo.persistence.access.query;
 import static org.veo.persistence.access.query.QueryFunctions.andIn;
 import static org.veo.persistence.access.query.QueryFunctions.andNotIn;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
@@ -56,11 +59,17 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   public PagedResult<RequirementImplementation, String> execute(
       PagingConfiguration<String> pagingConfiguration) {
     var items = repo.findAll(spec, toPageable(pagingConfiguration));
+    fullyLoadItems(items.stream().map(RequirementImplementationData::getDbId).toList());
     return new PagedResult<>(
         pagingConfiguration,
         items.stream().map(RequirementImplementation.class::cast).toList(),
         items.getTotalElements(),
         items.getTotalPages());
+  }
+
+  private void fullyLoadItems(List<Long> dbIds) {
+    ListUtils.partition(dbIds, VeoConstants.DB_QUERY_CHUNK_SIZE)
+        .forEach(repo::findAllByDbIdsWithControls);
   }
 
   @Override
@@ -75,8 +84,7 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
 
   private Specification<RequirementImplementationData> createSpecification(Client client) {
     return (root, query, criteriaBuilder) -> {
-      query.distinct(true);
-      root.fetch("control");
+      root.join("control");
       return criteriaBuilder.equal(root.get("control").get("owner").get("client"), client);
     };
   }

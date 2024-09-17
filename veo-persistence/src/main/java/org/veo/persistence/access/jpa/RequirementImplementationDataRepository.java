@@ -47,6 +47,14 @@ public interface RequirementImplementationDataRepository
   @Query(
       """
                       select distinct ri from requirement_implementation ri
+                      join fetch ri.control
+                      where ri.dbId in ?1
+                     """)
+  Set<RequirementImplementationData> findAllByDbIdsWithControls(Iterable<Long> uuids);
+
+  @Query(
+      """
+                      select distinct ri from requirement_implementation ri
                       join fetch ri.origin
                       join fetch ri.responsible
                       where ri.responsible = ?1
