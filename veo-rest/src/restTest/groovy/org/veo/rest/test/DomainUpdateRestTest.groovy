@@ -243,6 +243,46 @@ class DomainUpdateRestTest extends VeoRestTest {
         get("/scopes/$scopeId/risks/$scenarioId").body.domains[newDomainId].riskDefinitions == [:]
     }
 
+    def "overwrites vanilla risk definition"() {
+        given: "a new template version with an added risk value"
+        createOldAndNewTemplate { it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"]) }
+
+        expect:
+        get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.riskValues*.symbolicRisk == ["one"]
+
+        when:
+        def newDomainId = migrateToNewDomain()
+
+        then: "the changes from the new domain template have been applied"
+        with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
+            riskValues*.symbolicRisk ==~ ["one", "two"]
+        }
+    }
+
+    def "customized risk definition is not overwritten"() {
+        given: "a new template version with an added risk value"
+        createOldAndNewTemplate { it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"]) }
+
+        and: "a customized domain with an added translation"
+        get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.with { riskDef ->
+            riskDef.riskValues[0].translations = [
+                en: [
+                    name: "customized risk"
+                ]
+            ]
+            put("/content-customizing/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
+        }
+
+        when:
+        def newDomainId = migrateToNewDomain()
+
+        then: "the customized version has been applied"
+        with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
+            riskValues*.symbolicRisk ==~ ["one"]
+            riskValues[0].translations.en.name == "customized risk"
+        }
+    }
+
     private createOldAndNewTemplate(Consumer<Map> updateTemplate) {
         templateName = "domain update test template ${UUID.randomUUID()}"
 

@@ -81,9 +81,33 @@ public class MigrateDomainUseCase
             .filter(Predicate.not(newDomain::equals))
             .findAny()
             .orElseThrow();
+    applyCustomization(domainToUpdate, newDomain);
     performMigration(client, domainToUpdate, newDomain);
     domainToUpdate.setActive(false);
     return EmptyOutput.INSTANCE;
+  }
+
+  private void applyCustomization(Domain oldDomain, Domain newDomain) {
+    // Copy all customized risk definitions to the new domain. This may overwrite risk definition
+    // changes from the new domain template version.
+    oldDomain
+        .getRiskDefinitions()
+        .forEach(
+            (id, riskDef) -> {
+              var originalRiskDefinition =
+                  oldDomain.getDomainTemplate().getRiskDefinition(id).orElse(null);
+              if (!riskDef.equals(originalRiskDefinition)) {
+                log.debug(
+                    "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
+                    id,
+                    oldDomain.getName(),
+                    oldDomain.getTemplateVersion(),
+                    oldDomain.getIdAsString(),
+                    newDomain.getTemplateVersion(),
+                    newDomain.getIdAsString());
+                newDomain.applyRiskDefinition(id, riskDef);
+              }
+            });
   }
 
   private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
