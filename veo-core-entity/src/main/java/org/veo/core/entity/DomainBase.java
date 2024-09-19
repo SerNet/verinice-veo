@@ -78,6 +78,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void setIncarnationConfiguration(IncarnationConfiguration incarnationConfiguration);
 
+  void setControlImplementationConfiguration(
+      ControlImplementationConfiguration controlImplementationConfiguration);
+
   default Optional<ElementTypeDefinition> findElementTypeDefinition(String type) {
     return getElementTypeDefinitions().stream()
         .filter(d -> d.getElementType().equals(type))

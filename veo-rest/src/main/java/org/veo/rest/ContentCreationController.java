@@ -71,6 +71,7 @@ import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomain
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.IncarnationConfiguration;
@@ -89,6 +90,7 @@ import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.DeleteInspectionUseCase;
 import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
+import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
@@ -123,6 +125,8 @@ public class ContentCreationController extends AbstractVeoController {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase;
+  private final SaveControlImplementationConfigurationUseCase
+      saveControlImplementationConfigurationUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
   private final SaveInspectionUseCase saveInspectionUseCase;
   private final SaveRiskDefinitionUseCase saveRiskDefinitionUseCase;
@@ -238,6 +242,22 @@ public class ContentCreationController extends AbstractVeoController {
         saveIncarnationConfigurationUseCase,
         new SaveIncarnationConfigurationUseCase.InputData(
             getClient(user), Key.from(domainId), incarnationConfiguration),
+        empty -> ResponseEntity.noContent().build());
+  }
+
+  @PutMapping("/domains/{domainId}/control-implementation-configuration")
+  @Operation(summary = "Update domain-specific configuration related to control implementations.")
+  @ApiResponse(responseCode = "204", description = "Control implementations config updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveControlImplementationConfiguration(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @RequestBody ControlImplementationConfiguration controlImplementationConfiguration) {
+    return useCaseInteractor.execute(
+        saveControlImplementationConfigurationUseCase,
+        new SaveControlImplementationConfigurationUseCase.InputData(
+            getClient(user), Key.from(domainId), controlImplementationConfiguration),
         empty -> ResponseEntity.noContent().build());
   }
 

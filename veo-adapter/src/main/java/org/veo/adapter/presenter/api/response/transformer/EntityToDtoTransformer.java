@@ -382,6 +382,8 @@ public final class EntityToDtoTransformer {
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
 
+    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
+
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
@@ -420,6 +422,7 @@ public final class EntityToDtoTransformer {
     target.setDecisions(Map.copyOf(source.getDecisions()));
     target.setInspections(Map.copyOf(source.getInspections()));
     target.setIncarnationConfiguration(source.getIncarnationConfiguration());
+    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
   }
 

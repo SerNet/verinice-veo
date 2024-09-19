@@ -38,6 +38,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Nameable;
@@ -103,6 +104,11 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @NotNull
   @Type(JsonType.class)
   private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
+
+  @NotNull
+  @Type(JsonType.class)
+  private ControlImplementationConfiguration controlImplementationConfiguration =
+      new ControlImplementationConfiguration();
 
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {

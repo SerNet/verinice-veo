@@ -22,10 +22,9 @@ import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
+import org.veo.core.entity.ControlImplementationConfiguration
 import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.riskdefinition.CategoryLevel
-
-import spock.lang.IgnoreRest
 
 class DomainCreationRestTest extends DomainRestTest {
     String unitId
@@ -52,6 +51,7 @@ class DomainCreationRestTest extends DomainRestTest {
             authority == "JJ"
             templateVersion == "0.1.0"
             domainTemplate == null
+            controlImplementationConfiguration == [:]
         }
 
         when: "defining an element type, decision, inspection & incarnation config in the domain"
@@ -153,6 +153,76 @@ class DomainCreationRestTest extends DomainRestTest {
                 ]
             ]
         ], 201, SECONDARY_CLIENT_USER)
+    }
+
+    def "update controlImplementationConfiguration"() {
+        when: "creating a new domain"
+        def domainName = "Domain creation test ${randomUUID()}"
+        def domainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "dct",
+            description: "best one ever",
+            authority: "uz",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        put("/content-creation/domains/$domainId/element-type-definitions/control",  [
+            subTypes:[
+                c1:[
+                    statuses:['c0', 'c1'],
+                    sortKey : 1
+                ]
+            ]
+        ], null, 204, CONTENT_CREATOR)
+
+        and: "we update controlImplementationConfiguration"
+        def domainUpdatedBefore = get("/domains/$domainId").body.updatedAt
+        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
+            "mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
+
+        then:"the domain is updated"
+        with(get("/domains/$domainId").body) {
+            updatedAt > domainUpdatedBefore
+            controlImplementationConfiguration ==  ["complianceControlSubType": "c1",
+                "mitigationControlSubType": "c1"]
+        }
+
+        and: "the change is exported"
+        exportDomain(domainId).controlImplementationConfiguration == [ complianceControlSubType: "c1",
+            mitigationControlSubType: "c1"]
+
+        when:
+        put("/content-creation/domains/$domainId/control-implementation-configuration", ["mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
+
+        then:
+        with(get("/domains/$domainId").body) {
+            controlImplementationConfiguration ==  ["mitigationControlSubType": "c1"]
+        }
+
+        when:
+        get("/domains/$domainId").with {
+            put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1"], getETag(), 204, CONTENT_CREATOR)
+        }
+
+        then:
+        with(get("/domains/$domainId").body) {
+            controlImplementationConfiguration ==  ["complianceControlSubType": "c1"]
+        }
+
+        when: "the controlImplementationConfiguration is cleared"
+        def etag = get("/domains/$domainId").getETag()
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [:], null, 204, CONTENT_CREATOR)
+
+        then:
+        with(get("/domains/$domainId")) {
+            etag != getETag()
+            body.controlImplementationConfiguration ==  [:]
+        }
+
+        and: "an undefined subtype cannot be used"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
+            "mitigationControlSubType": "c2"], null, 400, CONTENT_CREATOR).with {
+            body.message == "Sub type c2 is not defined"
+        }
     }
 
     def "CRUD risk definition"() {

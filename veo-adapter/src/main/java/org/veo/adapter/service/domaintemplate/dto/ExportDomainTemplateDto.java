@@ -32,6 +32,7 @@ import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
@@ -64,6 +65,9 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
   private Map<String, Inspection> inspections = new HashMap<>();
 
   private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
+
+  private ControlImplementationConfiguration controlImplementationConfiguration =
+      new ControlImplementationConfiguration();
 
   @Override
   @JsonIgnore

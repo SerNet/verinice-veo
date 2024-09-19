@@ -24,6 +24,7 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
@@ -51,6 +52,8 @@ public interface DomainBaseState extends EntityState {
    * The default behavior when creating incarnation descriptions for catalog items from this domain
    */
   IncarnationConfiguration getIncarnationConfiguration();
+
+  ControlImplementationConfiguration getControlImplementationConfiguration();
 
   String getTemplateVersion();
 
