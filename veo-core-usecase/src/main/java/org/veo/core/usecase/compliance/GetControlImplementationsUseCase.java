@@ -23,6 +23,8 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -30,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.ControlImplementationQuery;
 import org.veo.core.repository.ControlImplementationRepository;
@@ -52,11 +55,17 @@ public class GetControlImplementationsUseCase
   private final GenericElementRepository genericElementRepository;
   private final DomainRepository domainRepository;
 
+  public enum ControlImplementationPurpose {
+    MITIGATION,
+    COMPLIANCE
+  }
+
   @Override
   public OutputData execute(InputData input) {
     var query = controlImplementationRepository.query(input.authenticatedClient, input.domainId);
     Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
     applyAdditionalQueryParameters(input, domain, query);
+
     var result = query.execute(input.pagingConfiguration);
     return new OutputData(result);
   }
@@ -86,6 +95,35 @@ public class GetControlImplementationsUseCase
               }
               query.whereRiskAffectedIs(id.toKey().value());
             });
+
+    Optional.ofNullable(input.purpose)
+        .ifPresent(
+            cf -> {
+              switch (cf) {
+                case ControlImplementationPurpose.COMPLIANCE ->
+                    Optional.ofNullable(
+                            domain
+                                .getControlImplementationConfiguration()
+                                .complianceControlSubType())
+                        .ifPresentOrElse(
+                            subType -> query.whereControlhasSubType(subType, input.domainId),
+                            () -> {
+                              throw new UnprocessableDataException(
+                                  "No compliance control sub type configured in domain.");
+                            });
+                case ControlImplementationPurpose.MITIGATION ->
+                    Optional.ofNullable(
+                            domain
+                                .getControlImplementationConfiguration()
+                                .mitigationControlSubType())
+                        .ifPresentOrElse(
+                            subType -> query.whereControlhasSubType(subType, input.domainId),
+                            () -> {
+                              throw new UnprocessableDataException(
+                                  "No mitigation control sub type configured in domain.");
+                            });
+              }
+            });
   }
 
   @Valid
@@ -94,6 +132,7 @@ public class GetControlImplementationsUseCase
       Key<UUID> control,
       @NotNull Key<UUID> domainId,
       TypedId<? extends RiskAffected<?, ?>> riskAffectedId,
+      @Nullable ControlImplementationPurpose purpose,
       @NotNull PagingConfiguration<String> pagingConfiguration)
       implements UseCase.InputData {}
 

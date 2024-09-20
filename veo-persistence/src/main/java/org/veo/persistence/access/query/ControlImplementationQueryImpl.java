@@ -73,6 +73,19 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   }
 
   @Override
+  public void whereControlhasSubType(String subtype, Key<UUID> domainId) {
+    spec =
+        spec.and(
+            (root, query, criteriaBuilder) -> {
+              var join =
+                  root.join("control", JoinType.INNER).join("domainAssociations", JoinType.LEFT);
+              return criteriaBuilder.and(
+                  criteriaBuilder.equal(join.get("domain").get("id"), domainId.value()),
+                  criteriaBuilder.in(join.get("subType")).value(subtype));
+            });
+  }
+
+  @Override
   public void whereRiskAffectedIs(UUID riskAffectedId) {
     spec =
         spec.and(

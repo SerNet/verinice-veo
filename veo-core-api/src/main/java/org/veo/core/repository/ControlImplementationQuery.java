@@ -26,4 +26,6 @@ public interface ControlImplementationQuery extends Query<ControlImplementation,
   void whereControlIdIn(Key<UUID> controlId);
 
   void whereRiskAffectedIs(UUID riskAffectedId);
+
+  void whereControlhasSubType(String subType, Key<UUID> domainId);
 }

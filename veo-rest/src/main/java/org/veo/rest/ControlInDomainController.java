@@ -279,6 +279,7 @@ public class ControlInDomainController implements ElementInDomainResource {
             Key.uuidFrom(uuid),
             Key.uuidFrom(domainId),
             null,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         out ->
             PagingMapper.toPage(

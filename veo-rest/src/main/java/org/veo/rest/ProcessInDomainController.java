@@ -22,6 +22,7 @@ import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.FILTER_CI_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
@@ -95,6 +96,7 @@ import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
+import org.veo.core.usecase.compliance.GetControlImplementationsUseCase.ControlImplementationPurpose;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -482,6 +484,8 @@ public class ProcessInDomainController implements ElementInDomainResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
+      @Parameter(description = FILTER_CI_DESC) @RequestParam(value = "purpose", required = false)
+          ControlImplementationPurpose controlFilter,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -511,6 +515,7 @@ public class ProcessInDomainController implements ElementInDomainResource {
             null,
             Key.from(domainId),
             TypedId.from(uuid, Process.class),
+            controlFilter,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 }

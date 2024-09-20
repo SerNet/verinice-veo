@@ -81,6 +81,7 @@ public final class ControllerConstants {
       "A UUID conforming to RFC4122 in canonical textual representation.";
   static final String UUID_EXAMPLE = "f35b982c-8ad4-4515-96ee-df5fdd4247b9";
   static final String EMBED_RISKS_DESC = "Embed the risk values in the response.";
+  static final String FILTER_CI_DESC = "Filters the CI for compliance or mitigation.";
 
   static final CacheControl DEFAULT_CACHE_CONTROL = CacheControl.noCache();
 

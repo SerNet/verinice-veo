@@ -20,7 +20,9 @@ package org.veo.rest.test
 import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
 
 import org.veo.core.entity.EntityType
+import org.veo.core.entity.exception.UnprocessableDataException
 
+import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 class ControlImplementationRestTest extends VeoRestTest {
@@ -28,9 +30,11 @@ class ControlImplementationRestTest extends VeoRestTest {
     private String unitId
     private String rootControl1Id
     private String rootControl2Id
+    private String rootControl3Id
     private String subControl1Id
     private String subControl2Id
     private String subControl3Id
+    private String subControl4Id
     private String person1Id
     private String person2Id
 
@@ -39,6 +43,16 @@ class ControlImplementationRestTest extends VeoRestTest {
             name: "CI/RI test domain ${UUID.randomUUID()}",
             authority: "JJ",
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
+        put("/content-creation/domains/$domainId/element-type-definitions/control", [
+            subTypes: [
+                ComplCtl: [statuses: ["NEW"]],
+                MitiCtl: [statuses: ["NEW"]],
+            ],
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            complianceControlSubType: "ComplCtl",
+            mitigationControlSubType: "MitiCtl"
+        ], null, 204, UserType.CONTENT_CREATOR)
         unitId = postNewUnit().resourceId
 
         subControl1Id = post("/controls", [
@@ -49,8 +63,10 @@ class ControlImplementationRestTest extends VeoRestTest {
             name: "sub control 2",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
-        rootControl1Id = post("/controls", [
+        rootControl1Id = post("/domains/$domainId/controls", [
             name: "root control 1",
+            subType: "MitiCtl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
                 [targetUri: "http://localhost/controls/$subControl1Id"],
@@ -61,11 +77,26 @@ class ControlImplementationRestTest extends VeoRestTest {
             name: "sub control 3",
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
-        rootControl2Id = post("/controls", [
+        rootControl2Id = post("/domains/$domainId/controls", [
             name: "root control 2",
+            subType: "ComplCtl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
                 [targetUri: "http://localhost/controls/$subControl3Id"]
+            ],
+        ]).body.resourceId
+        subControl4Id = post("/controls", [
+            name: "sub control 4",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+        rootControl3Id = post("/domains/$domainId/controls", [
+            name: "root control 3",
+            subType: "ComplCtl",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            parts: [
+                [targetUri: "http://localhost/controls/$subControl4Id"],
             ],
         ]).body.resourceId
 
@@ -247,6 +278,43 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         and: "the RIs are not part of the domain-specific element representation"
         retrievedElement.requirementImplementations == null
+
+        and:
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=MITIGATION", 200).body) {
+            items.size() == 1
+            items[0].control.subType == "MitiCtl"
+        }
+
+        and:
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=COMPLIANCE", 200).body) {
+            items.size() == 1
+            items[0].control.subType == "ComplCtl"
+        }
+
+        and:
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations", 200).body) {
+            items.size() == 2
+            items.control*.subType ==~ ["ComplCtl", "MitiCtl"]
+        }
+
+        when: "the configuration is deleted"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [:], null, 204, UserType.CONTENT_CREATOR)
+
+        then: "filter for mitigation is not allowed"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=MITIGATION", 422).body) {
+            message == "No mitigation control sub type configured in domain."
+        }
+
+        and: "filter for compliance is not allowed"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=COMPLIANCE", 422).body) {
+            message == "No compliance control sub type configured in domain."
+        }
+
+        and:
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations", 200).body) {
+            items.size() == 2
+            items.control*.subType ==~ ["ComplCtl", "MitiCtl"]
+        }
 
         when: "modifying CIs"
         get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {
