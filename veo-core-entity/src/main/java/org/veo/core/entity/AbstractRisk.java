@@ -106,6 +106,7 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
    * @return {@code true} if the risk could be removed. {@code false} otherwise.
    */
   default boolean remove() {
+    mitigate(null);
     return getEntity().removeRisk(this);
   }
 

@@ -336,6 +336,148 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
+    def "CIs are maintained for mitigations on #elementType.pluralTerm"() {
+        given:
+        defineSubTypeAndStatus(elementType)
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
+            name: "risk-afficer",
+            subType: "A",
+            status: "living",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [control: [targetUri: "/controls/$rootControl1Id"]]
+            ]
+        ]).body.resourceId
+        def scenario1Id = post("/scenarios", [
+            name: "scn",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ]).body.resourceId
+        def scenario2Id = post("/scenarios", [
+            name: "scn 2",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ]).body.resourceId
+
+        when: "creating a mitigated risk"
+        post("/$elementType.pluralTerm/$elementId/risks", [
+            scenario: [targetUri: "/scenarios/$scenario1Id"],
+            mitigation: [targetUri: "/controls/$rootControl2Id"],
+            domains: [
+                (domainId): [reference: [targetUri: "/domains/$domainId"]]
+            ]
+        ])
+
+        then: "a CI has been added"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
+            "root control 1",
+            "root control 2"
+        ]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl1Id", 200)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id", 200)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 200)
+
+        expect: "that the mitigation CI cannot be removed manually"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId")) {
+            body.controlImplementations.removeIf { it.control.name == 'root control 2' }
+            put(body._self, body, getETag(), 422).body.message == "Control 'root control 2' ($rootControl2Id) cannot be disassociated, because it mitigates a risk for scenario 'scn' ($scenario1Id)."
+        }
+
+        when: "changing the mitigating control"
+        def elementETagBeforeMitigationChange = get("/domains/$domainId/$elementType.pluralTerm/$elementId").getETag()
+        get("/$elementType.pluralTerm/$elementId/risks/$scenario1Id").with {
+            body.mitigation.targetUri = "/controls/$rootControl3Id"
+            put(body._self, body, getETag(), 200)
+        }
+
+        then: "the CI has been replaced"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
+            "root control 1",
+            "root control 3"
+        ]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl4Id", 200)
+
+        and:
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId").getETag() != elementETagBeforeMitigationChange
+
+        when: "adding another risk with a different mitigating control"
+        post("/$elementType.pluralTerm/$elementId/risks", [
+            scenario: [targetUri: "/scenarios/$scenario2Id"],
+            mitigation: [targetUri: "/controls/$rootControl2Id"],
+            domains: [
+                (domainId): [reference: [targetUri: "/domains/$domainId"]]
+            ]
+        ])
+
+        then: "a CI has been added"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
+            "root control 1",
+            "root control 2",
+            "root control 3"
+        ]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 200)
+
+        when: "changing the new risk to use the same control as the other risk"
+        get("/$elementType.pluralTerm/$elementId/risks/$scenario2Id").with {
+            body.mitigation = [targetUri: "/controls/$rootControl3Id"]
+            put(body._self, body, getETag(), 200)
+        }
+
+        then: "the CI has been removed"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
+            "root control 1",
+            "root control 3"
+        ]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
+
+        when: "removing the mitigation from the second risk"
+        get("/$elementType.pluralTerm/$elementId/risks/$scenario2Id").with {
+            body.mitigation = null
+            put(body._self, body, getETag(), 200)
+        }
+
+        then: "CIs haven't changed"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
+            "root control 1",
+            "root control 3"
+        ]
+
+        when: "removing the mitigation from the original risk as well"
+        get("/$elementType.pluralTerm/$elementId/risks/$scenario1Id").with {
+            body.mitigation = null
+            put(body._self, body, getETag(), 200)
+        }
+
+        then: "the CI is gone"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name == ["root control 1"]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl4Id", 404)
+
+        when: "mitigating the risk yet again"
+        get("/$elementType.pluralTerm/$elementId/risks/$scenario1Id").with {
+            body.mitigation = [targetUri: "/controls/$rootControl2Id"]
+            put(body._self, body, getETag(), 200)
+        }
+
+        then: "a CI has been added"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name == [
+            "root control 1",
+            "root control 2"
+        ]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 200)
+
+        when: "deleting the risk"
+        delete("/$elementType.pluralTerm/$elementId/risks/$scenario1Id")
+
+        then: "the CI is gone again"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name == ["root control 1"]
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl1Id", 200)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id", 200)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl4Id", 404)
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
     def "elements used by #elementType.singularTerm CIs & RIs can be deleted"() {
         when: "creating and fetching an element with one CIs and a responsible person"
         def personId = post("/persons", [

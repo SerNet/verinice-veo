@@ -41,6 +41,7 @@ import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -191,6 +192,21 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   }
 
   private void remove(ControlImplementationData ci) {
+    var control = ci.getControl();
+    risks.stream()
+        .filter(r -> control.equals(r.getMitigation()))
+        .findAny()
+        .ifPresent(
+            mitigatedRisk -> {
+              var scenario = mitigatedRisk.getScenario();
+              throw new UnprocessableDataException(
+                  "Control '%s' (%s) cannot be disassociated, because it mitigates a risk for scenario '%s' (%s)."
+                      .formatted(
+                          control.getName(),
+                          control.getIdAsUUID(),
+                          scenario.getName(),
+                          scenario.getIdAsUUID()));
+            });
     this.controlImplementations.remove(ci);
     ((RiskAffectedData<T, R>) ci.getOwner())
         .removeUnedited(

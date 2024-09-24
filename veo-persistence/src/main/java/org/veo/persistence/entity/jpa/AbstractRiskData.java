@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -154,7 +155,19 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public R mitigate(@Nullable Control control) {
-    setMitigation(control);
+    if (!Objects.equals(control, mitigation)) {
+      var previousMitigation = mitigation;
+      setMitigation(control);
+      if (previousMitigation != null
+          && entity.getRisks().stream()
+              .noneMatch(r -> previousMitigation.equals(r.getMitigation()))) {
+        entity.disassociateControl(previousMitigation);
+      }
+      if (control != null) {
+        entity.implementControl(control);
+      }
+      entity.setUpdatedAt(Instant.now());
+    }
     return (R) this;
   }
 

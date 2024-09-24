@@ -1527,7 +1527,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             subType == "AST_Application"
             abbreviation == null
             appliedCatalogItem.name == "asset"
-            tailoringReferences.size() == 2
+            tailoringReferences.size() == 3
             with(tailoringReferences.sort {it.referenceType}) {
                 it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it[0].linkType == "process_requiredApplications"
@@ -1535,6 +1535,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 it[1].mitigation.name == "control"
                 it[1].riskOwner.name == "person"
                 it[1].target.name == "scenario"
+                it[2].referenceType == TailoringReferenceType.CONTROL_IMPLEMENTATION
+                it[2].target.name == "control"
             }
         }
     }
