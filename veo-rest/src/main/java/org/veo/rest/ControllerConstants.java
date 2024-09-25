@@ -36,6 +36,7 @@ public final class ControllerConstants {
   public static final Authentication ANY_AUTH = new UsernamePasswordAuthenticationToken(null, null);
   public static final ApplicationUser ANY_USER = null;
   public static final Integer ANY_INT = null;
+  public static final Long ANY_LONG = null;
   public static final SearchQueryDto ANY_SEARCH = null;
   public static final String ANY_STRING = null;
   public static final UUID ANY_UUID = null;

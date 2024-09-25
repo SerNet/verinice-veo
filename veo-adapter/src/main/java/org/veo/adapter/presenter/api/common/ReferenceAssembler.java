@@ -27,6 +27,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -80,6 +81,8 @@ public interface ReferenceAssembler {
       String targetReferenceOf(T entity);
 
   String targetReferenceOf(UserConfiguration userConfiguration);
+
+  String targetReferenceOf(SystemMessage systemMessage);
 
   /**
    * Returns a reference to a collection of searches for the target type. Searches are a ressource

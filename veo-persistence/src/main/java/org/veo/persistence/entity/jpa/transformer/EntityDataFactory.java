@@ -44,6 +44,7 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.UserConfiguration;
@@ -66,6 +67,7 @@ import org.veo.persistence.entity.jpa.ProfileData;
 import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
+import org.veo.persistence.entity.jpa.SystemMessageData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 import org.veo.persistence.entity.jpa.UserConfigurationData;
@@ -253,5 +255,11 @@ public class EntityDataFactory implements EntityFactory {
     userConfigurationData.setUserName(username);
     userConfigurationData.setApplicationId(applicationId);
     return userConfigurationData;
+  }
+
+  @Override
+  public SystemMessage createSystemMessage() {
+    SystemMessageData systemMessageData = new SystemMessageData();
+    return systemMessageData;
   }
 }

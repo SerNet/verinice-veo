@@ -39,6 +39,7 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.UserConfiguration;
@@ -92,4 +93,6 @@ public interface EntityFactory {
   Profile createProfile(DomainBase domainTemplate);
 
   UserConfiguration createUserConfiguration(Client client, String username, String applicationId);
+
+  SystemMessage createSystemMessage();
 }

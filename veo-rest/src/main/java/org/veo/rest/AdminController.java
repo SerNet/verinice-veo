@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +29,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.SystemMessageDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -36,7 +43,10 @@ import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
+import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
+import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
+import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -55,8 +65,46 @@ public class AdminController {
   private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final AsyncTaskExecutor taskExecutor;
+  private final SaveSystemMessageUseCase saveSystemMessageUseCase;
+  private final DeleteSystemMessageUseCase deleteSystemMessageUseCase;
 
   public static final String URL_BASE_PATH = "/admin";
+
+  @PostMapping("/messages")
+  @Operation(summary = "Create a message.")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
+      @RequestBody @Valid @NotNull SystemMessageDto systemMessage) {
+    return useCaseInteractor.execute(
+        saveSystemMessageUseCase,
+        new SaveSystemMessageUseCase.InputData(null, systemMessage),
+        out ->
+            RestApiResponse.created(
+                "/messages",
+                new ApiResponseBody(
+                    true,
+                    Optional.of(out.id().toString()),
+                    "SystemMessage created successfully.")));
+  }
+
+  @PutMapping("/messages/{messageId}")
+  @Operation(summary = "Update a message.")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
+      @PathVariable long messageId, @RequestBody @Valid @NotNull SystemMessageDto systemMessage) {
+    return useCaseInteractor.execute(
+        saveSystemMessageUseCase,
+        new SaveSystemMessageUseCase.InputData(messageId, systemMessage),
+        out -> RestApiResponse.ok("SystemMessage updated."));
+  }
+
+  @DeleteMapping("/messages/{messageId}")
+  @Operation(summary = "Deletes the message with the id.)")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteSystemMessage(
+      @PathVariable long messageId) {
+    return useCaseInteractor.execute(
+        deleteSystemMessageUseCase,
+        new DeleteSystemMessageUseCase.InputData(messageId),
+        out -> ResponseEntity.noContent().build());
+  }
 
   @DeleteMapping("/client/{clientId}")
   @Operation(

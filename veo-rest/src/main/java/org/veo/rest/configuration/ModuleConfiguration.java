@@ -73,6 +73,7 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
+import org.veo.core.repository.SystemMessageRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -159,6 +160,10 @@ import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.core.usecase.inspection.Inspector;
+import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
+import org.veo.core.usecase.message.GetAllSystemMessageUseCase;
+import org.veo.core.usecase.message.GetSystemMessageUseCase;
+import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
@@ -236,6 +241,28 @@ import org.veo.service.risk.RiskService;
  */
 @Configuration
 public class ModuleConfiguration {
+
+  @Bean
+  public SaveSystemMessageUseCase saveSystemMessageUseCase(
+      SystemMessageRepository repository, EntityFactory factory, EntityStateMapper mapper) {
+    return new SaveSystemMessageUseCase(repository, factory, mapper);
+  }
+
+  @Bean
+  public GetSystemMessageUseCase getSystemMessageUseCase(SystemMessageRepository repository) {
+    return new GetSystemMessageUseCase(repository);
+  }
+
+  @Bean
+  public GetAllSystemMessageUseCase getAllSystemMessageUseCase(SystemMessageRepository repository) {
+    return new GetAllSystemMessageUseCase(repository);
+  }
+
+  @Bean
+  public DeleteSystemMessageUseCase deleteSystemMessageUseCase(SystemMessageRepository repository) {
+    return new DeleteSystemMessageUseCase(repository);
+  }
+
   @Bean
   public SaveUserConfigurationUseCase saveUserConfigurationUseCase(
       UserConfigurationRepository userConfigurationRepository,

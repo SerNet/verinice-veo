@@ -46,6 +46,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -74,6 +75,7 @@ import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
+import org.veo.core.entity.state.SystemMessageState;
 import org.veo.core.entity.state.UnitState;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EventPublisher;
@@ -159,6 +161,13 @@ public class EntityStateMapper {
     target.setStatus(source.getStatus());
     target.setImplementationUntil(
         Optional.ofNullable(source.getImplementationUntil()).map(LocalDate::parse).orElse(null));
+  }
+
+  public void mapSystemMessage(SystemMessageState source, SystemMessage target) {
+    target.setMessage(source.getMessage());
+    target.setLevel(source.getLevel());
+    target.setEffective(source.getEffective());
+    target.setPublication(source.getPublication());
   }
 
   private void publishPartsChanged(CompositeElement entity, Set oldParts) {

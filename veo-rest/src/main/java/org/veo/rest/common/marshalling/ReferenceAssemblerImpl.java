@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
+import static org.veo.rest.ControllerConstants.ANY_LONG;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
@@ -73,6 +74,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.SymIdentifiable;
+import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UserConfiguration;
@@ -95,6 +97,7 @@ import org.veo.rest.DomainController;
 import org.veo.rest.DomainTemplateController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.IncidentInDomainController;
+import org.veo.rest.MessageController;
 import org.veo.rest.PersonController;
 import org.veo.rest.PersonInDomainController;
 import org.veo.rest.ProcessController;
@@ -305,6 +308,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                       .getUserConfiguration(ANY_USER, ANY_STRING))
               .withRel(UserConfigurationController.URL_BASE_PATH));
 
+  private static final UriComponents GET_SYSTEM_MESSAGE =
+      createTemplate(
+          linkTo(methodOn(MessageController.class).getSystemMessage(ANY_LONG))
+              .withRel(UserConfigurationController.URL_BASE_PATH));
+
   @Override
   public String targetReferenceOf(Identifiable identifiable) {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
@@ -441,6 +449,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public String targetReferenceOf(UserConfiguration userConfiguration) {
     return buildUri(GET_USER_CONFIGURATION, userConfiguration.getApplicationId());
+  }
+
+  @Override
+  public String targetReferenceOf(SystemMessage systemMessage) {
+    return buildUri(GET_SYSTEM_MESSAGE, systemMessage.getId());
   }
 
   private static WebMvcLinkBuilder linkToRequirementImplementation(
