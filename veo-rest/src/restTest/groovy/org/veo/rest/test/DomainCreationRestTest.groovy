@@ -54,10 +54,23 @@ class DomainCreationRestTest extends DomainRestTest {
             controlImplementationConfiguration == [:]
         }
 
-        when: "defining an element type, decision, inspection & incarnation config in the domain"
+        when: "defining an element type, risk def, decision, inspection & incarnation config in the domain"
         postAssetObjectSchema(domainId)
         def domainUpdatedBeforeDecisionUpdate = get("/domains/$domainId").body.updatedAt
 
+        put("/content-creation/domains/$domainId/risk-definitions/SomeRA", [
+            id: "SomeRA",
+            riskValues: [[symbolicRisk: "one"]],
+            probability: [levels: [[:]]],
+            categories: [
+                [
+                    id: "obli-cat-ory",
+                    potentialImpacts: [[:]],
+                    valueMatrix: [[[symbolicRisk: "one"]]],
+                ]
+            ],
+            riskMethod: [:]
+        ], null, 201)
         put("/content-creation/domains/${domainId}/decisions/truthy", [
             name: [en: "Decision that always outputs true"],
             elementType: "asset",
@@ -112,12 +125,19 @@ class DomainCreationRestTest extends DomainRestTest {
         ])
 
         when: "creating a template from the domain"
-        def templateUri = post("/content-creation/domains/$domainId/template", [
+        def templateId = post("/content-creation/domains/$domainId/template", [
             version: "1.0.0"
-        ]).body.targetUri.replaceAll( /\/content-creation\//, "/")
+        ]).body.id
 
-        and: "applying the template in another client"
-        post("$templateUri/createdomains", null, 204, ADMIN)
+        and: "deploying it in all clients"
+        post("/domain-templates/$templateId/createdomains", null, 204, ADMIN)
+        post("/admin/domain-templates/$templateId/allclientsupdate", null, 204, ADMIN)
+        defaultPolling.eventually {
+            get("/domains")
+                    .body.findAll { it.name == domainName }.size() == 1
+            get("/domains", 200, SECONDARY_CLIENT_USER)
+                    .body.findAll { it.name == domainName }.size() == 1
+        }
 
         and: "looking up secondary client's domain"
         def secondaryClientDomain = get("/domains", 200, SECONDARY_CLIENT_USER).body
@@ -127,8 +147,9 @@ class DomainCreationRestTest extends DomainRestTest {
         secondaryClientDomain.authority == "JJ"
         secondaryClientDomain.templateVersion == "1.0.0"
 
-        and: "it contains the decision, inspection & incarnation config"
+        and: "it contains the risk def, decision, inspection & incarnation config"
         secondaryClientDomain.decisions.truthy.elementSubType == "server"
+        secondaryClientDomain.riskDefinitions.SomeRA.categories[0].id == "obli-cat-ory"
         with(get("/domains/${secondaryClientDomain.id}/inspections/alwaysAddPart", 200, SECONDARY_CLIENT_USER).body) {
             condition.type == "constant"
         }
