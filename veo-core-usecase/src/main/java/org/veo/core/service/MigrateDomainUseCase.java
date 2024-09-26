@@ -18,6 +18,7 @@
 package org.veo.core.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.MigrationFailedException;
@@ -108,9 +110,35 @@ public class MigrateDomainUseCase
                     oldDomain.getIdAsString(),
                     newDomain.getTemplateVersion(),
                     newDomain.getIdAsString());
-                newDomain.applyRiskDefinition(id, riskDef);
+                newDomain.applyRiskDefinition(id, migrate(riskDef, newDomain));
               }
             });
+  }
+
+  private RiskDefinition migrate(RiskDefinition riskDef, Domain newDomain) {
+    return riskDef.withImpactInheritingLinks(
+        migrate(riskDef.getImpactInheritingLinks(), newDomain));
+  }
+
+  private Map<String, List<String>> migrate(
+      Map<String, List<String>> impactInheritingLinks, Domain newDomain) {
+    return impactInheritingLinks.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                e ->
+                    e.getValue().stream()
+                        .filter(
+                            link ->
+                                newDomain
+                                    .getElementTypeDefinition(e.getKey())
+                                    .findLink(link)
+                                    .isPresent())
+                        .toList()))
+        .entrySet()
+        .stream()
+        .filter(e -> !e.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {

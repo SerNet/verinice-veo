@@ -40,6 +40,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.With;
 
 /**
  * Defines the {@link CategoryDefinition}'s and possible {@link RiskValue}'s for a matrix based risk
@@ -77,7 +78,7 @@ public class RiskDefinition {
    * <p>In the entries of this map, the key is the element type (singular term) and the value is a
    * list of link types.
    */
-  @Valid @NotNull private Map<String, List<String>> impactInheritingLinks = new HashMap<>();
+  @With @Valid @NotNull private Map<String, List<String>> impactInheritingLinks = new HashMap<>();
 
   public Optional<CategoryDefinition> getCategory(String categoryId) {
     return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();

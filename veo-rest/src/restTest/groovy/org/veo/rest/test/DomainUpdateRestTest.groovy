@@ -283,6 +283,29 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
     }
 
+    def "invalid customized risk definition is migrated to new domain"() {
+        given: "a new template version with a removed link"
+        createOldAndNewTemplate {
+            it.elementTypeDefinitions.scope.links.remove("scopeToProcessLink")
+        }
+
+        and: "a customized domain where a risk definition uses the doomed link"
+        get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.with { riskDef ->
+            riskDef.categories[0].id = "caterpillar"
+            riskDef.impactInheritingLinks.scope = ['scopeToProcessLink']
+            put("/content-creation/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
+        }
+
+        when:
+        def newDomainId = migrateToNewDomain()
+
+        then: "the customized version has been applied, minus the invalid link"
+        with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
+            categories[0].id == "caterpillar"
+            impactInheritingLinks == [:]
+        }
+    }
+
     private createOldAndNewTemplate(Consumer<Map> updateTemplate) {
         templateName = "domain update test template ${UUID.randomUUID()}"
 
