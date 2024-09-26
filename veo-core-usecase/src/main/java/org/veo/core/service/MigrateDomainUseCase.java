@@ -18,6 +18,7 @@
 package org.veo.core.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -95,7 +96,9 @@ public class MigrateDomainUseCase
         .forEach(
             (id, riskDef) -> {
               var originalRiskDefinition =
-                  oldDomain.getDomainTemplate().getRiskDefinition(id).orElse(null);
+                  Optional.ofNullable(oldDomain.getDomainTemplate())
+                      .flatMap(dt -> dt.getRiskDefinition(id))
+                      .orElse(null);
               if (!riskDef.equals(originalRiskDefinition)) {
                 log.debug(
                     "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
