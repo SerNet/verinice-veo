@@ -79,12 +79,11 @@ class RiskServiceSpec extends VeoSpec {
             associateWithDomain(domain, "NormalProcess", "NEW")
             id = Key.newUuid()
         }
-        this.risk = process.obtainRisk(scenario, domain).tap {
+        this.risk = process.obtainRisk(scenario).tap {
             assignDesignator(it)
             defineRiskValues([
                 newRiskValues(riskDefRef, domain)
             ] as Set)
-            addToDomains(domain)
         }
     }
 
@@ -304,12 +303,11 @@ class RiskServiceSpec extends VeoSpec {
         def scenario2 = newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
         }
-        def risk2 = process.obtainRisk(scenario2, domain).tap {
+        def risk2 = process.obtainRisk(scenario2).tap {
             assignDesignator(it)
             defineRiskValues([
                 newRiskValues(riskDefRef, domain)
             ] as Set)
-            addToDomains(domain)
         }
 
         risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, new ImpactRef(1))

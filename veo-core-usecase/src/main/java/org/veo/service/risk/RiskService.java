@@ -117,25 +117,25 @@ public class RiskService {
   }
 
   private Set<RiskChangedEvent> calculateValuesForRisk(
-      RiskAffected<?, ?> process, AbstractRisk<?, ?> risk) {
+      RiskAffected<?, ?> ra, AbstractRisk<?, ?> risk) {
     Set<RiskChangedEvent> riskEvents = new HashSet<>();
     Scenario scenario = risk.getScenario();
-    for (Domain domain : risk.getDomains()) {
-      riskEvents.addAll(calculateValuesForDomain(process, risk, scenario, domain));
+    for (Domain domain : ra.getDomains()) {
+      riskEvents.addAll(calculateValuesForDomain(ra, risk, scenario, domain));
     }
     return riskEvents;
   }
 
   private Set<RiskChangedEvent> calculateValuesForDomain(
-      RiskAffected<?, ?> process, AbstractRisk<?, ?> risk, Scenario scenario, Domain domain) {
-    log.debug("Determine values for {} of {} in {}", risk, process, domain);
+      RiskAffected<?, ?> ra, AbstractRisk<?, ?> risk, Scenario scenario, Domain domain) {
+    log.debug("Determine values for {} of {} in {}", risk, ra, domain);
     Set<RiskChangedEvent> riskEvents = new HashSet<>();
 
     for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
       RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
       if (risk.getRiskDefinitions(domain).contains(rdr)) {
         var riskEvent =
-            calculateValuesForRiskDefinition(process, risk, scenario, domain, riskDefinition);
+            calculateValuesForRiskDefinition(ra, risk, scenario, domain, riskDefinition);
         riskEvent.ifPresent(riskEvents::add);
       } else {
         log.debug(

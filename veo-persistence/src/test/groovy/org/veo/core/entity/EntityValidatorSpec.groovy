@@ -18,7 +18,6 @@
 package org.veo.core.entity
 
 import org.veo.core.entity.code.EntityValidationException
-import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.specification.EntityValidator
 import org.veo.test.VeoSpec
 
@@ -235,19 +234,6 @@ class EntityValidatorSpec extends VeoSpec {
 
         then: "the validation is unsuccessful"
         thrown(EntityValidationException)
-    }
-
-    def "A process with a risk in the wrong domain does not pass validation"() {
-        when : "an entity with a custom link in the wrong domain"
-        Domain otherDomain = newDomain(client)
-        Process process = newProcess(unit) {
-            associateWithDomain(domain, "NormalProcess", "NEW")
-        }
-        Scenario scenario = newScenario(unit)
-        process.obtainRisk(scenario, otherDomain)
-
-        then: "the validation is unsuccessful"
-        thrown(ModelConsistencyException)
     }
 
     def "a Person with a domain in the wrong client does not pass validation"() {

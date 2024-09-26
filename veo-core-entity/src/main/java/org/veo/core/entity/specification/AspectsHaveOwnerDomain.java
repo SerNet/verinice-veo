@@ -32,7 +32,7 @@ class AspectsHaveOwnerDomain implements EntitySpecification<Aspect> {
     if (owner instanceof Element element) {
       return element.getDomains().contains(aspect.getDomain());
     } else if (owner instanceof AbstractRisk risk) {
-      return risk.getDomains().contains(aspect.getDomain());
+      return risk.getEntity().getDomains().contains(aspect.getDomain());
     }
     throw new IllegalArgumentException(
         "Unable to check domains of aspect " + aspect + ", unhandled type " + aspect.getClass());

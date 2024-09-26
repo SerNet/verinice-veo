@@ -683,7 +683,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             def person = personDataRepository.save(newPerson(unit))
             def control = controlDataRepository.save(newControl(unit))
             scenario.associateWithDomain(domain, "NormalScenario", "NEW")
-            process.obtainRisk(scenario, domain).tap{
+            process.obtainRisk(scenario).tap{
                 it.setDesignator("RSK-1")
                 it.setCreatedBy("me")
                 it.setUpdatedBy("someoneelse")

@@ -50,11 +50,11 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
       """
          select distinct e from #{#entityName} e
          left join fetch e.risks r
-         left join fetch r.domains
          left join fetch r.scenario
          left join fetch r.mitigation
          left join fetch r.riskOwner
-         left join fetch r.riskAspects
+         left join fetch r.riskAspects a
+         left join fetch a.domain
          where e.dbId in ?1""")
   List<T> findAllWithRisksByDbIdIn(Iterable<UUID> ids);
 

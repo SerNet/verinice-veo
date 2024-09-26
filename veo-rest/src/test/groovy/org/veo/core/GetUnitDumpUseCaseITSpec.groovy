@@ -142,10 +142,10 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
                 name = "multi-domain company"
                 associateWithDomain(testDomain, "Company", "NEW")
                 associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
-                obtainRisk(dsgvoScenario, [dsgvoDomain, testDomain] as Set).tap{
+                obtainRisk(dsgvoScenario).tap{
                     designator = "RSK-1"
                 }
-                obtainRisk(testDomainScenario, [dsgvoDomain, testDomain] as Set).tap{
+                obtainRisk(testDomainScenario).tap{
                     designator = "RSK-2"
                     mitigate(dsgvoControl)
                     appoint(dsgvoPerson)

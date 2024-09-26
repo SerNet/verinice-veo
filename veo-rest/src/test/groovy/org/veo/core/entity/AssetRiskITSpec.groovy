@@ -71,7 +71,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
         AssetRisk risk
         def asset1 = insertAsset(newAsset(unit) {
             associateWithDomain(domain1, "NormalAsset", "NEW")
-            risk = obtainRisk(scenario1, domain1).tap {
+            risk = obtainRisk(scenario1).tap {
                 designator = "RSK-1"
             }
         })
@@ -82,7 +82,6 @@ class AssetRiskITSpec extends VeoSpringSpec {
         AssetRisk retrievedRisk1 = txTemplate.execute{
             Set<Asset> assets = assetRepository.findByRisk(scenario1)
             def assetRisk = assets.first().risks.first()
-            assert assetRisk.domains.first() == domain1
             // initialize hibernate proxy
             Hibernate.initialize(assetRisk.scenario)
             return assetRisk
@@ -91,7 +90,6 @@ class AssetRiskITSpec extends VeoSpringSpec {
         then:
         retrievedRisk1 == risk
         retrievedRisk1.scenario == scenario1
-        retrievedRisk1.domains.first() == domain1
         retrievedRisk1.entity == asset1
         def riskData = (AssetRiskData) retrievedRisk1
         riskData.createdAt != null

@@ -112,7 +112,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
                 (riskDefinitionRef): new PotentialProbability(probabilityRare)
             ])
         })
-        ProcessRisk risk = process.obtainRisk(scenario, domain).tap {
+        ProcessRisk risk = process.obtainRisk(scenario).tap {
             assignDesignator(it)
             defineRiskValues([
                 newRiskValues(riskDefinitionRef, domain)

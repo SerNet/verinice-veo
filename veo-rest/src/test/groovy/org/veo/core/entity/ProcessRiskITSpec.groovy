@@ -86,7 +86,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         ProcessRisk risk
         def process1 = insertProcess(newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            risk = obtainRisk(scenario1, domain).tap {
+            risk = obtainRisk(scenario1).tap {
                 designator = "RSK-1"
             }
         })
@@ -97,7 +97,6 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         ProcessRisk retrievedRisk1 = txTemplate.execute {
             Set<Process> processes = processRepository.findByRisk(scenario1)
             def processRisk = processes.first().risks.first()
-            assert processRisk.domains.first() == domain
             // initialize hibernate proxy
             Hibernate.initialize(processRisk.scenario)
             return processRisk
@@ -110,7 +109,6 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         then:
         retrievedRisk1 == risk
         retrievedRisk1.scenario == scenario1
-        retrievedRisk1.domains.first() == domain
         retrievedRisk1.entity == process1
         createdAt != null
         createdAt > beforeCreate
@@ -173,13 +171,13 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         ProcessRisk risk2
         insertProcess(newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            risk1 = obtainRisk(scenario1, domain).tap {
+            risk1 = obtainRisk(scenario1).tap {
                 designator = "RSK-1"
                 defineRiskValues([
                     newRiskValues(riskDefRef, domain)
                 ] as Set)
             }
-            risk2 = obtainRisk(scenario2, domain).tap {
+            risk2 = obtainRisk(scenario2).tap {
                 designator = "RSK-2"
                 defineRiskValues([
                     newRiskValues(riskDefRef, domain)
@@ -203,7 +201,6 @@ class ProcessRiskITSpec extends VeoSpringSpec {
             riskValue.setSpecificProbabilityExplanation('There... are... FOUR... lights!')
             process.updateRisk(
                     risk,
-                    [domain] as Set,
                     null,
                     null,
                     [riskValue] as Set

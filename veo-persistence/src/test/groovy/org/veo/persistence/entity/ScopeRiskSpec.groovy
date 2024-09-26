@@ -83,13 +83,13 @@ class ScopeRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
 
         when: "trying to update the risk with values for both categories"
-        def risk = scope.obtainRisk(scenario, domain)
+        def risk = scope.obtainRisk(scenario)
 
         def riskDefRef = new RiskDefinitionRef(riskDefId)
         def catC = new CategoryRef("C")
         def catD = new CategoryRef("D")
 
-        scope.updateRisk(risk, [domain] as Set, null, null, [
+        scope.updateRisk(risk, null, null, [
             newRiskValues(riskDefRef, domain) {
                 probability = new ProbabilityImpl().tap{
                     specificProbability = new ProbabilityRef(BigDecimal.valueOf(1))

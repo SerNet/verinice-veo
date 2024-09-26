@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
@@ -36,8 +35,6 @@ public interface RiskState<
   ITypedId<TNamespace> getOwnerRef();
 
   ITypedId<Scenario> getScenarioRef();
-
-  Set<ITypedId<Domain>> getDomainRefs();
 
   @Nullable
   ITypedId<Control> getMitigationRef();

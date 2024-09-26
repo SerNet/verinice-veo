@@ -119,7 +119,7 @@ public class PerformActionUseCase
               .getScenarios(element, domain)
               .forEach(
                   scenario -> {
-                    var risk = ra.obtainRisk(scenario, domain);
+                    var risk = ra.obtainRisk(scenario);
                     if (risk.getDesignator() == null) {
                       designatorService.assignDesignator(risk, domain.getOwner());
                       createdEntities.add(risk);

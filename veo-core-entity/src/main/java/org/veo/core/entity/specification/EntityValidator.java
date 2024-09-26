@@ -53,7 +53,6 @@ public class EntityValidator {
                 Element.class, new ElementOnlyReferencesUpToOneCatalogItemPerDomain()),
             new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
             new TypedValidator<>(Unit.class, new UnitDomainsAreSubsetOfClientDomains()),
-            new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()),
             new TypedValidator<>(
                 AbstractRisk.class, new RiskOnlyReferencesItsOwnersUnitSpecification()))
         .forEach(v -> v.validateIfApplicable(entity));

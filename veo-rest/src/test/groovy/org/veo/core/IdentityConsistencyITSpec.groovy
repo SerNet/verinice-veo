@@ -258,7 +258,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         entityManager.flush()
 
         when:
-        def risk = asset.obtainRisk(scenario, domain)
+        def risk = asset.obtainRisk(scenario)
         risk.designator = "RSK-1"
         testIdentityConsistency(AssetRiskData.class, risk)
 

@@ -39,11 +39,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
@@ -57,7 +55,6 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -102,11 +99,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   @ToString.Include
   private String designator;
 
-  @Column(name = "domains")
-  @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
-  @ToString.Exclude
-  private final Set<Domain> domains = new HashSet<>();
-
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ControlData.class)
   @JoinColumn(name = "control_id")
   @Setter(AccessLevel.PRIVATE)
@@ -132,26 +124,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   @Setter(AccessLevel.PRIVATE)
   @ToString.Exclude
   private T entity;
-
-  @Override
-  public boolean addToDomains(Domain aDomain) {
-    checkDomain(aDomain);
-    return domains.add(aDomain);
-  }
-
-  private void checkDomain(Domain aDomain) {
-    if (!getEntity().isAssociatedWithDomain(aDomain)) {
-      throw new ModelConsistencyException(
-          "The provided domain '%s' is not yet known to the entity", aDomain.getDisplayName());
-    }
-  }
-
-  public void setDomains(@NonNull @NotEmpty Set<Domain> newDomains) {
-    if (newDomains.isEmpty())
-      throw new IllegalArgumentException("There must be at least one domain for the risk.");
-    this.domains.clear();
-    this.domains.addAll(newDomains);
-  }
 
   @Override
   public R mitigate(@Nullable Control control) {
@@ -303,7 +275,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     newValuesSet.forEach(
         newValues -> {
           var domain =
-              getDomains().stream()
+              getEntity().getDomains().stream()
                   .filter(d -> d.getId().equals(newValues.getDomainId()))
                   .findFirst()
                   .orElseThrow(
@@ -392,14 +364,8 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
-  public boolean removeFromDomains(Domain aDomain) {
-    if (domains.size() < 2) {
-      throw new ModelConsistencyException(
-          "Could not remove domain '%s': cannot remove last domain from risk.", aDomain);
-    }
-    var success = domains.remove(aDomain);
+  public void removeFromDomains(Domain aDomain) {
     removeRiskAspects(aDomain);
-    return success;
   }
 
   private void removeRiskAspects(Domain aDomain) {
@@ -408,10 +374,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
-    if (domains.remove(oldDomain)) {
-      domains.add(newDomain);
-    }
-
     // TODO VEO-1351 Validate compatibility of risk-definitions before migration
     this.riskAspects.stream()
         .filter(ra -> ra.getDomain().equals(oldDomain))

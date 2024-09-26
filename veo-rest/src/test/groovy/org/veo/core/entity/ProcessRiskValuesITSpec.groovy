@@ -91,7 +91,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         ProcessRisk risk
         processRepository.save(newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            risk = obtainRisk(scenario1, this.domain).tap {
+            risk = obtainRisk(scenario1).tap {
                 designator = "RSK-1"
             }
         })

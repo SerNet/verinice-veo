@@ -96,7 +96,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
     private createRisk(Process process, Domain domain, RiskDefinitionRef rdRef) {
         def scenario = newScenario(unit)
         def control = newControl(unit)
-        def risk = process.obtainRisk(scenario, domain)
+        def risk = process.obtainRisk(scenario)
         risk = risk.mitigate(control)
         risk.defineRiskValues([
             newRiskValues(rdRef, domain)

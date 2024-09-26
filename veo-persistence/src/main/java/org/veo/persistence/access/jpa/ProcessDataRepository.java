@@ -62,8 +62,8 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
          select distinct e from #{#entityName} e
          inner join fetch e.riskValuesAspects
          inner join fetch e.risks r
-         inner join fetch r.domains
-         left join fetch r.riskAspects
+         left join fetch r.riskAspects a
+         left join fetch a.domain
          inner join fetch r.scenario s
          left join fetch s.riskValuesAspects
          where e.dbId in ?1""")

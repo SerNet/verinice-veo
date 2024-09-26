@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jochen Kemnade
+ * Copyright (C) 2024  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,16 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.specification;
+package org.veo.persistence.migrations
 
-import org.veo.core.entity.AbstractRisk;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-/** Checks that a risk's domains are contained in the element's domains */
-@SuppressWarnings("rawtypes")
-class RisksHaveDomain implements EntitySpecification<AbstractRisk> {
+import groovy.sql.Sql
 
-  @Override
-  public boolean test(AbstractRisk risk) {
-    return risk.getEntity().getDomains().containsAll(risk.getDomains());
-  }
+class V99__remove_abstractriskdata_domains extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).with {
+            execute("""
+                DROP TABLE abstractriskdata_domains;
+        """.toString())
+        }
+    }
 }

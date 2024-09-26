@@ -88,7 +88,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 31
             queryCounts.insert == 1
             queryCounts.update == 1
-            queryCounts.delete == 29
+            queryCounts.delete == 28
             queryCounts.time < 1000
             // 100 is the currently observed count of 86 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 100
@@ -122,7 +122,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             def assets = assetDataRepository.saveAll((0..99).collect{ i->
                 newAsset(unit).tap {
                     associateWithDomain(testDomain, 'AST_Application', 'NEw')
-                    obtainRisk(scenarios[i], testDomain).tap {
+                    obtainRisk(scenarios[i]).tap {
                         assignDesignator(it)
                         appoint(persons[i])
                         mitigate(controls[i])
@@ -138,7 +138,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             def processes = processDataRepository.saveAll((0..99).collect{ i->
                 newProcess(unit).tap {
                     associateWithDomain(testDomain, 'PRO_DataProcessing', 'NEw')
-                    obtainRisk(scenarios[i], testDomain).tap {
+                    obtainRisk(scenarios[i]).tap {
                         assignDesignator(it)
                         appoint(persons[i])
                         mitigate(controls[i])
@@ -161,7 +161,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
                     addMember(persons[i])
                     addMember(controls[i])
                     associateWithDomain(testDomain, 'SCP_ResponsibleBody', 'NEw')
-                    obtainRisk(scenarios[i], testDomain).tap {
+                    obtainRisk(scenarios[i]).tap {
                         assignDesignator(it)
                         appoint(persons[i])
                         mitigate(controls[i])
@@ -188,7 +188,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 63
             queryCounts.insert == 37
             queryCounts.update == 1
-            queryCounts.delete == 67
+            queryCounts.delete == 66
             queryCounts.time < 4000
             // 7850 is the currently observed count of 7727 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 7850

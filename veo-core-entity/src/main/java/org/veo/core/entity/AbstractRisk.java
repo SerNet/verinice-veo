@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import jakarta.validation.constraints.NotEmpty;
-
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
@@ -31,8 +29,6 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
-
-import lombok.NonNull;
 
 /**
  * Defines the behaviour of a risk object that is generic enough to be usable in different standards
@@ -63,13 +59,7 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
     return TYPE_DESIGNATOR;
   }
 
-  Set<Domain> getDomains();
-
-  boolean addToDomains(Domain aDomain);
-
-  void setDomains(@NonNull @NotEmpty Set<Domain> newDomains);
-
-  boolean removeFromDomains(Domain aDomain);
+  void removeFromDomains(Domain aDomain);
 
   Control getMitigation();
 

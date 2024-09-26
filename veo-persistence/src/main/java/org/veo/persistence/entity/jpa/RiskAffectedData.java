@@ -47,7 +47,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -135,9 +134,8 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
-  public R obtainRisk(Scenario scenario, Domain domain) {
+  public R obtainRisk(Scenario scenario) {
     scenario.checkSameClient(this);
-    isDomainValid(domain);
     var risk =
         risks.stream()
             .filter(r -> r.getScenario().equals(scenario))
@@ -148,7 +146,6 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
                   addRisk(riskData);
                   return riskData;
                 });
-    risk.addToDomains(domain);
     return risk;
   }
 
@@ -224,26 +221,10 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   abstract R createRisk(Scenario scenario);
 
   @Override
-  public void associateWithDomain(@NonNull Domain domain, String subType, String status) {
-    super.associateWithDomain(domain, subType, status);
-    risks.forEach(r -> r.addToDomains(domain));
-  }
-
-  @Override
   public boolean removeFromDomains(Domain domain) {
     boolean removed = super.removeFromDomains(domain);
     if (removed) {
-      Set.copyOf(getRisks()).stream()
-          .filter(r -> r.getDomains().contains(domain))
-          .forEach(
-              risk -> {
-                // A risk must not be associated with 0 domains
-                if (risk.getDomains().size() == 1) {
-                  getRisks().remove(risk);
-                } else {
-                  risk.removeFromDomains(domain);
-                }
-              });
+      Set.copyOf(getRisks()).stream().forEach(risk -> risk.removeFromDomains(domain));
     }
     return removed;
   }

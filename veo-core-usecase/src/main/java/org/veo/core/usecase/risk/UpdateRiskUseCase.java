@@ -74,7 +74,7 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     // Execute requested operation:
     R result =
         riskAffected.updateRisk(
-            risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.riskValues());
+            risk, mitigation.orElse(null), riskOwner.orElse(null), input.riskValues());
     if (!new RiskOnlyReferencesItsOwnersUnitSpecification().test(risk)) {
       throw new CrossUnitReferenceException();
     }

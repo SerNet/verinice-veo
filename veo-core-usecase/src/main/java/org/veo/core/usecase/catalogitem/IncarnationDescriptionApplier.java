@@ -313,7 +313,7 @@ public class IncarnationDescriptionApplier {
           TailoringReference<T, TNamespace> tailoringReference,
           Map<String, Element> elementsByItemId) {
     if (source instanceof RiskAffected<?, ?> riskAffected && target instanceof Scenario scenario) {
-      var risk = riskAffected.obtainRisk(scenario, domain);
+      var risk = riskAffected.obtainRisk(scenario);
       if (tailoringReference
           instanceof RiskTailoringReference<T, TNamespace> riskTailoringReference) {
         Optional.ofNullable(riskTailoringReference.getRiskOwner())

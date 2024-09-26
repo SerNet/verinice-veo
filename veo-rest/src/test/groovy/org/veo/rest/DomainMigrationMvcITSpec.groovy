@@ -215,51 +215,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         profileItem.customAspects.aspectOne.attrTwo == null
     }
 
-    @WithUserDetails("content-creator")
-    def 'risk is removed when element is dissociated from a domain'() {
-        given: "an asset and a risk"
-        def assetId = parseJson(post("/domains/$domainId/assets", [
-            name: "my little asset",
-            subType: "NormalAsset",
-            status: "NEW",
-            owner: [targetUri: "/units/$unitId"],
-        ])).resourceId
-        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
-            name: "my little scenario",
-            subType: "NormalScenario",
-            status: "NEW",
-            owner: [targetUri: "/units/$unitId"],
-        ])).resourceId
-        post("/assets/$assetId/risks", [
-            scenario: [targetUri: "/scenarios/$scenarioId"],
-            domains: [
-                (domainId): [
-                    reference: [targetUri: "/domains/$domainId"],
-                ]
-            ],
-        ])
-
-        expect: "the risk to exist"
-        parseJson(get("/assets/$assetId/risks")).size() == 1
-
-        when: "removing the subtype from the element type definition"
-        parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset.with {
-            it.subTypes = [:]
-            put("/content-creation/domains/$owner.domainId/element-type-definitions/asset", it, 204)
-        }
-
-        and: "triggering message processing"
-        messagingJob.sendMessages()
-
-        and: "waiting for the asset to be migrated"
-        defaultPolling.eventually {
-            parseJson(get("/assets/$assetId")).domains.isEmpty()
-        }
-
-        then: "the risk is gone"
-        parseJson(get("/assets/$assetId/risks")).isEmpty()
-    }
-
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(queue)
         if (purgeCount>0)

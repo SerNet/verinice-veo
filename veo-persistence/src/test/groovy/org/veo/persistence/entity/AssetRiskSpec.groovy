@@ -20,7 +20,6 @@ package org.veo.persistence.entity
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.test.VeoSpec
 
 class AssetRiskSpec extends VeoSpec {
@@ -42,7 +41,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.associateWithDomain(domain1, "NormalAsset", "NEW")
 
         when: "a risk is created for these entities"
-        def risk = asset.obtainRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario)
         risk.mitigate(control)
 
         then: "the risk references all entities"
@@ -59,7 +58,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.associateWithDomain(domain1, "NormalAsset", "NEW")
 
         when: "a risk is created"
-        def risk = asset.obtainRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario)
 
         then: "the reference to a control may be left missing"
         risk.entity == asset
@@ -75,7 +74,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.associateWithDomain(domain1, "NormalAsset", "NEW")
 
         when: "risks are added"
-        def risks = asset.obtainRisks([scenario1, scenario2] as Set, domain1,[] as Set)
+        def risks = asset.obtainRisks([scenario1, scenario2] as Set, [] as Set)
 
         then: "the asset has new risks"
         asset.risks.size() == 2
@@ -96,7 +95,7 @@ class AssetRiskSpec extends VeoSpec {
         def person = newPerson(unit)
 
         when: "a risk is created and linked to the person"
-        def risk = asset.obtainRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario)
         risk.appoint(person)
 
         then: "the person is present"
@@ -116,7 +115,7 @@ class AssetRiskSpec extends VeoSpec {
         personComposite.parts = [person]
 
         when: "a risk is created and linked to the personComposite"
-        def risk = asset.obtainRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario)
         risk.appoint(personComposite)
 
         then: "the personComposite is present"
@@ -139,7 +138,7 @@ class AssetRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
 
         when: "a risk is created"
-        def risk = assetComposite.obtainRisk(scenario, domain1)
+        def risk = assetComposite.obtainRisk(scenario)
 
         then: "the composite of assets is a valid reference"
         risk.entity == assetComposite
@@ -159,7 +158,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.associateWithDomain(domain1, "NormalAsset", "NEW")
 
         when: "a risk is created"
-        def risk = asset.obtainRisk(scenarioComposite, domain1)
+        def risk = asset.obtainRisk(scenarioComposite)
 
         then: "the composite of scenarios is a valid reference"
         risk.scenario == scenarioComposite
@@ -179,7 +178,7 @@ class AssetRiskSpec extends VeoSpec {
         asset1.associateWithDomain(domain1, "NormalAsset", "NEW")
 
         when: "a risk is created"
-        def risk = asset1.obtainRisk(scenario1, domain1)
+        def risk = asset1.obtainRisk(scenario1)
         risk.mitigate(controlComposite)
 
         then: "the composite of controls is a valid reference"
@@ -194,88 +193,17 @@ class AssetRiskSpec extends VeoSpec {
         def asset1 = newAsset(unit)
         def domain1 = newDomain(client)
         asset1.associateWithDomain(domain1, "NormalAsset", "NEW")
-        def risk1 = asset1.obtainRisk(scenario1, domain1)
+        def risk1 = asset1.obtainRisk(scenario1)
         def set = new HashSet<AssetRisk>()
         set.add(risk1)
 
         when: "another risk is created"
-        def risk2 = asset1.obtainRisk(scenario1, domain1)
+        def risk2 = asset1.obtainRisk(scenario1)
         set.add(risk2)
 
         then: "it has the same identity"
         risk1 == risk2
         set.size() == 1
         set.first() == risk1
-    }
-
-    def "A risk must belong to one or multiple domains"() {
-        given: "predefined entities"
-        def scenario1 = newScenario(unit)
-        def asset1 = newAsset(unit)
-        def domain1 = newDomain(client)
-        def domain2 = newDomain(client)
-        def domainUnknown = newDomain(client)
-        asset1.associateWithDomain(domain1, "NormalAsset", "NEW")
-        asset1.associateWithDomain(domain2, "NormalAsset", "NEW")
-
-        when: "a risk is created with two domains"
-        def risk = asset1.obtainRisk(scenario1, domain1)
-        risk.addToDomains(domain2)
-
-        then: "the domains are referenced by the risk"
-        risk.domains.size() == 2
-
-        when: "a domain can be removed"
-        def domain1Removed = risk.removeFromDomains(domain1)
-
-        then:
-        domain1Removed
-        risk.domains.size() == 1
-
-        when: "the last domain is removed from the risk"
-        risk.removeFromDomains(domain2)
-
-        then: "the operation is prevented"
-        thrown(ModelConsistencyException)
-
-        when: "A risk is created for a domain that the asset does not know about"
-        asset1.obtainRisk(scenario1, domainUnknown)
-
-        then: "The operation is prevented"
-        thrown(ModelConsistencyException)
-
-        when: "A domain that is unknown to the asset is added to an existing risk."
-        risk.addToDomains(domainUnknown)
-
-        then: "The operation is prevented"
-        thrown(ModelConsistencyException)
-    }
-
-    def "risk is removed when its only domain is removed from asset"() {
-        given: "a risk associated with two domains"
-        def domain1 = newDomain(client)
-        def domain2 = newDomain(client)
-        def asset = newAsset(unit) {
-            associateWithDomain(domain1, "NormalAsset", "NEW")
-            associateWithDomain(domain2, "NormalAsset", "NEW")
-            obtainRisk(newScenario(unit), domain1).tap{
-                addToDomains(domain2)
-            }
-        }
-
-        expect:
-        asset.risks.first().domains ==~ [domain1, domain2]
-
-        when: "one domain is removed from the asset"
-        asset.removeFromDomains(domain1)
-
-        then: "it is also removed from the risk"
-        asset.risks.first().domains ==~ [domain2]
-
-        when: "the last domain is removed"
-        asset.removeFromDomains(domain2)
-
-        then: "the whole risk is removed"
-        asset.getRisks().isEmpty()
     }
 }

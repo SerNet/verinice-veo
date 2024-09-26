@@ -71,7 +71,7 @@ class ScopeRiskITSpec extends VeoSpringSpec {
         ScopeRisk risk
         def scope1 = insertScope(newScope(unit) {
             associateWithDomain(domain1, "NormalScope", "NEW")
-            risk = obtainRisk(scenario1, domain1).tap {
+            risk = obtainRisk(scenario1).tap {
                 designator = "RSK-1"
             }
         })
@@ -82,7 +82,6 @@ class ScopeRiskITSpec extends VeoSpringSpec {
         ScopeRisk retrievedRisk1 = txTemplate.execute{
             Set<Scope> scopes = scopeRepository.findByRisk(scenario1)
             def scopeRisk = scopes.first().risks.first()
-            assert scopeRisk.domains.first() == domain1
             // initialize hibernate proxy
             Hibernate.initialize(scopeRisk.scenario)
             return scopeRisk
@@ -91,7 +90,6 @@ class ScopeRiskITSpec extends VeoSpringSpec {
         then:
         retrievedRisk1 == risk
         retrievedRisk1.scenario == scenario1
-        retrievedRisk1.domains.first() == domain1
         retrievedRisk1.entity == scope1
         def riskData = (ScopeRiskData) retrievedRisk1
         riskData.createdAt != null

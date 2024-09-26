@@ -69,10 +69,9 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     // Validate security constraints:
     riskAffected.checkSameClient(input.authenticatedClient());
     scenario.checkSameClient(input.authenticatedClient());
-    checkDomainOwnership(input.authenticatedClient(), domains);
 
     // Apply requested operation:
-    var risk = riskAffected.obtainRisk(scenario, domains);
+    var risk = riskAffected.obtainRisk(scenario);
     if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
       designatorService.assignDesignator(risk, input.authenticatedClient());
       newRiskCreated = true;

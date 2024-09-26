@@ -140,8 +140,7 @@ public class EntityStateMapper {
       RiskState<R, T> source, DbIdRefResolver resolver) {
     var element = resolver.resolve(source.getOwnerRef());
     var scenario = resolver.resolve(source.getScenarioRef());
-    var domains = resolver.resolve(source.getDomainRefs());
-    var target = element.obtainRisk(scenario, domains);
+    var target = element.obtainRisk(scenario);
     target.appoint(
         Optional.ofNullable(source.getRiskOwnerRef()).map(resolver::resolve).orElse(null));
     target.mitigate(

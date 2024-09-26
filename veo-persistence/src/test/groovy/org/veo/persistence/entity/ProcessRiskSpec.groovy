@@ -20,7 +20,6 @@ package org.veo.persistence.entity
 import org.veo.core.entity.Client
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.DeterminedRiskImpl
 import org.veo.core.entity.risk.ImpactImpl
@@ -53,7 +52,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created for these entities"
-        def risk = process.obtainRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario)
         risk.mitigate(control)
 
         then: "the risk references all entities"
@@ -70,7 +69,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
-        def risk = process.obtainRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario)
 
         then: "the reference to a control may be left missing"
         risk.entity == process
@@ -86,7 +85,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "risks are added"
-        def risks = process.obtainRisks([scenario1, scenario2] as Set, domain1,[] as Set)
+        def risks = process.obtainRisks([scenario1, scenario2] as Set, [] as Set)
 
         then: "the process has new risks"
         process.risks.size() == 2
@@ -107,7 +106,7 @@ class ProcessRiskSpec extends VeoSpec {
         def person = newPerson(unit)
 
         when: "a risk is created and linked to the person"
-        def risk = process.obtainRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario)
         risk.appoint(person)
 
         then: "the person is present"
@@ -127,7 +126,7 @@ class ProcessRiskSpec extends VeoSpec {
         personComposite.parts = [person]
 
         when: "a risk is created and linked to the personComposite"
-        def risk = process.obtainRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario)
         risk.appoint(personComposite)
 
         then: "the personComposite is present"
@@ -150,7 +149,7 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
 
         when: "a risk is created"
-        def risk = processComposite.obtainRisk(scenario, domain1)
+        def risk = processComposite.obtainRisk(scenario)
 
         then: "the composite of processes is a valid reference"
         risk.entity == processComposite
@@ -170,7 +169,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
-        def risk = process.obtainRisk(scenarioComposite, domain1)
+        def risk = process.obtainRisk(scenarioComposite)
 
         then: "the composite of scenarios is a valid reference"
         risk.scenario == scenarioComposite
@@ -190,7 +189,7 @@ class ProcessRiskSpec extends VeoSpec {
         process1.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
-        def risk = process1.obtainRisk(scenario1, domain1)
+        def risk = process1.obtainRisk(scenario1)
         risk.mitigate(controlComposite)
 
         then: "the composite of controls is a valid reference"
@@ -205,61 +204,18 @@ class ProcessRiskSpec extends VeoSpec {
         def process1 = newProcess(unit)
         def domain1 = newDomain(client)
         process1.associateWithDomain(domain1, "NormalProcess", "NEW")
-        def risk1 = process1.obtainRisk(scenario1, domain1)
+        def risk1 = process1.obtainRisk(scenario1)
         def set = new HashSet<ProcessRisk>()
         set.add(risk1)
 
         when: "another risk is created"
-        def risk2 = process1.obtainRisk(scenario1, domain1)
+        def risk2 = process1.obtainRisk(scenario1)
         set.add(risk2)
 
         then: "it has the same identity"
         risk1 == risk2
         set.size() == 1
         set.first() == risk1
-    }
-
-    def "A risk must belong to one or multiple domains"() {
-        given: "predefined entities"
-        def scenario1 = newScenario(unit)
-        def process1 = newProcess(unit)
-        def domain1 = newDomain(client)
-        def domain2 = newDomain(client)
-        def domainUnknown = newDomain(client)
-        process1.associateWithDomain(domain1, "NormalProcess", "NEW")
-        process1.associateWithDomain(domain2, "NormalProcess", "NEW")
-
-        when: "a risk is created with two domains"
-        def risk = process1.obtainRisk(scenario1, domain1)
-        risk.addToDomains(domain2)
-
-        then: "the domains are referenced by the risk"
-        risk.domains.size() == 2
-
-        when: "a domain can be removed"
-        def domain1Removed = risk.removeFromDomains(domain1)
-
-        then:
-        domain1Removed
-        risk.domains.size() == 1
-
-        when: "the last domain is removed from the risk"
-        risk.removeFromDomains(domain2)
-
-        then: "the operation is prevented"
-        thrown(ModelConsistencyException)
-
-        when: "A risk is created for a domain that the process does not know about"
-        process1.obtainRisk(scenario1, domainUnknown)
-
-        then: "The operation is prevented"
-        thrown(ModelConsistencyException)
-
-        when: "A domain that is unknown to the process is added to an existing risk."
-        risk.addToDomains(domainUnknown)
-
-        then: "The operation is prevented"
-        thrown(ModelConsistencyException)
     }
 
     def "risk can be used in multiple domains"() {
@@ -321,25 +277,13 @@ class ProcessRiskSpec extends VeoSpec {
         }
         def scenario = newScenario(unit)
 
-        when: "a risk is obtained for the process and scenario in domain 0"
-        def domain0Risk = process.obtainRisk(scenario, domain0)
+        when: "a risk is obtained"
+        def risk = process.obtainRisk(scenario)
 
-        then: "it is assigned to domain 0"
-        domain0Risk.domains ==~ [domain0]
-
-        when: "obtaining a risk for the process and scenario in domain 1"
-        def domain1Risk = process.obtainRisk(scenario, domain1)
-
-        then: "the same risk is used in both domains"
-        domain1Risk == domain0Risk
-
-        and: "it is assigned to both domains"
-        domain0Risk.domains ==~ [domain0, domain1]
-
-        when: "setting distinct risk values for the two domains"
+        and: "setting distinct risk values for the two domains"
         def riskDefRef = new RiskDefinitionRef(riskDefId)
         def cat = new CategoryRef("D")
-        process.updateRisk(domain0Risk, [domain0, domain1] as Set, null, null, [
+        process.updateRisk(risk, null, null, [
             newRiskValues(riskDefRef, domain0) {
                 probability = new ProbabilityImpl().tap{
                     specificProbability = new ProbabilityRef(BigDecimal.valueOf(1))
@@ -373,12 +317,14 @@ class ProcessRiskSpec extends VeoSpec {
         ] as Set)
 
         then: "the correct values can be fetched for both domains"
-        domain0Risk.getImpactProvider(riskDefRef, domain0).getSpecificImpact(cat).idRef.longValue() == 1
-        domain0Risk.getProbabilityProvider(riskDefRef, domain0).getSpecificProbability().idRef.longValue() == 1
-        domain0Risk.getRiskProvider(riskDefRef, domain0).getUserDefinedResidualRisk(cat).idRef.longValue() == 1
+        with(risk) {
+            getImpactProvider(riskDefRef, domain0).getSpecificImpact(cat).idRef.longValue() == 1
+            getProbabilityProvider(riskDefRef, domain0).getSpecificProbability().idRef.longValue() == 1
+            getRiskProvider(riskDefRef, domain0).getUserDefinedResidualRisk(cat).idRef.longValue() == 1
 
-        domain0Risk.getImpactProvider(riskDefRef, domain1).getSpecificImpact(cat).idRef.longValue() == 2
-        domain0Risk.getProbabilityProvider(riskDefRef, domain1).getSpecificProbability().idRef.longValue() == 2
-        domain0Risk.getRiskProvider(riskDefRef, domain1).getUserDefinedResidualRisk(cat).idRef.longValue() == 2
+            getImpactProvider(riskDefRef, domain1).getSpecificImpact(cat).idRef.longValue() == 2
+            getProbabilityProvider(riskDefRef, domain1).getSpecificProbability().idRef.longValue() == 2
+            getRiskProvider(riskDefRef, domain1).getUserDefinedResidualRisk(cat).idRef.longValue() == 2
+        }
     }
 }

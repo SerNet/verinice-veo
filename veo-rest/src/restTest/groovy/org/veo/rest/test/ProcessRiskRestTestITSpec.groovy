@@ -83,26 +83,6 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         }
     }
 
-    def "create and update a process risk without domain"() {
-        given: "a process and a scenario"
-        def processId = post("/processes", [
-            name: "risk test process",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
-        def scenarioId = post("/scenarios", [
-            name: "process risk test scenario",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
-
-        when: "creating the risk"
-        def error = post("/processes/$processId/risks", [
-            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
-        ],400)
-
-        then: "the error is present"
-        error.body.message ==~ /Need at least one domain to create a risk\./
-    }
-
     def "create a process risk with an invalid domain reference"() {
         given: "a process and a scenario"
         def processId = post("/processes", [

@@ -23,7 +23,6 @@ import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,7 +40,6 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
-import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.AbstractRisk;
@@ -54,13 +52,11 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.state.RiskState;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -83,11 +79,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   @ToString.Include
   private String designator;
 
-  @Valid
-  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
-  @JsonIgnore
-  @Singular
-  private Set<IdRef<Domain>> domains = Collections.emptySet();
+  @Valid @JsonIgnore private Set<IdRef<Domain>> domains = Collections.emptySet();
 
   @JsonGetter(value = "domains")
   @Schema(
@@ -138,17 +130,11 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
     setDomains(domainAssociations);
   }
 
-  protected static Set<IdRef<Domain>> toDomainReferences(
-      AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
-    return risk.getDomains().stream()
-        .map(o -> IdRef.from(o, referenceAssembler))
-        .collect(Collectors.toSet());
-  }
-
   protected static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(
       AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
     HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
-    risk.getDomains()
+    risk.getEntity()
+        .getDomains()
         .forEach(
             d ->
                 result.put(
@@ -163,12 +149,6 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
       AbstractRisk<?, ?> risk, Domain domain) {
     return risk.getRiskDefinitions(domain).stream()
         .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd, domain)));
-  }
-
-  @Override
-  @JsonIgnore
-  public Set<ITypedId<Domain>> getDomainRefs() {
-    return new HashSet<>(domains);
   }
 
   @Override

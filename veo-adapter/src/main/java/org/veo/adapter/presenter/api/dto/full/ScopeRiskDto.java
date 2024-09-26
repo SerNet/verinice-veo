@@ -17,9 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +31,6 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -43,7 +41,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
@@ -54,7 +51,6 @@ public class ScopeRiskDto extends AbstractRiskDto {
 
   @Builder
   public ScopeRiskDto(
-      @Valid @Singular Set<IdRef<Domain>> domains,
       @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
       @Valid IdRef<Control> mitigatedBy,
       @Valid IdRef<Person> riskOwner,
@@ -67,7 +63,13 @@ public class ScopeRiskDto extends AbstractRiskDto {
       long version,
       String designator,
       @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
-    super(designator, domains, scenario, mitigatedBy, riskOwner, domainsWithRiskValues);
+    super(
+        designator,
+        Collections.emptySet(),
+        scenario,
+        mitigatedBy,
+        riskOwner,
+        domainsWithRiskValues);
     this.scope = scope;
     setSelfRef(selfRef);
     setCreatedAt(createdAt);
@@ -90,10 +92,6 @@ public class ScopeRiskDto extends AbstractRiskDto {
         .updatedAt(risk.getUpdatedAt().toString())
         .updatedBy(risk.getUpdatedBy())
         .version(risk.getVersion())
-        .domains(
-            risk.getDomains().stream()
-                .map(o -> IdRef.from(o, referenceAssembler))
-                .collect(Collectors.toSet()))
         .selfRef(CompoundIdRef.from(risk, referenceAssembler))
         .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
         .build();

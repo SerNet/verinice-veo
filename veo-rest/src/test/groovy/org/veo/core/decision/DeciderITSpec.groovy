@@ -416,7 +416,7 @@ class DeciderITSpec extends VeoSpringSpec {
     }
 
     private ProcessRisk addRisk(Process process, Map<CategoryRef, RiskRef> inherentRisks) {
-        process.obtainRisk(scenarioA, domain).tap {
+        process.obtainRisk(scenarioA).tap {
             defineRiskValues([
                 newRiskValues(riskDefinitionRef, domain)
             ] as Set)
