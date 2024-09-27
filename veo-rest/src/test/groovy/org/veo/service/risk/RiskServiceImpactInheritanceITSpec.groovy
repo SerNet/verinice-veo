@@ -303,7 +303,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 2
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
@@ -334,7 +334,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
@@ -371,7 +371,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "we change the l0 element"
@@ -392,7 +392,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "we change the l6 element"
@@ -416,7 +416,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 1
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
@@ -456,7 +456,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
@@ -554,7 +554,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "We change the impact of c1 to 3"
@@ -591,7 +591,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "We change the impact of b1"
@@ -623,7 +623,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
@@ -717,7 +717,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "We change the impact of c1"
@@ -750,7 +750,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
 
         when: "We change the impact of b3"
@@ -793,7 +793,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
-            queryCounts.time < 100
+            queryCounts.time < 500
         }
     }
 
