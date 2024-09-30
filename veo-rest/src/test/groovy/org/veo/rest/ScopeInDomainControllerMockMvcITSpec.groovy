@@ -286,6 +286,12 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             subType: "Manual",
             status: "OUTDATED"
         ]).andReturn().response.getHeader("Location")
+        def incidentUri = post("/domains/$testDomainId/incidents", [
+            name: "I for Incident",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "DISASTER",
+            status: "DETECTED"
+        ]).andReturn().response.getHeader("Location")
         def subScopeUri = post("/domains/$testDomainId/scopes", [
             name: "S for Scope",
             owner: [targetUri: "/units/$unitId"],
@@ -310,6 +316,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             members: [
                 [targetInDomainUri: assetUri],
                 [targetInDomainUri: documentUri],
+                [targetInDomainUri: incidentUri],
                 [targetInDomainUri: subScopeUri],
                 [targetInDomainUri: dsgvoSubScopeUri],
             ]
@@ -317,7 +324,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "scope members in test-domain to be retrieved"
         with(parseJson(get("$scopeUri/members?size=2&page=0"))) {
-            totalItemCount == 3
+            totalItemCount == 4
             page == 0
             pageCount == 2
             items.size() == 2
@@ -333,11 +340,16 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             }
         }
         with(parseJson(get("$scopeUri/members?size=2&page=1"))) {
-            totalItemCount == 3
+            totalItemCount == 4
             page == 1
             pageCount == 2
-            items.size() == 1
+            items.size() == 2
             with(items[0]) {
+                name == "I for Incident"
+                type == "incident"
+                subType == "DISASTER"
+            }
+            with(items[1]) {
                 name == "S for Scope"
                 type == "scope"
                 subType == "Company"

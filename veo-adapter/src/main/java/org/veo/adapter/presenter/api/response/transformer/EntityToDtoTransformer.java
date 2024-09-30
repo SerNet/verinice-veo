@@ -633,6 +633,9 @@ public final class EntityToDtoTransformer {
     if (element instanceof Document document) {
       return (AbstractElementInDomainDto<TElement>) transformDocument2Dto(document, domain);
     }
+    if (element instanceof Incident incident) {
+      return (AbstractElementInDomainDto<TElement>) transformIncident2Dto(incident, domain);
+    }
     if (element instanceof Person person) {
       return (AbstractElementInDomainDto<TElement>) transformPerson2Dto(person, domain);
     }
