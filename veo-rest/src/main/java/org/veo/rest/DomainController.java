@@ -22,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.CUSTOM_ASPECTS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.ELEMENT_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -370,6 +371,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
       @RequestParam(value = NAME_PARAM, required = false) String name,
       @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = CUSTOM_ASPECTS_PARAM, required = false) List<String> customAspectKeys,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -404,7 +406,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             description,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         out ->
-            PagingMapper.toPage(out.page(), entityToDtoTransformer::transformShortCatalogItem2Dto));
+            PagingMapper.toPage(
+                out.page(),
+                i -> entityToDtoTransformer.transformShortCatalogItem2Dto(i, customAspectKeys)));
   }
 
   @GetMapping("/{domainId}/catalog-items/{itemId}")

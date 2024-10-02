@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -48,6 +49,7 @@ import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
+import org.veo.adapter.presenter.api.dto.AttributesDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
@@ -443,9 +445,24 @@ public final class EntityToDtoTransformer {
   }
 
   public ShortCatalogItemDto transformShortCatalogItem2Dto(@Valid CatalogItem source) {
+    return transformShortCatalogItem2Dto(source, null);
+  }
+
+  public ShortCatalogItemDto transformShortCatalogItem2Dto(
+      @Valid CatalogItem source, @Nullable List<String> customAspectKeys) {
     var target = new ShortCatalogItemDto();
     target.setId(source.getSymbolicId().value());
     mapTemplateItem(source, target);
+    if (customAspectKeys != null) {
+      target.setCustomAspects(
+          new CustomAspectMapDto(
+              customAspectKeys.stream()
+                  .filter(s -> source.getCustomAspects().containsKey(s))
+                  .collect(
+                      Collectors.toMap(
+                          Function.identity(),
+                          s -> new AttributesDto(source.getCustomAspects().get(s))))));
+    }
     return target;
   }
 

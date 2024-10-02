@@ -107,6 +107,38 @@ class DomainRestTestITSpec extends DomainRestTest {
         }
     }
 
+    def "retrieve specific custom aspects for catalog items"() {
+        given:
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
+
+        when:"we select all catalogItems with custom aspects control_dataProtection included"
+        def result = get("/domains/${dsgvoId}/catalog-items?customAspects=control_dataProtection&size=100").body
+
+        then: "we find all items and some have the control_dataProtection customAspect"
+        result.totalItemCount == 65
+        with(result.items.findAll { !it.customAspects.isEmpty() }) {
+            size() == 8
+            customAspects.control_dataProtection.size() == 8
+            customAspects.control_dataProtection.control_dataProtection_objectives.collect { it.first() }  ==~ [
+                'control_dataProtection_objectives_resilience',
+                'control_dataProtection_objectives_integrity',
+                'control_dataProtection_objectives_availability',
+                'control_dataProtection_objectives_confidentiality',
+                'control_dataProtection_objectives_pseudonymization',
+                'control_dataProtection_objectives_encryption',
+                'control_dataProtection_objectives_recoverability',
+                'control_dataProtection_objectives_effectiveness'
+            ]
+        }
+
+        when:"we select without custom aspects"
+        result = get("/domains/${dsgvoId}/catalog-items?size=100").body
+
+        then: "we find all items and none have the control_dataProtection customAspect"
+        result.totalItemCount == 65
+        result.items.findAll { it.customAspects !== null }.empty
+    }
+
     def "create a new catalog from a unit for a new domain"() {
         given: "a new domain"
         def domainName = "catalogitem creation test ${randomUUID()}"

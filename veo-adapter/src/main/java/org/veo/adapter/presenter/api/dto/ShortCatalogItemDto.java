@@ -19,9 +19,14 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.UUID;
 
+import jakarta.validation.Valid;
+
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -32,6 +37,14 @@ import lombok.ToString;
 public class ShortCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase> {
 
   @ToString.Include private UUID id;
+
+  @Valid
+  @Nullable
+  @Schema(
+      description =
+          "A subset of the catalog item's custom aspects - only those explicitly requested. If no custom aspects are explicitly requested, this is null. Custom aspects are groups of customizable attributes, see /domains/{domainId} to find the available custom aspects for an element type.",
+      title = "CustomAspect")
+  private CustomAspectMapDto customAspects = null;
 
   @Override
   public Class<CatalogItem> getModelInterface() {
