@@ -49,6 +49,7 @@ import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.service.ElementMigrationService;
+import org.veo.service.TemplateItemMigrationService;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
 
@@ -67,6 +68,7 @@ public class RiskComponentChangeListener {
   private final UnitRepository unitRepository;
   private final Decider decider;
   private final ElementMigrationService elementMigrationService;
+  private final TemplateItemMigrationService templateItemMigrationService;
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -122,6 +124,8 @@ public class RiskComponentChangeListener {
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       elements.forEach(
           e -> elementMigrationService.migrateRiskRelated((RiskRelated) e, domain, rd));
+
+      templateItemMigrationService.migrateRiskDefinitionChange(domain);
     }
 
     if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {

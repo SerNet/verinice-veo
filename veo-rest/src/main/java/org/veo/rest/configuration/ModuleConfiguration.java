@@ -225,11 +225,11 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
-import org.veo.service.CatalogMigrationService;
 import org.veo.service.ControlImplementationService;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
+import org.veo.service.TemplateItemMigrationService;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.ImpactInheritanceCalculatorHighWatermark;
 import org.veo.service.risk.RiskService;
@@ -1041,9 +1041,9 @@ public class ModuleConfiguration {
   public IncomingMessageHandler incomingMessageHandler(
       RepositoryProvider repositoryProvider,
       ElementMigrationService elementMigrationService,
-      CatalogMigrationService catalogMigrationService) {
+      TemplateItemMigrationService templateItemMigrationService) {
     return new IncomingMessageHandler(
-        repositoryProvider, elementMigrationService, catalogMigrationService);
+        repositoryProvider, elementMigrationService, templateItemMigrationService);
   }
 
   @Bean
@@ -1209,11 +1209,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  CatalogMigrationService catalogItemMigrationService(
+  TemplateItemMigrationService templateItemMigrationService(
       ElementMigrationService elementMigrationService,
       CatalogItemRepository catalogItemRepository,
       ProfileItemRepository profileItemRepository) {
-    return new CatalogMigrationService(
+    return new TemplateItemMigrationService(
         elementMigrationService, catalogItemRepository, profileItemRepository);
   }
 
@@ -1389,8 +1389,11 @@ public class ModuleConfiguration {
 
   @Bean
   DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase(
-      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
-    return new DeleteRiskDefinitionUseCase(domainRepository, repositoryProvider);
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      TemplateItemMigrationService catalogItemMigrationService) {
+    return new DeleteRiskDefinitionUseCase(
+        domainRepository, repositoryProvider, catalogItemMigrationService);
   }
 
   @Bean

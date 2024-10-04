@@ -29,6 +29,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.service.TemplateItemMigrationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +39,7 @@ public class DeleteRiskDefinitionUseCase
 
   private final DomainRepository domainRepository;
   private final RepositoryProvider repositoryProvider;
+  private final TemplateItemMigrationService templateItemMigrationService;
 
   @Override
   public EmptyOutput execute(InputData input) {
@@ -57,6 +59,8 @@ public class DeleteRiskDefinitionUseCase
                 e.setUpdatedAt(Instant.now());
               }
             });
+
+    templateItemMigrationService.removeRiskDefinition(domain, riskDefRef);
     return EmptyOutput.INSTANCE;
   }
 

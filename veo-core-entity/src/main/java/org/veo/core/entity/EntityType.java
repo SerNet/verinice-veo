@@ -99,6 +99,11 @@ public enum EntityType {
           Scenario.TYPE_DESIGNATOR,
           Scope.TYPE_DESIGNATOR);
 
+  public static final Set<EntityType> RISK_RELETATED =
+      Stream.of(values())
+          .filter(type -> RiskRelated.class.isAssignableFrom(type.type))
+          .collect(Collectors.toUnmodifiableSet());
+
   private static final Map<String, Class<? extends Entity>> TYPE_BY_PLURAL_TERM =
       Stream.of(values()).collect(Collectors.toMap(EntityType::getPluralTerm, EntityType::getType));
 

@@ -33,7 +33,7 @@ import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
-import org.veo.service.CatalogMigrationService
+import org.veo.service.TemplateItemMigrationService
 
 class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     @Autowired
@@ -43,7 +43,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     DomainRepository domainRepository
 
     @Autowired
-    CatalogMigrationService catalogItemMigrationService
+    TemplateItemMigrationService catalogItemMigrationService
 
     Domain domain
 

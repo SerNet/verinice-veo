@@ -132,6 +132,82 @@ class ProfileRestTest extends VeoRestTest {
         }
     }
 
+    def "apply simple profile after rd changes"() {
+        given: "A domain with a profile"
+        def domainId = copyDomain(dsgvoDomainId)
+        unitId = postNewUnit().resourceId
+        def profiles = get("/domains/${domainId}/profiles").body
+        def profileId = profiles.find { it.name == "Beispielorganisation" }.id
+
+        when: "removing category R from the risk definition"
+        get("/domains/${domainId}").body.riskDefinitions.DSRA.with { definition ->
+            definition.categories.removeLast()
+            //dsgvoDomainId resolves to null
+            with(put("/content-creation/domains/${domainId}/risk-definitions/DSRA", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
+            }
+        }
+        post("/domains/${domainId}/profiles/$profileId/incarnation?unit=$unitId", null, 204)
+        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find { it.name == "Durchführung Befragungen" }
+
+        then: "values for category R are removed from process"
+        with(process) {
+            riskValues.DSRA.potentialImpacts == [A:2, C:2, I:1]
+            riskValues.DSRA.potentialImpactsEffective == [A:2, C:2, I:1]
+        }
+
+        and: "values for category R are removed from the risk"
+        with(get("/processes/${process.id}/risks").body.first().domains.(domainId).riskDefinitions.DSRA) {
+            impactValues.size() == 3
+            riskValues.size() == 3
+        }
+
+        when: "the domain is exported"
+        def domainDto = exportDomain(domainId)
+        def profile = domainDto.profiles_v2.find { it.id == profileId }
+        def vvt = profile.items.find { it.name == "Durchführung Befragungen" }
+
+        then: "The export does not contain values for category R"
+        with(vvt) {
+            name== "Durchführung Befragungen"
+            aspects.impactValues.DSRA.potentialImpacts == [A:2, C:2, I:1]
+            aspects.impactValues.DSRA.potentialImpactsEffective == [A:2, C:2, I:1]
+        }
+    }
+
+    def "apply simple profile after rd removal"() {
+        given: "A domain with a profile"
+        def domainId = copyDomain(dsgvoDomainId)
+        unitId = postNewUnit().resourceId
+        def profiles = get("/domains/${domainId}/profiles").body
+        def profileId = profiles.find { it.name == "Beispielorganisation" }.id
+
+        when: "removing DSRA"
+        delete("/content-creation/domains/${domainId}/risk-definitions/DSRA", 204, CONTENT_CREATOR)
+        post("/domains/${domainId}/profiles/$profileId/incarnation?unit=$unitId", null, 204)
+        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find { it.name == "Durchführung Befragungen" }
+
+        then: "values for DSRA are removed from the process"
+        with(process) {
+            riskValues.size()==0
+        }
+
+        and: "values for DSRA are removed from the risk"
+        get("/processes/${process.id}/risks").body.first()
+                .domains.(domainId).riskDefinitions.size() == 0
+
+        when: "the domain is exported"
+        def domainDto = exportDomain(domainId)
+        def profile = domainDto.profiles_v2.find { it.id == profileId }
+        def item = profile.items.find { it.name == "Durchführung Befragungen" }
+
+        then: "The export does not contain values for DSRA"
+        with(item) {
+            name== "Durchführung Befragungen"
+            aspects.impactValues.isEmpty()
+        }
+    }
+
     def "create profile from multi-domain unit"() {
         given: "assets associated with different domains"
         get("/units/$unitId").with {
