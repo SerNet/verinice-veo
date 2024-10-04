@@ -22,7 +22,6 @@ import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPA
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.exception.UnprocessableDataException
 
-import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 class ControlImplementationRestTest extends VeoRestTest {
@@ -48,16 +47,42 @@ class ControlImplementationRestTest extends VeoRestTest {
                 ComplCtl: [statuses: ["NEW"]],
                 MitiCtl: [statuses: ["NEW"]],
             ],
+            customAspects: [
+                oneCa: [
+                    attributeDefinitions: [
+                        someAttr: [type: "integer"]
+                    ]
+                ]
+            ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/control-implementation-configuration", [
             complianceControlSubType: "ComplCtl",
             mitigationControlSubType: "MitiCtl"
         ], null, 204, UserType.CONTENT_CREATOR)
+
+        put("/content-creation/domains/$domainId/element-type-definitions/process", [
+            subTypes: [
+                A: [statuses: ["NEW"]]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/element-type-definitions/scope", [
+            subTypes: [
+                A: [statuses: ["NEW"]]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/element-type-definitions/asset", [
+            subTypes: [
+                A: [statuses: ["NEW"]]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
         unitId = postNewUnit().resourceId
 
-        subControl1Id = post("/controls", [
+        subControl1Id = post("/domains/$domainId/controls", [
             name: "sub control 1",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            customAspects: [oneCa: [someAttr: 3]],
+            subType: "MitiCtl",
+            status: "NEW",
         ]).body.resourceId
         subControl2Id = post("/controls", [
             name: "sub control 2",
@@ -108,6 +133,73 @@ class ControlImplementationRestTest extends VeoRestTest {
             name: "person 2",
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
+    }
+
+    def "CIs & RIs in domain for unassociated #elementType.singularTerm"() {
+        when: "creating an element with two CIs"
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "lame",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"],
+                    description: "I have my reasons",
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl2Id"],
+                    responsible: [targetUri: "/persons/$person1Id"],
+                ],
+            ]
+        ]).body.resourceId
+
+        then: "risk affeced need associated with the domain"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations", 404)
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "CRUD CIs & RIs in domain for #elementType.singularTerm"() {
+        when: "creating an element with two CIs"
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "lame",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "A",
+                    status: "NEW",
+                ]],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"],
+                    description: "I have my reasons",
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl2Id"],
+                    responsible: [targetUri: "/persons/$person1Id"],
+                ],
+            ]
+        ]).body.resourceId
+
+        then: "RIs are filtered by domain"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations", 200).body) {
+            items.size() == 1
+            totalItemCount == 1
+        }
+
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl2Id/requirement-implementations?controlCustomAspects=oneCa", 200).body) {
+            items.isEmpty()
+            totalItemCount == 0
+        }
+
+        and: "can be enriched by CA's"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations?controlCustomAspects=oneCa", 200).body) {
+            items.first().control.customAspects.oneCa.someAttr == 3
+            totalItemCount == 1
+        }
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
     def "CRUD CIs & RIs for #elementType.singularTerm"() {

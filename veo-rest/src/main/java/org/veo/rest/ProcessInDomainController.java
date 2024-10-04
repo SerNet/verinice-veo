@@ -80,6 +80,7 @@ import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
@@ -88,6 +89,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -97,6 +99,7 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase.ControlImplementationPurpose;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -118,7 +121,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(ProcessInDomainController.URL_BASE_PATH)
-public class ProcessInDomainController implements ElementInDomainResource {
+public class ProcessInDomainController
+    implements ElementInDomainResource, RiskAffectedInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Process.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -517,5 +521,26 @@ public class ProcessInDomainController implements ElementInDomainResource {
             TypedId.from(uuid, Process.class),
             controlFilter,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+  }
+
+  @Override
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      Authentication auth,
+      UUID domainId,
+      UUID riskAffectedId,
+      UUID controlId,
+      List<String> controlCustomAspectKeys,
+      Integer pageSize,
+      Integer pageNumber,
+      String sortColumn,
+      String sortOrder) {
+    return elementService.getRequirementImplementations(
+        new GetRequirementImplementationsByControlImplementationUseCase.InputData(
+            clientLookup.getClient(auth),
+            TypedId.from(riskAffectedId, Process.class),
+            TypedId.from(controlId, Control.class),
+            TypedId.from(domainId, Domain.class),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        controlCustomAspectKeys);
   }
 }

@@ -356,6 +356,15 @@ public final class EntityToDtoTransformer {
   }
 
   public RequirementImplementationDto transformRequirementImplementation2Dto(
+      RequirementImplementation source, Domain domain, List<String> customAspectKeys) {
+    var target = transformRequirementImplementation2Dto(source);
+    target.setControl(
+        ElementInDomainIdRef.from(
+            source.getControl(), domain, referenceAssembler, customAspectKeys));
+    return target;
+  }
+
+  public RequirementImplementationDto transformRequirementImplementation2Dto(
       RequirementImplementation source) {
     var target = new RequirementImplementationDto();
     target.setSelfRef(RequirementImplementationRef.from(source, referenceAssembler));

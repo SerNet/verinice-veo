@@ -40,6 +40,7 @@ import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -69,6 +70,7 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
@@ -92,6 +94,8 @@ public class ElementInDomainService {
   private final EntitySchemaService entitySchemaService;
   private final GetAvailableActionsUseCase getAvailableActionsUseCase;
   private final GetControlImplementationsUseCase getControlImplementationsByControlUseCase;
+  private final GetRequirementImplementationsByControlImplementationUseCase
+      getRequirementImplementationsByControlImplementationUseCase;
   private final PerformActionUseCase performActionUseCase;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
@@ -318,6 +322,20 @@ public class ElementInDomainService {
                             .filter(d -> d.getIdAsUUID().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
+  }
+
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      GetRequirementImplementationsByControlImplementationUseCase.InputData input,
+      List<String> controlCustomAspectKeys) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationsByControlImplementationUseCase,
+        input,
+        out ->
+            PagingMapper.toPage(
+                out.result(),
+                o ->
+                    entityToDtoTransformer.transformRequirementImplementation2Dto(
+                        o, out.domain(), controlCustomAspectKeys)));
   }
 
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(

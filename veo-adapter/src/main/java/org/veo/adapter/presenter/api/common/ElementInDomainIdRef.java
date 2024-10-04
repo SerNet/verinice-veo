@@ -17,8 +17,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import jakarta.validation.Valid;
+
+import javax.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.veo.adapter.presenter.api.dto.AttributesDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ref.TypedId;
@@ -27,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /** Reference to an element within a specific domain, based on element ID & domain ID. */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
@@ -38,6 +49,16 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   @Getter
   private final String subType;
+
+  @Valid
+  @Nullable
+  @Schema(
+      description =
+          "A subset of the element custom aspects - only those explicitly requested. If no custom aspects are explicitly requested, this is null. Custom aspects are groups of customizable attributes, see /domains/{domainId} to find the available custom aspects for an element type.")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Getter
+  @Setter
+  private CustomAspectMapDto customAspects = null;
 
   protected ElementInDomainIdRef(
       TypedId<TElement> ref,
@@ -82,5 +103,26 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
         null,
         element,
         element.findSubType(domain).orElse(null));
+  }
+
+  public static <T extends Element> ElementInDomainIdRef<T> from(
+      T element,
+      Domain domain,
+      @NonNull ReferenceAssembler urlAssembler,
+      List<String> customAspectKeys) {
+    ElementInDomainIdRef<T> target = from(element, domain, urlAssembler);
+
+    if (customAspectKeys != null
+        && !customAspectKeys.isEmpty()
+        && element.isAssociatedWithDomain(domain)) {
+      target.setCustomAspects(
+          new CustomAspectMapDto(
+              element.getCustomAspects(domain).stream()
+                  .filter(ca -> customAspectKeys.contains(ca.getType()))
+                  .collect(
+                      Collectors.toMap(
+                          CustomAspect::getType, ca -> new AttributesDto(ca.getAttributes())))));
+    }
+    return target;
   }
 }

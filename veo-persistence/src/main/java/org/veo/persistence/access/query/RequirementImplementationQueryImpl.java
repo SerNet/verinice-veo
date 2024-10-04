@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.repository.PagedResult;
@@ -80,6 +81,15 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   @Override
   public void whereControlNotIn(QueryCondition<Control> controls) {
     spec = andNotIn(spec, "control", controls);
+  }
+
+  @Override
+  public void whereControlInDomain(Domain domain) {
+    spec =
+        spec.and(
+            (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                    root.get("control").get("domainAssociations").get("domain"), domain));
   }
 
   private Specification<RequirementImplementationData> createSpecification(Client client) {

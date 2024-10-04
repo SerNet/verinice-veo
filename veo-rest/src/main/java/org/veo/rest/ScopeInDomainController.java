@@ -82,6 +82,7 @@ import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
@@ -91,6 +92,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.ActionResultDto;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
@@ -102,6 +104,7 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase.ControlImplementationPurpose;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -125,7 +128,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScopeInDomainController.URL_BASE_PATH)
 @Slf4j
-public class ScopeInDomainController implements ElementInDomainResource {
+public class ScopeInDomainController
+    implements ElementInDomainResource, RiskAffectedInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scope.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -507,5 +511,26 @@ public class ScopeInDomainController implements ElementInDomainResource {
             TypedId.from(uuid, Scope.class),
             controlFilter,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+  }
+
+  @Override
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      Authentication auth,
+      UUID domainId,
+      UUID riskAffectedId,
+      UUID controlId,
+      List<String> controlCustomAspectKeys,
+      Integer pageSize,
+      Integer pageNumber,
+      String sortColumn,
+      String sortOrder) {
+    return elementService.getRequirementImplementations(
+        new GetRequirementImplementationsByControlImplementationUseCase.InputData(
+            clientLookup.getClient(auth),
+            TypedId.from(riskAffectedId, Scope.class),
+            TypedId.from(controlId, Control.class),
+            TypedId.from(domainId, Domain.class),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        controlCustomAspectKeys);
   }
 }

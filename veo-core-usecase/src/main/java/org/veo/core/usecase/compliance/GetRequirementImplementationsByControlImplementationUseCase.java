@@ -23,12 +23,15 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
@@ -64,10 +67,25 @@ public class GetRequirementImplementationsByControlImplementationUseCase
             .collect(Collectors.toSet());
 
     var query = requirementImplementationRepository.query(input.authenticatedClient);
+    var domain = input.domain == null ? null : getEntity(input.domain, input.authenticatedClient);
+    if (domain != null) {
+      if (!domain.isActive()) {
+        throw new NotFoundException("Domain is inactive.");
+      }
+      if (!control.isAssociatedWithDomain(domain)) {
+        throw NotFoundException.elementNotAssociatedWithDomain(
+            control, input.domain.getId().toString());
+      }
+      if (!owner.isAssociatedWithDomain(domain))
+        throw NotFoundException.elementNotAssociatedWithDomain(
+            owner, input.domain.getId().toString());
+      query.whereControlInDomain(domain);
+    }
+
     query.whereIdsIn(new QueryCondition<>(riIds));
     // TODO #3052 Make hiding the top RI conditional or remove the top RI altogether.
     query.whereControlNotIn(new QueryCondition<>(Set.of(control)));
-    return new OutputData(query.execute(input.pagingConfiguration));
+    return new OutputData(query.execute(input.pagingConfiguration), domain);
   }
 
   @Valid
@@ -75,10 +93,21 @@ public class GetRequirementImplementationsByControlImplementationUseCase
       @NotNull Client authenticatedClient,
       @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
       @NotNull ITypedId<Control> control,
+      @Nullable ITypedId<Domain> domain,
       @NotNull PagingConfiguration<String> pagingConfiguration)
-      implements UseCase.InputData {}
+      implements UseCase.InputData {
+
+    public InputData(
+        @NotNull Client authenticatedClient,
+        @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
+        @NotNull ITypedId<Control> control,
+        @NotNull PagingConfiguration<String> pagingConfiguration) {
+      this(authenticatedClient, owner, control, null, pagingConfiguration);
+    }
+  }
 
   @Valid
-  public record OutputData(@NotNull PagedResult<RequirementImplementation, String> result)
+  public record OutputData(
+      @NotNull PagedResult<RequirementImplementation, String> result, Domain domain)
       implements UseCase.OutputData {}
 }
