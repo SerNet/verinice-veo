@@ -119,6 +119,7 @@ public class SchemaExtender {
     var linkProps = putProps(schema, "links");
     var customAspectProps = putProps(schema, "customAspects");
     var typeDef = domain.getElementTypeDefinition(elementType);
+    schema.put(ADDITIONAL_PROPERTIES, false);
     addSubTypes(schema, typeDef.getSubTypes());
     addCustomAspectMap(customAspectProps, typeDef.getCustomAspects());
     addLinks(linkProps, typeDef.getLinks(), linkDto);
@@ -210,10 +211,16 @@ public class SchemaExtender {
   }
 
   private void extendSchemaForScope(ObjectNode target, Domain domain) {
-    var riskDefinitionNode = (ObjectNode) target.get(PROPS).get("riskDefinition");
-    riskDefinitionNode
-        .putArray("enum")
-        .addAll(domain.getRiskDefinitions().keySet().stream().map(TextNode::new).toList());
+    var props = (ObjectNode) target.get(PROPS);
+    // Enum definitions in JSON schema must have at least one allowed value.
+    if (domain.getRiskDefinitions().isEmpty()) {
+      props.remove("riskDefinition");
+    } else {
+      var riskDefinitionNode = (ObjectNode) props.get("riskDefinition");
+      riskDefinitionNode
+          .putArray("enum")
+          .addAll(domain.getRiskDefinitions().keySet().stream().map(TextNode::new).toList());
+    }
     buildImpactSchema(domain, target);
   }
 

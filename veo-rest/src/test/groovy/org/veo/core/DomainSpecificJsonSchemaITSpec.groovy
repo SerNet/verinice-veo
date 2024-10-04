@@ -288,6 +288,31 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
     }
 
+    def "scope risk definition is validated without any risk definitions in the domain"() {
+        given: "no risk definitions at all"
+        domain.setRiskDefinitions([:])
+
+        and:
+        createElementTypeDefinition("scope")
+        def element = [
+            name: "risky scope",
+            subType: "A",
+            status: "A1",
+            owner: [targetUri: "http://localhost/units/..."],
+        ]
+
+        expect:
+        validate(element, "scope").empty
+
+        when:
+        element.riskDefinition = 'illegal'
+
+        then:
+        validate(element, "scope")*.message ==~ [
+            '$: property \'riskDefinition\' is not defined in the schema and the schema does not allow additional properties'
+        ]
+    }
+
     def "essential properties are required for #type.pluralTerm"() {
         given:
         createElementTypeDefinition(type.singularTerm)
