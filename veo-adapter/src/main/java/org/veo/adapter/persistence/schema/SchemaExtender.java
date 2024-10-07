@@ -119,7 +119,8 @@ public class SchemaExtender {
     var linkProps = putProps(schema, "links");
     var customAspectProps = putProps(schema, "customAspects");
     var typeDef = domain.getElementTypeDefinition(elementType);
-    schema.put(ADDITIONAL_PROPERTIES, false);
+    // TODO #3211 ban additional properties
+    // schema.put(ADDITIONAL_PROPERTIES, false);
     addSubTypes(schema, typeDef.getSubTypes());
     addCustomAspectMap(customAspectProps, typeDef.getCustomAspects());
     addLinks(linkProps, typeDef.getLinks(), linkDto);

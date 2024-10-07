@@ -304,13 +304,13 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         expect:
         validate(element, "scope").empty
 
-        when:
+        when: "a risk definition is used anyway"
         element.riskDefinition = 'illegal'
 
-        then:
-        validate(element, "scope")*.message ==~ [
-            '$: property \'riskDefinition\' is not defined in the schema and the schema does not allow additional properties'
-        ]
+        // TODO #3211 ban additional properties
+
+        then: "it is tolerated for now"
+        validate(element, "scope")*.message ==~ []
     }
 
     def "essential properties are required for #type.pluralTerm"() {
