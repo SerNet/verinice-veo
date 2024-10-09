@@ -89,7 +89,13 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
                               if (previousMapping
                                   .map(it -> !it.equals(e.getValue()))
                                   .orElse(false)) {
-                                log.warn("Found conflicting translations for {}", e.getKey());
+                                log.warn(
+                                    "Found conflicting translations for {} in client {}: '{}' vs. '{}' from {}",
+                                    e.getKey(),
+                                    domain.getOwner().getIdAsString(),
+                                    previousMapping.get(),
+                                    e.getValue(),
+                                    domain.getName());
                               }
                             });
                     translations.add(language, entriesForLanguage);
