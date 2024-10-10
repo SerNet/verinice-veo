@@ -1,17 +1,26 @@
 # Beschreibung
 
-_Beschreibung der aktuelle Situation und Hintergrundinformationen._
+_Beschreibung der aktuellen Situation und Hintergrundinformationen_
 
 # Wirkung
 
-_Positive (oder negative) Wirkung auf das eigene Unternehmen._
+_Positive (oder negative) Wirkung auf das eigene Unternehmen_
 
-# Beteiligte
+# Beteiligte Komponenten
 
 _Nicht zutreffende bitte löschen_
 
-Backend, Frontend, Shop, Content, Marketing, Vertrieb, ...
+~"1.Component::1.Backend"
+~"1.Component::2.Frontend"
+~"1.Component::3.Content"
+~"1.Component::4.Shop"
+~"1.Component::5.Marketing"
+~"1.Component::6.IIT"
+
+# Spezifikation
+
+_Unterstützte Anwendungsfälle und eine Zusammenfassung der technischen Umsetzungsstrategie_
 
 ---
 
-/label ~"Roadmap::Later"
+/label ~"Roadmap::None"

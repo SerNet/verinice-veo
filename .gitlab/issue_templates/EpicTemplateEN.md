@@ -1,17 +1,26 @@
-# Beschreibung
+# Description
 
-_Beschreibung der aktuelle Situation und Hintergrundinformationen._
+_Description of the current situation and background information_
 
-# Wirkung
+# Impact
 
-_Positive (oder negative) Wirkung auf das eigene Unternehmen._
+_Positive (or negative) impact on our company_
 
-# Beteiligte
+# Components involved
 
 _Please delete not applicable_
 
-Backend, Frontend, Shop, Content, Marketing, Sales, ...
+~"1.Component::1.Backend"
+~"1.Component::2.Frontend"
+~"1.Component::3.Content"
+~"1.Component::4.Shop"
+~"1.Component::5.Marketing"
+~"1.Component::6.IIT"
+
+# Specification
+
+_Supported use cases and a summary of the technical implementation strategy_
 
 ---
 
-/label ~"Roadmap::Later"
+/label ~"Roadmap::None"
