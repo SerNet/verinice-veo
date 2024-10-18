@@ -240,13 +240,22 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             ]
         }
 
-        when: "we delete the client with three domains"
+        when: "a client deactivation message is sent"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "${cId.uuidValue()}",
             "type": "DEACTIVATION"
         }""",5,Instant.now()))
 
+        then:"the client is deactivated"
+        defaultPolling.eventually {
+            def client = executeInTransaction {
+                repository.findById(cId).get()
+            }
+            client.state == ClientState.DEACTIVATED
+        }
+
+        when: "we delete the client with three domains"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "${cId.uuidValue()}",
