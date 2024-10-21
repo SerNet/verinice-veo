@@ -27,6 +27,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskValues
 import org.veo.core.entity.transform.EntityFactory
@@ -232,6 +235,38 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         retrievedRisk2.createdAt.truncatedTo(MILLIS) == risk2Created
         retrievedRisk2.createdAt > beforeCreate
         retrievedRisk2.updatedAt == retrievedRisk2.createdAt
+    }
+
+    def "a risk can be created for a process with impact values"() {
+        given:
+        def beforeCreate = Instant.now()
+        def domain = domainRepository.save(newDomain(client) {
+            it.riskDefinitions = [
+                "r2d2": createRiskDefinition("r2d2")
+            ] as Map
+        })
+
+        def scenario = insertScenario(newScenario(unit))
+        def riskDef = domain.getRiskDefinitions().values().first()
+        def categoryDef = riskDef.getCategory("I").get()
+        def riskDefRef = RiskDefinitionRef.from(riskDef)
+        def categoryRef = CategoryRef.from(categoryDef)
+        def impactRef = ImpactRef.from(categoryDef.getLevel(0).get())
+
+        when:
+        def process = insertProcess(newProcess(unit) {
+            associateWithDomain(domain, "PRO_DataProcessing", "NEW")
+            setImpactValues(domain, [(riskDefRef):new ImpactValues([(categoryRef):impactRef])])
+            obtainRisk(scenario).tap {
+                designator = "RSK-1"
+                defineRiskValues([
+                    newRiskValues(riskDefRef, domain)
+                ] as Set)
+            }
+        })
+
+        then:
+        !process.risks.empty
     }
 
     @Transactional

@@ -188,7 +188,14 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
                   .getImpactValues(domain, riskDefinitionRef)
                   .ifPresent(
                       impactValues ->
-                          impactValues.potentialImpacts().forEach(riskAspect::setPotentialImpact));
+                          impactValues
+                              .potentialImpacts()
+                              .forEach(
+                                  (cat, impact) -> {
+                                    if (riskAspect.categoryExists(cat)) {
+                                      riskAspect.setPotentialImpact(cat, impact);
+                                    }
+                                  }));
               riskAspects.add(riskAspect);
               return riskAspect;
             });

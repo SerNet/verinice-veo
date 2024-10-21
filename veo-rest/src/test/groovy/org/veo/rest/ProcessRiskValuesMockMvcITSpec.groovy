@@ -737,6 +737,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                         r1d1 : [
                             potentialImpacts: [
                                 "D": 2,
+                                "I": 1
                             ]
                         ]
                     ]
