@@ -92,6 +92,7 @@ public class DomainStateMapper {
     var resolver = refResolverFactory.local();
     var domainRef = TypedId.from(source.getSelfId(), source.getModelInterface());
     target.setAbbreviation(source.getAbbreviation());
+    target.setDescription(source.getDescription());
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitionStates().entrySet().stream()
             .map(

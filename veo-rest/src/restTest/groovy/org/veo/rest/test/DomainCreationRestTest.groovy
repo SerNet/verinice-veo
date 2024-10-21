@@ -145,6 +145,8 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then: "its metadata is correct"
         secondaryClientDomain.authority == "JJ"
+        secondaryClientDomain.abbreviation == "dct"
+        secondaryClientDomain.description == "best one ever"
         secondaryClientDomain.templateVersion == "1.0.0"
 
         and: "it contains the risk def, decision, inspection & incarnation config"
