@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.service;
 
-import static org.veo.core.entity.EntityType.RISK_RELETATED;
+import static org.veo.core.entity.EntityType.RISK_RELETATED_ELEMENTS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +87,7 @@ public class TemplateItemMigrationService {
 
   private void removeRiskDefinitionFromProfile(
       Domain domain, Profile p, List<RiskDefinitionRef> keySet) {
-    RISK_RELETATED.stream()
+    RISK_RELETATED_ELEMENTS.stream()
         .forEach(
             type -> {
               Set<ProfileItem> items = profileItemRepository.findAllByProfile(p, type);
@@ -133,7 +133,7 @@ public class TemplateItemMigrationService {
         .getProfiles()
         .forEach(
             p -> {
-              RISK_RELETATED.stream()
+              RISK_RELETATED_ELEMENTS.stream()
                   .forEach(
                       type -> {
                         Set<ProfileItem> pitems = profileItemRepository.findAllByProfile(p, type);

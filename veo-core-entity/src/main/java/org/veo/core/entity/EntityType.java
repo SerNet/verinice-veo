@@ -99,8 +99,8 @@ public enum EntityType {
           Scenario.TYPE_DESIGNATOR,
           Scope.TYPE_DESIGNATOR);
 
-  public static final Set<EntityType> RISK_RELETATED =
-      Stream.of(values())
+  public static final Set<EntityType> RISK_RELETATED_ELEMENTS =
+      ELEMENT_TYPES.stream()
           .filter(type -> RiskRelated.class.isAssignableFrom(type.type))
           .collect(Collectors.toUnmodifiableSet());
 
