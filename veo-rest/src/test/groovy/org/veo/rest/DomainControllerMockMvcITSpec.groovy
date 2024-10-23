@@ -26,6 +26,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -427,5 +428,58 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         dpiaMissing.condition.type == "and"
         dpiaMissing.condition.operands[1].type == "equals"
         dpiaMissing.suggestions[0].type == "addPart"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve breaking changes"() {
+        given:
+        def client = testDomain.owner
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+
+        when:
+        def breakingChanges = parseJson(get("/domains/${domain.idAsString}/breaking-changes"))
+
+        then:
+        breakingChanges.empty
+
+        when:
+        domainDataRepository.save(domain.tap {
+            getElementTypeDefinition('asset').tap {
+                customAspects.remove('asset_details')
+            }
+            getElementTypeDefinition('scope').customAspects.get('scope_contactInformation').tap {
+                attributeDefinitions.remove('scope_contactInformation_fax')
+                def oldWebSite = attributeDefinitions.get('scope_contactInformation_website')
+                attributeDefinitions.put('scope_contactInformation_website', new ExternalDocumentAttributeDefinition())
+            }
+        })
+        breakingChanges = parseJson(get("/domains/${domain.idAsString}/breaking-changes"))
+
+        then:
+        breakingChanges.size() == 4
+
+        when:
+        def breakingChangesByAttribute = breakingChanges.collectEntries {[it.attribute, it]}
+
+        then:
+        breakingChangesByAttribute.keySet() ==~ [
+            'scope_contactInformation_fax',
+            'scope_contactInformation_website',
+            'asset_details_number',
+            'asset_details_operatingStage'
+        ]
+        with(breakingChangesByAttribute.scope_contactInformation_fax) {
+            it.change == 'REMOVAL'
+            it.elementType == 'scope'
+            it.customAspect == 'scope_contactInformation'
+            it.oldValue == [type: 'text']
+        }
+        with(breakingChangesByAttribute.scope_contactInformation_website) {
+            it.change == 'MODIFICATION'
+            it.elementType == 'scope'
+            it.customAspect == 'scope_contactInformation'
+            it.oldValue == [type: 'text']
+            it.value == [type: 'externalDocument']
+        }
     }
 }

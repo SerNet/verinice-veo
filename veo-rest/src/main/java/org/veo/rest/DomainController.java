@@ -78,6 +78,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
+import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
@@ -97,6 +98,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -152,6 +154,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetProfileUseCase getProfileUseCase;
   private final GetInspectionUseCase getInspectionUseCase;
   private final GetInspectionsUseCase getInspectionsUseCase;
+  private final GetBreakingChangesUseCase getBreakingChangesUseCase;
 
   private final ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase;
   private final GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase;
@@ -589,6 +592,28 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
       @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
     return applyProfile(auth, id, profileId, unitId);
+  }
+
+  @GetMapping(value = "/{domainId}/breaking-changes")
+  @Operation(summary = "Retrieve breaking changes wrt. domain template")
+  @ApiResponse(responseCode = "200", description = "Breaking changes computed")
+  @ApiResponse(responseCode = "404", description = "Domain not found or has no domain template")
+  public @Valid Future<ResponseEntity<List<BreakingChange>>> getBreakingChanges(
+      @Parameter(hidden = true) Authentication auth,
+      @PathVariable UUID domainId,
+      WebRequest request) {
+    if (getEtag(Domain.class, domainId).map(request::checkNotModified).orElse(false)) {
+      return null;
+    }
+    return useCaseInteractor
+        .execute(
+            getBreakingChangesUseCase,
+            new GetBreakingChangesUseCase.InputData(
+                getAuthenticatedClient(auth).getId(), Key.from(domainId)),
+            GetBreakingChangesUseCase.OutputData::breakingChanges)
+        .thenApply(
+            breakingChanges ->
+                ResponseEntity.ok().cacheControl(defaultCacheControl).body(breakingChanges));
   }
 
   @InitBinder

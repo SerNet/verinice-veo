@@ -138,6 +138,7 @@ import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
@@ -1394,6 +1395,11 @@ public class ModuleConfiguration {
       TemplateItemMigrationService catalogItemMigrationService) {
     return new DeleteRiskDefinitionUseCase(
         domainRepository, repositoryProvider, catalogItemMigrationService);
+  }
+
+  @Bean
+  GetBreakingChangesUseCase getBreakingChangesUseCase(DomainRepository domainRepository) {
+    return new GetBreakingChangesUseCase(domainRepository);
   }
 
   @Bean
