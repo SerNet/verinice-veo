@@ -46,34 +46,31 @@ public class ControlImplementationService {
    * control-implementations.
    */
   public void addToControlImplementations(Set<Control> addedControls) {
-    addedControls.forEach(this::addToControlImplementations);
-  }
-
-  /**
-   * Add this control as a requirement if any of its parent controls have existing
-   * control-implementations.
-   */
-  private void addToControlImplementations(Control control) {
-    Set<Control> allParents = control.getCompositesRecursively();
+    Set<Control> allParents =
+        addedControls.stream()
+            .flatMap(control -> control.getCompositesRecursively().stream())
+            .collect(Collectors.toSet());
     var parentImplementations = controlImplRepo.findByControls(allParents);
-
-    log.atDebug()
-        .setMessage("Adding control {} as requirement to implementations {}.")
-        .addArgument(control::getIdAsString)
-        .addArgument(
-            () ->
-                parentImplementations.stream()
-                    .map(ci -> ci.getId().toString())
-                    .collect(Collectors.joining(", ")))
-        .log();
 
     parentImplementations.forEach(
         ci -> {
           var reqImpls = reqImplRepo.findAllByRef(ci.getRequirementImplementations());
-          // Skip if this CI already has an RI for this control
-          if (reqImpls.stream().noneMatch(ri -> ri.getControl().equals(control))) {
-            ci.addRequirement(control);
-          }
+          addedControls.forEach(
+              control -> {
+                // Skip if this CI already has an RI for this control
+                if (reqImpls.stream().noneMatch(ri -> ri.getControl().equals(control))) {
+                  log.atDebug()
+                      .setMessage("Adding control {} as requirement to implementations {}.")
+                      .addArgument(control::getIdAsString)
+                      .addArgument(
+                          () ->
+                              parentImplementations.stream()
+                                  .map(pI -> pI.getId().toString())
+                                  .collect(Collectors.joining(", ")))
+                      .log();
+                  ci.addRequirement(control);
+                }
+              });
         });
   }
 
