@@ -57,12 +57,15 @@ public class ControlImplementationService {
     Set<Control> allParents = control.getCompositesRecursively();
     var parentImplementations = controlImplRepo.findByControls(allParents);
 
-    log.debug(
-        "Adding control {} as requirement to implementations {}.",
-        control.getIdAsString(),
-        parentImplementations.stream()
-            .map(ci -> ci.getId().toString())
-            .collect(Collectors.joining(", ")));
+    log.atDebug()
+        .setMessage("Adding control {} as requirement to implementations {}.")
+        .addArgument(control::getIdAsString)
+        .addArgument(
+            () ->
+                parentImplementations.stream()
+                    .map(ci -> ci.getId().toString())
+                    .collect(Collectors.joining(", ")))
+        .log();
 
     parentImplementations.forEach(
         ci -> {
@@ -78,10 +81,15 @@ public class ControlImplementationService {
   public void removeControlImplementations(Set<Control> removedControls) {
     var controlImplementations = controlImplRepo.findByControls(removedControls);
 
-    log.debug(
-        "Removing {} implementations for controls {} ",
-        controlImplementations.size(),
-        removedControls.stream().map(Designated::getDesignator).collect(Collectors.joining(", ")));
+    log.atDebug()
+        .setMessage("Removing {} implementations for controls {} ")
+        .addArgument(controlImplementations::size)
+        .addArgument(
+            () ->
+                removedControls.stream()
+                    .map(Designated::getDesignator)
+                    .collect(Collectors.joining(", ")))
+        .log();
 
     controlImplementations.forEach(ControlImplementation::disassociateFromOwner);
   }
@@ -93,12 +101,19 @@ public class ControlImplementationService {
   public void removeRequirementsFromControlImplementations(Set<Control> removedControls) {
     var requirementImplementations = reqImplRepo.findByControls(removedControls);
 
-    log.debug(
-        "Removing requirements for controls {} from implementations {}",
-        removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.joining(", ")),
-        requirementImplementations.stream()
-            .map(ri -> ri.getId().toString())
-            .collect(Collectors.joining(", ")));
+    log.atDebug()
+        .setMessage("Removing requirements for controls {} from implementations {}")
+        .addArgument(
+            () ->
+                removedControls.stream()
+                    .map(Identifiable::getIdAsString)
+                    .collect(Collectors.joining(", ")))
+        .addArgument(
+            () ->
+                requirementImplementations.stream()
+                    .map(ri -> ri.getId().toString())
+                    .collect(Collectors.joining(", ")))
+        .log();
 
     requirementImplementations.forEach(
         ri -> {
