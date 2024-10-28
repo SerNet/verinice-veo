@@ -42,11 +42,6 @@ public class GetInspectionsUseCase
     return new OutputData(domain.getInspections(), domain);
   }
 
-  @Override
-  public boolean isReadOnly() {
-    return false;
-  }
-
   public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId)
       implements UseCase.InputData {}
 

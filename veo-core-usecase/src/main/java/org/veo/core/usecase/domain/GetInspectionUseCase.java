@@ -40,11 +40,6 @@ public class GetInspectionUseCase
     return new OutputData(domain.getInspection(input.inspectionRef));
   }
 
-  @Override
-  public boolean isReadOnly() {
-    return false;
-  }
-
   public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId, String inspectionRef)
       implements UseCase.InputData {}
 
