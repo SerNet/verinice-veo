@@ -214,7 +214,7 @@ class ControlImplementationSpec extends VeoSpec {
         def modified = elmt.getRequirementImplementation(reqImplRef)
         modified != null
 
-        and: "it's values were not touched"
+        and: "its values were not touched"
         modified.implementationStatement == IMPL_STATEMENT
         modified.getId() == reqImplId
 
