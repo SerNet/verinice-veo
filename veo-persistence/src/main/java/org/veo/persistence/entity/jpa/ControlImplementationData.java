@@ -19,9 +19,9 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -116,26 +116,16 @@ public class ControlImplementationData implements ControlImplementation {
     var controls = control.getPartsRecursively();
     controls.add(control);
 
-    var existingControls =
-        elmt.getRequirementImplementations().stream()
-            .map(RequirementImplementation::getControl)
-            .collect(Collectors.toSet());
-    controls.removeAll(existingControls);
-
-    var requirementImplementations =
-        controls.stream().map(RequirementImplementationData::createNew).collect(Collectors.toSet());
-
-    requirementImplementations.forEach(elmt::addRequirementImplementation);
-    setRequirementImplementations(
-        requirementImplementations.stream()
-            .map(RequirementImplementation.class::cast)
-            .collect(Collectors.toSet()));
-  }
-
-  private void setRequirementImplementations(Set<RequirementImplementation> implementations) {
-    this.requirementImplementations.clear();
-    this.requirementImplementations.addAll(
-        implementations.stream().map(ReqImplRef::from).collect(Collectors.toSet()));
+    for (Control c : controls) {
+      Optional<RequirementImplementation> existingRI = elmt.findRequirementImplementation(c);
+      if (existingRI.isPresent()) {
+        requirementImplementations.add(ReqImplRef.from(existingRI.get()));
+      } else {
+        RequirementImplementationData newRI = RequirementImplementationData.createNew(c);
+        requirementImplementations.add(ReqImplRef.from(newRI));
+        elmt.addRequirementImplementation(newRI);
+      }
+    }
   }
 
   public static ControlImplementationData createNew(RiskAffectedData<?, ?> elmt, Control control) {

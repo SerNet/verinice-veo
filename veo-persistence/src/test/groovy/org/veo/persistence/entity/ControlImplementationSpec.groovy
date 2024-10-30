@@ -222,6 +222,52 @@ class ControlImplementationSpec extends VeoSpec {
         type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
+    def "existing RIs are added to new CI"() {
+        given:
+        def elmt = newScope(unit)
+        def controlImplementation1 = elmt.implementControl(control)
+        def riC1 = elmt.getRequirementImplementation(control)
+        def riCS1 = elmt.getRequirementImplementation(controlStatement1)
+        def riCS2 = elmt.getRequirementImplementation(controlStatement2)
+
+        riCS1.status = ImplementationStatus.YES
+        riCS2.status = ImplementationStatus.PARTIAL
+
+        expect:
+        elmt.requirementImplementations.size() == 3
+        controlImplementation1.requirementImplementations.size() == 3
+        controlImplementation1.requirementImplementations*.UUID ==~ [
+            riC1.id,
+            riCS1.id,
+            riCS2.id
+        ]
+
+        when:
+        def control2 = newControl(unit) {
+            addParts([
+                controlStatement1,
+                controlStatement2
+            ] as Set)
+        }
+        def controlImplementation2 = elmt.implementControl(control2)
+        def riC2 = elmt.getRequirementImplementation(control2)
+
+        then:
+        elmt.requirementImplementations.size() == 4
+        riCS1.status == ImplementationStatus.YES
+        riCS2.status == ImplementationStatus.PARTIAL
+        controlImplementation1.requirementImplementations*.UUID ==~ [
+            riC1.id,
+            riCS1.id,
+            riCS2.id
+        ]
+        controlImplementation2.requirementImplementations*.UUID ==~ [
+            riC2.id,
+            riCS1.id,
+            riCS2.id
+        ]
+    }
+
     RiskAffected makeType(String type) {
         return "new${type.capitalize()}"(unit)
     }
