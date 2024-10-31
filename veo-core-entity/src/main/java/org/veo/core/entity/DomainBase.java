@@ -173,6 +173,5 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
     if (!getProfiles().removeIf(p -> p.getId().equals(profileId))) {
       throw new NotFoundException(profileId, Profile.class);
     }
-    ;
   }
 }
