@@ -29,6 +29,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
+import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
@@ -174,4 +175,8 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
       throw new NotFoundException(profileId, Profile.class);
     }
   }
+
+  DomainMigrationDefinition getDomainMigrationDefinition();
+
+  void setDomainMigrationDefinition(DomainMigrationDefinition domainUpdateDescription);
 }

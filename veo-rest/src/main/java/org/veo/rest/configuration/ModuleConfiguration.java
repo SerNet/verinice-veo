@@ -146,10 +146,12 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.GetInspectionUseCase;
 import org.veo.core.usecase.domain.GetInspectionsUseCase;
+import org.veo.core.usecase.domain.GetUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
+import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -242,6 +244,16 @@ import org.veo.service.risk.RiskService;
  */
 @Configuration
 public class ModuleConfiguration {
+
+  @Bean
+  public SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase(DomainRepository repository) {
+    return new SaveUpdateDefinitionUseCase(repository);
+  }
+
+  @Bean
+  public GetUpdateDefinitionUseCase getUpdateDefinitionUseCase(DomainRepository repository) {
+    return new GetUpdateDefinitionUseCase(repository);
+  }
 
   @Bean
   public SaveSystemMessageUseCase saveSystemMessageUseCase(

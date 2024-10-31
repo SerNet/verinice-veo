@@ -22,10 +22,13 @@ import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPA
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
@@ -34,6 +37,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -46,6 +50,7 @@ import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.ProcessRiskData
 
 import groovy.json.JsonSlurper
+import jakarta.validation.constraints.Size
 
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
@@ -1936,5 +1941,127 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then:
         riskDsraRiskValues.impactValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
         riskDsraRiskValues.riskValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+    }
+
+    @WithUserDetails("content-creator")
+    def "CRUD for DomainUpdateDefinition"() {
+        given:
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+
+        when:
+        def md = parseJson(get("/content-creation/domains/${domainId}/migrations"))
+
+        then: "the migrations are empty"
+        md == []
+
+        when: "we update the migrations"
+        parseJson(put("/content-creation/domains/${domainId}/migrations", migrationDefinition(),[:], 200))
+
+        def results = get("/content-creation/domains/${domainId}/migrations")
+        String eTag = getETag(results)
+        md = parseJson(results)
+
+        then: "the update is persistent"
+        with(md.first()) {
+            description.en == "a type change"
+            oldDefinitions.size() == 1
+            newDefinitions.size() == 1
+        }
+
+        and: "another get returns 304"
+        mvc.perform(MockMvcRequestBuilders.get("/content-creation/domains/${domainId}/migrations").accept(MediaType.APPLICATION_JSON).header(
+                HttpHeaders.IF_NONE_MATCH, eTag
+                )).andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
+
+        when: "the customAspect does not exist"
+        migrationDefinition().tap {
+            first().oldDefinitions.first().customAspect = "no_existing_aspect"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        def updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "Custom aspect 'no_existing_aspect' is not defined"
+
+        when: "the attribute does not exist"
+        migrationDefinition().tap {
+            first().oldDefinitions.first().attribute = "no_existing_attribute"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "Attribute 'no_existing_attribute' is not defined"
+
+        when: "no description is provided"
+        migrationDefinition().tap {
+            first().description = [:]
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "No description provided for step."
+
+        when: "the migrationExpression is wrong"
+        migrationDefinition().tap {
+            first().newDefinitions.first().migrationExpression.customAspect = "no_existing"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "Custom aspect 'no_existing' is not defined"
+
+        when: "the customAspect does not exist"
+        migrationDefinition().tap {
+            first().newDefinitions.first().customAspect = "no_existing"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "Custom aspect 'no_existing' is not defined"
+
+        when: "the steps have the same id"
+        migrationDefinition().tap {
+            it.add(migrationDefinition().first())
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(IllegalArgumentException)
+        updateEx.message == "Id 'a1' not unique."
+    }
+
+    private List<Map> migrationDefinition() {
+        def m = [
+            [description : [en: "a type change"],
+                id: "a1",
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "scope",
+                        customAspect: "scope_contactInformation",
+                        attribute: "scope_contactInformation_website",
+                        removeIfInvalid: true
+                    ],
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "scope",
+                        customAspect: "scope_contactInformation",
+                        attribute: "scope_contactInformation_website",
+                        migrationExpression: [
+                            type : 'customAspectAttributeValue',
+                            customAspect: 'scope_contactInformation',
+                            attribute: 'scope_contactInformation_website'
+                        ]
+                    ],
+                ]
+            ]
+        ]
+        return m
     }
 }

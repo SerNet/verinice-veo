@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
+import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.state.DomainBaseState;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
@@ -68,6 +70,9 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
 
   private ControlImplementationConfiguration controlImplementationConfiguration =
       new ControlImplementationConfiguration();
+
+  private DomainMigrationDefinition domainMigrationDefinition =
+      new DomainMigrationDefinition(Collections.emptyList());
 
   @Override
   @JsonIgnore

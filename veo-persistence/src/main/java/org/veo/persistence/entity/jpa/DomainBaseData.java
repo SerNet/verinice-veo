@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -43,6 +44,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -109,6 +111,12 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @Type(JsonType.class)
   private ControlImplementationConfiguration controlImplementationConfiguration =
       new ControlImplementationConfiguration();
+
+  @Column(name = "domain_migration_definition")
+  @NotNull
+  @Type(JsonType.class)
+  private DomainMigrationDefinition domainMigrationDefinition =
+      new DomainMigrationDefinition(Collections.emptyList());
 
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {

@@ -29,6 +29,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -54,6 +55,8 @@ public interface DomainBaseState extends EntityState {
   IncarnationConfiguration getIncarnationConfiguration();
 
   ControlImplementationConfiguration getControlImplementationConfiguration();
+
+  DomainMigrationDefinition getDomainMigrationDefinition();
 
   String getTemplateVersion();
 

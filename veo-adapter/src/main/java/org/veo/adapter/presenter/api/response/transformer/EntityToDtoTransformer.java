@@ -426,6 +426,7 @@ public final class EntityToDtoTransformer {
     target.setIncarnationConfiguration(source.getIncarnationConfiguration());
     target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+    target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
   }
 
   private ElementTypeDefinitionDto mapElementTypeDefinition(

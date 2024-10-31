@@ -103,7 +103,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         }, expectedStatusCode)
     }
 
-    ResultActions put(String url, Map content, Map headers, int expectedStatusCode = 200) {
+    ResultActions put(String url, Object content, Map headers, int expectedStatusCode = 200) {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(url)
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))

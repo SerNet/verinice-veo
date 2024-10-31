@@ -28,6 +28,7 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -54,6 +55,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,12 +74,16 @@ import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ControlImplementationConfiguration;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
+import org.veo.core.entity.Versioned;
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.definitions.DomainMigrationStep;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -90,10 +96,12 @@ import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.DeleteInspectionUseCase;
 import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
+import org.veo.core.usecase.domain.GetUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
+import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
@@ -103,6 +111,7 @@ import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
+import org.veo.service.EtagService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -141,11 +150,14 @@ public class ContentCreationController extends AbstractVeoController {
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
   private final CreateProfileInDomainTemplateUseCase createProfileInDomainTemplate;
   private final DeleteProfileInDomainTemplateUseCase deleteProfileInDomainTemplateUseCase;
+  private final GetUpdateDefinitionUseCase getUpdateDefinitionUseCase;
+  private final SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase;
 
   public static final String URL_BASE_PATH = "/content-creation";
 
   private final CreateDomainUseCase createDomainUseCase;
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
+  private final EtagService etagService;
 
   @PostMapping("/domains")
   @Operation(summary = "Creates blank new domain")
@@ -607,6 +619,51 @@ public class ContentCreationController extends AbstractVeoController {
       @NotNull @RequestPart MultipartFile file) {
     ExportDomainTemplateDto domainTemplateDto = parse(file, ExportDomainTemplateDto.class);
     return doCreateDomainTemplate(domainTemplateDto);
+  }
+
+  @PutMapping("/domains/{domainId}/migrations")
+  @Operation(summary = "Create or update the migration definition")
+  @ApiResponse(responseCode = "200", description = "Migration definition updated")
+  @ApiResponse(responseCode = "422", description = "Migration definition not consistent.")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveUpdateDefinition(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @RequestBody @Valid @NotNull List<DomainMigrationStep> domainMigrationStep) {
+    return useCaseInteractor.execute(
+        saveUpdateDefinitionUseCase,
+        new SaveUpdateDefinitionUseCase.InputData(
+            getAuthenticatedClient(auth), Key.from(domainId), domainMigrationStep),
+        out -> RestApiResponse.ok("Migrations updated"));
+  }
+
+  @GetMapping(value = "/domains/{domainId}/migrations")
+  @Operation(summary = "Retrieve the defined migrations")
+  @ApiResponse(responseCode = "200")
+  @ApiResponse(responseCode = "404", description = "Domain not found or has no domain template")
+  public @Valid Future<ResponseEntity<List<DomainMigrationStep>>> getUpdateDefinitions(
+      @Parameter(hidden = true) Authentication auth,
+      @PathVariable UUID domainId,
+      WebRequest request) {
+    if (getEtag(Domain.class, domainId).map(request::checkNotModified).orElse(false)) {
+      return null;
+    }
+
+    return useCaseInteractor
+        .execute(
+            getUpdateDefinitionUseCase,
+            new GetUpdateDefinitionUseCase.InputData(
+                getAuthenticatedClient(auth), Key.from(domainId)),
+            GetUpdateDefinitionUseCase.OutputData::migrationSteps)
+        .thenApply(
+            updateDefinition ->
+                ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(updateDefinition));
+  }
+
+  private <T extends Identifiable & Versioned> Optional<String> getEtag(
+      Class<T> entityClass, UUID id) {
+    return etagService.getEtag(entityClass, id.toString());
   }
 
   private CompletableFuture<ResponseEntity<ApiResponseBody>> doCreateDomainTemplate(
