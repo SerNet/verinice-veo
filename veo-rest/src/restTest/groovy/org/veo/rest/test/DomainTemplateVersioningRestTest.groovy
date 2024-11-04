@@ -63,4 +63,37 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
         post("/content-creation/domains/$domainId_1_1_0/template", [version: "1.1.0"], 409, CONTENT_CREATOR)
         .body.message == "Domain template with version 1.1.0 already exists"
     }
+
+    def "hotfix can be created from old minor version"() {
+        when: "creating a new minor version template"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.1.0"], 201, CONTENT_CREATOR).body.id
+
+        // TODO #3301 create a new domain from the old template and use that as our old minor version here
+
+        and: "creating a patch version from the old minor"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
+
+        then: "all three templates exist"
+        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
+    }
+
+    def "hotfix can be created from old major version"() {
+        when: "creating a new major version template"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "2.0.0"], 201, CONTENT_CREATOR).body.id
+
+        // TODO #3301 create a new domain from the old template and use that as our old minor version here
+
+        and: "creating a patch version from the old major"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
+
+        then: "all three templates exist"
+        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
+    }
+
+    // TODO #3301 this test becomes obsolete once the new template becomes associated with the domain it was created from
+    def "new template version cannot be created from domain that was not created from a template"() {
+        expect: "that the original domain that does not refer to the template cannot be used to create another template"
+        post("/content-creation/domains/$domainId_original/template", [version: "1.1.0"], 422, CONTENT_CREATOR)
+        .body.message == "Domain is not based on a template, but templates already exist."
+    }
 }

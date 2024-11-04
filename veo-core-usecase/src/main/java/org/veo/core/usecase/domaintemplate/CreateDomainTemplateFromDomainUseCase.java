@@ -19,6 +19,7 @@ package org.veo.core.usecase.domaintemplate;
 
 import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.validateVersion;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -80,19 +81,28 @@ public class CreateDomainTemplateFromDomainUseCase
   /** Validate and apply new version value. */
   private Domain updateVersion(Domain domain, Version version) {
     validateVersion(version);
-    domainTemplateRepository
-        .findCurrentTemplateVersion(domain.getName())
-        .ifPresent(
-            currentTemplateVersion -> {
-              if (version.lessThan(currentTemplateVersion)) {
+    Optional.ofNullable(domain.getDomainTemplate())
+        .map(DomainTemplate::getTemplateVersion)
+        .map(Version::parse)
+        .ifPresentOrElse(
+            templateVersion -> {
+              if (version.lessThan(templateVersion)) {
                 throw new UnprocessableDataException(
                     "Domain template version must be higher than current version %s"
-                        .formatted(currentTemplateVersion));
-              }
-              if (version.equals(currentTemplateVersion)) {
+                        .formatted(templateVersion));
+              } else if (version.equals(templateVersion)) {
                 throw new EntityAlreadyExistsException(
                     "Domain template with version %s already exists".formatted(version));
               }
+            },
+            () -> {
+              domainTemplateRepository
+                  .getLatestDomainTemplateId(domain.getName())
+                  .ifPresent(
+                      (ignored) -> {
+                        throw new UnprocessableDataException(
+                            "Domain is not based on a template, but templates already exist.");
+                      });
             });
     domain.setTemplateVersion(version.toString());
     return repository.save(domain);
