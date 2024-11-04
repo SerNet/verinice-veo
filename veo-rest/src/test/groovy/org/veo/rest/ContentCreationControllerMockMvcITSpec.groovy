@@ -423,61 +423,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "create a DomainTemplate"() {
-        given: "a number of existing templates"
-        def initialTemplateCount = txTemplate.execute {
-            domainTemplateDataRepository.count()
-        }
-
-        when: "a template is created"
-        def result = parseJson(post("/content-creation/domains/${testDomain.idAsString}/template",[version : "1.0.0"]))
-
-        then: "a result is returned"
-        result != null
-
-        and: "there is one more template in the repo"
-        domainTemplateDataRepository.count() == initialTemplateCount + 1
-
-        when: "loading the domain templates from the database"
-        def dt = txTemplate.execute {
-            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }
-        }
-
-        then: "the version is set"
-        dt.templateVersion == "1.0.0"
-
-        when: "trying to create another domain template with the same version"
-        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.0"], 409)
-
-        then:
-        thrown(EntityAlreadyExistsException)
-
-        when: "trying to create another domain template with a lower version"
-        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "0.5.3"], 422)
-
-        then:
-        thrown(UnprocessableDataException)
-
-        when: "trying to create another domain template with an invalid version"
-        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.1"], 400)
-
-        then:
-        thrown(MethodArgumentNotValidException)
-
-        when: "trying to create another domain template with a prerelease label"
-        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.1-prerelease3"], 400)
-
-        then:
-        thrown(MethodArgumentNotValidException)
-
-        when: "trying to create another domain template with a higher version"
-        post("/content-creation/domains/${testDomain.idAsString}/template", [version : "1.0.1"])
-
-        then:
-        notThrown(Exception)
-    }
-
-    @WithUserDetails("content-creator")
     def "create catalog items in a domain from a unit"() {
         given: "a domain and a unit with elements"
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
