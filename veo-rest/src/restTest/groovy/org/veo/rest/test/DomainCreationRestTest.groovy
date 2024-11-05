@@ -51,7 +51,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         when: "defining an element type, risk def, decision, inspection & incarnation config in the domain"
-        postAssetObjectSchema(domainId)
+        putAssetDefinition(domainId)
         def domainUpdatedBeforeDecisionUpdate = get("/domains/$domainId").body.updatedAt
 
         put("/content-creation/domains/$domainId/risk-definitions/SomeRA", [
@@ -904,7 +904,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ], 201, CONTENT_CREATOR).body.resourceId
 
         when: "defining an element type in the domain"
-        postAssetObjectSchema(domainId)
+        putAssetDefinition(domainId)
 
         and:
         delete("/content-creation/domains/${domainId}", 204)

@@ -33,7 +33,7 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
             name: domainName,
             authority: "me",
         ], 201, CONTENT_CREATOR).body.resourceId
-        postAssetObjectSchema(domainId_original)
+        putAssetDefinition(domainId_original)
 
         templateId_1_0_0 = post("/content-creation/domains/$domainId_original/template", [version: "1.0.0"], 201, CONTENT_CREATOR).body.id
         // TODO #3301 createdomains becomes unnecessary once the template gets associated with the domain it was created from

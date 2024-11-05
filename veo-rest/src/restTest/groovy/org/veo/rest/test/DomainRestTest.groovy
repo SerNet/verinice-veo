@@ -17,152 +17,51 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
-import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
-import org.apache.http.HttpStatus
+abstract class DomainRestTest extends VeoRestTest {
 
-abstract class DomainRestTest extends VeoRestTest{
-
-    def postAssetObjectSchema(String domainId) {
-        post("/content-creation/domains/$domainId/element-type-definitions/asset/object-schema",
+    def putAssetDefinition(String domainId) {
+        put("/content-creation/domains/$domainId/element-type-definitions/asset",
                 [
-                    properties: [
-                        domains: [
-                            properties: [
-                                (domainId): [
-                                    properties: [
-                                        subType: [
-                                            enum: ["server"],
-                                        ]
-                                    ],
-                                    allOf: [
-                                        [
-                                            "if": [
-                                                properties: [
-                                                    subType: [
-                                                        const: "server"
-                                                    ]
-                                                ]
-                                            ],
-                                            then: [
-                                                properties: [
-                                                    status: [
-                                                        enum: ["off", "on"]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        customAspects: [
-                            properties: [:]
-                        ],
-                        links: [
-                            properties: [:]
-                        ],
-                        translations: [
-                            en: [
-                                asset_server_singular: "Server",
-                                asset_server_plural: "Servers",
-                                asset_server_status_off: "off",
-                                asset_server_status_on: "on"
-                            ]
+                    subTypes: [
+                        server: [
+                            statuses: ["off", "on"]
+                        ]
+                    ],
+                    translations: [
+                        en: [
+                            asset_server_singular: "Server",
+                            asset_server_plural: "Servers",
+                            asset_server_status_off: "off",
+                            asset_server_status_on: "on"
                         ]
                     ]
                 ],
-                204, CONTENT_CREATOR)
+                null, 204, CONTENT_CREATOR)
     }
 
-    def postPersonObjectSchema(String domainId) {
-        post("/content-creation/domains/$domainId/element-type-definitions/person/object-schema",
+    def putPersonDefinition(String domainId) {
+        put("/content-creation/domains/$domainId/element-type-definitions/person",
                 [
-                    properties: [
-                        domains: [
-                            properties: [
-                                (domainId): [
-                                    properties: [
-                                        subType: [
-                                            enum: ["PER_Person"],
-                                        ]
-                                    ],
-                                    allOf: [
-                                        [
-                                            "if": [
-                                                properties: [
-                                                    subType: [
-                                                        const: "PER_Person"
-                                                    ]
-                                                ]
-                                            ],
-                                            then: [
-                                                properties: [
-                                                    status: [
-                                                        enum: ["NEW", "on"]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        customAspects: [
-                            properties: [:]
-                        ],
-                        links: [
-                            properties: [:]
-                        ],
-                        translations: [:]
+                    subTypes: [
+                        PER_Person: [
+                            statuses: ["NEW", "on"]
+                        ]
                     ]
                 ],
-                204, CONTENT_CREATOR)
+                null, 204, CONTENT_CREATOR)
     }
-    def postProcessObjectSchema(String domainId) {
-        post("/content-creation/domains/$domainId/element-type-definitions/process/object-schema",
+
+    def putProcessDefinition(String domainId) {
+        put("/content-creation/domains/$domainId/element-type-definitions/process",
                 [
-                    properties: [
-                        domains: [
-                            properties: [
-                                (domainId): [
-                                    properties: [
-                                        subType: [
-                                            enum: ["PRO_Process"],
-                                        ]
-                                    ],
-                                    allOf: [
-                                        [
-                                            "if": [
-                                                properties: [
-                                                    subType: [
-                                                        const: "PRO_Process"
-                                                    ]
-                                                ]
-                                            ],
-                                            then: [
-                                                properties: [
-                                                    status: [
-                                                        enum: ["NEW", "on"]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        customAspects: [
-                            properties: [:]
-                        ],
-                        links: [
-                            properties: [:]
-                        ],
-                        translations: [:]
+                    subTypes: [
+                        PRO_Process: [
+                            statuses: ["NEW", "on"]
+                        ]
                     ]
                 ],
-                204, CONTENT_CREATOR)
+                null, 204, CONTENT_CREATOR)
     }
 }

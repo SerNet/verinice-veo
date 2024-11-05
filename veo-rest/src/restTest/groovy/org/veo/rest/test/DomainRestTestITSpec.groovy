@@ -149,9 +149,9 @@ class DomainRestTestITSpec extends DomainRestTest {
             authority: "ME",
         ], 201, CONTENT_CREATOR).body.resourceId
 
-        postPersonObjectSchema(domainId)
-        postProcessObjectSchema(domainId)
-        postAssetObjectSchema(domainId)
+        putPersonDefinition(domainId)
+        putProcessDefinition(domainId)
+        putAssetDefinition(domainId)
 
         when: "we create a unit with elements"
         def catalogSourceUnitId = postNewUnit("U1", [domainId]).resourceId
@@ -275,7 +275,7 @@ class DomainRestTestITSpec extends DomainRestTest {
             name: "catalog item update test ${randomUUID()}",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
-        postPersonObjectSchema(domainId)
+        putPersonDefinition(domainId)
         def unitId = postNewUnit("U1", [domainId]).resourceId
         def person1Id = post("/domains/$domainId/persons", [
             name: "person 1",
