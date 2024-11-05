@@ -35,6 +35,7 @@ import org.veo.core.entity.event.ElementEvent;
   @Type(value = AndExpression.class, name = "and"),
   @Type(value = CurrentElementExpression.class, name = "currentElement"),
   @Type(value = ConstantExpression.class, name = "constant"),
+  @Type(value = ContainsExpression.class, name = "contains"),
   @Type(value = CustomAspectAttributeSizeExpression.class, name = "customAspectAttributeSize"),
   @Type(value = CustomAspectAttributeValueExpression.class, name = "customAspectAttributeValue"),
   @Type(value = EqualsExpression.class, name = "equals"),

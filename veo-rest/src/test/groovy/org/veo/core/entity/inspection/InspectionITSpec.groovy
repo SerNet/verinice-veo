@@ -22,9 +22,9 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.condition.AndExpression
 import org.veo.core.entity.condition.ConstantExpression
+import org.veo.core.entity.condition.ContainsExpression
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
 import org.veo.core.entity.condition.EqualsExpression
-import org.veo.core.entity.condition.EqualsMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.test.VeoSpec
 
@@ -96,6 +96,61 @@ class InspectionITSpec extends VeoSpec {
         finding = stickerInspection.run(linuxPc, domain)
 
         then: "the warning is gone"
+        finding.empty
+    }
+
+    def "find a constant string in a CA attribute list"() {
+        given:
+        def inspection = newInspection() {
+            severity = Severity.HINT
+            description.translations.(Locale.ENGLISH) = "A dog might find the needle in the haystack"
+            elementType = Asset.SINGULAR_TERM
+            elementSubType = "farm"
+            condition =
+                    new ContainsExpression(
+                    new CustomAspectAttributeValueExpression("assets", "haystack"),
+                    new ConstantExpression("needle")
+                    )
+            suggestAddingPart("dog")
+        }
+
+        when:
+        def farm = newAsset(unit) {
+            associateWithDomain(domain, "farm", "ESTABLISHED")
+            customAspects.add(newCustomAspect("assets", domain) {
+                attributes["haystack"] = [
+                    'straw',
+                    'straw',
+                    'straw',
+                    'needle',
+                    'straw'
+                ]
+            })
+        }
+        def finding = inspection.run(farm, domain)
+
+        then:
+        with(finding.get()) {
+            severity == Severity.HINT
+            description.translations.en == "A dog might find the needle in the haystack"
+            with(suggestions[0]) {
+                it instanceof AddPartSuggestion
+                partSubType == "dog"
+            }
+        }
+
+        when:
+        farm.applyCustomAspect(newCustomAspect("assets", domain) {
+            attributes["haystack"] = [
+                'straw',
+                'straw',
+                'straw',
+                'straw'
+            ]
+        })
+        finding = inspection.run(farm, domain)
+
+        then:
         finding.empty
     }
 }
