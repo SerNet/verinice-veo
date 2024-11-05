@@ -113,7 +113,7 @@ class CatalogItemRestTest extends VeoRestTest {
 
         when: "creating and exporting a domain template from the domain"
         def templateId = post("/content-creation/domains/$copyOfTestDomainId/template", [
-            version: "99.99.99"
+            version: "1.1.0"
         ], 201, CONTENT_CREATOR).body.id
         def exportedDomainTemplate = get("/content-creation/domain-templates/$templateId", 200, CONTENT_CREATOR).body
 

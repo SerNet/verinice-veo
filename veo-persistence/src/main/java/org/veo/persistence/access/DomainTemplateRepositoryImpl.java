@@ -75,19 +75,14 @@ public class DomainTemplateRepositoryImpl
   }
 
   @Override
-  public Optional<Version> findCurrentTemplateVersion(String templateName) {
+  public Version getLatestVersion(String templateName) {
     return dataRepository
         .findCurrentTemplateVersion(templateName)
-        .map(
-            version -> {
-              try {
-                return Version.valueOf(version);
-              }
-              // TODO-1072 This will no longer happen once we've abolished non-sem-vers from the DB.
-              catch (Exception ex) {
-                return null;
-              }
-            });
+        .map(Version::parse)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "No domain template found for name '%s'".formatted(templateName)));
   }
 
   @Override
@@ -106,5 +101,10 @@ public class DomainTemplateRepositoryImpl
     catalogItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.value());
     profileItemDataRepository.findAllByDomainTemplateFetchTailoringReferences(id.value());
     return dt;
+  }
+
+  @Override
+  public boolean templateExists(String name, Version version) {
+    return dataRepository.existsByNameAndTemplateVersion(name, version.toString());
   }
 }

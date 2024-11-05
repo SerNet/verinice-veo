@@ -50,4 +50,6 @@ public interface DomainTemplateDataRepository
           where dt.dbId = ?1
       """)
   Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(UUID id);
+
+  boolean existsByNameAndTemplateVersion(String name, String templateVersion);
 }

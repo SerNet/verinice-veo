@@ -1522,7 +1522,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             productId: 'EXAMPLE_ELEMENTS',
         ])
         def result = parseJson(post("/content-creation/domains/${domain.idAsString}/template", [
-            version : "1.2.3"
+            version : "1.1.0"
         ]))
 
         then: "a result is returned"
@@ -1534,14 +1534,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
-                    .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
+                    .find{ it.name == domain.name && it.templateVersion == "1.1.0"}
                     .tap{
                         it.profiles*.items*.tailoringReferences*.id
                     } // init proxy
         }
 
         then: "the template is found, the version is set"
-        dt.templateVersion == "1.2.3"
+        dt.templateVersion == "1.1.0"
 
         and: "the example profile exists"
         with(dt.profiles.find { it.name == "Example elements" }) {
@@ -1634,7 +1634,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "a template is created"
         post("/content-creation/domains/${domain.idAsString}/template", [
-            version : "1.2.3",
+            version : "1.1.0",
             profiles: [
                 exampleOrganization: [
                     unitId: unitId

@@ -81,18 +81,35 @@ public class CreateDomainTemplateFromDomainUseCase
   /** Validate and apply new version value. */
   private Domain updateVersion(Domain domain, Version version) {
     validateVersion(version);
+    if (domainTemplateRepository.templateExists(domain.getName(), version)) {
+      throw new EntityAlreadyExistsException(
+          "Domain template %s %s already exists".formatted(domain.getName(), version));
+    }
     Optional.ofNullable(domain.getDomainTemplate())
         .map(DomainTemplate::getTemplateVersion)
         .map(Version::parse)
         .ifPresentOrElse(
+            /*
+             If the domain is based on an existing template, enforce restrictions for different types of updates:
+             * Major and minor versions may only be created from a domain based on the latest template.
+             * Patches can also be created as hotfixes for outdated templates.
+             * Version numbers must not be skipped.
+             * Only major versions may contain breaking changes.
+             * Patch versions must not contain any structural changes.
+            */
             templateVersion -> {
-              if (version.lessThan(templateVersion)) {
-                throw new UnprocessableDataException(
-                    "Domain template version must be higher than current version %s"
-                        .formatted(templateVersion));
-              } else if (version.equals(templateVersion)) {
-                throw new EntityAlreadyExistsException(
-                    "Domain template with version %s already exists".formatted(version));
+              switch (getUpdateType(templateVersion, version)) {
+                case UpdateType.MAJOR -> {
+                  validateNewMinorOrMajor(domain, templateVersion);
+                }
+                case UpdateType.MINOR -> {
+                  validateNewMinorOrMajor(domain, templateVersion);
+                  // TODO #3275 forbid breaking changes
+                }
+                case UpdateType.PATCH -> {
+                  // TODO #3275 forbid breaking changes
+                  // TODO #3315 forbid any structural changes
+                }
               }
             },
             () -> {
@@ -106,6 +123,34 @@ public class CreateDomainTemplateFromDomainUseCase
             });
     domain.setTemplateVersion(version.toString());
     return repository.save(domain);
+  }
+
+  private void validateNewMinorOrMajor(Domain domain, Version templateVersion) {
+    var latest = domainTemplateRepository.getLatestVersion(domain.getName());
+    if (!templateVersion.equals(latest)) {
+      throw new UnprocessableDataException(
+          "Given domain is based on version %s, but a new minor or major version can only be created from the latest template %s."
+              .formatted(templateVersion, latest));
+    }
+  }
+
+  private UpdateType getUpdateType(Version oldVersion, Version newVersion) {
+    var nextPatch = oldVersion.nextPatchVersion();
+    var nextMinor = oldVersion.nextMinorVersion();
+    var nextMajor = oldVersion.nextMajorVersion();
+
+    if (newVersion.equals(nextPatch)) {
+      return UpdateType.PATCH;
+    }
+    if (newVersion.equals(nextMinor)) {
+      return UpdateType.MINOR;
+    }
+    if (newVersion.equals(nextMajor)) {
+      return UpdateType.MAJOR;
+    }
+    throw new UnprocessableDataException(
+        "Unexpected version - expected next patch (%s), minor (%s) or major (%s)."
+            .formatted(nextPatch, nextMinor, nextMajor));
   }
 
   @Override

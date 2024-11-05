@@ -59,9 +59,15 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         and: "that new version numbers must be higher"
         post("/content-creation/domains/$domainId_1_1_0/template", [version: "0.9.0"], 422, CONTENT_CREATOR)
-        .body.message == "Domain template version must be higher than current version 1.1.0"
+        .body.message == "Unexpected version - expected next patch (1.1.1), minor (1.2.0) or major (2.0.0)."
         post("/content-creation/domains/$domainId_1_1_0/template", [version: "1.1.0"], 409, CONTENT_CREATOR)
-        .body.message == "Domain template with version 1.1.0 already exists"
+        .body.message == "Domain template $domainName 1.1.0 already exists"
+
+        and: "that versions cannot be skipped"
+        ["1.1.2", "1.3.0", "3.0.0"].each {
+            assert post("/content-creation/domains/$domainId_1_1_0/template", [version: it], 422, CONTENT_CREATOR)
+            .body.message == "Unexpected version - expected next patch (1.1.1), minor (1.2.0) or major (2.0.0)."
+        }
     }
 
     def "hotfix can be created from old minor version"() {
@@ -70,11 +76,24 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         // TODO #3301 create a new domain from the old template and use that as our old minor version here
 
-        and: "creating a patch version from the old minor"
+        then: "the outdated domain cannot be used to create a new minor or major version"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "2.0.0"], 422, CONTENT_CREATOR)
+        .body.message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 1.1.0."
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.1.0"], 409, CONTENT_CREATOR)
+        .body.message == "Domain template $domainName 1.1.0 already exists"
+
+        when: "creating a patch version from the old minor"
         post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
 
         then: "all three templates exist"
         get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
+
+        expect: "that the old minor cannot be used to create yet another patch"
+        // TODO #3301 create a new domain from the old template and use that as our old minor version here
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 409, CONTENT_CREATOR)
+        .body.message == "Domain template $domainName 1.0.1 already exists"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.2"], 422, CONTENT_CREATOR)
+        .body.message == "Unexpected version - expected next patch (1.0.1), minor (1.1.0) or major (2.0.0)."
     }
 
     def "hotfix can be created from old major version"() {
@@ -83,7 +102,13 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         // TODO #3301 create a new domain from the old template and use that as our old minor version here
 
-        and: "creating a patch version from the old major"
+        then: "the outdated domain cannot be used to create a new minor or major version"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.1.0"], 422, CONTENT_CREATOR)
+        .body.message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 2.0.0."
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "2.0.0"], 409, CONTENT_CREATOR)
+        .body.message == "Domain template $domainName 2.0.0 already exists"
+
+        when: "creating a patch version from the old major"
         post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
 
         then: "all three templates exist"

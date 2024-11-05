@@ -170,7 +170,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
 
         and: "creating a domain template from the domain"
         def templateId = post("/content-creation/domains/$copyOfTestDomainId/template", [
-            version: "99.99.99"
+            version: "1.1.0"
         ], 201, CONTENT_CREATOR).body.id
 
         and: "exporting the template"
