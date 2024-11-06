@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migrations) {
 
@@ -33,27 +34,25 @@ public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migra
     if (domainTemplate == null && !migrations.isEmpty()) {
       throw new IllegalArgumentException("No domainTemplate linked with domain.");
     }
-    Set<String> ids = new HashSet<>(migrations().size());
+    Set<String> ids = HashSet.newHashSet(migrations().size());
     migrations()
         .forEach(
             step -> {
               if (step.description().getTranslations().isEmpty()) {
-                throw new IllegalArgumentException("No description provided for step.");
+                throw new UnprocessableDataException(
+                    "No description provided for step '%s'.".formatted(step.id()));
               }
               if (ids.contains(step.id())) {
-                throw new IllegalArgumentException("Id '%s' not unique.".formatted(step.id()));
+                throw new UnprocessableDataException("Id '%s' not unique.".formatted(step.id()));
               }
               ids.add(step.id());
-              step.newDefinitions().forEach(nd -> nd.validate(domain));
-              step.oldDefinitions()
-                  .forEach(
-                      nd -> {
-                        if (nd.migrationExpression() != null) {
-                          throw new IllegalArgumentException(
-                              "Can't have expressions for old migration steps. ");
-                        }
-                        nd.validate(domainTemplate);
-                      });
+              try {
+                step.newDefinitions().forEach(nd -> nd.validate(domain));
+                step.oldDefinitions().forEach(nd -> nd.validate(domainTemplate));
+              } catch (IllegalArgumentException e) {
+                throw new UnprocessableDataException(
+                    "Invalid definition '%s'. %s".formatted(step.id(), e.getMessage()));
+              }
             });
   }
 }

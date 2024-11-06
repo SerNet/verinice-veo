@@ -38,6 +38,7 @@ import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -1976,62 +1977,130 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "the customAspect does not exist"
         migrationDefinition().tap {
             first().oldDefinitions.first().customAspect = "no_existing_aspect"
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        def updateEx = thrown(IllegalArgumentException)
-        updateEx.message == "Custom aspect 'no_existing_aspect' is not defined"
+        def updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Invalid definition 'a1'. No customAspect 'no_existing_aspect' for element type scope in oldDefinitions."
 
         when: "the attribute does not exist"
         migrationDefinition().tap {
             first().oldDefinitions.first().attribute = "no_existing_attribute"
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        updateEx = thrown(IllegalArgumentException)
-        updateEx.message == "Attribute 'no_existing_attribute' is not defined"
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Invalid definition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope in oldDefinitions."
 
         when: "no description is provided"
         migrationDefinition().tap {
             first().description = [:]
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        updateEx = thrown(IllegalArgumentException)
-        updateEx.message == "No description provided for step."
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "No description provided for step 'a1'."
 
         when: "the migrationExpression is wrong"
         migrationDefinition().tap {
             first().newDefinitions.first().migrationExpression.customAspect = "no_existing"
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        updateEx = thrown(IllegalArgumentException)
-        updateEx.message == "Custom aspect 'no_existing' is not defined"
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Invalid definition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
 
         when: "the customAspect does not exist"
         migrationDefinition().tap {
             first().newDefinitions.first().customAspect = "no_existing"
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        updateEx = thrown(IllegalArgumentException)
-        updateEx.message == "Custom aspect 'no_existing' is not defined"
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Invalid definition 'a1'. No customAspect 'no_existing' for element type scope in newDefinitions."
+
+        when: "the attribute in the migrationExpression does not exist"
+        migrationDefinition().tap {
+            first().newDefinitions.first().migrationExpression.attribute = "no_existing_attribute"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Invalid definition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
 
         when: "the steps have the same id"
         migrationDefinition().tap {
             it.add(migrationDefinition().first())
-            put("/content-creation/domains/${domainId}/migrations", it, [:], 400)
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
         then:"the data is rejected"
-        updateEx = thrown(IllegalArgumentException)
+        updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Id 'a1' not unique."
+
+        when: "the steps have different ids"
+        migrationDefinition().tap {
+            it.add(migrationDefinition().first())
+            first().id = "a2"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 200)
+        }
+
+        then: "the update is persistent"
+        with(parseJson(get("/content-creation/domains/${domainId}/migrations"))) {
+            size() == 2
+            it.get(0).id == "a2"
+            it.get(1).id == "a1"
+        }
+
+        when: "we change a CA definition"
+        executeInTransaction {
+            def domain = domainDataRepository.findById(domainId).get()
+            domainDataRepository.save(domain.tap {
+                getElementTypeDefinition('process').customAspects.get('process_opinionDPO').tap {
+                    attributeDefinitions.remove('process_opinionDPO_opinionDPO')
+                    attributeDefinitions.put('process_opinionDPO_new', new TextAttributeDefinition())
+                }
+            })
+        }
+
+        then:
+        put("/content-creation/domains/${domainId}/migrations", migrationDefinitionChangeKey(),[:], 200)
+    }
+
+    private List<Map> migrationDefinitionChangeKey() {
+        def m = [
+            [description : [en: "a key change"],
+                id: "b1",
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "process_opinionDPO",
+                        attribute: "process_opinionDPO_opinionDPO"
+                    ],
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "process_opinionDPO",
+                        attribute: "process_opinionDPO_new",
+                        migrationExpression: [
+                            type : 'customAspectAttributeValue',
+                            customAspect: 'process_opinionDPO',
+                            attribute: 'process_opinionDPO_opinionDPO'
+                        ]
+                    ],
+                ]
+            ],
+        ]
+        return m
     }
 
     private List<Map> migrationDefinition() {
@@ -2060,7 +2129,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                         ]
                     ],
                 ]
-            ]
+            ],
         ]
         return m
     }

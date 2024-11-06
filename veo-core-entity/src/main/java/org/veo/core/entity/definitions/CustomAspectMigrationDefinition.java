@@ -24,7 +24,9 @@ import javax.annotation.Nullable;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.CustomAspect;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.condition.VeoExpression;
 
@@ -40,20 +42,40 @@ public record CustomAspectMigrationDefinition(
   @Override
   public void validate(DomainBase domain) {
     EntityType.validateElementType(elementType);
-    var attributeDefinition =
-        domain
-            .getElementTypeDefinition(elementType)
-            .getCustomAspectDefinition(customAspect)
-            .getAttributeDefinition(attribute);
-
+    ElementTypeDefinition elementTypeDefinition = domain.getElementTypeDefinition(elementType);
+    var stepType = domain instanceof DomainTemplate ? "old" : "new";
+    CustomAspectDefinition customAspectDefinition =
+        elementTypeDefinition.getCustomAspects().get(customAspect);
+    if (customAspectDefinition == null) {
+      throw new IllegalArgumentException(
+          "No customAspect '%s' for element type %s in %sDefinitions."
+              .formatted(customAspect, elementType, stepType));
+    }
+    var attributeDefinition = customAspectDefinition.getAttributeDefinitions().get(attribute);
+    if (attributeDefinition == null) {
+      throw new IllegalArgumentException(
+          "No attribute '%s.%s' for element type %s in %sDefinitions."
+              .formatted(customAspect, attribute, elementType, stepType));
+    }
     if (migrationExpression != null) {
-      migrationExpression.selfValidate(domain, elementType);
-      Class<?> expectedType = attributeDefinition.getValueType();
-      Class<?> actualType = migrationExpression.getValueType(domain, elementType);
-      if (!actualType.isAssignableFrom(expectedType)) {
-        throw new IllegalArgumentException(
-            "Values for attribute %s must be of type %s, but given expression produces %s"
-                .formatted(attribute, expectedType.getSimpleName(), actualType.getSimpleName()));
+      if (domain instanceof Domain d) {
+        try {
+          var domainTemplate = d.getDomainTemplate();
+          migrationExpression.selfValidate(domainTemplate, elementType);
+          Class<?> expectedType = attributeDefinition.getValueType();
+          Class<?> actualType = migrationExpression.getValueType(domainTemplate, elementType);
+          if (!actualType.isAssignableFrom(expectedType)) {
+            throw new IllegalArgumentException(
+                "Values for attribute %s must be of type %s, but given expression produces %s."
+                    .formatted(
+                        attribute, expectedType.getSimpleName(), actualType.getSimpleName()));
+          }
+        } catch (Exception e) {
+          throw new IllegalArgumentException(
+              "MigrationExpression is invalid: %s.".formatted(e.getMessage()));
+        }
+      } else {
+        throw new IllegalArgumentException("Can't have expressions for old migration steps.");
       }
     }
   }
