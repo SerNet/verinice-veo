@@ -19,6 +19,7 @@ package org.veo.core.entity;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -186,6 +188,10 @@ public interface Element
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
 
+  default Optional<CustomAspect> getCustomAspect(Domain domain, String type) {
+    return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
+  }
+
   default Set<CustomLink> getLinks(Domain domain) {
     return getLinks().stream().filter(l -> l.getDomain().equals(domain)).collect(toSet());
   }
@@ -230,4 +236,9 @@ public interface Element
   CatalogItem toCatalogItem(Domain domain);
 
   ProfileItem toProfileItem(Profile profile);
+
+  void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions);
+
+  CustomAspect findOrAddCustomAspect(Domain domain, String type);
 }

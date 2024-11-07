@@ -85,9 +85,32 @@ public class MigrateDomainUseCase
             .findAny()
             .orElseThrow();
     applyCustomization(domainToUpdate, newDomain);
-    performMigration(client, domainToUpdate, newDomain);
+    migrateUnits(client, domainToUpdate, newDomain);
     domainToUpdate.setActive(false);
     return EmptyOutput.INSTANCE;
+  }
+
+  private void migrateUnits(Client client, Domain oldDomain, Domain newDomain) {
+    log.info(
+        "Performing migration for domain {}->{} (client {})",
+        oldDomain,
+        newDomain,
+        client.getIdAsString());
+
+    List<Unit> unitsToUpdate = unitRepository.findByDomain(oldDomain.getId());
+    int failureCount = 0;
+    for (Unit unit : unitsToUpdate) {
+      try {
+        migrateUnitUseCase.execute(
+            new MigrateUnitUseCase.InputData(unit.getId(), oldDomain.getId(), newDomain.getId()));
+      } catch (Exception e) {
+        failureCount++;
+        log.error("Error migrating unit {}", unit, e);
+      }
+    }
+    if (failureCount != 0) {
+      throw MigrationFailedException.forDomain(unitsToUpdate.size(), failureCount);
+    }
   }
 
   private void applyCustomization(Domain oldDomain, Domain newDomain) {
@@ -139,30 +162,6 @@ public class MigrateDomainUseCase
         .stream()
         .filter(e -> !e.getValue().isEmpty())
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
-
-  private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
-    log.info(
-        "Performing migration for domain {}->{} (client {})",
-        domainToUpdate,
-        newDomain,
-        client.getIdAsString());
-
-    List<Unit> unitsToUpdate = unitRepository.findByDomain(domainToUpdate.getId());
-    int failureCount = 0;
-    for (Unit unit : unitsToUpdate) {
-      try {
-        migrateUnitUseCase.execute(
-            new MigrateUnitUseCase.InputData(
-                unit.getId(), domainToUpdate.getId(), newDomain.getId()));
-      } catch (Exception e) {
-        failureCount++;
-        log.error("Error migrating unit {}", unit, e);
-      }
-    }
-    if (failureCount != 0) {
-      throw MigrationFailedException.forDomain(unitsToUpdate.size(), failureCount);
-    }
   }
 
   public record InputData(Key<UUID> domainId) implements UseCase.InputData {}

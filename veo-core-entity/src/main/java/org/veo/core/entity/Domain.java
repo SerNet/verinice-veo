@@ -135,4 +135,14 @@ public interface Domain extends DomainBase, ClientOwned {
   default Optional<Action> findAction(String actionId) {
     return Optional.ofNullable(getActions().get(actionId));
   }
+
+  default String mapOldSubType(String subtype) {
+    // TODO verinice-veo#3378: include mapping in migration definition
+    return subtype;
+  }
+
+  default String mapOldStatus(String status) {
+    // TODO verinice-veo#3378: include mapping in migration definition
+    return status;
+  }
 }

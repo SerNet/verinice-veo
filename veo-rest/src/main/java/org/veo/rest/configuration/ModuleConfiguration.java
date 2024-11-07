@@ -1103,24 +1103,18 @@ public class ModuleConfiguration {
   public MigrateDomainUseCase migrateDomainUseCase(
       DomainRepository domainRepository,
       UnitRepository unitRepository,
-      MigrateUnitUseCase migrateUnitUseCase,
-      Decider decider) {
+      MigrateUnitUseCase migrateUnitUseCase) {
     return new MigrateDomainUseCase(domainRepository, unitRepository, migrateUnitUseCase);
   }
 
   @Bean
-  public MigrateUnitUseCase migrateUnitUseCase(
+  public MigrateUnitUseCase migrateUnitByCopyUseCase(
       DomainRepository domainRepository,
       UnitRepository unitRepository,
       GenericElementRepository genericElementRepository,
-      ElementMigrationService elementMigrationService,
       Decider decider) {
     return new MigrateUnitUseCase(
-        domainRepository,
-        elementMigrationService,
-        genericElementRepository,
-        decider,
-        unitRepository);
+        domainRepository, genericElementRepository, decider, unitRepository);
   }
 
   @Bean

@@ -76,8 +76,8 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * entityStateMapper.mapState(processState, process, false, _)
         1 * process.getOwner() >> existingUnit
         4 * process.getDomains() >> []
-        2 * process.getCustomAspects() >> []
-        3 * process.getLinks() >> []
+        1 * process.getCustomAspects() >> []
+        2 * process.getLinks() >> []
         1 * process.owningClient >> Optional.of(existingClient)
         1 * process.modelInterface >> Process
         1 * processRepository.save(process) >> process
@@ -104,8 +104,8 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * identifiableFactory.create(Process) >> process
         1 * process.getOwner() >> existingUnit
         3 * process.getDomains() >> []
-        2 * process.getCustomAspects() >> []
-        3 * process.getLinks() >> []
+        1 * process.getCustomAspects() >> []
+        2 * process.getLinks() >> []
 
         thrown(ClientBoundaryViolationException)
     }

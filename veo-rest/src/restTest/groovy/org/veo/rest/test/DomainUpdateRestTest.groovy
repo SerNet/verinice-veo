@@ -24,17 +24,21 @@ import java.util.function.Consumer
 
 class DomainUpdateRestTest extends VeoRestTest {
 
-    String oldDomainTemplateId
-    String newDomainTemplateId
+    String currentDomainTemplateId
     String templateName
     String unitId
     String oldDomainId
 
-    def "updates client to new domain template version and migrates elements"() {
-        given:
-        createOldAndNewTemplate {}
+    def setup() {
+        templateName = "domain update test template ${UUID.randomUUID()}"
+        currentDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
+        post("/domain-templates/$currentDomainTemplateId/createdomains", null, 204, ADMIN)
+        oldDomainId = domains.find { it.name == templateName }.id
+        unitId = postNewUnit("U1", [oldDomainId, testDomainId]).resourceId
+    }
 
-        and: "a scope and a process linked to it in the old domain"
+    def "updates client to new domain template version and migrates elements"() {
+        given: "a scope and a process linked to it in the old domain"
         def scopeId = post("/scopes", [
             name: "target scope",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -78,7 +82,9 @@ class DomainUpdateRestTest extends VeoRestTest {
         post("/units/${unitId}/incarnations", get("/units/${unitId}/domains/${oldDomainId}/incarnation-descriptions?itemIds=${c1SymId}").body)
 
         when: "migrating to the new domain"
-        def newDomainId = migrateToNewDomain()
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "1.0.1"
+        }
         def migratedScope = get("/scopes/$scopeId").body
 
         then: "the sub type and link are still present under the new domain"
@@ -132,11 +138,213 @@ class DomainUpdateRestTest extends VeoRestTest {
         noExceptionThrown()
     }
 
-    def "information in other domains is untouched during migration"() {
-        given:
-        createOldAndNewTemplate {}
+    def "updates client to new domain template version and migrates elements with incompatible changes"() {
+        given: "a scope and a process linked to it in the old domain"
+        def scopeId = post("/domains/$oldDomainId/scopes", [
+            name: "target scope",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "SCP_ResponsibleBody",
+            status: "NEW"
+        ]).body.resourceId
+        def processId = post("/domains/$oldDomainId/processes", [
+            name: "old process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            customAspects: [
+                "test1":
+                [
+                    Attribute1: true,
+                    Attribute2: "my test text",
+                ],
+                "test2": [
+                    Attribute1: false,
+                    Attribute2: true,
+                ],
+                "everlasting": [
+                    perfectNumber: 42
+                ],
+            ],
+            links: [
+                processToScopeLink: [
+                    [
+                        target: [targetUri: "/scopes/$scopeId"]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
 
-        and: "a document associated with two domains"
+        when: "migrating to a template with breaking changes"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+
+            it.elementTypeDefinitions.process.customAspects.test1 = [
+                'attributeDefinitions': [
+                    'Attribute3': ['type': 'boolean']
+                ]]
+
+            it.elementTypeDefinitions.process.customAspects.test2 = [
+                'attributeDefinitions': [
+                    'Attribute1': ['type': 'boolean'],
+                    'Attribute2': ['type': 'boolean'],
+                    'Attribute3': ['type': 'text']
+                ]]
+
+            it.domainMigrationDefinition = [migrations: migrationDefinitionChangeKey()]
+        }
+
+        def migratedScope = get("/domains/$newDomainId/scopes/$scopeId").body
+
+        then: "the sub type is still present under the new domain"
+        migratedScope.subType == "SCP_ResponsibleBody"
+
+        when:"We get the process in the new domain"
+        def processInNewDomain = get("/domains/$newDomainId/processes/$processId").body
+
+        then: "the process has been migrated"
+        with(processInNewDomain) {
+            name == "old process"
+            customAspects.test1.Attribute1 == null
+            customAspects.test1.Attribute2 == null
+            customAspects.test1.Attribute3 == true
+            customAspects.test2.Attribute1 == false
+            customAspects.test2.Attribute2 == true
+            customAspects.test2.Attribute3 == "my test text"
+            customAspects.everlasting.perfectNumber == 42
+            links.processToScopeLink.size() == 1
+            links.processToScopeLink.first().target.name == "target scope"
+            links.processToScopeLink.first().target.associatedWithDomain == true
+        }
+
+        when: "migrating to a new patch template"
+        newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.1"
+        }
+
+        then: "the process has been migrated without any changes"
+        with(get("/domains/$newDomainId/processes/$processId").body) {
+            customAspects.test1.Attribute1 == null
+            customAspects.test1.Attribute2 == null
+            customAspects.test1.Attribute3 == true
+            customAspects.test2.Attribute1 == false
+            customAspects.test2.Attribute2 == true
+            customAspects.test2.Attribute3 == "my test text"
+            customAspects.everlasting.perfectNumber == 42
+            links.processToScopeLink.size() == 1
+            links.processToScopeLink.first().target.name == "target scope"
+            links.processToScopeLink.first().target.associatedWithDomain == true
+        }
+    }
+
+    def "add and remove CAs during major update"() {
+        given:
+        def processId = post("/domains/$oldDomainId/processes", [
+            name: "old process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            customAspects: [
+                "test1":
+                [
+                    Attribute1: false,
+                    Attribute2: "old comment",
+                ],
+                test2:[
+                    Attribute1: true,
+                    Attribute2: true,
+                ],
+                everlasting: [
+                    perfectNumber: 42
+                ],
+            ],
+        ]).body.resourceId
+
+        when: "migrating to the new domain"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+
+            it.elementTypeDefinitions.process.customAspects.remove('test1')
+            it.elementTypeDefinitions.process.customAspects.test2.attributeDefinitions.newText = [
+                type: 'text'
+            ]
+            it.elementTypeDefinitions.process.customAspects.newCA = [
+                attributeDefinitions: [
+                    newBool: [
+                        type: 'boolean'
+                    ]
+                ]
+            ]
+
+            it.domainMigrationDefinition = [
+                migrations: [
+                    [
+                        description: [en: "move text attribute from removed CA to an extended CA"],
+                        id: "move-text",
+                        oldDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute2"
+                            ]
+                        ],
+                        newDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test2",
+                                attribute: "newText",
+                                migrationExpression: [
+                                    type: 'customAspectAttributeValue',
+                                    customAspect: 'test1',
+                                    attribute: 'Attribute2'
+                                ]
+                            ],
+                        ],
+                    ],
+                    [
+                        description: [en: "move boolean attribute from removed CA to a new CA"],
+                        id: "move-bool",
+                        oldDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute1"
+                            ],
+                        ],
+                        newDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "newCA",
+                                attribute: "newBool",
+                                migrationExpression: [
+                                    type: 'customAspectAttributeValue',
+                                    customAspect: 'test1',
+                                    attribute: 'Attribute1'
+                                ]
+                            ],
+                        ],
+                    ],
+                ],]
+        }
+        def processInNewDomain = get("/domains/$newDomainId/processes/$processId").body
+
+        then: "the process has the migrated values in the new domain"
+        with(processInNewDomain) {
+            name == "old process"
+            customAspects.test1 == null
+            customAspects.test2.Attribute1 == true
+            customAspects.test2.Attribute2 == true
+            customAspects.test2.newText == "old comment"
+            customAspects.newCA.newBool == false
+            customAspects.everlasting.perfectNumber == 42
+        }
+    }
+
+    def "information in other domains is untouched during migration"() {
+        given: "a document associated with two domains"
         def targetPersonId = post("/domains/$testDomainId/persons", [
             name: "Manuel el autor",
             subType: "MasterOfDisaster",
@@ -170,7 +378,9 @@ class DomainUpdateRestTest extends VeoRestTest {
         ], 200)
 
         when: "migrating to a new template version"
-        def newDomainId = migrateToNewDomain()
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "1.0.1"
+        }
 
         then: "the document has been migrated"
         get("/domains/$newDomainId/documents/$documentId").body.subType == "DOC_Document"
@@ -187,9 +397,6 @@ class DomainUpdateRestTest extends VeoRestTest {
 
     def "removes risk values for deleted risk definition"() {
         given:
-        createOldAndNewTemplate { it.riskDefinitions = [:] }
-
-        and:
         def scopeId = post("/domains/$oldDomainId/scopes", [
             name: "scp",
             subType: "SCP_ResponsibleBody",
@@ -231,8 +438,11 @@ class DomainUpdateRestTest extends VeoRestTest {
             ]
         ])
 
-        when:
-        def newDomainId = migrateToNewDomain()
+        when: "migrating to a new template with no risk definitions"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+            it.riskDefinitions = [:]
+        }
 
         then:
         with(get("/domains/$newDomainId/scopes/$scopeId").body) {
@@ -244,14 +454,14 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "overwrites vanilla risk definition"() {
-        given: "a new template version with an added risk value"
-        createOldAndNewTemplate { it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"]) }
-
         expect:
         get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.riskValues*.symbolicRisk == ["one"]
 
         when:
-        def newDomainId = migrateToNewDomain()
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "1.1.0"
+            it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"])
+        }
 
         then: "the changes from the new domain template have been applied"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
@@ -260,10 +470,7 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "customized risk definition is not overwritten"() {
-        given: "a new template version with an added risk value"
-        createOldAndNewTemplate { it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"]) }
-
-        and: "a customized domain with an added translation"
+        given: "a customized domain with an added translation"
         get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.with { riskDef ->
             riskDef.riskValues[0].translations = [
                 en: [
@@ -273,8 +480,11 @@ class DomainUpdateRestTest extends VeoRestTest {
             put("/content-customizing/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
         }
 
-        when:
-        def newDomainId = migrateToNewDomain()
+        when: "migrating to a new template version with an added risk value"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "1.1.0"
+            it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"])
+        }
 
         then: "the customized version has been applied"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
@@ -284,41 +494,24 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "invalid customized risk definition is migrated to new domain"() {
-        given: "a new template version with a removed link"
-        createOldAndNewTemplate {
-            it.elementTypeDefinitions.scope.links.remove("scopeToProcessLink")
-        }
-
-        and: "a customized domain where a risk definition uses the doomed link"
+        given: "a customized domain where a risk definition uses the doomed link"
         get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.with { riskDef ->
             riskDef.categories[0].id = "caterpillar"
             riskDef.impactInheritingLinks.scope = ['scopeToProcessLink']
             put("/content-creation/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
         }
 
-        when:
-        def newDomainId = migrateToNewDomain()
+        when: "migrating to new template version with a removed link\""
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+            it.elementTypeDefinitions.scope.links.remove("scopeToProcessLink")
+        }
 
         then: "the customized version has been applied, minus the invalid link"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
             categories[0].id == "caterpillar"
             impactInheritingLinks == [:]
         }
-    }
-
-    private createOldAndNewTemplate(Consumer<Map> updateTemplate) {
-        templateName = "domain update test template ${UUID.randomUUID()}"
-
-        def template = getTemplate()
-        oldDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-
-        updateTemplate(template)
-        template.templateVersion = "1.1.0"
-        newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-
-        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
-        oldDomainId = get("/domains").body.find { it.name == templateName }.id
-        unitId = postNewUnit("U1", [oldDomainId, testDomainId]).resourceId
     }
 
     private LinkedHashMap<String, Serializable> getTemplate() {
@@ -393,7 +586,24 @@ class DomainUpdateRestTest extends VeoRestTest {
                     ]
                 ],
                 'process': [
-                    'customAspects': [:],
+                    'customAspects': [
+                        'test1' :[
+                            'attributeDefinitions': [
+                                'Attribute1': ['type': 'boolean'],
+                                'Attribute2': ['type': 'text']
+                            ]],
+                        'test2' :[
+                            'attributeDefinitions': [
+                                'Attribute1': ['type': 'boolean'],
+                                'Attribute2': ['type': 'boolean']
+                            ]
+                        ],
+                        'everlasting': [
+                            attributeDefinitions: [
+                                'perfectNumber': ['type': 'integer']
+                            ],
+                        ]
+                    ],
                     'links': [
                         'processToScopeLink': [
                             'attributeDefinitions': [:],
@@ -480,12 +690,64 @@ class DomainUpdateRestTest extends VeoRestTest {
         ]
     }
 
-    String migrateToNewDomain() {
-        post("/domain-templates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
-        post("/admin/domain-templates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
+    String createNewTemplateAndMigrate(Consumer<Map> updateTemplate) {
+        def template = get("/content-creation/domain-templates/$currentDomainTemplateId").body
+        updateTemplate(template)
+        currentDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
+        post("/domain-templates/$currentDomainTemplateId/createdomains", null, 204, ADMIN)
+        post("/admin/domain-templates/$currentDomainTemplateId/allclientsupdate", null, 204, ADMIN)
         defaultPolling.eventually {
-            get("/domains").body.findAll{it.name == templateName}*.templateVersion == ["1.1.0"]
+            def versions = get("/domains").body.findAll { it.name == templateName }*.templateVersion
+            versions == [template.templateVersion]
         }
-        get("/domains").body.findAll{it.name == templateName}.first().id
+        get("/domains").body.find{it.name == templateName}.id
+    }
+
+    private List<Map> migrationDefinitionChangeKey() {
+        def m = [
+            [description : [en: "a key change and and a transfer of value"],
+                id: "t1",
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "test1",
+                        attribute: "Attribute1"
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "test1",
+                        attribute: "Attribute2"
+                    ]
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "test1",
+                        attribute: "Attribute3",
+                        migrationExpression: [
+                            type : 'customAspectAttributeValue',
+                            customAspect: 'test1',
+                            attribute: 'Attribute1'
+                        ]
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "process",
+                        customAspect: "test2",
+                        attribute: "Attribute3",
+                        migrationExpression: [
+                            type : 'customAspectAttributeValue',
+                            customAspect: 'test1',
+                            attribute: 'Attribute2'
+                        ]
+                    ],
+                ],
+
+            ],
+        ]
+        return m
     }
 }

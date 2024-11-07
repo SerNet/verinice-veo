@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -36,6 +39,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.TemplateItemAspects;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -73,6 +77,18 @@ public class ControlData extends ElementData implements Control {
   @ManyToMany(targetEntity = ControlData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
   private final Set<Control> composites = new HashSet<>();
+
+  @Override
+  public void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+    super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
+    Map<RiskDefinitionRef, ControlRiskValues> riskValues = getRiskValues(oldDomain);
+    // TODO: verince-veo#3381
+    List<RiskDefinitionRef> newRiskDefinition =
+        newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
+    riskValues.entrySet().removeIf(e -> !newRiskDefinition.contains(e.getKey()));
+    setRiskValues(newDomain, riskValues);
+  }
 
   @Override
   public void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
@@ -115,6 +131,15 @@ public class ControlData extends ElementData implements Control {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(a -> a.values.remove(riskDefinition) != null)
         .orElse(false);
+  }
+
+  @Override
+  public boolean removeFromDomains(Domain domain) {
+    boolean removed = super.removeFromDomains(domain);
+    if (removed) {
+      setRiskValues(domain, Collections.emptyMap());
+    }
+    return removed;
   }
 
   @Override

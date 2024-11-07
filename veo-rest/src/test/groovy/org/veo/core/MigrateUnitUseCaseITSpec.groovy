@@ -20,6 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
@@ -91,6 +92,9 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
     @Autowired
     ScenarioRepository scenarioRepository
 
+    @Autowired
+    EntityToDtoTransformer t
+
     Client client
     Domain dsgvoDomain
     Domain dsgvoDomainV2
@@ -135,7 +139,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
     def "Migrate a control with risk values"() {
         given: 'a client with an empty unit'
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
-        ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(42)
+        ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(2)
         ControlRiskValues controlRiskValues = new ControlRiskValues(implementationStatusRef)
         Map riskValues = [
             (riskDefinitionRef) : controlRiskValues
@@ -169,7 +173,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             it.domain == dsgvoDomainV2
             with(it.values) {
                 size() == 1
-                get(riskDefinitionRef).implementationStatus.ordinalValue == 42
+                get(riskDefinitionRef).implementationStatus.ordinalValue == 2
             }
         }
     }
@@ -283,7 +287,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         Asset asset = assetRepository.save(newAsset(unit) {
-            associateWithDomain(dsgvoDomain, "AST_DataType", "NEW")
+            associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             setImpactValues(dsgvoDomain, impactValues)
         })
 
@@ -424,7 +428,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             }.resultPage.each {
                 //initialize lazy associations
                 it.customAspects*.domain.name
-                it.links*.domains*.name
+                it.links*.domain*.name
             }
         }
         persons.size() == 5
@@ -442,9 +446,6 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
-
-        and: 'the old domain is removed from all processes'
-        processRepository.findByDomain(dsgvoDomain).empty
     }
 
     def runUseCase(Key<UUID> unitId, Key<UUID> domainIdOld = dsgvoDomain.id, Key<UUID> domainIdNew = dsgvoDomainV2.id) {

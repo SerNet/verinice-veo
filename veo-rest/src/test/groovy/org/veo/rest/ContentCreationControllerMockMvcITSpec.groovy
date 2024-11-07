@@ -1899,8 +1899,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when:
         def md = parseJson(get("/content-creation/domains/${domainId}/migrations"))
 
-        then: "the migrations are empty"
-        md == []
+        then: "the migrations contains one step"
+        md.size() == 1
 
         when: "trying to explicitly set an empty migration list"
         parseJson(put("/content-creation/domains/${domainId}/migrations", [], [:], 422))

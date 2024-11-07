@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -40,6 +41,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.EqualsAndHashCode;
@@ -103,6 +105,22 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
       fetch = FetchType.LAZY)
   @Valid
   private final Set<ScopeRiskValuesAspectData> scopeRiskValuesAspects = new HashSet<>();
+
+  @Override
+  public void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+    super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
+    Optional<RiskDefinitionRef> riskDefinition = getRiskDefinition(oldDomain);
+    // TODO: verince-veo#3381
+    List<RiskDefinitionRef> newRiskDefinition =
+        newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
+    riskDefinition.ifPresent(
+        rd -> {
+          if (newRiskDefinition.contains(rd)) {
+            setRiskDefinition(newDomain, rd);
+          }
+        });
+  }
 
   @Override
   public void setRiskDefinition(Domain domain, RiskDefinitionRef riskDefinition) {

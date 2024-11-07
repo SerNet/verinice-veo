@@ -132,4 +132,6 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
   boolean removeRiskCategory(RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain);
 
   boolean addRiskCategory(RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain);
+
+  void copyAspectData(Domain oldDomain, Domain newDomain);
 }

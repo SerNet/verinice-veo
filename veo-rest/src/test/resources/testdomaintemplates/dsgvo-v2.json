@@ -2794,5 +2794,32 @@
       "customAspects": {},
       "links": {}
     }
+  },
+  "domainMigrationDefinition": {
+    "migrations": [
+      {
+        "id": "1",
+        "description": {
+          "en": "remove obsolete attributes"
+        },
+        "oldDefinitions": [
+          {
+            "type": "customAspectAttribute",
+            "elementType": "process",
+            "customAspect": "process_opinionDPO",
+            "attribute": "process_opinionDPO_consultationRequired",
+            "migrationExpression": null
+          },
+          {
+            "type": "customAspectAttribute",
+            "elementType": "process",
+            "customAspect": "process_opinionDPO",
+            "attribute": "process_opinionDPO_consultationConducted",
+            "migrationExpression": null
+          }
+        ],
+        "newDefinitions": []
+      }
+    ]
   }
 }

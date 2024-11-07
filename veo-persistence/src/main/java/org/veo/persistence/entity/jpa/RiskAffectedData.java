@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +43,7 @@ import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.ImpactValues;
@@ -57,6 +61,19 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
     extends ElementData implements RiskAffected<T, R> {
+
+  @Override
+  public void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+    super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
+    Map<RiskDefinitionRef, ImpactValues> impactValues = new HashMap<>(getImpactValues(oldDomain));
+    // TODO: verince-veo#3381
+    List<RiskDefinitionRef> newRiskDefinition =
+        newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
+    impactValues.entrySet().removeIf(e -> !newRiskDefinition.contains(e.getKey()));
+    setImpactValues(newDomain, impactValues);
+    getRisks().forEach(r -> r.copyAspectData(oldDomain, newDomain));
+  }
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {

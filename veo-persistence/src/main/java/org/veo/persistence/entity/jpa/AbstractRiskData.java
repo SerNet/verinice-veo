@@ -150,6 +150,25 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
+  public void copyAspectData(Domain oldDomain, Domain newDomain) {
+    List<RiskDefinitionRef> newRiskDefinition =
+        newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
+    Map<RiskDefinitionRef, RiskTailoringReferenceValues> tailoringReferenceValues =
+        getTailoringReferenceValues(oldDomain);
+    tailoringReferenceValues.entrySet().removeIf(e -> !newRiskDefinition.contains(e.getKey()));
+    setValues(tailoringReferenceValues, newDomain);
+
+    getRiskDefinitions(oldDomain).stream()
+        .filter(e -> newRiskDefinition.contains(e))
+        .forEach(
+            rd -> {
+              RiskValuesAspectData oldAspect = getOrCreateRiskAspect(oldDomain, rd);
+              RiskValuesAspectData aspectData = getOrCreateRiskAspect(newDomain, rd);
+              aspectData.copyAspectData(oldAspect);
+            });
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o == null) return false;
 

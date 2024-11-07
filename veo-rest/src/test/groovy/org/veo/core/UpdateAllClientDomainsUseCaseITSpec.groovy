@@ -28,7 +28,11 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.CustomAspectMigrationDefinition
+import org.veo.core.entity.definitions.DomainMigrationDefinition
+import org.veo.core.entity.definitions.DomainMigrationStep
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactValues
@@ -40,6 +44,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
+import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
@@ -149,7 +154,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     def "Migrate a control with risk values"() {
         given: 'a client with an empty unit'
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
-        ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(42)
+        ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(1)
         ControlRiskValues controlRiskValues = new ControlRiskValues(implementationStatusRef)
         Map riskValues = [
             (riskDefinitionRef) : controlRiskValues
@@ -173,7 +178,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         control = executeInTransaction {
             controlRepository.findById(control.id).get().tap {
                 //initialize lazy associations
+                it.getRiskDefinitions(dsgvoDomainV2)
                 it.getRiskValues(dsgvoDomainV2)
+                it.riskValuesAspects.forEach{ a-> a.domain.name  }
             }
         }
 
@@ -183,7 +190,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             it.domain == dsgvoDomainV2
             with(it.values) {
                 size() == 1
-                get(riskDefinitionRef).implementationStatus.ordinalValue == 42
+                get(riskDefinitionRef).implementationStatus.ordinalValue == 1
             }
         }
     }
@@ -216,6 +223,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 // init lazy associations
                 ((ScopeData)it).getRiskDefinition(dsgvoDomainV2)
                 ((ScopeData)it).getImpactValues(dsgvoDomainV2)
+                it.scopeRiskValuesAspects.forEach{ a-> a.domain.name  }
             }
         }
 
@@ -297,7 +305,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         Asset asset = assetRepository.save(newAsset(unit) {
-            associateWithDomain(dsgvoDomain, "AST_DataType", "NEW")
+            associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             setImpactValues(dsgvoDomain, impactValues)
         })
 
@@ -438,7 +446,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             }.resultPage.each {
                 //initialize lazy associations
                 it.customAspects*.domain.name
-                it.links*.domains*.name
+                it.links*.domain*.name
             }
         }
         persons.size() == 5

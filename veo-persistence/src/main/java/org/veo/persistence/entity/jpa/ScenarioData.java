@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -36,6 +39,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.TemplateItemAspects;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -83,6 +87,18 @@ public class ScenarioData extends ElementData implements Scenario {
   @Valid
   @Getter
   private final Set<Scenario> composites = new HashSet<>();
+
+  @Override
+  public void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+    super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
+    Map<RiskDefinitionRef, PotentialProbability> probability = getPotentialProbability(oldDomain);
+    // TODO: verince-veo#3381
+    List<RiskDefinitionRef> newRiskDefinition =
+        newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
+    probability.entrySet().removeIf(e -> !newRiskDefinition.contains(e.getKey()));
+    setPotentialProbability(newDomain, probability);
+  }
 
   public void setPotentialProbability(
       Domain domain, Map<RiskDefinitionRef, PotentialProbability> potentialProbability) {

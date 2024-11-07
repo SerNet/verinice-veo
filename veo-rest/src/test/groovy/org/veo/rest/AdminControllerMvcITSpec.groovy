@@ -156,8 +156,8 @@ class AdminControllerMvcITSpec extends ContentSpec {
                     domains.(newDomainId) != null
 
                     domains.(newDomainId).reference.displayName == oldDomainName
-                    domains.(newDomainId).riskDefinitions.DSRA.riskValues == oldRiskValues
-                    domains.(newDomainId).riskDefinitions.DSRA.impactValues == oldImpactValues
+                    domains.(newDomainId).riskDefinitions.DSRA.riskValues ==~ oldRiskValues
+                    domains.(newDomainId).riskDefinitions.DSRA.impactValues ==~ oldImpactValues
                     domains.(newDomainId).riskDefinitions.DSRA.probability == oldProbability
                 }
             }

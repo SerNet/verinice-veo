@@ -33,8 +33,25 @@ import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 import org.veo.core.entity.specification.ElementOnlyReferencesAssociatedDomains;
 import org.veo.core.entity.specification.ElementOnlyReferencesItsOwnUnitSpecification;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
 public class DomainSensitiveElementValidator {
+
+  public static boolean isValid(Element element, Domain domain) {
+    try {
+      validate(element, domain);
+      return true;
+    } catch (IllegalArgumentException e) {
+      log.warn(
+          "element {} ({}) is invalid: {}",
+          element.getName(),
+          element.getIdAsString(),
+          e.getMessage());
+      return false;
+    }
+  }
 
   public static void validate(Element element) {
     if (!new ElementOnlyReferencesItsOwnUnitSpecification().test(element)) {
@@ -48,9 +65,18 @@ public class DomainSensitiveElementValidator {
       throw new IllegalArgumentException(
           "Element cannot contain custom aspects or links for domains it is not associated with");
     }
-    element.getCustomAspects().forEach(ca -> validateCustomAspect(element, ca));
     element
-        .getLinks()
+        .getDomains()
+        .forEach(
+            domain -> {
+              validate(element, domain);
+            });
+  }
+
+  public static void validate(Element element, Domain domain) {
+    element.getCustomAspects(domain).forEach(ca -> validateCustomAspect(element, ca));
+    element
+        .getLinks(domain)
         .forEach(
             link -> {
               validateLink(
@@ -60,26 +86,21 @@ public class DomainSensitiveElementValidator {
                   link.getAttributes(),
                   link.getDomain());
             });
-    element
-        .getDomains()
-        .forEach(
-            domain -> {
-              SubTypeValidator.validate(element, domain);
 
-              var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
-              if (element instanceof RiskAffected<?, ?> riskAffected) {
-                RiskValuesValidator.validateImpactValues(
-                    riskAffected.getImpactValues(domain), riskRefProvider);
-              }
-              if (element instanceof Control control) {
-                RiskValuesValidator.validateControlRiskValues(
-                    control.getRiskValues(domain), riskRefProvider);
-              }
-              if (element instanceof Scenario scenario) {
-                RiskValuesValidator.validateScenarioRiskValues(
-                    scenario.getPotentialProbability(domain), riskRefProvider);
-              }
-            });
+    SubTypeValidator.validate(element, domain);
+
+    var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
+    if (element instanceof RiskAffected<?, ?> riskAffected) {
+      RiskValuesValidator.validateImpactValues(
+          riskAffected.getImpactValues(domain), riskRefProvider);
+    }
+    if (element instanceof Control control) {
+      RiskValuesValidator.validateControlRiskValues(control.getRiskValues(domain), riskRefProvider);
+    }
+    if (element instanceof Scenario scenario) {
+      RiskValuesValidator.validateScenarioRiskValues(
+          scenario.getPotentialProbability(domain), riskRefProvider);
+    }
   }
 
   static void validateLinkTargetType(

@@ -190,4 +190,24 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     impactCategories.add(new ImpactImpl(category));
     riskCategories.add(new DeterminedRiskImpl(category));
   }
+
+  public void copyAspectData(RiskValuesAspectData oldAspect) {
+    domain
+        .getRiskDefinition(oldAspect.riskDefinition.getIdRef())
+        .ifPresent(
+            rd -> {
+              List<CategoryRef> newCats =
+                  rd.getCategories().stream().map(CategoryRef::from).toList();
+              probability = oldAspect.probability;
+              impactCategories =
+                  oldAspect.impactCategories.stream() // TODO: verince-veo#3274 do not filter
+                      .filter(ic -> newCats.contains(ic.getCategory()))
+                      .toList();
+              riskDefinition = oldAspect.riskDefinition;
+              riskCategories =
+                  oldAspect.riskCategories.stream()
+                      .filter(dr -> newCats.contains(dr.getCategory()))
+                      .toList();
+            });
+  }
 }

@@ -73,8 +73,8 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         1 * scopeRepository.save(_) >> { it[0] }
         1 * scope.getOwner() >> existingUnit
         4 * scope.getDomains() >> []
-        2 * scope.getCustomAspects() >> []
-        3 * scope.getLinks() >> []
+        1 * scope.getCustomAspects() >> []
+        2 * scope.getLinks() >> []
 
         when:
         def scope1 = output.entity
@@ -100,8 +100,8 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         1 * identifiableFactory.create(Scope) >> scope
         1 * scope.getOwner() >> existingUnit
         3 * scope.getDomains() >> []
-        2 * scope.getCustomAspects() >> []
-        3 * scope.getLinks() >> []
+        1 * scope.getCustomAspects() >> []
+        2 * scope.getLinks() >> []
         thrown(ClientBoundaryViolationException)
     }
 }

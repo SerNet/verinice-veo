@@ -25,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Element
 import org.veo.core.entity.Key
+import org.veo.core.usecase.MigrationFailedException
+import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -41,7 +44,7 @@ class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
     private UpdateAllClientDomainsUseCase useCase
 
     @SpringBean
-    ElementMigrationService elementMigrationServiceMock = Mock()
+    Decider deciderMock = Mock()
 
     Client client
     Client client2
@@ -77,8 +80,9 @@ class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
         def unit2scenario = scenarioDataRepository.save(newScenario(unit2) {
             associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
         })
-        elementMigrationServiceMock.migrate(unit2scenario, dsgvoDomainV2) >> {
-            throw new RuntimeException()
+
+        deciderMock.decide(unit2scenario,dsgvoDomainV2) >> {
+            throw new MigrationFailedException("failed", 1, 2)
         }
 
         when:

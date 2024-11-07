@@ -30,6 +30,13 @@ public class MigrationFailedException extends RuntimeException {
     this.failureCount = failureCount;
   }
 
+  public static MigrationFailedException forUnit(int elementCount, int failureCount) {
+    return new MigrationFailedException(
+        "Migration of unit failed for " + failureCount + " of " + elementCount + " elements(s)",
+        elementCount,
+        failureCount);
+  }
+
   public static MigrationFailedException forDomain(int unitCount, int failureCount) {
     return new MigrationFailedException(
         "Migration failed for " + failureCount + " of " + unitCount + " unit(s)",

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2024  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,21 +17,33 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
+import com.github.zafarkhaja.semver.Version;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.definitions.DomainMigrationStep;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.MigrationFailedException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +56,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class MigrateUnitUseCase
-    implements TransactionalUseCase<MigrateUnitUseCase.InputData, UseCase.EmptyOutput> {
+    implements TransactionalUseCase<MigrateUnitUseCase.InputData, MigrateUnitUseCase.OutputData> {
   private final DomainRepository domainRepository;
-  private final ElementMigrationService elementMigrationService;
   private final GenericElementRepository genericElementRepository;
   private final Decider decider;
   private final UnitRepository unitRepository;
@@ -59,17 +70,23 @@ public class MigrateUnitUseCase
   // TODO #2338 remove @Transactional (currently, without this annotation there would be no
   // transaction when calling this from another use case)
   @Transactional(TxType.REQUIRES_NEW)
-  public EmptyOutput execute(InputData input) {
+  public OutputData execute(InputData input) {
     var unit = unitRepository.getById(input.unitId);
     var oldDomain = domainRepository.getById(input.domainIdOld, unit.getClient().getId());
     var newDomain = domainRepository.getById(input.domainIdNew, unit.getClient().getId());
 
+    Version oldVersion = Version.parse(oldDomain.getTemplateVersion());
+    Version newVersion = Version.parse(newDomain.getTemplateVersion());
+
+    boolean needsMigrationDefinition = !oldVersion.isSameMajorVersionAs(newVersion);
+
     log.info(
-        "Performing migration for domain {} {}->{} (unit {})",
+        "Performing migration for domain {}::{}->{} (unit {}) need attribute migration: {}",
         newDomain.getName(),
         oldDomain.getTemplateVersion(),
         newDomain.getTemplateVersion(),
-        unit.getId());
+        unit.getId(),
+        needsMigrationDefinition);
 
     var elementQuery = genericElementRepository.query(unit.getClient());
     elementQuery.whereUnitIn(Set.of(unit));
@@ -77,22 +94,64 @@ public class MigrateUnitUseCase
     var elements = elementQuery.execute(PagingConfiguration.UNPAGED).getResultPage();
     unit.addToDomains(newDomain);
 
-    log.info(
-        "Transferring domain-specific information on {} elements from old domain to new domain",
-        elements.size());
-    elements.forEach(element -> element.transferToDomain(oldDomain, newDomain));
-
-    // Mercilessly remove all information from the elements that is no longer valid under the new
-    // domain. This must happen after all elements have been transferred, because link targets are
-    // also validated and must have been transferred beforehand.
-    elements.forEach(element -> elementMigrationService.migrate(element, newDomain));
+    associateNewDomain(oldDomain, newDomain, elements);
+    Map<String, List<MigrationDefinition>> deprecatedDefinitions =
+        needsMigrationDefinition
+            ? newDomain.getDomainMigrationDefinition().migrations().stream()
+                .map(DomainMigrationStep::oldDefinitions)
+                .flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(e -> e.elementType()))
+            : Collections.emptyMap();
 
     elements.forEach(
-        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
-    unit.removeFromDomains(oldDomain);
-    return EmptyOutput.INSTANCE;
+        element ->
+            element.copyDomainData(
+                oldDomain,
+                newDomain,
+                deprecatedDefinitions.getOrDefault(
+                    element.getModelType(), Collections.emptyList())));
+    if (needsMigrationDefinition) {
+      applyMigrationDefinition(oldDomain, newDomain, elements);
+    }
+    var invalidElements =
+        elements.stream()
+            .filter(e -> !DomainSensitiveElementValidator.isValid(e, newDomain))
+            .toList();
+
+    if (invalidElements.isEmpty()) {
+      log.info("migration successful, remove old domain: {}", oldDomain);
+      elements.forEach(e -> e.removeFromDomains(oldDomain));
+      unit.removeFromDomains(oldDomain);
+      elements.forEach(
+          element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
+    } else {
+      throw MigrationFailedException.forUnit(elements.size(), invalidElements.size());
+    }
+    return new OutputData(invalidElements);
+  }
+
+  private void applyMigrationDefinition(
+      Domain oldDomain, Domain newDomain, List<Element> skipedElements) {
+    Map<String, List<Element>> elementsByType =
+        skipedElements.stream().collect(Collectors.groupingBy(e -> e.getModelType()));
+    newDomain.getDomainMigrationDefinition().migrations().stream()
+        .map(DomainMigrationStep::newDefinitions)
+        .flatMap(List::stream)
+        .forEach(d -> d.migrate(elementsByType, oldDomain, newDomain));
+  }
+
+  private void associateNewDomain(Domain oldDomain, Domain newDomain, List<Element> elements) {
+    elements.forEach(
+        element -> {
+          element.associateWithDomain(
+              newDomain,
+              newDomain.mapOldSubType(element.getSubType(oldDomain)),
+              newDomain.mapOldStatus(element.getStatus(oldDomain)));
+        });
   }
 
   public record InputData(Key<UUID> unitId, Key<UUID> domainIdOld, Key<UUID> domainIdNew)
       implements UseCase.InputData {}
+
+  public record OutputData(List<Element> skipedElements) implements UseCase.OutputData {}
 }

@@ -20,8 +20,12 @@ package org.veo.persistence.entity.jpa;
 import static java.util.List.copyOf;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -61,6 +65,10 @@ import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.definitions.CustomAspectMigrationDefinition;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
@@ -240,6 +248,77 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
+  public void copyDomainData(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+
+    var nETD = newDomain.getElementTypeDefinition(getModelType());
+    var oETD = oldDomain.getElementTypeDefinition(getModelType());
+
+    migrateCustomAspects(oldDomain, newDomain, excludedDefinitions);
+    migrateCustomLinks(oldDomain, newDomain, nETD, oETD);
+
+    findAppliedCatalogItem(oldDomain)
+        .flatMap(oldItem -> newDomain.findCatalogItem(oldItem.getSymbolicId()))
+        .ifPresent(newItem -> appliedCatalogItems.add(newItem));
+  }
+
+  private void migrateCustomAspects(
+      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> deprecatedDefinitions) {
+    getCustomAspects(oldDomain)
+        .forEach(
+            ca -> {
+              String caType = ca.getType();
+              if (findCustomAspect(newDomain, caType)
+                  .isEmpty()) { // Unaltered CAs have already been carried over during CA sync on
+                // domain association
+                var attributes =
+                    ca.getAttributes().entrySet().stream()
+                        .filter(e -> isIncluded(deprecatedDefinitions, ca, e))
+                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                if (!attributes.isEmpty()) {
+                  applyCustomAspect(new CustomAspectData(caType, attributes, newDomain));
+                }
+              }
+            });
+  }
+
+  private boolean isIncluded(
+      Collection<MigrationDefinition> deprecatedDefinitions,
+      CustomAspect ca,
+      Entry<String, Object> e) {
+    return !deprecatedDefinitions.contains(
+        new CustomAspectMigrationDefinition(
+            "customAspectAttribute", getModelType(), ca.getType(), e.getKey(), null));
+  }
+
+  private void migrateCustomLinks(
+      Domain oldDomain,
+      Domain newDomain,
+      ElementTypeDefinition newElementTypeDefinition,
+      ElementTypeDefinition oldElementTypeDefinition) {
+    getLinks(oldDomain).stream()
+        .forEach(
+            cl -> {
+              LinkDefinition newLD = newElementTypeDefinition.getLinks().get(cl.getType());
+              LinkDefinition oldLD = oldElementTypeDefinition.getLinks().get(cl.getType());
+              if (newLD != null) { // TODO: vernice-veo#3381
+                if (isCompatible(newLD, oldLD)) {
+                  CustomLink link = new CustomLinkData();
+                  link.setDomain(newDomain);
+                  link.setType(cl.getType());
+                  link.setTarget(cl.getTarget());
+                  link.setAttributes(cl.getAttributes());
+                  addLink(link);
+                }
+              }
+            });
+  }
+
+  private boolean isCompatible(LinkDefinition newDefinition, LinkDefinition oldDefinition) {
+    return Objects.equals(newDefinition, oldDefinition);
+  }
+
+  @Override
   public boolean removeFromDomains(Domain domain) {
     boolean removed = this.getDomains().remove(domain);
     if (removed) {
@@ -359,6 +438,17 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .findAny()
         .ifPresent(ci -> item.setAppliedCatalogItem(ci));
     return item;
+  }
+
+  @Override
+  public CustomAspect findOrAddCustomAspect(Domain domain, String type) {
+    return findCustomAspect(domain, type)
+        .orElseGet(
+            () -> {
+              var ca = new CustomAspectData(type, new HashMap<>(), domain);
+              applyCustomAspect(ca);
+              return ca;
+            });
   }
 
   private void toItem(Domain domain, TemplateItem<?, ?> item) {
