@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import java.util.Collections;
 import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
@@ -29,4 +30,10 @@ public record DomainMigrationStep(
     @NotNull @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH) String id,
     @NotNull TranslatedText description,
     @NotNull List<MigrationDefinition> oldDefinitions,
-    List<MigrationDefinition> newDefinitions) {}
+    List<MigrationDefinition> newDefinitions) {
+  public DomainMigrationStep {
+    if (newDefinitions == null) {
+      newDefinitions = Collections.emptyList();
+    }
+  }
+}
