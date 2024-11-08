@@ -44,6 +44,7 @@ import org.veo.core.entity.event.ElementEvent;
   @Type(value = LinkTargetsExpression.class, name = "linkTargets"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),
+  @Type(value = RemoveExpression.class, name = "remove"),
 })
 public interface VeoExpression {
   public Object getValue(Element element, Domain domain);
