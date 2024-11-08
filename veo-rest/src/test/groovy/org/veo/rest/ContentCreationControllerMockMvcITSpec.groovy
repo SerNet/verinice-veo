@@ -37,7 +37,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
-import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
@@ -51,7 +50,6 @@ import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.ProcessRiskData
 
 import groovy.json.JsonSlurper
-import jakarta.validation.constraints.Size
 
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
@@ -2112,8 +2110,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                         type: "customAspectAttribute",
                         elementType: "scope",
                         customAspect: "scope_contactInformation",
-                        attribute: "scope_contactInformation_website",
-                        removeIfInvalid: true
+                        attribute: "scope_contactInformation_website"
                     ],
                 ],
                 newDefinitions: [

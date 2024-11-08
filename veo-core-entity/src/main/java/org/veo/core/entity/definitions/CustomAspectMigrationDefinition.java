@@ -35,7 +35,6 @@ public record CustomAspectMigrationDefinition(
     @NotNull @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH) String elementType,
     @NotNull @Size(max = CustomAspect.TYPE_MAX_LENGTH) String customAspect,
     @NotNull @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH) String attribute,
-    boolean removeIfInvalid,
     @Nullable VeoExpression migrationExpression)
     implements MigrationDefinition {
 
