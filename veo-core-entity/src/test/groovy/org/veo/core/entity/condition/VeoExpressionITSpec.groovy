@@ -47,4 +47,27 @@ class VeoExpressionITSpec extends Specification {
         [1, 2, 3] | null | [1, 2, 3]
         ['f', 'o', 'o'] | 'o' | ['f']
     }
+
+    def "Map a list using a map"() {
+        given:
+        Domain domain = Mock()
+        Element element = Mock()
+        CustomAspectAttributeValueExpression source = Stub{
+            getValue(element, domain) >> list
+        }
+        ConstantExpression mapping = Stub{
+            getValue(element, domain) >> map
+        }
+        MapExpression expression = new MapExpression(source, mapping)
+
+        expect:
+        expression.getValue(element, domain) == result
+
+        where:
+        list | map | result
+        null | [:] | null
+        [] | [:] | []
+        [1, 2, 3] | [1:2 , 3:2] | [2, null, 2]
+        ['foo', 'bar'] | [bar: 'baz'] | [null, 'baz']
+    }
 }

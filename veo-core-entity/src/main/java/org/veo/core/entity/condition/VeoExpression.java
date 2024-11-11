@@ -42,6 +42,7 @@ import org.veo.core.entity.event.ElementEvent;
   @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
   @Type(value = ImplementedRequirementsExpression.class, name = "implementedRequirements"),
   @Type(value = LinkTargetsExpression.class, name = "linkTargets"),
+  @Type(value = MapExpression.class, name = "map"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),
   @Type(value = RemoveExpression.class, name = "remove"),
