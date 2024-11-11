@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -44,9 +45,9 @@ public class ConstantExpression implements VeoExpression {
   @Override
   public void selfValidate(DomainBase domain, String elementType) {
     if (value != null
-        && Stream.of(String.class, Boolean.class, Number.class)
+        && Stream.of(String.class, Boolean.class, Number.class, Map.class)
             .noneMatch(t -> t.isInstance(value))) {
-      throw new IllegalArgumentException("Constant value must be a string, boolean or number");
+      throw new IllegalArgumentException("Constant value must be a string, boolean, number or map");
     }
   }
 
