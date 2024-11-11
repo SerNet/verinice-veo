@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapExpression implements VeoExpression {
-  private CustomAspectAttributeValueExpression source;
+  private VeoExpression source;
   private ConstantExpression mapping;
 
   @Override
