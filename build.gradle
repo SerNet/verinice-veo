@@ -151,7 +151,7 @@ subprojects {
                 targets {
                     all {
                         testTask.configure {
-                            maxHeapSize = '512m'
+                            maxHeapSize = '1g'
                             systemProperties project.properties.subMap([
                                 "http.proxyHost",
                                 "http.proxyPort",
