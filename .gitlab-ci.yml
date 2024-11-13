@@ -160,11 +160,12 @@ http_rest_tests:
     alias: veo
     variables:
       JDK_JAVA_OPTIONS: -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=3128 -Dhttps.proxyHost=$PROXY -Dhttps.proxyPort=3128 -Dhttps.proxySet=true
+      LOGGING_LEVEL_ROOT: WARN
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: test
       SPRING_DATASOURCE_PASSWORD: test
       SPRING_JACKSON_DESERIALIZATION_FAIL_ON_UNKNOWN_PROPERTIES: 'true'
-      SPRING_PROFILES_ACTIVE: background-tasks
+      SPRING_PROFILES_ACTIVE: background-tasks, plain-logging
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: $AUTH_URL
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: $AUTH_URL/protocol/openid-connect/certs
       VEO_CORS_ORIGINS: https://*.verinice.example, https://frontend.somewhereelse.example

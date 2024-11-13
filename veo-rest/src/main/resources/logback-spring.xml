@@ -2,7 +2,9 @@
 <configuration>
 	<include
 		resource="org/springframework/boot/logging/logback/defaults.xml" />
-	<appender name="CONSOLE"
+	<include
+		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	<appender name="JSON"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder
 			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -18,6 +20,11 @@
 		</encoder>
 	</appender>
 	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
+		<springProfile name="plain-logging">
+			<appender-ref ref="CONSOLE" />
+		</springProfile>
+		<springProfile name="!plain-logging">
+			<appender-ref ref="JSON" />
+		</springProfile>
 	</root>
 </configuration>
