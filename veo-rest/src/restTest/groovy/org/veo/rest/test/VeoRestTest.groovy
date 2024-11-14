@@ -144,8 +144,8 @@ class VeoRestTest extends Specification {
     @Value('${veo.message.exchanges.veo-subscriptions}')
     String exchange
 
-    String dsgvoDomainId
-    String testDomainId
+    static String dsgvoDomainId
+    static String testDomainId
 
     private userTokenCache = [:]
 
@@ -185,10 +185,12 @@ class VeoRestTest extends Specification {
                 getDomains()
                 get("/domains", 200, UserType.SECONDARY_CLIENT_USER)
             }
+            getDomains().tap {
+                dsgvoDomainId = it.find { it.name == "DS-GVO" }.id
+                testDomainId = it.find { it.name == "test-domain" }.id
+            }
             clientsCreated = true
         }
-        dsgvoDomainId = getDomains().find { it.name == "DS-GVO" }.id
-        testDomainId = getDomains().find { it.name == "test-domain" }.id
     }
 
     def sendClientChangeEvent(Map data) {
