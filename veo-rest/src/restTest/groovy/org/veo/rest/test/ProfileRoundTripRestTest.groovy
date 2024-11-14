@@ -29,7 +29,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
 
     def setup() {
         copyOfTestDomainId = copyDomain(testDomainId)
-        sourceUnitId = postNewUnit("source").resourceId
+        sourceUnitId = postNewUnit("source", [copyOfTestDomainId]).resourceId
         targetUnitId = postNewUnit("target").resourceId
     }
 

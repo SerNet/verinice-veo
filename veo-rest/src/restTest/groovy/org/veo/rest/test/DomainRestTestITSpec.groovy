@@ -154,7 +154,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         postAssetObjectSchema(domainId)
 
         when: "we create a unit with elements"
-        def catalogSourceUnitId = postNewUnit().resourceId
+        def catalogSourceUnitId = postNewUnit("U1", [domainId]).resourceId
         def person1Id = post("/domains/$domainId/persons", [
             name   : "example person 1",
             subType: "PER_Person",
@@ -195,7 +195,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         catalogItems.size() == 4
 
         when: "we incarnet all items"
-        def unitId = postNewUnit().resourceId
+        def unitId = postNewUnit("U1", [domainId]).resourceId
 
         def catalogItemsIds = catalogItems.collect{it.id}.join(',')
         def incarnationDescription = get("/units/${unitId}/domains/$domainId/incarnation-descriptions?itemIds=${catalogItemsIds}").body
@@ -276,7 +276,7 @@ class DomainRestTestITSpec extends DomainRestTest {
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
         postPersonObjectSchema(domainId)
-        def unitId = postNewUnit().resourceId
+        def unitId = postNewUnit("U1", [domainId]).resourceId
         def person1Id = post("/domains/$domainId/persons", [
             name: "person 1",
             subType: "PER_Person",

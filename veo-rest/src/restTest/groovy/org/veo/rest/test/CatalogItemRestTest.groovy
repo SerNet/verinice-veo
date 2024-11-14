@@ -97,7 +97,7 @@ class CatalogItemRestTest extends VeoRestTest {
     def "catalog item IDs are symbolic"() {
         given: "a catalog item in a copy of test-domain"
         def copyOfTestDomainId = copyDomain(testDomainId)
-        def sourceUnitId = postNewUnit().resourceId
+        def sourceUnitId = postNewUnit("U1", [copyOfTestDomainId]).resourceId
         post("/domains/$copyOfTestDomainId/assets", [
             name: "brave test subject",
             subType: "Information",

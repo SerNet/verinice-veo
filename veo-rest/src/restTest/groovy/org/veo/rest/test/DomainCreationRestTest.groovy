@@ -26,7 +26,7 @@ class DomainCreationRestTest extends DomainRestTest {
     String unitId
 
     def setup() {
-        unitId = postNewUnit().resourceId
+        unitId = postNewUnit('U1', []).resourceId
     }
 
     def "create new domain"() {

@@ -221,7 +221,7 @@ class UnitImportRestTest extends VeoRestTest {
         ], null, 204, UserType.CONTENT_CREATOR)
 
         and: "a unit with a control"
-        def unitId = postNewUnit().resourceId
+        def unitId = postNewUnit("U1", [domainId]).resourceId
         post("/domains/$domainId/controls", [
             name: "control patrol",
             owner: [targetUri: "/units/$unitId"],

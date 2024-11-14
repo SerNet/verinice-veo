@@ -317,8 +317,8 @@ class DomainUpdateRestTest extends VeoRestTest {
         newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
 
         post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
-        unitId = postNewUnit().resourceId
         oldDomainId = get("/domains").body.find { it.name == templateName }.id
+        unitId = postNewUnit("U1", [oldDomainId, testDomainId]).resourceId
     }
 
     private LinkedHashMap<String, Serializable> getTemplate() {

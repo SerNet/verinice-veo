@@ -74,7 +74,7 @@ class ControlImplementationRestTest extends VeoRestTest {
                 A: [statuses: ["NEW"]]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
-        unitId = postNewUnit().resourceId
+        unitId = postNewUnit("U1", [domainId, testDomainId]).resourceId
 
         subControl1Id = post("/domains/$domainId/controls", [
             name: "sub control 1",

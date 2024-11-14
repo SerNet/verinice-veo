@@ -135,7 +135,7 @@ class ProfileRestTest extends VeoRestTest {
     def "apply simple profile after rd changes"() {
         given: "A domain with a profile"
         def domainId = copyDomain(dsgvoDomainId)
-        unitId = postNewUnit().resourceId
+        unitId = postNewUnit('U1', [domainId]).resourceId
         def profiles = get("/domains/${domainId}/profiles").body
         def profileId = profiles.find { it.name == "Beispielorganisation" }.id
 
@@ -178,7 +178,7 @@ class ProfileRestTest extends VeoRestTest {
     def "apply simple profile after rd removal"() {
         given: "A domain with a profile"
         def domainId = copyDomain(dsgvoDomainId)
-        unitId = postNewUnit().resourceId
+        unitId = postNewUnit("U1", [domainId]).resourceId
         def profiles = get("/domains/${domainId}/profiles").body
         def profileId = profiles.find { it.name == "Beispielorganisation" }.id
 
