@@ -22,10 +22,6 @@ import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
-import org.veo.core.entity.ControlImplementationConfiguration
-import org.veo.core.entity.TranslationMap
-import org.veo.core.entity.riskdefinition.CategoryLevel
-
 class DomainCreationRestTest extends DomainRestTest {
     String unitId
 

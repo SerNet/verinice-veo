@@ -35,7 +35,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -373,8 +372,8 @@ class VeoRestTest extends Specification {
         return new ByteArrayResource(jsonString.getBytes(StandardCharsets.UTF_8)) {
                     @Override
                     public String getFilename() {
-                        return "file"; // Filename has to be returned in order to be able to post.
+                        return "file" // Filename has to be returned in order to be able to post.
                     }
-                };
+                }
     }
 }

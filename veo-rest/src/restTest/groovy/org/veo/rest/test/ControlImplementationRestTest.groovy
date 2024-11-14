@@ -20,7 +20,6 @@ package org.veo.rest.test
 import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
 
 import org.veo.core.entity.EntityType
-import org.veo.core.entity.exception.UnprocessableDataException
 
 import spock.lang.Issue
 
