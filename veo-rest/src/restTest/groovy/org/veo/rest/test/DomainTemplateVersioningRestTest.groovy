@@ -33,7 +33,7 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
             name: domainName,
             authority: "me",
         ], 201, CONTENT_CREATOR).body.resourceId
-        putAssetDefinition(domainId_original)
+        putPersonDefinition(domainId_original)
 
         templateId_1_0_0 = post("/content-creation/domains/$domainId_original/template", [version: "1.0.0"], 201, CONTENT_CREATOR).body.id
         // TODO #3301 createdomains becomes unnecessary once the template gets associated with the domain it was created from
@@ -113,6 +113,130 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         then: "all three templates exist"
         get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
+    }
+
+    def "breaking changes can only be released as a major"() {
+        when: "breaking things"
+        get("/domains/$domainId_1_0_0").body.elementTypeDefinitions.person.with{
+            customAspects.sight.attributeDefinitions.remove("needsGlasses")
+            customAspects.sight.attributeDefinitions.needsReadingGlasses = [type: "boolean"]
+            customAspects.sight.attributeDefinitions.needsDistanceSpecs = [type: "boolean"]
+            put("/content-creation/domains/$owner.domainId_1_0_0/element-type-definitions/person", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "a template cannot be created without migration steps"
+        ["1.0.1", "1.1.0", "2.0.0"].each{
+            assert post("/content-creation/domains/$domainId_1_0_0/template", [version: it], 422, CONTENT_CREATOR)
+            .body.message == "Migration definition not suited to update from old domain template 1.0.0: Missing migration steps: Removed attribute 'needsGlasses' of custom aspect 'sight' for type person"
+        }
+
+        when: "adding a migration step"
+        put("/content-creation/domains/$domainId_1_0_0/migrations", [
+            [
+                id: "split-needsGlasses",
+                description: [en: "Things have changed."],
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "needsGlasses"
+                    ]
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "needsReadingGlasses"
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "needsDistanceSpecs"
+                    ]
+                ]
+            ]
+        ], null, 200)
+
+        then: "it still cannot be released as a patch or minor"
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.0.1"], 422, CONTENT_CREATOR)
+        .body.message == "Domain contains breaking changes and must be released as a major (2.0.0) update."
+        post("/content-creation/domains/$domainId_1_0_0/template", [version: "1.1.0"], 422, CONTENT_CREATOR)
+        .body.message == "Domain contains breaking changes and must be released as a major (2.0.0) update."
+
+        and: "it can be released as a major"
+        def templateId_2_0_0 = post("/content-creation/domains/$domainId_1_0_0/template", [version: "2.0.0"], 201, CONTENT_CREATOR).body.id
+
+        when: "releasing improved migration steps as a patch"
+        // TODO #3301 createdomains becomes unnecessary once the template gets associated with the domain it was created from
+        post("/domain-templates/$templateId_2_0_0/createdomains", null, 204, ADMIN)
+        def domainId_2_0_0 = domains.find { it.name == domainName && it.templateVersion == "2.0.0" && it.id != domainId_1_0_0 }.id
+        get("/content-creation/domains/$domainId_2_0_0/migrations", 200, CONTENT_CREATOR).body.with{ migrations ->
+            migrations[0].description.en = "Instead of just telling us whether you need glasses or not, we need to know which kinds of glasses you need."
+            put("/content-creation/domains/$domainId_2_0_0/migrations", migrations, null, 200)
+        }
+        def templateId_2_0_1 = post("/content-creation/domains/$domainId_2_0_0/template", [version: "2.0.1"], 201, CONTENT_CREATOR).body.id
+
+        and: "making more breaking changes"
+        // TODO #3301 createdomains becomes unnecessary once the template gets associated with the domain it was created from
+        post("/domain-templates/$templateId_2_0_1/createdomains", null, 204, ADMIN)
+        def domainId_2_0_1 = domains.find { it.name == domainName && it.templateVersion == "2.0.1" && it.id != domainId_2_0_0 }.id
+        get("/domains/$domainId_2_0_1").body.elementTypeDefinitions.person.with{
+            customAspects.eyeSight = customAspects.sight
+            customAspects.remove("sight")
+            put("/content-creation/domains/$domainId_2_0_1/element-type-definitions/person", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "the migration steps are no longer valid"
+        post("/content-creation/domains/$domainId_2_0_1/template", [version: "3.0.0"], 422, CONTENT_CREATOR)
+        .body.message == "Migration definition not suited to update from old domain template 2.0.1: Invalid definition 'split-needsGlasses'. No customAspect 'sight' for element type person in newDefinitions."
+
+        when: "creating a new migration step"
+        put("/content-creation/domains/$domainId_2_0_1/migrations", [
+            [
+                id: "rename-sight",
+                description: [en: "We have renamed a custom aspect key."],
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "needsDistanceSpecs",
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "needsReadingGlasses",
+                    ]
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "eyeSight",
+                        attribute: "needsReadingGlasses"
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "eyeSight",
+                        attribute: "needsDistanceSpecs"
+                    ]
+                ]
+            ]
+        ], null, 200)
+
+        then: "a new major can be created"
+        post("/content-creation/domains/$domainId_2_0_1/template", [version: "3.0.0"], 201, CONTENT_CREATOR)
+        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ [
+            "1.0.0",
+            "2.0.0",
+            "2.0.1",
+            "3.0.0"
+        ]
     }
 
     // TODO #3301 this test becomes obsolete once the new template becomes associated with the domain it was created from

@@ -780,9 +780,10 @@ public class ModuleConfiguration {
   public CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase(
       DomainTemplateService domainTemplateService,
       DomainRepository domainRepository,
-      DomainTemplateRepository domainTemplateRepository) {
+      DomainTemplateRepository domainTemplateRepository,
+      DomainChangeService domainChangeService) {
     return new CreateDomainTemplateFromDomainUseCase(
-        domainTemplateService, domainRepository, domainTemplateRepository);
+        domainTemplateService, domainRepository, domainTemplateRepository, domainChangeService);
   }
 
   @Bean

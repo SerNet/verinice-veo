@@ -37,9 +37,13 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateService;
+import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CreateDomainTemplateFromDomainUseCase
     implements TransactionalUseCase<
         CreateDomainTemplateFromDomainUseCase.InputData,
@@ -47,16 +51,7 @@ public class CreateDomainTemplateFromDomainUseCase
   private final DomainTemplateService domainTemplateService;
   private final DomainRepository repository;
   private final DomainTemplateRepository domainTemplateRepository;
-
-  public CreateDomainTemplateFromDomainUseCase(
-      DomainTemplateService domainTemplateService,
-      DomainRepository repository,
-      DomainTemplateRepository domainTemplateRepository) {
-    super();
-    this.domainTemplateService = domainTemplateService;
-    this.repository = repository;
-    this.domainTemplateRepository = domainTemplateRepository;
-  }
+  private final DomainChangeService domainChangeService;
 
   @Override
   public OutputData execute(InputData input) {
@@ -85,6 +80,8 @@ public class CreateDomainTemplateFromDomainUseCase
       throw new EntityAlreadyExistsException(
           "Domain template %s %s already exists".formatted(domain.getName(), version));
     }
+    var introducesBreakingChanges =
+        domainChangeService.evaluateChanges(domain).introducesBreakingChanges();
     Optional.ofNullable(domain.getDomainTemplate())
         .map(DomainTemplate::getTemplateVersion)
         .map(Version::parse)
@@ -104,10 +101,14 @@ public class CreateDomainTemplateFromDomainUseCase
                 }
                 case UpdateType.MINOR -> {
                   validateNewMinorOrMajor(domain, templateVersion);
-                  // TODO #3275 forbid breaking changes
+                  if (introducesBreakingChanges) {
+                    throwMustBeMajor(templateVersion);
+                  }
                 }
                 case UpdateType.PATCH -> {
-                  // TODO #3275 forbid breaking changes
+                  if (introducesBreakingChanges) {
+                    throwMustBeMajor(templateVersion);
+                  }
                   // TODO #3315 forbid any structural changes
                 }
               }
@@ -123,6 +124,12 @@ public class CreateDomainTemplateFromDomainUseCase
             });
     domain.setTemplateVersion(version.toString());
     return repository.save(domain);
+  }
+
+  private static void throwMustBeMajor(Version templateVersion) {
+    throw new UnprocessableDataException(
+        "Domain contains breaking changes and must be released as a major (%s) update."
+            .formatted(templateVersion.nextMajorVersion()));
   }
 
   private void validateNewMinorOrMajor(Domain domain, Version templateVersion) {

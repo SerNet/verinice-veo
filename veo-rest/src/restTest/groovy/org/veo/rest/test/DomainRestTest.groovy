@@ -48,6 +48,15 @@ abstract class DomainRestTest extends VeoRestTest {
                         PER_Person: [
                             statuses: ["NEW", "on"]
                         ]
+                    ],
+                    customAspects: [
+                        sight: [
+                            attributeDefinitions: [
+                                needsGlasses: [
+                                    type: "boolean",
+                                ]
+                            ]
+                        ]
                     ]
                 ],
                 null, 204, CONTENT_CREATOR)
