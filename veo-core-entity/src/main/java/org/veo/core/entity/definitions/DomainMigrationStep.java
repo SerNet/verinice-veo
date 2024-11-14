@@ -23,6 +23,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslatedText;
 
@@ -35,5 +36,9 @@ public record DomainMigrationStep(
     if (newDefinitions == null) {
       newDefinitions = Collections.emptyList();
     }
+  }
+
+  public boolean handles(BreakingChange breakingChange) {
+    return oldDefinitions.stream().anyMatch(d -> d.matches(breakingChange));
   }
 }

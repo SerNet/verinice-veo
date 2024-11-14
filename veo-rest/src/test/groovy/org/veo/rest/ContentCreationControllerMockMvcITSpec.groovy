@@ -1902,6 +1902,13 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "the migrations are empty"
         md == []
 
+        when: "trying to explicitly set an empty migration list"
+        parseJson(put("/content-creation/domains/${domainId}/migrations", [], [:], 422))
+
+        then:
+        def updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Missing migration steps: Modified attribute 'scope_contactInformation_website' of custom aspect 'scope_contactInformation' for type scope"
+
         when: "we update the migrations"
         parseJson(put("/content-creation/domains/${domainId}/migrations", migrationDefinition(),[:], 200))
 
@@ -1928,7 +1935,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:"the data is rejected"
-        def updateEx = thrown(UnprocessableDataException)
+        updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No customAspect 'no_existing_aspect' for element type scope in oldDefinitions."
 
         when: "the attribute does not exist"
@@ -2017,7 +2024,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:
-        put("/content-creation/domains/${domainId}/migrations", migrationDefinitionChangeKey(),[:], 200)
+        put("/content-creation/domains/${domainId}/migrations", migrationDefinition().plus(migrationDefinitionChangeKey()),[:], 200)
     }
 
     @WithUserDetails("content-creator")
@@ -2065,6 +2072,15 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then:
         def updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 1.4.0: Invalid definition 'a'. No attribute 'document_details.document_details_status' for element type document in oldDefinitions."
+
+        when: "trying to explicitly set an empty migration list"
+        parseJson(put("/content-creation/domains/${domainId}/migrations", [], [:], 422))
+
+        then:
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message.startsWith("Migration definition not suited to update from old domain template 1.4.0: Missing migration steps: ")
+        updateEx.message.contains("Removed attribute 'process_PIADPO_advice' of custom aspect 'process_PIADPO' for type process")
+        updateEx.message.contains("Removed attribute 'process_PIAInvolvement_affectedPersonsComment' of custom aspect 'process_PIAInvolvement' for type process")
     }
 
     @WithUserDetails("content-creator")

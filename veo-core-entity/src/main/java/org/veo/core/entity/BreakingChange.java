@@ -58,6 +58,16 @@ public record BreakingChange(
         value);
   }
 
+  @Override
+  public String toString() {
+    return "%s attribute '%s' of custom aspect '%s' for type %s"
+        .formatted(
+            change == ChangeType.REMOVAL ? "Removed" : "Modified",
+            attribute,
+            customAspect,
+            elementType);
+  }
+
   enum ChangeType {
     MODIFICATION,
     REMOVAL

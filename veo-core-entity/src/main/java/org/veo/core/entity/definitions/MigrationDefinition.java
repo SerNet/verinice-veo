@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.condition.VeoExpression;
 
@@ -47,4 +48,6 @@ public interface MigrationDefinition {
   VeoExpression migrationExpression();
 
   void validate(DomainBase domain);
+
+  boolean matches(BreakingChange breakingChange);
 }

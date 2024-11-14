@@ -17,8 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.github.zafarkhaja.semver.Version;
 
+import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -48,14 +52,17 @@ public class DomainChangeService {
     var newBreakingChanges =
         DomainDiff.determineBreakingChanges(domain, domain.getDomainTemplate());
     if (!newBreakingChanges.isEmpty()) {
-      validate(domain, domain.getDomainTemplate());
+      validate(domain, domain.getDomainTemplate(), newBreakingChanges);
       return new DomainChangeEvaluation(true);
     }
     var previousMajor = Version.parse(domain.getTemplateVersion()).majorVersion() - 1;
     var previousMajorTemplate =
         domainTemplateRepository.findLatestByMajor(domain.getName(), previousMajor).orElse(null);
     if (previousMajorTemplate != null) {
-      validate(domain, previousMajorTemplate);
+      validate(
+          domain,
+          previousMajorTemplate,
+          DomainDiff.determineBreakingChanges(domain, previousMajorTemplate));
     } else if (!domain.getDomainMigrationDefinition().migrations().isEmpty()) {
       throw new UnprocessableDataException(
           "Migrations must be empty, because no breaking changes from domain template %s were detected and no previous major version template (%s.*.*) was found."
@@ -64,9 +71,25 @@ public class DomainChangeService {
     return new DomainChangeEvaluation(false);
   }
 
-  private static void validate(Domain domain, DomainTemplate templateToMigrateFrom) {
+  private static void validate(
+      Domain domain, DomainTemplate templateToMigrateFrom, List<BreakingChange> breakingChanges) {
     try {
       domain.getDomainMigrationDefinition().validate(domain, templateToMigrateFrom);
+      var unhandledChanges =
+          breakingChanges.stream()
+              .filter(
+                  breakingChange ->
+                      domain.getDomainMigrationDefinition().migrations().stream()
+                          .noneMatch(m -> m.handles(breakingChange)))
+              .toList();
+      if (!unhandledChanges.isEmpty()) {
+        throw new UnprocessableDataException(
+            "Missing migration steps: %s"
+                .formatted(
+                    unhandledChanges.stream()
+                        .map(Record::toString)
+                        .collect(Collectors.joining(", "))));
+      }
     } catch (UnprocessableDataException ex) {
       throw new UnprocessableDataException(
           "Migration definition not suited to update from old domain template %s: %s"

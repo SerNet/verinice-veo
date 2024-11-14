@@ -22,6 +22,7 @@ import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
@@ -77,5 +78,13 @@ public record CustomAspectMigrationDefinition(
         throw new IllegalArgumentException("Can't have expressions for old migration steps.");
       }
     }
+  }
+
+  @Override
+  public boolean matches(BreakingChange breakingChange) {
+    return breakingChange.type().equals("customAspectAttribute")
+        && breakingChange.elementType().equals(elementType)
+        && breakingChange.customAspect().equals(customAspect)
+        && breakingChange.attribute().equals(attribute);
   }
 }
