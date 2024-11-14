@@ -43,7 +43,7 @@ import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.ImpactValues;
@@ -64,7 +64,9 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public void copyDomainData(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions) {
     super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
     Map<RiskDefinitionRef, ImpactValues> impactValues = new HashMap<>(getImpactValues(oldDomain));
     // TODO: verince-veo#3381

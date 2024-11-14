@@ -1916,7 +1916,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No customAspect 'no_existing_aspect' for element type scope in oldDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid oldDefinition 'a1'. No customAspect 'no_existing_aspect' for element type scope."
 
         when: "the attribute does not exist"
         migrationDefinition().tap {
@@ -1926,7 +1926,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope in oldDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid oldDefinition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope."
 
         when: "no description is provided"
         migrationDefinition().tap {
@@ -1946,7 +1946,17 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
+
+        when: "the element type is wrong"
+        migrationDefinition().tap {
+            first().newDefinitions.first().elementType = "none_existing_element_type"
+            put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
+        }
+
+        then:"the data is rejected"
+        updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. 'none_existing_element_type' is not a valid element type - must be one of asset, control, document, incident, person, process, scenario, scope"
 
         when: "the customAspect does not exist"
         migrationDefinition().tap {
@@ -1956,7 +1966,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No customAspect 'no_existing' for element type scope in newDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. No customAspect 'no_existing' for element type scope."
 
         when: "the attribute in the migrationExpression does not exist"
         migrationDefinition().tap {
@@ -1966,7 +1976,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
 
         when: "the steps have the same id"
         migrationDefinition().tap {
@@ -2043,7 +2053,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                         type: "customAspectAttribute",
                         elementType: "document",
                         customAspect: "document_details",
-                        attribute: "document_details_status"
+                        attribute: "document_details_status",
+                        migrationExpression: [
+                            type : 'constant',
+                            value: 'good'
+                        ]
                     ],
                 ]
             ],
@@ -2051,7 +2065,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         def updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 1.4.0: Invalid definition 'a'. No attribute 'document_details.document_details_status' for element type document in oldDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 1.4.0: Invalid oldDefinition 'a'. No attribute 'document_details.document_details_status' for element type document."
 
         when: "trying to explicitly set an empty migration list"
         parseJson(put("/content-creation/domains/${domainId}/migrations", [], [:], 422))

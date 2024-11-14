@@ -2807,15 +2807,13 @@
             "type": "customAspectAttribute",
             "elementType": "process",
             "customAspect": "process_opinionDPO",
-            "attribute": "process_opinionDPO_consultationRequired",
-            "migrationExpression": null
+            "attribute": "process_opinionDPO_consultationRequired"
           },
           {
             "type": "customAspectAttribute",
             "elementType": "process",
             "customAspect": "process_opinionDPO",
-            "attribute": "process_opinionDPO_consultationConducted",
-            "migrationExpression": null
+            "attribute": "process_opinionDPO_consultationConducted"
           }
         ],
         "newDefinitions": []

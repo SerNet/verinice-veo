@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.definitions.DomainMigrationStep;
+import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;

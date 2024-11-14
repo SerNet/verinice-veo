@@ -39,7 +39,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.TemplateItemAspects;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -90,7 +90,9 @@ public class ScenarioData extends ElementData implements Scenario {
 
   @Override
   public void copyDomainData(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions) {
     super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
     Map<RiskDefinitionRef, PotentialProbability> probability = getPotentialProbability(oldDomain);
     // TODO: verince-veo#3381

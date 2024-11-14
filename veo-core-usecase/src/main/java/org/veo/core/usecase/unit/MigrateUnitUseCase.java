@@ -32,8 +32,8 @@ import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.definitions.DomainMigrationStep;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.DomainMigrationStep;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -94,7 +94,7 @@ public class MigrateUnitUseCase
     unit.addToDomains(newDomain);
 
     associateNewDomain(oldDomain, newDomain, elements);
-    Map<String, List<MigrationDefinition>> deprecatedDefinitions =
+    Map<String, List<DomainSpecificValueLocation>> deprecatedDefinitions =
         needsMigrationDefinition
             ? newDomain.getDomainMigrationDefinition().migrations().stream()
                 .map(DomainMigrationStep::oldDefinitions)

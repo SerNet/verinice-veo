@@ -29,8 +29,8 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
-import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;

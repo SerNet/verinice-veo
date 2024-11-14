@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.definitions;
+package org.veo.core.entity.domainmigration;
 
 import java.util.HashSet;
 import java.util.List;
@@ -44,10 +44,15 @@ public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migra
               ids.add(step.id());
               try {
                 step.newDefinitions().forEach(nd -> nd.validate(domain, domainTemplate));
-                step.oldDefinitions().forEach(nd -> nd.validate(domainTemplate, null));
               } catch (IllegalArgumentException e) {
                 throw new UnprocessableDataException(
-                    "Invalid definition '%s'. %s".formatted(step.id(), e.getMessage()));
+                    "Invalid newDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
+              }
+              try {
+                step.oldDefinitions().forEach(od -> od.validate(domainTemplate));
+              } catch (IllegalArgumentException e) {
+                throw new UnprocessableDataException(
+                    "Invalid oldDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
               }
             });
   }

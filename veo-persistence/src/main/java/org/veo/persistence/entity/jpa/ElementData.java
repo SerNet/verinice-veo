@@ -65,10 +65,10 @@ import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
-import org.veo.core.entity.definitions.CustomAspectMigrationDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.CustomAspectAttribute;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
@@ -249,7 +249,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Override
   public void copyDomainData(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions) {
 
     var nETD = newDomain.getElementTypeDefinition(getModelType());
     var oETD = oldDomain.getElementTypeDefinition(getModelType());
@@ -263,7 +265,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   private void migrateCustomAspects(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> deprecatedDefinitions) {
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> deprecatedDefinitions) {
     getCustomAspects(oldDomain)
         .forEach(
             ca -> {
@@ -283,12 +287,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   private boolean isIncluded(
-      Collection<MigrationDefinition> deprecatedDefinitions,
+      Collection<DomainSpecificValueLocation> deprecatedDefinitions,
       CustomAspect ca,
       Entry<String, Object> e) {
     return !deprecatedDefinitions.contains(
-        new CustomAspectMigrationDefinition(
-            "customAspectAttribute", getModelType(), ca.getType(), e.getKey(), null));
+        new CustomAspectAttribute(getModelType(), ca.getType(), e.getKey()));
   }
 
   private void migrateCustomLinks(

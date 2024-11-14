@@ -82,8 +82,8 @@ import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.decision.Decision;
-import org.veo.core.entity.definitions.DomainMigrationStep;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.UseCase.IdAndClient;
@@ -114,6 +114,7 @@ import org.veo.service.EtagService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -627,17 +628,23 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @RequestBody @Valid @NotNull List<DomainMigrationStep> domainMigrationStep) {
+      @RequestBody @Valid @NotNull List<DomainMigrationStep> domainMigrationSteps) {
     return useCaseInteractor.execute(
         saveUpdateDefinitionUseCase,
         new SaveUpdateDefinitionUseCase.InputData(
-            getAuthenticatedClient(auth), domainId, domainMigrationStep),
+            getAuthenticatedClient(auth), domainId, domainMigrationSteps),
         out -> RestApiResponse.ok("Migrations updated"));
   }
 
   @GetMapping(value = "/domains/{domainId}/migrations")
-  @Operation(summary = "Retrieve the defined migrations")
-  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary = "Retrieve the defined migrations.",
+      description = "Returns the set of migrations.")
+  @ApiResponse(
+      responseCode = "200",
+      content = {
+        @Content(array = @ArraySchema(schema = @Schema(implementation = DomainMigrationStep.class)))
+      })
   @ApiResponse(responseCode = "404", description = "Domain not found or has no domain template")
   public @Valid Future<ResponseEntity<List<DomainMigrationStep>>> getUpdateDefinitions(
       @Parameter(hidden = true) Authentication auth,

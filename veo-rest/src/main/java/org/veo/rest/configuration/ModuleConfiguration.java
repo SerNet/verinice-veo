@@ -875,7 +875,9 @@ public class ModuleConfiguration {
   public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
     return builder ->
         builder
-            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .featuresToDisable(
+                SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+                SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS)
             .filters(
                 new SimpleFilterProvider()
                     .addFilter(

@@ -687,6 +687,94 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "Domain migration is well-documented"() {
+        expect:
+        with(getSchema('DomainMigrationStep')) {
+            it.description == 'One step in the migration of the domain. A step is a set of removal and/or transform operations described by a set of old and new definitions.'
+            it.properties.keySet() ==~ [
+                'id',
+                'description',
+                'oldDefinitions',
+                'newDefinitions'
+            ]
+            it.required ==~ [
+                'id',
+                'description',
+                'oldDefinitions'
+            ]
+            with(it.properties.oldDefinitions) {
+                it.type == 'array'
+                it.description == 'A list of attributes in the old domain that this step handles'
+                it.items ==
+                        [$ref:'#/components/schemas/DomainSpecificValueLocation']
+            }
+            with(it.properties.newDefinitions) {
+                it.type == 'array'
+                it.description == 'An optional list of attributes in the new domain that this step will create. If this is omitted, the values will not be transferred into the new domain.'
+                it.items == [
+                    oneOf:[
+                        [$ref:'#/components/schemas/CustomAspectMigrationTransformDefinition']
+                    ]
+                ]
+            }
+        }
+
+        with(getSchema('DomainSpecificValueLocation')) {
+            it.description == 'The location of a domain-specific value in an element'
+            it.properties.keySet() ==~ ['type']
+            it.required ==~ ['type']
+            it.discriminator == [
+                propertyName: 'type',
+                mapping:[customAspectAttribute:'#/components/schemas/CustomAspectAttribute']
+            ]
+        }
+
+        with(getSchema('MigrationTransformDefinition')) {
+            it.description == 'Describes a transform operation to translate a value from the old domain to the new'
+            it.properties.keySet() ==~ ['type']
+            it.required ==~ ['type']
+            it.discriminator == [
+                propertyName: 'type',
+                mapping:[customAspectAttribute:'#/components/schemas/CustomAspectMigrationTransformDefinition']
+            ]
+        }
+
+        with(getSchema('CustomAspectMigrationTransformDefinition')) {
+            it.required ==~ [
+                'elementType',
+                'customAspect',
+                'attribute',
+                'migrationExpression'
+            ]
+            it.allOf.contains( [$ref:'#/components/schemas/MigrationTransformDefinition'])
+            with(it.allOf.find{it.type == 'object'}) {
+                it.properties.keySet() ==~ [
+                    'elementType',
+                    'customAspect',
+                    'attribute',
+                    'migrationExpression'
+                ]
+                with(it.properties.elementType) {
+                    it.type == 'string'
+                    it.enum ==~ EntityType.ELEMENT_SINGULAR_TERMS
+                    it.description == 'The element type'
+                }
+                with(it.properties.attribute) {
+                    it.type == 'string'
+                    it.description == 'The attribute in the custom aspect'
+                }
+                with(it.properties.migrationExpression) {
+                    // TODO check description once swagger-core is able to generate it
+                    // it.description == 'An expression to transform the value from the old domain'
+                    it.$ref == '#/components/schemas/VeoExpression'
+                }
+            }
+        }
+        with(getSchema('VeoExpression')) {
+            it.description == 'Extract a value from an element in the context of a given domain'
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {

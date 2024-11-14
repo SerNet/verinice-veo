@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -238,7 +238,9 @@ public interface Element
   ProfileItem toProfileItem(Profile profile);
 
   void copyDomainData(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions);
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions);
 
   CustomAspect findOrAddCustomAspect(Domain domain, String type);
 }

@@ -155,13 +155,23 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
                         type: "customAspectAttribute",
                         elementType: "person",
                         customAspect: "sight",
-                        attribute: "needsReadingGlasses"
+                        attribute: "needsReadingGlasses",
+                        migrationExpression: [
+                            type: "customAspectAttributeValue",
+                            customAspect: "sight",
+                            attribute: "needsGlasses",
+                        ]
                     ],
                     [
                         type: "customAspectAttribute",
                         elementType: "person",
                         customAspect: "sight",
-                        attribute: "needsDistanceSpecs"
+                        attribute: "needsDistanceSpecs",
+                        migrationExpression: [
+                            type: "customAspectAttributeValue",
+                            customAspect: "sight",
+                            attribute: "needsGlasses",
+                        ]
                     ]
                 ]
             ],
@@ -230,7 +240,7 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         then: "the migration steps are no longer valid"
         post("/content-creation/domains/$domainId_2_0_1/template", [version: "3.0.0"], 422, CONTENT_CREATOR)
-        .body.message == "Migration definition not suited to update from old domain template 2.0.1: Invalid definition 'split-needsGlasses'. No customAspect 'sight' for element type person in newDefinitions."
+        .body.message == "Migration definition not suited to update from old domain template 2.0.1: Invalid newDefinition 'split-needsGlasses'. No customAspect 'sight' for element type person."
 
         when: "creating a new migration step"
         put("/content-creation/domains/$domainId_2_0_1/migrations", [
@@ -262,19 +272,34 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
                         type: "customAspectAttribute",
                         elementType: "person",
                         customAspect: "eyeSight",
-                        attribute: "needsReadingGlasses"
+                        attribute: "needsReadingGlasses",
+                        migrationExpression: [
+                            type: "customAspectAttributeValue",
+                            customAspect: "sight",
+                            attribute: "needsReadingGlasses",
+                        ]
                     ],
                     [
                         type: "customAspectAttribute",
                         elementType: "person",
                         customAspect: "eyeSight",
-                        attribute: "needsDistanceSpecs"
+                        attribute: "needsDistanceSpecs",
+                        migrationExpression: [
+                            type: "customAspectAttributeValue",
+                            customAspect: "sight",
+                            attribute: "needsDistanceSpecs",
+                        ]
                     ],
                     [
                         type: "customAspectAttribute",
                         elementType: "person",
                         customAspect: "eyeSight",
                         attribute: "nightVision",
+                        migrationExpression: [
+                            type: "customAspectAttributeValue",
+                            customAspect: "sight",
+                            attribute: "nightVision",
+                        ]
                     ]
                 ]
             ]

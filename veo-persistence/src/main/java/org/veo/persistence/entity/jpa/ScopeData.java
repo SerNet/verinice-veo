@@ -40,7 +40,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
-import org.veo.core.entity.definitions.MigrationDefinition;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.EqualsAndHashCode;
@@ -107,7 +107,9 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
 
   @Override
   public void copyDomainData(
-      Domain oldDomain, Domain newDomain, Collection<MigrationDefinition> excludedDefinitions) {
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions) {
     super.copyDomainData(oldDomain, newDomain, excludedDefinitions);
     Optional<RiskDefinitionRef> riskDefinition = getRiskDefinition(oldDomain);
     // TODO: verince-veo#3381

@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import org.veo.core.entity.definitions.DomainMigrationDefinition
-import org.veo.core.entity.definitions.DomainMigrationStep
+import org.veo.core.entity.domainmigration.DomainMigrationDefinition
+import org.veo.core.entity.domainmigration.DomainMigrationStep
 import org.veo.test.VeoSpec
 
 class DomainMigrationDefinitionITSpec extends VeoSpec {
