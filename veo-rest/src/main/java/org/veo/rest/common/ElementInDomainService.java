@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -49,10 +50,12 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.LinkQuery;
@@ -327,15 +330,38 @@ public class ElementInDomainService {
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       GetRequirementImplementationsByControlImplementationUseCase.InputData input,
       List<String> controlCustomAspectKeys) {
+
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         input,
         out ->
             PagingMapper.toPage(
                 out.result(),
-                o ->
-                    entityToDtoTransformer.transformRequirementImplementation2Dto(
-                        o, out.domain(), controlCustomAspectKeys)));
+                o -> {
+                  var domain = out.domain();
+                  if (controlCustomAspectKeys != null) {
+                    List<String> availableCAs =
+                        domain
+                            .getElementTypeDefinition(Control.SINGULAR_TERM)
+                            .getCustomAspects()
+                            .keySet()
+                            .stream()
+                            .sorted()
+                            .toList();
+                    List<String> invalidCas =
+                        controlCustomAspectKeys.stream()
+                            .filter(Predicate.not(availableCAs::contains))
+                            .sorted()
+                            .toList();
+                    if (!invalidCas.isEmpty()) {
+                      throw new NotFoundException(
+                          "Invalid custom aspect ID(s): %s, available aspects: %s",
+                          invalidCas, availableCAs);
+                    }
+                  }
+                  return entityToDtoTransformer.transformRequirementImplementation2Dto(
+                      o, domain, controlCustomAspectKeys);
+                }));
   }
 
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(

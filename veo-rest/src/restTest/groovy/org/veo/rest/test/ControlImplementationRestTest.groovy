@@ -197,6 +197,11 @@ class ControlImplementationRestTest extends VeoRestTest {
             totalItemCount == 1
         }
 
+        and: "querying invalid CAs returns 404"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations?controlCustomAspects=foobar", 404).body) {
+            message == 'Invalid custom aspect ID(s): [foobar], available aspects: [oneCa]'
+        }
+
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
