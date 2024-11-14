@@ -37,7 +37,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([])
 
         when:
-        dmd.validate(domain)
+        dmd.validate(domain, domain.domainTemplate)
 
         then:
         noExceptionThrown()
@@ -50,7 +50,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
         ])
 
         when:
-        dmd.validate(domain)
+        dmd.validate(domain, domain.domainTemplate)
 
         then:
         noExceptionThrown()

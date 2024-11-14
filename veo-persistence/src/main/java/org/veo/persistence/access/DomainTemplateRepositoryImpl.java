@@ -107,4 +107,9 @@ public class DomainTemplateRepositoryImpl
   public boolean templateExists(String name, Version version) {
     return dataRepository.existsByNameAndTemplateVersion(name, version.toString());
   }
+
+  @Override
+  public Optional<DomainTemplate> findLatestByMajor(String name, long major) {
+    return dataRepository.findLatestByMajor(name, major).map(DomainTemplate.class::cast);
+  }
 }

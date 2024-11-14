@@ -52,4 +52,10 @@ public interface DomainTemplateDataRepository
   Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(UUID id);
 
   boolean existsByNameAndTemplateVersion(String name, String templateVersion);
+
+  @Query(
+      value =
+          "select * from domaintemplate where name = ?1 and templateversion like concat(?2, '.%.%') order by templateversion desc limit 1",
+      nativeQuery = true)
+  Optional<DomainTemplateData> findLatestByMajor(String name, long major);
 }

@@ -30,15 +30,14 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
-import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.risk.CategoryRef
@@ -50,7 +49,6 @@ import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.ProcessRiskData
 
 import groovy.json.JsonSlurper
-
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
  * Uses JPA repositories with in-memory database.
@@ -1889,8 +1887,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
     @WithUserDetails("content-creator")
     def "CRUD for DomainUpdateDefinition"() {
-        given:
+        given: "a domain with a changed attribute type"
         def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        executeInTransaction {
+            def domain = domainDataRepository.findById(domainId).get()
+            domainDataRepository.save(domain.tap {
+                getElementTypeDefinition('scope').customAspects.scope_contactInformation.attributeDefinitions.scope_contactInformation_website = new ExternalDocumentAttributeDefinition()
+            })
+        }
 
         when:
         def md = parseJson(get("/content-creation/domains/${domainId}/migrations"))
@@ -1925,7 +1929,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         def updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Invalid definition 'a1'. No customAspect 'no_existing_aspect' for element type scope in oldDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No customAspect 'no_existing_aspect' for element type scope in oldDefinitions."
 
         when: "the attribute does not exist"
         migrationDefinition().tap {
@@ -1935,7 +1939,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Invalid definition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope in oldDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope in oldDefinitions."
 
         when: "no description is provided"
         migrationDefinition().tap {
@@ -1945,7 +1949,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "No description provided for step 'a1'."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: No description provided for step 'a1'."
 
         when: "the migrationExpression is wrong"
         migrationDefinition().tap {
@@ -1955,7 +1959,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Invalid definition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
 
         when: "the customAspect does not exist"
         migrationDefinition().tap {
@@ -1965,7 +1969,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Invalid definition 'a1'. No customAspect 'no_existing' for element type scope in newDefinitions."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. No customAspect 'no_existing' for element type scope in newDefinitions."
 
         when: "the attribute in the migrationExpression does not exist"
         migrationDefinition().tap {
@@ -1975,7 +1979,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Invalid definition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid definition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
 
         when: "the steps have the same id"
         migrationDefinition().tap {
@@ -1985,7 +1989,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:"the data is rejected"
         updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Id 'a1' not unique."
+        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Id 'a1' not unique."
 
         when: "the steps have different ids"
         migrationDefinition().tap {
@@ -2001,7 +2005,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             it.get(1).id == "a1"
         }
 
-        when: "we change a CA definition"
+        when: "we change another CA definition"
         executeInTransaction {
             def domain = domainDataRepository.findById(domainId).get()
             domainDataRepository.save(domain.tap {
@@ -2014,6 +2018,69 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         put("/content-creation/domains/${domainId}/migrations", migrationDefinitionChangeKey(),[:], 200)
+    }
+
+    @WithUserDetails("content-creator")
+    def "domains with no previous major and no breaking changes must not contain migrations"() {
+        given: "an unmodified domain"
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsUUID
+
+        when:
+        parseJson(put("/content-creation/domains/$domainId/migrations", migrationDefinition(), [:], 422))
+
+        then:
+        def ex = thrown(UnprocessableDataException)
+        ex.message == "Migrations must be empty, because no breaking changes from domain template 1.4.0 were detected and no previous major version template (0.*.*) was found."
+    }
+
+    @WithUserDetails("content-creator")
+    def "domain with no breaking changes must contain migration steps from previous major"() {
+        given: "an unmodified domain based on 2.0.0"
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+
+        when: "trying to use a definition that didn't exist in the old template"
+        parseJson(put("/content-creation/domains/${domainId}/migrations", [
+            [description : [en: "Go figure it out"],
+                id: "a",
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "document",
+                        customAspect: "document_details",
+                        attribute: "document_details_status"
+                    ],
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "document",
+                        customAspect: "document_details",
+                        attribute: "document_details_status"
+                    ],
+                ]
+            ],
+        ], [:], 422))
+
+        then:
+        def updateEx = thrown(UnprocessableDataException)
+        updateEx.message == "Migration definition not suited to update from old domain template 1.4.0: Invalid definition 'a'. No attribute 'document_details.document_details_status' for element type document in oldDefinitions."
+    }
+
+    @WithUserDetails("content-creator")
+    def "Migrations must be empty on a domain not based on a template"() {
+        given: "an unmodified domain"
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: "migration validation test domain",
+            authority: "yours truly",
+        ])).resourceId
+
+        when:
+        parseJson(put("/content-creation/domains/$domainId/migrations", migrationDefinition(), [:], 422))
+
+        then:
+        def ex = thrown(UnprocessableDataException)
+        ex.message == "Migrations must be empty, because the domain is not based on a template."
     }
 
     private List<Map> migrationDefinitionChangeKey() {

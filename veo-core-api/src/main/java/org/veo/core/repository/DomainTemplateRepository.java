@@ -46,4 +46,6 @@ public interface DomainTemplateRepository extends Repository<DomainTemplate> {
   DomainTemplate getByIdWithRiskDefinitionsProfilesAndCatalogItems(Key<UUID> id);
 
   boolean templateExists(String name, Version version);
+
+  Optional<DomainTemplate> findLatestByMajor(String name, long major);
 }

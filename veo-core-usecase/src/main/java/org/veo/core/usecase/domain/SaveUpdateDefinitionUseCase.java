@@ -29,6 +29,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.DomainMigrationDefinition;
 import org.veo.core.entity.definitions.DomainMigrationStep;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -38,15 +39,16 @@ import lombok.RequiredArgsConstructor;
 public class SaveUpdateDefinitionUseCase
     implements TransactionalUseCase<SaveUpdateDefinitionUseCase.InputData, UseCase.EmptyOutput> {
   private final DomainRepository repository;
+  private final DomainChangeService domainChangeService;
 
   @Override
   public EmptyOutput execute(InputData input) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClient.getId());
 
     var dmd = new DomainMigrationDefinition(input.migrationSteps());
-    dmd.validate(domain);
     domain.setDomainMigrationDefinition(dmd);
     domain.setUpdatedAt(Instant.now());
+    domainChangeService.evaluateChanges(domain);
 
     return EmptyOutput.INSTANCE;
   }

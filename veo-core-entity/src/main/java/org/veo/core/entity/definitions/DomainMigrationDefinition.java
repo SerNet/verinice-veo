@@ -29,11 +29,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
 
 public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migrations) {
 
-  public void validate(@NotNull Domain domain) {
-    DomainTemplate domainTemplate = domain.getDomainTemplate();
-    if (domainTemplate == null && !migrations.isEmpty()) {
-      throw new IllegalArgumentException("No domainTemplate linked with domain.");
-    }
+  public void validate(@NotNull Domain domain, @NotNull DomainTemplate domainTemplate) {
     Set<String> ids = HashSet.newHashSet(migrations().size());
     migrations()
         .forEach(

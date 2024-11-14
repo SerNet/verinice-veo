@@ -82,6 +82,7 @@ import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.GetLinksByElementUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
@@ -246,8 +247,9 @@ import org.veo.service.risk.RiskService;
 public class ModuleConfiguration {
 
   @Bean
-  public SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase(DomainRepository repository) {
-    return new SaveUpdateDefinitionUseCase(repository);
+  public SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase(
+      DomainRepository repository, DomainChangeService domainChangeService) {
+    return new SaveUpdateDefinitionUseCase(repository, domainChangeService);
   }
 
   @Bean
@@ -856,6 +858,12 @@ public class ModuleConfiguration {
   public DesignatorService designatorService(
       DesignatorSequenceRepository designatorSequenceRepository) {
     return new DesignatorService(designatorSequenceRepository);
+  }
+
+  @Bean
+  public DomainChangeService domainChangeService(
+      DomainTemplateRepository domainTemplateRepository) {
+    return new DomainChangeService(domainTemplateRepository);
   }
 
   @Bean
