@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
@@ -49,7 +50,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ControlImplementationDto implements ControlImplementationState {
-  IdRef<Control> control;
+  @NotNull IdRef<Control> control;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   ImplementationStatus implementationStatus;

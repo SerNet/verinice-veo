@@ -195,6 +195,49 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "Sensible error is returned for structurally broken CI"() {
+        given:
+        def unitId = UUID.randomUUID().toString()
+        def assetId = UUID.randomUUID().toString()
+        def controlId = UUID.randomUUID().toString()
+        def domain = parseJson(get("/domains/${domain.idAsString}"))
+        Map request = [
+            unit:[
+                name: 'New unit',
+                id: unitId
+            ],
+            elements: [
+                [
+                    id: controlId,
+                    name: 'Control',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'control'
+                ],
+                [
+                    id: assetId,
+                    name: 'Asset',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'asset',
+                    controlImplementations : [
+                        [ : ]
+                    ]
+                ]
+            ],
+            domains: [
+                domain
+            ],
+            risks: []
+        ]
+
+        when:
+        def result = post('/units/import', request, 400)
+
+        then:
+        MethodArgumentNotValidException e = thrown()
+        e.message.contains('elements[].controlImplementations[].control')
+    }
+
+    @WithUserDetails("user@domain.example")
     def "get a unit"() {
         def unit = urepository.save(newUnit(client) {
             name = "Test unit"
