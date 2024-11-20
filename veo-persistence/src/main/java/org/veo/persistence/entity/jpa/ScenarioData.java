@@ -125,6 +125,15 @@ public class ScenarioData extends ElementData implements Scenario {
   }
 
   @Override
+  public boolean removeFromDomains(Domain domain) {
+    boolean removed = super.removeFromDomains(domain);
+    if (removed) {
+      setPotentialProbability(domain, Collections.emptyMap());
+    }
+    return removed;
+  }
+
+  @Override
   public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(rv -> rv.potentialProbability.remove(riskDefinition) != null)

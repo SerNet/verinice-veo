@@ -141,6 +141,15 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   }
 
   @Override
+  public boolean removeFromDomains(Domain domain) {
+    boolean removed = super.removeFromDomains(domain);
+    if (removed) {
+      removeAspectByDomain(scopeRiskValuesAspects, domain);
+    }
+    return removed;
+  }
+
+  @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     findAspectByDomain(scopeRiskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     super.transferToDomain(oldDomain, newDomain);

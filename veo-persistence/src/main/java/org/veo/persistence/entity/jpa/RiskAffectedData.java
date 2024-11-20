@@ -242,6 +242,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     boolean removed = super.removeFromDomains(domain);
     if (removed) {
       Set.copyOf(getRisks()).stream().forEach(risk -> risk.removeFromDomains(domain));
+      setImpactValues(domain, Collections.emptyMap());
     }
     return removed;
   }
