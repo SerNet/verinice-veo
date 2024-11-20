@@ -343,6 +343,91 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
     }
 
+    def "missing attribute values are handled correctly"() {
+        given:
+        def processWithoutTextId = post("/domains/$oldDomainId/processes", [
+            name: "old process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            customAspects: [
+                "test1":
+                [
+                    Attribute1: false,
+                ],
+            ],
+        ]).body.resourceId
+        def processWithTextId = post("/domains/$oldDomainId/processes", [
+            name: "old process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            customAspects: [
+                "test1":
+                [
+                    Attribute1: true,
+                    Attribute2: "Famous last words",
+                ],
+            ],
+        ]).body.resourceId
+
+        when: "migrating to the new domain"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+
+            it.elementTypeDefinitions.process.customAspects.test1.attributeDefinitions.with {
+                it.remove('Attribute2')
+                it.Attribute3 = [
+                    type: 'text'
+                ]
+            }
+            it.domainMigrationDefinition = [
+                migrations: [
+                    [
+                        description: [en: "rename attr 2 to attr 3"],
+                        id: "move-text",
+                        oldDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute2"
+                            ]
+                        ],
+                        newDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute3",
+                                migrationExpression: [
+                                    type: 'customAspectAttributeValue',
+                                    customAspect: 'test1',
+                                    attribute: 'Attribute2'
+                                ]
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        }
+
+        then: "the process has the migrated values in the new domain"
+        with(get("/domains/$newDomainId/processes/$processWithoutTextId").body) {
+            name == "old process"
+            customAspects.test1 == [
+                Attribute1: false
+            ]
+        }
+        with(get("/domains/$newDomainId/processes/$processWithTextId").body) {
+            name == "old process"
+            customAspects.test1 == [
+                Attribute1: true,
+                Attribute3: "Famous last words"
+            ]
+        }
+    }
+
     def "information in other domains is untouched during migration"() {
         given: "a document associated with two domains"
         def targetPersonId = post("/domains/$testDomainId/persons", [

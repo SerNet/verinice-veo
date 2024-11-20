@@ -111,10 +111,12 @@ public record CustomAspectMigrationDefinition(
                     customAspect,
                     attribute,
                     migrationExpression);
-                element
-                    .findOrAddCustomAspect(newDomain, customAspect)
-                    .getAttributes()
-                    .put(attribute, value);
+                if (value != null) {
+                  element
+                      .findOrAddCustomAspect(newDomain, customAspect)
+                      .getAttributes()
+                      .put(attribute, value);
+                }
               });
     }
   }
