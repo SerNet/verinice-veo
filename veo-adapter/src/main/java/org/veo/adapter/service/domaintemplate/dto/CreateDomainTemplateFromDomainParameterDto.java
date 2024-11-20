@@ -17,15 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import org.veo.core.entity.Constraints;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -42,31 +36,4 @@ public class CreateDomainTemplateFromDomainParameterDto {
   @Size(max = 255)
   @Pattern(regexp = SEM_VER_PATTERN)
   private String version;
-
-  @Schema(
-      description =
-          "The units to include in the creation of this domain template. Each entry defines a profile. "
-              + "Key is the symbolic name of the profile.")
-  private Map<String, ProfileCreationParameters> profiles = new HashMap<>();
-
-  @Data
-  public static class ProfileCreationParameters {
-    @NotNull private UUID unitId;
-
-    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @Schema(description = "A name for the profile", example = "My profile")
-    private String name;
-
-    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @Schema(
-        description = "A description for the profile",
-        example = "This profile contains commonly used template objects")
-    private String description;
-
-    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @Schema(
-        description = "The profile's language, must be an IETF BCP 47 language tag (see RFC 5646)",
-        example = "en_US")
-    private String language;
-  }
 }
