@@ -46,7 +46,7 @@ public class MigrationFailedException extends RuntimeException {
 
   public static MigrationFailedException forClient(int clientCount, int failureCount) {
     return new MigrationFailedException(
-        "Migration failed for " + clientCount + " of " + failureCount + " client(s)",
+        "Migration failed for " + failureCount + " of " + clientCount + " client(s)",
         clientCount,
         failureCount);
   }
