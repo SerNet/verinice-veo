@@ -40,7 +40,8 @@ public class AttributeValidator {
       attrDefinition.validate(attrValue);
     } catch (InvalidAttributeException e) {
       throw new IllegalArgumentException(
-          String.format("Invalid value for attribute '%s': %s", attrKey, e.getMessage()));
+          String.format(
+              "Invalid value '%s' for attribute '%s': %s", attrValue, attrKey, e.getMessage()));
     }
   }
 }

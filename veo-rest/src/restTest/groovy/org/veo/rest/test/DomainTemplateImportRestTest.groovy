@@ -163,13 +163,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")
+        response.message.endsWith("Invalid value '1' for attribute 'process_accessAuthorization_description': must be a string")
 
         when: "trying to create the template with content type multipart"
         response = postMultipart("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")
+        response.message.endsWith("Invalid value '1' for attribute 'process_accessAuthorization_description': must be a string")
     }
 
     def "cannot import template with invalid catalog link"() {
