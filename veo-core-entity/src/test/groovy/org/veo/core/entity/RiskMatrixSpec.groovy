@@ -218,48 +218,52 @@ class RiskMatrixSpec extends Specification {
     }
 
     def "test ProbabilityDefinition equals"() {
-        when: "ImplementationStateDefinition"
+        when:
         def pd1 =new ProbabilityDefinition()
         def pd2 = new ProbabilityDefinition()
 
-        then: "both are equals"
+        then:
         pd1 == pd2
 
-        when: "changed"
+        when:
         pd1.id = "id"
 
-        then: "not equals"
+        then:
         pd1 != pd2
 
-        when: "set same id"
+        when:
         pd2.id = "id"
 
-        then: "both are equals"
+        then:
         pd1 == pd2
 
-        when: "the content is changed"
+        when:
         pd1.levels = [
             new ProbabilityLevel("color-1")
         ]
 
-        then: "not equals"
+        then:
         pd1 != pd2
 
         when: "when complete constructor is used"
-        pd1 =new ImplementationStateDefinition([
-            new CategoryLevel("color-1")
-        ])
-        pd2 =new ImplementationStateDefinition([
-            new CategoryLevel("color-1")
-        ])
+        pd1 = new ProbabilityDefinition(TranslationMap.of([
+            (Locale.ENGLISH): [
+                name: "p1"
+            ]
+        ]), [new ProbabilityLevel()])
+        pd2 = new ProbabilityDefinition(TranslationMap.of([
+            (Locale.ENGLISH): [
+                name: "p1"
+            ]
+        ]), [new ProbabilityLevel()])
 
-        then: "both are equals"
+        then:
         pd1 == pd2
 
-        when: "put in set"
+        when:
         def set = [pd1, pd2] as Set
 
-        then: "only one remains"
+        then:
         set.size() == 1
     }
 
