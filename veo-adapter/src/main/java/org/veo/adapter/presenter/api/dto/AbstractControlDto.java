@@ -27,7 +27,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.state.ControlState;
+import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -40,7 +40,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "control", description = "Schema for control")
 public abstract class AbstractControlDto extends CompositeEntityDto<Control>
-    implements ControlState {
+    implements CompositeElementState<Control> {
 
   @Override
   @Schema(description = "The name for the control.", example = "Install sensors")
@@ -93,5 +93,5 @@ public abstract class AbstractControlDto extends CompositeEntityDto<Control>
   @Schema(
       description =
           "Details about this element's association with domains. Domain ID is key, association object is value.")
-  private Map<UUID, ControlDomainAssociationDto> domains = new HashMap<>();
+  private Map<UUID, DomainAssociationDto> domains = new HashMap<>();
 }

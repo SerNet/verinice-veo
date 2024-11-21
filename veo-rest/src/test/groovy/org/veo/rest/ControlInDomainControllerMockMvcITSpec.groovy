@@ -69,11 +69,6 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "/units/$unitId"],
             subType: "TOM",
             status: "NEW",
-            riskValues: [
-                riskyDef: [
-                    implementationStatus: 1
-                ]
-            ],
             customAspects: [
                 implementation: [
                     explanation: "Data is encrypted / decrypted by the clients, not by the server"
@@ -120,7 +115,6 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.links.literature[0].target.associatedWithDomain
         response.links.literature[0].target.subType == "Manual"
         response.links.literature[0].attributes.chapters == [2, 7, 8]
-        response.riskValues.riskyDef.implementationStatus == 1
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/controls/$partId"
@@ -288,33 +282,6 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             pageCount == 2
             items*.name == (11..15).collect { "control $it" }
             items*.subType =~ ["TOM"]
-        }
-    }
-
-    def "risk values can be updated"() {
-        given: "a control with risk values"
-        def controlId = parseJson(post("/domains/$testDomainId/controls", [
-            name: "Risky control",
-            owner: [targetUri: "/units/$unitId"],
-            subType: "TOM",
-            status: "NEW",
-            riskValues: [
-                riskyDef: [
-                    implementationStatus: 0
-                ]
-            ]
-        ])).resourceId
-
-        when: "updating risk values"
-        get("/domains/$testDomainId/controls/$controlId").with{getResults ->
-            def control = parseJson(getResults)
-            control.riskValues.riskyDef.implementationStatus = 1
-            put(control._self, control, ["If-Match": getETag(getResults)], 200)
-        }
-
-        then: "risk values have been altered"
-        with(parseJson(get("/domains/$testDomainId/controls/$controlId"))) {
-            riskValues.riskyDef.implementationStatus == 1
         }
     }
 

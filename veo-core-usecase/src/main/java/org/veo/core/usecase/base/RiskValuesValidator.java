@@ -20,7 +20,6 @@ package org.veo.core.usecase.base;
 import java.util.Map;
 
 import org.veo.core.entity.exception.RiskConsistencyException;
-import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
 import org.veo.core.entity.risk.ImpactValues;
@@ -35,16 +34,6 @@ class RiskValuesValidator {
         (riskDefRef, probability) -> {
           var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
           validator.validate(probability.potentialProbability());
-        });
-  }
-
-  public static void validateControlRiskValues(
-      Map<RiskDefinitionRef, ControlRiskValues> riskValues,
-      DomainRiskReferenceProvider riskRefProvider) {
-    riskValues.forEach(
-        (riskDefRef, values) -> {
-          var validator = new DomainRiskReferenceValidator(riskRefProvider, riskDefRef);
-          validator.validate(values.implementationStatus());
         });
   }
 

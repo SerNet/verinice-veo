@@ -406,9 +406,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def scenarioResult = parseJson(get(postResult[0].targetUri))
         def controlResult = parseJson(get(postResult[1].targetUri))
 
-        then: "the control is created and the risk values are set"
+        then: "the control is created"
         validateNewElementAgainstCatalogItem(controlResult, controlImpactExample, domain)
-        controlResult.domains[domain.idAsString].riskValues.id.implementationStatus == 1
 
         and: "the scenario is created and the risk values are set"
         validateNewElementAgainstCatalogItem(scenarioResult, scenarioProbabilityExample, domain)

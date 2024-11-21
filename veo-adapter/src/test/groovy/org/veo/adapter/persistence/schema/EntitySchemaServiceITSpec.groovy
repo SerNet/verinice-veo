@@ -89,19 +89,6 @@ class EntitySchemaServiceITSpec extends Specification {
         schema.get(PROPS).get("_self").get("readOnly").booleanValue()
     }
 
-    def "control schema domain association is complete"() {
-        given:
-        def testDomain = getTestDomain()
-
-        when:
-        def schema = getSchema(Set.of(testDomain), "control")
-
-        then:
-        def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
-        riskValueProps.get("riskDefA").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1, 2]
-        riskValueProps.get("riskDefB").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1]
-    }
-
     def "scenario schema domain association is complete"() {
         given:
         def testDomain = getTestDomain()

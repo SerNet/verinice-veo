@@ -34,14 +34,12 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
-import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.ImpactValuesDto;
 import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -65,8 +63,6 @@ import org.veo.core.entity.riskdefinition.DiscreteValue;
 /** Add domain-specific sub schemas to an element schema. */
 public class SchemaExtender {
   private final SchemaProvider provider = SchemaProvider.getInstance();
-  private final Supplier<ObjectNode> controlRiskValuesDto =
-      provider.schema(ControlRiskValuesDto.class);
   private final Supplier<ObjectNode> scenarioRiskValuesDto =
       provider.schema(ScenarioRiskValuesDto.class);
   private final Supplier<ObjectNode> customAspectDto = provider.schema(CustomAspectDto.class);
@@ -144,9 +140,6 @@ public class SchemaExtender {
   }
 
   private void extendDomainAssociationSchema(ObjectNode target, String elementType, Domain domain) {
-    if (elementType.equals(Control.SINGULAR_TERM)) {
-      extendSchemaForControl(target, domain);
-    }
     if (elementType.equals(Scenario.SINGULAR_TERM)) {
       extendSchemaForScenario(target, domain);
     }
@@ -167,27 +160,6 @@ public class SchemaExtender {
 
   private void extendSchemaForAsset(ObjectNode target, Domain domain) {
     buildImpactSchema(domain, target);
-  }
-
-  private void extendSchemaForControl(ObjectNode target, Domain domain) {
-    var riskValuesProps = ((ObjectNode) target.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
-    domain
-        .getRiskDefinitions()
-        .forEach(
-            (riskDefId, riskDef) -> {
-              var riskValuesSchema = controlRiskValuesDto.get();
-              var implStatusSchema =
-                  (ObjectNode) riskValuesSchema.get(PROPS).get("implementationStatus");
-              implStatusSchema
-                  .putArray("enum")
-                  .addAll(
-                      riskDef.getImplementationStateDefinition().getLevels().stream()
-                          .map(DiscreteValue::getOrdinalValue)
-                          .map(IntNode::new)
-                          .toList());
-              riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
-              riskValuesProps.set(riskDefId, riskValuesSchema);
-            });
   }
 
   private void extendSchemaForScenario(ObjectNode target, Domain domain) {

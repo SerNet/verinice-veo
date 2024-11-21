@@ -277,7 +277,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             subType: "CTL_TOM",
             status: "NEW",
             decisionResults: [:],
-            riskValues: [:],
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }
@@ -332,7 +331,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             decisionResults: [:],
             subType: "CTL_TOM",
             status: "NEW",
-            riskValues: [:],
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.idAsString
     }

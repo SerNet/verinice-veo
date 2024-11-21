@@ -33,10 +33,8 @@ import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.CategoryRef
-import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImpactValues
-import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbability
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
@@ -289,7 +287,7 @@ class CatalogSpec extends VeoMvcSpec {
                 description = "a process example entry"
 
                 aspects = new TemplateItemAspects(
-                        null,[
+                        [
                             (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
                             (new ImpactValues([
                                 ( CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
@@ -309,13 +307,6 @@ class CatalogSpec extends VeoMvcSpec {
                 status = "NEW"
                 name = 'controlImpactExample'
                 description = "a control example entry"
-                aspects = new TemplateItemAspects(
-                        (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
-                        (new ControlRiskValues(
-                        ImplementationStatusRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
-                        .getCategory("C").get().getLevel(1).get()))
-                        )
-                        ,[:],[:])
             })
 
             controlImpactExample1 = newCatalogItem(domain, {
@@ -340,7 +331,7 @@ class CatalogSpec extends VeoMvcSpec {
                 status = "NEW"
                 name = 'scenarioProbabilityExample'
                 description = "a scenario example entry"
-                aspects = new TemplateItemAspects([:],[:],[
+                aspects = new TemplateItemAspects([:],[
                     (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
                     (new PotentialProbability(
                     ProbabilityRef.from(domain.riskDefinitions.get(RISK_DEF_ID).getProbability().getLevel(3).get())))

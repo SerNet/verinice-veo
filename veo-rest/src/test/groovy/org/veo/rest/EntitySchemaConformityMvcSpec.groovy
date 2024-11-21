@@ -221,7 +221,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         notThrown(Exception)
     }
 
-    def "control with custom aspect and risk value conforms to schema"() {
+    def "control with custom aspect conforms to schema"() {
         given: "the control schema and a newly created control in a scope"
         def schema = getSchema(client, "control")
         def controlId = (String)parseJson(post("/controls", [
@@ -265,13 +265,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "CTL_TOM",
                     status: "NEW",
-                    riskValues: [
-                        DSRA: [
-                            implementationStatus: 1
-                        ]
-                    ]
                 ]
-
             ],
             name: "control",
             owner: [

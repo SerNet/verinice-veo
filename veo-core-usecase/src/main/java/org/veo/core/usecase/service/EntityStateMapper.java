@@ -54,7 +54,6 @@ import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialImpactValues;
@@ -62,9 +61,7 @@ import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
-import org.veo.core.entity.state.ControlDomainAssociationState;
 import org.veo.core.entity.state.ControlImplementationState;
-import org.veo.core.entity.state.ControlRiskValuesState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
@@ -326,13 +323,6 @@ public class EntityStateMapper {
                     domain,
                     scope.getImpactValues(domain)));
           };
-    } else if (target instanceof Control control) {
-      customMapper =
-          (domain, association) ->
-              control.setRiskValues(
-                  domain,
-                  mapRiskValues(
-                      ((ControlDomainAssociationState) association).getRiskValues(), domain));
     } else if (target instanceof Scenario scenario) {
       customMapper =
           (domain, association) ->
@@ -370,27 +360,6 @@ public class EntityStateMapper {
             .map(pp -> referenceProvider.getProbabilityRef(riskDefinitionId, pp))
             .orElse(null),
         riskValuesDto.getPotentialProbabilityExplanation());
-  }
-
-  private Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
-      Map<String, ? extends ControlRiskValuesState> riskValues, Domain domain) {
-
-    var referenceProvider = referencesForDomain(domain);
-    return riskValues.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                kv -> referenceProvider.getRiskDefinitionRef(kv.getKey()),
-                kv -> mapControlRiskValues2Entity(kv.getKey(), kv.getValue(), referenceProvider)));
-  }
-
-  private ControlRiskValues mapControlRiskValues2Entity(
-      String riskDefinitionId,
-      ControlRiskValuesState riskValuesState,
-      DomainRiskReferenceProvider referenceProvider) {
-    return new ControlRiskValues(
-        Optional.ofNullable(riskValuesState.getImplementationStatus())
-            .map(status -> referenceProvider.getImplementationStatus(riskDefinitionId, status))
-            .orElse(null));
   }
 
   private <T extends Element> void mapToEntity(

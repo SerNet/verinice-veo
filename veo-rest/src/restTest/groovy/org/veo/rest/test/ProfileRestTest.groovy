@@ -119,7 +119,6 @@ class ProfileRestTest extends VeoRestTest {
             with(items.find { it.name == "TOM 1" }) {
                 links.size() == 0
                 parts.size() == 0
-                riskValues.DSRA.implementationStatus == 2
             }
         }
         with(get("/domains/$dsgvoDomainId/scenarios?unit=$unitId").body) {

@@ -17,16 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Map;
-
-import org.veo.core.entity.risk.ControlRiskValues;
-import org.veo.core.entity.risk.RiskDefinitionRef;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 /** A control represents something with can be applied to an entity. */
-public interface Control extends CompositeElement<Control>, RiskRelated {
+public interface Control extends CompositeElement<Control> {
 
   String SINGULAR_TERM = "control";
   String PLURAL_TERM = "controls";
@@ -42,12 +37,8 @@ public interface Control extends CompositeElement<Control>, RiskRelated {
     return TYPE_DESIGNATOR;
   }
 
-  Map<RiskDefinitionRef, ControlRiskValues> getRiskValues(Domain domain);
-
   @Override
   default Class<Control> getModelInterface() {
     return Control.class;
   }
-
-  void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }

@@ -147,30 +147,6 @@ class SwaggerSpec extends VeoSpringSpec {
         riskSchema.properties.ownerRef == null
     }
 
-    def "control risk values are mapped correctly"() {
-        given:
-        def schemas = parsedApiDocs.components.schemas
-
-        expect:
-        def controlSchema = schemas.FullControlDto
-        controlSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ControlDomainAssociationDto"
-
-        def controlDomainAssociationSchema = schemas.ControlDomainAssociationDto
-        controlDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ControlRiskValuesDto"
-
-        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
-        //  'links' must also be present
-        controlDomainAssociationSchema.properties.keySet() ==~ [
-            'subType',
-            'status',
-            'decisionResults',
-            'riskValues',
-        ]
-
-        def controlRiskValuesSchema = schemas.ControlRiskValuesDto
-        controlRiskValuesSchema.properties.implementationStatus.type == "integer"
-    }
-
     def "scenario risk values are mapped correctly"() {
         given:
         def schemas = parsedApiDocs.components.schemas

@@ -689,7 +689,6 @@ public final class EntityToDtoTransformer {
   public FullControlInDomainDto transformControl2Dto(Control source, Domain domain) {
     var target = new FullControlInDomainDto(source.getIdAsUUID());
     mapCompositeElementProperties(source, target, domain);
-    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
 

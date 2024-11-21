@@ -379,9 +379,6 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
                 }
               } else if (type.equals(Control.class)) {
                 fetchComposites(batch, controlDataRepository);
-                if (fetchRiskValuesAspects) {
-                  controlDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
-                }
               } else if (type.equals(Document.class)) {
                 fetchComposites(batch, documentDataRepository);
               } else if (type.equals(Incident.class)) {

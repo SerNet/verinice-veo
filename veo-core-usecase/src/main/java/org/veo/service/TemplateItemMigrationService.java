@@ -40,9 +40,7 @@ import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
-import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -103,7 +101,6 @@ public class TemplateItemMigrationService {
     TemplateItemAspects aspects = templateItem.getAspects();
     templateItem.setAspects(
         new TemplateItemAspects(
-            removeInvalidKeys(aspects.controlRiskValues(), keySet),
             removeInvalidKeys(aspects.impactValues(), keySet),
             removeInvalidKeys(aspects.scenarioRiskValues(), keySet)));
   }
@@ -152,16 +149,6 @@ public class TemplateItemMigrationService {
     TemplateItemAspects aspects = item.getAspects();
     item.setAspects(
         new TemplateItemAspects(
-            Optional.ofNullable(aspects.controlRiskValues())
-                .map(
-                    crv ->
-                        syncMap(
-                            crv,
-                            validRiskDefinitionRefs,
-                            e ->
-                                newControlRiskValues(
-                                    e.getValue(), domain.getRiskDefinition(e.getKey().getIdRef()))))
-                .orElse(null),
             Optional.ofNullable(aspects.impactValues())
                 .map(
                     iv ->
@@ -241,21 +228,6 @@ public class TemplateItemMigrationService {
 
     return new RiskTailoringReferenceValues(
         value.specificProbability(), value.specificProbabilityExplanation(), categories);
-  }
-
-  private ControlRiskValues newControlRiskValues(
-      ControlRiskValues value, Optional<RiskDefinition> riskDefinition) {
-    if (riskDefinition.isPresent()) {
-      RiskDefinition rd = riskDefinition.get();
-      List<ImplementationStatusRef> levels =
-          rd.getImplementationStateDefinition().getLevels().stream()
-              .map(ImplementationStatusRef::from)
-              .toList();
-      if (levels.contains(value.implementationStatus())) {
-        return value;
-      }
-    }
-    return null;
   }
 
   private PotentialProbability newPotentialProbability(

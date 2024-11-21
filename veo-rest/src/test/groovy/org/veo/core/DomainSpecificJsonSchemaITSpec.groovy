@@ -59,10 +59,6 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
                     new RiskValue("medium"),
                     new RiskValue("high"),
                 ]
-                implementationStateDefinition.setLevels([
-                    new CategoryLevel(),
-                    new CategoryLevel()
-                ])
             })
         }
     }
@@ -236,33 +232,6 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES*.singularTerm
-    }
-
-    def "control implementation status is validated"() {
-        given:
-        createElementTypeDefinition("control")
-        def element = [
-            name: "out ouf control",
-            subType: "A",
-            status: "A1",
-            owner: [targetUri: "http://localhost/units/..."],
-            riskValues: [
-                noRiskNoFun: [
-                    implementationStatus: 1
-                ]
-            ]
-        ]
-
-        expect:
-        validate(element, "control").empty
-
-        when:
-        element.riskValues.noRiskNoFun.implementationStatus = 99
-
-        then:
-        validate(element, "control")*.message ==~ [
-            '$.riskValues.noRiskNoFun.implementationStatus: does not have a value in the enumeration [0, 1]'
-        ]
     }
 
     def "scope risk definition is validated"() {

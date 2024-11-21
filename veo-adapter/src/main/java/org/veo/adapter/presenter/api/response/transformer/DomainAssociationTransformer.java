@@ -36,8 +36,6 @@ import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ImpactValuesDto;
@@ -57,9 +55,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
-import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -87,31 +83,7 @@ public class DomainAssociationTransformer {
   }
 
   public void mapDomainsToDto(Control source, AbstractControlDto target, boolean newStructure) {
-    Map<UUID, ControlDomainAssociationDto> extractDomainAssociations =
-        extractDomainAssociations(
-            source,
-            domain -> {
-              var associationDto = new ControlDomainAssociationDto();
-              associationDto.setRiskValues(mapRiskValues(source, domain));
-              return associationDto;
-            },
-            newStructure);
-    target.setDomains(extractDomainAssociations);
-  }
-
-  public Map<String, ControlRiskValuesDto> mapRiskValues(Control source, Domain domain) {
-    return source.getRiskValues(domain).entrySet().stream()
-        .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapControlRiskValuesToDto));
-  }
-
-  private ControlRiskValuesDto mapControlRiskValuesToDto(
-      Map.Entry<RiskDefinitionRef, ControlRiskValues> entry) {
-    var riskValuesDto = new ControlRiskValuesDto();
-    riskValuesDto.setImplementationStatus(
-        Optional.ofNullable(entry.getValue().implementationStatus())
-            .map(ImplementationStatusRef::getOrdinalValue)
-            .orElse(null));
-    return riskValuesDto;
+    target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
   private ImpactValuesDto mapImpactValuesToDto(Map.Entry<RiskDefinitionRef, ImpactValues> entry) {

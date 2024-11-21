@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -34,11 +33,9 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
  * relevant.
  */
 public record TemplateItemAspects(
-    Map<RiskDefinitionRef, ControlRiskValues> controlRiskValues,
     Map<RiskDefinitionRef, ImpactValues> impactValues,
     Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues) {
   public TemplateItemAspects {
-    controlRiskValues = immutableCopy(controlRiskValues);
     impactValues = immutableCopy(impactValues);
     scenarioRiskValues = immutableCopy(scenarioRiskValues);
   }
@@ -49,6 +46,6 @@ public record TemplateItemAspects(
   }
 
   public TemplateItemAspects() {
-    this(null, null, null);
+    this(null, null);
   }
 }

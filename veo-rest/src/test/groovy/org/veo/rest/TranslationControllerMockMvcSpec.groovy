@@ -50,7 +50,6 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         translations.lang.de.subType == 'Subtyp'
         translations.lang.de.riskDefinition == 'Risikodefinition'
         translations.lang.en.description == 'Description'
-        translations.lang.en.implementationStatus == 'Implementation status'
         translations.lang.en.potentialProbability == 'Potential probability'
         translations.lang.en.potentialProbabilityExplanation == 'Explanation'
 

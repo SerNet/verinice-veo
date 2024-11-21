@@ -211,7 +211,6 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             "delete from custom_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
             "delete from decision_results_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
             "delete from element_domain_association where owner_db_id in (select db_id from element where owner_id = ?1)",
-            "delete from control_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'control' and owner_id = ?1)",
             "delete from scenario_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
             "delete from impact_values_aspect where owner_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1)",
             "delete from scope_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",

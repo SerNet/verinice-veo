@@ -20,13 +20,9 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
-import org.veo.core.entity.risk.ControlRiskValues
-import org.veo.core.entity.risk.ImplementationStatusRef
-import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -123,38 +119,6 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
         }
 
         QueryCountHolder.grandTotal.select == 6
-        QueryCountHolder.grandTotal.time < 500
-    }
-
-    def "query joins risk values"() {
-        given:
-        def controlCount = 10
-
-        controlDataRepository.saveAll((1..controlCount).collect {
-            newControl(unit) {
-                associateWithDomain(domain, "FullControl", "NEW")
-                setRiskValues(domain, [
-                    (new RiskDefinitionRef("someRiskDef")): new ControlRiskValues(new ImplementationStatusRef(0))
-                ])
-            }
-        })
-
-        when:
-        QueryCountHolder.clear()
-        def result = txTemplate.execute {
-            elementRepository.query(client).with {
-                fetchRiskValuesAspects()
-                execute(PagingConfiguration.UNPAGED)
-            }
-        }
-
-        then: "all data has been fetched"
-        result.totalResults == controlCount
-        with(result.resultPage[0]) {
-            (it as Control).getRiskValues(domain) != null
-        }
-
-        QueryCountHolder.grandTotal.select == 5
         QueryCountHolder.grandTotal.time < 500
     }
 }

@@ -19,7 +19,6 @@ package org.veo.core.usecase.base;
 
 import java.util.Map;
 
-import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -93,9 +92,6 @@ public class DomainSensitiveElementValidator {
     if (element instanceof RiskAffected<?, ?> riskAffected) {
       RiskValuesValidator.validateImpactValues(
           riskAffected.getImpactValues(domain), riskRefProvider);
-    }
-    if (element instanceof Control control) {
-      RiskValuesValidator.validateControlRiskValues(control.getRiskValues(domain), riskRefProvider);
     }
     if (element instanceof Scenario scenario) {
       RiskValuesValidator.validateScenarioRiskValues(

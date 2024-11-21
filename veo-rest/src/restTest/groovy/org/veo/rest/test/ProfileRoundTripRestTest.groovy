@@ -53,11 +53,6 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             subType: "TOM",
             status: "NEW",
             owner: [targetUri: "/units/$sourceUnitId"],
-            riskValues: [
-                riskyDef: [
-                    implementationStatus: 1
-                ]
-            ]
         ]).body.resourceId
         def originalPersonId = post("/domains/$copyOfTestDomainId/persons", [
             name: "poster person",
@@ -206,7 +201,6 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         with(get("/domains/$newDomainInOtherClientId/controls", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
             get(0).name == "freaky control"
-            get(0).riskValues.riskyDef.implementationStatus == 1
         }
         with(get("/domains/$newDomainInOtherClientId/processes", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1

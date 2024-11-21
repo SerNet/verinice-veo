@@ -17,17 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.veo.persistence.entity.jpa.ControlData;
 
-public interface ControlDataRepository extends CompositeEntityDataRepository<ControlData> {
-
-  @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "riskValuesAspects")
-  List<ControlData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
-}
+public interface ControlDataRepository extends CompositeEntityDataRepository<ControlData> {}

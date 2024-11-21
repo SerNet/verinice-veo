@@ -190,8 +190,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
   @Override
   public Set<ElementRepository<? extends RiskRelated>> getRiskRelatedElementRepos() {
-    return Set.of(
-        assetRepository, controlRepository, processRepository, scenarioRepository, scopeRepository);
+    return Set.of(assetRepository, processRepository, scenarioRepository, scopeRepository);
   }
 
   @Override

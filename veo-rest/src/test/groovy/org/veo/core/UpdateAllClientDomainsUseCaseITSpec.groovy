@@ -28,15 +28,9 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
-import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
-import org.veo.core.entity.definitions.CustomAspectMigrationDefinition
-import org.veo.core.entity.definitions.DomainMigrationDefinition
-import org.veo.core.entity.definitions.DomainMigrationStep
-import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactValues
-import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbability
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
@@ -44,7 +38,6 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
-import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
@@ -149,50 +142,6 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
         then: 'the unit is moved to the new domain'
         unit.domains == [dsgvoDomainV2] as Set
-    }
-
-    def "Migrate a control with risk values"() {
-        given: 'a client with an empty unit'
-        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
-        ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(1)
-        ControlRiskValues controlRiskValues = new ControlRiskValues(implementationStatusRef)
-        Map riskValues = [
-            (riskDefinitionRef) : controlRiskValues
-        ]
-        Unit unit = unitRepository.save(newUnit(client) {
-            addToDomains(dsgvoDomain)
-        })
-        Control control = controlRepository.save(newControl(unit) {
-            associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
-            setRiskValues(dsgvoDomain, riskValues)
-        })
-
-        when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
-        unit = executeInTransaction {
-            unitRepository.findById(unit.id).get().tap {
-                //initialize lazy associations
-                it.domains*.name
-            }
-        }
-        control = executeInTransaction {
-            controlRepository.findById(control.id).get().tap {
-                //initialize lazy associations
-                it.getRiskDefinitions(dsgvoDomainV2)
-                it.getRiskValues(dsgvoDomainV2)
-                it.riskValuesAspects.forEach{ a-> a.domain.name  }
-            }
-        }
-
-        then: "the control's risk values are moved to the new domain"
-        control.riskValuesAspects.size() == 1
-        with(((ControlData)control).riskValuesAspects.first()) {
-            it.domain == dsgvoDomainV2
-            with(it.values) {
-                size() == 1
-                get(riskDefinitionRef).implementationStatus.ordinalValue == 1
-            }
-        }
     }
 
     def "Migrate a scope referencing a risk definition"() {

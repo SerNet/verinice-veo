@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.Control;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
@@ -115,15 +114,6 @@ public class TemplateItemValidator {
       @NotNull String elementType,
       @NotNull DomainBase domain) {
     var refProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
-    Optional.ofNullable(aspects.controlRiskValues())
-        .ifPresent(
-            v -> {
-              if (!elementType.equals(Control.SINGULAR_TERM)) {
-                throw new UnprocessableDataException(
-                    "%s cannot contain control risk values".formatted(elementType));
-              }
-              RiskValuesValidator.validateControlRiskValues(v, refProvider);
-            });
     Optional.ofNullable(aspects.impactValues())
         .ifPresent(
             v -> {

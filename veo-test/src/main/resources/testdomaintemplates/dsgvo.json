@@ -5210,13 +5210,7 @@
           "subType": "CTL_TOM",
           "status": "NEW",
           "id": "03f19b05-d6c1-435a-9261-3accdf10f0cf",
-          "aspects": {
-            "controlRiskValues": {
-              "DSRA": {
-                "implementationStatus": 2
-              }
-            }
-          },
+          "aspects": {},
           "customAspects": {
             "control_dataProtection": {
               "control_dataProtection_objectives": [

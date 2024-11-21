@@ -22,7 +22,6 @@ import java.util.Arrays;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
@@ -60,7 +59,7 @@ public enum ElementTypeDtoInfo {
       EntityType.CONTROL,
       FullControlDto.class,
       FullControlInDomainDto.class,
-      ControlDomainAssociationDto.class),
+      DomainAssociationDto.class),
   DOCUMENT(
       EntityType.DOCUMENT,
       FullDocumentDto.class,

@@ -17,12 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.veo.core.entity.Control;
-import org.veo.core.entity.state.ControlDomainAssociationState;
-import org.veo.core.entity.state.ControlState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -37,8 +32,7 @@ import lombok.ToString;
     description =
         "An administrative or technical measure that can influence risks, such as a guideline or mode of procedure - this DTO represents a control from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractControlInDomainDto
-    extends AbstractCompositeElementInDomainDto<Control>
-    implements ControlState, ControlDomainAssociationState {
+    extends AbstractCompositeElementInDomainDto<Control> {
 
   @Override
   @Schema(example = "Encryption")
@@ -68,9 +62,4 @@ public abstract class AbstractControlInDomainDto
   public Class<Control> getModelInterface() {
     return Control.class;
   }
-
-  @Schema(
-      description =
-          "Key is risk definition ID, value contains risk values in the context of that risk definition.")
-  Map<String, ControlRiskValuesDto> riskValues = new HashMap<>();
 }

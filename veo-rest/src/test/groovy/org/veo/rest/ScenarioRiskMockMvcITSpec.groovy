@@ -210,25 +210,5 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         ex = thrown(RiskConsistencyException)
         ex.message.contains("Domain Scenario Risk Test 5.3.1 contains no risk definition with ID $undefinedName")
-
-        when: "creating a scenario with an undefined risk value"
-        post("/scenarios", [
-            name: "Flood",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    riskValues: [
-                        myFirstRiskDefinition : [
-                            potentialProbability: 1,
-                            implementationStatus: 1
-                        ]
-                    ]
-                ]
-            ]
-        ], 400)
-
-        then: "an exception is thrown"
-        ex = thrown(HttpMessageNotReadableException)
-        ex.message.contains('Unrecognized field "implementationStatus"')
     }
 }

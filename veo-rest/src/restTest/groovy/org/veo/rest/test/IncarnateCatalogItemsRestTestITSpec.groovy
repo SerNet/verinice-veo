@@ -53,7 +53,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
-                riskValues: [:],
             ]
             // Mind the difference between Closure#owner and Element#owner
             it.owner.displayName == owner.UNIT_NAME
@@ -140,7 +139,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
-                riskValues: [:],
             ]
             links.size() == 1
             links["Control_details_Control"].domains.size() == 1
@@ -202,7 +200,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
-                riskValues: [:],
             ]
         }
     }
@@ -226,7 +223,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
-                riskValues: [:],
             ]
             it.owner.displayName == owner.UNIT_NAME
             links.size() == 1
@@ -243,7 +239,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
-                riskValues: [:],
             ]
             it.owner.displayName == owner.UNIT_NAME
             links.size() == 1
