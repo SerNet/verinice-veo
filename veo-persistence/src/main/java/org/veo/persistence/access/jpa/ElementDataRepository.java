@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import jakarta.annotation.Nonnull;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.entity.jpa.ElementData;
 
+@Primary
 public interface ElementDataRepository<T extends ElementData>
     extends JpaRepository<T, UUID>,
         JpaSpecificationExecutor<T>,
