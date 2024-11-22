@@ -28,7 +28,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
@@ -1080,11 +1079,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             (0..7).each { i ->
                 dataDrivenAssets << newAsset(unit) {
                     associateWithDomain(domain, "AST_Application", "NEW")
-                    id = Key.newUuid()
                     name = "Asset-${i}"
                 }
             }
-            dataDrivenAssets = dataDrivenAssets.collect { assetDataRepository.save(it) }
+            dataDrivenAssets = assetDataRepository.saveAll(dataDrivenAssets)
 
             dataDrivenAssets[0].setLinks([
                 newCustomLink(dataDrivenAssets[1], "asset_asset_app", domain)
@@ -1185,11 +1183,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             (0..7).each { i ->
                 dataDrivenAssets << newAsset(unit) {
                     associateWithDomain(domain, "AST_Application", "NEW")
-                    id = Key.newUuid()
                     name = "Asset-${i}"
                 }
             }
-            dataDrivenAssets = dataDrivenAssets.collect { assetDataRepository.save(it) }
+            dataDrivenAssets = assetDataRepository.saveAll(dataDrivenAssets)
 
             dataDrivenAssets[0].setLinks([
                 newCustomLink(dataDrivenAssets[1], "asset_asset_app", domain)
@@ -1420,7 +1417,6 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         (0..9).each { i ->
             line1 << newAsset(unit) {
                 associateWithDomain(domain, "AST_Application", "NEW")
-                id = Key.newUuid()
                 name = "Line1-${i}"
             }
         }
@@ -1439,7 +1435,6 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         (0..9).each { i ->
             line2 << newAsset(unit) {
                 associateWithDomain(domain, "AST_Application", "NEW")
-                id = Key.newUuid()
                 name = "Line2-${i}"
             }
         }
@@ -1518,7 +1513,6 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         given: "a single asset"
         def asset = newAsset(unit) {
             associateWithDomain(domain, "AST_Application", "NEW")
-            id = Key.newUuid()
             name = "single asset"
         }
         asset.setImpactValues(domain, impactValues3)

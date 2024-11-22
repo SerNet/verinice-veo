@@ -18,11 +18,9 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -59,8 +57,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                 })
             }
             domainId = domain.idAsString
+            client = clientRepository.save(client)
             unitId = unitRepository.save(newUnit(client)).idAsString
-            clientRepository.save(client)
         }
     }
 

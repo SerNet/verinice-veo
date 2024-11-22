@@ -67,8 +67,8 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
                     ]
                 })
             }.idAsString
+            client = clientRepository.save(client)
             unitId = unitRepository.save(newUnit(client)).idAsString
-            clientRepository.save(client)
         }
     }
 

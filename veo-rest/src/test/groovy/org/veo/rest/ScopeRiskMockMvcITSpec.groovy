@@ -24,7 +24,6 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
@@ -77,9 +76,9 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                 })
             }
             domainId = domain.idAsString
+            client = clientRepository.save(client)
             unit = unitRepository.save(newUnit(client))
             unitId = unit.idAsString
-            clientRepository.save(client)
         }
     }
 

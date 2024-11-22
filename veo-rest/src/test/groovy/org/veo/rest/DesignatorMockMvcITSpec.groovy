@@ -58,12 +58,12 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
                     ]
                 })
             }
+            client = clientRepository.save(client)
+            domain = client.domains.first()
             unit = newUnit(client) {
                 name = "Test unit"
             }
-            clientRepository.save(client)
             unitRepository.save(unit)
-            domain = client.domains.first()
         }
     }
 

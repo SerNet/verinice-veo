@@ -62,9 +62,10 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition")
                 ]
             }
+            client = clientRepository.save(client)
+
             domainId = domain.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
-            clientRepository.save(client)
         }
     }
 

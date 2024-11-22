@@ -102,11 +102,11 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 })
             }
 
+            client = clientRepository.save(client)
             unit = newUnit(client) {
                 name = "Test unit"
             }
 
-            clientRepository.save(client)
             unitRepository.save(unit)
         }
     }

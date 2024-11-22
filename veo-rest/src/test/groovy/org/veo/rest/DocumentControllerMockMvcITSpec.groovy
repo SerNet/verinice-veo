@@ -74,12 +74,11 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "Domain 1"
             }
 
+            client = clientRepository.save(client)
+
             unit = newUnit(client) {
                 name = "Test unit"
             }
-
-            unit.client = client
-            clientRepository.save(client)
             unitRepository.save(unit)
         }
     }

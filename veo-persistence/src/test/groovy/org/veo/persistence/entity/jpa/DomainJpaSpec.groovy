@@ -177,7 +177,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
-        newDomain(client) {domain->
+        domain0 = newDomain(client) {domain->
             applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
                 subTypes = [
                     ctl : newSubTypeDefinition {
@@ -186,10 +186,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
                 ]
             })
         }
-        Unit unit = newUnit(client)
-        unit = unitRepository.save(unit)
-        client = clientRepository.save(client)
-        domain0 = client.domains.first()
 
         CatalogItem item1 = newCatalogItem(domain0, {
             elementType = "control"
@@ -238,10 +234,12 @@ class DomainJpaSpec extends AbstractJpaSpec {
         newLinkTailoringReference(item6, item2, TailoringReferenceType.LINK_EXTERNAL) {
             linkType = 'externallinktest'
         }
+        client = clientRepository.save(client)
+        domain0 = client.domains.first()
+        Unit unit = newUnit(client)
+        unit = unitRepository.save(unit)
 
         when: "saving"
-        domain0 = repository.save(domain0)
-
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
