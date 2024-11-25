@@ -47,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class VersioningEventListener {
   private final MessageCreator messageCreator;
 
-  @EventListener
+  @EventListener(ClientOwnedEntityVersioningEvent.class)
   @Transactional(propagation = MANDATORY)
   public <T extends Versioned & ClientOwned> void handle(
       ClientOwnedEntityVersioningEvent<T> event) {
