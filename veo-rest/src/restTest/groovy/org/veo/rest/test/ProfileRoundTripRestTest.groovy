@@ -48,10 +48,19 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 ]
             ]
         ]).body.resourceId
+        def originalSubControlId = post("/domains/$copyOfTestDomainId/controls", [
+            name: "sub control",
+            subType: "TOM",
+            status: "NEW",
+            owner: [targetUri: "/units/$sourceUnitId"],
+        ]).body.resourceId
         def originalControlId = post("/domains/$copyOfTestDomainId/controls", [
             name: "freaky control",
             subType: "TOM",
             status: "NEW",
+            parts: [
+                [targetUri: "/controls/$originalSubControlId"]
+            ],
             owner: [targetUri: "/units/$sourceUnitId"],
         ]).body.resourceId
         def originalPersonId = post("/domains/$copyOfTestDomainId/persons", [
@@ -104,7 +113,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 [targetUri: "/scenarios/$originalSubScenarioId"]
             ]
         ])
-        post("/domains/$copyOfTestDomainId/scopes", [
+        def originalScopeId = post("/domains/$copyOfTestDomainId/scopes", [
             name: "Can't cope with this scope",
             subType: "Company",
             status: "NEW",
@@ -123,7 +132,14 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                     ]
                 ]
             ]
-        ])
+        ]).body.resourceId
+        get("/scopes/$originalScopeId/requirement-implementations/$originalSubControlId").with {
+            body.status = "YES"
+            body.responsible = [targetUri: "/persons/$originalPersonId"]
+            body.implementationStatement = "bold statement"
+            body.implementationUntil = "2025-01-01"
+            put(body._self, body, getETag(), 204)
+        }
         post("/processes/$originalProcessId/risks", [
             scenario: [targetUri: "/scenarios/$originalSubScenarioId"],
             riskOwner: [targetUri: "/persons/$originalPersonId"],
@@ -172,7 +188,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         def exportedDomainTemplate = get("/content-creation/domain-templates/$templateId", 200, CONTENT_CREATOR).body
 
         then: "the export contains the right amount of items"
-        exportedDomainTemplate.profiles_v2.first().items.size() == 7
+        exportedDomainTemplate.profiles_v2.first().items.size() == 8
 
         when: "importing the template under a different name"
         exportedDomainTemplate.name = "completely different domain template ${randomUUID()}"
@@ -199,8 +215,11 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             get(0).riskValues.riskyDef.potentialImpacts.D == 1
         }
         with(get("/domains/$newDomainInOtherClientId/controls", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 1
-            get(0).name == "freaky control"
+            size() == 2
+            it*.name ==~ [
+                "freaky control",
+                "sub control"
+            ]
         }
         with(get("/domains/$newDomainInOtherClientId/processes", 200, SECONDARY_CLIENT_USER).body.items) {
             size() == 1
@@ -252,6 +271,13 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 control.name == "freaky control"
                 responsible.name == "poster person"
                 description == "Everything is under control"
+                with(owner.get(_requirementImplementations, 200, SECONDARY_CLIENT_USER).body.items) {
+                    it*.control*.name == ["sub control"]
+                    get(0).status == "YES"
+                    get(0).responsible.name == "poster person"
+                    get(0).implementationStatement == "bold statement"
+                    get(0).implementationUntil == "2025-01-01"
+                }
             }
             get(0).riskValues.riskyDef.potentialImpacts.D == 1
         }

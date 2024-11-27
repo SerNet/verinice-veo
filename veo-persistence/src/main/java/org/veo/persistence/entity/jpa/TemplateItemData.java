@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,6 +39,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TailoringReference;
@@ -45,6 +47,7 @@ import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
@@ -169,6 +172,23 @@ public abstract class TemplateItemData<
     return ref;
   }
 
+  @Override
+  public RequirementImplementationTailoringReference<T, TNamespace>
+      addRequirementImplementationReference(
+          T control,
+          ImplementationStatus status,
+          @Nullable String implementationStatement,
+          @Nullable LocalDate implementationUntil,
+          @Nullable T responsible) {
+    var ref = createRequirementImplementationTailoringReference();
+    add(ref, TailoringReferenceType.REQUIREMENT_IMPLEMENTATION, control);
+    ref.setStatus(status);
+    ref.setImplementationStatement(implementationStatement);
+    ref.setImplementationUntil(implementationUntil);
+    ref.setResponsible(responsible);
+    return ref;
+  }
+
   protected void add(
       TailoringReference<T, TNamespace> reference, TailoringReferenceType type, T target) {
     reference.setReferenceType(type);
@@ -184,6 +204,9 @@ public abstract class TemplateItemData<
 
   protected abstract ControlImplementationTailoringReference<T, TNamespace>
       createControlImplementationTailoringReference();
+
+  protected abstract RequirementImplementationTailoringReference<T, TNamespace>
+      createRequirementImplementationTailoringReference();
 
   protected Element createElement(Unit owner) {
     TemplateItem.checkValidElementType(getElementType());

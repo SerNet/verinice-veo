@@ -37,6 +37,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
@@ -155,5 +156,12 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
       createControlImplementationTailoringReference() {
     throw new UnprocessableDataException(
         "Control implementations currently not supported for catalog items");
+  }
+
+  @Override
+  protected RequirementImplementationTailoringReference<CatalogItem, DomainBase>
+      createRequirementImplementationTailoringReference() {
+    throw new UnprocessableDataException(
+        "Requirement implementations currently not supported for catalog items");
   }
 }

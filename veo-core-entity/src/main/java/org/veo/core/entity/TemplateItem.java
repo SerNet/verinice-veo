@@ -17,13 +17,17 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.NotNull;
+
 import javax.annotation.Nullable;
 
+import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.state.CustomAspectState;
@@ -122,4 +126,11 @@ public interface TemplateItem<
 
   ControlImplementationTailoringReference<T, TNamespace> addControlImplementationReference(
       T control, @Nullable T responsible, @Nullable String description);
+
+  RequirementImplementationTailoringReference<T, TNamespace> addRequirementImplementationReference(
+      T control,
+      @NotNull ImplementationStatus status,
+      @Nullable String implementationStatement,
+      @Nullable LocalDate implementationUntil,
+      @Nullable T responsible);
 }

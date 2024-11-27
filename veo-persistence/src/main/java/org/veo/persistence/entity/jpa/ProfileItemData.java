@@ -35,6 +35,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
@@ -115,5 +116,11 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
   protected ControlImplementationTailoringReference<ProfileItem, Profile>
       createControlImplementationTailoringReference() {
     return new ProfileControlImplementationTailoringReferenceData();
+  }
+
+  @Override
+  protected RequirementImplementationTailoringReference<ProfileItem, Profile>
+      createRequirementImplementationTailoringReference() {
+    return new ProfileRequirementImplementationTailoringReferenceData();
   }
 }

@@ -101,6 +101,18 @@ public abstract class AbstractCreateItemsFromUnitUseCase<
                           .map(elementsToCatalogItems::get)
                           .orElse(null),
                       ci.getDescription()));
+      risky.getRequirementImplementations().stream()
+          .filter(ri -> !ri.isUnedited())
+          .forEach(
+              ri ->
+                  item.addRequirementImplementationReference(
+                      elementsToCatalogItems.get(ri.getControl()),
+                      ri.getStatus(),
+                      ri.getImplementationStatement(),
+                      ri.getImplementationUntil(),
+                      Optional.ofNullable(ri.getResponsible())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null)));
       risky.getRisks().stream()
           .filter(r -> r.getScenario().isAssociatedWithDomain(domain))
           .forEach(

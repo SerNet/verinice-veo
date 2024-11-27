@@ -117,6 +117,8 @@ public class GetProfileIncarnationDescriptionUseCase
       case RISK -> toKey(TailoringReferenceType.RISK, origin, target, "");
       case CONTROL_IMPLEMENTATION ->
           toKey(TailoringReferenceType.CONTROL_IMPLEMENTATION, origin, target, "");
+      case REQUIREMENT_IMPLEMENTATION ->
+          toKey(TailoringReferenceType.REQUIREMENT_IMPLEMENTATION, origin, target, "");
       default ->
           throw new IllegalArgumentException(
               "Unexpected tailoring reference type %s"

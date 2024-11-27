@@ -78,5 +78,11 @@ public enum TailoringReferenceType {
    * maps to a {@link ControlImplementationTailoringReference}. It targets a {@link TemplateItem}
    * representing a {@link Control}.
    */
-  CONTROL_IMPLEMENTATION;
+  CONTROL_IMPLEMENTATION,
+  /**
+   * Defines a requirement implementation as part of a {@link RiskAffected} in a {@link ProfileItem}
+   * and maps to a {@link RequirementImplementationTailoringReference}. It targets a {@link
+   * TemplateItem} representing a {@link Control}.
+   */
+  REQUIREMENT_IMPLEMENTATION;
 }

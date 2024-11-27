@@ -38,11 +38,13 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
@@ -186,38 +188,45 @@ public class IncarnationDescriptionApplier {
           Map<UUID, Element> referencedElementsById,
           Map<String, Element> elementsByItemId,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
-    parameters.forEach(
-        parameter -> {
-          var tailoringReference = tailoringReferencesById.get(parameter.getId());
-          if (tailoringReference == null) {
-            throw new NotFoundException(
-                UUID.fromString(parameter.getId()), TailoringReference.class);
-          }
-          var target =
-              parameter
-                  .getReferencedElementRef()
-                  .map(ITypedId::getId)
-                  .map(referencedElementsById::get)
-                  .orElseGet(
-                      () ->
-                          elementsByItemId.get(
-                              tailoringReference.getTarget().getSymbolicIdAsString()));
-          if (target == null) {
-            throw new UnprocessableDataException(
-                "%s %s not included in request but required by %s."
-                    .formatted(
-                        tailoringReference.getTarget().getModelInterface().getSimpleName(),
-                        tailoringReference.getTarget().getName(),
-                        item.getName()));
-          }
-          // TODO #898 adapt to non-redundant tailoring reference system
-          applyTailoringReference(
-              tailoringReference,
-              element,
-              target,
-              item.requireDomainMembership(),
-              elementsByItemId);
-        });
+    parameters.stream()
+        // RIs must be applied after CIs
+        .sorted(
+            Comparator.comparing(
+                p ->
+                    tailoringReferencesById.get(p.getId()).getReferenceType()
+                        == TailoringReferenceType.REQUIREMENT_IMPLEMENTATION))
+        .forEach(
+            parameter -> {
+              var tailoringReference = tailoringReferencesById.get(parameter.getId());
+              if (tailoringReference == null) {
+                throw new NotFoundException(
+                    UUID.fromString(parameter.getId()), TailoringReference.class);
+              }
+              var target =
+                  parameter
+                      .getReferencedElementRef()
+                      .map(ITypedId::getId)
+                      .map(referencedElementsById::get)
+                      .orElseGet(
+                          () ->
+                              elementsByItemId.get(
+                                  tailoringReference.getTarget().getSymbolicIdAsString()));
+              if (target == null) {
+                throw new UnprocessableDataException(
+                    "%s %s not included in request but required by %s."
+                        .formatted(
+                            tailoringReference.getTarget().getModelInterface().getSimpleName(),
+                            tailoringReference.getTarget().getName(),
+                            item.getName()));
+              }
+              // TODO #898 adapt to non-redundant tailoring reference system
+              applyTailoringReference(
+                  tailoringReference,
+                  element,
+                  target,
+                  item.requireDomainMembership(),
+                  elementsByItemId);
+            });
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -242,6 +251,8 @@ public class IncarnationDescriptionApplier {
       case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItemId);
       case CONTROL_IMPLEMENTATION ->
           addControlImplementation(origin, target, tailoringReference, elementsByItemId);
+      case REQUIREMENT_IMPLEMENTATION ->
+          addRequirementImplementation(origin, target, tailoringReference, elementsByItemId);
       default ->
           throw new IllegalArgumentException(
               "Unexpected tailoring reference type %s"
@@ -276,6 +287,41 @@ public class IncarnationDescriptionApplier {
     } else
       throw new ModelConsistencyException(
           "Cannot create control implementation from %s for %s targeting %s"
+              .formatted(
+                  tailoringReference.getClass().getSimpleName(),
+                  origin.getModelType(),
+                  target.getModelType()));
+  }
+
+  private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      void addRequirementImplementation(
+          Element origin,
+          Element target,
+          TailoringReference<T, TNamespace> tailoringReference,
+          Map<String, Element> elementsByItemId) {
+    if (origin instanceof RiskAffected<?, ?> ra
+        && target instanceof Control control
+        && tailoringReference
+            instanceof RequirementImplementationTailoringReference<T, TNamespace> tr) {
+      var ri = ra.getRequirementImplementation(control);
+      ri.setStatus(tr.getStatus());
+      ri.setImplementationStatement(tr.getImplementationStatement());
+      ri.setImplementationUntil(tr.getImplementationUntil());
+      Optional.ofNullable(tr.getResponsible())
+          .map(T::getSymbolicIdAsString)
+          .map(elementsByItemId::get)
+          .ifPresent(
+              responsible -> {
+                if (responsible instanceof Person person) {
+                  ri.setResponsible(person);
+                } else
+                  throw new ModelConsistencyException(
+                      "Cannot use %s as responsible for requirement implementation"
+                          .formatted(responsible.getModelType()));
+              });
+    } else
+      throw new ModelConsistencyException(
+          "Cannot create requirement implementation from %s for %s targeting %s"
               .formatted(
                   tailoringReference.getClass().getSimpleName(),
                   origin.getModelType(),

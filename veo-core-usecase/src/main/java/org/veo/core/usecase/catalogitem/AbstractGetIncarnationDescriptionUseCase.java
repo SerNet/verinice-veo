@@ -58,7 +58,13 @@ public class AbstractGetIncarnationDescriptionUseCase<
   private TailoringReferenceParameter mapParameter(
       TailoringReference<T, ?> reference, Element element) {
     return switch (reference.getReferenceType()) {
-      case PART, COMPOSITE, RISK, CONTROL_IMPLEMENTATION, SCOPE, MEMBER ->
+      case PART,
+              COMPOSITE,
+              RISK,
+              CONTROL_IMPLEMENTATION,
+              REQUIREMENT_IMPLEMENTATION,
+              SCOPE,
+              MEMBER ->
           fromReference(reference, element);
       case LINK, LINK_EXTERNAL ->
           fromLinkReference((LinkTailoringReference<T, ?>) reference, element);

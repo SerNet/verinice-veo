@@ -26,10 +26,12 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoringReferenceDto;
+import org.veo.adapter.service.domaintemplate.dto.RequirementImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
@@ -93,6 +95,16 @@ public abstract class AbstractTemplateItemDto<
           .ifPresent(ciRefDto::setResponsible);
       ciRefDto.setDescription(ciSource.getDescription());
       return ciRefDto;
+    } else if (source
+        instanceof RequirementImplementationTailoringReference<T, TNamespace> riSource) {
+      var riRefDto = new RequirementImplementationTailoringReferenceDto<T, TNamespace>();
+      riRefDto.setStatus(riSource.getStatus());
+      riRefDto.setImplementationStatement(riSource.getImplementationStatement());
+      riRefDto.setImplementationUntil(riSource.getImplementationUntil());
+      Optional.ofNullable(riSource.getResponsible())
+          .map(r -> SymIdRef.from(r, uriAssembler))
+          .ifPresent(riRefDto::setResponsible);
+      return riRefDto;
     }
     return new TailoringReferenceDto<>();
   }

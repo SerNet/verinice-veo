@@ -43,6 +43,7 @@ import org.veo.core.entity.state.DomainBaseState;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 import org.veo.core.entity.state.LinkTailoringReferenceState;
 import org.veo.core.entity.state.ProfileItemState;
+import org.veo.core.entity.state.RequirementImplementationTailoringReferenceState;
 import org.veo.core.entity.state.RiskTailoringReferenceState;
 import org.veo.core.entity.state.TailoringReferenceState;
 import org.veo.core.entity.state.TemplateItemState;
@@ -227,6 +228,13 @@ public class DomainStateMapper {
               targetItem,
               Optional.ofNullable(ciDto.getResponsibleRef()).map(resolver::resolve).orElse(null),
               ciDto.getDescription());
+      case RequirementImplementationTailoringReferenceState<T, TNamespace> riDto ->
+          owner.addRequirementImplementationReference(
+              targetItem,
+              riDto.getStatus(),
+              riDto.getImplementationStatement(),
+              riDto.getImplementationUntil(),
+              Optional.ofNullable(riDto.getResponsibleRef()).map(resolver::resolve).orElse(null));
       default -> owner.addTailoringReference(source.getReferenceType(), targetItem);
     }
   }

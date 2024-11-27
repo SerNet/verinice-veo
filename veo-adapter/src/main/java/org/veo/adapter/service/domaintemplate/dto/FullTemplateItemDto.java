@@ -78,6 +78,9 @@ public interface FullTemplateItemDto<
     @JsonSubTypes.Type(
         value = ControlImplementationTailoringReferenceDto.class,
         name = "CONTROL_IMPLEMENTATION"),
+    @JsonSubTypes.Type(
+        value = RequirementImplementationTailoringReferenceDto.class,
+        name = "REQUIREMENT_IMPLEMENTATION"),
   })
   @Schema(description = "References to other catalog items in the same domain")
   Set<TailoringReferenceDto<T, TNamespace>> getTailoringReferences();
