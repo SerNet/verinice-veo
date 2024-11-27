@@ -43,8 +43,8 @@ public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migra
               }
               ids.add(step.id());
               try {
-                step.newDefinitions().forEach(nd -> nd.validate(domain));
-                step.oldDefinitions().forEach(nd -> nd.validate(domainTemplate));
+                step.newDefinitions().forEach(nd -> nd.validate(domain, domainTemplate));
+                step.oldDefinitions().forEach(nd -> nd.validate(domainTemplate, null));
               } catch (IllegalArgumentException e) {
                 throw new UnprocessableDataException(
                     "Invalid definition '%s'. %s".formatted(step.id(), e.getMessage()));
