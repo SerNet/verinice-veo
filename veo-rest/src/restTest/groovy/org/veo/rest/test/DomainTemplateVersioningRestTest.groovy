@@ -121,16 +121,23 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
             customAspects.sight.attributeDefinitions.remove("needsGlasses")
             customAspects.sight.attributeDefinitions.needsReadingGlasses = [type: "boolean"]
             customAspects.sight.attributeDefinitions.needsDistanceSpecs = [type: "boolean"]
+            customAspects.sight.attributeDefinitions.remove("nightBlind")
+            customAspects.sight.attributeDefinitions.nightVision = [type: "boolean"]
+
             put("/content-creation/domains/$owner.domainId_1_0_0/element-type-definitions/person", it, null, 204, CONTENT_CREATOR)
         }
 
         then: "a template cannot be created without migration steps"
         ["1.0.1", "1.1.0", "2.0.0"].each{
-            assert post("/content-creation/domains/$domainId_1_0_0/template", [version: it], 422, CONTENT_CREATOR)
-            .body.message == "Migration definition not suited to update from old domain template 1.0.0: Missing migration steps: Removed attribute 'needsGlasses' of custom aspect 'sight' for type person"
+            with(post("/content-creation/domains/$domainId_1_0_0/template", [version: it], 422, CONTENT_CREATOR)
+            .body.message) {
+                it.startsWith("Migration definition not suited to update from old domain template 1.0.0: Missing migration steps:")
+                it.contains("Removed attribute 'needsGlasses' of custom aspect 'sight' for type person")
+                it.contains("Removed attribute 'nightBlind' of custom aspect 'sight' for type person")
+            }
         }
 
-        when: "adding a migration step"
+        when: "adding migration steps"
         put("/content-creation/domains/$domainId_1_0_0/migrations", [
             [
                 id: "split-needsGlasses",
@@ -156,6 +163,38 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
                         customAspect: "sight",
                         attribute: "needsDistanceSpecs"
                     ]
+                ]
+            ],
+            [
+                id: "negate-night-blindness",
+                description: [en: "Things have changed."],
+                oldDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "nightBlind"
+                    ]
+                ],
+                newDefinitions: [
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "nightVision",
+                        migrationExpression: [
+                            type: "equals",
+                            left: [
+                                type: "customAspectAttributeValue",
+                                customAspect: "sight",
+                                attribute: "nightBlind",
+                            ],
+                            right: [
+                                type: "constant",
+                                value: false,
+                            ]
+                        ]
+                    ],
                 ]
             ]
         ], null, 200)
@@ -210,6 +249,12 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
                         elementType: "person",
                         customAspect: "sight",
                         attribute: "needsReadingGlasses",
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "sight",
+                        attribute: "nightVision",
                     ]
                 ],
                 newDefinitions: [
@@ -224,6 +269,12 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
                         elementType: "person",
                         customAspect: "eyeSight",
                         attribute: "needsDistanceSpecs"
+                    ],
+                    [
+                        type: "customAspectAttribute",
+                        elementType: "person",
+                        customAspect: "eyeSight",
+                        attribute: "nightVision",
                     ]
                 ]
             ]

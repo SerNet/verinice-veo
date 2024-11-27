@@ -48,7 +48,7 @@ public record CustomAspectMigrationDefinition(
     implements MigrationDefinition {
 
   @Override
-  public void validate(DomainBase domain) {
+  public void validate(DomainBase domain, DomainTemplate domainTemplate) {
     EntityType.validateElementType(elementType);
     ElementTypeDefinition elementTypeDefinition = domain.getElementTypeDefinition(elementType);
     var stepType = domain instanceof DomainTemplate ? "old" : "new";
@@ -66,9 +66,8 @@ public record CustomAspectMigrationDefinition(
               .formatted(customAspect, attribute, elementType, stepType));
     }
     if (migrationExpression != null) {
-      if (domain instanceof Domain d) {
+      if (domain instanceof Domain) {
         try {
-          var domainTemplate = d.getDomainTemplate();
           migrationExpression.selfValidate(domainTemplate, elementType);
           Class<?> expectedType = attributeDefinition.getValueType();
           Class<?> actualType = migrationExpression.getValueType(domainTemplate, elementType);
