@@ -20,6 +20,7 @@ package org.veo.core.usecase.catalogitem;
 import static java.util.function.Function.identity;
 
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -144,20 +145,34 @@ public class IncarnationDescriptionApplier {
     var elementsByItemId =
         itemsById.values().stream()
             .collect(Collectors.toMap(T::getSymbolicIdAsString, i -> i.incarnate(unit)));
+    descriptions.stream()
+        .sorted(
+            // we need to create the control parts before creating the CIs to make sure that all RIs
+            // are properly created
+            Comparator.comparing(
+                description -> {
+                  var item = itemsById.get(description.getItemRef().getSymbolicId());
+                  return !Control.SINGULAR_TERM.equals(item.getElementType());
+                }))
+        .forEach(
+            description -> {
+              var item = itemsById.get(description.getItemRef().getSymbolicId());
+              var element = elementsByItemId.get(item.getSymbolicIdAsString());
+              applyTailoringReferences(
+                  item,
+                  element,
+                  description.getParameterStates(),
+                  referencedElementsById,
+                  elementsByItemId,
+                  tailoringReferencesById);
+            });
+
     var sortedElements =
         descriptions.stream()
             .map(
                 description -> {
                   var item = itemsById.get(description.getItemRef().getSymbolicId());
-                  var element = elementsByItemId.get(item.getSymbolicIdAsString());
-                  applyTailoringReferences(
-                      item,
-                      element,
-                      description.getParameterStates(),
-                      referencedElementsById,
-                      elementsByItemId,
-                      tailoringReferencesById);
-                  return element;
+                  return elementsByItemId.get(item.getSymbolicIdAsString());
                 })
             .toList();
     elementBatchCreator.create(sortedElements, unit);
