@@ -54,7 +54,10 @@ abstract class DomainRestTest extends VeoRestTest {
                             attributeDefinitions: [
                                 needsGlasses: [
                                     type: "boolean",
-                                ]
+                                ],
+                                nightBlind: [
+                                    type: "boolean"
+                                ],
                             ]
                         ]
                     ]
