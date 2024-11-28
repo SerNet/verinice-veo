@@ -21,7 +21,6 @@ import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.Repository
@@ -49,8 +48,7 @@ class DbIdRefResolverSpec extends Specification {
     def "loads reference target from repo"() {
         given: "an asset"
         def asset = Mock(Asset) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Asset
         }
 
@@ -65,28 +63,23 @@ class DbIdRefResolverSpec extends Specification {
     def "caches results"() {
         given: "two assets and two persons"
         def asset1 = Mock(Asset) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Asset
         }
         def asset2 = Mock(Asset) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Asset
         }
         def asset3 = Mock(Asset) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Asset
         }
         def person1 = Mock(Person) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Person
         }
         def person2 = Mock(Person) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.getModelInterface() >> Person
         }
 

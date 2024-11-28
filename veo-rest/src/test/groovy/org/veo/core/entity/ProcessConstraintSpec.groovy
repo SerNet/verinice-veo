@@ -32,7 +32,7 @@ class ProcessConstraintSpec extends Specification {
 
     def "designator, owner, and name must be specified"() {
         given: "an invalid process object"
-        Key<UUID> id = Key.newUuid()
+        def id = UUID.randomUUID()
         def processData = new ProcessData()
         processData.id = id
 

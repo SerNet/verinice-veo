@@ -44,7 +44,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.rest.common.RestApiResponse;
@@ -89,8 +88,8 @@ public class ContentCustomizingController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveRiskDefinitionUseCase,
         new SaveRiskDefinitionUseCase.InputData(
-            Key.uuidFrom(user.getClientId()),
-            Key.from(domainId),
+            UUID.fromString(user.getClientId()),
+            domainId,
             riskDefinitionId,
             riskDefinition,
             Set.of(

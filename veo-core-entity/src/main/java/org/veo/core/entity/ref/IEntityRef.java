@@ -30,7 +30,7 @@ public interface IEntityRef<T extends Entity> {
 
   static <T extends Entity> IEntityRef<T> from(T entity) {
     if (entity instanceof Identifiable i) {
-      return TypedId.from(i.getIdAsUUID(), (Class) i.getModelInterface());
+      return TypedId.from(i.getId(), (Class) i.getModelInterface());
     } else if (entity instanceof SymIdentifiable s) {
       return TypedSymbolicId.from(s);
     }

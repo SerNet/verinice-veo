@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -55,7 +54,7 @@ public class SaveDecisionUseCase
 
   @Valid
   public record InputData(
-      Key<UUID> authenticatedClientId, Key<UUID> domainId, String decisionRef, Decision decision)
+      UUID authenticatedClientId, UUID domainId, String decisionRef, Decision decision)
       implements UseCase.InputData {}
 
   @Valid

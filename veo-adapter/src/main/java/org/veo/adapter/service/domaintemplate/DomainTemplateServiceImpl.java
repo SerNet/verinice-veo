@@ -24,7 +24,6 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -47,23 +46,23 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   @Override
-  public DomainTemplate getTemplate(Client client, Key<UUID> key) {
+  public DomainTemplate getTemplate(Client client, UUID key) {
     checkClientAccess(client, key);
     return domainTemplateRepository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(key);
   }
 
-  private void checkClientAccess(Client client, Key<UUID> key) {
+  private void checkClientAccess(Client client, UUID key) {
     // TODO VEO-1454 check the shop status for available products
   }
 
   @Override
-  public Domain createDomain(Client client, String templateId) {
+  public Domain createDomain(Client client, UUID templateId) {
     return createDomain(client, templateId, true);
   }
 
   @Override
-  public Domain createDomain(Client client, String templateId, boolean copyProfiles) {
-    DomainTemplate domainTemplate = getTemplate(client, Key.uuidFrom(templateId));
+  public Domain createDomain(Client client, UUID templateId, boolean copyProfiles) {
+    DomainTemplate domainTemplate = getTemplate(client, templateId);
 
     var domain = domainStateMapper.toDomain(domainTemplate, copyProfiles);
     domain.setDomainTemplate(domainTemplate);

@@ -19,7 +19,6 @@ package org.veo.persistence.entity
 
 import org.veo.core.entity.Control
 import org.veo.core.entity.EntityType
-import org.veo.core.entity.Key
 import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
@@ -117,9 +116,9 @@ class ControlImplementationSpec extends VeoSpec {
     def "disassociate a control from a #type"() {
         given: "a #type with multiple controlImplementations"
         def elmt = makeType(type)
-        def person = newPerson(unit) {id = Key.newUuid()}
-        def control2 = newControl(unit) {id = Key.newUuid()}
-        def control3 = newControl(unit) {id = Key.newUuid()}
+        def person = newPerson(unit) {id = UUID.randomUUID()}
+        def control2 = newControl(unit) {id = UUID.randomUUID()}
+        def control3 = newControl(unit) {id = UUID.randomUUID()}
 
         when: "a requirement is changed"
         elmt.implementControl(control2)
@@ -162,9 +161,9 @@ class ControlImplementationSpec extends VeoSpec {
     def "disassociate controls with a shared RI"() {
         given:
         def asset = newAsset(unit)
-        def parentControl1 = newControl(unit) {id = Key.newUuid()}
-        def parentControl2 = newControl(unit) {id = Key.newUuid()}
-        def childControl = newControl(unit) {id = Key.newUuid()}
+        def parentControl1 = newControl(unit) {id = UUID.randomUUID()}
+        def parentControl2 = newControl(unit) {id = UUID.randomUUID()}
+        def childControl = newControl(unit) {id = UUID.randomUUID()}
 
         asset.implementControl(parentControl1).addRequirement(childControl)
         asset.implementControl(parentControl2).addRequirement(childControl)

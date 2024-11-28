@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
-import org.veo.core.entity.Key
 import org.veo.core.entity.ref.TypedSymbolicId
 import org.veo.persistence.access.CatalogItemRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -84,7 +83,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
         when:
         CatalogItem catalogItem = new CatalogItemData()
-        catalogItem.setSymbolicId(Key.newUuid())
+        catalogItem.setSymbolicId(UUID.randomUUID())
         catalogItem.setName("my name")
         catalogItem.setSubType("ctl")
         catalogItem.setStatus("NEW")

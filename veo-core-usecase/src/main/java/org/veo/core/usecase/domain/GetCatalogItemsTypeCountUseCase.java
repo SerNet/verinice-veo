@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
@@ -69,8 +68,7 @@ public class GetCatalogItemsTypeCountUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> domainId, Client authenticatedClient)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid CatalogItemsTypeCount result) implements UseCase.OutputData {}

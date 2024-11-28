@@ -21,14 +21,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
 public interface RiskValuesProvider
     extends ProbabilityValueProvider, CategorizedImpactValueProvider, CategorizedRiskValueProvider {
-  Key<UUID> getDomainId();
+  UUID getDomainId();
 
-  Key<String> getRiskDefinitionId();
+  String getRiskDefinitionId();
 
   List<Impact> getImpactCategories();
 

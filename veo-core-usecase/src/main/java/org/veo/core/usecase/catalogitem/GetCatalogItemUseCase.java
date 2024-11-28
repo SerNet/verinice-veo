@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -47,7 +46,7 @@ public class GetCatalogItemUseCase
 
   @Valid
   public record InputData(
-      @NonNull Key<UUID> itemId, @NonNull Key<UUID> domainId, @NonNull Client authenticatedClient)
+      @NonNull UUID itemId, @NonNull UUID domainId, @NonNull Client authenticatedClient)
       implements UseCase.InputData {}
 
   @Valid

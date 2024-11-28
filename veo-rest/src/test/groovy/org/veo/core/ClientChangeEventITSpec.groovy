@@ -36,7 +36,6 @@ import org.testcontainers.containers.GenericContainer
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.message.EventDispatcher
 import org.veo.message.EventMessage
 import org.veo.message.RabbitMQSenderConfiguration
@@ -97,12 +96,12 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
     def "publish create client event"() {
         when: "a create client event is send"
-        def cId = Key.newUuid()
+        def cId = UUID.randomUUID()
         def clientName = "new client"
 
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "CREATION",
             "name": "${clientName}",
             "domainProducts": {
@@ -123,13 +122,13 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         and: "no units are created"
         executeInTransaction {
-            unitDataRepository.findByClientId(cId.value())
+            unitDataRepository.findByClientId(cId)
         }.size() == 0
 
         when:"we send a change -> add a domain"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "MODIFICATION",
             "domainProducts": {
                 "DSGVO-test" : []
@@ -159,7 +158,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         when: "we add a profile to a template and add this profile"
         def dt = domainTemplateDataRepository
-                .findByIdWithProfilesAndRiskDefinitions(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get()
+                .findByIdWithProfilesAndRiskDefinitions(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get()
 
         dt.profiles.add(newProfile(dt) {
             name = 'The New Profile'
@@ -179,7 +178,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         domainTemplateDataRepository.save(dt)
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "MODIFICATION",
             "domainProducts": {
                 "DSGVO-test" : ["NEW_PROFILE"]
@@ -212,7 +211,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         when:"we send a change -> add a non existing domain/profiles"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "MODIFICATION",
             "domainProducts": {
                 "DSGVO-test1" : ["dontExist1","dontExist2"]
@@ -243,7 +242,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         when: "a client deactivation message is sent"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "DEACTIVATION"
         }""",5,Instant.now()))
 
@@ -258,7 +257,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         when: "we delete the client with three domains"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
-            "clientId": "${cId.uuidValue()}",
+            "clientId": "$cId",
             "type": "DELETION"
         }""",6,Instant.now()))
 
@@ -300,7 +299,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             state = ACTIVATED
         })
 
-        def cId = client.getIdAsString()
+        def cId = client.getId()
         unitRepository.save(newUnit(client))
         unitRepository.save(newUnit(client))
 
@@ -314,7 +313,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         then: "the event is sent"
         defaultPolling.eventually {
-            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 5
+            repository.findById(cId).get().maxUnits == 5
         }
 
         when:"we send the next change"
@@ -327,7 +326,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         then: "the event is sent and the maxUnits is updated"
         defaultPolling.eventually {
-            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 15
+            repository.findById(cId).get().maxUnits == 15
         }
 
         when:"we send the next change -> less units than exiting"
@@ -340,7 +339,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         then: "the event is sent and the maxUnits is updated"
         defaultPolling.eventually {
-            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 1
+            repository.findById(cId).get().maxUnits == 1
         }
     }
 

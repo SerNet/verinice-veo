@@ -29,6 +29,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.NotFoundException;
@@ -63,7 +64,7 @@ public class GetRequirementImplementationsByControlImplementationUseCase
     var implementation = owner.getImplementationFor(control);
     var riIds =
         implementation.getRequirementImplementations().stream()
-            .map(ReqImplRef::toKey)
+            .map(ReqImplRef::getUUID)
             .collect(Collectors.toSet());
 
     var query = requirementImplementationRepository.query(input.authenticatedClient);

@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
@@ -51,7 +50,7 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient{
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it)
         })
         unit = unitRepository.save(newUnit(client))
@@ -81,7 +80,7 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
         when:
         query.whereIdsIn(new QueryCondition(asset.controlImplementations.collectMany {
             it.requirementImplementations
-        }.collect { it.toKey() } as Set))
+        }.collect { it.getUUID() } as Set))
         def result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
 
         then:

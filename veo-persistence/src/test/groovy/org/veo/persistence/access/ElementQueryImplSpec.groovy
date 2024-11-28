@@ -22,7 +22,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
@@ -49,7 +48,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient{
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it)
         })
         domain = client.domains.first()
@@ -284,7 +283,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         when:
         def processesInScopeA = elementQueryFactory.queryElements(client).with{
-            whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeA.id))
+            whereScopesContain(new SingleValueQueryCondition<UUID>(scopeA.id))
             execute(PagingConfiguration.UNPAGED)
         }
 
@@ -297,7 +296,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         when:
         def processesInScopeB = elementQueryFactory.queryProcesses(client).with{
-            whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeB.id))
+            whereScopesContain(new SingleValueQueryCondition<UUID>(scopeB.id))
             execute(PagingConfiguration.UNPAGED)
         }
 

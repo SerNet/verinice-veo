@@ -21,7 +21,6 @@ import static java.util.Collections.singleton;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -78,15 +76,14 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
 
   @Override
   @Transactional(readOnly = true)
-  public Set<Scope> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
-    List<UUID> dbIDs = ids.stream().map(Key::value).toList();
-    var elements = scopeDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
+  public Set<Scope> findWithRisksAndScenarios(Set<UUID> ids) {
+    var elements = scopeDataRepository.findWithRisksAndScenariosByDbIdIn(ids);
     return Collections.unmodifiableSet(elements);
   }
 
   @Override
-  public Optional<Scope> findByIdWithRiskValues(Key<UUID> processId) {
-    var processes = scopeDataRepository.findByIdsWithRiskValues(singleton(processId.value()));
+  public Optional<Scope> findByIdWithRiskValues(UUID processId) {
+    var processes = scopeDataRepository.findByIdsWithRiskValues(singleton(processId));
     return processes.stream().findFirst().map(Scope.class::cast);
   }
 
@@ -97,7 +94,7 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
   }
 
   @Override
-  public Optional<Scope> findById(Key<UUID> id, boolean shouldEmbedRisks) {
+  public Optional<Scope> findById(UUID id, boolean shouldEmbedRisks) {
     if (shouldEmbedRisks) {
       return this.findByIdWithRiskValues(id);
     } else {

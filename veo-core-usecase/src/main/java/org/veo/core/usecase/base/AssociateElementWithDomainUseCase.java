@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -65,8 +64,8 @@ public class AssociateElementWithDomainUseCase
   public record InputData(
       Client authenticatedClient,
       Class<? extends Element> elementType,
-      Key<UUID> elementId,
-      Key<UUID> domainId,
+      UUID elementId,
+      UUID domainId,
       String subType,
       String status)
       implements UseCase.InputData {}

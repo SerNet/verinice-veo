@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.CatalogItem;
@@ -28,7 +29,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.ProfileState;
@@ -71,7 +71,7 @@ public class DomainStateMapper {
             source.getName(),
             source.getAuthority(),
             source.getTemplateVersion(),
-            Key.uuidFrom(
+            UUID.fromString(
                 domainTemplateIdGenerator.createDomainTemplateId(
                     source.getName(), source.getTemplateVersion())));
     map(source, target, true);
@@ -145,7 +145,7 @@ public class DomainStateMapper {
             ciRef ->
                 resolver.inject(
                     owner
-                        .findCatalogItem(Key.from(ciRef.getSymbolicId()))
+                        .findCatalogItem(ciRef.getSymbolicId())
                         .orElseThrow(
                             () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
                     ciRef));
@@ -192,7 +192,7 @@ public class DomainStateMapper {
       void mapTemplateItem(
           TemplateItemState<T, TNamespace> source, T target, IdRefResolver resolver) {
     EntityStateMapper.mapNameableProperties(source, target);
-    target.setSymbolicId(Key.from(source.getSelfId()));
+    target.setSymbolicId(source.getSelfId());
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
     target.setSubType(source.getSubType());

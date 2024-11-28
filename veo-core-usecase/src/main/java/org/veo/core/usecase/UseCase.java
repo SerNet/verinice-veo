@@ -23,7 +23,6 @@ import java.util.function.Function;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 
 /**
  * Superclass for all use cases. Each use case must provide an implementation of input and output
@@ -81,5 +80,5 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
    * the client.
    */
   @Valid
-  record IdAndClient(Key<UUID> id, Client authenticatedClient) implements UseCase.InputData {}
+  record IdAndClient(UUID id, Client authenticatedClient) implements UseCase.InputData {}
 }

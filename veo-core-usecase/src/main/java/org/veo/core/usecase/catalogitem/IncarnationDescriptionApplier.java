@@ -36,7 +36,6 @@ import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
@@ -72,7 +71,7 @@ public class IncarnationDescriptionApplier {
 
   public <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
       List<Element> incarnate(
-          Key<UUID> unitId,
+          UUID unitId,
           List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
           AbstractTemplateItemRepository<T, TNamespace> repository,
           Client client) {
@@ -101,7 +100,7 @@ public class IncarnationDescriptionApplier {
                 .collect(Collectors.toSet()),
             client)
         .stream()
-        .collect(Collectors.toMap(it -> it.getSymbolicId().value(), identity()));
+        .collect(Collectors.toMap(it -> it.getSymbolicId(), identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -114,7 +113,7 @@ public class IncarnationDescriptionApplier {
             descriptions.stream()
                 .flatMap(d -> d.getParameterStates().stream())
                 .map(TailoringReferenceParameterState::getId)
-                .map(Key::uuidFrom)
+                .map(UUID::fromString)
                 .collect(Collectors.toSet()),
             client)
         .stream()
@@ -131,8 +130,8 @@ public class IncarnationDescriptionApplier {
         .map(o -> o.orElse(null))
         .filter(Objects::nonNull)
         .distinct()
-        .map(ref -> elementRepository.getById(Key.from(ref.getId()), ref.getType(), client))
-        .collect(Collectors.toMap(Element::getIdAsUUID, identity()));
+        .map(ref -> elementRepository.getById(ref.getId(), ref.getType(), client))
+        .collect(Collectors.toMap(Element::getId, identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -191,7 +190,8 @@ public class IncarnationDescriptionApplier {
         parameter -> {
           var tailoringReference = tailoringReferencesById.get(parameter.getId());
           if (tailoringReference == null) {
-            throw new NotFoundException(Key.uuidFrom(parameter.getId()), TailoringReference.class);
+            throw new NotFoundException(
+                UUID.fromString(parameter.getId()), TailoringReference.class);
           }
           var target =
               parameter

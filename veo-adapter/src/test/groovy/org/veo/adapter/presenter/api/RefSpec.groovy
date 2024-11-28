@@ -27,7 +27,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.entity.ref.TypedCompoundId
@@ -43,19 +42,19 @@ class RefSpec extends Specification {
     def "ref equals & hashcode is implemented correctly"() {
         given:
         def unit1 = Spy(Unit) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def unit1Doppelganger = Spy(Unit) {
-            idAsUUID >> unit1.idAsUUID
+            id >> unit1.id
             displayName >> ""
         }
         def unit2 = Spy(Unit) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def assetWithSameId = Spy(Asset) {
-            idAsUUID >> unit1.idAsUUID
+            id >> unit1.id
             displayName >> ""
         }
 
@@ -106,20 +105,20 @@ class RefSpec extends Specification {
     def "sym ref equals & hashcode is implemented correctly"() {
         given:
         def domain = Spy(Domain) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def domain2 = Spy(Domain) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def ci = Spy(CatalogItem) {
-            symbolicId >> Key.newUuid()
+            symbolicId >> UUID.randomUUID()
             displayName >> ""
             domainBase >> domain
         }
         def ci2 = Spy(CatalogItem) {
-            symbolicId >> Key.newUuid()
+            symbolicId >> UUID.randomUUID()
             displayName >> ""
             domainBase >> domain
         }
@@ -181,19 +180,19 @@ class RefSpec extends Specification {
     def "compound ref equals & hashcode is implemented correctly"() {
         given:
         def asset1 = Spy(Asset) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def asset2 = Spy(Asset) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def scenario1 = Spy(Scenario) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def scenario2 = Spy(Scenario) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             displayName >> ""
         }
         def risk = Spy(AssetRisk) {

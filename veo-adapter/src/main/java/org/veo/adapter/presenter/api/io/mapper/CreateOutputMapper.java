@@ -18,16 +18,16 @@
 package org.veo.adapter.presenter.api.io.mapper;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 
 /** Returns just the id of the newly created {@link Identifiable} as output. */
 public final class CreateOutputMapper {
 
   public static ApiResponseBody map(Identifiable identifiable) {
-    Optional<String> id = Optional.ofNullable(identifiable.getId()).map(Key::uuidValue);
+    Optional<String> id = Optional.ofNullable(identifiable.getId()).map(UUID::toString);
     return new ApiResponseBody(
         true,
         id,

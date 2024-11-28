@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
-import org.veo.core.entity.Key
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 
 import jakarta.persistence.EntityManager
@@ -39,8 +38,8 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "provides sequence values per client and object type"() {
         given:
-        def clientId1 = Key.newUuid()
-        def clientId2 = Key.newUuid()
+        def clientId1 = UUID.randomUUID()
+        def clientId2 = UUID.randomUUID()
         designatorSequenceRepo.createSequences(clientId1)
         designatorSequenceRepo.createSequences(clientId2)
 
@@ -57,7 +56,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "get multiple sequence values per object type"() {
         given:
-        def clientId1 = Key.newUuid()
+        def clientId1 = UUID.randomUUID()
         designatorSequenceRepo.createSequences(clientId1)
 
         expect:
@@ -68,7 +67,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "can't get value without creating sequence first"() {
         when:
-        designatorSequenceRepo.getNext(Key.newUuid(), Asset.TYPE_DESIGNATOR)
+        designatorSequenceRepo.getNext(UUID.randomUUID(), Asset.TYPE_DESIGNATOR)
 
         then:
         thrown(PersistenceException)
@@ -76,7 +75,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "deletes sequence"() {
         given:
-        def clientId = Key.newUuid()
+        def clientId = UUID.randomUUID()
         designatorSequenceRepo.createSequences(clientId)
         designatorSequenceRepo.deleteSequences(clientId)
 
@@ -89,7 +88,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "idempotent sequence creation"() {
         given:
-        def clientId = Key.newUuid()
+        def clientId = UUID.randomUUID()
         designatorSequenceRepo.createSequences(clientId)
 
         when:
@@ -101,7 +100,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
     def "idempotent sequence deletion"() {
         given:
-        def clientId = Key.newUuid()
+        def clientId = UUID.randomUUID()
         designatorSequenceRepo.createSequences(clientId)
         designatorSequenceRepo.deleteSequences(clientId)
 

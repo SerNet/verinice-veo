@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -53,6 +52,6 @@ public class DeleteProfileInDomainTemplateUseCase
   }
 
   @Valid
-  public record InputData(Client client, Key<UUID> domainTemplateId, Key<UUID> profileId)
+  public record InputData(Client client, UUID domainTemplateId, UUID profileId)
       implements UseCase.InputData {}
 }

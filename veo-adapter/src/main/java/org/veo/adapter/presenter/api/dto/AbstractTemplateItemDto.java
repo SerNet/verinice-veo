@@ -63,7 +63,7 @@ public abstract class AbstractTemplateItemDto<
   protected TailoringReferenceDto<T, TNamespace> createTailoringReferenceDto(
       TailoringReference<T, TNamespace> source, ReferenceAssembler referenceAssembler) {
     var target = supplyDto(source, referenceAssembler);
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setReferenceType(source.getReferenceType());
     target.setTarget(SymIdRef.from(source.getTarget(), referenceAssembler));
     return target;

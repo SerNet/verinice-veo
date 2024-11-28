@@ -28,7 +28,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -137,7 +136,7 @@ public class GetProfileIncarnationDescriptionUseCase
 
   private void validateInput(InputData input) {
     input.authenticatedClient.getDomains().stream()
-        .filter(d -> d.getIdAsString().equals(input.domainId.uuidValue()))
+        .filter(d -> d.getId().equals(input.domainId))
         .findAny()
         .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
 
@@ -165,10 +164,10 @@ public class GetProfileIncarnationDescriptionUseCase
   @Valid
   public record InputData(
       Client authenticatedClient,
-      Key<UUID> unitId,
-      Key<UUID> domainId,
-      List<Key<UUID>> profileItemIds,
-      Key<UUID> profileId,
+      UUID unitId,
+      UUID domainId,
+      List<UUID> profileItemIds,
+      UUID profileId,
       boolean mergeBidirectionalReferences)
       implements UseCase.InputData {}
 

@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.exception.NotFoundException;
@@ -79,7 +78,7 @@ public class GetControlImplementationsUseCase
                   genericElementRepository.getById(id, Control.class, input.authenticatedClient);
               if (!control.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
-                    control, input.domainId.uuidValue());
+                    control, input.domainId.toString());
               }
               query.whereControlIdIn(id);
             });
@@ -88,12 +87,12 @@ public class GetControlImplementationsUseCase
             id -> {
               RiskAffected<?, ?> ra =
                   genericElementRepository.getById(
-                      id.toKey(), id.getType(), input.authenticatedClient);
+                      id.getId(), id.getType(), input.authenticatedClient);
               if (!ra.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
-                    ra, input.domainId.uuidValue());
+                    ra, input.domainId.toString());
               }
-              query.whereRiskAffectedIs(id.toKey().value());
+              query.whereRiskAffectedIs(id.getId());
             });
 
     Optional.ofNullable(input.purpose)
@@ -129,8 +128,8 @@ public class GetControlImplementationsUseCase
   @Valid
   public record InputData(
       @NotNull Client authenticatedClient,
-      Key<UUID> control,
-      @NotNull Key<UUID> domainId,
+      UUID control,
+      @NotNull UUID domainId,
       TypedId<? extends RiskAffected<?, ?>> riskAffectedId,
       @Nullable ControlImplementationPurpose purpose,
       @NotNull PagingConfiguration<String> pagingConfiguration)

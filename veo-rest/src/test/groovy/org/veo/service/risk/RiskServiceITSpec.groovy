@@ -123,12 +123,12 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
 
         when: 'running the risk service on the changed process'
         executeInTransaction {
-            riskService.evaluateChangedRiskComponent(processDataRepository.findById(process.idAsUUID).orElseThrow())
+            riskService.evaluateChangedRiskComponent(processDataRepository.findById(process.id).orElseThrow())
         }
         def queryCounts = QueryCountHolder.grandTotal
 
         risk = executeInTransaction {
-            process = processDataRepository.findByIdsWithRiskValues(Set.of(process.idAsUUID)).first()
+            process = processDataRepository.findByIdsWithRiskValues(Set.of(process.id)).first()
             process.risks.first().tap {
                 it.getRiskDefinitions(domain)
             }
@@ -197,19 +197,19 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         when: "changing the scenario's potential probability and running the risk service"
         listener.receivedEvents.clear()
         executeInTransaction {
-            scenario = scenarioDataRepository.findById(scenario.idAsUUID).get().tap {
+            scenario = scenarioDataRepository.findById(scenario.id).get().tap {
                 setPotentialProbability(domain, [
                     (riskDefinitionRef): new PotentialProbability(probabilityOften)
                 ])
             }
-            process = processDataRepository.findById(process.idAsUUID).get()
+            process = processDataRepository.findById(process.id).get()
             QueryCountHolder.clear()
             riskService.evaluateChangedRiskComponent(process)
         }
         queryCounts = QueryCountHolder.grandTotal
         executeInTransaction {
             risk = executeInTransaction {
-                process = processDataRepository.findById(process.idAsUUID).get()
+                process = processDataRepository.findById(process.id).get()
                 process.risks.first().tap {
                     //initialize lazy associations
                     it.getRiskDefinitions(domain)

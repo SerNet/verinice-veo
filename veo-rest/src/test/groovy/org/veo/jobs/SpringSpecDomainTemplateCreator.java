@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -34,7 +36,6 @@ import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
@@ -53,7 +54,7 @@ public class SpringSpecDomainTemplateCreator {
       new PathMatchingResourcePatternResolver(getClass().getClassLoader());
   private final ObjectMapper objectMapper;
   private final DomainTemplateRepository domainTemplateRepository;
-  private Map<String, ExportDomainTemplateDto> domainTemplateDtos;
+  private Map<UUID, ExportDomainTemplateDto> domainTemplateDtos;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final DomainRepository domainRepository;
@@ -63,21 +64,21 @@ public class SpringSpecDomainTemplateCreator {
    * is attempted to create the domain template from the corresponding test domain template resource
    * file first.
    */
-  public Domain createDomainFromTemplate(String templateId, Client client, boolean copyProfiles) {
-    if (!domainTemplateRepository.exists(Key.uuidFrom(templateId))) {
+  public Domain createDomainFromTemplate(UUID templateId, Client client, boolean copyProfiles) {
+    if (!domainTemplateRepository.exists(templateId)) {
       createTestTemplate(templateId);
     }
     AsSystemUser.runAsAdmin(
         () -> {
           createDomainFromTemplateUseCase.execute(
               new CreateDomainFromTemplateUseCase.InputData(
-                  templateId, client.getIdAsString(), copyProfiles));
+                  templateId, client.getId(), copyProfiles));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()
         .filter(
             d ->
                 Optional.ofNullable(d.getDomainTemplate())
-                    .map(DomainTemplate::getIdAsString)
+                    .map(DomainTemplate::getId)
                     .map(templateId::equals)
                     .orElse(false))
         .sorted(Comparator.comparing(Domain::getCreatedAt).reversed())
@@ -89,7 +90,7 @@ public class SpringSpecDomainTemplateCreator {
    * Creates domain template with given ID from the corresponding test domain template resource
    * file.
    */
-  public void createTestTemplate(String templateId) {
+  public void createTestTemplate(UUID templateId) {
     var dto = getTestTemplateDto(templateId);
     AsSystemUser.runAsContentCreator(
         () -> {
@@ -97,7 +98,7 @@ public class SpringSpecDomainTemplateCreator {
         });
   }
 
-  private ExportDomainTemplateDto getTestTemplateDto(String templateId) {
+  private ExportDomainTemplateDto getTestTemplateDto(UUID templateId) {
     if (domainTemplateDtos == null) {
       try {
         domainTemplateDtos =
@@ -111,7 +112,7 @@ public class SpringSpecDomainTemplateCreator {
                         throw new RuntimeException(e);
                       }
                     })
-                .collect(Collectors.toMap(dto -> dto.getId().toString(), dto -> dto));
+                .collect(Collectors.toMap(ExportDomainTemplateDto::getId, Function.identity()));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

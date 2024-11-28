@@ -22,7 +22,6 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 
 import lombok.NonNull;
 import lombok.With;
@@ -34,7 +33,7 @@ import lombok.With;
 public record ClientVersioningEvent(
     @NonNull @NotNull Client entity, ModificationType type, @With long changeNumber)
     implements VersioningEvent<Client> {
-  public Key<UUID> getClientId() {
+  public UUID getClientId() {
     return entity.getId();
   }
 }

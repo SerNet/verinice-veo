@@ -44,7 +44,7 @@ public class GetProfilesUseCase extends AbstractProfileUseCase
   public OutputData execute(InputData input) {
     checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Set<Profile> profiles =
-        profileRepo.findAllByDomainId(input.authenticatedClient.getId(), input.domain.toKey());
+        profileRepo.findAllByDomainId(input.authenticatedClient.getId(), input.domain.getId());
     log.info("profiles: {}", profiles.size());
     return new OutputData(profiles);
   }

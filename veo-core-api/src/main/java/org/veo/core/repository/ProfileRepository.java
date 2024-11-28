@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
@@ -35,21 +34,20 @@ import org.veo.core.entity.ProfileItem;
  * methods - i.e. queries based on particular fields.
  */
 public interface ProfileRepository extends IdentifiableVersionedRepository<Profile> {
-  Optional<Profile> findProfileByIdFetchTailoringReferences(
-      Key<UUID> profileId, Key<UUID> clientId);
+  Optional<Profile> findProfileByIdFetchTailoringReferences(UUID profileId, UUID clientId);
 
   List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
-      Set<Key<UUID>> profileItemIds, Client client);
+      Set<UUID> profileItemIds, Client client);
 
   List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
-      Key<UUID> profileId, Client client);
+      UUID profileId, Client client);
 
   Set<Profile> findAllByDomain(Domain domain);
 
-  Set<Profile> findAllByDomainId(Key<UUID> clientId, Key<UUID> domainId);
+  Set<Profile> findAllByDomainId(UUID clientId, UUID domainId);
 
   Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
-      Key<UUID> profileId, Key<UUID> itemId, Key<UUID> clientId);
+      UUID profileId, UUID itemId, UUID clientId);
 
-  Optional<Profile> findById(Key<UUID> clientId, Key<UUID> profileId);
+  Optional<Profile> findById(UUID clientId, UUID profileId);
 }

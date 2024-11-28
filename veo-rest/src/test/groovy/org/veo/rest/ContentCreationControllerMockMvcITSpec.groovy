@@ -424,7 +424,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "create catalog items in a domain from a unit"() {
         given: "a domain and a unit with elements"
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def domainId = domain.idAsUUID
+        def domainId = domain.id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
         def firstVersion = domain.version
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -670,7 +670,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "create an empty profile in a domain"() {
         given: "a domain"
         def domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def domainId = domain.idAsUUID
+        def domainId = domain.id
         def firstVersion = domain.version
 
         when: "we create a new empty profile"
@@ -830,7 +830,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "update a profile in a domain"() {
         given: "a domain and a unit"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
         def unitId = createUnitWithElements(domainId).first()
 
         when: "we create a new profile"
@@ -936,7 +936,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "export and import a profile from a domain"() {
         given: "a domain and a unit"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         when: "we incarnate one linked catalog item"
@@ -1032,7 +1032,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 exportedProfile)).id
 
         def dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{dt1->
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
                 dt1.profiles.size()
                 dt1.profiles[0].items.size()
                 dt1.profiles[0].items.size()
@@ -1062,7 +1062,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         profileInTemplateId = parseJson(post("/content-creation/domain-templates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/profiles",
                 exportedProfile)).id
         dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{dt1->
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{dt1->
                 dt1.profiles.size()
                 dt1.profiles[0].items.size()
                 dt1.profiles[0].items.each{
@@ -1092,7 +1092,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when:
         delete("/content-creation/domain-templates/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/profiles/$profileInTemplateId")
         dt = txTemplate.execute {
-            domainTemplateDataRepository.findById(UUID.fromString(DSGVO_TEST_DOMAIN_TEMPLATE_ID)).get().tap{
+            domainTemplateDataRepository.findById(DSGVO_TEST_DOMAIN_TEMPLATE_ID).get().tap{
                 profiles.size()
             }
         }
@@ -1175,7 +1175,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create profile in a domain from a unit"() {
         given: "a domain and a unit with elements"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -1342,7 +1342,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "profile product ID + language must be unique"() {
         given:
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).id
 
         when: "trying to use an existing product ID + language"
         post("/content-creation/domains/$domainId/profiles", [
@@ -1384,7 +1384,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a profile in a domain from a unit with applied items "() {
         given: "a domain and a unit with elements"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
 
         post("/domains/${domainId}/processes/${processId}/links", [
@@ -1491,7 +1491,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "risks are not supported for catalog items"() {
         given: "a unit with risks"
-        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true)
 
         when: "trying to create catalog items from the unit"
@@ -1505,7 +1505,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def unitId = createUnitWithElements(domain.idAsUUID, true).first()
+        def unitId = createUnitWithElements(domain.id, true).first()
 
         given: "a number of existing templates"
         def initialTemplateCount = txTemplate.execute {
@@ -1561,7 +1561,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "creating and exporting the domain"
-        Domain newDomain = createTestDomain(client, dt.idAsString)
+        Domain newDomain = createTestDomain(client, dt.id)
         def results = get("/domains/${newDomain.idAsString}/export")
         def exportedDomain = parseJson(results)
 
@@ -1589,7 +1589,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         UUID.fromString(domainTemplateId)
 
         when: "we create a domain from the domain template"
-        newDomain = createTestDomain(client, domainTemplateId)
+        newDomain = createTestDomain(client, UUID.fromString(domainTemplateId))
 
         then: "the domain contains the profiles"
         newDomain.name == "DSGVO-test"
@@ -1638,11 +1638,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "remove risk value matrix from a risk category"() {
         given:
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
 
         when:
-        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.id).get()
         def riskDefinition = domain.riskDefinitions.DSRA
 
         then:
@@ -1686,7 +1686,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
         riskDefinitionJson.categories.find{it.id == 'C'}.valueMatrix = null
         put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
-        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.id).get()
         riskDefinition = domain.riskDefinitions.DSRA
 
         then:
@@ -1728,11 +1728,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "add risk category"() {
         given:
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId, true, true)
 
         when:
-        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        def domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.id).get()
         def riskDefinition = domain.riskDefinitions.DSRA
         def rdRef = RiskDefinitionRef.from(riskDefinition)
 
@@ -1749,7 +1749,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             id = 'C2'
         }
         put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
-        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.idAsUUID).get()
+        domain = domainDataRepository.findByIdWithProfilesAndRiskDefinitions(domainId, client.id).get()
         riskDefinition = domain.riskDefinitions.DSRA
         def c2Ref = CategoryRef.from(riskDefinition.getCategory('C2').get())
 
@@ -1868,7 +1868,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "CRUD for DomainUpdateDefinition"() {
         given: "a domain with a changed attribute type"
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).id
         executeInTransaction {
             def domain = domainDataRepository.findById(domainId).get()
             domainDataRepository.save(domain.tap {
@@ -2010,7 +2010,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "domains with no previous major and no breaking changes must not contain migrations"() {
         given: "an unmodified domain"
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).id
 
         when:
         parseJson(put("/content-creation/domains/$domainId/migrations", migrationDefinition(), [:], 422))
@@ -2024,7 +2024,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "domain with no breaking changes must contain migration steps from previous major"() {
         given: "an unmodified domain based on 2.0.0"
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
-        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsUUID
+        def domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).id
 
         when: "trying to use a definition that didn't exist in the old template"
         parseJson(put("/content-creation/domains/${domainId}/migrations", [

@@ -44,7 +44,7 @@ public final class ETag {
 
   public static <T extends SymIdentifiable<?, ?> & Versioned> String fromSymIdentifiable(T entity) {
     return from(
-        entity.getSymbolicId().value()
+        entity.getSymbolicId()
             + entity.getNamespace().getModelType()
             + entity.getNamespace().getIdAsString(),
         entity.getVersion());

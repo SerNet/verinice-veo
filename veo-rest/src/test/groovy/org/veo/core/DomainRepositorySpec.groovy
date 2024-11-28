@@ -20,7 +20,6 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -71,7 +70,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
         given:
         def client = createTestClient()
         def domain = domainRepository.save(newDomain(client))
-        def randomId = Key.newUuid()
+        def randomId = UUID.randomUUID()
 
         when:
         domainRepository.getByIds([
@@ -81,7 +80,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
 
         then:
         NotFoundException e = thrown()
-        e.message == "Entity ${randomId.uuidValue()} not found"
+        e.message == "Entity $randomId not found"
     }
 
     def "getByIds throws for other client's domain"() {

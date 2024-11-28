@@ -19,11 +19,9 @@ package org.veo.core.entity.event;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
-
 public interface ClientEvent {
 
-  Key<UUID> getClientId();
+  UUID getClientId();
 
   ClientChangeType getType();
 

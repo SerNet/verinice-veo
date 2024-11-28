@@ -36,7 +36,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -80,7 +79,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
     CompletableFuture<E> entityFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.from(uuid), client),
+            new GetElementUseCase.InputData(uuid, client),
             output -> entity2Dto(output.element()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -104,7 +103,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
     return useCaseInteractor.execute(
         evaluateElementUseCase,
         new EvaluateElementUseCase.InputData(
-            getAuthenticatedClient(auth), Key.uuidFrom(domainId), dto),
+            getAuthenticatedClient(auth), UUID.fromString(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 
@@ -113,8 +112,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
     var client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         inspectElementUseCase,
-        new InspectElementUseCase.InputData(
-            client, elementType, Key.from(elementId), Key.from(domainId)),
+        new InspectElementUseCase.InputData(client, elementType, elementId, domainId),
         output -> ResponseEntity.ok().body(output.findings()));
   }
 

@@ -19,8 +19,6 @@ package org.veo.core.entity.event;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
-
 public interface DomainEvent {
 
   Object UNKNOWN_SOURCE = RiskEvent.class;
@@ -32,5 +30,5 @@ public interface DomainEvent {
   Object getSource();
 
   /** The client in which the event occured. */
-  Key<UUID> getClientId();
+  UUID getClientId();
 }

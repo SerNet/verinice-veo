@@ -45,8 +45,8 @@ public class GetProfileItemsUseCase extends AbstractProfileUseCase
     checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Profile profile =
         profileRepo
-            .findById(input.authenticatedClient.getId(), input.profile.toKey())
-            .orElseThrow(() -> new NotFoundException(input.profile.toKey(), Profile.class));
+            .findById(input.authenticatedClient.getId(), input.profile.getId())
+            .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
 
     return new OutputData(profile.getItems());
   }

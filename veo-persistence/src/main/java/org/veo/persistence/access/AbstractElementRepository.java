@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -90,7 +89,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Transactional
   public void deleteAll(Set<T> elements) {
-    Set<UUID> elementIds = elements.stream().map(Element::getIdAsUUID).collect(Collectors.toSet());
+    Set<UUID> elementIds = elements.stream().map(Element::getId).collect(Collectors.toSet());
     deleteLinksByTargets(elementIds);
 
     elements.forEach(e -> e.getLinks().clear());
@@ -100,25 +99,25 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   @Override
-  public Optional<T> findById(Key<UUID> id, Key<UUID> clientId) {
-    return dataRepository.findById(id.value(), clientId.value()).map(e -> (T) e);
+  public Optional<T> findById(UUID id, UUID clientId) {
+    return dataRepository.findById(id, clientId).map(e -> (T) e);
   }
 
   @Override
-  public T getById(Key<UUID> id, Key<UUID> clientId) {
+  public T getById(UUID id, UUID clientId) {
     return findById(id, clientId).orElseThrow(() -> new NotFoundException(id, elementType));
   }
 
   @Override
   @Transactional
-  public void deleteById(Key<UUID> id) {
-    deleteLinksByTargets(Set.of(id.value()));
+  public void deleteById(UUID id) {
+    deleteLinksByTargets(Set.of(id));
 
     // remove element from scope members:
-    Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(singleton(id.value()));
+    Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(singleton(id));
     scopes.stream().map(ScopeData.class::cast).forEach(scopeData -> scopeData.removeMemberById(id));
 
-    dataRepository.deleteById(id.value());
+    dataRepository.deleteById(id);
   }
 
   private void deleteLinksByTargets(Set<UUID> targetElementIds) {

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.base
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 
@@ -30,7 +29,7 @@ class UnitHierarchyProviderTest extends Specification{
 
     def "finds all units in root" () {
         given: "a multi level unit hierarchy"
-        def rootId = Key.newUuid()
+        def rootId = UUID.randomUUID()
         def root = Mock(Unit)
         def rootChild0 = Mock(Unit)
         def rootChild0Child0 = Mock(Unit)

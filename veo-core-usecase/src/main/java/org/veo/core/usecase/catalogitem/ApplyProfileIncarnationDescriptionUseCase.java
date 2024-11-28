@@ -25,7 +25,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
@@ -60,7 +59,7 @@ public class ApplyProfileIncarnationDescriptionUseCase
   @Valid
   public record InputData(
       Client authenticatedClient,
-      @NotNull Key<UUID> unitId,
+      @NotNull UUID unitId,
       @NotNull List<TemplateItemIncarnationDescriptionState<ProfileItem, Profile>> descriptions)
       implements UseCase.InputData {}
 

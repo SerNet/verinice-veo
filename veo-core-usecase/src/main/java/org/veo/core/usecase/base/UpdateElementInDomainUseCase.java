@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
@@ -52,7 +51,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   public OutputData<T> execute(InputData<T> input) {
     var idRefResolver = refResolverFactory.db(input.authenticatedClient);
 
-    var domain = idRefResolver.resolve(input.domainId.value(), Domain.class);
+    var domain = idRefResolver.resolve(input.domainId, Domain.class);
     var inputElement = input.element;
     var storedElement = repo.getById(input.id, input.authenticatedClient.getId());
     storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net
@@ -82,9 +81,9 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
   @Valid
   public record InputData<T extends Element>(
-      Key<UUID> id,
+      UUID id,
       @Valid ElementState<T> element,
-      Key<UUID> domainId,
+      UUID domainId,
       Client authenticatedClient,
       String eTag,
       String username)

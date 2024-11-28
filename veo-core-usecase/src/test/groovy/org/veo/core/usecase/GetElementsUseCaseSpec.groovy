@@ -18,7 +18,6 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Asset
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.GenericElementRepository
@@ -43,7 +42,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all elements for a client"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
@@ -64,7 +63,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
 
     def "apply query conditions"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id

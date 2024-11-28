@@ -19,7 +19,6 @@ package org.veo.core.service
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.repository.DomainTemplateRepository
 import org.veo.service.DefaultDomainCreator
 
@@ -37,9 +36,9 @@ class DefaultDomainCreatorSpec extends Specification {
             domains >> []
         }
 
-        def dsgvoTemplateId = Key.newUuid()
+        def dsgvoTemplateId = UUID.randomUUID()
         def dsgvoDomain = Mock(Domain)
-        def isoTemplateId = Key.newUuid()
+        def isoTemplateId = UUID.randomUUID()
         def isoDomain = Mock(Domain)
 
         when: 'domains are created'
@@ -49,8 +48,8 @@ class DefaultDomainCreatorSpec extends Specification {
         then: 'both templates are incarnated in the client'
         1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.of(dsgvoTemplateId)
         1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
-        1 * domainTemplateService.createDomain(client, dsgvoTemplateId.uuidValue(), true) >> dsgvoDomain
-        1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue(), false) >> isoDomain
+        1 * domainTemplateService.createDomain(client, dsgvoTemplateId, true) >> dsgvoDomain
+        1 * domainTemplateService.createDomain(client, isoTemplateId, false) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
         1 * client.addToDomains(isoDomain)
     }

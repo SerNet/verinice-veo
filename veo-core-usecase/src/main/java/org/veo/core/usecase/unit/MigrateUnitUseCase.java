@@ -32,7 +32,6 @@ import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.DomainMigrationStep;
 import org.veo.core.entity.definitions.MigrationDefinition;
 import org.veo.core.repository.DomainRepository;
@@ -150,7 +149,7 @@ public class MigrateUnitUseCase
         });
   }
 
-  public record InputData(Key<UUID> unitId, Key<UUID> domainIdOld, Key<UUID> domainIdNew)
+  public record InputData(UUID unitId, UUID domainIdOld, UUID domainIdNew)
       implements UseCase.InputData {}
 
   public record OutputData(List<Element> skipedElements) implements UseCase.OutputData {}

@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
@@ -56,8 +55,7 @@ public abstract class ModifyElementUseCase<T extends Element>
     ElementState<T> entity = input.element;
     ElementRepository<T> repo = repositoryProvider.getElementRepositoryFor(elementClass);
     var storedEntity =
-        repo.findById(Key.from(input.id))
-            .orElseThrow(() -> new NotFoundException(Key.from(input.id), elementClass));
+        repo.findById(input.id).orElseThrow(() -> new NotFoundException(input.id, elementClass));
     ETag.validate(input.eTag, storedEntity);
     checkClientBoundaries(input, storedEntity);
     entityStateMapper.mapState(
@@ -67,7 +65,7 @@ public abstract class ModifyElementUseCase<T extends Element>
 
     storedEntity.setUpdatedAt(Instant.now());
     repo.save(storedEntity);
-    return new OutputData<>(repo.getById(Key.from(input.id), input.authenticatedClient.getId()));
+    return new OutputData<>(repo.getById(input.id, input.authenticatedClient.getId()));
   }
 
   private void evaluateDecisions(T entity) {

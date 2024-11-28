@@ -20,7 +20,6 @@ package org.veo.core.usecase.base
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.Document
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
@@ -57,7 +56,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
     }
 
     def "Delete a process" () {
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Process process = Mock() {
             getOwner() >> existingUnit
             getId() >> id
@@ -80,7 +79,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
     }
 
     def "Delete a person" () {
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
@@ -96,7 +95,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
 
     def "Delete a scope"() {
         given:
-        def scopeId = Key.newUuid()
+        def scopeId = UUID.randomUUID()
         Scope scope = Mock() {
             getOwner() >> existingUnit
             getId() >> scopeId

@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,7 +56,7 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
   @Getter(AccessLevel.NONE)
   Element entity;
 
-  Key<UUID> clientId;
+  UUID clientId;
 
   public RiskAffectingElementChangeEvent(
       Element element, Object source, RiskChangedEvent riskEvent) {
@@ -65,7 +64,7 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
     changedRisks.add(riskEvent);
   }
 
-  public Key<UUID> getEntityId() {
+  public UUID getEntityId() {
     return entity.getId();
   }
 

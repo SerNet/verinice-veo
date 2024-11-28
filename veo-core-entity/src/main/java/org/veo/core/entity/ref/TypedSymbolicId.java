@@ -54,7 +54,7 @@ public class TypedSymbolicId<
   public static <T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
       TypedSymbolicId<T, TNamespace> from(T entity) {
     return TypedSymbolicId.from(
-        entity.getSymbolicId().value(),
+        entity.getSymbolicId(),
         (Class<T>) entity.getModelInterface(),
         TypedId.from(entity.getNamespace()));
   }

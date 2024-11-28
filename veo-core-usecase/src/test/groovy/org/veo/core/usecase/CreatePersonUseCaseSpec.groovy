@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
@@ -54,7 +53,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         personState = Mock() {
             modelInterface >> Person
             name >> "John"
-            owner >> TypedId.from(existingUnit.idAsUUID, Unit)
+            owner >> TypedId.from(existingUnit.id, Unit)
         }
 
         repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
@@ -81,8 +80,8 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
     def "validates scope client"() {
         given: "a scope for another client"
         def scope = Spy(Scope)
-        scope.id >> Key.newUuid()
-        scope.idAsUUID >> scope.id.value()
+        scope.id >> UUID.randomUUID()
+        scope.id >> scope.id
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 

@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.repository.LinkQuery
@@ -66,7 +65,7 @@ class LinkQuerySpec extends AbstractJpaSpec {
 
     def setup() {
         def client = clientDataRepository.save(newClient {
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it) {name = "d1"}
             newDomain(it) {name = "d2"}
         })

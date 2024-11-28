@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -49,8 +48,7 @@ public class GetCatalogItemsUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> domainId, Client authenticatedClient)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid List<CatalogItem> catalogItems) implements UseCase.OutputData {}

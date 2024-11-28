@@ -27,7 +27,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.CompositeElementQuery;
@@ -89,7 +88,7 @@ public class GetElementsUseCase
             condition ->
                 condition.getValues().stream()
                     .flatMap(
-                        (Key<UUID> rootUnitId) ->
+                        (UUID rootUnitId) ->
                             unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
                     .collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
@@ -149,16 +148,16 @@ public class GetElementsUseCase
   public static record InputData(
       Client authenticatedClient,
       QueryCondition<String> elementTypes,
-      QueryCondition<Key<UUID>> unitUuid,
-      SingleValueQueryCondition<Key<UUID>> domainId,
+      QueryCondition<UUID> unitUuid,
+      SingleValueQueryCondition<UUID> domainId,
       QueryCondition<String> displayName,
       QueryCondition<String> subType,
       QueryCondition<String> status,
-      QueryCondition<Key<UUID>> childElementIds,
+      QueryCondition<UUID> childElementIds,
       SingleValueQueryCondition<Boolean> hasChildElements,
       SingleValueQueryCondition<Boolean> hasParentElements,
-      SingleValueQueryCondition<Key<UUID>> compositeId,
-      SingleValueQueryCondition<Key<UUID>> scopeId,
+      SingleValueQueryCondition<UUID> compositeId,
+      SingleValueQueryCondition<UUID> scopeId,
       QueryCondition<String> description,
       QueryCondition<String> designator,
       QueryCondition<String> name,

@@ -27,7 +27,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.ref.TypedId
@@ -41,15 +40,15 @@ import spock.lang.Specification
 
 class EntityStateMapperSpec extends Specification {
 
-    Key domain0Id = Key.newUuid()
-    Key domain1Id = Key.newUuid()
+    def domain0Id = UUID.randomUUID()
+    def domain1Id = UUID.randomUUID()
     Domain domain0 = Mock(Domain) { it.id >> domain0Id }
     Domain domain1 = Mock(Domain) { it.id >> domain1Id }
     IdRefResolver idRefResolver = Mock() {
-        resolve(domain0Id.value(), Domain) >> domain0
-        resolve(TypedId.from(domain0Id.value(), Domain)) >> domain0
-        resolve(domain1Id.value(), Domain) >> domain1
-        resolve(TypedId.from(domain1Id.value(), Domain)) >> domain1
+        resolve(domain0Id, Domain) >> domain0
+        resolve(TypedId.from(domain0Id, Domain)) >> domain0
+        resolve(domain1Id, Domain) >> domain1
+        resolve(TypedId.from(domain1Id, Domain)) >> domain1
     }
     EntityFactory entityFactory = Mock()
     EventPublisher eventPublisher = Mock()
@@ -67,7 +66,7 @@ class EntityStateMapperSpec extends Specification {
                 subType >> "foo"
                 status >> "NEW_FOO"
                 riskValues >> [:]
-                domain >> TypedId.from(domain0Id.value(), Domain)
+                domain >> TypedId.from(domain0Id, Domain)
                 customLinkStates >> []
                 customAspectStates >> []
             },
@@ -75,7 +74,7 @@ class EntityStateMapperSpec extends Specification {
                 subType >> "bar"
                 status >> "NEW_BAR"
                 riskValues >> [:]
-                domain >> TypedId.from(domain1Id.value(), Domain)
+                domain >> TypedId.from(domain1Id, Domain)
                 customLinkStates >> []
                 customAspectStates >> []
             }
@@ -109,9 +108,9 @@ class EntityStateMapperSpec extends Specification {
             it.controlImplementations >> []
         }
 
-        def compositeAssetId = Key.newUuid()
+        def compositeAssetId = UUID.randomUUID()
         def compositeAssetDto = new FullAssetDto().tap {
-            id = compositeAssetId.value()
+            id = compositeAssetId
             name = "Composite Asset"
             setParts([
                 asset1Ref,
@@ -136,10 +135,10 @@ class EntityStateMapperSpec extends Specification {
         def entity = Mock(Document)
         def link = Mock(CustomLink)
 
-        def compositeAssetId = Key.newUuid()
+        def compositeAssetId = UUID.randomUUID()
         def dto = new FullDocumentDto().tap {
-            id = compositeAssetId.value()
-            domains = [(domain0.id.value()): new DomainAssociationDto().tap {
+            id = compositeAssetId
+            domains = [(domain0.id): new DomainAssociationDto().tap {
                     subType = "contract"
                     status = "CONCLUDED"
                 } ]

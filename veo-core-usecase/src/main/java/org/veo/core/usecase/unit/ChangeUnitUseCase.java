@@ -22,7 +22,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.UnitRepository;
@@ -52,13 +51,13 @@ public abstract class ChangeUnitUseCase
   public OutputData execute(InputData input) {
     log.info("Updating unit with id {}", input.id);
 
-    var storedUnit = unitRepository.getById(Key.from(input.id));
+    var storedUnit = unitRepository.getById(input.id);
     checkSameClient(storedUnit, input);
     ETag.validate(input.eTag, storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     save(updatedUnit, input);
-    return output(unitRepository.getById(Key.from(input.id)));
+    return output(unitRepository.getById(input.id));
   }
 
   protected abstract Unit update(Unit storedUnit, InputData input);

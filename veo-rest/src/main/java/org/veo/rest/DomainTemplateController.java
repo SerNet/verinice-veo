@@ -17,13 +17,13 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
@@ -104,11 +103,10 @@ public class DomainTemplateController extends AbstractEntityController {
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Domain(s) created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
       Authentication auth,
-      @PathVariable String id,
-      @RequestParam(value = "clientids", required = false) List<String> inputClientIds) {
+      @PathVariable UUID id,
+      @RequestParam(value = "clientids", required = false) List<UUID> inputClientIds) {
     return (inputClientIds != null
-            ? CompletableFuture.completedFuture(
-                inputClientIds.stream().map(Key::uuidFrom).collect(Collectors.toSet()))
+            ? CompletableFuture.completedFuture(new HashSet<>(inputClientIds))
             : useCaseInteractor.execute(
                 getClientIdsWhereDomainTemplateNotAppliedUseCase,
                 new GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData(id),
@@ -117,8 +115,7 @@ public class DomainTemplateController extends AbstractEntityController {
         .thenApply(v -> ResponseEntity.noContent().build());
   }
 
-  private CompletableFuture<Class<Void>> createDomains(
-      String domainTemplateId, Set<Key<UUID>> clientIds) {
+  private CompletableFuture<Class<Void>> createDomains(UUID domainTemplateId, Set<UUID> clientIds) {
     log.info("Creating domain from template {} in {} clients", domainTemplateId, clientIds.size());
     var future = CompletableFuture.completedFuture(void.class);
     var i = new AtomicInteger();
@@ -130,7 +127,7 @@ public class DomainTemplateController extends AbstractEntityController {
                       useCaseInteractor.execute(
                           createDomainFromTemplateUseCase,
                           new CreateDomainFromTemplateUseCase.InputData(
-                              domainTemplateId, clientId.uuidValue(), true),
+                              domainTemplateId, clientId, true),
                           out -> void.class))
               .thenApply(
                   nothing -> {

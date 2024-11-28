@@ -19,12 +19,12 @@ package org.veo.adapter.presenter.api.io.mapper;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.risk.RiskValues;
 
 import lombok.RequiredArgsConstructor;
@@ -58,8 +58,8 @@ public final class CategorizedRiskValueMapper {
         .probability(dto.getProbability())
         .impactCategories(dto.getImpactValues())
         .categorizedRisks(dto.getRiskValues())
-        .domainId(Key.uuidFrom(domainId))
-        .riskDefinitionId(new Key<>(riskDefinitionId))
+        .domainId(UUID.fromString(domainId))
+        .riskDefinitionId(riskDefinitionId)
         .build();
   }
 }

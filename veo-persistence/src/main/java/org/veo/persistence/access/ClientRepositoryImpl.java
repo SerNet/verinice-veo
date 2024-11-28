@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
@@ -56,24 +55,24 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
+  public Optional<Client> findByIdFetchCatalogsAndItems(UUID id) {
     return clientDataRepository
-        .findWithCatalogsAndItemsByDbId(id.value())
+        .findWithCatalogsAndItemsByDbId(id)
         .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
 
   @Override
-  public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
+  public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(UUID id) {
     return clientDataRepository
-        .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.value())
+        .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id)
         .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
 
   @Override
-  public Optional<Client> findByIdFetchTranslations(Key<UUID> id) {
-    return clientDataRepository.findWithTranslationsByDbId(id.value()).map(Client.class::cast);
+  public Optional<Client> findByIdFetchTranslations(UUID id) {
+    return clientDataRepository.findWithTranslationsByDbId(id).map(Client.class::cast);
   }
 
   @Override
@@ -84,9 +83,9 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Set<Client> findAllActiveWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId) {
+  public Set<Client> findAllActiveWhereDomainTemplateNotApplied(UUID domainTemplateId) {
     return clientDataRepository
-        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId.value())
+        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId)
         .stream()
         .map(Client.class::cast)
         .collect(Collectors.toSet());
@@ -95,8 +94,8 @@ public class ClientRepositoryImpl
   @Override
   public void delete(Client client) {
     userConfigurationDataRepository.deleteAll(
-        userConfigurationDataRepository.findUserConfigurationsByClient(client.getIdAsUUID()));
-    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getIdAsUUID()));
+        userConfigurationDataRepository.findUserConfigurationsByClient(client.getId()));
+    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getId()));
     client.setDomains(Set.of());
     super.delete(client);
   }

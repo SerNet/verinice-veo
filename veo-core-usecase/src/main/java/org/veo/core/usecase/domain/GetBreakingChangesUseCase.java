@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.veo.core.entity.BreakingChange;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -47,8 +46,7 @@ public class GetBreakingChangesUseCase
     return new OutputData(DomainDiff.determineBreakingChanges(domain, template));
   }
 
-  public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId)
-      implements UseCase.InputData {}
+  public record InputData(UUID authenticatedClientId, UUID domainId) implements UseCase.InputData {}
 
   public record OutputData(List<BreakingChange> breakingChanges) implements UseCase.OutputData {}
 }

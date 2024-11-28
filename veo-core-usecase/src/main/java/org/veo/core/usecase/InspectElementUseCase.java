@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -66,7 +65,7 @@ public class InspectElementUseCase
   }
 
   public record InputData(
-      Client client, Class<? extends Element> elementType, Key<UUID> elementId, Key<UUID> domainId)
+      Client client, Class<? extends Element> elementType, UUID elementId, UUID domainId)
       implements UseCase.InputData {}
 
   public record OutputData(Set<Finding> findings) implements UseCase.OutputData {}

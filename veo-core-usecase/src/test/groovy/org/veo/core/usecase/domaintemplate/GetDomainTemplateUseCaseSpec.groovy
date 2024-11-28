@@ -18,7 +18,6 @@
 package org.veo.core.usecase.domaintemplate
 
 import org.veo.core.entity.DomainTemplate
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ClientRepository
 import org.veo.core.service.DomainTemplateService
@@ -34,7 +33,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a domaintemplate"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         DomainTemplate domaintemplate = Mock()
         domaintemplate.getId() >> id
         templateService.getTemplate(existingClient, id) >> domaintemplate
@@ -50,7 +49,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a domaintemplate unknown client"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         DomainTemplate domaintemplate = Mock()
         domaintemplate.getId() >> id
 

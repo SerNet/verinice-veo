@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.risk.RiskValues;
@@ -75,30 +74,30 @@ public abstract class AbstractRiskUseCase<
   @Valid
   public record InputData(
       @NotNull Client authenticatedClient,
-      @NotNull Key<UUID> riskAffectedRef,
-      @NotNull Key<UUID> scenarioRef,
-      @NotNull Set<@NotNull Key<UUID>> domainRefs,
-      @Nullable Key<UUID> controlRef,
-      @Nullable Key<UUID> riskOwnerRef,
+      @NotNull UUID riskAffectedRef,
+      @NotNull UUID scenarioRef,
+      @NotNull Set<@NotNull UUID> domainRefs,
+      @Nullable UUID controlRef,
+      @Nullable UUID riskOwnerRef,
       @Nullable String eTag,
       Set<RiskValues> riskValues)
       implements UseCase.InputData {
 
-    public Optional<Key<UUID>> getControlRef() {
+    public Optional<UUID> getControlRef() {
       return Optional.ofNullable(controlRef);
     }
 
-    public Optional<Key<UUID>> getRiskOwnerRef() {
+    public Optional<UUID> getRiskOwnerRef() {
       return Optional.ofNullable(riskOwnerRef);
     }
 
     public InputData(
         Client authenticatedClient,
-        Key<UUID> riskAffectedRef,
-        Key<UUID> scenarioRef,
-        Set<Key<UUID>> domainRefs,
-        Key<UUID> controlRef,
-        Key<UUID> riskOwnerRef,
+        UUID riskAffectedRef,
+        UUID scenarioRef,
+        Set<UUID> domainRefs,
+        UUID controlRef,
+        UUID riskOwnerRef,
         Set<RiskValues> riskValues) {
       this(
           authenticatedClient,

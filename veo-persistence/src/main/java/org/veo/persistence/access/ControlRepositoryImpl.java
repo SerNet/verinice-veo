@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.ControlDataRepository;
@@ -70,8 +69,8 @@ public class ControlRepositoryImpl
   }
 
   @Override
-  public void deleteById(Key<UUID> id) {
-    delete(dataRepository.findById(id.value()).orElseThrow());
+  public void deleteById(UUID id) {
+    delete(dataRepository.findById(id).orElseThrow());
   }
 
   @Override

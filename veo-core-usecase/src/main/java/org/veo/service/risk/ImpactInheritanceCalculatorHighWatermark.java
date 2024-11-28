@@ -547,7 +547,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     long startTime = System.currentTimeMillis();
     Set<FlyweightElement> allLinksGroupedByElement =
         flyweightRepo.findAllLinksGroupedByElement(
-            linkTypes, domain.getIdAsUUID(), unit.getIdAsUUID(), domain.getOwner().getIdAsUUID());
+            linkTypes, domain.getId(), unit.getId(), domain.getOwner().getId());
 
     long timeNeeded = System.currentTimeMillis() - startTime;
     log.debug("loadFlyweightElements in {} ms", timeNeeded);
@@ -601,7 +601,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   private Set<RiskAffected<?, ?>> mapIdsToRiskAffected(
       Set<RiskAffected<?, ?>> allRiskElements, Set<UUID> ids) {
     return allRiskElements.stream()
-        .filter(r -> ids.contains(r.getIdAsUUID()))
+        .filter(r -> ids.contains(r.getId()))
         .collect(Collectors.toSet());
   }
 

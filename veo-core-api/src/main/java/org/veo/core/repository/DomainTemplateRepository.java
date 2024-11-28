@@ -24,7 +24,6 @@ import java.util.UUID;
 import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 
 /**
  * A repository for <code>DomainTemplate</code> entities.
@@ -35,15 +34,15 @@ import org.veo.core.entity.Key;
 public interface DomainTemplateRepository extends Repository<DomainTemplate> {
   List<DomainTemplate> findAll();
 
-  List<Key<UUID>> getDomainTemplateIds(String name);
+  List<UUID> getDomainTemplateIds(String name);
 
-  Optional<Key<UUID>> getLatestDomainTemplateId(String name);
+  Optional<UUID> getLatestDomainTemplateId(String name);
 
   Version getLatestVersion(String templateName);
 
-  Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id);
+  Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(UUID id);
 
-  DomainTemplate getByIdWithRiskDefinitionsProfilesAndCatalogItems(Key<UUID> id);
+  DomainTemplate getByIdWithRiskDefinitionsProfilesAndCatalogItems(UUID id);
 
   boolean templateExists(String name, Version version);
 

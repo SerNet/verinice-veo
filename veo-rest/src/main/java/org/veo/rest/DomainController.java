@@ -83,7 +83,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.IncarnationConfiguration;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.inspection.Inspection;
@@ -202,7 +201,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     CompletableFuture<FullDomainDto> domainFuture =
         useCaseInteractor.execute(
             getDomainUseCase,
-            new UseCase.IdAndClient(Key.from(id), client),
+            new UseCase.IdAndClient(id, client),
             output -> entityToDtoTransformer.transformDomain2Dto(output.domain()));
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
@@ -224,7 +223,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor
         .execute(
             exportDomainUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(id), client),
+            new UseCase.IdAndClient(UUID.fromString(id), client),
             o -> entityToDtoTransformer.transformDomain2ExportDto(o.exportDomain()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
@@ -239,8 +238,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
           UUID domainId) {
     return useCaseInteractor.execute(
         getIncarnationConfigurationUseCase,
-        new GetIncarnationConfigurationUseCase.InputData(
-            getAuthenticatedClient(auth), Key.from(domainId)),
+        new GetIncarnationConfigurationUseCase.InputData(getAuthenticatedClient(auth), domainId),
         GetIncarnationConfigurationUseCase.OutputData::incarnationConfiguration);
   }
 
@@ -431,8 +429,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       WebRequest request) {
     return useCaseInteractor.execute(
         getCatalogItemUseCase,
-        new GetCatalogItemUseCase.InputData(
-            Key.from(itemId), Key.from(domainId), getAuthenticatedClient(auth)),
+        new GetCatalogItemUseCase.InputData(itemId, domainId, getAuthenticatedClient(auth)),
         out ->
             RestApiResponse.okOrNotModified(
                 out.catalogItem(), entityToDtoTransformer::transformShortCatalogItem2Dto, request));
@@ -470,7 +467,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
       @Parameter(hidden = true) Authentication auth,
-      @PathVariable String id,
+      @PathVariable UUID id,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId,
       WebRequest request) {
     Client client = getAuthenticatedClient(auth);
@@ -478,8 +475,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor
         .execute(
             getElementStatusCountUseCase,
-            new GetElementStatusCountUseCase.InputData(
-                Key.uuidFrom(unitId), Key.uuidFrom(id), client),
+            new GetElementStatusCountUseCase.InputData(UUID.fromString(unitId), id, client),
             GetElementStatusCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
@@ -493,8 +489,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor
         .execute(
             getInspectionsUseCase,
-            new GetInspectionsUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), Key.from(domainId)),
+            new GetInspectionsUseCase.InputData(getAuthenticatedClient(auth).getId(), domainId),
             out ->
                 entityToDtoTransformer.transformInspections2ShortDtos(
                     out.inspections(), out.domain()))
@@ -515,7 +510,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         .execute(
             getInspectionUseCase,
             new GetInspectionUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), Key.from(domainId), inspectionId),
+                getAuthenticatedClient(auth).getId(), domainId, inspectionId),
             GetInspectionUseCase.OutputData::inspection)
         .thenApply(
             inspection -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(inspection));
@@ -537,7 +532,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor
         .execute(
             getCatalogItemsTypeCountUseCase,
-            new GetCatalogItemsTypeCountUseCase.InputData(Key.from(id), client),
+            new GetCatalogItemsTypeCountUseCase.InputData(id, client),
             GetCatalogItemsTypeCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
@@ -557,10 +552,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             getProfileIncarnationDescriptionUseCase,
             new GetProfileIncarnationDescriptionUseCase.InputData(
                 getAuthenticatedClient(auth),
-                Key.uuidFrom(unitId),
-                Key.uuidFrom(id),
+                UUID.fromString(unitId),
+                UUID.fromString(id),
                 null,
-                Key.uuidFrom(profileId),
+                UUID.fromString(profileId),
                 true),
             out ->
                 out.references().stream()
@@ -571,7 +566,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 useCaseInteractor.execute(
                     applyProfileIncarnationDescriptionUseCase,
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                        getAuthenticatedClient(auth), Key.uuidFrom(unitId), references),
+                        getAuthenticatedClient(auth), UUID.fromString(unitId), references),
                     out -> ResponseEntity.noContent().build()));
   }
 
@@ -608,8 +603,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor
         .execute(
             getBreakingChangesUseCase,
-            new GetBreakingChangesUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), Key.from(domainId)),
+            new GetBreakingChangesUseCase.InputData(getAuthenticatedClient(auth).getId(), domainId),
             GetBreakingChangesUseCase.OutputData::breakingChanges)
         .thenApply(
             breakingChanges ->

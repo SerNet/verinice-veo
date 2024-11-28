@@ -17,17 +17,18 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /** Base type for entities that act as aggregate roots and have a UUID */
 public interface Identifiable extends Entity {
-  Key<UUID> getId();
+  UUID getId();
 
-  String getIdAsString();
+  default String getIdAsString() {
+    return Optional.ofNullable(getId()).map(UUID::toString).orElse(null);
+  }
 
-  UUID getIdAsUUID();
-
-  void setId(Key<UUID> id);
+  void setId(UUID id);
 
   @Override
   Class<? extends Identifiable> getModelInterface();

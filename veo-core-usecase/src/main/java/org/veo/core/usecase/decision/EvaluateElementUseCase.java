@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.inspection.Finding;
@@ -73,7 +72,6 @@ public class EvaluateElementUseCase
   private <T extends Element> T fetchOrCreateElement(ElementState<T> source, Client client) {
     var element =
         Optional.ofNullable(source.getSelfId())
-            .map(Key::from)
             .map(id -> elementRepository.getById(id, source.getModelInterface(), client))
             .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
     entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
@@ -81,7 +79,7 @@ public class EvaluateElementUseCase
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, Key<UUID> domainId, ElementState<?> element)
+  public record InputData(Client authenticatedClient, UUID domainId, ElementState<?> element)
       implements UseCase.InputData {}
 
   @Valid

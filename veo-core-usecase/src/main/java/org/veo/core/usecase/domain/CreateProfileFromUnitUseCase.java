@@ -30,7 +30,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Unit;
@@ -136,10 +135,10 @@ public class CreateProfileFromUnitUseCase
 
   @Valid
   public record InputData(
-      Key<UUID> domainId,
+      UUID domainId,
       Client authenticatedClient,
-      Key<UUID> unitId,
-      Key<UUID> profileId,
+      UUID unitId,
+      UUID profileId,
       String name,
       String description,
       String language,

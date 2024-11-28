@@ -18,7 +18,6 @@
 package org.veo.test
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 
 class VeoSpecSpec extends VeoSpec {
@@ -65,7 +64,7 @@ class VeoSpecSpec extends VeoSpec {
 
     def "Create a new unit with a given id" () {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         def client = Mock(Client)
 
         when:

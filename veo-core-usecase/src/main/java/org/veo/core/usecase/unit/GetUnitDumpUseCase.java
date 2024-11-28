@@ -29,7 +29,6 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
@@ -126,12 +125,12 @@ public class GetUnitDumpUseCase
   }
 
   public record InputData(
-      @NonNull Key<UUID> unitId,
+      @NonNull UUID unitId,
       /**
        * If a domain ID is set, only elements associated with that domain are exported and aspects
        * belonging to other domains are not included in the elements' representations.
        */
-      Key<UUID> domainId)
+      UUID domainId)
       implements UseCase.InputData {}
 
   public record OutputData(Unit unit, Collection<Element> elements) implements UseCase.OutputData {}

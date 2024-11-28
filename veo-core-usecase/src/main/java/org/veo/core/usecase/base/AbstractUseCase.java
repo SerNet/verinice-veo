@@ -25,7 +25,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -68,17 +67,17 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
     var e =
         repositoryProvider
             .getRepositoryFor(ref.getType())
-            .findById(Key.from(ref.getId()))
-            .orElseThrow(() -> new NotFoundException(Key.from(ref.getId()), ref.getType()));
+            .findById(ref.getId())
+            .orElseThrow(() -> new NotFoundException(ref.getId(), ref.getType()));
     checkSameClient(client, e);
     return e;
   }
 
-  protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {
+  protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, UUID id) {
     return repositoryProvider.getRepositoryFor(clazz).findById(id);
   }
 
-  protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
+  protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<UUID> ids) {
     return repositoryProvider.getRepositoryFor(clazz).findByIds(ids);
   }
 }

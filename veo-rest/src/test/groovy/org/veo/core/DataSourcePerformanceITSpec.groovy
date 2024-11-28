@@ -23,7 +23,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
@@ -634,11 +633,11 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
     }
 
-    List<Process> selectProcesses(Key<UUID> id, boolean withRisks = false) {
+    List<Process> selectProcesses(UUID id, boolean withRisks = false) {
         executeInTransaction {
-            def result = processDataRepository.findAllById([id.uuidValue()])
+            def result = processDataRepository.findAllById([id])
             if (withRisks)
-                processDataRepository.findAllWithRisksByDbIdIn([id.uuidValue()])
+                processDataRepository.findAllWithRisksByDbIdIn([id])
             result
         }
     }

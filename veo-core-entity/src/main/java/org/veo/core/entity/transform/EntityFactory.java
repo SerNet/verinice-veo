@@ -32,7 +32,6 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
@@ -55,7 +54,7 @@ public interface EntityFactory {
 
   Process createProcess(String name, Unit unit);
 
-  Client createClient(Key<UUID> id, String name);
+  Client createClient(UUID id, String name);
 
   Asset createAsset(String name, Unit unit);
 
@@ -80,7 +79,7 @@ public interface EntityFactory {
   Scope createScope(String name, Unit owner);
 
   DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, Key<UUID> id);
+      String name, String authority, String templateVersion, UUID id);
 
   CatalogItem createCatalogItem(DomainBase domain);
 

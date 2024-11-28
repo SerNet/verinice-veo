@@ -26,7 +26,6 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
@@ -67,20 +66,20 @@ public class GetElementUseCase<T extends Element>
 
   @Valid
   public record InputData(
-      @NotNull Key<UUID> elementId,
+      @NotNull UUID elementId,
       @NotNull Client authenticatedClient,
-      Key<UUID> domainId,
+      UUID domainId,
       boolean embedRisks)
       implements UseCase.InputData {
-    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
+    public InputData(UUID id, Client authenticatedClient, boolean embedRisks) {
       this(id, authenticatedClient, null, embedRisks);
     }
 
-    public InputData(Key<UUID> id, Client client) {
+    public InputData(UUID id, Client client) {
       this(id, client, false);
     }
 
-    public InputData(Key<UUID> id, Client client, Key<UUID> domainId) {
+    public InputData(UUID id, Client client, UUID domainId) {
       this(id, client, domainId, false);
     }
   }

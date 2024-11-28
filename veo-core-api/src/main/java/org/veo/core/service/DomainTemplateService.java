@@ -23,7 +23,6 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -35,7 +34,7 @@ import org.veo.core.entity.exception.NotFoundException;
 public interface DomainTemplateService {
   List<DomainTemplate> getTemplates(Client client);
 
-  DomainTemplate getTemplate(Client client, Key<UUID> templateId);
+  DomainTemplate getTemplate(Client client, UUID templateId);
 
   /**
    * Creates a domain from the given templateId for the given client. The client is used check the
@@ -43,9 +42,9 @@ public interface DomainTemplateService {
    *
    * @throws NotFoundException when the template doesn't exist
    */
-  Domain createDomain(Client client, String templateId);
+  Domain createDomain(Client client, UUID templateId);
 
-  Domain createDomain(Client client, String templateId, boolean copyProfiles);
+  Domain createDomain(Client client, UUID templateId, boolean copyProfiles);
 
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
 

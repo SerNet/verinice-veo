@@ -151,7 +151,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public UUID getSelfId() {
-    return getIdAsUUID();
+    return getId();
   }
 
   @Override

@@ -17,11 +17,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ProcessRepository
-import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetElementUseCase
 
@@ -34,7 +32,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a process"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Process process = Mock()
         process.getOwner() >> existingUnit
         process.getId() >> id

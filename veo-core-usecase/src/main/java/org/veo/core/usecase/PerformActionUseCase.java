@@ -39,7 +39,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
@@ -217,7 +216,7 @@ public class PerformActionUseCase
       ApplyLinkTailoringReferences createLinkedScenariosStep,
       Element control,
       CatalogItem controlCatalogItem,
-      List<Key<UUID>> scenarioCatalogItems) {
+      List<UUID> scenarioCatalogItems) {
 
     if (scenarioCatalogItems.isEmpty()) {
       return;
@@ -299,11 +298,11 @@ public class PerformActionUseCase
   }
 
   public record InputData(
-      @NotNull Key<UUID> domainId,
-      @NotNull Key<UUID> elementId,
+      @NotNull UUID domainId,
+      @NotNull UUID elementId,
       @NotNull Class<? extends Element> elementType,
       @NotNull String actionId,
-      @NotNull Key<UUID> clientId)
+      @NotNull UUID clientId)
       implements UseCase.InputData {}
 
   public record OutputData(@NotNull ActionResult result) implements UseCase.OutputData {}

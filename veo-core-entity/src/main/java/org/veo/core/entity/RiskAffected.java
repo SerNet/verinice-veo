@@ -89,7 +89,7 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
     return getRisks().stream().filter(risk -> risk.getScenario().equals(scenario)).findFirst();
   }
 
-  default Optional<R> getRisk(Key<UUID> scenarioRef) {
+  default Optional<R> getRisk(UUID scenarioRef) {
     return getRisks().stream()
         .filter(risk -> risk.getScenario().getId().equals(scenarioRef))
         .findFirst();

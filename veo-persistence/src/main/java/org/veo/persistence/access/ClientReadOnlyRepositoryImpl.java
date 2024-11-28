@@ -24,7 +24,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientReadOnlyRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 
@@ -38,7 +37,7 @@ public class ClientReadOnlyRepositoryImpl implements ClientReadOnlyRepository {
   private final ClientDataRepository clientDataRepository;
 
   @Override
-  public Optional<Client> findById(Key<UUID> id) {
-    return clientDataRepository.findById(id.value()).map(Client.class::cast);
+  public Optional<Client> findById(UUID id) {
+    return clientDataRepository.findById(id).map(Client.class::cast);
   }
 }

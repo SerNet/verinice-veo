@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 public interface ElementRepository<T extends Element>
@@ -35,7 +34,7 @@ public interface ElementRepository<T extends Element>
 
   void deleteAll(Set<T> entities);
 
-  Optional<T> findById(Key<UUID> id, Key<UUID> clientId);
+  Optional<T> findById(UUID id, UUID clientId);
 
-  T getById(Key<UUID> id, Key<UUID> clientId);
+  T getById(UUID id, UUID clientId);
 }

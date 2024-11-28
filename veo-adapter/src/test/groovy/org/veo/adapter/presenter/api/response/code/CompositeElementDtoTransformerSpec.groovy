@@ -27,7 +27,6 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 
 import spock.lang.Specification
@@ -48,7 +47,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         subUnit.getClient() >> null
         subUnit.getDomains() >> []
         subUnit.getName() >> subUnitName
-        subUnit.getId() >> Key.uuidFrom(subUnitId)
+        subUnit.getId() >> UUID.fromString(subUnitId)
         subUnit.getUnits() >> []
         subUnit.getModelInterface() >> Unit.class
         subUnit.getDisplayName() >> subUnitName
@@ -58,7 +57,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
-        unit.idAsUUID >> unitId
+        unit.id >> unitId
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
         unit.getDisplayName() >> unitName
@@ -72,12 +71,9 @@ class CompositeElementDtoTransformerSpec extends Specification {
         Unit unit = createUnit()
 
         Asset compositeAsset = Mock()
-
-        //        compositeAsset.setId(Key.newUuid())
-
         compositeAsset.getOwner() >> unit
         compositeAsset.getName() >> "Composite Asset"
-        compositeAsset.idAsUUID >> randomUUID()
+        compositeAsset.id >> randomUUID()
         compositeAsset.getModelInterface() >> Asset.class
         compositeAsset.getDomains() >> []
         compositeAsset.getLinks() >> []
@@ -102,19 +98,19 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element with parts to DTO"() {
         given: "A composite element with two parts"
         Asset asset1 = Mock(Asset) {
-            it.idAsUUID >> randomUUID()
+            it.id >> randomUUID()
             it.displayName >> "Asset 1"
             it.modelInterface >> Asset
         }
 
         Asset asset2 = Mock(Asset) {
-            it.idAsUUID >> randomUUID()
+            it.id >> randomUUID()
             it.displayName >> "Asset 2"
             it.modelInterface >> Asset
         }
 
         Asset compositeAsset = Mock(Asset) {
-            it.idAsUUID >> randomUUID()
+            it.id >> randomUUID()
             it.name >> "Composite Asset"
             it.domains >> []
             it.links >> []
@@ -144,7 +140,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def "Transform composite element that contains itself"() {
         given: "A composite element that contains itself"
         Asset compositeAsset = Mock()
-        compositeAsset.idAsUUID >> randomUUID()
+        compositeAsset.id >> randomUUID()
         compositeAsset.name >> "Composite Asset"
         compositeAsset.domains >> []
         compositeAsset.links >> []

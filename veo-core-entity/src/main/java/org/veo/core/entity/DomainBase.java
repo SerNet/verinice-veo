@@ -50,7 +50,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   Set<CatalogItem> getCatalogItems();
 
-  default Optional<CatalogItem> findCatalogItem(Key<UUID> symbolicId) {
+  default Optional<CatalogItem> findCatalogItem(UUID symbolicId) {
     return getCatalogItems().stream()
         .filter(ci -> ci.getSymbolicId().equals(symbolicId))
         .findFirst();
@@ -102,10 +102,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   }
 
   Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
-
-  default Optional<RiskDefinition> getRiskDefinition(Key<String> riskDefinitionId) {
-    return getRiskDefinition(riskDefinitionId.value());
-  }
 
   Set<Profile> getProfiles();
 
@@ -170,7 +166,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void removeInspection(String inspectionId);
 
-  default void removeProfile(Key<UUID> profileId) {
+  default void removeProfile(UUID profileId) {
     if (!getProfiles().removeIf(p -> p.getId().equals(profileId))) {
       throw new NotFoundException(profileId, Profile.class);
     }

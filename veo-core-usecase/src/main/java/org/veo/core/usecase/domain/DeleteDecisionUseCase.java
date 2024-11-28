@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -53,6 +52,6 @@ public class DeleteDecisionUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId, String decisionKey)
+  public record InputData(UUID authenticatedClientId, UUID domainId, String decisionKey)
       implements UseCase.InputData {}
 }

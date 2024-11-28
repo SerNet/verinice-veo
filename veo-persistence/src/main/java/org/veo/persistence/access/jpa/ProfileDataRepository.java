@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           left join fetch i.appliedCatalogItem
                           where i.symbolicDbId in ?1 and i.owner.domain.owner = ?2
                       """)
-  Iterable<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+  List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Iterable<UUID> ids, Client client);
 
   @Query(
@@ -71,7 +72,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                     left join fetch i.tailoringReferences tr
                     where i.owner.dbId = ?1 and i.owner.domain.owner = ?2
                 """)
-  Iterable<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+  List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       UUID profileId, Client client);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")

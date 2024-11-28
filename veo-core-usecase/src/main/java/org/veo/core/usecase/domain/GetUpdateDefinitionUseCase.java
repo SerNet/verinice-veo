@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.DomainMigrationStep;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -45,7 +44,7 @@ public class GetUpdateDefinitionUseCase
   }
 
   @Valid
-  public record InputData(@NotNull Client authenticatedClient, @NotNull Key<UUID> domainId)
+  public record InputData(@NotNull Client authenticatedClient, @NotNull UUID domainId)
       implements UseCase.InputData {}
 
   public record OutputData(@NotNull List<DomainMigrationStep> migrationSteps)

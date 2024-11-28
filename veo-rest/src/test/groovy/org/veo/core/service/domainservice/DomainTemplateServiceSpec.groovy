@@ -25,7 +25,6 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.usecase.service.DomainStateMapper
@@ -58,7 +57,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.idAsString == DSGVO_TEST_DOMAIN_TEMPLATE_ID
+            domainTemplate.id == DSGVO_TEST_DOMAIN_TEMPLATE_ID
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
@@ -130,7 +129,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, domainTemplateFromDomain.idAsString)
+            domainFromTemplate = domainTemplateService.createDomain(client, domainTemplateFromDomain.id)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
             // initialize lazy association
@@ -202,7 +201,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainVeo612TemplateId = "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
+            def testDomainVeo612TemplateId = UUID.fromString("40df37d5-cd23-528e-bfc2-7b73c0aa2c67")
             createTestDomainTemplate(testDomainVeo612TemplateId)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainVeo612TemplateId)
             client.addToDomains(domainFromTemplate)
@@ -236,7 +235,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainTemplateVeo620 = "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
+            def testDomainTemplateVeo620 = UUID.fromString("99af3dc3-eb17-5267-afc5-14e9f2ebd701")
             createTestDomainTemplate(testDomainTemplateVeo620)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainTemplateVeo620)
             client.addToDomains(domainFromTemplate)
@@ -280,7 +279,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             ]
             profiles = [
                 newProfile(t) {
-                    id = Key.newUuid()
+                    id = UUID.randomUUID()
                     items = [
                         newProfileItem(it) {
                             elementType = 'scenario'

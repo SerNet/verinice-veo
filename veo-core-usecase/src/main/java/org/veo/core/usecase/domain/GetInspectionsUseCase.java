@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -42,8 +41,7 @@ public class GetInspectionsUseCase
     return new OutputData(domain.getInspections(), domain);
   }
 
-  public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId)
-      implements UseCase.InputData {}
+  public record InputData(UUID authenticatedClientId, UUID domainId) implements UseCase.InputData {}
 
   public record OutputData(Map<String, Inspection> inspections, Domain domain)
       implements UseCase.OutputData {}

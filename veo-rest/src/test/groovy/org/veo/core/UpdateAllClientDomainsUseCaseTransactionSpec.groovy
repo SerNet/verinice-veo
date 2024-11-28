@@ -25,14 +25,11 @@ import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Element
-import org.veo.core.entity.Key
 import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.service.ElementMigrationService
 
 @WithUserDetails("user@domain.example")
 class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
@@ -61,8 +58,8 @@ class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)
-            dsgvoDomain = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
-            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_V2_UUID }
+            dsgvoDomain = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
+            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_V2_UUID }
         }
     }
 
@@ -87,7 +84,7 @@ class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
 
         when:
         executeInTransaction {
-            useCase.execute(new InputData(Key.uuidFrom(DSGVO_DOMAINTEMPLATE_V2_UUID)))
+            useCase.execute(new InputData(DSGVO_DOMAINTEMPLATE_V2_UUID))
         }
 
         then:

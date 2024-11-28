@@ -27,7 +27,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
@@ -143,10 +142,10 @@ public class CreateUnitUseCase
   @Valid
   public record InputData(
       NameableInputData nameableInput,
-      Key<UUID> clientId,
-      Optional<Key<UUID>> parentUnitId,
+      UUID clientId,
+      Optional<UUID> parentUnitId,
       Integer maxUnits,
-      Set<Key<UUID>> domainIds)
+      Set<UUID> domainIds)
       implements UseCase.InputData {}
 
   @Valid

@@ -22,7 +22,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.GenericElementRepository;
@@ -72,6 +71,5 @@ public class DeleteUnitUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> unitId, Client authenticatedClient)
-      implements UseCase.InputData {}
+  public record InputData(UUID unitId, Client authenticatedClient) implements UseCase.InputData {}
 }

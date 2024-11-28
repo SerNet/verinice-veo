@@ -74,7 +74,7 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
         decider.updateDecisions(new ControlPartsChangedEvent(control, [] as Set))
 
         then: "the result for the part-dependent decision has been updated"
-        with(controlDataRepository.findById(control.dbId, client.idAsUUID).get()) {
+        with(controlDataRepository.findById(control.dbId, client.id).get()) {
             it.getDecisionResults(domain).get(new DecisionRef("isGroup")).value
         }
 

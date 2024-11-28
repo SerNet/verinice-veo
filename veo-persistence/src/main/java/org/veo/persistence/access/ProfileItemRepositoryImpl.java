@@ -26,7 +26,6 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
@@ -66,10 +65,10 @@ public class ProfileItemRepositoryImpl implements ProfileItemRepository {
 
   @Override
   public Set<TailoringReference<ProfileItem, Profile>> findTailoringReferencesByIds(
-      Set<Key<UUID>> ids, Client client) {
+      Set<UUID> ids, Client client) {
     return profileItemDataRepository
         .findTailoringReferencesByIds(
-            ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
+            ids.stream().map(UUID::toString).collect(Collectors.toSet()), client)
         .stream()
         .map(tr -> (TailoringReference<ProfileItem, Profile>) tr)
         .collect(Collectors.toSet());

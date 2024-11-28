@@ -18,7 +18,6 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
@@ -33,7 +32,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
     def "Create new unit in a client" () {
         Unit newUnit1 = Mock()
-        newUnit1.id >> Key.newUuid()
+        newUnit1.id >> UUID.randomUUID()
         newUnit1.name >> "New unit"
 
         given: "starting values for a unit"
@@ -51,7 +50,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * unitRepository.save(newUnit1) >> newUnit1
         newUnit != null
         newUnit.getName() == "New unit"
-        !newUnit.getId().isUndefined()
     }
 
     def "Create a new subunit in an existing unit" () {
@@ -59,7 +57,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
-        newUnit1.id >> Key.newUuid()
+        newUnit1.id >> UUID.randomUUID()
         newUnit1.name >> "New unit"
         newUnit1.parent >> existingUnit
 
@@ -79,7 +77,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         newUnit != null
         newUnit.getName() == "New unit"
-        !newUnit.getId().isUndefined()
         newUnit.getParent().getId() == existingUnit.getId()
     }
 
@@ -88,7 +85,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
-        newUnit1.id >> Key.newUuid()
+        newUnit1.id >> UUID.randomUUID()
         newUnit1.name >> "New unit"
 
         entityFactory.createUnit(_,_) >> newUnit1
@@ -114,15 +111,15 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
-        newUnit1.id >> Key.newUuid()
+        newUnit1.id >> UUID.randomUUID()
         newUnit1.name >> "New unit"
 
         entityFactory.createUnit(_,_) >> newUnit1
 
-        def randomDomainId = Key.newUuid()
+        def randomDomainId = UUID.randomUUID()
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId.uuidValue()] as Set)
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId] as Set)
 
         when: "the use case to create a unit is executed"
         usecase.execute(input)
@@ -131,7 +128,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
-        1 * domainRepository.getByIds([randomDomainId.uuidValue()] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
+        1 * domainRepository.getByIds([randomDomainId] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
         thrown(ReferenceTargetNotFoundException)
     }
 
@@ -140,11 +137,11 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData("New unit", null, null)
 
         Unit newUnit1 = Mock()
-        newUnit1.id >> Key.newUuid()
+        newUnit1.id >> UUID.randomUUID()
         newUnit1.name >> "New unit"
 
         Domain anotherDomain = Mock()
-        anotherDomain.id >> Key.newUuid()
+        anotherDomain.id >> UUID.randomUUID()
         anotherClient.getDomains() >> [anotherDomain]
         anotherDomain.getOwner() >> anotherClient
         entityFactory.createUnit(_,_) >> newUnit1

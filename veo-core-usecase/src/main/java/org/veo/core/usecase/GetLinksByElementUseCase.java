@@ -45,10 +45,10 @@ public class GetLinksByElementUseCase
   @Override
   public OutputData execute(InputData input) {
     var domain =
-        domainRepository.getById(input.domainRef.toKey(), input.authenticatedClient.getId());
+        domainRepository.getById(input.domainRef.getId(), input.authenticatedClient.getId());
     var element =
         elementRepository.getById(
-            input.elementRef().toKey(), input.elementRef.getType(), input.authenticatedClient);
+            input.elementRef().getId(), input.elementRef.getType(), input.authenticatedClient);
     if (!element.isAssociatedWithDomain(domain)) {
       throw NotFoundException.elementNotAssociatedWithDomain(element, domain.getIdAsString());
     }

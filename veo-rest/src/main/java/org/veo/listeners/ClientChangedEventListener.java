@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
@@ -63,7 +62,7 @@ public class ClientChangedEventListener {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(ClientChangedEvent event) {
     log.info("ClientChangedEventListener ----> {}", event);
-    Key<UUID> clientId = event.getClientId();
+    UUID clientId = event.getClientId();
     if (event.getType() == ClientChangedEvent.ClientChangeType.CREATION) {
       createClient(event);
       return;

@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ControlImplementationQuery;
@@ -47,7 +46,7 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   protected Specification<ControlImplementationData> spec;
 
   public ControlImplementationQueryImpl(
-      ControlImplementationDataRepository repo, Client client, Key<UUID> domainId) {
+      ControlImplementationDataRepository repo, Client client, UUID domainId) {
     this.repo = repo;
     spec = createSpecification(client, domainId);
   }
@@ -65,22 +64,22 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   }
 
   @Override
-  public void whereControlIdIn(Key<UUID> controlId) {
+  public void whereControlIdIn(UUID controlId) {
     spec =
         spec.and(
             (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("control").get("id"), controlId.value()));
+                criteriaBuilder.equal(root.get("control").get("id"), controlId));
   }
 
   @Override
-  public void whereControlhasSubType(String subtype, Key<UUID> domainId) {
+  public void whereControlhasSubType(String subtype, UUID domainId) {
     spec =
         spec.and(
             (root, query, criteriaBuilder) -> {
               var join =
                   root.join("control", JoinType.INNER).join("domainAssociations", JoinType.LEFT);
               return criteriaBuilder.and(
-                  criteriaBuilder.equal(join.get("domain").get("id"), domainId.value()),
+                  criteriaBuilder.equal(join.get("domain").get("id"), domainId),
                   criteriaBuilder.in(join.get("subType")).value(subtype));
             });
   }
@@ -94,7 +93,7 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   }
 
   private Specification<ControlImplementationData> createSpecification(
-      Client client, Key<UUID> domainId) {
+      Client client, UUID domainId) {
     return (root, query, criteriaBuilder) -> {
       query.distinct(true);
 
@@ -112,12 +111,10 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
 
       Predicate riskAffectedPredicate =
           criteriaBuilder.equal(
-              root.get("owner").get("domainAssociations").get("domain").get("id"),
-              domainId.value());
+              root.get("owner").get("domainAssociations").get("domain").get("id"), domainId);
       Predicate domainPredicate =
           criteriaBuilder.equal(
-              root.get("control").get("domainAssociations").get("domain").get("id"),
-              domainId.value());
+              root.get("control").get("domainAssociations").get("domain").get("id"), domainId);
       Predicate clientPredicate =
           criteriaBuilder.equal(root.get("control").get("owner").get("client"), client);
 

@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -37,7 +36,6 @@ import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.RiskTailoringReference;
@@ -68,9 +66,8 @@ public abstract class TemplateItemData<
 
   @NotNull @ToString.Include private UUID symbolicDbId;
 
-  @Override
-  public Key<UUID> getSymbolicId() {
-    return Optional.ofNullable(symbolicDbId).map(Key::from).orElse(null);
+  public UUID getSymbolicId() {
+    return symbolicDbId;
   }
 
   @Override
@@ -79,8 +76,8 @@ public abstract class TemplateItemData<
   }
 
   @Override
-  public void setSymbolicId(Key<UUID> symbolicId) {
-    symbolicDbId = symbolicId.value();
+  public void setSymbolicId(UUID symbolicId) {
+    symbolicDbId = symbolicId;
   }
 
   @NotNull

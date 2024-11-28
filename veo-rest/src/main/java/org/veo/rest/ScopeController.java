@@ -100,7 +100,6 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
@@ -296,7 +295,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.from(uuid), client, embedRisks),
+            new GetElementUseCase.InputData(uuid, client, embedRisks),
             output ->
                 entityToDtoTransformer.transformScope2Dto(output.element(), false, embedRisks));
     return scopeFuture.thenApply(
@@ -325,7 +324,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(Key.from(uuid), client),
+        new GetElementUseCase.InputData(uuid, client),
         output -> {
           Scope scope = output.element();
           return ResponseEntity.ok()
@@ -396,7 +395,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scope.class, Key.uuidFrom(uuid), client),
+        new DeleteElementUseCase.InputData(Scope.class, UUID.fromString(uuid), client),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -460,7 +459,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Parameter(hidden = true) ApplicationUser user, UUID scopeId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetScopeRisksUseCase.InputData(client, Key.from(scopeId));
+    var input = new GetScopeRisksUseCase.InputData(client, scopeId);
 
     return useCaseInteractor.execute(
         getScopeRisksUseCase,
@@ -481,7 +480,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   private CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
       Client client, UUID scopeId, UUID scenarioId) {
-    var input = new GetScopeRiskUseCase.InputData(client, Key.from(scopeId), Key.from(scenarioId));
+    var input = new GetScopeRiskUseCase.InputData(client, scopeId, scenarioId);
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -507,7 +506,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     var input =
         new CreateScopeRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.from(scopeId),
+            scopeId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -540,9 +539,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       ApplicationUser user, UUID scopeId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
-    var input =
-        new DeleteRiskUseCase.InputData(
-            Scope.class, client, Key.from(scopeId), Key.from(scenarioId));
+    var input = new DeleteRiskUseCase.InputData(Scope.class, client, scopeId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -593,7 +590,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     var input =
         new UpdateScopeRiskUseCase.InputData(
             client,
-            Key.from(scopeId),
+            scopeId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),

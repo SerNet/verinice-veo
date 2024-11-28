@@ -21,16 +21,12 @@ import static org.veo.rest.configuration.WebMvcSecurityConfiguration.TESTCLIENT_
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ContentTooLongException
 import org.veo.core.entity.specification.ExceedLimitException
-import org.veo.core.repository.ClientRepository
-import org.veo.core.repository.UserConfigurationRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UserConfigurationRepositoryImpl
 
@@ -149,7 +145,7 @@ class UserConfigurationControllerMvcITSpec extends VeoMvcSpec {
         result.message == "configuration created"
 
         when: "we get the configurations"
-        def configs = configurationRepository.findAllByClient(Key.uuidFrom(TESTCLIENT_UUID))
+        def configs = configurationRepository.findAllByClient(UUID.fromString(TESTCLIENT_UUID))
 
         then: "the data can is present"
         configs.size() == 3
@@ -158,7 +154,7 @@ class UserConfigurationControllerMvcITSpec extends VeoMvcSpec {
         executeInTransaction {
             clientRepository.delete(client)
         }
-        configs = configurationRepository.findAllByClient(Key.uuidFrom(TESTCLIENT_UUID))
+        configs = configurationRepository.findAllByClient(UUID.fromString(TESTCLIENT_UUID))
 
         then: "all configurations are gone"
         configs.empty

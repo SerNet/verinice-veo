@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import jakarta.validation.Valid;
@@ -39,7 +40,6 @@ import org.veo.adapter.presenter.api.dto.SystemMessageDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
@@ -114,7 +114,7 @@ public class AdminController {
       @PathVariable String clientId) {
     return useCaseInteractor.execute(
         deleteClientUseCase,
-        new DeleteClientUseCase.InputData(Key.uuidFrom(clientId)),
+        new DeleteClientUseCase.InputData(UUID.fromString(clientId)),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -138,11 +138,12 @@ public class AdminController {
         "Submit updateAllClientDomainsUseCase task for domainTemplate: {}",
         id.replaceAll("[\r\n]", ""));
     taskExecutor.execute(
-        // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the task as event
+        // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the
+        // task as event
         () -> {
           log.info("Start of updateAllClientDomainsUseCase task");
           updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
+              new UpdateAllClientDomainsUseCase.InputData(UUID.fromString(id)), out -> null);
           log.info("end of updateAllClientDomainsUseCase task");
         });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());

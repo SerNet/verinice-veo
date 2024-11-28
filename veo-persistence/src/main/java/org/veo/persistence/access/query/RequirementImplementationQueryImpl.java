@@ -34,7 +34,6 @@ import org.veo.core.VeoConstants;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
@@ -74,8 +73,8 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   }
 
   @Override
-  public void whereIdsIn(QueryCondition<Key<UUID>> ids) {
-    spec = andIn(spec, "id", ids.map(Key::value));
+  public void whereIdsIn(QueryCondition<UUID> ids) {
+    spec = andIn(spec, "id", ids);
   }
 
   @Override

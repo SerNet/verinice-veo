@@ -250,7 +250,7 @@ public class EntityStateMapper {
                                 newLink.getType().equals(oldLink.getType())
                                     && oldLink
                                         .getTarget()
-                                        .getIdAsUUID()
+                                        .getId()
                                         .equals(newLink.getTarget().getId())))
             .collect(Collectors.toSet());
     removedLinks.forEach(target::removeLink);
@@ -370,8 +370,7 @@ public class EntityStateMapper {
       boolean removeFromOtherDomains) {
     if (removeFromOtherDomains) {
       target.getDomains().stream()
-          .filter(
-              d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getIdAsUUID())))
+          .filter(d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getId())))
           .forEach(target::removeFromDomains);
     }
     domains.forEach(

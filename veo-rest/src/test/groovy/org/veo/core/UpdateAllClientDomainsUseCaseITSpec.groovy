@@ -22,9 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
@@ -48,7 +46,6 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetData
-import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
@@ -105,8 +102,8 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)
-            dsgvoDomain = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
-            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_V2_UUID }
+            dsgvoDomain = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
+            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_V2_UUID }
         }
     }
 
@@ -418,9 +415,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         processRepository.findByDomain(dsgvoDomain).empty
     }
 
-    def runUseCase(String domainTemplateId) {
+    def runUseCase(UUID domainTemplateId) {
         executeInTransaction {
-            useCase.execute(new InputData(Key.uuidFrom(domainTemplateId)))
+            useCase.execute(new InputData(domainTemplateId))
         }
     }
 }

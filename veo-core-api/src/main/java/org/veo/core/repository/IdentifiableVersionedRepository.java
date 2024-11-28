@@ -21,11 +21,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
 
 public interface IdentifiableVersionedRepository<T extends Versioned & Identifiable>
     extends Repository<T> {
 
-  Optional<Long> getVersion(Key<UUID> uuidFrom);
+  Optional<Long> getVersion(UUID id);
 }

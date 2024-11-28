@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
@@ -49,14 +48,13 @@ public final class CreateUnitInputMapper {
 
   public static CreateUnitUseCase.InputData map(
       CreateUnitDto dto, String clientId, Integer maxUnits) {
-    Optional<Key<UUID>> parentId =
-        Optional.ofNullable(dto.getParent()).map(IdRef::getId).map(Key::from);
+    Optional<UUID> parentId = Optional.ofNullable(dto.getParent()).map(IdRef::getId);
 
     return new InputData(
         new NameableInputData(dto.getName(), dto.getAbbreviation(), dto.getDescription()),
-        Key.uuidFrom(clientId),
+        UUID.fromString(clientId),
         parentId,
         maxUnits,
-        dto.getDomains().stream().map(IdRef::getId).map(Key::from).collect(Collectors.toSet()));
+        dto.getDomains().stream().map(IdRef::getId).collect(Collectors.toSet()));
   }
 }

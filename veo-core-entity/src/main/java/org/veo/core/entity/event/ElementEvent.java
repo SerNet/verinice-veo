@@ -20,11 +20,10 @@ package org.veo.core.entity.event;
 import java.util.UUID;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 
 public interface ElementEvent extends DomainEvent {
 
-  Key<UUID> getEntityId();
+  UUID getEntityId();
 
   <T extends Element> Class<T> getEntityType();
 }

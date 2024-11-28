@@ -17,11 +17,10 @@
  ******************************************************************************/
 package org.veo.rest.schemas.controller;
 
-import static org.veo.core.entity.Key.uuidFrom;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
@@ -61,7 +59,7 @@ public class EntitySchemaController implements EntitySchemaResource {
   public Future<ResponseEntity<String>> getSchema(
       Authentication auth,
       @PathVariable String type,
-      @RequestParam(value = "domains") List<String> domainIDs) {
+      @RequestParam(value = "domains") List<UUID> domainIDs) {
     return CompletableFuture.supplyAsync(
         () -> {
           ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
@@ -73,11 +71,11 @@ public class EntitySchemaController implements EntitySchemaResource {
           var clientDomainsById =
               domainRepository
                   .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-                      domainIDs.stream().map(Key::uuidFrom).toList(), uuidFrom(user.getClientId()))
+                      domainIDs.stream().toList(), UUID.fromString(user.getClientId()))
                   .stream()
-                  .collect(Collectors.toMap(Domain::getIdAsString, Function.identity()));
+                  .collect(Collectors.toMap(Domain::getId, Function.identity()));
           Set<Domain> domains = new HashSet<>(domainIDs.size());
-          for (String domainId : domainIDs) {
+          for (UUID domainId : domainIDs) {
             Domain domain = clientDomainsById.get(domainId);
             if (domain == null) {
               throw new NotFoundException(domainId, Domain.class);

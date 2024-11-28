@@ -24,7 +24,6 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ProfileState;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +33,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ClientChangedEvent implements ClientEvent {
 
-  @NotNull private final Key<UUID> clientId;
+  @NotNull private final UUID clientId;
   @NotNull private final ClientChangeType type;
   private final Integer maxUnits;
   private final String name;

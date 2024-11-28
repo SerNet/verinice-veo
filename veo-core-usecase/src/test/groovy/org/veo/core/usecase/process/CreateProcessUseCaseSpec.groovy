@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
@@ -60,7 +59,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     def setup() {
         processState.name >> "John's process"
         processState.modelInterface >> Process
-        processState.owner >> TypedId.from(existingUnit.idAsUUID, Unit)
+        processState.owner >> TypedId.from(existingUnit.id, Unit)
 
         repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         repositoryProvider.getElementRepositoryFor(Process) >> processRepository
@@ -92,8 +91,8 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     def "validates scope client"() {
         given: "a scope for another client"
         def scope = Spy(Scope)
-        scope.id >> Key.newUuid()
-        scope.idAsUUID >> scope.id.value()
+        scope.id >> UUID.randomUUID()
+        scope.id >> scope.id
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 

@@ -27,7 +27,6 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ControlImplementationConfiguration;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -70,7 +69,7 @@ public class SaveControlImplementationConfigurationUseCase
   @Valid
   public record InputData(
       @NotNull Client authenticatedClient,
-      @NotNull Key<UUID> domainId,
+      @NotNull UUID domainId,
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration)
       implements UseCase.InputData {}
 }

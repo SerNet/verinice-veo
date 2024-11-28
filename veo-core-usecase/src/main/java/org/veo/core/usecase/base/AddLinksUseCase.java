@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.repository.DomainRepository;
@@ -59,11 +58,7 @@ public class AddLinksUseCase
   }
 
   private <T extends Element> T execute(
-      Key<UUID> elementId,
-      Class<T> type,
-      Set<CustomLinkState> links,
-      Key<UUID> domainId,
-      Client client) {
+      UUID elementId, Class<T> type, Set<CustomLinkState> links, UUID domainId, Client client) {
     var domain = domainRepository.getById(domainId, client.getId());
     var element = elementRepo.getById(elementId, type, client);
     if (!element.isAssociatedWithDomain(domain)) {
@@ -82,9 +77,9 @@ public class AddLinksUseCase
 
   @Valid
   public record InputData(
-      Key<UUID> elementId,
+      UUID elementId,
       Class<? extends Element> type,
-      Key<UUID> domainId,
+      UUID domainId,
       Set<CustomLinkState> links,
       Client authenticatedClient)
       implements UseCase.InputData {}

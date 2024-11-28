@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
@@ -27,14 +26,13 @@ import org.veo.core.usecase.UseCaseSpec
 class GetDomainUseCaseSpec extends UseCaseSpec {
 
     DomainRepository repository = Mock()
-    Key existingDomainId
+    def existingDomainId
 
     GetDomainUseCase usecase = new GetDomainUseCase(repository)
 
     def setup() {
-        existingDomainId = Key.newUuid()
+        existingDomainId = UUID.randomUUID()
         existingDomain.getId() >> existingDomainId
-        existingDomain.getIdAsUUID() >> existingDomainId.value()
         existingDomain.owner >> existingClient
 
         repository.getById(existingDomainId) >> existingDomain
@@ -70,7 +68,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
 
     def "retrieve an unknown domain"() {
         when:
-        usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
+        usecase.execute(new IdAndClient(UUID.randomUUID(),  existingClient))
 
         then:
         thrown(NotFoundException)

@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.AccessLevel;
@@ -62,7 +61,7 @@ public class RiskChangedEvent implements RiskEvent {
 
   Object source;
 
-  Key<UUID> clientId;
+  UUID clientId;
 
   Set<RiskEvent.ChangedValues> changes = new HashSet<>();
 
@@ -71,7 +70,7 @@ public class RiskChangedEvent implements RiskEvent {
   }
 
   /** The affected domain. May be null, i.e. when deleting a risk which affects all domains. */
-  @Nullable Key<UUID> domainId;
+  @Nullable UUID domainId;
 
   /**
    * The affected risk-definition. May be null, i.e. when deleting a risk which affects all risk
@@ -79,11 +78,11 @@ public class RiskChangedEvent implements RiskEvent {
    */
   @Nullable RiskDefinitionRef riskDefinition;
 
-  public Key<UUID> getRiskAffectedId() {
+  public UUID getRiskAffectedId() {
     return risk.getEntity().getId();
   }
 
-  public Key<UUID> getScenarioId() {
+  public UUID getScenarioId() {
     return risk.getScenario().getId();
   }
 

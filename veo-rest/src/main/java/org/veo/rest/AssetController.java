@@ -101,7 +101,6 @@ import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControl
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -293,7 +292,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     CompletableFuture<FullAssetDto> entityFuture =
         useCaseInteractor.execute(
             getAssetUseCase,
-            new GetAssetUseCase.InputData(Key.from(uuid), client, embedRisks),
+            new GetAssetUseCase.InputData(uuid, client, embedRisks),
             output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -368,7 +367,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Asset.class, Key.from(uuid), client),
+        new DeleteElementUseCase.InputData(Asset.class, uuid, client),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -451,7 +450,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @Parameter(hidden = true) ApplicationUser user, UUID assetId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetAssetRisksUseCase.InputData(client, Key.from(assetId));
+    var input = new GetAssetRisksUseCase.InputData(client, assetId);
 
     return useCaseInteractor.execute(
         getAssetRisksUseCase,
@@ -472,7 +471,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   private CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
       Client client, UUID assetId, UUID scenarioId) {
-    var input = new GetAssetRiskUseCase.InputData(client, Key.from(assetId), Key.from(scenarioId));
+    var input = new GetAssetRiskUseCase.InputData(client, assetId, scenarioId);
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -498,7 +497,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     var input =
         new CreateAssetRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.from(assetId),
+            assetId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -531,9 +530,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       ApplicationUser user, UUID assetId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
-    var input =
-        new DeleteRiskUseCase.InputData(
-            Asset.class, client, Key.from(assetId), Key.from(scenarioId));
+    var input = new DeleteRiskUseCase.InputData(Asset.class, client, assetId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -546,7 +543,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     var input =
         new UpdateAssetRiskUseCase.InputData(
             client,
-            Key.from(assetId),
+            assetId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),

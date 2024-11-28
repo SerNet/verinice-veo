@@ -77,7 +77,7 @@ public class RestApiResponse {
                 refAssembler.elementInDomainRefOf(
                     element,
                     element.getDomains().stream()
-                        .filter(d -> d.getIdAsUUID().equals(domainId))
+                        .filter(d -> d.getId().equals(domainId))
                         .findFirst()
                         .orElseThrow())))
         .body(CreateOutputMapper.map(element));

@@ -24,7 +24,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.IncarnationConfiguration;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -53,7 +52,7 @@ public class SaveIncarnationConfigurationUseCase
   @Valid
   public record InputData(
       @NotNull Client authenticatedClient,
-      @NotNull Key<UUID> domainId,
+      @NotNull UUID domainId,
       @NotNull IncarnationConfiguration incarnationConfiguration)
       implements UseCase.InputData {}
 }

@@ -20,7 +20,6 @@ package org.veo.core.entity.exception;
 import java.util.UUID;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 
 /**
  * Thrown when an input entity contains a reference to an entity that could not be found.
@@ -33,7 +32,7 @@ public class ReferenceTargetNotFoundException extends RuntimeException {
     super(message);
   }
 
-  public ReferenceTargetNotFoundException(Key<UUID> id, Class<? extends Identifiable> targetType) {
+  public ReferenceTargetNotFoundException(UUID id, Class<? extends Identifiable> targetType) {
     super("%s with ID %s not found".formatted(targetType.getName(), id));
   }
 }

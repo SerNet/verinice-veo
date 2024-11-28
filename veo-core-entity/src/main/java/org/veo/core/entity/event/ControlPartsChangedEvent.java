@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 
 import lombok.Value;
 
@@ -32,7 +31,7 @@ import lombok.Value;
 public class ControlPartsChangedEvent implements ElementEvent {
 
   Control entity;
-  Key<UUID> clientId;
+  UUID clientId;
 
   Set<Control> oldRecursiveParts;
 
@@ -43,7 +42,7 @@ public class ControlPartsChangedEvent implements ElementEvent {
   }
 
   @Override
-  public Key<UUID> getEntityId() {
+  public UUID getEntityId() {
     return entity.getId();
   }
 

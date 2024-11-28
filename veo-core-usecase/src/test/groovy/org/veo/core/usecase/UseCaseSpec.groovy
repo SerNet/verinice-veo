@@ -20,7 +20,6 @@ package org.veo.core.usecase
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationConfiguration
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
@@ -56,7 +55,7 @@ abstract class UseCaseSpec extends Specification {
         existingDomain.modelInterface >> Domain.class
         existingDomain.incarnationConfiguration >> new IncarnationConfiguration()
 
-        def id1 = Key.newUuid()
+        def id1 = UUID.randomUUID()
         Client client = Mock()
         client.getId() >> id1
         client.getDomains() >> [existingDomain]
@@ -64,12 +63,12 @@ abstract class UseCaseSpec extends Specification {
         client.getName()>> "Existing client"
         existingClient = client
 
-        def id2 = Key.newUuid()
+        def id2 = UUID.randomUUID()
         anotherClient = Mock()
         anotherClient.getId() >> id2
         anotherClient.getName()>> "Another client"
 
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
 
         existingUnit = Mock()
         existingUnit.getClient() >> client
@@ -77,8 +76,8 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
         existingUnit.getId() >> id
-        existingUnit.getIdAsString() >> id.uuidValue()
-        existingUnit.idAsUUID >> id.value()
+        existingUnit.getIdAsString() >> id.toString()
+        existingUnit.id >> id
         existingUnit.getModelInterface() >> Unit
         existingUnit.getVersion() >> 0
 

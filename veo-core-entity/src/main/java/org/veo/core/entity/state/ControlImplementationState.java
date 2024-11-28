@@ -36,6 +36,6 @@ public interface ControlImplementationState {
   String getDescription();
 
   default boolean references(Control ctl) {
-    return ctl.getIdAsUUID().equals(getControl().getId());
+    return ctl.getId().equals(getControl().getId());
   }
 }

@@ -17,13 +17,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.persistence.MappedSuperclass;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,28 +38,26 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public abstract class IdentifiableVersionedData extends VersionedData implements Identifiable {
 
+  /**
+   * @deprecated use {@link #getId()}
+   */
+  @Deprecated
   public abstract UUID getDbId();
 
+  /**
+   * @deprecated use {@link #setId(UUID)}
+   */
+  @Deprecated
   public abstract void setDbId(UUID id);
 
   @Override
-  public Key<UUID> getId() {
-    return Optional.ofNullable(getDbId()).map(Key::from).orElse(null);
-  }
-
-  @Override
-  public String getIdAsString() {
-    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
-  }
-
-  @Override
-  public UUID getIdAsUUID() {
+  public UUID getId() {
     return getDbId();
   }
 
   @Override
-  public void setId(Key<UUID> id) {
-    setDbId(Optional.ofNullable(id).map(Key::value).orElse(null));
+  public void setId(UUID id) {
+    setDbId(id);
   }
 
   @Override

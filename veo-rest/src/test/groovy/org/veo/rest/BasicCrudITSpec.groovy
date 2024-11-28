@@ -23,7 +23,6 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 
@@ -103,7 +102,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
         when:
         def processId = result.resourceId
         def process = txTemplate.execute{
-            processRepository.findById(Key.uuidFrom(processId)).tap {
+            processRepository.findById(UUID.fromString(processId)).tap {
                 // initialize hibernate proxies
                 it.ifPresent{ it.links.first().target.id }
             }

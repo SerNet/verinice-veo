@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.IEntityRef;
 import org.veo.core.entity.ref.TypedId;
 
@@ -45,8 +44,8 @@ public class NotFoundException extends DomainException {
     super("%s not found".formatted(ref));
   }
 
-  public NotFoundException(Key<UUID> id, Class<? extends Identifiable> type) {
-    this(TypedId.from(id.value(), type));
+  public NotFoundException(UUID id, Class<? extends Identifiable> type) {
+    this(TypedId.from(id, type));
   }
 
   public NotFoundException(String messageTemplate, Object... arguments) {

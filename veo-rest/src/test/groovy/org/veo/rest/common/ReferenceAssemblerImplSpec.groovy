@@ -31,7 +31,6 @@ import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Profile
@@ -79,7 +78,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "target reference for #type and #id is #reference"() {
         given:
         def entity = Stub(type) {
-            getIdAsUUID () >> UUID.fromString(id)
+            getId () >> UUID.fromString(id)
             getModelInterface() >> type
         }
 
@@ -102,11 +101,11 @@ class ReferenceAssemblerImplSpec extends Specification {
         def elementId = randomUUID()
         def domainId = randomUUID()
         def element = Stub(clazz) {
-            idAsUUID >> elementId
+            id >> elementId
             modelInterface >> clazz
         }
         def domain = Stub(Domain) {
-            idAsUUID >> domainId
+            id >> domainId
         }
 
         expect:
@@ -121,7 +120,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         def domainId = UUID.fromString('371c5f43-cd7c-4e4f-b45b-59a7337bf489')
         def itemId = 'ccf66944-e782-4221-8e2a-65209d2826f1'
         Domain domain = Stub {
-            idAsUUID >> domainId
+            id >> domainId
         }
         CatalogItem catalogItem = Stub {
             symbolicIdAsString >> itemId
@@ -185,10 +184,10 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def controlImplementation = Spy(ControlImplementation) {
             owner >> Spy(type as Class<RiskAffected>) {
-                idAsUUID >> UUID.fromString("aff15bfa-7259-4044-a396-59db2e16b0e0")
+                id >> UUID.fromString("aff15bfa-7259-4044-a396-59db2e16b0e0")
             }
             control >> Spy(Control) {
-                idAsUUID >>  UUID.fromString("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
+                id >>  UUID.fromString("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
             }
         }
 
@@ -208,10 +207,9 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create a key for a reference to a #type with id #id "() {
         given:
         def uuid = UUID.fromString(id)
-        def key = Key.from(uuid)
 
         expect:
-        referenceAssembler.toKey(TypedId.from(uuid, type)) == key
+        referenceAssembler.toKey(TypedId.from(uuid, type)) == uuid
 
         where:
         type     | id
@@ -234,8 +232,8 @@ class ReferenceAssemblerImplSpec extends Specification {
             TypedId.from(uuid2, type),
         ] as Set
         )
-        refs.contains(Key.from(uuid1))
-        refs.contains(Key.from(uuid2))
+        refs.contains(uuid1)
+        refs.contains(uuid2)
 
         where:
         type     | id1                                    | id2
@@ -256,12 +254,12 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def entity = Stub(type) {
             modelInterface >> type
-            id >> Key.newUuid()
-            idAsUUID >> it.id.value()
+            id >> UUID.randomUUID()
+            id >> it.id
             if (it instanceof Profile) {
                 owner >> Stub(DomainBase) {
-                    id >> Key.newUuid()
-                    idAsUUID >> it.id.value()
+                    id >> UUID.randomUUID()
+                    id >> it.id
                 }
             }
         }
@@ -282,25 +280,22 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def entity = Spy(type) {
             modelInterface >> type
-            symbolicId >> Key.newUuid()
-            symbolicIdAsString >> it.symbolicId.uuidValue()
+            symbolicId >> UUID.randomUUID()
+            symbolicIdAsString >> it.symbolicId.toString()
             if (it instanceof CatalogItem) {
                 domainBase >> Stub(Domain) {
                     modelInterface >> Domain
-                    id >> Key.newUuid()
-                    idAsUUID >> it.id.value()
+                    id >> UUID.randomUUID()
                 }
             }
             if (it instanceof ProfileItem) {
                 owner >> Stub(Profile) {
                     modelInterface >> Profile
-                    id >> Key.newUuid()
-                    idAsUUID >> it.id.value()
+                    id >> UUID.randomUUID()
                 }
                 domainBase >> Stub(Domain) {
                     modelInterface >> Domain
-                    id >> Key.newUuid()
-                    idAsUUID >> it.id.value()
+                    id >> UUID.randomUUID()
                 }
             }
         }

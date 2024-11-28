@@ -46,8 +46,7 @@ public class DefaultDomainCreator {
                   templateId,
                   templateName,
                   client.getIdAsString());
-              client.addToDomains(
-                  domainService.createDomain(client, templateId.uuidValue(), copyProfiles));
+              client.addToDomains(domainService.createDomain(client, templateId, copyProfiles));
             },
             () -> {
               log.warn("Default domain template {} not found.", templateName);

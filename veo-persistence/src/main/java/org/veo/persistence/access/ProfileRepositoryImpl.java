@@ -21,13 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.repository.ProfileRepository;
@@ -49,31 +47,24 @@ public class ProfileRepositoryImpl
   }
 
   @Override
-  public Optional<Profile> findProfileByIdFetchTailoringReferences(
-      Key<UUID> profileId, Key<UUID> clientId) {
+  public Optional<Profile> findProfileByIdFetchTailoringReferences(UUID profileId, UUID clientId) {
     return profileDataRepository
-        .findProfileByIdFetchTailoringReferences(profileId.value(), clientId.value())
+        .findProfileByIdFetchTailoringReferences(profileId, clientId)
         .map(Profile.class::cast);
   }
 
   @Override
   public List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
-      Set<Key<UUID>> profileItemIds, Client client) {
-    var ids = profileItemIds.stream().map(Key::value).toList();
-    return StreamSupport.stream(
-            profileDataRepository
-                .findItemsByIdsFetchDomainAndTailoringReferences(ids, client)
-                .spliterator(),
-            false)
-        .map(ProfileItem.class::cast)
-        .toList();
+      Set<UUID> profileItemIds, Client client) {
+    return profileDataRepository.findItemsByIdsFetchDomainAndTailoringReferences(
+        profileItemIds, client);
   }
 
   @Override
   public Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
-      Key<UUID> profileId, Key<UUID> itemId, Key<UUID> clientId) {
+      UUID profileId, UUID itemId, UUID clientId) {
     return profileDataRepository.findProfileItemByIdFetchTailoringReferences(
-        profileId.value(), itemId.value(), clientId.value());
+        profileId, itemId, clientId);
   }
 
   @Override
@@ -83,23 +74,18 @@ public class ProfileRepositoryImpl
 
   @Override
   public List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
-      Key<UUID> profileId, Client client) {
-    return StreamSupport.stream(
-            profileDataRepository
-                .findItemsByProfileIdFetchDomainAndTailoringReferences(profileId.value(), client)
-                .spliterator(),
-            false)
-        .map(ProfileItem.class::cast)
-        .toList();
+      UUID profileId, Client client) {
+    return profileDataRepository.findItemsByProfileIdFetchDomainAndTailoringReferences(
+        profileId, client);
   }
 
   @Override
-  public Set<Profile> findAllByDomainId(Key<UUID> clientId, Key<UUID> domainId) {
-    return profileDataRepository.findAllByDomainId(clientId.value(), domainId.value());
+  public Set<Profile> findAllByDomainId(UUID clientId, UUID domainId) {
+    return profileDataRepository.findAllByDomainId(clientId, domainId);
   }
 
   @Override
-  public Optional<Profile> findById(Key<UUID> clientId, Key<UUID> profileId) {
-    return profileDataRepository.findById(clientId.value(), profileId.value());
+  public Optional<Profile> findById(UUID clientId, UUID profileId) {
+    return profileDataRepository.findById(clientId, profileId);
   }
 }

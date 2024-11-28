@@ -189,7 +189,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
             domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID).tap{
                 client = clientRepository.save(client)
             }
-            client.domains.find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
+            client.domains.find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
         }
         executeInTransaction {
             def unit = unitRepository.save(newUnit(client))

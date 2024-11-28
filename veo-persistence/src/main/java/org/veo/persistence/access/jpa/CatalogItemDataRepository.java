@@ -34,13 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.DomainData;
 
-public interface CatalogItemDataRepository extends CrudRepository<CatalogItemData, Key<UUID>> {
+public interface CatalogItemDataRepository extends CrudRepository<CatalogItemData, UUID> {
 
   @Query("select e from #{#entityName} e where e.symbolicDbId = ?1 and e.domain = ?2")
   Optional<CatalogItem> findByIdInDomain(UUID id, DomainData domain);
@@ -106,12 +105,12 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
         where ci.symbolicDbId in ?1 and ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3
   """)
   Set<CatalogItem> findAllByIdsAndDomain(
-      Collection<UUID> symbolicIds, UUID domainId, UUID clientId);
+      Collection<UUID> symbolicDbIds, UUID domainId, UUID clientId);
 
   @Query(
       """
     select ci from catalogitem ci
         where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2
   """)
-  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<UUID> symbolicIds, UUID domainTemplateId);
+  Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<UUID> symbolicDbIds, UUID domainTemplateId);
 }

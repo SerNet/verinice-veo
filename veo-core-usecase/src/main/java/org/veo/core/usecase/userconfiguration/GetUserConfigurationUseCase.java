@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -45,7 +44,7 @@ public class GetUserConfigurationUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> clientId, String userName, String applicationId)
+  public record InputData(UUID clientId, String userName, String applicationId)
       implements UseCase.InputData {}
 
   @Valid

@@ -20,7 +20,6 @@ package org.veo.core.usecase.catalogitem
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
@@ -58,15 +57,15 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         emptyQuery.execute(_) >> emptyQueryResult
         emptyQueryResult.getResultPage() >> []
 
-        def existingDomainId = Key.newUuid()
+        def existingDomainId = UUID.randomUUID()
         existingDomain.id >> existingDomainId
-        existingDomain.idAsUUID >> existingDomainId.value()
+        existingDomain.id >> existingDomainId
         existingDomain.owner >> existingClient
         existingDomain.modelInterface >> Domain.class
         domainRepository.getById(existingDomainId) >> existingDomain
         domainRepository.getActiveById(existingDomainId, existingClient.id) >> existingDomain
 
-        item1.symbolicId >> Key.newUuid()
+        item1.symbolicId >> UUID.randomUUID()
         item1.domainBase >> existingDomain
         item1.requireDomainMembership() >> existingDomain
     }

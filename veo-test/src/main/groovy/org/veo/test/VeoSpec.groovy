@@ -36,7 +36,6 @@ import org.veo.core.entity.Entity
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
-import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -122,7 +121,7 @@ abstract class VeoSpec extends Specification {
 
     static ClientData newClient(@DelegatesTo(value = Client.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
-        return factory.createClient(Key.newUuid(), null).tap {
+        return factory.createClient(UUID.randomUUID(), null).tap {
             it.updateState(ClientEvent.ClientChangeType.ACTIVATION)
             VeoSpec.execute(it, init)
             if (it.name == null) {
@@ -207,7 +206,7 @@ abstract class VeoSpec extends Specification {
 
     static DomainTemplateData newDomainTemplate(@DelegatesTo(value = DomainTemplate.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DomainTemplate") Closure init = null) {
-        return factory.createDomainTemplate(null, "me", "1.0.0", Key.newUuid()).tap {
+        return factory.createDomainTemplate(null, "me", "1.0.0", UUID.randomUUID()).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)
@@ -440,7 +439,7 @@ abstract class VeoSpec extends Specification {
 
     static RiskValues newRiskValues(RiskDefinitionRef riskDefinitionRef, Domain domain, @DelegatesTo(value = RiskValues.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.risk.RiskValues") Closure init = null) {
-        return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap {
+        return new RiskValues(new ProbabilityImpl(), [], [], riskDefinitionRef.idRef, domain.id).tap {
             VeoSpec.execute(it, init)
         }
     }

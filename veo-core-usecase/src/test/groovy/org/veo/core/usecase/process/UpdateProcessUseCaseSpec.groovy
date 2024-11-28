@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.state.ProcessState
@@ -39,17 +38,17 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
     UpdateProcessUseCase usecase = new UpdateProcessUseCase(repositoryProvider, eventPublisher, decider, entityStateMapper, refResolverFactory)
     def "update a process"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         ProcessState process = Mock()
         process.domainAssociationStates >> []
         process.controlImplementationStates >> []
-        process.getId() >> id.uuidValue()
+        process.getId() >> id
         process.getName()>> "Updated process"
         process.parts >> []
 
         def existingProcess = Mock(Process) {
             it.id >> id
-            it.idAsString >> id.uuidValue()
+            it.idAsString >> id.toString()
             it.name >> "Old process"
             it.owner >> existingUnit
             it.domains >> []
@@ -67,8 +66,8 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def eTag = ETag.from(id.uuidValue(), 0)
-        def output = usecase.execute(new InputData(id.value(), process, existingClient, eTag, "max"))
+        def eTag = ETag.from(id.toString(), 0)
+        def output = usecase.execute(new InputData(id, process, existingClient, eTag, "max"))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository

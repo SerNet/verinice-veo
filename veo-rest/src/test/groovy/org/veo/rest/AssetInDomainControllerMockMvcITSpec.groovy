@@ -24,7 +24,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
@@ -283,8 +282,8 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "retrieve control implementations for an asset"() {
         given:
-        def unit = unitRepository.getByIdFetchClient(Key.uuidFrom(unitId))
-        def testDomain = domainRepository.getById(Key.uuidFrom(testDomainId))
+        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId))
+        def testDomain = domainRepository.getById(UUID.fromString(testDomainId))
         def targetAsset = txTemplate.execute {
             def person1 = personRepository.save(newPerson(unit) {
                 name = "Jane Doe"
@@ -367,7 +366,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "retrieving control implementations for an asset without the domain associated returns 404"() {
         given:
-        def unit = unitRepository.getByIdFetchClient(Key.uuidFrom(unitId))
+        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId))
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit))
         }

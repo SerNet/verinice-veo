@@ -24,7 +24,6 @@ import java.util.UUID;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 /**
@@ -48,7 +47,7 @@ public interface ElementQuery<T extends Element> extends Query<T, String> {
    *     to be unique across different types of elements.
    * @return this
    */
-  void whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
+  void whereChildElementIn(QueryCondition<UUID> elementIds);
 
   /**
    * Only include elements with / without at least one child element (member or part).
@@ -96,7 +95,7 @@ public interface ElementQuery<T extends Element> extends Query<T, String> {
 
   void whereDomainsContain(Domain domain);
 
-  void whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
+  void whereScopesContain(SingleValueQueryCondition<UUID> scopeId);
 
   void fetchControlImplementations();
 

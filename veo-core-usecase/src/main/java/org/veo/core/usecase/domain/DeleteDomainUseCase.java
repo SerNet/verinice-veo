@@ -62,7 +62,7 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
                         .anyMatch(k -> k.equals(input.id())));
 
     if (isUsed) {
-      throw new DomainInUseException("Domain in use: " + input.id().uuidValue());
+      throw new DomainInUseException("Domain in use: " + input.id());
     }
 
     log.info("deleting unused domain {}", domain);

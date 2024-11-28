@@ -27,7 +27,6 @@ import static org.veo.rest.ControllerConstants.ANY_LONG;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
-import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
 import static org.veo.rest.ControllerConstants.ANY_USER;
 import static org.veo.rest.ControllerConstants.ANY_UUID;
 import static org.veo.rest.ControllerConstants.ANY_UUID_LIST;
@@ -64,7 +63,6 @@ import org.veo.core.entity.Entity;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -120,8 +118,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
     value = "NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS",
     justification = "The controller method invocations are just dummies")
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
-  private static final UUID DUMMY_UUID = Key.NIL_UUID.value();
-  private static final String DUMMY_UUID_STRING = DUMMY_UUID.toString();
+  private static final String DUMMY_UUID_STRING = "00000000-0000-0000-0000-000000000000";
+  private static final UUID DUMMY_UUID = UUID.fromString(DUMMY_UUID_STRING);
 
   private static final UriComponents GET_ASSET =
       createTemplate(
@@ -316,7 +314,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public String targetReferenceOf(Identifiable identifiable) {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
-    UUID id = identifiable.getIdAsUUID();
+    UUID id = identifiable.getId();
     if (Scope.class.isAssignableFrom(type)) {
       return buildUri(GET_SCOPE, id);
     }
@@ -354,7 +352,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       Profile profile = (Profile) identifiable;
       // TODO #2497 introduce endpoint for profiles in domain
       // templates
-      return buildUri(GET_PROFILE, profile.getOwner().getIdAsUUID(), id);
+      return buildUri(GET_PROFILE, profile.getOwner().getId(), id);
     }
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type) || TemplateItemReference.class.isAssignableFrom(type)) {
@@ -368,28 +366,28 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String elementInDomainRefOf(Element element, Domain domain) {
     var type = element.getModelInterface();
     if (Asset.class.isAssignableFrom(type)) {
-      return buildUri(GET_ASSET_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_ASSET_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Control.class.isAssignableFrom(type)) {
-      return buildUri(GET_CONTROL_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_CONTROL_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Document.class.isAssignableFrom(type)) {
-      return buildUri(GET_DOCUMENT_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_DOCUMENT_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Incident.class.isAssignableFrom(type)) {
-      return buildUri(GET_INCIDENT_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_INCIDENT_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Person.class.isAssignableFrom(type)) {
-      return buildUri(GET_PERSON_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_PERSON_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Process.class.isAssignableFrom(type)) {
-      return buildUri(GET_PROCESS_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_PROCESS_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Scenario.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCENARIO_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_SCENARIO_IN_DOMAIN, domain.getId(), element.getId());
     }
     if (Scope.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCOPE_IN_DOMAIN, domain.getIdAsUUID(), element.getIdAsUUID());
+      return buildUri(GET_SCOPE_IN_DOMAIN, domain.getId(), element.getId());
     }
     throw new NotImplementedException(
         "%s references in domain context not supported".formatted(type.getSimpleName()));
@@ -397,8 +395,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String targetReferenceOf(RequirementImplementation requirementImplementation) {
-    UUID originId = requirementImplementation.getOrigin().getIdAsUUID();
-    UUID controlId = requirementImplementation.getControl().getIdAsUUID();
+    UUID originId = requirementImplementation.getOrigin().getId();
+    UUID controlId = requirementImplementation.getControl().getId();
     return switch (requirementImplementation.getOrigin().getModelType()) {
       case Asset.SINGULAR_TERM -> buildUri(GET_ASSET_RI, originId, controlId);
       case Process.SINGULAR_TERM -> buildUri(GET_PROCESS_RI, originId, controlId);
@@ -409,8 +407,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String requirementImplementationsOf(ControlImplementation controlImplementation) {
-    UUID ownerId = controlImplementation.getOwner().getIdAsUUID();
-    UUID controlId = controlImplementation.getControl().getIdAsUUID();
+    UUID ownerId = controlImplementation.getOwner().getId();
+    UUID controlId = controlImplementation.getControl().getId();
     return switch (controlImplementation.getOwner().getModelType()) {
       case Asset.SINGULAR_TERM -> buildUri(GET_ASSET_RIS, ownerId, controlId);
       case Process.SINGULAR_TERM -> buildUri(GET_PROCESS_RIS, ownerId, controlId);
@@ -421,7 +419,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String inspectionReferenceOf(String id, Domain domain) {
-    return buildUri(GET_INSPECTION, domain.getIdAsUUID(), id);
+    return buildUri(GET_INSPECTION, domain.getId(), id);
   }
 
   @Override
@@ -431,7 +429,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
       return buildUri(
           GET_CATALOG_ITEM,
-          catalogItem.getDomainBase().getIdAsUUID(),
+          catalogItem.getDomainBase().getId(),
           catalogItem.getSymbolicIdAsString());
     }
     if (entity instanceof ProfileItem profileItem) {
@@ -439,8 +437,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       // templates
       return buildUri(
           GET_PROFILE_ITEM,
-          profileItem.getDomainBase().getIdAsUUID(),
-          profileItem.getOwner().getIdAsUUID(),
+          profileItem.getDomainBase().getId(),
+          profileItem.getOwner().getId(),
           profileItem.getSymbolicIdAsString());
     }
     throw new NotImplementedException();
@@ -854,13 +852,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   }
 
   @Override
-  public Key<UUID> toKey(ITypedId<? extends Identifiable> reference) {
+  public UUID toKey(ITypedId<? extends Identifiable> reference) {
     if (reference == null) return null;
-    return Key.from(reference.getId());
+    return reference.getId();
   }
 
   @Override
-  public Set<Key<UUID>> toKeys(Set<? extends ITypedId<?>> references) {
+  public Set<UUID> toKeys(Set<? extends ITypedId<?>> references) {
     return references.stream().map(this::toKey).collect(Collectors.toSet());
   }
 
@@ -868,7 +866,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String schemaReferenceOf(String typeSingularTerm) {
     return linkTo(
             methodOn(EntitySchemaController.class)
-                .getSchema(ANY_AUTH, typeSingularTerm, ANY_STRING_LIST))
+                .getSchema(ANY_AUTH, typeSingularTerm, ANY_UUID_LIST))
         .withSelfRel()
         .getHref();
   }

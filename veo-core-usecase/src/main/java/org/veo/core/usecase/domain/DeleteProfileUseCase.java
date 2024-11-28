@@ -20,7 +20,6 @@ package org.veo.core.usecase.domain;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -44,6 +43,6 @@ public class DeleteProfileUseCase
     return false;
   }
 
-  public record InputData(Key<UUID> domainId, Key<UUID> profileId, Client client)
+  public record InputData(UUID domainId, UUID profileId, Client client)
       implements UseCase.InputData {}
 }

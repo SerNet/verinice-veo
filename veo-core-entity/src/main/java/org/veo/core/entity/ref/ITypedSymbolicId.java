@@ -22,23 +22,12 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.SymIdentifiable;
 
 public interface ITypedSymbolicId<
         T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     extends IEntityRef<T> {
   UUID getSymbolicId();
-
-  @JsonIgnore
-  default Key<UUID> getSymbolicKey() {
-    return Key.from(getSymbolicId());
-  }
-
-  @JsonIgnore
-  default Key<UUID> getOwnerKey() {
-    return Key.from(getNamespaceId());
-  }
 
   UUID getNamespaceId();
 

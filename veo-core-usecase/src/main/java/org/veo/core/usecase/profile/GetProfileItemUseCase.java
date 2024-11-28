@@ -45,8 +45,8 @@ public class GetProfileItemUseCase extends AbstractProfileUseCase
     return new OutputData(
         profileRepo
             .findProfileItemByIdFetchTailoringReferences(
-                input.profileItem.getOwnerKey(),
-                input.profileItem.getSymbolicKey(),
+                input.profileItem.getNamespaceId(),
+                input.profileItem.getSymbolicId(),
                 input.authenticatedClient.getId())
             .orElseThrow(() -> new NotFoundException(input.profileItem)));
   }

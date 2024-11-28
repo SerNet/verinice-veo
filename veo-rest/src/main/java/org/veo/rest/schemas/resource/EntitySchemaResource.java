@@ -18,6 +18,7 @@
 package org.veo.rest.schemas.resource;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import org.springframework.http.MediaType;
@@ -108,5 +109,5 @@ public interface EntitySchemaResource {
                           "List of domain identifiers - must not contain any reserved characters "
                               + "defined in RFC 3986."))
           @RequestParam(value = "domains")
-          List<String> domainIDs);
+          List<UUID> domainIDs);
 }

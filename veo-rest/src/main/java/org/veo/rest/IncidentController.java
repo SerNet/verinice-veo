@@ -93,7 +93,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -299,7 +298,7 @@ public class IncidentController
     Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Incident.class, Key.uuidFrom(uuid), client),
+        new DeleteElementUseCase.InputData(Incident.class, UUID.fromString(uuid), client),
         output -> ResponseEntity.noContent().build());
   }
 

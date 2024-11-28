@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -38,15 +37,15 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
   List<Unit> findByParent(Unit parent);
 
-  Optional<Unit> findByIdFetchClient(Key<UUID> id);
+  Optional<Unit> findByIdFetchClient(UUID id);
 
-  default Unit getById(Key<UUID> unitId) {
+  default Unit getById(UUID unitId) {
     return findById(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
   }
 
-  default Unit getByIdFetchClient(Key<UUID> unitId) {
+  default Unit getByIdFetchClient(UUID unitId) {
     return findByIdFetchClient(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
   }
 
-  List<Unit> findByDomain(Key<UUID> domainId);
+  List<Unit> findByDomain(UUID domainId);
 }

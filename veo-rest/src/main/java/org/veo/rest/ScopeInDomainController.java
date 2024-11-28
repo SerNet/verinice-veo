@@ -95,7 +95,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
@@ -507,7 +506,7 @@ public class ScopeInDomainController
         new GetControlImplementationsUseCase.InputData(
             clientLookup.getClient(auth),
             null,
-            Key.from(domainId),
+            domainId,
             TypedId.from(uuid, Scope.class),
             controlFilter,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));

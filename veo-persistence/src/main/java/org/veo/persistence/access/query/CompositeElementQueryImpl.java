@@ -25,7 +25,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.CompositeElementQuery;
 import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.persistence.access.jpa.AssetDataRepository;
@@ -67,12 +66,11 @@ class CompositeElementQueryImpl<
         client);
   }
 
-  public void whereCompositesContain(SingleValueQueryCondition<Key<UUID>> condition) {
+  public void whereCompositesContain(SingleValueQueryCondition<UUID> condition) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("composites", JoinType.INNER).get("dbId"),
-                    condition.getValue().value()));
+                    root.join("composites", JoinType.INNER).get("dbId"), condition.getValue()));
   }
 }

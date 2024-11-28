@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -206,7 +205,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the entity is retrieved"
-        def updatedDocument = documentRepository.getById(Key.uuidFrom(documentId), client.id)
+        def updatedDocument = documentRepository.getById(UUID.fromString(documentId), client.id)
 
         then: "the correct changeNumber was written to the entity"
         updatedDocument.changeNumber == 1
@@ -224,7 +223,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the document is retrieved"
-        documentRepository.getById(Key.uuidFrom(documentId), client.id)
+        documentRepository.getById(UUID.fromString(documentId), client.id)
 
         then: "the document is gone"
         thrown(NotFoundException)

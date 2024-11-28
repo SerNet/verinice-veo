@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ProfileRepository;
 
@@ -33,8 +32,8 @@ public abstract class AbstractProfileUseCase {
 
   void checkClientOwnsDomain(Client client, UUID id) {
     client.getDomains().stream()
-        .filter(d -> d.getIdAsUUID().equals(id))
+        .filter(d -> d.getId().equals(id))
         .findAny()
-        .orElseThrow(() -> new NotFoundException(Key.from(id), Domain.class));
+        .orElseThrow(() -> new NotFoundException(id, Domain.class));
   }
 }

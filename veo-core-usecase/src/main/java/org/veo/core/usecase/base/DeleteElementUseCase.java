@@ -24,7 +24,6 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -89,7 +88,6 @@ public class DeleteElementUseCase
     return false;
   }
 
-  public record InputData(
-      Class<? extends Element> entityClass, Key<UUID> id, Client authenticatedClient)
+  public record InputData(Class<? extends Element> entityClass, UUID id, Client authenticatedClient)
       implements UseCase.InputData {}
 }

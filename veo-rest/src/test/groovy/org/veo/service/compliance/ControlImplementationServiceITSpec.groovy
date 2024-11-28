@@ -31,7 +31,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ReqImplRef
 import org.veo.core.entity.event.ControlPartsChangedEvent
@@ -83,7 +82,7 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
 
     def setup() {
         client = clientRepo.save(newClient{
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it)
         })
         domain = client.domains.first()
@@ -146,9 +145,9 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         control_A_1.addPart(newControl)
         publishPartsChanged(control_A_1, oldParts)
 
-        control_A_1 = controlRepo.findById(control_A_1.idAsUUID).orElseThrow()
-        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        control_A_1 = controlRepo.findById(control_A_1.id).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.id).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.id).orElseThrow()
 
         then: "new requirementImplementations were created in all elements"
         elmt1.controlImplementations.size() == 1
@@ -183,8 +182,8 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         oldParts = control_A_1.getPartsRecursively()
         control_A_1.removePart(control_A_1_2)
         publishPartsChanged(control_A_1, oldParts)
-        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.id).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.id).orElseThrow()
 
         then: "the control implementation itself is still present"
         elmt1.controlImplementations.size() == 1
@@ -212,8 +211,8 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         oldParts = control_A_1.getPartsRecursively()
         control_A_1.addPart(control_A_1_2)
         publishPartsChanged(control_A_1, oldParts)
-        elmt1 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
-        elmt2 = repoFor(type).findById(elmt1.idAsUUID).orElseThrow()
+        elmt1 = repoFor(type).findById(elmt1.id).orElseThrow()
+        elmt2 = repoFor(type).findById(elmt1.id).orElseThrow()
 
         then: "the retained modified requirementImplementation is acknowledged and reused"
         elmt1.controlImplementations.size() == 1

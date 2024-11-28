@@ -30,7 +30,6 @@ import java.util.stream.StreamSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.IdentifiableVersionedRepository;
@@ -66,8 +65,8 @@ abstract class AbstractIdentifiableVersionedRepository<
   }
 
   @Override
-  public Optional<T> findById(Key<UUID> id) {
-    return (Optional<T>) dataRepository.findById(id.value());
+  public Optional<T> findById(UUID id) {
+    return (Optional<T>) dataRepository.findById(id);
   }
 
   @Override
@@ -78,30 +77,30 @@ abstract class AbstractIdentifiableVersionedRepository<
 
   @Override
   @Transactional
-  public void deleteById(Key<UUID> id) {
-    dataRepository.deleteById(id.value());
+  public void deleteById(UUID id) {
+    dataRepository.deleteById(id);
   }
 
   @Override
-  public boolean exists(Key<UUID> id) {
-    return dataRepository.existsById(id.value());
+  public boolean exists(UUID id) {
+    return dataRepository.existsById(id);
   }
 
   @Override
-  public Set<T> findByIds(Set<Key<UUID>> ids) {
-    var idStrings = ids.stream().map(Key::value).toList();
+  public Set<T> findByIds(Set<UUID> ids) {
+    var idStrings = ids.stream().toList();
     return StreamSupport.stream(dataRepository.findAllById(idStrings).spliterator(), false)
         .map(e -> (T) e)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Set<T> getByIds(Set<Key<UUID>> ids) {
+  public Set<T> getByIds(Set<UUID> ids) {
     Set<T> result = findByIds(ids);
     if (result.size() < ids.size()) {
-      List<Key<UUID>> foundIds = result.stream().map(Identifiable::getId).toList();
+      List<UUID> foundIds = result.stream().map(Identifiable::getId).toList();
       List<String> unfoundIds =
-          ids.stream().filter(Predicate.not(foundIds::contains)).map(Key::uuidValue).toList();
+          ids.stream().filter(Predicate.not(foundIds::contains)).map(UUID::toString).toList();
       throw new NotFoundException(
           format(
               "%s %s not found",
@@ -111,7 +110,7 @@ abstract class AbstractIdentifiableVersionedRepository<
   }
 
   @Override
-  public Optional<Long> getVersion(Key<UUID> id) {
-    return dataRepository.getVersion(id.value());
+  public Optional<Long> getVersion(UUID id) {
+    return dataRepository.getVersion(id);
   }
 }

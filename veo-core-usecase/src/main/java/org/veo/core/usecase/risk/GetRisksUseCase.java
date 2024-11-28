@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
@@ -56,7 +55,7 @@ public class GetRisksUseCase<T extends RiskAffected<T, R>, R extends AbstractRis
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, Key<UUID> riskAffectedRef)
+  public record InputData(Client authenticatedClient, UUID riskAffectedRef)
       implements UseCase.InputData {}
 
   @Valid

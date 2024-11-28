@@ -40,7 +40,6 @@ import java.util.stream.IntStream;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.exception.NotFoundException;
@@ -208,8 +207,8 @@ public class SaveRiskDefinitionUseCase
 
   @Valid
   public record InputData(
-      Key<UUID> authenticatedClientId,
-      Key<UUID> domainId,
+      UUID authenticatedClientId,
+      UUID domainId,
       String riskDefinitionRef,
       RiskDefinition riskDefinition,
       Set<RiskDefinitionChangeType> forbiddenChanges)

@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 
 import spock.lang.Specification
 
@@ -37,13 +36,11 @@ class CustomLinkTransformerSpec extends Specification {
     def "transform custom link entity to DTO"() {
         given: "a custom link"
         def domain = Mock(Domain) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.modelInterface >> Domain
         }
         def targetAsset = Mock(Asset) {
-            it.id >> Key.newUuid()
-            it.idAsUUID >> it.id.value()
+            it.id >> UUID.randomUUID()
             it.modelInterface >> Asset
         }
         def link = Mock(CustomLink) {
@@ -60,7 +57,7 @@ class CustomLinkTransformerSpec extends Specification {
         with(dto) {
             target == IdRef.from(targetAsset, referenceAssembler)
             attributes == link.attributes
-            domains*.id ==~ [domain.id.value()]
+            domains*.id ==~ [domain.id]
         }
     }
 }

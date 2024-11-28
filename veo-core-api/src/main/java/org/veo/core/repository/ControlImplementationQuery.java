@@ -19,13 +19,12 @@ package org.veo.core.repository;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.compliance.ControlImplementation;
 
 public interface ControlImplementationQuery extends Query<ControlImplementation, String> {
-  void whereControlIdIn(Key<UUID> controlId);
+  void whereControlIdIn(UUID controlId);
 
   void whereRiskAffectedIs(UUID riskAffectedId);
 
-  void whereControlhasSubType(String subType, Key<UUID> domainId);
+  void whereControlhasSubType(String subType, UUID domainId);
 }

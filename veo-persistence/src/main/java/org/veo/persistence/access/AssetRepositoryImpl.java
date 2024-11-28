@@ -21,7 +21,6 @@ import static java.util.Collections.singleton;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ElementQuery;
@@ -74,17 +72,15 @@ public class AssetRepositoryImpl
 
   @Override
   @Transactional(readOnly = true)
-  public Set<Asset> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
-    List<UUID> dbIDs = ids.stream().map(Key::value).toList();
-    var elements = assetDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
+  public Set<Asset> findWithRisksAndScenarios(Set<UUID> ids) {
+    var elements = assetDataRepository.findWithRisksAndScenariosByDbIdIn(ids);
     return Collections.unmodifiableSet(elements);
   }
 
   @Override
-  public Optional<Asset> findByIdWithRiskValues(Key<UUID> processId) {
+  public Optional<Asset> findByIdWithRiskValues(UUID processId) {
     var processes =
-        ((AssetDataRepository) dataRepository)
-            .findByIdsWithRiskValues(singleton(processId.value()));
+        ((AssetDataRepository) dataRepository).findByIdsWithRiskValues(singleton(processId));
     return processes.stream().findFirst().map(Asset.class::cast);
   }
 
@@ -96,7 +92,7 @@ public class AssetRepositoryImpl
   }
 
   @Override
-  public Optional<Asset> findById(Key<UUID> id, boolean shouldEmbedRisks) {
+  public Optional<Asset> findById(UUID id, boolean shouldEmbedRisks) {
     if (shouldEmbedRisks) {
       return this.findByIdWithRiskValues(id);
     } else {

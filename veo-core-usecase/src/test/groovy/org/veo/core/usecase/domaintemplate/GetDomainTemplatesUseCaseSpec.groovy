@@ -19,12 +19,10 @@ package org.veo.core.usecase.domaintemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.DomainTemplate
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ClientRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase
 import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase.InputData
 
 class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
@@ -36,7 +34,7 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all domaintemplates"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         DomainTemplate domaintemplate = Mock()
         domaintemplate.getId() >> id
 
@@ -53,11 +51,11 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all domaintemplates unknown client"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         DomainTemplate domaintemplate = Mock()
         domaintemplate.getId() >> id
 
-        def cid = Key.newUuid()
+        def cid = UUID.randomUUID()
         Client client = Mock()
         client.getId() >> cid
 

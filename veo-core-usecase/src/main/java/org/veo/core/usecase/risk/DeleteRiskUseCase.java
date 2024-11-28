@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
@@ -77,7 +76,7 @@ public class DeleteRiskUseCase
   public record InputData(
       Class<? extends RiskAffected<?, ?>> entityClass,
       Client authenticatedClient,
-      Key<UUID> riskAffectedRef,
-      Key<UUID> scenarioRef)
+      UUID riskAffectedRef,
+      UUID scenarioRef)
       implements UseCase.InputData {}
 }

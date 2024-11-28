@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
@@ -79,7 +78,7 @@ public class CreateElementUseCase<TEntity extends Element>
     return new CreateElementUseCase.OutputData<>(entity);
   }
 
-  private void addToScopes(TEntity element, Set<Key<UUID>> scopeIds, Client client) {
+  private void addToScopes(TEntity element, Set<UUID> scopeIds, Client client) {
     repositoryProvider
         .getElementRepositoryFor(Scope.class)
         .findByIds(scopeIds)
@@ -113,7 +112,7 @@ public class CreateElementUseCase<TEntity extends Element>
 
   @Valid
   public record InputData<TEntity extends Element>(
-      ElementState<TEntity> newEntity, Client authenticatedClient, Set<Key<UUID>> scopeIds)
+      ElementState<TEntity> newEntity, Client authenticatedClient, Set<UUID> scopeIds)
       implements UseCase.InputData {}
 
   @Valid

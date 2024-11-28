@@ -20,7 +20,6 @@ package org.veo.core.usecase.client;
 import java.util.UUID;
 
 import org.veo.core.entity.AccountProvider;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
@@ -59,5 +58,5 @@ public class DeleteClientUseCase
     return false;
   }
 
-  public record InputData(Key<UUID> clientId) implements UseCase.InputData {}
+  public record InputData(UUID clientId) implements UseCase.InputData {}
 }

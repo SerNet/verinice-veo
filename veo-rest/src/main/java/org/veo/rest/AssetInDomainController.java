@@ -92,7 +92,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -511,7 +510,7 @@ public class AssetInDomainController
         new GetControlImplementationsUseCase.InputData(
             clientLookup.getClient(auth),
             null,
-            Key.from(domainId),
+            domainId,
             TypedId.from(uuid, Asset.class),
             controlFilter,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));

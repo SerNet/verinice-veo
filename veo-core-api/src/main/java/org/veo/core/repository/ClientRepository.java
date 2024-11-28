@@ -25,7 +25,6 @@ import java.util.function.Predicate;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientState;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
 /**
@@ -37,19 +36,19 @@ import org.veo.core.entity.exception.NotFoundException;
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
   static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == ClientState.ACTIVATED;
 
-  Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
+  Optional<Client> findByIdFetchCatalogsAndItems(UUID id);
 
-  Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
+  Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(UUID id);
 
-  Optional<Client> findByIdFetchTranslations(Key<UUID> id);
+  Optional<Client> findByIdFetchTranslations(UUID id);
 
   List<Client> findAll();
 
-  default Client getById(Key<UUID> clientId) {
+  default Client getById(UUID clientId) {
     return findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));
   }
 
-  default Client getActiveById(Key<UUID> clientId) {
+  default Client getActiveById(UUID clientId) {
     Client client =
         findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));
     if (!IS_CLIENT_ACTIVE.test(client)) {
@@ -58,7 +57,7 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
     return client;
   }
 
-  default Optional<Client> findActiveById(Key<UUID> clientId) {
+  default Optional<Client> findActiveById(UUID clientId) {
     Optional<Client> oClient = findById(clientId);
     if (oClient.isPresent()) {
       if (IS_CLIENT_ACTIVE.test(oClient.get())) {
@@ -68,5 +67,5 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
     return Optional.empty();
   }
 
-  Set<Client> findAllActiveWhereDomainTemplateNotApplied(Key<UUID> domainTemplateId);
+  Set<Client> findAllActiveWhereDomainTemplateNotApplied(UUID domainTemplateId);
 }

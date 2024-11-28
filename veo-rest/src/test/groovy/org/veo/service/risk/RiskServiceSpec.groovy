@@ -21,7 +21,6 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CH
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.event.RiskChangedEvent
@@ -77,7 +76,7 @@ class RiskServiceSpec extends VeoSpec {
         }
         this.process = newProcess(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")
-            id = Key.newUuid()
+            id = UUID.randomUUID()
         }
         this.risk = process.obtainRisk(scenario).tap {
             assignDesignator(it)

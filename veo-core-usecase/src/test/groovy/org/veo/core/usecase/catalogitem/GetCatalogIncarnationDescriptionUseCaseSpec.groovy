@@ -20,7 +20,6 @@ package org.veo.core.usecase.catalogitem
 import org.veo.core.entity.Control
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
-import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
@@ -55,13 +54,13 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
 
     def "get the apply information for a catalog-item with one copy ref"() {
         given:
-        def id2 = Key.newUuid()
+        def id2 = UUID.randomUUID()
         item2.symbolicId >> id2
         item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.tailoringReferences >> []
 
-        def trId = Key.newUuid()
+        def trId = UUID.randomUUID()
         TailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.COPY
@@ -82,13 +81,13 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
 
     def "get the apply information for a catalog-item with link"() {
         given:
-        def id2 = Key.newUuid()
+        def id2 = UUID.randomUUID()
         item2.symbolicId >> id2
         item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
-        def trId = Key.newUuid()
+        def trId = UUID.randomUUID()
         LinkTailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK
@@ -116,13 +115,13 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
 
     def "get the apply information for a catalog-item with external link"() {
         given:
-        def id2 = Key.newUuid()
+        def id2 = UUID.randomUUID()
         item2.symbolicId >> id2
         item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
-        def trId = Key.newUuid()
+        def trId = UUID.randomUUID()
         LinkTailoringReference tr = Mock()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
@@ -173,7 +172,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         given:
         item1.tailoringReferences >> []
 
-        def unitId = Key.newUuid()
+        def unitId = UUID.randomUUID()
         Unit anotherUnit = Mock()
         anotherUnit.id >> unitId
 
@@ -189,7 +188,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.tailoringReferences >> []
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [Key.newUuid()], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [UUID.randomUUID()], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
 
         then:
         thrown(NotFoundException)

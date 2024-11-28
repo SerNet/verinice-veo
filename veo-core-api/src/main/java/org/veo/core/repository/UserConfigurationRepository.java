@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -31,15 +30,15 @@ public interface UserConfigurationRepository {
 
   void delete(UserConfiguration entity);
 
-  Set<UserConfiguration> findAllByClient(Key<UUID> clientId);
+  Set<UserConfiguration> findAllByClient(UUID clientId);
 
-  Set<String> findAllKeysByUser(Key<UUID> clientId, String userName);
+  Set<String> findAllKeysByUser(UUID clientId, String userName);
 
   Optional<UserConfiguration> findUserConfiguration(
-      Key<UUID> clientId, String userName, String applicationId);
+      UUID clientId, String userName, String applicationId);
 
   default UserConfiguration getUserConfiguration(
-      Key<UUID> clientId, String userName, String applicationId) {
+      UUID clientId, String userName, String applicationId) {
     return findUserConfiguration(clientId, userName, applicationId)
         .orElseThrow(
             () ->
@@ -50,5 +49,5 @@ public interface UserConfigurationRepository {
                     UserConfiguration.class));
   }
 
-  int countUserConfigurations(Key<UUID> id, String userName);
+  int countUserConfigurations(UUID id, String userName);
 }

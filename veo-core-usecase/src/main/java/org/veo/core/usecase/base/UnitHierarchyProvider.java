@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.UnitRepository;
 
@@ -39,7 +38,7 @@ public class UnitHierarchyProvider {
    * @param rootUnitId ID of the unit whose descendants should be found.
    * @return A flat collection containing the root unit and all its descendants.
    */
-  public Set<Unit> findAllInRoot(Key<UUID> rootUnitId) {
+  public Set<Unit> findAllInRoot(UUID rootUnitId) {
     Unit root = unitRepository.getById(rootUnitId);
     var units = new HashSet<Unit>();
     addUnitHierarchyToSet(root, units);

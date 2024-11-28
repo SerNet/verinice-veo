@@ -20,7 +20,6 @@ package org.veo.persistence.access
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.repository.CatalogItemQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
@@ -43,7 +42,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient{
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it)
         })
         domain = client.domains.first()

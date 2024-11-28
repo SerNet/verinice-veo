@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,7 +39,7 @@ public class RiskAffectedLinkDeletedEvent implements DomainEvent, RiskEvent {
   Element entity;
 
   Domain domain;
-  Key<UUID> clientId;
+  UUID clientId;
   Object source;
   String linkType;
   Set<ChangedValues> changes = new HashSet<>();
@@ -56,7 +55,7 @@ public class RiskAffectedLinkDeletedEvent implements DomainEvent, RiskEvent {
     this.clientId = entity.getOwningClient().orElseThrow().getId();
   }
 
-  public Key<UUID> getEntityId() {
+  public UUID getEntityId() {
     return entity.getId();
   }
 

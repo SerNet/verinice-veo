@@ -37,7 +37,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
@@ -84,11 +83,11 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
             .orElse(false);
   }
 
-  public boolean removeMemberById(Key<UUID> id) {
+  public boolean removeMemberById(UUID id) {
     return removeMembersById(Set.of(id));
   }
 
-  public boolean removeMembersById(Collection<Key<UUID>> ids) {
+  public boolean removeMembersById(Collection<UUID> ids) {
     return members.removeIf(compositeEntity -> ids.contains(compositeEntity.getId()));
   }
 

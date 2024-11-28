@@ -24,12 +24,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData;
 
-public interface ProfileItemDataRepository extends CrudRepository<ProfileItemData, Key<UUID>> {
+public interface ProfileItemDataRepository extends CrudRepository<ProfileItemData, UUID> {
 
   @Query(
       """

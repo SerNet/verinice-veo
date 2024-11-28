@@ -17,11 +17,12 @@
  ******************************************************************************/
 package org.veo.rest.common;
 
+import java.util.UUID;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.rest.security.ApplicationUser;
 
@@ -37,6 +38,6 @@ public class ClientLookup {
   }
 
   public Client getClient(ApplicationUser user) {
-    return clientRepository.getActiveById(Key.uuidFrom(user.getClientId()));
+    return clientRepository.getActiveById(UUID.fromString(user.getClientId()));
   }
 }

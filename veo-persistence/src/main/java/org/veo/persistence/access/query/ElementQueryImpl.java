@@ -52,7 +52,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Entity;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
@@ -185,8 +184,8 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void whereChildElementIn(QueryCondition<Key<UUID>> condition) {
-    var childIds = condition.getValues().stream().map(Key::value).collect(Collectors.toSet());
+  public void whereChildElementIn(QueryCondition<UUID> condition) {
+    var childIds = condition.getValues().stream().collect(Collectors.toSet());
     mySpec =
         mySpec.and(
             (root, query, criateriaBuilder) ->
@@ -286,12 +285,12 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void whereScopesContain(SingleValueQueryCondition<Key<UUID>> condition) {
+  public void whereScopesContain(SingleValueQueryCondition<UUID> condition) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("scopes", JoinType.LEFT).get("dbId"), condition.getValue().value()));
+                    root.join("scopes", JoinType.LEFT).get("dbId"), condition.getValue()));
   }
 
   @Override
@@ -368,7 +367,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   private void fullyLoadItems(Class<? extends Entity> type, List<TDataClass> items) {
-    var ids = items.stream().map(Element::getIdAsUUID).toList();
+    var ids = items.stream().map(Element::getId).toList();
     ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE)
         .forEach(
             batch -> {

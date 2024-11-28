@@ -65,12 +65,12 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
             name >> person.name
             abbreviation >> person.abbreviation
             description >> person.description
-            it.owner >> TypedId.from(unit.idAsUUID, Unit)
+            it.owner >> TypedId.from(unit.id, Unit)
             getDomainAssociationStates() >> [
                 Mock(DomainAssociationState) {
                     getSubType() >> 'PER_Person'
                     getStatus() >> 'NEW'
-                    getDomain() >> TypedId.from(testDomain.idAsUUID, Domain)
+                    getDomain() >> TypedId.from(testDomain.id, Domain)
                     getCustomLinkStates() >> []
                     getCustomAspectStates() >> [
                         Mock(CustomAspectState) {
@@ -88,7 +88,7 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
 
         when:
         executeInTransaction {
-            updatePersonUseCase.execute(new InputData(person.idAsUUID, updatedPerson, unit.client, ETag.from(person.idAsString, 0), "user@domain.example"))
+            updatePersonUseCase.execute(new InputData(person.id, updatedPerson, unit.client, ETag.from(person.idAsString, 0), "user@domain.example"))
         }
         def queryCounts = QueryCountHolder.grandTotal
 

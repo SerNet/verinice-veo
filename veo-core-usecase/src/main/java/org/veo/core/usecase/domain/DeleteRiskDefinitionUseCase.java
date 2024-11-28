@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.repository.DomainRepository;
@@ -70,7 +69,6 @@ public class DeleteRiskDefinitionUseCase
   }
 
   @Valid
-  public record InputData(
-      Key<UUID> authenticatedClientId, Key<UUID> domainId, String riskDefinitionRef)
+  public record InputData(UUID authenticatedClientId, UUID domainId, String riskDefinitionRef)
       implements UseCase.InputData {}
 }

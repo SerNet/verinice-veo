@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -47,7 +46,7 @@ public class ControlImplementationRepositoryImpl implements ControlImplementatio
   }
 
   @Override
-  public ControlImplementationQuery query(Client client, Key<UUID> domainId) {
+  public ControlImplementationQuery query(Client client, UUID domainId) {
     return new ControlImplementationQueryImpl(dataRepo, client, domainId);
   }
 

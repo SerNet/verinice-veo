@@ -40,7 +40,6 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
@@ -121,7 +120,7 @@ public class GetCatalogIncarnationDescriptionUseCase
     return new OutputData(incarnationDescriptions, unit);
   }
 
-  private List<CatalogItem> loadCatalogItems(List<Key<UUID>> catalogItemIds, Domain domain) {
+  private List<CatalogItem> loadCatalogItems(List<UUID> catalogItemIds, Domain domain) {
     var catalogItemsById =
         catalogItemRepository.findAllByIdsFetchTailoringReferences(catalogItemIds, domain).stream()
             .collect(Collectors.toMap(CatalogItem::getSymbolicId, Function.identity()));
@@ -131,7 +130,7 @@ public class GetCatalogIncarnationDescriptionUseCase
               var catalogItem = catalogItemsById.get(id);
               if (catalogItem == null) {
                 throw new NotFoundException(
-                    TypedSymbolicId.from(id.value(), CatalogItem.class, TypedId.from(domain)));
+                    TypedSymbolicId.from(id, CatalogItem.class, TypedId.from(domain)));
               }
               return catalogItem;
             })
@@ -253,9 +252,9 @@ public class GetCatalogIncarnationDescriptionUseCase
   @Valid
   public record InputData(
       Client authenticatedClient,
-      @NotNull Key<UUID> unitId,
-      @NotNull Key<UUID> domainId,
-      @NotNull List<Key<UUID>> catalogItemIds,
+      @NotNull UUID unitId,
+      @NotNull UUID domainId,
+      @NotNull List<UUID> catalogItemIds,
       IncarnationRequestModeType requestType,
       IncarnationLookup lookup,
       Set<TailoringReferenceType> include,

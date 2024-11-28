@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.CompositeElementRepository;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -58,9 +57,9 @@ abstract class AbstractCompositeEntityRepositoryImpl<
   }
 
   @Override
-  public void deleteById(Key<UUID> id) {
+  public void deleteById(UUID id) {
     // remove element from composite parts:
-    var composites = compositeRepo.findDistinctByParts_DbId_In(singleton(id.value()));
+    var composites = compositeRepo.findDistinctByParts_DbId_In(singleton(id));
     composites.forEach(assetComposite -> assetComposite.removePartById(id));
 
     super.deleteById(id);
@@ -68,7 +67,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<
 
   @Override
   public Set<S> findCompositesByParts(Set<S> parts) {
-    var partIds = parts.stream().map(Identifiable::getIdAsUUID).collect(Collectors.toSet());
+    var partIds = parts.stream().map(Identifiable::getId).collect(Collectors.toSet());
     return compositeRepo.findDistinctByParts_DbId_In(partIds).stream()
         .map(data -> (S) data)
         .collect(Collectors.toSet());

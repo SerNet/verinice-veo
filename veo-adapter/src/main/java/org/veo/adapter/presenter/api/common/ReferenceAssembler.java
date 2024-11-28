@@ -25,7 +25,6 @@ import org.veo.core.entity.CompoundIdentifiable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.SymIdentifiable;
 import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.UserConfiguration;
@@ -108,10 +107,10 @@ public interface ReferenceAssembler {
   TypedId<? extends Element> parseElementRef(String url);
 
   /** Transforms the given adapter layer reference to an entity key. */
-  Key<UUID> toKey(ITypedId<? extends Identifiable> reference);
+  UUID toKey(ITypedId<? extends Identifiable> reference);
 
   /** Transforms the given adapter layer references to entity keys. */
-  Set<Key<UUID>> toKeys(Set<? extends ITypedId<?>> references);
+  Set<UUID> toKeys(Set<? extends ITypedId<?>> references);
 
   String schemaReferenceOf(String typeSingularTerm);
 

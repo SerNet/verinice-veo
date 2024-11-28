@@ -22,7 +22,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
@@ -46,10 +45,9 @@ public class GetProfileUseCase extends AbstractProfileUseCase
     var profile =
         (input.fastLoadDetails
                 ? profileRepo.findProfileByIdFetchTailoringReferences(
-                    input.profile.toKey(), input.authenticatedClient.getId())
-                : profileRepo.findById(input.authenticatedClient.getId(), input.profile.toKey()))
-            .orElseThrow(
-                () -> new NotFoundException(Key.from(input.profile.getId()), Profile.class));
+                    input.profile.getId(), input.authenticatedClient.getId())
+                : profileRepo.findById(input.authenticatedClient.getId(), input.profile.getId()))
+            .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
     log.info("profile: {}", profile);
 
     return new OutputData(profile);

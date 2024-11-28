@@ -18,13 +18,13 @@
 package org.veo.rest.security;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.Account;
 import org.veo.core.entity.AccountProvider;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientReadOnlyRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class AccountProviderImpl implements AccountProvider {
             SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     var client =
         Optional.ofNullable(user.getClientId())
-            .map(Key::uuidFrom)
+            .map(UUID::fromString)
             .flatMap(clientRepository::findById)
             .orElse(null);
 

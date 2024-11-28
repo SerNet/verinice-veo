@@ -74,7 +74,6 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.ElementState;
@@ -177,15 +176,15 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               Set<TailoringReferenceType> exclude) {
 
     Client client = getAuthenticatedClient(auth);
-    Key<UUID> containerId = Key.uuidFrom(unitId);
-    List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).toList();
+    UUID containerId = UUID.fromString(unitId);
+    List<UUID> list = itemIds.stream().map(UUID::fromString).toList();
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
             getCatalogIncarnationDescriptionUseCase,
             new GetCatalogIncarnationDescriptionUseCase.InputData(
                 client,
                 containerId,
-                Key.uuidFrom(domainId),
+                UUID.fromString(domainId),
                 list,
                 requestMode,
                 useExistingIncarnations,
@@ -226,7 +225,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             applyCatalogIncarnationDescriptionUseCase,
             new ApplyCatalogIncarnationDescriptionUseCase.InputData(
                 client,
-                Key.uuidFrom(unitId),
+                UUID.fromString(unitId),
                 applyInformation.getParameters().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) d)
                     .toList()),
@@ -279,7 +278,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     CompletableFuture<FullUnitDto> unitFuture =
         useCaseInteractor.execute(
             getUnitUseCase,
-            new UseCase.IdAndClient(Key.from(id), getAuthenticatedClient(auth)),
+            new UseCase.IdAndClient(id, getAuthenticatedClient(auth)),
             output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
@@ -394,7 +393,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
     return useCaseInteractor.execute(
         deleteUnitUseCase,
-        new DeleteUnitUseCase.InputData(Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
+        new DeleteUnitUseCase.InputData(UUID.fromString(uuid), getAuthenticatedClient(auth)),
         output -> RestApiResponse.noContent());
   }
 

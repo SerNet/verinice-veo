@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 
 import lombok.Value;
 
@@ -31,7 +30,7 @@ import lombok.Value;
 @Value
 public class CreateElementInputData<T extends Element> {
 
-  Key<UUID> unitId;
+  UUID unitId;
   T element;
   Client authenticatedClient;
 }

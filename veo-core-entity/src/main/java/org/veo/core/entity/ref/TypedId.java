@@ -45,7 +45,7 @@ public class TypedId<T extends Identifiable> implements ITypedId<T> {
   }
 
   public static <T extends Identifiable> TypedId<T> from(T entity) {
-    return TypedId.from(entity.getIdAsUUID(), (Class<T>) entity.getModelInterface());
+    return TypedId.from(entity.getId(), (Class<T>) entity.getModelInterface());
   }
 
   @Override

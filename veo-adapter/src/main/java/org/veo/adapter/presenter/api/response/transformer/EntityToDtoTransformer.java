@@ -174,7 +174,7 @@ public final class EntityToDtoTransformer {
 
   public ExportProfileDto transformProfile2ExportDto(Profile profile) {
     ExportProfileDto profileDto = new ExportProfileDto();
-    profileDto.setId(profile.getIdAsUUID());
+    profileDto.setId(profile.getId());
     mapProfile(profile, profileDto);
     profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2ExportDto));
     return profileDto;
@@ -182,7 +182,7 @@ public final class EntityToDtoTransformer {
 
   public FullProfileDto transformProfile2Dto(Profile profile) {
     FullProfileDto profileDto = new FullProfileDto();
-    profileDto.setId(profile.getIdAsUUID());
+    profileDto.setId(profile.getId());
     mapProfile(profile, profileDto);
     profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2Dto));
     return profileDto;
@@ -190,7 +190,7 @@ public final class EntityToDtoTransformer {
 
   public ShortProfileDto transformProfile2ListDto(Profile profile) {
     ShortProfileDto profileDto = new ShortProfileDto();
-    profileDto.setId(profile.getIdAsUUID());
+    profileDto.setId(profile.getId());
     mapProfile(profile, profileDto);
     return profileDto;
   }
@@ -384,7 +384,7 @@ public final class EntityToDtoTransformer {
 
   public FullDomainDto transformDomain2Dto(@Valid Domain source) {
     var target = new FullDomainDto();
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
@@ -416,7 +416,7 @@ public final class EntityToDtoTransformer {
   }
 
   private void mapDomain(DomainBase source, ExportDomainTemplateDto target) {
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
@@ -461,7 +461,7 @@ public final class EntityToDtoTransformer {
   public ShortCatalogItemDto transformShortCatalogItem2Dto(
       @Valid CatalogItem source, @Nullable List<String> customAspectKeys) {
     var target = new ShortCatalogItemDto();
-    target.setId(source.getSymbolicId().value());
+    target.setId(source.getSymbolicId());
     mapTemplateItem(source, target);
     if (customAspectKeys != null) {
       target.setCustomAspects(
@@ -478,7 +478,7 @@ public final class EntityToDtoTransformer {
 
   public ShortProfileItemDto transformShortProfileItem2Dto(@Valid ProfileItem source) {
     var target = new ShortProfileItemDto();
-    target.setId(source.getSymbolicId().value());
+    target.setId(source.getSymbolicId());
     target.setStatus(source.getStatus());
     mapTemplateItem(source, target);
     return target;
@@ -493,7 +493,7 @@ public final class EntityToDtoTransformer {
       void mapFullTemplateItem(TEntity source, TDto target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapTemplateItem(source, target);
-    target.setId(source.getSymbolicId().value());
+    target.setId(source.getSymbolicId());
     target.setStatus(source.getStatus());
     target.setAspects(source.getAspects());
     target.setCustomAspects(CustomAspectMapDto.from(source.getCustomAspects()));
@@ -512,7 +512,7 @@ public final class EntityToDtoTransformer {
 
   public FullUnitDto transformUnit2Dto(@Valid Unit source) {
     var target = new FullUnitDto();
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setVersion(source.getVersion());
     target.setUnits(convertSet(source.getUnits(), u -> IdRef.from(u, referenceAssembler)));
     mapVersionedSelfReferencingProperties(source, target);
@@ -540,7 +540,7 @@ public final class EntityToDtoTransformer {
 
   private <TDto extends AbstractElementDto & IdentifiableDto> void mapElement(
       Element source, TDto target, boolean newStructure) {
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setDesignator(source.getDesignator());
     target.setVersion(source.getVersion());
     mapVersionedSelfReferencingProperties(source, target);
@@ -641,7 +641,7 @@ public final class EntityToDtoTransformer {
 
   public DomainTemplateMetadataDto transformDomainTemplateMetadata2Dto(DomainTemplate source) {
     var target = new DomainTemplateMetadataDto();
-    target.setId(source.getIdAsUUID());
+    target.setId(source.getId());
     target.setSelfRef(IdRef.from(source, referenceAssembler));
     target.setName(source.getName());
     target.setTemplateVersion(source.getTemplateVersion());
@@ -679,7 +679,7 @@ public final class EntityToDtoTransformer {
   }
 
   public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
-    var target = new FullAssetInDomainDto(source.getIdAsUUID());
+    var target = new FullAssetInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     mapRiskAffectedProperties(source, target, domain);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
@@ -687,31 +687,31 @@ public final class EntityToDtoTransformer {
   }
 
   public FullControlInDomainDto transformControl2Dto(Control source, Domain domain) {
-    var target = new FullControlInDomainDto(source.getIdAsUUID());
+    var target = new FullControlInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     return target;
   }
 
   public FullDocumentInDomainDto transformDocument2Dto(Document source, Domain domain) {
-    var target = new FullDocumentInDomainDto(source.getIdAsUUID());
+    var target = new FullDocumentInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     return target;
   }
 
   public FullIncidentInDomainDto transformIncident2Dto(Incident source, Domain domain) {
-    var target = new FullIncidentInDomainDto(source.getIdAsUUID());
+    var target = new FullIncidentInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     return target;
   }
 
   public FullPersonInDomainDto transformPerson2Dto(Person source, Domain domain) {
-    var target = new FullPersonInDomainDto(source.getIdAsUUID());
+    var target = new FullPersonInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     return target;
   }
 
   public FullProcessInDomainDto transformProcess2Dto(Process source, Domain domain) {
-    var target = new FullProcessInDomainDto(source.getIdAsUUID());
+    var target = new FullProcessInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     mapRiskAffectedProperties(source, target, domain);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
@@ -719,14 +719,14 @@ public final class EntityToDtoTransformer {
   }
 
   public FullScenarioInDomainDto transformScenario2Dto(Scenario source, Domain domain) {
-    var target = new FullScenarioInDomainDto(source.getIdAsUUID());
+    var target = new FullScenarioInDomainDto(source.getId());
     mapCompositeElementProperties(source, target, domain);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
 
   public FullScopeInDomainDto transformScope2Dto(Scope source, Domain domain) {
-    var target = new FullScopeInDomainDto(source.getIdAsUUID());
+    var target = new FullScopeInDomainDto(source.getId());
     mapElementProperties(source, target, domain);
     mapRiskAffectedProperties(source, target, domain);
     target.setMembers(

@@ -19,7 +19,6 @@ package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
@@ -28,10 +27,10 @@ import org.veo.core.usecase.UseCaseSpec
 class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     CatalogItem catalogItem = Mock()
     Client existingClient = Mock {
-        id >> Key.newUuid()
+        id >> UUID.randomUUID()
     }
-    Key existingDomainId = Key.newUuid()
-    Key catalogItemId = Key.newUuid()
+    def existingDomainId = UUID.randomUUID()
+    def catalogItemId = UUID.randomUUID()
 
     DomainRepository domainRepository = Mock()
     CatalogItemRepository catalogItemRepository = Mock()
@@ -55,7 +54,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "delegates item not found exception"() {
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), existingDomainId, existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(UUID.randomUUID(), existingDomainId, existingClient))
 
         then:
         thrown(NotFoundException)
@@ -63,7 +62,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "delegates domain not found exception"() {
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Key.newUuid(), existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, UUID.randomUUID(), existingClient))
 
         then:
         thrown(NotFoundException)
@@ -71,7 +70,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "delegates not found exception for wrong client"() {
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, Mock(Client) { id >> Key.newUuid() }))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, Mock(Client) { id >> UUID.randomUUID() }))
 
         then:
         thrown(NotFoundException)

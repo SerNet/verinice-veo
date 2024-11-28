@@ -18,9 +18,9 @@
 package org.veo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
 import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.core.repository.RepositoryProvider;
@@ -34,9 +34,9 @@ public class EtagService {
   private final RepositoryProvider repositoryProvider;
 
   public <T extends Identifiable & Versioned> Optional<String> getEtag(
-      Class<T> entityClass, String id) {
+      Class<T> entityClass, UUID id) {
     IdentifiableVersionedRepository<T> repo =
         repositoryProvider.getVersionedIdentifiableRepositoryFor(entityClass);
-    return repo.getVersion(Key.uuidFrom(id)).map(version -> ETag.from(id, version));
+    return repo.getVersion(id).map(version -> ETag.from(id.toString(), version));
   }
 }

@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 
@@ -31,8 +30,7 @@ public interface AbstractTemplateItemRepository<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends SymIdentifiableRepository<T, TNamespace> {
 
-  Set<TailoringReference<T, TNamespace>> findTailoringReferencesByIds(
-      Set<Key<UUID>> ids, Client client);
+  Set<TailoringReference<T, TNamespace>> findTailoringReferencesByIds(Set<UUID> ids, Client client);
 
   T save(T item);
 

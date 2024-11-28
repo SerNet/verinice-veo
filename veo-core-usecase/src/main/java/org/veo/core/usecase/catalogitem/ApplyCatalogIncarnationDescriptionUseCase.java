@@ -27,7 +27,6 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -65,7 +64,7 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   @Valid
   public record InputData(
       Client authenticatedClient,
-      @NotNull Key<UUID> unitId,
+      @NotNull UUID unitId,
       @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions)
       implements UseCase.InputData {}
 

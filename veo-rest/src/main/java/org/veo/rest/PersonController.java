@@ -92,7 +92,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -300,7 +299,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Person.class, Key.from(uuid), client),
+        new DeleteElementUseCase.InputData(Person.class, uuid, client),
         output -> ResponseEntity.noContent().build());
   }
 

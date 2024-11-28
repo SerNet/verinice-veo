@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DesignatorSequenceRepository;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -43,7 +42,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    * Creates all required designator sequences for a new client. This must be called before fetching
    * any sequence vales for that client.
    */
-  public void createSequences(Key<UUID> clientId) {
+  public void createSequences(UUID clientId) {
     EntityType.TYPE_DESIGNATORS.forEach(
         new Consumer<String>() {
           @Override
@@ -62,14 +61,14 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    * @return The next sequential designator number for given client & entity type, starting with 1.
    */
   @Override
-  public Long getNext(Key<UUID> clientId, String typeDesignator) {
+  public Long getNext(UUID clientId, String typeDesignator) {
     return getNext(clientId, typeDesignator, 1).getFirst();
   }
 
   @Override
   @SuppressFBWarnings("SQL_INJECTION_JPA")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public List<Long> getNext(Key<UUID> clientId, String typeDesignator, int count) {
+  public List<Long> getNext(UUID clientId, String typeDesignator, int count) {
     return em.createNativeQuery(
             "SELECT nextval('"
                 + getSequenceName(clientId, typeDesignator)
@@ -83,7 +82,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    * Removes all designator sequences for given client from DB. This should be performed as a
    * cleanup when the client is removed.
    */
-  public void deleteSequences(Key<UUID> clientId) {
+  public void deleteSequences(UUID clientId) {
     EntityType.TYPE_DESIGNATORS.forEach(
         new Consumer<String>() {
           @Override
@@ -98,7 +97,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
         });
   }
 
-  private String getSequenceName(Key<UUID> clientId, String typeDesignator) {
-    return "designator_" + clientId.uuidValue().replace("-", "") + "_" + typeDesignator;
+  private String getSequenceName(UUID clientId, String typeDesignator) {
+    return "designator_" + clientId.toString().replace("-", "") + "_" + typeDesignator;
   }
 }

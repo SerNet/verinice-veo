@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -90,7 +89,7 @@ public class GetElementStatusCountUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> unitId, Key<UUID> domainId, Client authenticatedClient)
+  public record InputData(UUID unitId, UUID domainId, Client authenticatedClient)
       implements UseCase.InputData {}
 
   @Valid

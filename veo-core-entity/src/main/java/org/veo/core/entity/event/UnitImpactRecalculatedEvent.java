@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 import lombok.Value;
@@ -57,7 +56,7 @@ public class UnitImpactRecalculatedEvent implements DomainEvent {
   }
 
   @Override
-  public Key<UUID> getClientId() {
+  public UUID getClientId() {
     return client.getId();
   }
 }

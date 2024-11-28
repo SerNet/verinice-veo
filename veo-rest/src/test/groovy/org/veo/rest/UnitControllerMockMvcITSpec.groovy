@@ -45,7 +45,6 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
@@ -734,7 +733,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "cannot create a unit with an invalid domain"() {
         given:
-        def randomUuid = Key.newUuid().uuidValue()
+        def randomUuid = UUID.randomUUID()
         Map request = [
             name: 'New unit',
             domains: [

@@ -22,6 +22,7 @@ import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ELEMENT_TYPE_DEF
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -39,7 +40,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.repository.DomainRepository;
@@ -129,13 +129,13 @@ public class MessageSubscriber {
   }
 
   private void handleElementTypeDefinitionUpdate(JsonNode content) {
-    var domainId = Key.uuidFrom(content.get("domainId").asText());
+    var domainId = UUID.fromString(content.get("domainId").asText());
     var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
     log.info(
         "Received {} message for element type {} in domain {}",
         EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
         elementType,
-        domainId.uuidValue());
+        domainId);
     domainRepository
         .findById(domainId)
         .ifPresent(
@@ -148,7 +148,7 @@ public class MessageSubscriber {
   }
 
   private void handleClientStateEvent(JsonNode content) {
-    var clientId = Key.uuidFrom(content.get("clientId").asText());
+    var clientId = UUID.fromString(content.get("clientId").asText());
     var clientState = ClientChangeType.valueOf(content.get("type").asText());
     var maxUnits = content.has("maxUnits") ? content.get("maxUnits").asInt() : null;
     var clientName = content.has("name") ? content.get("name").asText() : null;
@@ -159,7 +159,7 @@ public class MessageSubscriber {
     log.info(
         "Received {} message for clientstate {} message type: {}",
         EVENT_TYPE_CLIENT_CHANGE,
-        clientId.uuidValue(),
+        clientId,
         clientState.name());
     AsSystemUser.runAsAdmin(
         () ->

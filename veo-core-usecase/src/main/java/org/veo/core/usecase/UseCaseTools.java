@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -38,7 +37,7 @@ public final class UseCaseTools {
    *
    * @throws NotFoundException
    */
-  public static Client checkClientExists(Key<UUID> clientId, ClientRepository clientRepository) {
+  public static Client checkClientExists(UUID clientId, ClientRepository clientRepository) {
     return clientRepository
         .findById(clientId)
         .orElseThrow(() -> new NotFoundException(clientId, Client.class));

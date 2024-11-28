@@ -19,7 +19,6 @@ package org.veo.persistence.entity
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
@@ -34,7 +33,7 @@ class AssetSpec extends VeoSpec {
 
     def setup() {
         entityFactory = new EntityDataFactory()
-        this.client = entityFactory.createClient(Key.newUuid(), "client")
+        this.client = entityFactory.createClient(UUID.randomUUID(), "client")
         this.unit = entityFactory.createUnit("unit", null)
         this.unit.setClient(client)
     }

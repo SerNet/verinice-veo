@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 
 /** Utility class to create entity specifications */
 public final class EntitySpecifications {
@@ -35,7 +34,7 @@ public final class EntitySpecifications {
     return Domain::isActive;
   }
 
-  public static EntitySpecification<Identifiable> hasId(Key<UUID> id) {
+  public static EntitySpecification<Identifiable> hasId(UUID id) {
     return o -> o.getId().equals(id);
   }
 

@@ -42,8 +42,7 @@ public class GetProcessRisksUseCase extends GetRisksUseCase<Process, ProcessRisk
             .orElseThrow(
                 () ->
                     new NotFoundException(
-                        "Could not find risks for process %s",
-                        input.riskAffectedRef().uuidValue()));
+                        "Could not find risks for process %s", input.riskAffectedRef()));
 
     process.checkSameClient(input.authenticatedClient());
     return new OutputData<>(process.getRisks());

@@ -19,8 +19,6 @@ package org.veo.core.entity.compliance;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -39,10 +37,6 @@ public class ReqImplRef {
 
   public UUID getUUID() {
     return UUID.fromString(keyRef);
-  }
-
-  public Key<UUID> toKey() {
-    return new Key<>(getUUID());
   }
 
   public boolean references(RequirementImplementation reqImpl) {

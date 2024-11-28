@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
@@ -45,11 +44,11 @@ public interface RiskAffectedRepository<T extends RiskAffected<T, R>, R extends 
   /** Retrieves elements that have risks for which the given person is the risk owner. */
   Set<T> findByRisk(Person riskOwner);
 
-  Set<T> findWithRisksAndScenarios(Set<Key<UUID>> ids);
+  Set<T> findWithRisksAndScenarios(Set<UUID> ids);
 
-  Optional<T> findByIdWithRiskValues(Key<UUID> processId);
+  Optional<T> findByIdWithRiskValues(UUID processId);
 
-  Optional<T> findById(Key<UUID> id, boolean shouldEmbedRisks);
+  Optional<T> findById(UUID id, boolean shouldEmbedRisks);
 
   Set<T> findRisksWithValue(Scenario scenario);
 }

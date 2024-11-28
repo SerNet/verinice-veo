@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
@@ -50,7 +49,7 @@ public class UpdateElementTypeDefinitionUseCase
     Domain domain =
         repository
             .findById(input.domainId)
-            .orElseThrow(() -> new NotFoundException(input.domainId.uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
     Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
@@ -92,7 +91,7 @@ public class UpdateElementTypeDefinitionUseCase
   @Valid
   public record InputData(
       @Valid Client authenticatedClient,
-      Key<UUID> domainId,
+      UUID domainId,
       EntityType entityType,
       ElementTypeDefinitionState elementTypeDefinition,
       // TODO #3042: remove this when we remove support for JSON schema

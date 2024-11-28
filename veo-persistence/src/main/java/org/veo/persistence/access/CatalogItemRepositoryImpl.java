@@ -29,7 +29,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedSymbolicId;
@@ -53,22 +52,21 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
 
   @Override
   public Set<CatalogItem> findAllByIdsFetchTailoringReferences(
-      Collection<Key<UUID>> symIds, Domain domain) {
-    var ids = symIds.stream().map(Key::value).toList();
-    return catalogItemDataRepository.findAllByIdsFetchTailoringReferences(ids, domain).stream()
+      Collection<UUID> symIds, Domain domain) {
+    return catalogItemDataRepository.findAllByIdsFetchTailoringReferences(symIds, domain).stream()
         .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public CatalogItem getByIdInDomain(Key<UUID> catalogItemId, Domain domain) {
+  public CatalogItem getByIdInDomain(UUID catalogItemId, Domain domain) {
     return catalogItemDataRepository
-        .findByIdInDomain(catalogItemId.value(), (DomainData) domain)
+        .findByIdInDomain(catalogItemId, (DomainData) domain)
         .orElseThrow(
             () ->
                 new NotFoundException(
                     "Catalog item %s not found in domain %s"
-                        .formatted(catalogItemId.uuidValue(), domain.getIdAsString())));
+                        .formatted(catalogItemId.toString(), domain.getIdAsString())));
   }
 
   @Override
@@ -88,7 +86,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
                       .collect(Collectors.toSet());
               if (namespaceType.equals(Domain.class)) {
                 return catalogItemDataRepository
-                    .findAllByIdsAndDomain(symIds, namespaceId, client.getIdAsUUID())
+                    .findAllByIdsAndDomain(symIds, namespaceId, client.getId())
                     .stream();
               }
               if (namespaceType.equals(DomainTemplate.class)) {
@@ -103,10 +101,10 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
 
   @Override
   public Set<TailoringReference<CatalogItem, DomainBase>> findTailoringReferencesByIds(
-      Set<Key<UUID>> ids, Client client) {
+      Set<UUID> ids, Client client) {
     return catalogItemDataRepository
         .findTailoringReferencesByIds(
-            ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
+            ids.stream().map(UUID::toString).collect(Collectors.toSet()), client)
         .stream()
         .map(tr -> (TailoringReference<CatalogItem, DomainBase>) tr)
         .collect(Collectors.toSet());
@@ -132,7 +130,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
 
   @Override
   public Set<SubTypeCount> getCountsBySubType(Domain domain) {
-    return catalogItemDataRepository.getCountsBySubType(domain.getIdAsUUID());
+    return catalogItemDataRepository.getCountsBySubType(domain.getId());
   }
 
   @Override

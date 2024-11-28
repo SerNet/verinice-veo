@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.persistence.access.jpa.UserConfigurationDataRepository;
@@ -48,27 +47,27 @@ public class UserConfigurationRepositoryImpl implements UserConfigurationReposit
   }
 
   @Override
-  public Set<String> findAllKeysByUser(Key<UUID> clientId, String userName) {
-    return dataRepository.findAllKeysByUser(clientId.value(), userName);
+  public Set<String> findAllKeysByUser(UUID clientId, String userName) {
+    return dataRepository.findAllKeysByUser(clientId, userName);
   }
 
   @Override
   public Optional<UserConfiguration> findUserConfiguration(
-      Key<UUID> clientId, String username, String applicationId) {
+      UUID clientId, String username, String applicationId) {
     return dataRepository
-        .findUserConfiguration(clientId.value(), username, applicationId)
+        .findUserConfiguration(clientId, username, applicationId)
         .map(UserConfiguration.class::cast);
   }
 
   @Override
-  public Set<UserConfiguration> findAllByClient(Key<UUID> clientId) {
-    return dataRepository.findUserConfigurationsByClient(clientId.value()).stream()
+  public Set<UserConfiguration> findAllByClient(UUID clientId) {
+    return dataRepository.findUserConfigurationsByClient(clientId).stream()
         .map(UserConfiguration.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public int countUserConfigurations(Key<UUID> clientId, String username) {
-    return dataRepository.countUserConfigurations(clientId.value(), username);
+  public int countUserConfigurations(UUID clientId, String username) {
+    return dataRepository.countUserConfigurations(clientId, username);
   }
 }

@@ -33,7 +33,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -127,6 +126,6 @@ public class CreateCatalogFromUnitUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> domainId, Client authenticatedClient, Key<UUID> unitId)
+  public record InputData(UUID domainId, Client authenticatedClient, UUID unitId)
       implements UseCase.InputData {}
 }

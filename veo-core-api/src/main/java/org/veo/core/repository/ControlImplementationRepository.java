@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -32,7 +31,7 @@ public interface ControlImplementationRepository {
 
   Set<ControlImplementation> findByControls(Set<Control> removedControls);
 
-  ControlImplementationQuery query(Client client, Key<UUID> domainId);
+  ControlImplementationQuery query(Client client, UUID domainId);
 
   Set<ControlImplementation> findByRequirement(RequirementImplementation referencedRI);
 

@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,9 +41,9 @@ public class RiskValues implements RiskValuesProvider {
 
   @Valid private List<DeterminedRisk> categorizedRisks;
 
-  @Valid private Key<String> riskDefinitionId;
+  @Valid private String riskDefinitionId;
 
-  @Valid private Key<UUID> domainId;
+  @Valid private UUID domainId;
 
   public static RiskValues from(AbstractRisk<?, ?> risk, RiskDefinitionRef riskDef, Domain domain) {
     return builder()
@@ -52,7 +51,7 @@ public class RiskValues implements RiskValuesProvider {
         .impactCategories(risk.getImpactProvider(riskDef, domain).getCategorizedImpacts())
         .categorizedRisks(risk.getRiskProvider(riskDef, domain).getCategorizedRisks())
         .domainId(domain.getId())
-        .riskDefinitionId(new Key<>(riskDef.getIdRef()))
+        .riskDefinitionId(riskDef.getIdRef())
         .build();
   }
 }

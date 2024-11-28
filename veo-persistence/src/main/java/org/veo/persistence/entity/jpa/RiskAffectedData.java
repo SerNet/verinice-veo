@@ -217,9 +217,9 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
                   "Control '%s' (%s) cannot be disassociated, because it mitigates a risk for scenario '%s' (%s)."
                       .formatted(
                           control.getName(),
-                          control.getIdAsUUID(),
+                          control.getId(),
                           scenario.getName(),
-                          scenario.getIdAsUUID()));
+                          scenario.getId()));
             });
     this.controlImplementations.remove(ci);
     ((RiskAffectedData<T, R>) ci.getOwner())

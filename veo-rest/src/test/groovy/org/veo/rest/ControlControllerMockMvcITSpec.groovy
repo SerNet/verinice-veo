@@ -25,7 +25,6 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -129,7 +128,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when:
         Control savedControl = txTemplate.execute {
-            controlRepository.findById(Key.uuidFrom(resourceId)).get().tap() {
+            controlRepository.findById(UUID.fromString(resourceId)).get().tap() {
                 // resolve proxy:
                 customAspects.first()
             }

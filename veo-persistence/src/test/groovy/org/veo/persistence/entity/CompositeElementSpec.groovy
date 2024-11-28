@@ -21,7 +21,6 @@ import java.time.Instant
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.LinkDefinition
@@ -174,9 +173,9 @@ class CompositeElementSpec extends VeoSpec {
         Unit unit2 = newUnit(client2)
 
         def processes = [
-            newProcess(unit) { id = Key.newUuid() },
+            newProcess(unit) { id = UUID.randomUUID() },
             newProcess(unit2) {
-                id = Key.newUuid()
+                id = UUID.randomUUID()
             }
         ] as Set
 
@@ -193,8 +192,8 @@ class CompositeElementSpec extends VeoSpec {
         given: "a set of two processes from different clients"
         Client client2 = newClient()
         Unit unit2 = newUnit(client2)
-        def p1 = newProcess(unit) { id = Key.newUuid() }
-        def p2 = newProcess(unit2) { id = Key.newUuid() }
+        def p1 = newProcess(unit) { id = UUID.randomUUID() }
+        def p2 = newProcess(unit2) { id = UUID.randomUUID() }
 
         when: "a new composite is created"
         def processComposite = newProcess(unit)

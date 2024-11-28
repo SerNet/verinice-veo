@@ -42,7 +42,7 @@ class TransformerSpec extends Specification {
         subUnit.getClient() >> null
         subUnit.getDomains() >> []
         subUnit.getName() >> subUnitName
-        subUnit.idAsUUID >> subUnitId
+        subUnit.id >> subUnitId
         subUnit.getUnits() >> []
         subUnit.getModelInterface() >> Unit.getClass()
 
@@ -51,7 +51,7 @@ class TransformerSpec extends Specification {
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
-        unit.idAsUUID >> unitId
+        unit.id >> unitId
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.getClass()
         unit.createdAt >> Instant.now()

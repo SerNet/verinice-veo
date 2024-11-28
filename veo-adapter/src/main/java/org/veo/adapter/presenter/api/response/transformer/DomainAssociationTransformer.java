@@ -49,6 +49,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -203,7 +204,7 @@ public class DomainAssociationTransformer {
     return source.getDomains().stream()
         .collect(
             toMap(
-                domain -> domain.getIdAsUUID(),
+                Identifiable::getId,
                 domain -> {
                   var association = supplier.apply(domain);
                   association.setSubType(source.getSubType(domain));

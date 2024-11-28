@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 
 /**
  * A repository for {@link Client} entities.
@@ -31,5 +30,5 @@ import org.veo.core.entity.Key;
  * access to clients.
  */
 public interface ClientReadOnlyRepository {
-  Optional<Client> findById(Key<UUID> id);
+  Optional<Client> findById(UUID id);
 }

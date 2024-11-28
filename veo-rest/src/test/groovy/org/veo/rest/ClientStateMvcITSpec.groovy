@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
 import org.veo.rest.common.ClientNotActiveException
 
@@ -49,7 +48,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         }
 
         when: "we examine the client and the domain"
-        client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
+        client = clientRepository.findById(UUID.fromString(TESTCLIENT_UUID)).get()
 
         then: "the state is active"
         client.state == ACTIVATED
@@ -87,10 +86,10 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         parseJson(get("/assets")).totalItemCount == 1
 
         when: "we deactivate the client"
-        client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
+        client = clientRepository.findById(UUID.fromString(TESTCLIENT_UUID)).get()
         client.updateState(DEACTIVATION)
         clientRepository.save(client)
-        client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
+        client = clientRepository.findById(UUID.fromString(TESTCLIENT_UUID)).get()
 
         then: "its state has been updated"
         client.state ==  DEACTIVATED

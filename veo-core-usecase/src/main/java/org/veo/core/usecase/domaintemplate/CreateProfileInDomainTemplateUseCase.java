@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.exception.NotFoundException;
@@ -92,7 +91,7 @@ public class CreateProfileInDomainTemplateUseCase
   }
 
   @Valid
-  public record InputData(Client client, Key<UUID> templateId, ProfileState profile)
+  public record InputData(Client client, UUID templateId, ProfileState profile)
       implements UseCase.InputData {}
 
   @Valid

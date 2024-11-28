@@ -44,9 +44,6 @@ final class ValidUnitSpecification implements EntitySpecification<Element> {
   }
 
   public boolean isSatisfiedBy(Unit unit) {
-    return (unit != null
-        && !unit.getId().isUndefined()
-        && unit.getName() != null
-        && !unit.getName().isEmpty());
+    return (unit != null && unit.getName() != null && !unit.getName().isEmpty());
   }
 }

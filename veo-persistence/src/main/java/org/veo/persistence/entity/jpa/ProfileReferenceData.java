@@ -30,7 +30,6 @@ import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TemplateItemReference;
@@ -56,22 +55,12 @@ public abstract class ProfileReferenceData
   private ProfileItem owner;
 
   @Override
-  public Key<UUID> getId() {
-    return Optional.ofNullable(getDbId()).map(Key::from).orElse(null);
+  public void setId(UUID id) {
+    setDbId(Optional.ofNullable(id).orElse(null));
   }
 
   @Override
-  public void setId(Key<UUID> id) {
-    setDbId(Optional.ofNullable(id).map(Key::value).orElse(null));
-  }
-
-  @Override
-  public String getIdAsString() {
-    return Optional.ofNullable(getDbId()).map(UUID::toString).orElse(null);
-  }
-
-  @Override
-  public UUID getIdAsUUID() {
+  public UUID getId() {
     return dbId;
   }
 

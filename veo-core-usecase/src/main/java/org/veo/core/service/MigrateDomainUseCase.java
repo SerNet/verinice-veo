@@ -29,7 +29,6 @@ import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
@@ -164,5 +163,5 @@ public class MigrateDomainUseCase
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  public record InputData(Key<UUID> domainId) implements UseCase.InputData {}
+  public record InputData(UUID domainId) implements UseCase.InputData {}
 }

@@ -25,7 +25,6 @@ import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
-import org.veo.core.entity.Key
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -316,7 +315,7 @@ class ElementMigrationServiceSpec extends Specification{
             ]
         }
         def element = Mock(Element) {
-            id >> Key.newUuid()
+            id >> UUID.randomUUID()
             modelType >> "asset"
             getCustomAspects(domain) >> ([] as Set)
             getLinks(domain) >> ([] as Set)

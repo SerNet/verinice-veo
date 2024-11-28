@@ -476,7 +476,7 @@ class SwaggerSpec extends VeoSpringSpec {
             required == false
             with(schema) {
                 type == 'array'
-                items == ['type': 'string']
+                items == ['type': 'string', 'format': 'uuid']
             }
         }
     }

@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ref.ITypedId;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -47,7 +46,7 @@ public interface Repository<T extends Identifiable> extends RepositoryBase<T, IT
 
   @Override
   default Set<T> findAllByRefs(Set<ITypedId<T>> refs, Client client) {
-    var results = findByIds(refs.stream().map(ITypedId::toKey).collect(Collectors.toSet()));
+    var results = findByIds(refs.stream().map(ITypedId::getId).collect(Collectors.toSet()));
     results.forEach(
         r -> {
           if (r instanceof ClientOwned co) {
@@ -61,15 +60,15 @@ public interface Repository<T extends Identifiable> extends RepositoryBase<T, IT
 
   List<T> saveAll(Set<T> entities);
 
-  Optional<T> findById(Key<UUID> id);
+  Optional<T> findById(UUID id);
 
-  Set<T> findByIds(Set<Key<UUID>> ids);
+  Set<T> findByIds(Set<UUID> ids);
 
-  Set<T> getByIds(Set<Key<UUID>> ids);
+  Set<T> getByIds(Set<UUID> ids);
 
   void delete(T entity);
 
-  void deleteById(Key<UUID> id);
+  void deleteById(UUID id);
 
-  boolean exists(Key<UUID> id);
+  boolean exists(UUID id);
 }

@@ -37,7 +37,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Profile;
@@ -94,7 +93,7 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Client createClient(Key<UUID> id, String name) {
+  public Client createClient(UUID id, String name) {
     Client client = new ClientData();
     client.setId(id);
     client.setName(name);
@@ -152,7 +151,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public Domain createDomain(String name, String authority, String templateVersion) {
     Domain domain = new DomainData();
-    domain.setId(Key.newUuid());
+    domain.setId(UUID.randomUUID());
     domain.setName(name);
     domain.setAuthority(authority);
     domain.setTemplateVersion(templateVersion);
@@ -186,7 +185,7 @@ public class EntityDataFactory implements EntityFactory {
 
   @Override
   public DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, Key<UUID> id) {
+      String name, String authority, String templateVersion, UUID id) {
     DomainTemplate domainTemplate = new DomainTemplateData();
     domainTemplate.setId(id);
     domainTemplate.setName(name);
@@ -200,7 +199,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public CatalogItem createCatalogItem(DomainBase domain) {
     CatalogItem catalogItem = new CatalogItemData();
-    catalogItem.setSymbolicId(Key.newUuid());
+    catalogItem.setSymbolicId(UUID.randomUUID());
     catalogItem.setDomainBase(domain);
     domain.getCatalogItems().add(catalogItem);
     return catalogItem;
@@ -233,7 +232,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public ProfileItem createProfileItem(Profile profile) {
     ProfileItemData profileData = new ProfileItemData();
-    profileData.setSymbolicId(Key.newUuid());
+    profileData.setSymbolicId(UUID.randomUUID());
     profileData.setOwner(profile);
     profile.getItems().add(profileData);
     return profileData;

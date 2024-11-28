@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
@@ -25,7 +24,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase
 public class DeleteUnitUseCaseSpec extends UseCaseSpec {
     def "Delete a unit with subunits" () {
         given: "starting values for a unit"
-        def uid = Key.newUuid()
+        def uid = UUID.randomUUID()
         Unit existingUnit = Mock(Unit)
         existingUnit.id >> uid
         existingUnit.client >> existingClient

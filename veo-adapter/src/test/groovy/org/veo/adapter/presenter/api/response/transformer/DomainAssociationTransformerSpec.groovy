@@ -37,15 +37,15 @@ import spock.lang.Specification
 
 class DomainAssociationTransformerSpec extends Specification {
 
-    Domain domain0 = Mock(Domain) { it.idAsUUID >> randomUUID() }
-    Domain domain1 = Mock(Domain) { it.idAsUUID >> randomUUID() }
+    Domain domain0 = Mock(Domain) { it.id >> randomUUID() }
+    Domain domain1 = Mock(Domain) { it.id >> randomUUID() }
     ReferenceAssembler referenceAssembler = Mock()
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer(referenceAssembler)
 
     def "maps sub types from entity to DTO"() {
         given: "a process with different sub types in two domains"
         Person linkTargetPerson = Mock(Person) {
-            idAsUUID >> randomUUID()
+            id >> randomUUID()
             modelInterface >> Person
             findSubType(domain1) >> Optional.of("SuperOverseer")
         }
@@ -102,14 +102,14 @@ class DomainAssociationTransformerSpec extends Specification {
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
         capturedDomainMap.size() == 2
-        with(capturedDomainMap[domain0.idAsUUID]) {
+        with(capturedDomainMap[domain0.id]) {
             subType == "foo"
             status == "NEW_FOO"
             customAspects.value.relevance.value.importance == 10000
             links.value.isEmpty()
             decisionResults == decisionResults0
         }
-        with(capturedDomainMap[domain1.idAsUUID]) {
+        with(capturedDomainMap[domain1.id]) {
             subType == "bar"
             status == "NEW_BAR"
             customAspects.value.isEmpty()
@@ -153,11 +153,11 @@ class DomainAssociationTransformerSpec extends Specification {
         then: "a map of domain associations is set on the DTO"
         1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
         capturedDomainMap.size() == 2
-        with(capturedDomainMap[domain0.idAsUUID]) {
+        with(capturedDomainMap[domain0.id]) {
             subType == "foo"
             status == "NEW_FOO"
         }
-        with(capturedDomainMap[domain1.idAsUUID]) {
+        with(capturedDomainMap[domain1.id]) {
             subType == "bar"
             status == "NEW_BAR"
         }

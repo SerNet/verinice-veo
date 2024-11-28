@@ -19,7 +19,6 @@ package org.veo.core.usecase.domain;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -40,7 +39,7 @@ public class GetInspectionUseCase
     return new OutputData(domain.getInspection(input.inspectionRef));
   }
 
-  public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId, String inspectionRef)
+  public record InputData(UUID authenticatedClientId, UUID domainId, String inspectionRef)
       implements UseCase.InputData {}
 
   public record OutputData(Inspection inspection) implements UseCase.OutputData {}

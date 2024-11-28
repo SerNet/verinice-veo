@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.rest.common.ClientNotActiveException;
@@ -80,7 +79,7 @@ public abstract class AbstractVeoController {
   }
 
   protected Client getClient(String clientId) {
-    Key<UUID> id = Key.uuidFrom(clientId);
+    UUID id = UUID.fromString(clientId);
     return clientRepository
         .findActiveById(id)
         .orElseThrow(() -> new ClientNotActiveException(clientId));

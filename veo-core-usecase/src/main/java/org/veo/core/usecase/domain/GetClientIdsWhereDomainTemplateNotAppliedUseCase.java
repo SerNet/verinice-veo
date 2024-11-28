@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -50,16 +49,14 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
       throw new MissingAdminPrivilegesException();
     }
     return new OutputData(
-        clientRepository
-            .findAllActiveWhereDomainTemplateNotApplied(Key.uuidFrom(input.domainTemplateId))
-            .stream()
+        clientRepository.findAllActiveWhereDomainTemplateNotApplied(input.domainTemplateId).stream()
             .map(Identifiable::getId)
             .collect(Collectors.toSet()));
   }
 
   @Valid
-  public record InputData(String domainTemplateId) implements UseCase.InputData {}
+  public record InputData(UUID domainTemplateId) implements UseCase.InputData {}
 
   @Valid
-  public record OutputData(@Valid Set<Key<UUID>> clientIds) implements UseCase.OutputData {}
+  public record OutputData(@Valid Set<UUID> clientIds) implements UseCase.OutputData {}
 }

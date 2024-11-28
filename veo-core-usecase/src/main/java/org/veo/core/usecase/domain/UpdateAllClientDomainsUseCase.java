@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.MigrationFailedException;
@@ -42,11 +41,11 @@ public class UpdateAllClientDomainsUseCase
 
   @Override
   public EmptyOutput execute(InputData input) {
-    Set<Key<UUID>> newDomainIds = domainRepository.findIdsByTemplateId(input.domainTemplateId);
+    Set<UUID> newDomainIds = domainRepository.findIdsByTemplateId(input.domainTemplateId);
     int count = newDomainIds.size();
     log.info("Migrating {} clients to new domain template {}", count, input.domainTemplateId);
     int migrationsDone = 0;
-    for (Key<UUID> newDomainId : newDomainIds) {
+    for (UUID newDomainId : newDomainIds) {
       try {
         migrateDomainUseCase.execute(new MigrateDomainUseCase.InputData(newDomainId));
         migrationsDone++;
@@ -64,5 +63,5 @@ public class UpdateAllClientDomainsUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> domainTemplateId) implements UseCase.InputData {}
+  public record InputData(UUID domainTemplateId) implements UseCase.InputData {}
 }

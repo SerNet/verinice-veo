@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.NonNull;
@@ -38,37 +37,37 @@ import lombok.NonNull;
  */
 public interface DomainRepository extends IdentifiableVersionedRepository<Domain> {
 
-  Set<Domain> findAllActiveByClient(Key<UUID> clientId);
+  Set<Domain> findAllActiveByClient(UUID clientId);
 
-  Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId);
+  Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(UUID clientId);
 
   Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-      Collection<Key<UUID>> domainIds, Key<UUID> clientId);
+      Collection<UUID> domainIds, UUID clientId);
 
-  Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId);
+  Set<UUID> findIdsByTemplateId(UUID domainTemplateId);
 
-  Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
+  Optional<Domain> findById(UUID domainId, UUID clientId);
 
-  Domain getActiveById(Key<UUID> domainId, Key<UUID> clientId);
+  Domain getActiveById(UUID domainId, UUID clientId);
 
-  Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId);
+  Domain getById(@NonNull UUID domainId, @NonNull UUID clientId);
 
-  Set<Domain> findByIds(@NonNull Set<Key<UUID>> ids, @NonNull Key<UUID> clientId);
+  Set<Domain> findByIds(@NonNull Set<UUID> ids, @NonNull UUID clientId);
 
-  Set<Domain> getByIds(@NonNull Set<@NonNull Key<UUID>> domainIds, @NonNull Key<UUID> clientId);
+  Set<Domain> getByIds(@NonNull Set<@NonNull UUID> domainIds, @NonNull UUID clientId);
 
-  Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId);
+  Optional<Domain> findByIdWithProfilesAndRiskDefinitions(UUID id, UUID clientId);
 
-  default Domain getById(Key<UUID> id) {
+  default Domain getById(UUID id) {
     return findById(id).orElseThrow(() -> new NotFoundException(id, Domain.class));
   }
 
   boolean nameExistsInClient(String name, Client client);
 
-  Domain getByIdWithDecisionsAndInspections(Key<UUID> domainId, Key<UUID> clientId);
+  Domain getByIdWithDecisionsAndInspections(UUID domainId, UUID clientId);
 
   default Domain getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
-      Key<UUID> domainId, Key<UUID> clientId) {
+      UUID domainId, UUID clientId) {
     return findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
             List.of(domainId), clientId)
         .stream()

@@ -39,7 +39,7 @@ class FilterMockMvcITSpec extends VeoMvcSpec {
         client = clientRepository.getById(client.id)
         unitId = unitRepository.save(newUnit(client) {
             domains = [domain]
-        }).idAsUUID
+        }).id
     }
 
     def "filter #type.pluralTerm by abbreviation"() {

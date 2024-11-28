@@ -36,7 +36,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.aspects.RiskValuesAspect;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
@@ -146,13 +145,13 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   private List<DeterminedRiskImpl> riskCategories = new ArrayList<>();
 
   @Override
-  public Key<UUID> getDomainId() {
+  public UUID getDomainId() {
     return domain.getId();
   }
 
   @Override
-  public Key<String> getRiskDefinitionId() {
-    return new Key<>(riskDefinition.getIdRef());
+  public String getRiskDefinitionId() {
+    return riskDefinition.getIdRef();
   }
 
   public List<Impact> getImpactCategories() {

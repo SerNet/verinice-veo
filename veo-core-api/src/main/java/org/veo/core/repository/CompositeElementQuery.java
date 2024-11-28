@@ -20,8 +20,7 @@ package org.veo.core.repository;
 import java.util.UUID;
 
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Key;
 
 public interface CompositeElementQuery<T extends CompositeElement<T>> extends ElementQuery<T> {
-  void whereCompositesContain(SingleValueQueryCondition<Key<UUID>> condition);
+  void whereCompositesContain(SingleValueQueryCondition<UUID> condition);
 }

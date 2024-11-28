@@ -22,7 +22,6 @@ import org.springframework.data.mapping.PropertyReferenceException
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ControlImplementationQuery
 import org.veo.core.repository.PagingConfiguration
@@ -63,7 +62,7 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient {
-            id = Key.newUuid()
+            id = UUID.randomUUID()
             newDomain(it)
         })
         unit = unitRepository.save(newUnit(client))
@@ -129,7 +128,7 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
 
     def 'filter CIs by risk-affected'() {
         when:
-        query.whereRiskAffectedIs(asset.idAsUUID)
+        query.whereRiskAffectedIs(asset.id)
         def result = query.execute(new PagingConfiguration(Integer.MAX_VALUE, 0, "control.name", SortOrder.ASCENDING))
 
         then:

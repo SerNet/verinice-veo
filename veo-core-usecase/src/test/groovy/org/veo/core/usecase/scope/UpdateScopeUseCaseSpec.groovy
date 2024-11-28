@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.state.ScopeState
@@ -40,9 +39,9 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
     UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper, eventPublisher, refResolverFactory)
     def "update a scope"() {
         given:
-        def scopeId = Key.newUuid()
+        def scopeId = UUID.randomUUID()
         def scope = Mock(ScopeState)
-        scope.getId() >> scopeId.uuidValue()
+        scope.getId() >> scopeId
         scope.name >> "Updated scope"
         scope.domainAssociationStates >> []
         scope.members >> []
@@ -50,7 +49,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
         def existingScope = Mock(Scope) {
             it.id >> scopeId
-            it.idAsString >> scopeId.uuidValue()
+            it.idAsString >> scopeId.toString()
             it.owner >> existingUnit
             it.domains >> []
             it.customAspects >> []
@@ -65,8 +64,8 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def eTag = ETag.from(scopeId.uuidValue(), 0)
-        def output = usecase.execute(new ModifyElementUseCase.InputData(scopeId.value(), scope, existingClient,  eTag, USER_NAME))
+        def eTag = ETag.from(scopeId.toString(), 0)
+        def output = usecase.execute(new ModifyElementUseCase.InputData(scopeId, scope, existingClient,  eTag, USER_NAME))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository

@@ -24,7 +24,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
@@ -58,7 +57,7 @@ public class GetUnitsUseCase
 
     if (input.parentUuid.isEmpty()) return new OutputData(unitRepository.findByClient(client));
     else {
-      Key<UUID> parentId = Key.from(input.parentUuid.get());
+      UUID parentId = input.parentUuid.get();
       Unit parentUnit =
           unitRepository
               .findById(parentId)

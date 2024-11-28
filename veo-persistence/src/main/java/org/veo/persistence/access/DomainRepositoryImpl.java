@@ -26,14 +26,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
@@ -55,44 +53,44 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findAllActiveByClient(Key<UUID> clientId) {
-    return dataRepository.findAllActiveByClient(clientId.value()).stream()
+  public Set<Domain> findAllActiveByClient(UUID clientId) {
+    return dataRepository.findAllActiveByClient(clientId).stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId) {
-    return dataRepository.findActiveDomainsWithProfilesAndRiskDefinitions(clientId.value()).stream()
+  public Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(UUID clientId) {
+    return dataRepository.findActiveDomainsWithProfilesAndRiskDefinitions(clientId).stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
   public Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-      Collection<Key<UUID>> domainIds, Key<UUID> clientId) {
+      Collection<UUID> domainIds, UUID clientId) {
     return dataRepository
         .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-            domainIds.stream().map(Key::value).toList(), clientId.value())
+            domainIds.stream().toList(), clientId)
         .stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId) {
-    return dataRepository.findIdsByDomainTemplateId(domainTemplateId.value()).stream()
-        .map(Key::uuidFrom)
+  public Set<UUID> findIdsByTemplateId(UUID domainTemplateId) {
+    return dataRepository.findIdsByDomainTemplateId(domainTemplateId).stream()
+        .map(UUID::fromString)
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
-    return dataRepository.findById(domainId.value(), clientId.value());
+  public Optional<Domain> findById(@NonNull UUID domainId, @NonNull UUID clientId) {
+    return dataRepository.findById(domainId, clientId);
   }
 
   @Override
-  public Domain getActiveById(Key<UUID> domainId, Key<UUID> clientId) {
+  public Domain getActiveById(UUID domainId, UUID clientId) {
     var domain = getById(domainId, clientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
@@ -101,28 +99,24 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
+  public Domain getById(@NonNull UUID domainId, @NonNull UUID clientId) {
     return dataRepository
-        .findById(domainId.value(), clientId.value())
+        .findById(domainId, clientId)
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }
 
   @Override
-  public Set<Domain> findByIds(Set<Key<UUID>> ids, @NonNull Key<UUID> clientId) {
-    var idStrings = ids.stream().map(Key::value).toList();
-    return StreamSupport.stream(
-            dataRepository.findAllByDbIdInAndOwnerDbIdIs(idStrings, clientId.value()).spliterator(),
-            false)
-        .collect(Collectors.toSet());
+  public Set<Domain> findByIds(Set<UUID> ids, @NonNull UUID clientId) {
+    return dataRepository.findAllByDbIdInAndOwnerDbIdIs(ids, clientId);
   }
 
   @Override
-  public Set<Domain> getByIds(Set<Key<UUID>> ids, @NonNull Key<UUID> clientId) {
+  public Set<Domain> getByIds(Set<UUID> ids, @NonNull UUID clientId) {
     Set<Domain> result = findByIds(ids, clientId);
     if (result.size() < ids.size()) {
-      List<Key<UUID>> foundIds = result.stream().map(Identifiable::getId).toList();
+      List<UUID> foundIds = result.stream().map(Identifiable::getId).toList();
       List<String> unfoundIds =
-          ids.stream().filter(Predicate.not(foundIds::contains)).map(Key::uuidValue).toList();
+          ids.stream().filter(Predicate.not(foundIds::contains)).map(UUID::toString).toList();
       throw new NotFoundException(
           format(
               "%s %s not found",
@@ -132,9 +126,9 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId) {
+  public Optional<Domain> findByIdWithProfilesAndRiskDefinitions(UUID id, UUID clientId) {
     return dataRepository
-        .findByIdWithProfilesAndRiskDefinitions(id.value(), clientId.value())
+        .findByIdWithProfilesAndRiskDefinitions(id, clientId)
         .map(Domain.class::cast);
   }
 
@@ -144,9 +138,9 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Domain getByIdWithDecisionsAndInspections(Key<UUID> domainId, Key<UUID> clientId) {
+  public Domain getByIdWithDecisionsAndInspections(UUID domainId, UUID clientId) {
     return dataRepository
-        .findByIdWithDecisionsAndInspections(domainId.value(), clientId.value())
+        .findByIdWithDecisionsAndInspections(domainId, clientId)
         .map(Domain.class::cast)
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }

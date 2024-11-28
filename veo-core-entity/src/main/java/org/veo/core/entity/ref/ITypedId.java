@@ -22,7 +22,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 
 public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
@@ -30,8 +29,4 @@ public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
 
   @JsonIgnore
   Class<T> getType();
-
-  default Key<UUID> toKey() {
-    return Key.from(getId());
-  }
 }

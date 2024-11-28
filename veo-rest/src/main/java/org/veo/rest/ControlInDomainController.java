@@ -86,7 +86,6 @@ import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -276,8 +275,8 @@ public class ControlInDomainController implements ElementInDomainResource {
         getControlImplementationsUseCase,
         new GetControlImplementationsUseCase.InputData(
             client,
-            Key.uuidFrom(uuid),
-            Key.uuidFrom(domainId),
+            UUID.fromString(uuid),
+            UUID.fromString(domainId),
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),

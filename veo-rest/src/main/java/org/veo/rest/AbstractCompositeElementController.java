@@ -30,7 +30,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -62,7 +61,7 @@ public abstract class AbstractCompositeElementController<
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(Key.from(uuid), client),
+        new GetElementUseCase.InputData(uuid, client),
         output -> {
           T element = output.element();
           return ResponseEntity.ok()

@@ -42,7 +42,6 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -95,14 +94,14 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   @Override
   public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
-    return dataRepository.getCountsBySubType(u.getIdAsUUID(), d.getIdAsUUID());
+    return dataRepository.getCountsBySubType(u.getId(), d.getId());
   }
 
   @Override
   public <T extends Element> Optional<T> findById(
-      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId) {
+      UUID elementId, Class<T> elementType, UUID clientId) {
     return dataRepository
-        .findById(elementId.value(), clientId.value())
+        .findById(elementId, clientId)
         .filter(e -> e.getModelInterface() == elementType)
         .map(e -> (T) e);
   }
@@ -123,8 +122,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Override
   @Transactional
   public void deleteAll(Collection<Element> elements) {
-    Set<Key<UUID>> elementKeys = elements.stream().map(Element::getId).collect(Collectors.toSet());
-    List<UUID> elementUUIDs = elementKeys.stream().map(Key::value).toList();
+    List<UUID> elementUUIDs = elements.stream().map(Element::getId).toList();
     ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
         .forEach(batch -> deleteLinksByTargets(Set.copyOf(batch)));
 
@@ -159,7 +157,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             .collect(Collectors.toSet());
     scopes.stream()
         .map(ScopeData.class::cast)
-        .forEach(scopeData -> scopeData.removeMembersById(elementKeys));
+        .forEach(scopeData -> scopeData.removeMembersById(elementUUIDs));
     elements.forEach(Element::remove);
 
     // First remove the owning side of bi-directional associations
@@ -202,7 +200,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Override
   @Transactional
   public void deleteByUnit(Unit unit) {
-    var unitId = unit.getIdAsUUID();
+    var unitId = unit.getId();
     em.flush();
     Stream.of(
             "delete from requirement_implementation where origin_db_id in (select db_id from element where owner_id = ?1)",

@@ -22,11 +22,9 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.*
 import org.veo.core.entity.AbstractRisk
 import org.veo.core.entity.Client
 import org.veo.core.entity.Identifiable
-import org.veo.core.entity.Key
 import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.event.RiskChangedEvent
-import org.veo.core.entity.event.RiskEvent
 import org.veo.test.VeoSpec
 
 import spock.lang.Unroll
@@ -40,13 +38,13 @@ class RiskChangedEventSpec extends VeoSpec{
         given: "A RiskChangedEvent with specified changes and domain ID"
         def mockRisk = Stub(AbstractRisk) {
             getEntity() >> Stub(RiskAffected) {
-                getId() >> Key.newUuid()
+                getId() >> UUID.randomUUID()
                 getOwningClient() >> Optional.of(Stub(Client) {
-                    getId() >> Key.newUuid()
+                    getId() >> UUID.randomUUID()
                 })
             }
             getScenario() >> Stub(Scenario) {
-                getId() >> Key.newUuid()
+                getId() >> UUID.randomUUID()
             }
         }
         def event = new RiskChangedEvent(mockRisk, new Object())
@@ -65,9 +63,9 @@ class RiskChangedEventSpec extends VeoSpec{
         [RISK_CREATED]        | null                      | null                      | true
         [RISK_DELETED]        | null                      | null                      | true
         [RISK_VALUES_CHANGED] | null                      | null                      | true
-        [RISK_VALUES_CHANGED] | Key.newUuid()             | Key.newUuid()             | false
-        [RISK_VALUES_CHANGED] | Key.newUuid()             | null                      | false
-        [RISK_VALUES_CHANGED] | null                      | Key.newUuid()             | false
-        [RISK_VALUES_CHANGED] | Key.uuidFrom(STABLE_UUID) | Key.uuidFrom(STABLE_UUID) | true
+        [RISK_VALUES_CHANGED] | UUID.randomUUID()             | UUID.randomUUID()             | false
+        [RISK_VALUES_CHANGED] | UUID.randomUUID()             | null                      | false
+        [RISK_VALUES_CHANGED] | null                      | UUID.randomUUID()             | false
+        [RISK_VALUES_CHANGED] | UUID.fromString(STABLE_UUID) | UUID.fromString(STABLE_UUID) | true
     }
 }

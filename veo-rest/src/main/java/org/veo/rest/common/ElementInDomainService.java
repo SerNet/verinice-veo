@@ -54,7 +54,6 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
@@ -116,16 +115,13 @@ public class ElementInDomainService {
           GetElementUseCase<TElement> getElementUseCase,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
     var client = clientLookup.getClient(auth);
-    if (etagService
-        .getEtag(modelType, uuid.toString())
-        .map(request::checkNotModified)
-        .orElse(false)) {
+    if (etagService.getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor
         .execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(Key.from(uuid), client, Key.from(domainId)),
+            new GetElementUseCase.InputData(uuid, client, domainId),
             output -> toDtoMapper.apply(output.element(), output.domain()))
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
@@ -134,8 +130,7 @@ public class ElementInDomainService {
       Client client, UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
     return runner.run(
             () ->
-                getElementUseCase.execute(
-                    new GetElementUseCase.InputData(Key.from(uuid), client, Key.from(domainId))))
+                getElementUseCase.execute(new GetElementUseCase.InputData(uuid, client, domainId)))
         != null;
   }
 
@@ -166,7 +161,7 @@ public class ElementInDomainService {
                     toDtoMapper.apply(
                         e,
                         e.getDomains().stream()
-                            .filter(d -> d.getIdAsUUID().equals(domainId))
+                            .filter(d -> d.getId().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
   }
@@ -198,8 +193,8 @@ public class ElementInDomainService {
         new AssociateElementWithDomainUseCase.InputData(
             clientLookup.getClient(auth),
             modelType,
-            Key.from(uuid),
-            Key.from(domainId),
+            uuid,
+            domainId,
             dto.getSubType(),
             dto.getStatus()),
         o -> ResponseEntity.ok().body(toDtoMapper.apply((TElement) o.element(), o.domain())));
@@ -223,13 +218,13 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         updateUseCase,
         new UpdateElementInDomainUseCase.InputData<>(
-            Key.from(id), dto, Key.from(domainId), client, eTag, user.getUsername()),
+            id, dto, domainId, client, eTag, user.getUsername()),
         output ->
             toResponseEntity(
                 output.entity(),
                 toDtoMapper,
                 output.entity().getDomains().stream()
-                    .filter(d -> d.getIdAsUUID().equals(domainId))
+                    .filter(d -> d.getId().equals(domainId))
                     .findFirst()
                     .orElseThrow()));
   }
@@ -240,7 +235,7 @@ public class ElementInDomainService {
     dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(clientLookup.getClient(auth), Key.from(domainId), dto),
+        new EvaluateElementUseCase.InputData(clientLookup.getClient(auth), domainId, dto),
         output -> ResponseEntity.ok().body(output));
   }
 
@@ -253,9 +248,9 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         addLinksUseCase,
         new AddLinksUseCase.InputData(
-            Key.from(elementId),
+            elementId,
             assetClass,
-            Key.from(domainId),
+            domainId,
             links.getCustomLinkStates(),
             clientLookup.getClient(auth)),
         out ->
@@ -278,7 +273,7 @@ public class ElementInDomainService {
         () -> {
           var domain =
               domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
-                  Key.from(domainId), clientLookup.getClient(auth).getId());
+                  domainId, clientLookup.getClient(auth).getId());
           return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
         });
   }
@@ -288,7 +283,7 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         getAvailableActionsUseCase,
         new GetAvailableActionsUseCase.InputData(
-            Key.from(domainId), Key.from(uuid), type, clientLookup.getClient(auth).getId()),
+            domainId, uuid, type, clientLookup.getClient(auth).getId()),
         o -> ResponseEntity.ok(entityToDtoTransformer.transformActions2Dtos(o.actions())));
   }
 
@@ -301,11 +296,7 @@ public class ElementInDomainService {
     return useCaseInteractor.execute(
         performActionUseCase,
         new PerformActionUseCase.InputData(
-            Key.from(domainId),
-            Key.from(uuid),
-            elementType,
-            actionId,
-            clientLookup.getClient(auth).getId()),
+            domainId, uuid, elementType, actionId, clientLookup.getClient(auth).getId()),
         o -> ResponseEntity.ok(entityToDtoTransformer.transformActionResult2Dto(o.result())));
   }
 
@@ -322,7 +313,7 @@ public class ElementInDomainService {
                     entityToDtoTransformer.mapControlImplementation(
                         e,
                         e.getOwner().getDomains().stream()
-                            .filter(d -> d.getIdAsUUID().equals(domainId))
+                            .filter(d -> d.getId().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
   }

@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
@@ -54,7 +53,7 @@ public class RiskDefinitionChangedEvent implements DomainEvent {
   }
 
   @Override
-  public Key<UUID> getClientId() {
+  public UUID getClientId() {
     return client.getId();
   }
 }

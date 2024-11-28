@@ -65,6 +65,6 @@ public abstract class AbstractEntityController extends AbstractVeoController {
 
   protected <T extends Identifiable & Versioned> Optional<String> getEtag(
       Class<T> entityClass, UUID id) {
-    return etagService.getEtag(entityClass, id.toString());
+    return etagService.getEtag(entityClass, id);
   }
 }

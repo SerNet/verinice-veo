@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.state.CompositeElementState
 import org.veo.core.repository.PersonRepository
@@ -36,10 +35,10 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     def "update a person"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Person person = Mock()
         person.id >> id
-        person.idAsString >> id.uuidValue()
+        person.idAsString >> id.toString()
         person.getOwner() >> existingUnit
         person.name >> "Updated person"
         person.version >> 0
@@ -53,14 +52,14 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         person.appliedCatalogItems >> []
 
         CompositeElementState personState = Mock {
-            getId() >> id.uuidValue()
+            getId() >> id
             domainAssociationStates >> []
             parts >> []
         }
 
         when:
-        def eTag = ETag.from(person.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(id.value(), personState, existingClient, eTag, "max"))
+        def eTag = ETag.from(person.getId().toString(), 0)
+        def output = usecase.execute(new InputData(id, personState, existingClient, eTag, "max"))
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository

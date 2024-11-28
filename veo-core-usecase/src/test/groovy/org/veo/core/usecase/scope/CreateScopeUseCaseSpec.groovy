@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.ref.TypedId
@@ -55,7 +54,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.getOwningClient() >> Optional.of(existingClient)
         scopeState.name >> "My scope"
         scopeState.modelInterface >> Scope
-        scopeState.owner >> TypedId.from(existingUnit.idAsUUID, Unit)
+        scopeState.owner >> TypedId.from(existingUnit.id, Unit)
 
         repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
 
@@ -86,8 +85,8 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
     def "validates super scope client"() {
         given: "a scope for another client"
         def superScope = Spy(Scope)
-        superScope.id >> Key.newUuid()
-        superScope.idAsUUID >> superScope.id.value()
+        superScope.id >> UUID.randomUUID()
+        superScope.id >> superScope.id
         superScope.checkSameClient(existingClient) >> {
             throw new ClientBoundaryViolationException(superScope, existingClient)
         }

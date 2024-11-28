@@ -43,7 +43,7 @@ public interface TemplateItem<
 
   @Override
   default UUID getSelfId() {
-    return getSymbolicId().value();
+    return getSymbolicId();
   }
 
   @Override

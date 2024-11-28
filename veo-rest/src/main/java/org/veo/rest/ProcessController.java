@@ -100,7 +100,6 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
@@ -230,7 +229,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     CompletableFuture<FullProcessDto> entityFuture =
         useCaseInteractor.execute(
             getProcessUseCase,
-            new GetProcessUseCase.InputData(Key.from(uuid), client, embedRisks),
+            new GetProcessUseCase.InputData(uuid, client, embedRisks),
             output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -304,7 +303,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     return useCaseInteractor.execute(
         deleteElementUseCase,
         new DeleteElementUseCase.InputData(
-            Process.class, Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
+            Process.class, UUID.fromString(uuid), getAuthenticatedClient(auth)),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -453,7 +452,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(hidden = true) ApplicationUser user, UUID processId) {
 
     Client client = getClient(user.getClientId());
-    var input = new GetProcessRisksUseCase.InputData(client, Key.from(processId));
+    var input = new GetProcessRisksUseCase.InputData(client, processId);
 
     return useCaseInteractor.execute(
         getProcessRisksUseCase,
@@ -474,8 +473,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   private CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
       Client client, UUID processId, UUID scenarioId) {
-    var input =
-        new GetProcessRiskUseCase.InputData(client, Key.from(processId), Key.from(scenarioId));
+    var input = new GetProcessRiskUseCase.InputData(client, processId, scenarioId);
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -500,7 +498,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     var input =
         new CreateProcessRiskUseCase.InputData(
             getClient(user.getClientId()),
-            Key.from(processId),
+            processId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
@@ -533,9 +531,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       ApplicationUser user, UUID processId, UUID scenarioId) {
 
     Client client = getClient(user.getClientId());
-    var input =
-        new DeleteRiskUseCase.InputData(
-            Process.class, client, Key.from(processId), Key.from(scenarioId));
+    var input = new DeleteRiskUseCase.InputData(Process.class, client, processId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -548,7 +544,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     var input =
         new UpdateProcessRiskUseCase.InputData(
             client,
-            Key.from(processId),
+            processId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),

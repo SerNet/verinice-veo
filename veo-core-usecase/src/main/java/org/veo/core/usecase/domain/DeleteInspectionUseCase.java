@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -49,6 +48,6 @@ public class DeleteInspectionUseCase
   }
 
   @Valid
-  public record InputData(Key<UUID> authenticatedClientId, Key<UUID> domainId, String inspectionId)
+  public record InputData(UUID authenticatedClientId, UUID domainId, String inspectionId)
       implements UseCase.InputData {}
 }

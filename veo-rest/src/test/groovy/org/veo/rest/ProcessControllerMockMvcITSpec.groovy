@@ -29,7 +29,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
@@ -537,7 +536,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ])).resourceId
         def process1 = txTemplate.execute{
-            Process process = processRepository.findById(Key.uuidFrom(processId)).get()
+            Process process = processRepository.findById(UUID.fromString(processId)).get()
             with(process.links) {
                 //need to be in the open session
                 size() == 1

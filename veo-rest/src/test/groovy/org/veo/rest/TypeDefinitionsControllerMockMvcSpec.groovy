@@ -42,7 +42,7 @@ class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
             post(it.searchUri, [:])
             // Try using the schema URI.
             // TODO VEO-663 do the async thing
-            assert mvc.perform(MockMvcRequestBuilders.get(it.schemaUri.replace("{domains}", "whatever")))
+            assert mvc.perform(MockMvcRequestBuilders.get(it.schemaUri.replace("{domains}", UUID.randomUUID().toString())))
             .andReturn().response.status == 200
         }
     }

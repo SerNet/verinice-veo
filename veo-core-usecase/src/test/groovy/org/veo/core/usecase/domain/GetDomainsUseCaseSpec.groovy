@@ -18,7 +18,6 @@
 package org.veo.core.usecase.domain
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
@@ -26,12 +25,12 @@ import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
 class GetDomainsUseCaseSpec extends UseCaseSpec {
 
     DomainRepository domainRepository = Mock()
-    Key existingDomainId
+    def existingDomainId
 
     GetDomainsUseCase usecase = new GetDomainsUseCase(domainRepository)
 
     def setup() {
-        existingDomainId = Key.newUuid()
+        existingDomainId = UUID.randomUUID()
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
         existingDomain.active >> true

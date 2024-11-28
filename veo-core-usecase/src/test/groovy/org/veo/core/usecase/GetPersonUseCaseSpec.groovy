@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PersonRepository
@@ -33,7 +32,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a person"() {
         given:
-        def id = Key.newUuid()
+        def id = UUID.randomUUID()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id

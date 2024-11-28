@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ScopeRepository
@@ -33,7 +32,7 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a scope"() {
         given:
-        def scopeId = Key.newUuid()
+        def scopeId = UUID.randomUUID()
         def scope = Mock(Scope) {
             getOwner() >> existingUnit
             getId() >> scopeId

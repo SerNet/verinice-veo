@@ -23,7 +23,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
@@ -91,7 +90,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     def "create a simple client with unit"() {
         given: "a domain and a client"
-        Key clientId = Key.newUuid()
+        def clientId = UUID.randomUUID()
         Client client = repository.save(newClient {
             id = clientId
         })
@@ -128,7 +127,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     def "create simple client, unit and some objects"() {
         given: "a domain and a client"
-        Key clientId = Key.newUuid()
+        def clientId = UUID.randomUUID()
         Client client = repository.save(newClient{
             id = clientId
         })

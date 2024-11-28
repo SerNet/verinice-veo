@@ -25,7 +25,6 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -37,18 +36,16 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
 
   Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
 
-  default <T extends Element> T getById(Key<UUID> elementId, Class<T> elementType, Client client) {
+  default <T extends Element> T getById(UUID elementId, Class<T> elementType, Client client) {
     return getById(elementId, elementType, client.getId());
   }
 
-  default <T extends Element> T getById(
-      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId) {
+  default <T extends Element> T getById(UUID elementId, Class<T> elementType, UUID clientId) {
     return findById(elementId, elementType, clientId)
         .orElseThrow(() -> new NotFoundException(elementId, elementType));
   }
 
-  <T extends Element> Optional<T> findById(
-      Key<UUID> elementId, Class<T> elementType, Key<UUID> clientId);
+  <T extends Element> Optional<T> findById(UUID elementId, Class<T> elementType, UUID clientId);
 
   LinkQuery queryLinks(Element element, Domain domain);
 

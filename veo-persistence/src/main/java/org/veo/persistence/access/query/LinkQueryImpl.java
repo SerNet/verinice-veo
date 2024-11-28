@@ -73,7 +73,7 @@ public class LinkQueryImpl implements LinkQuery {
         elementDataRepository
             .findAllById(resultList.stream().map(row -> (UUID) row[2]).distinct().toList())
             .stream()
-            .collect(Collectors.toMap(Element::getIdAsUUID, Function.identity()));
+            .collect(Collectors.toMap(Element::getId, Function.identity()));
     var pageItems =
         resultList.stream()
             .map(
@@ -106,7 +106,7 @@ public class LinkQueryImpl implements LinkQuery {
 
   private Query linkQuery(String query) {
     return em.createNativeQuery(WITH_LINK_SUB_QUERY + query)
-        .setParameter("elementId", element.getIdAsUUID())
-        .setParameter("domainId", domain.getIdAsUUID());
+        .setParameter("elementId", element.getId())
+        .setParameter("domainId", domain.getId());
   }
 }

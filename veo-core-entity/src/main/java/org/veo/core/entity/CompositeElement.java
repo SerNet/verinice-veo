@@ -89,7 +89,7 @@ public interface CompositeElement<T extends CompositeElement<T>> extends Element
     addParts(parts);
   }
 
-  default boolean removePartById(Key<UUID> id) {
+  default boolean removePartById(UUID id) {
     return getParts().removeIf(part -> part.getId().equals(id));
   }
 

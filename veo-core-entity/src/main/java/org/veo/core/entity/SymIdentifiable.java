@@ -36,11 +36,11 @@ public interface SymIdentifiable<
   @Override
   Class<? extends T> getModelInterface();
 
-  Key<UUID> getSymbolicId();
+  UUID getSymbolicId();
 
   String getSymbolicIdAsString();
 
-  void setSymbolicId(Key<UUID> symbolicId);
+  void setSymbolicId(UUID symbolicId);
 
   /** The parent entity in which the symbolic ID must be unique. */
   TNamespace getNamespace();

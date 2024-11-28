@@ -38,7 +38,6 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
 import org.veo.core.service.EntitySchemaService
@@ -71,16 +70,16 @@ import org.veo.test.VeoSpec
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
     // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.4.0
-    public static final String DSGVO_DOMAINTEMPLATE_UUID = "dbbf0dbd-073f-51fc-86d2-d890169a3083"
+    public static final UUID DSGVO_DOMAINTEMPLATE_UUID = UUID.fromString("dbbf0dbd-073f-51fc-86d2-d890169a3083")
 
     // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v2.0.0
-    public static final String DSGVO_DOMAINTEMPLATE_V2_UUID = "b492c7da-0033-59c3-a225-c749595d2b8d"
+    public static final UUID DSGVO_DOMAINTEMPLATE_V2_UUID = UUID.fromString("b492c7da-0033-59c3-a225-c749595d2b8d")
 
     // dsgvo-test-1.json
-    public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "fece7858-8da5-59a3-b34a-6f8f831a256f"
+    public static final UUID DSGVO_TEST_DOMAIN_TEMPLATE_ID = UUID.fromString("fece7858-8da5-59a3-b34a-6f8f831a256f")
 
     // test-domain.json
-    public static final String TEST_DOMAIN_TEMPLATE_ID = "b641354b-ca8f-5d43-9e87-d3369451de89"
+    public static final UUID TEST_DOMAIN_TEMPLATE_ID = UUID.fromString("b641354b-ca8f-5d43-9e87-d3369451de89")
 
     @Autowired
     ClientRepository clientRepository
@@ -140,7 +139,7 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     def deleteUnitRecursively(Unit unit) {
         // Query the repository since the persistence context was cleared
-        unitDataRepository.findByParentId(unit.idAsUUID).each {
+        unitDataRepository.findByParentId(unit.id).each {
             deleteUnitRecursively(it)
         }
         deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
@@ -162,22 +161,22 @@ abstract class VeoSpringSpec extends VeoSpec {
         }
     }
 
-    def createTestDomainTemplate(String templateId) {
+    def createTestDomainTemplate(UUID templateId) {
         domainTemplateCreator.createTestTemplate(templateId)
     }
 
     Client createTestClient() {
         return clientRepository.save(newClient {
-            id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+            id = UUID.fromString(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
             state = ClientState.ACTIVATED
         })
     }
 
     def deleteTestClient() {
-        clientRepository.deleteById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
+        clientRepository.deleteById(UUID.fromString(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
     }
 
-    Domain createTestDomain(Client client, String templateId, boolean copyProfiles = true) {
+    Domain createTestDomain(Client client, UUID templateId, boolean copyProfiles = true) {
         return txTemplate.execute {
             return domainTemplateCreator.createDomainFromTemplate(templateId, client, copyProfiles)
         }

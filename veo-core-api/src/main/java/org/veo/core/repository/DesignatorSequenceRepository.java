@@ -20,14 +20,12 @@ package org.veo.core.repository;
 import java.util.List;
 import java.util.UUID;
 
-import org.veo.core.entity.Key;
-
 /**
  * Provides sequential numbers for designator creation. There is a separate sequence for each
  * combination of client and type designator.
  */
 public interface DesignatorSequenceRepository {
-  Long getNext(Key<UUID> clientId, String typeDesignator);
+  Long getNext(UUID clientId, String typeDesignator);
 
-  List<Long> getNext(Key<UUID> clientId, String typeDesignator, int count);
+  List<Long> getNext(UUID clientId, String typeDesignator, int count);
 }

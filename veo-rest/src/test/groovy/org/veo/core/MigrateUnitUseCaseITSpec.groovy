@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
@@ -108,8 +107,8 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)
-            dsgvoDomain = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_UUID }
-            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.idAsString == DSGVO_DOMAINTEMPLATE_V2_UUID }
+            dsgvoDomain = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
+            dsgvoDomainV2 = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_V2_UUID }
         }
     }
 
@@ -402,7 +401,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
-    def runUseCase(Key<UUID> unitId, Key<UUID> domainIdOld = dsgvoDomain.id, Key<UUID> domainIdNew = dsgvoDomainV2.id) {
+    def runUseCase(UUID unitId, UUID domainIdOld = dsgvoDomain.id, UUID domainIdNew = dsgvoDomainV2.id) {
         executeInTransaction {
             useCase.execute(new InputData(unitId, domainIdOld, domainIdNew))
         }

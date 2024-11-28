@@ -17,11 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.DomainTemplateService;
@@ -44,7 +45,7 @@ public class CreateDomainFromTemplateUseCase
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }
-    var client = clientRepository.getActiveById(Key.uuidFrom(input.clientId));
+    var client = clientRepository.getActiveById(input.clientId);
     domainTemplateService.createDomain(client, input.domainTemplateId, input.copyProfiles);
     clientRepository.save(client);
     return EmptyOutput.INSTANCE;
@@ -56,7 +57,7 @@ public class CreateDomainFromTemplateUseCase
   }
 
   @Valid
-  public record InputData(String domainTemplateId, String clientId, boolean copyProfiles)
+  public record InputData(UUID domainTemplateId, UUID clientId, boolean copyProfiles)
       implements UseCase.InputData {}
 
   @Valid

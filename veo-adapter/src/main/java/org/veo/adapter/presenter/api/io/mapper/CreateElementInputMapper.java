@@ -17,14 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.usecase.base.CreateElementUseCase;
 
@@ -35,10 +34,10 @@ public class CreateElementInputMapper {
     return new CreateElementUseCase.InputData<>(state, client, mapIds(scopeIds));
   }
 
-  private static Set<Key<UUID>> mapIds(List<UUID> ids) {
+  private static Set<UUID> mapIds(List<UUID> ids) {
     if (ids == null) {
       return Set.of();
     }
-    return ids.stream().map(Key::from).collect(Collectors.toSet());
+    return new HashSet<>(ids);
   }
 }
