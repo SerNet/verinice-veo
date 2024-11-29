@@ -25,8 +25,10 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
+import org.veo.core.usecase.service.DomainStateMapper
 import org.veo.persistence.access.ClientRepositoryImpl
 
 @ComponentScan("org.veo")
@@ -37,6 +39,9 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     @Autowired
     DomainTemplateServiceImpl domainTemplateService
+
+    @Autowired
+    DomainStateMapper domainStateMapper
 
     def "create specific domain from template"() {
         given: "a client"
@@ -262,6 +267,50 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[2].tailoringReferences.collect {it.target.name}.toSorted() == ['Asset 1', 'Asset 2']
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.MEMBER
             it[2].tailoringReferences[1].referenceType == TailoringReferenceType.MEMBER
+        }
+    }
+
+    def "copy a profile with multiple references to the same catalog item"() {
+        given:
+        def template = newDomainTemplate() {t->
+            catalogItems = [
+                newCatalogItem(t) {
+                    elementType = 'scenario'
+                }
+            ]
+            profiles = [
+                newProfile(t) {
+                    id = Key.newUuid()
+                    items = [
+                        newProfileItem(it) {
+                            elementType = 'scenario'
+                            appliedCatalogItem = t.catalogItems.first()
+                        },
+                        newProfileItem(it) {
+                            elementType = 'scenario'
+                            appliedCatalogItem = t.catalogItems.first()
+                        }
+                    ]
+                }
+            ]
+        }
+
+        def profile = template.profiles.first()
+        def client = newClient()
+        def domain = domainStateMapper.toDomain(template, false)
+
+        when:
+        domainTemplateService.copyProfileToDomain(profile, domain)
+
+        then:
+        domain.profiles.size() ==1
+        domain.catalogItems.size() == 1
+        with(domain.profiles.first()) {
+            items.size() == 2
+            items*.appliedCatalogItem == [
+                domain.catalogItems.first(),
+                domain.catalogItems.first()
+            ]
         }
     }
 }

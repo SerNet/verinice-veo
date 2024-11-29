@@ -140,6 +140,7 @@ public class DomainStateMapper {
     source.getItemStates().stream()
         .map(ProfileItemState::getAppliedCatalogItemRef)
         .filter(Objects::nonNull)
+        .distinct()
         .forEach(
             ciRef ->
                 resolver.inject(
