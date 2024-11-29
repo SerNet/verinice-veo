@@ -97,7 +97,7 @@ class VeoRestTest extends Specification {
     def clientId = 'veo-development-client'
 
     @Value('${veo.resttest.veo-clientid}')
-    def veoClientId = '21712604-ed85-4f08-aa46-1cf39607ee9e'
+    def veoClientId = 'd89879e1-5f82-4110-933a-355feac97525'
 
     @Value('${veo.resttest.veo-secondary-clientid}')
     def veoSecondaryClientId = '26ab39fb-d846-4f47-84a9-98b9aaa64419'
