@@ -30,7 +30,7 @@ class V34__rename_risk_value_properties extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
         def om = new ObjectMapper()
-        var con = new Sql(context.connection)
+        def con = new Sql(context.connection)
         con.query("select db_id, risk_categories from riskvalues_aspect") { ResultSet aspect ->
             while(aspect.next()) {
                 def id = aspect.getString("db_id")

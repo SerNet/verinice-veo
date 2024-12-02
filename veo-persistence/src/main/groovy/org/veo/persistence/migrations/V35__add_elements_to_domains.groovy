@@ -26,7 +26,7 @@ import groovy.sql.Sql
 class V35__add_elements_to_domains extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        var con = new Sql(context.connection)
+        def con = new Sql(context.connection)
         // select each element that is in a unit and has no domain associations. also fetch one of its client's domains
         // (doesn't matter which domain in prod because there should only be one active domain per client)
         con.eachRow("""

@@ -27,7 +27,7 @@ import jakarta.transaction.NotSupportedException
 class V36__add_missing_subtype_aspects extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        var con = new Sql(context.connection)
+        def con = new Sql(context.connection)
         // select all domain associations that have no corresponding sub type aspect, also fetching the element type
         con.eachRow("""
                 select e.db_id as element_id, e.dtype as element_type, ed.domains_db_id as domain_id

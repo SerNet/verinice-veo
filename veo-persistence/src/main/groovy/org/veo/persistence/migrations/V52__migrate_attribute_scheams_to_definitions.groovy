@@ -32,7 +32,7 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
         new Sql(context.connection).with{
-            var cache = [:]
+            def cache = [:]
             query("select db_id, custom_aspects, links from element_type_definition;") { ResultSet row ->
                 while (row.next()) {
                     execute([

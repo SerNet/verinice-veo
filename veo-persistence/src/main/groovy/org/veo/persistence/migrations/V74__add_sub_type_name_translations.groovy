@@ -32,7 +32,7 @@ class V74__add_sub_type_name_translations extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
         new Sql(context.connection).with {
-            var translationCache = [:]
+            def translationCache = [:]
             query("select db_id, element_type, sub_types, translations from element_type_definition;") { ResultSet row ->
                 while (row.next()) {
                     def elementType = row.getString("element_type")
