@@ -165,7 +165,7 @@ http_rest_tests:
       SPRING_DATASOURCE_USERNAME: test
       SPRING_DATASOURCE_PASSWORD: test
       SPRING_JACKSON_DESERIALIZATION_FAIL_ON_UNKNOWN_PROPERTIES: 'true'
-      SPRING_PROFILES_ACTIVE: background-tasks, plain-logging
+      SPRING_PROFILES_ACTIVE: background-tasks
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: $AUTH_URL
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: $AUTH_URL/protocol/openid-connect/certs
       VEO_CORS_ORIGINS: https://*.verinice.example, https://frontend.somewhereelse.example
