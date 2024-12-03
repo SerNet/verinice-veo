@@ -21,14 +21,21 @@ import java.util.List;
 
 import org.veo.core.entity.TranslatedText;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /** A problem or observation yielded by an {@link Inspection}. */
 @AllArgsConstructor
 @Getter
+@Schema(description = "A problem or observation yielded by an inspection")
 public class Finding {
+  @Schema(description = "Rating of how problematic this finding is")
   Severity severity;
+
+  @Schema(description = "Key is ISO language key, value is human-readable description")
   TranslatedText description;
+
+  @Schema(description = "Suggested actions that would fix this finding")
   List<Suggestion> suggestions;
 }

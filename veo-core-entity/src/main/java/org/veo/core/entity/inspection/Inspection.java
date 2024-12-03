@@ -35,6 +35,7 @@ import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.exception.NotFoundException;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,6 +50,9 @@ import lombok.NonNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(
+    description =
+        "Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.")
 public class Inspection {
 
   @NonNull Severity severity;
@@ -56,10 +60,16 @@ public class Inspection {
 
   @Nullable
   @Size(min = 1, max = 32)
+  @Schema(
+      description =
+          "Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.")
   String elementType;
 
   @Nullable
   @Size(min = 1, max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
+  @Schema(
+      description =
+          "Element sub type that this inspection applies to. If this is null, the inspection applies to all element sub types.")
   String elementSubType;
 
   @NonNull VeoExpression condition;

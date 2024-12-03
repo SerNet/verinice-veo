@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.core.entity.exception.InvalidAttributeException;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @JsonTypeInfo(use = NAME, property = "type")
@@ -49,6 +51,35 @@ import lombok.Data;
   @JsonSubTypes.Type(value = ListAttributeDefinition.class, name = ListAttributeDefinition.TYPE),
   @JsonSubTypes.Type(value = TextAttributeDefinition.class, name = TextAttributeDefinition.TYPE),
 })
+@Schema(
+    description = "Defines validation rules for an attribute in a custom aspect or link",
+    discriminatorProperty = "type",
+    discriminatorMapping = {
+      @DiscriminatorMapping(
+          schema = BooleanAttributeDefinition.class,
+          value = BooleanAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = DateAttributeDefinition.class,
+          value = DateAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = DateTimeAttributeDefinition.class,
+          value = DateTimeAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = EnumAttributeDefinition.class,
+          value = EnumAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = ExternalDocumentAttributeDefinition.class,
+          value = ExternalDocumentAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = IntegerAttributeDefinition.class,
+          value = IntegerAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = ListAttributeDefinition.class,
+          value = ListAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = TextAttributeDefinition.class,
+          value = TextAttributeDefinition.TYPE),
+    })
 @Data
 public abstract class AttributeDefinition {
 

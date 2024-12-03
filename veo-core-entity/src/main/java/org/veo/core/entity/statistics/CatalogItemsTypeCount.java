@@ -24,6 +24,12 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
 import org.veo.core.entity.EntityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(
+    description = "Amount of catalog items per sub type, grouped by element type",
+    example = "{\"control\": {\"TOM\": 8}, \"scenario\": {\"Attack\": 13, \"NaturalDisaster\": 5}}",
+    accessMode = Schema.AccessMode.READ_ONLY)
 public class CatalogItemsTypeCount {
 
   private final Map<String, Map<String, Long>> values = new HashMap<>();

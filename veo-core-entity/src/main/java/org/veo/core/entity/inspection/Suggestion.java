@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /** Suggests a user action that would fix a {@link Finding} yielded by an {@link Inspection}. */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -28,4 +30,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
   @JsonSubTypes.Type(value = AddPartSuggestion.class, name = AddPartSuggestion.NAME),
 })
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
+@Schema(
+    description = "Suggests an action to the user that would fix an inspection finding",
+    discriminatorProperty = "type",
+    discriminatorMapping =
+        @DiscriminatorMapping(value = AddPartSuggestion.NAME, schema = AddPartSuggestion.class))
 public interface Suggestion {}

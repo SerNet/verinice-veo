@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,9 +27,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
+@Schema(
+    description = "Suggests adding a part to the composite element",
+    accessMode = Schema.AccessMode.READ_ONLY)
 public class AddPartSuggestion implements Suggestion {
   public static final String NAME = "addPart";
 
   /** Suggested subtype of the new part. */
+  @Schema(description = "Suggested sub type for the new part")
   private String partSubType;
 }

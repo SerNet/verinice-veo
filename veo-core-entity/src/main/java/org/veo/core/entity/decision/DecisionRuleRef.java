@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,6 +31,7 @@ import lombok.Value;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
+@Schema(description = "Index of a rule in a decision's rules list", type = "integer")
 public class DecisionRuleRef {
   @Getter private final int index;
 

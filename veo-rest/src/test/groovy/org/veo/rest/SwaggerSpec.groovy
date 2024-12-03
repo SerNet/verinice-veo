@@ -277,9 +277,9 @@ class SwaggerSpec extends VeoSpringSpec {
 
         expect:
         def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
-        scopeDomainAssociationSchema.properties.decisionResults.additionalProperties.'$ref' == "#/components/schemas/DecisionResultsSchema"
+        scopeDomainAssociationSchema.properties.decisionResults.additionalProperties.'$ref' == "#/components/schemas/DecisionResult"
 
-        def decisionResultsSchema = schemas.DecisionResultsSchema
+        def decisionResultsSchema = schemas.DecisionResult
         decisionResultsSchema.properties.decisiveRule.type == "integer"
         decisionResultsSchema.properties.agreeingRules.items.type == "integer"
     }
@@ -416,10 +416,10 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/domains/{id}/catalog-items/type-count"].get
 
         expect: "that the correct schema is used"
-        endPointInfo.responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/CatalogItemsTypeCountSchema'
+        endPointInfo.responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/CatalogItemsTypeCount'
 
         when:
-        def schema = parsedApiDocs.components.schemas.CatalogItemsTypeCountSchema
+        def schema = parsedApiDocs.components.schemas.CatalogItemsTypeCount
 
         then:
         schema.readOnly
@@ -453,7 +453,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 }
 
         expect: "that the docs contain the expected mapping"
-        with(parsedApiDocs.components.schemas.AttributeDefinitionSchema) {
+        with(parsedApiDocs.components.schemas.AttributeDefinition) {
             discriminator.mapping == expectedSubTypeMap
         }
     }
@@ -593,7 +593,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "Inspection schema is complete"() {
         expect:
-        with(getSchema('InspectionSchema')) {
+        with(getSchema('Inspection')) {
             it.description == '''Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.'''
             with(it.properties) {
                 it.keySet() ==~  [
@@ -629,7 +629,11 @@ class SwaggerSpec extends VeoSpringSpec {
 
                 with(it.suggestions) {
                     it.type == 'array'
-                    it.items == [$ref:'#/components/schemas/SuggestionSchema']
+                    it.items == [
+                        oneOf: [
+                            [$ref:'#/components/schemas/AddPartSuggestion']
+                        ]
+                    ]
                 }
             }
         }
@@ -637,33 +641,40 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "Suggestion schema is complete"() {
         expect:
-        with(getSchema('SuggestionSchema')) {
+        with(getSchema('Suggestion')) {
             it.description == 'Suggests an action to the user that would fix an inspection finding'
-            it.properties == null
+            it.properties.keySet() ==~ ['type']
             it.discriminator == [
                 propertyName:'type',
                 mapping:[
-                    addPart:'#/components/schemas/AddPartSuggestionSchema']
+                    addPart:'#/components/schemas/AddPartSuggestion']
             ]
         }
     }
 
     def "AddPartSuggestion schema is complete"() {
         expect:
-        with(getSchema('AddPartSuggestionSchema')) {
+        with(getSchema('AddPartSuggestion')) {
             it.description == '''Suggests adding a part to the composite element'''
-            with(it.properties) {
-                it.keySet() ==~ ['partSubType']
-                with(it.partSubType) {
-                    it.description == 'Suggested sub type for the new part'
+            it.properties == null
+            it.allOf.size() == 2
+            with(it.allOf) {
+                with(it.find{it.type == 'object'}) {
+                    with(it.properties) {
+                        it.keySet() ==~ ['partSubType']
+                        with(it.partSubType) {
+                            it.description == 'Suggested sub type for the new part'
+                        }
+                    }
                 }
+                it.find{it.type != 'object'} == [$ref:'#/components/schemas/Suggestion']
             }
         }
     }
 
     def "AttributeDefinition schema is complete"() {
         expect:
-        with(getSchema('AttributeDefinitionSchema')) {
+        with(getSchema('AttributeDefinition')) {
             it.description == 'Defines validation rules for an attribute in a custom aspect or link'
             it.discriminator == [
                 propertyName:'type',

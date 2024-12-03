@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
-import org.veo.adapter.SchemaReplacer;
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
@@ -1185,11 +1184,6 @@ public class ModuleConfiguration {
   public Decider decider(
       ClientRepository clientRepository, GenericElementRepository genericElementRepository) {
     return new Decider(clientRepository, genericElementRepository);
-  }
-
-  @Bean
-  public SchemaReplacer schemaReplacer() {
-    return new SchemaReplacer();
   }
 
   @Bean
