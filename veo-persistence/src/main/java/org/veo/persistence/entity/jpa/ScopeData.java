@@ -40,6 +40,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -94,6 +95,18 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   @Override
   ScopeRisk createRisk(Scenario scenario) {
     return new ScopeRiskData(this, scenario);
+  }
+
+  @Override
+  protected TemplateItemAspects mapAspectsToItem(Domain domain) {
+    return new TemplateItemAspects(
+        this.getImpactValues(domain), null, getRiskDefinition(domain).orElse(null));
+  }
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    super.applyItemAspects(itemAspects, domain);
+    setRiskDefinition(domain, itemAspects.scopeRiskDefinition());
   }
 
   @OneToMany(

@@ -34,7 +34,8 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
  */
 public record TemplateItemAspects(
     Map<RiskDefinitionRef, ImpactValues> impactValues,
-    Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues) {
+    Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues,
+    RiskDefinitionRef scopeRiskDefinition) {
   public TemplateItemAspects {
     impactValues = immutableCopy(impactValues);
     scenarioRiskValues = immutableCopy(scenarioRiskValues);
@@ -46,6 +47,6 @@ public record TemplateItemAspects(
   }
 
   public TemplateItemAspects() {
-    this(null, null);
+    this(null, null, null);
   }
 }

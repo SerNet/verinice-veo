@@ -658,7 +658,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def memberUri = postIncarnationDescriptions(getIncarnationDescriptions([itemMember]))[0].targetUri
 
         and: "fetching the scopes"
-        def scopes = parseJson(get("/scopes")).items
+        def scopes = parseJson(get("/domains/${domain.idAsString}/scopes")).items
 
         then: "the scope from the catalog has been applied"
         scopes.size() == 1
@@ -668,6 +668,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         scopes[0].members.size() == 1
         scopes[0].members[0].name == "itemMember"
         scopes[0].members[0].targetUri == memberUri
+        scopes[0].riskDefinition == domain.riskDefinitions.keySet().first()
+        scopes[0].riskValues.id.potentialImpacts == [C : 2]
     }
 
     def "apply processImpactExample"() {

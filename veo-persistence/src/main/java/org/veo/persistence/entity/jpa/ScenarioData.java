@@ -71,7 +71,7 @@ public class ScenarioData extends ElementData implements Scenario {
 
   @Override
   protected TemplateItemAspects mapAspectsToItem(Domain domain) {
-    return new TemplateItemAspects(null, getPotentialProbability(domain));
+    return new TemplateItemAspects(null, getPotentialProbability(domain), null);
   }
 
   @OneToMany(

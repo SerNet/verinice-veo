@@ -23,10 +23,12 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
+import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -89,6 +91,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             newDomain(client) { d->
                 name = "Domain-complete"
+                applyElementTypeDefinition(newElementTypeDefinition("scope", d) {
+                    subTypes = [
+                        S1: newSubTypeDefinition {
+                            sortKey = 1
+                        }
+                    ]
+                })
+
                 newCatalogItem(d,{
                     elementType = "control"
                     subType = "CTL_TOM"
@@ -107,7 +117,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     status = "NEW"
                     name = 'c3'
                 })
-                riskDefinitions = ["id":rd] as Map
+                newCatalogItem(d,{
+                    elementType = "scope"
+                    subType = "S1"
+                    status = "NEW"
+                    name = 'scp1'
+                    aspects = new TemplateItemAspects(null, null, RiskDefinitionRef.from(rd))
+                })
+                riskDefinitions = ["id1":rd] as Map
                 newProfile(d,{p->
                     name = "test-profile"
                     description = "my description"
@@ -199,7 +216,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result*.name.sort().first() == 'Domain 1'
     }
 
-    @WithUserDetails("user@domain.example")
+    @WithUserDetails("content-creator")
     def "export a Domain"() {
         given: "a saved domain"
 
@@ -211,7 +228,21 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result.name == completeDomain.name
         result.elementTypeDefinitions != null
         result.riskDefinitions !=null
-        result.catalogItems*.name ==~ ["c1", "c2", "c3"]
+        result.catalogItems*.name ==~ ["c1", "c2", "c3", "scp1"]
+
+        with(result.catalogItems.find { it.name == "scp1" }) {
+            aspects.scopeRiskDefinition == "id1"
+        }
+
+        when: "we delete the riskdefinition"
+        delete("/content-creation/domains/${completeDomain.idAsString}/risk-definitions/id1")
+
+        result = parseJson(get("/domains/${completeDomain.idAsString}/export"))
+
+        then:
+        with(result.catalogItems.find { it.name == "scp1" }) {
+            aspects.scopeRiskDefinition == null
+        }
     }
 
     @WithUserDetails("user@domain.example")

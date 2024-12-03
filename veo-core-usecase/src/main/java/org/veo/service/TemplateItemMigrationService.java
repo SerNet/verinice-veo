@@ -69,14 +69,14 @@ public class TemplateItemMigrationService {
     var items = catalogItemRepository.findAllByDomain(domain);
     List<RiskDefinitionRef> validRiskDefinitionRefs =
         domain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
-
+    List<String> riskRelated =
+        RISK_RELETATED_ELEMENTS.stream().map(EntityType::getSingularTerm).toList();
     items.stream()
-        .filter(RiskRelated.class::isInstance)
+        .filter(ci -> riskRelated.contains(ci.getElementType()))
         .forEach(
             templateItem ->
                 removeRiskDefinitionFromItem(domain, templateItem, validRiskDefinitionRefs));
     removeRiskDefinitionFromRiskTailorRef(domain, items, validRiskDefinitionRefs);
-
     domain
         .getProfiles()
         .forEach(p -> removeRiskDefinitionFromProfile(domain, p, validRiskDefinitionRefs));
@@ -102,7 +102,8 @@ public class TemplateItemMigrationService {
     templateItem.setAspects(
         new TemplateItemAspects(
             removeInvalidKeys(aspects.impactValues(), keySet),
-            removeInvalidKeys(aspects.scenarioRiskValues(), keySet)));
+            removeInvalidKeys(aspects.scenarioRiskValues(), keySet),
+            keySet.contains(aspects.scopeRiskDefinition()) ? aspects.scopeRiskDefinition() : null));
   }
 
   private void removeRiskDefinitionFromRiskTailorRef(
@@ -168,7 +169,8 @@ public class TemplateItemMigrationService {
                             e ->
                                 newPotentialProbability(
                                     e.getValue(), domain.getRiskDefinition(e.getKey().getIdRef()))))
-                .orElse(null)));
+                .orElse(null),
+            aspects.scopeRiskDefinition()));
   }
 
   private void migrateAllRiskTailoringReference(

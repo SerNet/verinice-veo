@@ -298,7 +298,7 @@ class CatalogSpec extends VeoMvcSpec {
                                 )
                             ])
                             )]
-                        ,null)
+                        ,null, null)
             })
 
             controlImpactExample = newCatalogItem(domain, {
@@ -335,7 +335,7 @@ class CatalogSpec extends VeoMvcSpec {
                     (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
                     (new PotentialProbability(
                     ProbabilityRef.from(domain.riskDefinitions.get(RISK_DEF_ID).getProbability().getLevel(3).get())))
-                ])
+                ], null)
             })
 
             scenarioProbabilityExample1 = newCatalogItem(domain, {
@@ -404,6 +404,20 @@ class CatalogSpec extends VeoMvcSpec {
                 subType = "kaleidoscope"
                 status = "NEW"
                 name = "itemScope"
+
+                aspects = new TemplateItemAspects(
+                        [
+                            (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
+                            (new ImpactValues([
+                                ( CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                .getCategory("C").get())):
+                                (
+                                ImpactRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                .getCategory("C").get().getLevel(2).get())
+                                )
+                            ])
+                            )]
+                        ,null, RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID)))
             }
             itemMember = newCatalogItem(domain) {
                 elementType = "process"

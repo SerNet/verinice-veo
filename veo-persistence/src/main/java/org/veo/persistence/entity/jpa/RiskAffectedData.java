@@ -251,7 +251,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   protected TemplateItemAspects mapAspectsToItem(Domain domain) {
-    return new TemplateItemAspects(this.getImpactValues(domain), null);
+    return new TemplateItemAspects(this.getImpactValues(domain), null, null);
   }
 
   @Override

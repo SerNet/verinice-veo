@@ -266,6 +266,13 @@ class DomainCreationRestTest extends DomainRestTest {
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
+        put("/content-creation/domains/$newDomainId/element-type-definitions/scope", [
+            subTypes: [
+                SimpleScope: [
+                    statuses: ["OLD", "NEW"]
+                ]
+            ]
+        ], null, 204, CONTENT_CREATOR)
         get("/units/$unitId").with {
             body.domains.add([targetUri: "/domains/$newDomainId"])
             put(body._self, body, getETag())
@@ -301,6 +308,19 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "it has been applied"
         get(scenarioInDomainUri).body.riskValues.simpleDef.potentialProbability == 1
 
+        def scopeInDomainUri = post("/domains/$newDomainId/scopes", [
+            name: "risk test scope",
+            subType: "SimpleScope",
+            status: "OLD",
+            owner: [targetUri: "/units/$unitId"],
+            riskDefinition: "simpleDef",
+        ]).location
+
+        then: "it has been applied"
+        with(get(scopeInDomainUri).body) {
+            riskDefinition == "simpleDef"
+        }
+
         when: "modifying impact inheriting links"
         definition.impactInheritingLinks.scenario = ["requiredScenario"]
         put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)
@@ -317,6 +337,12 @@ class DomainCreationRestTest extends DomainRestTest {
         and: "it has been removed from the scenario"
         with(get(scenarioInDomainUri).body) {
             riskValues == [:]
+            updatedBy == owner.contentCreatorUserName
+        }
+
+        and: "from the scope"
+        with(get(scopeInDomainUri).body) {
+            riskDefinition == null
             updatedBy == owner.contentCreatorUserName
         }
     }
@@ -492,6 +518,43 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "it is perstisted"
         with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {definition->
             definition.categories.each { it.valueMatrix == null }
+        }
+    }
+
+    def "impact values and riskdef are removed from scope when riskdefinition is removed"() {
+        given: "some elements with risks"
+        def domainId = copyDomain(dsgvoDomainId)
+
+        get("/units/$unitId").with{
+            body.domains.add([targetUri: "/domains/$domainId"])
+            put("/units/$unitId", body, getETag())
+        }
+
+        def elementWithImpactId = post("/domains/$domainId/scopes", [
+            name: "scope-0",
+            subType: "SCP_Processor",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            riskDefinition : "DSRA",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 2,
+                        "I": 2,
+                        "A": 2,
+                        "R": 2
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "removing riskdefinition"
+        delete("/content-creation/domains/$domainId/risk-definitions/DSRA", 204, CONTENT_CREATOR)
+
+        then: "all values are gone"
+        with(get("/domains/$domainId/scopes/$elementWithImpactId").body) {
+            riskValues.DSRA == null
+            riskDefinition == null
         }
     }
 
