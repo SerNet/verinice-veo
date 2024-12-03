@@ -19,7 +19,6 @@ variables:
 stages:
   - build
   - check
-  - docker_image
   - integration_test
   - deployment
 
@@ -37,17 +36,19 @@ build:
   stage: build
   rules:
     - when: on_success
+  variables:
+    IMAGE_NAME: eu.gcr.io/veo-projekt/veo
+    GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
   script:
     - env
-    - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME build -x check
-    - echo "PROJECT_VERSION=$(./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -q properties --property version| awk '/^version:/ {print $2}')" >> variables.env
+    - |-
+      ADDITIONAL_TAGS="pipeline-id-${CI_PIPELINE_ID}"
+      if [ -n "$CI_COMMIT_TAG" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,$CI_COMMIT_TAG";
+        if [ "$CI_COMMIT_REF_NAME" = "main" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,latest"; fi;
+      fi;
+      if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,develop"; fi;
+    - ./gradlew -i -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -PciCommitId=$CI_COMMIT_SHA jib -Djib.console=plain -Djib.to.image="$IMAGE_NAME:gitlab-git-${CI_COMMIT_SHA}" -Djib.to.tags="$ADDITIONAL_TAGS"
   interruptible: true
-  artifacts:
-    expire_in: 1 week
-    reports:
-      dotenv: variables.env
-    paths:
-      - veo-rest/build/libs
   cache:
     - key: gradle
       paths:
@@ -108,45 +109,9 @@ check:
         - build
       policy: pull
 
-docker_image:
-  stage: docker_image
-  needs:
-   - build
-  rules:
-    - when: on_success
-  image:
-    name: gcr.io/kaniko-project/executor:v1.23.2-debug
-    entrypoint: [""]
-
-  variables:
-    IMAGE_NAME: eu.gcr.io/veo-projekt/veo
-    # this does not work in Gitlab < 15.7, so we need the before_script workaround
-    # GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
-
-  before_script:
-    - export GOOGLE_APPLICATION_CREDENTIALS=${GCR_ACCESS_TOKEN}
-
-  script:
-    - |-
-      DESTINATION_ARG="--destination $IMAGE_NAME:git-${CI_COMMIT_SHA} --destination $IMAGE_NAME:pipeline-id-${CI_PIPELINE_ID}"
-      if [ -n "$CI_COMMIT_TAG" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG";
-        if [ "$CI_COMMIT_REF_NAME" = "main" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest"; fi;
-      fi;
-      if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"; fi;
-    - /kaniko/executor
-      --cache=true
-      --cache-copy-layers
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      $DESTINATION_ARG
-      --build-arg VEO_VERSION="${PROJECT_VERSION}"
-      --label org.opencontainers.image.version="${PROJECT_VERSION}"
-      --label org.opencontainers.image.revision=${CI_COMMIT_SHA}
-  interruptible: true
-
 http_rest_tests:
   needs:
-  - docker_image
+  - build
   stage: integration_test
   rules:
     - !reference [ .verification, rules ]

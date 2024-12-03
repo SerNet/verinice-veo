@@ -4,6 +4,7 @@ import java.util.concurrent.Executors
 
 plugins {
     id "com.gorylenko.gradle-git-properties" version "2.4.2"
+    id 'com.google.cloud.tools.jib' version '3.4.4'
 }
 
 apply plugin: 'org.springframework.boot'
@@ -91,6 +92,30 @@ gitProperties {
 // that causes  UP-TO-DATE checks to fail.
 tasks.withType(com.gorylenko.GenerateGitPropertiesTask).all {
     enabled = includeRealInfo
+}
+
+jib {
+    from {
+        image = 'gcr.io/distroless/java21-debian12:nonroot'
+    }
+    container {
+        labels = project.provider {
+            [
+                'org.opencontainers.image.title':"vernice.veo backend",
+                'org.opencontainers.image.description':"Backend of the verinice.veo web application.",
+                'org.opencontainers.image.ref.name':'verinice.veo',
+                'org.opencontainers.image.vendor':"SerNet GmbH",
+                'org.opencontainers.image.authors':'verinice@sernet.de',
+                'org.opencontainers.image.licenses':'AGPL-3.0',
+                'org.opencontainers.image.source':'https://github.com/verinice/verinice-veo',
+                'org.opencontainers.image.version': project.version,
+                'org.opencontainers.image.revision': rootProject.getProperty('ciCommitId')
+            ]
+        }
+        environment = ['JDK_JAVA_OPTIONS':'-Djdk.serialFilter=maxbytes=0']
+        user = 'nonroot'
+        ports = ['8070']
+    }
 }
 
 testing {
