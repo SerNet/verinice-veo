@@ -82,7 +82,6 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
 
     def setup() {
         client = clientRepo.save(newClient{
-            id = UUID.randomUUID()
             newDomain(it)
         })
         domain = client.domains.first()

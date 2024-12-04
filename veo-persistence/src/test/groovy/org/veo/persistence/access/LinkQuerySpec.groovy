@@ -65,7 +65,6 @@ class LinkQuerySpec extends AbstractJpaSpec {
 
     def setup() {
         def client = clientDataRepository.save(newClient {
-            id = UUID.randomUUID()
             newDomain(it) {name = "d1"}
             newDomain(it) {name = "d2"}
         })

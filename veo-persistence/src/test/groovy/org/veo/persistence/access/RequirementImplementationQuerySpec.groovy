@@ -50,7 +50,6 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient{
-            id = UUID.randomUUID()
             newDomain(it)
         })
         unit = unitRepository.save(newUnit(client))

@@ -116,9 +116,9 @@ class ControlImplementationSpec extends VeoSpec {
     def "disassociate a control from a #type"() {
         given: "a #type with multiple controlImplementations"
         def elmt = makeType(type)
-        def person = newPerson(unit) {id = UUID.randomUUID()}
-        def control2 = newControl(unit) {id = UUID.randomUUID()}
-        def control3 = newControl(unit) {id = UUID.randomUUID()}
+        def person = newPerson(unit)
+        def control2 = newControl(unit)
+        def control3 = newControl(unit)
 
         when: "a requirement is changed"
         elmt.implementControl(control2)
@@ -161,9 +161,9 @@ class ControlImplementationSpec extends VeoSpec {
     def "disassociate controls with a shared RI"() {
         given:
         def asset = newAsset(unit)
-        def parentControl1 = newControl(unit) {id = UUID.randomUUID()}
-        def parentControl2 = newControl(unit) {id = UUID.randomUUID()}
-        def childControl = newControl(unit) {id = UUID.randomUUID()}
+        def parentControl1 = newControl(unit)
+        def parentControl2 = newControl(unit)
+        def childControl = newControl(unit)
 
         asset.implementControl(parentControl1).addRequirement(childControl)
         asset.implementControl(parentControl2).addRequirement(childControl)

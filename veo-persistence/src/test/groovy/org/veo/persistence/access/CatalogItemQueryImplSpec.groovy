@@ -43,7 +43,6 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientDataRepository.save(newClient{
-            id = UUID.randomUUID()
             newDomain(it)
         })
         domain = client.domains.first()
