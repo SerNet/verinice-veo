@@ -188,9 +188,9 @@ public class MostRecentChangeTracker<
 
   private String determineId(V entityToStore) {
     if (entityToStore instanceof AbstractRiskData<?, ?> risk) {
-      return Optional.ofNullable(risk.getDbId()).map(UUID::toString).orElse(null);
+      return Optional.ofNullable(risk.getId()).map(UUID::toString).orElse(null);
     } else if (entityToStore instanceof TemplateItemData<?, ?> ti) {
-      return Optional.ofNullable(ti.getDbId()).map(UUID::toString).orElse(null);
+      return Optional.ofNullable(ti.getId()).map(UUID::toString).orElse(null);
     } else {
       return entityToStore.getIdAsString();
     }

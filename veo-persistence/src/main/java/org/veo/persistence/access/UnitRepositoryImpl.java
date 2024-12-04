@@ -53,7 +53,7 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
 
   @Override
   public Optional<Unit> findByIdFetchClient(UUID id) {
-    return dataRepository.findWithClientByDbId(id).map(Unit.class::cast);
+    return dataRepository.findWithClientById(id).map(Unit.class::cast);
   }
 
   @Override

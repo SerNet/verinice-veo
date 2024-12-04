@@ -31,18 +31,15 @@ import org.veo.persistence.entity.jpa.ElementData;
 @NoRepositoryBean
 public interface CompositeEntityDataRepository<T extends ElementData>
     extends ElementDataRepository<T> {
-  @Query(
-      "select distinct e from #{#entityName} as e "
-          + "inner join e.parts p "
-          + "where p.dbId IN ?1")
+  @Query("select distinct e from #{#entityName} as e inner join e.parts p where p.id IN ?1")
   @SuppressWarnings("PMD.MethodNamingConventions")
-  List<T> findDistinctByParts_DbId_In(Set<UUID> dbIds);
+  List<T> findAllByParts(Set<UUID> partIds);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"parts"})
-  List<T> findAllWithPartsByDbIdIn(List<UUID> ids);
+  List<T> findAllWithPartsByIdIn(List<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"composites", "composites.parts"})
-  List<T> findAllWithCompositesAndCompositesPartsByDbIdIn(List<UUID> ids);
+  List<T> findAllWithCompositesAndCompositesPartsByIdIn(List<UUID> ids);
 }

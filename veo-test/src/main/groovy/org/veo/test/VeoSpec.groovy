@@ -491,7 +491,7 @@ abstract class VeoSpec extends Specification {
 
     private static def name(Entity target) {
         if (target.name == null) {
-            target.name = target.modelType + " " + target.dbId
+            target.name = target.modelType + " " + target.id
         }
     }
 

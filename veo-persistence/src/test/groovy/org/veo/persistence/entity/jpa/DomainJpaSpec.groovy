@@ -72,7 +72,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
         when: "saving"
         domain0 = repository.save(domain0)
-        Domain d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.id).get()
 
         then: "saved and loaded"
         d.abbreviation == domain0.abbreviation
@@ -98,7 +98,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
         when: "saving"
         domain0 = repository.save(domain0)
-        Domain d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.id).get()
 
         then: "saved and loaded"
         d.name == domain0.name
@@ -128,7 +128,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         when: "saving"
         domain0 = repository.save(domain0)
 
-        Domain d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.id).get()
 
         then: "saved and loaded"
         d.name == domain0.name
@@ -158,7 +158,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         when: "saving"
         domain0 = repository.save(domain0)
 
-        Domain d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.id).get()
 
         then: "saved and loaded"
         d.name == domain0.name
@@ -240,7 +240,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         unit = unitRepository.save(unit)
 
         when: "saving"
-        Domain d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.id).get()
 
         then: "saved and loaded"
         d.name == domain0.name
@@ -282,7 +282,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         controlEntity = controlRepository.save(controlEntity)
         clientRepository.save(client)
 
-        Control c = controlRepository.findById(controlEntity.dbId).get()
+        Control c = controlRepository.findById(controlEntity.id).get()
 
         then: "the link remains"
         c.appliedCatalogItems.size() == 1

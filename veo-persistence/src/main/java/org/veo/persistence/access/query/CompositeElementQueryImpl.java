@@ -71,6 +71,6 @@ class CompositeElementQueryImpl<
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("composites", JoinType.INNER).get("dbId"), condition.getValue()));
+                    root.join("composites", JoinType.INNER).get("id"), condition.getValue()));
   }
 }

@@ -77,7 +77,7 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
   @Override
   @Transactional(readOnly = true)
   public Set<Scope> findWithRisksAndScenarios(Set<UUID> ids) {
-    var elements = scopeDataRepository.findWithRisksAndScenariosByDbIdIn(ids);
+    var elements = scopeDataRepository.findWithRisksAndScenariosByIdIn(ids);
     return Collections.unmodifiableSet(elements);
   }
 

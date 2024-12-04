@@ -73,7 +73,8 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @EqualsAndHashCode.Include
-  private UUID dbId;
+  @Column(name = "db_id")
+  private UUID id;
 
   @ToString.Include
   @Column(name = "name")
@@ -144,6 +145,6 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
 
   @Override
   public UUID getSelfId() {
-    return getDbId();
+    return getId();
   }
 }

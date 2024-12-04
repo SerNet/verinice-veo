@@ -31,17 +31,16 @@ public interface UserConfigurationDataRepository
 
   @Query(
       "select distinct e from #{#entityName} as e "
-          + "where e.client.dbId=?1 and e.userName=?2 and e.applicationId=?3")
+          + "where e.client.id=?1 and e.userName=?2 and e.applicationId=?3")
   Optional<UserConfigurationData> findUserConfiguration(
       UUID clientId, String username, String applicationId);
 
-  @Query("select e from #{#entityName} as e where e.client.dbId=?1")
+  @Query("select e from #{#entityName} as e where e.client.id=?1")
   Set<UserConfigurationData> findUserConfigurationsByClient(UUID clientId);
 
-  @Query("select count(e) from #{#entityName} as e where e.client.dbId=?1 and e.userName=?2 ")
+  @Query("select count(e) from #{#entityName} as e where e.client.id=?1 and e.userName=?2 ")
   int countUserConfigurations(UUID clientId, String username);
 
-  @Query(
-      "select e.applicationId from #{#entityName} as e where e.client.dbId=?1 and e.userName=?2 ")
+  @Query("select e.applicationId from #{#entityName} as e where e.client.id=?1 and e.userName=?2 ")
   Set<String> findAllKeysByUser(UUID clientId, String userName);
 }

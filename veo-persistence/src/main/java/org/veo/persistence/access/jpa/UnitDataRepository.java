@@ -28,14 +28,14 @@ import org.veo.persistence.entity.jpa.UnitData;
 
 public interface UnitDataRepository extends IdentifiableVersionedDataRepository<UnitData> {
 
-  @Query("select e from #{#entityName} as e where e.parent.dbId = ?1")
+  @Query("select e from #{#entityName} as e where e.parent.id = ?1")
   List<UnitData> findByParentId(UUID parentId);
 
-  @Query("select e from #{#entityName} as e where e.client.dbId = ?1")
+  @Query("select e from #{#entityName} as e where e.client.id = ?1")
   List<UnitData> findByClientId(UUID clientId);
 
   @EntityGraph(attributePaths = {"client"})
-  Optional<UnitData> findWithClientByDbId(UUID uuidValue);
+  Optional<UnitData> findWithClientById(UUID uuidValue);
 
   List<UnitData> findByDomainsId(UUID domainId);
 }

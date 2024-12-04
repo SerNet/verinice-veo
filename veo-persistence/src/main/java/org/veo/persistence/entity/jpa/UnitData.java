@@ -55,7 +55,8 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private UUID dbId;
+  @Column(name = "db_id")
+  private UUID id;
 
   @Column(name = "name")
   @ToString.Include

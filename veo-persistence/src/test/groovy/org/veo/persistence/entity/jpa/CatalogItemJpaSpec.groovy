@@ -73,7 +73,7 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
         }
 
         when:
-        def items = catalogItemRepository.findAllByIdsAndDomain(catalogItemSymIds, domain.dbId, client.dbId)
+        def items = catalogItemRepository.findAllByIdsAndDomain(catalogItemSymIds, domain.id, client.id)
 
         then:
         items.size() == 2

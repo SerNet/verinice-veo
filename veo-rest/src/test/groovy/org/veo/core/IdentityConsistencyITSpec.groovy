@@ -97,7 +97,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         assert entities.contains(entity)
 
         //when: "a reference is loaded in a different persistence context"
-        def reference = entityManager.getReference(clazz, entity.getDbId())
+        def reference = entityManager.getReference(clazz, entity.id)
 
         //then: "the reference is equal with the entity"
         assert reference == entity
@@ -121,7 +121,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         assert entities.contains(entity)
 
         //when: "the entity is loaded in a different persistence context"
-        def entityInstance2 = entityManager.find(clazz, entity.getDbId())
+        def entityInstance2 = entityManager.find(clazz, entity.id)
 
         //then: "the entity is present in the set"
         assert entities.contains(entityInstance2)
@@ -129,7 +129,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         //when: "the entity is deleted"
         def deletedEntity = entityManager.getReference(
                 clazz,
-                entity.getDbId()
+                entity.id
                 )
         entityManager.remove(deletedEntity)
 

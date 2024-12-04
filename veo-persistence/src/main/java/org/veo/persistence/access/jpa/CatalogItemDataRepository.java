@@ -71,7 +71,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
       """
             select new org.veo.core.repository.SubTypeCount(ci.elementType ,ci.subType, count(ci.subType))
             from #{#entityName} as ci
-            where ci.domain.dbId = ?1
+            where ci.domain.id = ?1
             group by ci.elementType, ci.subType
 """)
   Set<SubTypeCount> getCountsBySubType(UUID domainId);
@@ -85,7 +85,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
          select tr from catalog_tailoring_reference tr
            left join fetch tr.owner
            left join fetch tr.target
-           where tr.dbId in ?1 and tr.owner.domain.owner = ?2
+           where tr.id in ?1 and tr.owner.domain.owner = ?2
          """)
   Set<CatalogTailoringReferenceData> findTailoringReferencesByIds(
       Iterable<String> ids, Client client);
@@ -95,14 +95,14 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
                 select ci from #{#entityName} ci
                   left join fetch ci.tailoringReferences
                   join ci.domainTemplate as dt
-                  where dt.dbId = ?1
+                  where dt.id = ?1
               """)
   Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(UUID domainTemplateId);
 
   @Query(
       """
     select ci from catalogitem ci
-        where ci.symbolicDbId in ?1 and ci.domain.dbId = ?2 and ci.domain.owner.dbId = ?3
+        where ci.symbolicDbId in ?1 and ci.domain.id = ?2 and ci.domain.owner.id = ?3
   """)
   Set<CatalogItem> findAllByIdsAndDomain(
       Collection<UUID> symbolicDbIds, UUID domainId, UUID clientId);
@@ -110,7 +110,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
   @Query(
       """
     select ci from catalogitem ci
-        where ci.symbolicDbId in ?1 and ci.domainTemplate.dbId = ?2
+        where ci.symbolicDbId in ?1 and ci.domainTemplate.id = ?2
   """)
   Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<UUID> symbolicDbIds, UUID domainTemplateId);
 }

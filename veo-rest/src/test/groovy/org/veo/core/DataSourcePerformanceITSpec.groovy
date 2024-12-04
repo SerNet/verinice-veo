@@ -637,7 +637,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             def result = processDataRepository.findAllById([id])
             if (withRisks)
-                processDataRepository.findAllWithRisksByDbIdIn([id])
+                processDataRepository.findAllWithRisksByIdIn([id])
             result
         }
     }

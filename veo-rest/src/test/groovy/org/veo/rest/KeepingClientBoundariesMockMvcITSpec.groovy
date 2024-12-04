@@ -140,7 +140,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             id: '' + otherClientsUnit.idAsString,
             name: 'hijacked-unit',
             parent: [displayName: 'Test unit',
-                targetUri: 'http://localhost//units/' + unit.dbId]
+                targetUri: 'http://localhost//units/' + unit.id]
         ], headers, 404)
 
         then: "an exception is thrown"
@@ -369,7 +369,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                     [
                         target:
                         [
-                            targetUri: "http://localhost/assets/$otherClientsAsset.dbId"
+                            targetUri: "http://localhost/assets/$otherClientsAsset.id"
                         ]
                     ]
                 ]
@@ -412,7 +412,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         post(url, [
             name: 'entity-in-another client',
             owner: [displayName: '' + otherClientsUnit.name,
-                targetUri: 'http://localhost/units/' + otherClientsUnit.dbId]
+                targetUri: 'http://localhost/units/' + otherClientsUnit.id]
         ],404)
     }
 
@@ -424,7 +424,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             id: entityUuid,
             name: 'hijacked-entity',
             owner: [displayName: 'Test unit',
-                targetUri: 'http://localhost/units/' + unit.dbId]
+                targetUri: 'http://localhost/units/' + unit.id]
         ], headers, 404)
     }
 }

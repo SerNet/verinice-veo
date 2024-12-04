@@ -53,7 +53,10 @@ import lombok.ToString;
 @EntityListeners({VersionedEntityListener.class})
 public class ClientData extends IdentifiableVersionedData implements Client, Nameable {
 
-  @Id @ToString.Include private UUID dbId;
+  @Column(name = "db_id")
+  @Id
+  @ToString.Include
+  private UUID id;
 
   @Column(name = "name")
   @ToString.Include

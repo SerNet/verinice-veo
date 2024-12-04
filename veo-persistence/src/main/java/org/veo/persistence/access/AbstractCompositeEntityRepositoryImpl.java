@@ -59,7 +59,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<
   @Override
   public void deleteById(UUID id) {
     // remove element from composite parts:
-    var composites = compositeRepo.findDistinctByParts_DbId_In(singleton(id));
+    var composites = compositeRepo.findAllByParts(singleton(id));
     composites.forEach(assetComposite -> assetComposite.removePartById(id));
 
     super.deleteById(id);
@@ -68,7 +68,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<
   @Override
   public Set<S> findCompositesByParts(Set<S> parts) {
     var partIds = parts.stream().map(Identifiable::getId).collect(Collectors.toSet());
-    return compositeRepo.findDistinctByParts_DbId_In(partIds).stream()
+    return compositeRepo.findAllByParts(partIds).stream()
         .map(data -> (S) data)
         .collect(Collectors.toSet());
   }

@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -46,23 +47,14 @@ public abstract class ProfileReferenceData
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  private UUID dbId;
+  @Column(name = "db_id")
+  private UUID id;
 
   @ManyToOne(targetEntity = ProfileItemData.class, fetch = FetchType.LAZY)
   private ProfileItem target;
 
   @ManyToOne(targetEntity = ProfileItemData.class, optional = false, fetch = FetchType.LAZY)
   private ProfileItem owner;
-
-  @Override
-  public void setId(UUID id) {
-    setDbId(Optional.ofNullable(id).orElse(null));
-  }
-
-  @Override
-  public UUID getId() {
-    return dbId;
-  }
 
   @Override
   public Optional<Client> getOwningClient() {
@@ -79,11 +71,11 @@ public abstract class ProfileReferenceData
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore, a transient entity must never equal another entity.
-    return dbId != null && dbId.equals(other.getDbId());
+    return id != null && id.equals(other.getId());
   }
 
   @Override
   public int hashCode() {
-    return dbId != null ? dbId.hashCode() : getClass().hashCode();
+    return id != null ? id.hashCode() : getClass().hashCode();
   }
 }

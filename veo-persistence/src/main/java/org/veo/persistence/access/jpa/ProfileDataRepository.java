@@ -40,7 +40,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           left join fetch i.owner p
                           left join fetch p.domain d
                           left join fetch p.domainTemplate
-                          where i.symbolicDbId = ?2 and p.dbId= ?1 and d.owner.dbId = ?3
+                          where i.symbolicDbId = ?2 and p.id= ?1 and d.owner.id = ?3
                       """)
   Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
       UUID profileId, UUID itemId, UUID clientId);
@@ -52,7 +52,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                                     left join fetch i.tailoringReferences tr
                                     left join fetch i.appliedCatalogItem
                                     left join fetch p.domain d
-                                    where p.dbId= ?1 and d.owner.dbId = ?2
+                                    where p.id= ?1 and d.owner.id = ?2
                                 """)
   Optional<Profile> findProfileByIdFetchTailoringReferences(UUID profileId, UUID clientId);
 
@@ -70,7 +70,7 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
       """
                   select i from profile_item i
                     left join fetch i.tailoringReferences tr
-                    where i.owner.dbId = ?1 and i.owner.domain.owner = ?2
+                    where i.owner.id = ?1 and i.owner.domain.owner = ?2
                 """)
   List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       UUID profileId, Client client);
@@ -78,9 +78,9 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<Profile> findAllByDomain(DomainData domain);
 
-  @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.domain.dbId = ?2")
+  @Query("select ci from #{#entityName} ci where ci.domain.owner.id = ?1 and ci.domain.id = ?2")
   Set<Profile> findAllByDomainId(UUID clientId, UUID domainId);
 
-  @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.dbId = ?2")
+  @Query("select ci from #{#entityName} ci where ci.domain.owner.id = ?1 and ci.id = ?2")
   Optional<Profile> findById(UUID clientId, UUID profileId);
 }

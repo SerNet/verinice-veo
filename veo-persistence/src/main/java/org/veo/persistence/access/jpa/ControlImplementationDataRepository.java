@@ -55,7 +55,7 @@ public interface ControlImplementationDataRepository
       """
           select distinct ci from control_implementation  ci
           join fetch ci.owner
-          where ci.control.dbId in ?1
+          where ci.control.id in ?1
          """)
   Set<ControlImplementation> findByControlIdWithOwner(Set<String> controlIds);
 

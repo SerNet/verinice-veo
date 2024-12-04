@@ -73,7 +73,7 @@ public class AssetRepositoryImpl
   @Override
   @Transactional(readOnly = true)
   public Set<Asset> findWithRisksAndScenarios(Set<UUID> ids) {
-    var elements = assetDataRepository.findWithRisksAndScenariosByDbIdIn(ids);
+    var elements = assetDataRepository.findWithRisksAndScenariosByIdIn(ids);
     return Collections.unmodifiableSet(elements);
   }
 

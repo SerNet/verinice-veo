@@ -78,7 +78,7 @@ public interface RequirementImplementationDataRepository
   @Query(
       """
          select distinct ri from requirement_implementation  ri
-         where ri.control.dbId in ?1
+         where ri.control.id in ?1
          """)
   Set<RequirementImplementationData> findAllByControlIds(Set<String> controlIDs);
 }

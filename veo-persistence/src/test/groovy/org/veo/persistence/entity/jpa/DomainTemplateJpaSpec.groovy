@@ -77,7 +77,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             return repository.save(domain0)
         }
         DomainTemplate d = txTemplate.execute {
-            return repository.findById(domain0.dbId).get()
+            return repository.findById(domain0.id).get()
         }
 
         then: "saved and loaded"
@@ -107,7 +107,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             return repository.save(domain0)
         }
         DomainTemplate d = txTemplate.execute {
-            return repository.findById(domain0.dbId).get()
+            return repository.findById(domain0.id).get()
         }
 
         then: "saved and loaded"
@@ -141,7 +141,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             return repository.save(domain0)
         }
         DomainTemplate d = txTemplate.execute {
-            return repository.findById(domain0.dbId).get()
+            return repository.findById(domain0.id).get()
         }
 
         then: "saved and loaded"
@@ -188,7 +188,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             return repository.save(domain0)
         }
         DomainTemplate d = txTemplate.execute {
-            return repository.findById(domain0.dbId).get()
+            return repository.findById(domain0.id).get()
         }
 
         then: "saved and loaded"
@@ -255,7 +255,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         def domainId = newDomain(client) {
             name = "main"
             templateVersion = "0.1.0"
-        }.dbId
+        }.id
         clientRepository.save(client)
 
         expect: "template queries to ignore the domain"

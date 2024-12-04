@@ -51,7 +51,7 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch da.domain "
           + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
-          + "where e.dbId = ?1")
+          + "where e.id = ?1")
   @Override
   @Nonnull
   Optional<T> findById(@Nonnull UUID id);
@@ -64,29 +64,29 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch da.domain "
           + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
-          + "where e.dbId = ?1 and e.owner.client.dbId = ?2")
+          + "where e.id = ?1 and e.owner.client.id = ?2")
   @Nonnull
   Optional<T> findById(@Nonnull UUID id, @Nonnull UUID clientId);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"links", "decisionResultsAspects"})
-  List<T> findAllWithLinksDecisionsByDbIdIn(Iterable<UUID> ids);
+  List<T> findAllWithLinksDecisionsByIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"customAspects", "customAspects.domain"})
-  List<T> findAllWithCustomAspectsByDbIdIn(Iterable<UUID> ids);
+  List<T> findAllWithCustomAspectsByIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"domainAssociations", "domainAssociations.domain"})
-  List<T> findAllWithDomainAssociationsByDbIdIn(Iterable<UUID> ids);
+  List<T> findAllWithDomainAssociationsByIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "appliedCatalogItems")
-  List<T> findAllWithAppliedCatalogItemsByDbIdIn(Iterable<UUID> ids);
+  List<T> findAllWithAppliedCatalogItemsByIdIn(Iterable<UUID> ids);
 
   @Override
   @Nonnull
@@ -96,12 +96,12 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "SELECT new org.veo.core.repository.SubTypeStatusCount(e.elementType, a.subType, a.status, count(a.status)) from #{#entityName} as e "
           + "inner join e.domainAssociations a "
-          + "where e.owner.dbId = ?1 "
+          + "where e.owner.id = ?1 "
           + "and a.domain.id = ?2 "
           + "group by e.elementType, a.subType, a.status")
   Set<SubTypeStatusCount> getCountsBySubType(UUID unitId, UUID uuid);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"scopes", "scopes.members"})
-  List<T> findAllWithScopesAndScopeMembersByDbIdIn(List<UUID> ids);
+  List<T> findAllWithScopesAndScopeMembersByIdIn(List<UUID> ids);
 }

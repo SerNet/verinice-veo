@@ -32,7 +32,7 @@ public interface ScenarioDataRepository extends CompositeEntityDataRepository<Sc
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  List<ScenarioData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
+  List<ScenarioData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 
   @Query("SELECT e FROM #{#entityName} as e RIGHT JOIN FETCH e.riskValuesAspects")
   Set<ScenarioData> findByDomainWhereRiskValuesExist(Domain domain);

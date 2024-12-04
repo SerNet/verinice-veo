@@ -102,7 +102,7 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
         def composite1Id = txTemplate.execute {
             assetDataRepository.save(newAsset(unit) {
                 addPart(it)
-            }).dbId
+            }).id
         }
 
         then:

@@ -55,15 +55,15 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
          left join fetch r.riskOwner
          left join fetch r.riskAspects a
          left join fetch a.domain
-         where e.dbId in ?1""")
-  List<T> findAllWithRisksByDbIdIn(Iterable<UUID> ids);
+         where e.id in ?1""")
+  List<T> findAllWithRisksByIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
       """
         select distinct e from #{#entityName} e
         left join fetch e.controlImplementations
-        where e.dbId in ?1
+        where e.id in ?1
         """)
   Set<T> findAllWithCIs(Iterable<UUID> ids);
 
@@ -72,7 +72,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
       """
         select distinct e from #{#entityName} e
         left join fetch e.requirementImplementations
-        where e.dbId in ?1
+        where e.id in ?1
         """)
   Set<T> findAllWithRIs(Iterable<UUID> ids);
 

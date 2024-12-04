@@ -62,7 +62,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
 
         when: "saving and retrieving the asset"
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then: "the aspect exists"
         with(retrievedAsset.get().domainAssociations) {
@@ -82,7 +82,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
         when: "changing the status for domain 1, saving & retrieving"
         asset.setStatus("OLD", domain1)
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then: "the new status has been applied"
         with(retrievedAsset.get().domainAssociations.sort { it.subType }) {

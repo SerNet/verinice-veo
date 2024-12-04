@@ -82,7 +82,7 @@ public class ProcessRepositoryImpl
   @Override
   @Transactional(readOnly = true)
   public Set<Process> findWithRisksAndScenarios(Set<UUID> ids) {
-    var elements = processDataRepository.findWithRisksAndScenariosByDbIdIn(ids);
+    var elements = processDataRepository.findWithRisksAndScenariosByIdIn(ids);
     return Collections.unmodifiableSet(elements);
   }
 

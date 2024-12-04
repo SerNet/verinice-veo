@@ -47,8 +47,8 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
           + "left join fetch s.risks risks "
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "
-          + "where s.dbId IN ?1")
-  Set<ScopeData> findByIdsWithRiskValues(Set<UUID> dbIds);
+          + "where s.id IN ?1")
+  Set<ScopeData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
       """
@@ -59,8 +59,8 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
                    left join fetch a.domain
                    inner join fetch r.scenario s
                    left join fetch s.riskValuesAspects
-                   where e.dbId in ?1""")
-  Set<ScopeData> findWithRisksAndScenariosByDbIdIn(Iterable<UUID> ids);
+                   where e.id in ?1""")
+  Set<ScopeData> findWithRisksAndScenariosByIdIn(Iterable<UUID> ids);
 
   @Query(
       """
@@ -78,25 +78,25 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
   @Query(
       "select distinct e from #{#entityName} as e "
           + "inner join e.members m "
-          + "where m.dbId in ?1 and e.dbId not in ?1")
-  Set<Scope> findDistinctOthersByMemberIds(Set<UUID> dbIds);
+          + "where m.id in ?1 and e.id not in ?1")
+  Set<Scope> findDistinctOthersByMemberIds(Set<UUID> ids);
 
   @Query(
       "select count(s) > 0 from #{#entityName} as s "
           + "inner join s.scopeRiskValuesAspects r "
           + "inner join s.riskValuesAspects rva "
           + "inner join s.members m "
-          + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
+          + "where m.id in ?1 and r.riskDefinitionRef = ?2 and r.domain.id = ?3")
   boolean canUseRiskDefinition(
       Set<UUID> elementIds, RiskDefinitionRef riskDefinitionRef, String domainId);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "members")
-  List<ScopeData> findAllWithMembersByDbIdIn(List<UUID> ids);
+  List<ScopeData> findAllWithMembersByIdIn(List<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"riskValuesAspects", "scopeRiskValuesAspects"})
-  List<ScopeData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
+  List<ScopeData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 
   @Query(
       "select distinct s from scope s "

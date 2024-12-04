@@ -28,24 +28,24 @@ import org.veo.persistence.entity.jpa.ClientData;
 
 public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
-  @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
+  @Query("select c from #{#entityName} c left join fetch c.domains where c.id = ?1")
   Optional<ClientData> findById(UUID id);
 
   @EntityGraph(attributePaths = {"domains.catalogItems"})
-  Optional<ClientData> findWithCatalogsAndItemsByDbId(UUID id);
+  Optional<ClientData> findWithCatalogsAndItemsById(UUID id);
 
   @EntityGraph(
       attributePaths = {"domains.catalogItems", "domains.catalogItems.tailoringReferences"})
-  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(UUID id);
+  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesById(UUID id);
 
   @EntityGraph(attributePaths = {"domains.elementTypeDefinitions.translations"})
-  Optional<ClientData> findWithTranslationsByDbId(UUID id);
+  Optional<ClientData> findWithTranslationsById(UUID id);
 
   @Query(
       """
                    select c from client c
                    where c.state = org.veo.core.entity.ClientState.ACTIVATED
-                   and not exists (select d from domain d where d.owner = c and d.domainTemplate.dbId = ?1)
+                   and not exists (select d from domain d where d.owner = c and d.domainTemplate.id = ?1)
           """)
   Set<ClientData> findAllActiveWhereDomainTemplateNotApplied(UUID uuid);
 }

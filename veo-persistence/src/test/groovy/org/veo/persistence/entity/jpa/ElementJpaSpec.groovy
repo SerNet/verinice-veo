@@ -131,17 +131,17 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def 'increment version id'() {
         given: "one unit db ID"
-        def dbId = owner0.getDbId()
+        def id = owner0.id
 
         when: "load and save the asset"
-        UnitData unit = unitRepository.findById(dbId).get()
+        UnitData unit = unitRepository.findById(id).get()
 
         long versionBefore = unit.getVersion()
         unit.setName("New name")
         unitRepository.save(unit)
         entityManager.flush()
 
-        unit = unitRepository.findById(dbId).get()
+        unit = unitRepository.findById(id).get()
 
         then: "version is incremented"
         versionBefore == 0
@@ -193,7 +193,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         asset = assetRepository.save(asset)
         entityManager.flush()
         entityManager.detach(asset)
-        asset = assetRepository.findById(asset.dbId).get()
+        asset = assetRepository.findById(asset.id).get()
 
         and: "trying to mutate the results again"
         asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])

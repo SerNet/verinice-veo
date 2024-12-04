@@ -41,10 +41,10 @@ class ElementDomainAssociationDataSpec extends Specification{
         def uuid1 = UUID.randomUUID()
         def uuid2 = UUID.randomUUID()
         def aspect1 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW").tap {
-            dbId = uuid1
+            id = uuid1
         }
         def aspect2 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "NEW").tap {
-            dbId = uuid2
+            id = uuid2
         }
 
         expect: "objects are not equal"
@@ -58,10 +58,10 @@ class ElementDomainAssociationDataSpec extends Specification{
         def uuid = UUID.randomUUID()
 
         def aspect1 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "new").tap {
-            dbId = uuid
+            id = uuid
         }
         def aspect2 = new ElementDomainAssociationData(commonDomain, commonOwner, "a", "new").tap {
-            dbId = uuid
+            id = uuid
         }
 
         expect: "objects are equal"

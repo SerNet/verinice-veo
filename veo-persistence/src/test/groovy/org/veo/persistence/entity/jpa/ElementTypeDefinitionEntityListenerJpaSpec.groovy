@@ -71,7 +71,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
                 })
             }
             clientRepo.save(client)
-            domain.dbId
+            domain.id
         }
 
         then: "no entity type definition update event was published"

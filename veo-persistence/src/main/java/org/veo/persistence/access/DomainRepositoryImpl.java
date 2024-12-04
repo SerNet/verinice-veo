@@ -107,7 +107,7 @@ public class DomainRepositoryImpl
 
   @Override
   public Set<Domain> findByIds(Set<UUID> ids, @NonNull UUID clientId) {
-    return dataRepository.findAllByDbIdInAndOwnerDbIdIs(ids, clientId);
+    return dataRepository.findAllByIdInAndOwnerIdIs(ids, clientId);
   }
 
   @Override

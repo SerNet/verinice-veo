@@ -31,7 +31,7 @@ import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
-  @Query("select e.dbId from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
+  @Query("select e.id from #{#entityName} as e join e.domainTemplate as t where t.id = ?1")
   Collection<String> findIdsByDomainTemplateId(UUID domainTemplateId);
 
   @Query(
@@ -42,18 +42,18 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
       "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
   Set<DomainData> findAllByClient(UUID clientId);
 
-  @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
+  @Query("select d from #{#entityName} d " + "where d.id = ?1 and d.owner.id = ?2")
   Optional<Domain> findById(UUID domainId, UUID clientId);
 
-  @Query("select d from #{#entityName} d where d.dbId in ?1 and d.owner.dbId = ?2")
-  Set<Domain> findAllByDbIdInAndOwnerDbIdIs(Collection<UUID> domainIds, UUID clientId);
+  @Query("select d from #{#entityName} d where d.id in ?1 and d.owner.id = ?2")
+  Set<Domain> findAllByIdInAndOwnerIdIs(Collection<UUID> domainIds, UUID clientId);
 
   @Query(
       """
         select d from #{#entityName} d
           join fetch d.decisionSet
           join fetch d.inspectionSet
-          where d.dbId = ?1 and d.owner.dbId = ?2
+          where d.id = ?1 and d.owner.id = ?2
     """)
   Optional<DomainData> findByIdWithDecisionsAndInspections(UUID domainId, UUID clientId);
 
@@ -62,7 +62,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
         select d from #{#entityName} d
           left join fetch d.profiles
           join fetch d.riskDefinitionSet
-          where d.owner.dbId = ?1 and d.active = true
+          where d.owner.id = ?1 and d.active = true
       """)
   Set<DomainData> findActiveDomainsWithProfilesAndRiskDefinitions(UUID clientId);
 
@@ -71,7 +71,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
         select d from #{#entityName} d
           left join fetch d.profiles
           join fetch d.riskDefinitionSet
-          where d.dbId = ?1 and d.owner.dbId = ?2
+          where d.id = ?1 and d.owner.id = ?2
       """)
   Optional<DomainData> findByIdWithProfilesAndRiskDefinitions(UUID id, UUID clientId);
 

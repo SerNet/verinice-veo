@@ -32,7 +32,7 @@ import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 public interface IdentifiableVersionedDataRepository<T extends IdentifiableVersionedData>
     extends CrudRepository<T, UUID> {
 
-  @Query("select version from #{#entityName} where dbId = ?1")
+  @Query("select version from #{#entityName} where id = ?1")
   @Nonnull
   Optional<Long> getVersion(@Nonnull UUID id);
 }

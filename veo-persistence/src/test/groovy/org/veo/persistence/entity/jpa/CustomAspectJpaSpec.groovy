@@ -72,7 +72,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
 
         when:
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then:
         retrievedAsset.present
@@ -99,7 +99,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
             "k1": 1
         ]
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then: 'the change has been applied'
         retrievedAsset.get().customAspects[0].attributes == [
@@ -123,7 +123,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         when: 'removing the first prop'
         asset.customAspects[0].attributes = ["k2": "due"]
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then: 'only the second prop remains'
         retrievedAsset.get().customAspects[0].attributes == ["k2": "due"]
@@ -142,7 +142,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
 
         when:
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId)
+        def retrievedAsset = assetRepository.findById(asset.id)
 
         then:
         retrievedAsset.present

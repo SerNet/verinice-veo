@@ -94,7 +94,7 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
         def list = userConfigRepository.findAll()
 
         then:
-        conf1.dbId != null
+        conf1.id != null
         list.size() == 1
 
         when:
@@ -117,7 +117,7 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
             userConfigRepository.save(factory.createUserConfiguration(client, "TestName3", "TestApp1"))
             userConfigRepository.save(factory.createUserConfiguration(client, "TestName4", "TestApp1"))
         }
-        def list = userConfigRepository.findUserConfigurationsByClient(client.dbId)
+        def list = userConfigRepository.findUserConfigurationsByClient(client.id)
 
         then:
         list.size() == 8

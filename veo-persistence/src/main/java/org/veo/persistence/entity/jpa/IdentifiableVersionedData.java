@@ -38,28 +38,6 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public abstract class IdentifiableVersionedData extends VersionedData implements Identifiable {
 
-  /**
-   * @deprecated use {@link #getId()}
-   */
-  @Deprecated
-  public abstract UUID getDbId();
-
-  /**
-   * @deprecated use {@link #setId(UUID)}
-   */
-  @Deprecated
-  public abstract void setDbId(UUID id);
-
-  @Override
-  public UUID getId() {
-    return getDbId();
-  }
-
-  @Override
-  public void setId(UUID id) {
-    setDbId(id);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (o == null) return false;
@@ -73,8 +51,8 @@ public abstract class IdentifiableVersionedData extends VersionedData implements
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    UUID dbId = getDbId();
-    return dbId != null && dbId.equals(other.getDbId());
+    UUID dbId = getId();
+    return dbId != null && dbId.equals(other.getId());
   }
 
   @Override

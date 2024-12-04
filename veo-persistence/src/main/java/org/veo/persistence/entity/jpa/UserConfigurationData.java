@@ -49,7 +49,8 @@ public class UserConfigurationData implements UserConfiguration {
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @ToString.Include
-  private UUID dbId;
+  @Column(name = "db_id")
+  private UUID id;
 
   @ToString.Include private String userName;
   @ToString.Include private String applicationId;
@@ -64,7 +65,7 @@ public class UserConfigurationData implements UserConfiguration {
 
   @Override
   public boolean isPersisted() {
-    return getDbId() != null;
+    return getId() != null;
   }
 
   @Override
@@ -85,8 +86,8 @@ public class UserConfigurationData implements UserConfiguration {
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.
     // Therefore a transient entity must never equal another entity.
-    UUID dbId = getDbId();
-    return dbId != null && dbId.equals(other.getDbId());
+    UUID dbId = getId();
+    return dbId != null && dbId.equals(other.getId());
   }
 
   @Override

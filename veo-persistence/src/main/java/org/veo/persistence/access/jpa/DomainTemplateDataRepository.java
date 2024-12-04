@@ -47,7 +47,7 @@ public interface DomainTemplateDataRepository
         select dt from #{#entityName} dt
           left join fetch dt.profiles
           join fetch dt.riskDefinitionSet
-          where dt.dbId = ?1
+          where dt.id = ?1
       """)
   Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(UUID id);
 

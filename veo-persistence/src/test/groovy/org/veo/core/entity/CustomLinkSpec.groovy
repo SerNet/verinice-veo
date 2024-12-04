@@ -53,13 +53,13 @@ class CustomLinkSpec extends Specification{
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = uuid1
+            id = uuid1
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = uuid2
+            id = uuid2
         }
 
         expect: "objects are not equal"
@@ -76,13 +76,13 @@ class CustomLinkSpec extends Specification{
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = uuid
+            id = uuid
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            dbId = uuid
+            id = uuid
         }
 
         expect: "objects are equal"

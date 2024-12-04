@@ -190,7 +190,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criateriaBuilder) ->
                 in(
-                    root.join(getChildAttributeName(), JoinType.INNER).get("dbId"),
+                    root.join(getChildAttributeName(), JoinType.INNER).get("id"),
                     childIds,
                     criateriaBuilder));
   }
@@ -201,7 +201,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 checkNull(
-                    root.join(getChildAttributeName(), JoinType.LEFT).get("dbId"),
+                    root.join(getChildAttributeName(), JoinType.LEFT).get("id"),
                     !present,
                     criteriaBuilder));
   }
@@ -211,16 +211,13 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     var parentSpec =
         (Specification<TDataClass>)
             (root, query, criteriaBuilder) ->
-                checkNull(
-                    root.join("scopes", JoinType.LEFT).get("dbId"), !present, criteriaBuilder);
+                checkNull(root.join("scopes", JoinType.LEFT).get("id"), !present, criteriaBuilder);
     if (dataRepository instanceof CompositeEntityDataRepository) {
       var compositeSpec =
           (Specification<TDataClass>)
               (root, query, criteriaBuilder) ->
                   checkNull(
-                      root.join("composites", JoinType.LEFT).get("dbId"),
-                      !present,
-                      criteriaBuilder);
+                      root.join("composites", JoinType.LEFT).get("id"), !present, criteriaBuilder);
 
       if (present) {
         // scope present or composite present
@@ -290,7 +287,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("scopes", JoinType.LEFT).get("dbId"), condition.getValue()));
+                    root.join("scopes", JoinType.LEFT).get("id"), condition.getValue()));
   }
 
   @Override
@@ -336,7 +333,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Transactional(readOnly = true)
   public PagedResult<TInterface, String> execute(PagingConfiguration<String> pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
-    List<UUID> ids = items.stream().map(ElementData::getDbId).toList();
+    List<UUID> ids = items.stream().map(ElementData::getId).toList();
     fullyLoadItems(ids);
 
     return new PagedResult<>(
@@ -351,15 +348,15 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
             .flatMap(
                 batch -> {
-                  var chunk = dataRepository.findAllWithLinksDecisionsByDbIdIn(batch);
-                  dataRepository.findAllWithCustomAspectsByDbIdIn(batch);
-                  dataRepository.findAllWithDomainAssociationsByDbIdIn(batch);
+                  var chunk = dataRepository.findAllWithLinksDecisionsByIdIn(batch);
+                  dataRepository.findAllWithCustomAspectsByIdIn(batch);
+                  dataRepository.findAllWithDomainAssociationsByIdIn(batch);
 
                   if (fetchAppliedCatalogItems) {
-                    dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(batch);
+                    dataRepository.findAllWithAppliedCatalogItemsByIdIn(batch);
                   }
                   if (fetchScopesAndScopeMembers) {
-                    dataRepository.findAllWithScopesAndScopeMembersByDbIdIn(batch);
+                    dataRepository.findAllWithScopesAndScopeMembersByIdIn(batch);
                   }
                   return chunk.stream();
                 });
@@ -374,7 +371,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
               if (type.equals(Asset.class)) {
                 fetchCompositeRiskAffected(batch, assetDataRepository);
                 if (fetchRiskValuesAspects) {
-                  assetDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                  assetDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
                 }
               } else if (type.equals(Control.class)) {
                 fetchComposites(batch, controlDataRepository);
@@ -385,24 +382,24 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
               } else if (type.equals(Process.class)) {
                 fetchCompositeRiskAffected(batch, processDataRepository);
                 if (fetchRiskValuesAspects) {
-                  processDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                  processDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
                 }
               } else if (type.equals(Person.class)) {
                 fetchComposites(batch, personDataRepository);
               } else if (type.equals(Scenario.class)) {
                 fetchComposites(batch, scenarioDataRepository);
                 if (fetchRiskValuesAspects) {
-                  scenarioDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                  scenarioDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
                 }
               } else if (type.equals(Scope.class)) {
                 if (fetchMembers) {
-                  scopeDataRepository.findAllWithMembersByDbIdIn(batch);
+                  scopeDataRepository.findAllWithMembersByIdIn(batch);
                 }
                 if (fetchRiskValuesAspects) {
-                  scopeDataRepository.findAllWithRiskValuesAspectsByDbIdIn(batch);
+                  scopeDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
                 }
                 if (fetchRisks) {
-                  scopeDataRepository.findAllWithRisksByDbIdIn(batch);
+                  scopeDataRepository.findAllWithRisksByIdIn(batch);
                 }
                 if (fetchControlImplementations) {
                   scopeDataRepository.findAllWithCIs(batch);
@@ -422,7 +419,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
           List<UUID> ids, CompositeRiskAffectedDataRepository<TData> repo) {
     fetchComposites(ids, repo);
     if (fetchRisks) {
-      repo.findAllWithRisksByDbIdIn(ids);
+      repo.findAllWithRisksByIdIn(ids);
     }
     if (fetchControlImplementations) {
       repo.findAllWithCIs(ids);
@@ -435,10 +432,10 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private void fetchComposites(
       List<UUID> ids, CompositeEntityDataRepository<? extends ElementData> repo) {
     if (fetchParts) {
-      repo.findAllWithPartsByDbIdIn(ids);
+      repo.findAllWithPartsByIdIn(ids);
     }
     if (fetchCompositesAndCompositeParts) {
-      repo.findAllWithCompositesAndCompositesPartsByDbIdIn(ids);
+      repo.findAllWithCompositesAndCompositesPartsByIdIn(ids);
     }
   }
 

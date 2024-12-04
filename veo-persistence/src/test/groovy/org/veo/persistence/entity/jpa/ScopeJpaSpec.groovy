@@ -68,7 +68,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
             ]
         }
         def scopeId = txTemplate.execute {
-            scopeDataRepository.save(scope).dbId
+            scopeDataRepository.save(scope).id
         }
 
         then: "the scope can be retrieved"
@@ -102,7 +102,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         }
 
         expect: "the members were saved"
-        def savedScope = scopeDataRepository.findById(scope.dbId)
+        def savedScope = scopeDataRepository.findById(scope.id)
         savedScope.present
         savedScope.get().members.size() == 4
 
@@ -113,11 +113,11 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         }
 
         then: "the scope is removed but the composites remain"
-        scopeDataRepository.findById(scope.dbId).empty
-        assetDataRepository.findById(asset.dbId).present
-        assetDataRepository.findById(assetComposite.dbId).present
-        personDataRepository.findById(person.dbId).present
-        personDataRepository.findById(personComposite.dbId).present
+        scopeDataRepository.findById(scope.id).empty
+        assetDataRepository.findById(asset.id).present
+        assetDataRepository.findById(assetComposite.id).present
+        personDataRepository.findById(person.id).present
+        personDataRepository.findById(personComposite.id).present
     }
 
     def "delete composites that are memebers of a scope"() {
@@ -138,7 +138,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         }
 
         expect: "the scope has all members"
-        def savedScope = scopeDataRepository.findById(scope.dbId)
+        def savedScope = scopeDataRepository.findById(scope.id)
         savedScope.get().members.size() == 4
 
         when: "the composites are removed"
@@ -151,7 +151,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         // this behaviour is expected - scope members have to be removed by business logic
         // when elements are removed. Currently this is implemented in the repositories
         // (caution: not JPA-repositories)
-        def persistedScope = scopeDataRepository.findById(scope.dbId)
+        def persistedScope = scopeDataRepository.findById(scope.id)
         persistedScope.present
         persistedScope.get().members.size() == 4
         persistedScope.get().members.contains(asset)

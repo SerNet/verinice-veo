@@ -43,8 +43,8 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
           + "left join fetch p.risks risks "
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "
-          + "where p.dbId IN ?1")
-  Set<ProcessData> findByIdsWithRiskValues(Set<UUID> dbIds);
+          + "where p.id IN ?1")
+  Set<ProcessData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
       """
@@ -66,10 +66,10 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
          left join fetch a.domain
          inner join fetch r.scenario s
          left join fetch s.riskValuesAspects
-         where e.dbId in ?1""")
-  Set<ProcessData> findWithRisksAndScenariosByDbIdIn(Iterable<UUID> ids);
+         where e.id in ?1""")
+  Set<ProcessData> findWithRisksAndScenariosByIdIn(Iterable<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  Set<ProcessData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
+  Set<ProcessData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 }

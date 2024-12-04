@@ -43,8 +43,8 @@ public interface AssetDataRepository extends CompositeRiskAffectedDataRepository
           + "left join fetch a.risks risks "
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "
-          + "where a.dbId IN ?1")
-  Set<AssetData> findByIdsWithRiskValues(Set<UUID> dbIds);
+          + "where a.id IN ?1")
+  Set<AssetData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
       """
@@ -66,10 +66,10 @@ public interface AssetDataRepository extends CompositeRiskAffectedDataRepository
                left join fetch a.domain
                inner join fetch r.scenario s
                left join fetch s.riskValuesAspects
-               where e.dbId in ?1""")
-  Set<AssetData> findWithRisksAndScenariosByDbIdIn(Iterable<UUID> ids);
+               where e.id in ?1""")
+  Set<AssetData> findWithRisksAndScenariosByIdIn(Iterable<UUID> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  Set<AssetData> findAllWithRiskValuesAspectsByDbIdIn(List<UUID> ids);
+  Set<AssetData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 }

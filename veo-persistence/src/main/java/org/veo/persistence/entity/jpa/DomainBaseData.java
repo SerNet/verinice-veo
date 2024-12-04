@@ -62,7 +62,11 @@ import lombok.ToString;
 @Data
 public abstract class DomainBaseData extends IdentifiableVersionedData
     implements DomainBase, Nameable {
-  @Id @ToString.Include private UUID dbId;
+
+  @Column(name = "db_id")
+  @Id
+  @ToString.Include
+  private UUID id;
 
   @Column(name = "name")
   @ToString.Include
