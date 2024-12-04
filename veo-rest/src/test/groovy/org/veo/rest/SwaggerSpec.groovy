@@ -775,6 +775,76 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "parts items are properly described"() {
+        expect:
+        with(getSchema('FullIncidentDto')) {
+            it.properties.parts != null
+            with(it.properties.parts) {
+                it.type == 'array'
+                it.items == [$ref: '#/components/schemas/PartReference']
+            }
+        }
+        with(getSchema('PartReference')) {
+            it.description == '''A reference to an entity's part'''
+            with(it.properties.displayName) {
+                description == 'A friendly human readable title of the referenced entity.'
+                example == 'My Entity'
+            }
+            with(it.properties.targetUri) {
+                description == 'The resource URL of the referenced entity.'
+                example == 'http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>'
+                format == 'uri'
+            }
+        }
+    }
+
+    def "RiskValuesDto is well-documented"() {
+        expect:
+        with(getSchema('RiskValuesDto')) {
+            it.description == 'A set of risk values'
+            it.properties.keySet() ==~ [
+                'probability',
+                'impactValues',
+                'riskValues'
+            ]
+            it.properties.probability == [$ref:'#/components/schemas/Probability']
+        }
+    }
+
+    def "Probability is well-documented"() {
+        expect:
+        with(getSchema('Probability')) {
+            it.description == 'A collection of probability values.'
+            it.properties.keySet() ==~ [
+                'potentialProbability',
+                'specificProbabilityExplanation',
+                'specificProbability',
+                'effectiveProbability'
+            ]
+            with(it.properties.potentialProbability) {
+                it.type == 'number'
+                it.description == 'The potential probability derived from the scenario associated with this risk.'
+            }
+            with(it.properties.effectiveProbability) {
+                it.type == 'number'
+                it.example == 4
+                it.description == 'Either the potential probability or the specific probability where the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.'
+            }
+        }
+    }
+
+    def "ProbabilityRef is well-documented"() {
+        expect:
+        with(getSchema('ProbabilityRef')) {
+            it.properties.keySet() ==~ [
+                'idRef'
+            ]
+            with(it.properties.idRef) {
+                it.type == 'number'
+            }
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {
