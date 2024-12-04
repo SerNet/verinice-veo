@@ -47,7 +47,7 @@ build:
         if [ "$CI_COMMIT_REF_NAME" = "main" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,latest"; fi;
       fi;
       if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,develop"; fi;
-    - ./gradlew -i -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -PciCommitId=$CI_COMMIT_SHA jib -Djib.console=plain -Djib.to.image="$IMAGE_NAME:gitlab-git-${CI_COMMIT_SHA}" -Djib.to.tags="$ADDITIONAL_TAGS"
+    - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -PciCommitId=$CI_COMMIT_SHA jib -Djib.console=plain -Djib.to.image="$IMAGE_NAME:gitlab-git-${CI_COMMIT_SHA}" -Djib.to.tags="$ADDITIONAL_TAGS"
   interruptible: true
   cache:
     - key: gradle
