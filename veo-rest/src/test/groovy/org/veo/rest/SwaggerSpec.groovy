@@ -80,7 +80,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def ops = parsedApiDocs
                 .paths
                 .entrySet()
-                .collectMany{path ->
+                .collectMany{ path ->
                     path.value.entrySet().collect{
                         [
                             path: path.key,
@@ -326,7 +326,9 @@ class SwaggerSpec extends VeoSpringSpec {
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
         def schemaTypes = EntityType.ELEMENT_TYPES
-                .collect{it.singularTerm}
+                .collect{
+                    it.singularTerm
+                }
                 .sort()
 
         when: "fetching allowed schemas from OpenAPI parameter doc"
@@ -568,7 +570,9 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{domainId}/profiles/{profileId}"]
 
         then:
-        with(endPointInfo.put.parameters.find{it.name == 'unit'}) {
+        with(endPointInfo.put.parameters.find{
+            it.name == 'unit'
+        }) {
             description == 'Pass a unit ID to overwrite all items in the profile with new profile items created from the elements in that unit. Omit unit ID to leave current profile items untouched.'
         }
     }
@@ -585,6 +589,103 @@ class SwaggerSpec extends VeoSpringSpec {
             'MappingJacksonValue',
             'KeyUUID'
         ]
+    }
+
+    def "Inspection schema is complete"() {
+        expect:
+        with(getSchema('InspectionSchema')) {
+            it.description == '''Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.'''
+            with(it.properties) {
+                it.keySet() ==~  [
+                    'severity',
+                    'description',
+                    'elementType',
+                    'elementSubType',
+                    'condition',
+                    'suggestions'
+                ]
+                with(it.elementType) {
+                    it.description == 'Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.'
+                    it.maxLength == 32
+                }
+                it.condition == [
+                    oneOf: [
+                        [$ref:'#/components/schemas/AndExpression'],
+                        [$ref:'#/components/schemas/ConstantExpression'],
+                        [$ref:'#/components/schemas/ContainsExpression'],
+                        [$ref:'#/components/schemas/CurrentElementExpression'],
+                        [$ref:'#/components/schemas/CustomAspectAttributeSizeExpression'],
+                        [$ref:'#/components/schemas/CustomAspectAttributeValueExpression'],
+                        [$ref:'#/components/schemas/DecisionResultValueExpression'],
+                        [$ref:'#/components/schemas/EqualsExpression'],
+                        [$ref:'#/components/schemas/ImplementedRequirementsExpression'],
+                        [$ref:'#/components/schemas/LinkTargetsExpression'],
+                        [$ref:'#/components/schemas/MapExpression'],
+                        [$ref:'#/components/schemas/MaxRiskExpression'],
+                        [$ref:'#/components/schemas/PartCountExpression'],
+                        [$ref:'#/components/schemas/RemoveExpression']
+                    ]
+                ]
+
+                with(it.suggestions) {
+                    it.type == 'array'
+                    it.items == [$ref:'#/components/schemas/SuggestionSchema']
+                }
+            }
+        }
+    }
+
+    def "Suggestion schema is complete"() {
+        expect:
+        with(getSchema('SuggestionSchema')) {
+            it.description == 'Suggests an action to the user that would fix an inspection finding'
+            it.properties == null
+            it.discriminator == [
+                propertyName:'type',
+                mapping:[
+                    addPart:'#/components/schemas/AddPartSuggestionSchema']
+            ]
+        }
+    }
+
+    def "AddPartSuggestion schema is complete"() {
+        expect:
+        with(getSchema('AddPartSuggestionSchema')) {
+            it.description == '''Suggests adding a part to the composite element'''
+            with(it.properties) {
+                it.keySet() ==~ ['partSubType']
+                with(it.partSubType) {
+                    it.description == 'Suggested sub type for the new part'
+                }
+            }
+        }
+    }
+
+    def "AttributeDefinition schema is complete"() {
+        expect:
+        with(getSchema('AttributeDefinitionSchema')) {
+            it.description == 'Defines validation rules for an attribute in a custom aspect or link'
+            it.discriminator == [
+                propertyName:'type',
+                mapping:[
+                    boolean:'#/components/schemas/BooleanAttributeDefinition',
+                    date:'#/components/schemas/DateAttributeDefinition',
+                    dateTime:'#/components/schemas/DateTimeAttributeDefinition',
+                    enum:'#/components/schemas/EnumAttributeDefinition',
+                    externalDocument:'#/components/schemas/ExternalDocumentAttributeDefinition',
+                    integer:'#/components/schemas/IntegerAttributeDefinition',
+                    list:'#/components/schemas/ListAttributeDefinition',
+                    text:'#/components/schemas/TextAttributeDefinition'
+                ]
+            ]
+        }
+    }
+
+    def getSchema(String name) {
+        def schemas = parsedApiDocs.components.schemas
+        schemas[name].tap {
+            assert it != null, "Schema $name not found, available schemas: ${schemas.keySet().toSorted()}"
+        }
     }
 
     @Memoized
