@@ -28,6 +28,4 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
   @JsonSubTypes.Type(value = AddPartSuggestion.class, name = AddPartSuggestion.NAME),
 })
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
-public class Suggestion {
-  protected Suggestion() {}
-}
+public interface Suggestion {}

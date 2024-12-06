@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
-public class AddPartSuggestion extends Suggestion {
+public class AddPartSuggestion implements Suggestion {
   public static final String NAME = "addPart";
 
   /** Suggested subtype of the new part. */

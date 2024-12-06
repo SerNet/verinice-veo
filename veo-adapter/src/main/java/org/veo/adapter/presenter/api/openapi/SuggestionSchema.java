@@ -30,4 +30,4 @@ import io.swagger.v3.oas.annotations.media.Schema;
         @DiscriminatorMapping(
             value = AddPartSuggestion.NAME,
             schema = AddPartSuggestionSchema.class))
-public class SuggestionSchema extends Suggestion {}
+public interface SuggestionSchema extends Suggestion {}
