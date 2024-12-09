@@ -33,6 +33,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -119,6 +120,13 @@ public class CreateCatalogFromUnitUseCase
     log.info(
         "removing references to obsolete catalog items from {} incarnations", incarnations.size());
     incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(obsoleteItems));
+
+    log.info("remove references to obsolete catalog items from profiles");
+    domain.getProfiles().stream()
+        .map(Profile::getItems)
+        .flatMap(Collection::stream)
+        .filter(i -> obsoleteItems.contains(i.getAppliedCatalogItem()))
+        .forEach(i -> i.setAppliedCatalogItem(null));
 
     log.info("removing {} obsolete catalog items", obsoleteItems.size());
     obsoleteItems.forEach(TemplateItem::clearTailoringReferences);

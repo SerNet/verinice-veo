@@ -934,6 +934,62 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "obsolete catalog item references are removed from profiles"() {
+        given: "profile items referencing catalog items"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
+        def catalogItems = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().catalogItems.each {
+                it.tailoringReferences.size()
+            }
+        }
+        def unitId = parseJson(post("/units", [
+            name   : "new profile",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+
+        def catalogItem1Id = catalogItems.find{it.name == "Control-1" }.symbolicIdAsString
+        def catalogItem2Id = catalogItems.find{it.name == "Control-2" }.symbolicIdAsString
+        def incarnationDescriptions = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItem1Id,$catalogItem2Id"))
+        post("/units/${unitId}/incarnations", incarnationDescriptions)
+        def profileId = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
+                [
+                    name: 'export-test',
+                    description: 'All the good stuff',
+                    language: 'de_DE',
+                    productId: 'EXPORT_TEST',
+                ], 201)).id
+
+        when: "we recreate the catalog and remove one item"
+        unitId = parseJson(post("/units", [
+            name   : "new catalog unit",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+        incarnationDescriptions = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItem1Id"))
+        post("/units/${unitId}/incarnations", incarnationDescriptions)
+
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
+                [:], 204)
+
+        def exportedProfile = parseJson(get("/domains/${domainId}/profiles/${profileId}/export"))
+
+        then: "the reference to the removed item is gone"
+        with(exportedProfile.items.find{it.name == "Control-2" }) {
+            abbreviation == 'c-2'
+            appliedCatalogItem == null
+        }
+
+        and: "the reference to the remaining item is still present"
+        with(exportedProfile.items.find{it.name == "Control-1" }) {
+            abbreviation == 'c-1'
+            appliedCatalogItem.name == 'Control-1'
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "export and import a profile from a domain"() {
         given: "a domain and a unit"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id
