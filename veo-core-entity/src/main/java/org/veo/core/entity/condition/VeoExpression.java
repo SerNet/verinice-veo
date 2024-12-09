@@ -76,6 +76,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(value = "maxRisk", schema = MaxRiskExpression.class),
       @DiscriminatorMapping(value = "partCount", schema = PartCountExpression.class),
       @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class)
+    },
+    oneOf = {
+      AndExpression.class,
+      CurrentElementExpression.class,
+      ConstantExpression.class,
+      ContainsExpression.class,
+      CustomAspectAttributeSizeExpression.class,
+      CustomAspectAttributeValueExpression.class,
+      EqualsExpression.class,
+      DecisionResultValueExpression.class,
+      ImplementedRequirementsExpression.class,
+      LinkTargetsExpression.class,
+      MapExpression.class,
+      MaxRiskExpression.class,
+      PartCountExpression.class,
+      RemoveExpression.class
     })
 public interface VeoExpression {
   public Object getValue(Element element, Domain domain);

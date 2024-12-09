@@ -608,25 +608,7 @@ class SwaggerSpec extends VeoSpringSpec {
                     it.description == 'Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.'
                     it.maxLength == 32
                 }
-                it.condition == [
-                    oneOf: [
-                        [$ref:'#/components/schemas/AndExpression'],
-                        [$ref:'#/components/schemas/ConstantExpression'],
-                        [$ref:'#/components/schemas/ContainsExpression'],
-                        [$ref:'#/components/schemas/CurrentElementExpression'],
-                        [$ref:'#/components/schemas/CustomAspectAttributeSizeExpression'],
-                        [$ref:'#/components/schemas/CustomAspectAttributeValueExpression'],
-                        [$ref:'#/components/schemas/DecisionResultValueExpression'],
-                        [$ref:'#/components/schemas/EqualsExpression'],
-                        [$ref:'#/components/schemas/ImplementedRequirementsExpression'],
-                        [$ref:'#/components/schemas/LinkTargetsExpression'],
-                        [$ref:'#/components/schemas/MapExpression'],
-                        [$ref:'#/components/schemas/MaxRiskExpression'],
-                        [$ref:'#/components/schemas/PartCountExpression'],
-                        [$ref:'#/components/schemas/RemoveExpression']
-                    ]
-                ]
-
+                it.condition == [$ref:'#/components/schemas/VeoExpression']
                 with(it.suggestions) {
                     it.type == 'array'
                     it.items == [
