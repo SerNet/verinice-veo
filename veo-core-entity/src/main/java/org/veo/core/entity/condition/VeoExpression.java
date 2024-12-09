@@ -26,6 +26,9 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.event.ElementEvent;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Provides input value for a {@link Condition}. Takes an element and extracts a value from the
  * element in the context of a given domain.
@@ -47,6 +50,33 @@ import org.veo.core.entity.event.ElementEvent;
   @Type(value = PartCountExpression.class, name = "partCount"),
   @Type(value = RemoveExpression.class, name = "remove"),
 })
+@Schema(
+    description = "Extract a value from an element in the context of a given domain",
+    discriminatorProperty = "type",
+    discriminatorMapping = {
+      @DiscriminatorMapping(value = "and", schema = AndExpression.class),
+      @DiscriminatorMapping(value = "currentElement", schema = CurrentElementExpression.class),
+      @DiscriminatorMapping(value = "constant", schema = ConstantExpression.class),
+      @DiscriminatorMapping(value = "contains", schema = ContainsExpression.class),
+      @DiscriminatorMapping(
+          value = "customAspectAttributeSize",
+          schema = CustomAspectAttributeSizeExpression.class),
+      @DiscriminatorMapping(
+          value = "customAspectAttributeValue",
+          schema = CustomAspectAttributeValueExpression.class),
+      @DiscriminatorMapping(value = "equals", schema = EqualsExpression.class),
+      @DiscriminatorMapping(
+          value = "decisionResultValue",
+          schema = DecisionResultValueExpression.class),
+      @DiscriminatorMapping(
+          value = "implementedRequirements",
+          schema = ImplementedRequirementsExpression.class),
+      @DiscriminatorMapping(value = "linkTargets", schema = LinkTargetsExpression.class),
+      @DiscriminatorMapping(value = "map", schema = MapExpression.class),
+      @DiscriminatorMapping(value = "maxRisk", schema = MaxRiskExpression.class),
+      @DiscriminatorMapping(value = "partCount", schema = PartCountExpression.class),
+      @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class)
+    })
 public interface VeoExpression {
   public Object getValue(Element element, Domain domain);
 

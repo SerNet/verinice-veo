@@ -692,6 +692,19 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "VeoExpression is well-documented"() {
+        expect:
+        with(getSchema('VeoExpression')) {
+            it.description == 'Extract a value from an element in the context of a given domain'
+            with(it.discriminator) {
+                propertyName == 'type'
+                mapping.and == '#/components/schemas/AndExpression'
+                mapping.customAspectAttributeValue == '#/components/schemas/CustomAspectAttributeValueExpression'
+                mapping.remove == '#/components/schemas/RemoveExpression'
+            }
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {
