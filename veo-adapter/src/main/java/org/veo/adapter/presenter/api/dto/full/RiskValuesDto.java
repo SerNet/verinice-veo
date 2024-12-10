@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.veo.adapter.presenter.api.openapi.DeterminedRiskSchema;
-import org.veo.adapter.presenter.api.openapi.ProbabilitySchema;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.risk.DeterminedRisk;
@@ -53,9 +52,7 @@ public class RiskValuesDto {
 
   @Valid
   @JsonDeserialize(as = ProbabilityImpl.class)
-  @Schema(
-      description = "Values describing the probability of this risk occurring",
-      implementation = ProbabilitySchema.class)
+  @Schema(description = "Values describing the probability of this risk occurring")
   private Probability probability;
 
   @Valid

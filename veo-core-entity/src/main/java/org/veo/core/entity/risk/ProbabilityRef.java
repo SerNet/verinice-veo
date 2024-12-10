@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.veo.core.entity.riskdefinition.ProbabilityLevel;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -53,11 +52,7 @@ public class ProbabilityRef {
     this.idRef = idRef;
   }
 
-  @Getter
-  @PositiveOrZero
-  @Schema(minimum = "0")
-  @JsonValue
-  BigDecimal idRef;
+  @Getter @PositiveOrZero @JsonValue BigDecimal idRef;
 
   public static ProbabilityRef from(ProbabilityLevel pl) {
     return new ProbabilityRef(new BigDecimal(pl.getOrdinalValue()));

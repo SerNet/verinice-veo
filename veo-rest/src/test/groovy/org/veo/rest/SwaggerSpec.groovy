@@ -835,6 +835,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.example == 1
                 it.description == 'The potential probability derived from the scenario associated with this risk.'
                 it.minimum == 0
+                it.readOnly == true
             }
             with(it.properties.effectiveProbability) {
                 it.type == 'number'
