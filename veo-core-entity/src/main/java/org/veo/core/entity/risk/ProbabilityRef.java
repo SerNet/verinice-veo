@@ -24,6 +24,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import org.veo.core.entity.riskdefinition.ProbabilityLevel;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -47,7 +48,10 @@ import lombok.ToString;
 @ToString
 public class ProbabilityRef {
 
-  @Getter @PositiveOrZero BigDecimal idRef;
+  @Getter
+  @PositiveOrZero
+  @Schema(minimum = "0")
+  BigDecimal idRef;
 
   public static ProbabilityRef from(ProbabilityLevel pl) {
     return new ProbabilityRef(new BigDecimal(pl.getOrdinalValue()));

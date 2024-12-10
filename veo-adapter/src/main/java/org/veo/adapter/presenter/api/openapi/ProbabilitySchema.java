@@ -38,6 +38,7 @@ public interface ProbabilitySchema {
   @Schema(
       description =
           "The probability of a scenario in a specific circumstance. A scalar value that matches a valid probability level from a risk-definition.",
+      minimum = "0",
       example = "3")
   @PositiveOrZero
   BigDecimal getSpecificProbability();
@@ -46,6 +47,7 @@ public interface ProbabilitySchema {
       description =
           "Either the potential probability or the specific probability where "
               + "the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.",
+      minimum = "0",
       example = "4")
   @PositiveOrZero
   BigDecimal getEffectiveProbability();
@@ -59,7 +61,8 @@ public interface ProbabilitySchema {
   @Schema(
       description =
           "The potential probability derived from the scenario associated with " + "this risk.",
-      example = "No risk no fun.",
+      minimum = "0",
+      example = "1",
       accessMode = Schema.AccessMode.READ_ONLY)
   BigDecimal getPotentialProbability();
 }

@@ -823,12 +823,15 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             with(it.properties.potentialProbability) {
                 it.type == 'number'
+                it.example == 1
                 it.description == 'The potential probability derived from the scenario associated with this risk.'
+                it.minimum == 0
             }
             with(it.properties.effectiveProbability) {
                 it.type == 'number'
                 it.example == 4
                 it.description == 'Either the potential probability or the specific probability where the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.'
+                it.minimum == 0
             }
         }
     }
@@ -841,6 +844,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             with(it.properties.idRef) {
                 it.type == 'number'
+                it.minimum == 0
             }
         }
     }
