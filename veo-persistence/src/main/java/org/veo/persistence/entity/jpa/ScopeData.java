@@ -99,8 +99,8 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
 
   @Override
   protected TemplateItemAspects mapAspectsToItem(Domain domain) {
-    return new TemplateItemAspects(
-        this.getImpactValues(domain), null, getRiskDefinition(domain).orElse(null));
+    return super.mapAspectsToItem(domain)
+        .withScopeRiskDefinition(getRiskDefinition(domain).orElse(null));
   }
 
   @Override

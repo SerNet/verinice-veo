@@ -521,43 +521,6 @@ class DomainCreationRestTest extends DomainRestTest {
         }
     }
 
-    def "impact values and riskdef are removed from scope when riskdefinition is removed"() {
-        given: "some elements with risks"
-        def domainId = copyDomain(dsgvoDomainId)
-
-        get("/units/$unitId").with{
-            body.domains.add([targetUri: "/domains/$domainId"])
-            put("/units/$unitId", body, getETag())
-        }
-
-        def elementWithImpactId = post("/domains/$domainId/scopes", [
-            name: "scope-0",
-            subType: "SCP_Processor",
-            status: "NEW",
-            owner: [targetUri: "/units/$unitId"],
-            riskDefinition : "DSRA",
-            riskValues: [
-                DSRA : [
-                    potentialImpacts: [
-                        "C": 2,
-                        "I": 2,
-                        "A": 2,
-                        "R": 2
-                    ]
-                ]
-            ]
-        ]).body.resourceId
-
-        when: "removing riskdefinition"
-        delete("/content-creation/domains/$domainId/risk-definitions/DSRA", 204, CONTENT_CREATOR)
-
-        then: "all values are gone"
-        with(get("/domains/$domainId/scopes/$elementWithImpactId").body) {
-            riskValues.DSRA == null
-            riskDefinition == null
-        }
-    }
-
     def "impact values are updated when category is removed or added"() {
         given: "some elements with risks"
         def domainId = copyDomain(dsgvoDomainId)

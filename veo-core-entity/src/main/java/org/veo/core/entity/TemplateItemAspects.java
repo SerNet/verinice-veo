@@ -26,12 +26,15 @@ import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import lombok.With;
+
 /**
  * Serializable container for aspects to be used in a template item.
  *
  * <p>For each element type, only a subset of the information representable in this class is
  * relevant.
  */
+@With
 public record TemplateItemAspects(
     Map<RiskDefinitionRef, ImpactValues> impactValues,
     Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues,

@@ -405,19 +405,13 @@ class CatalogSpec extends VeoMvcSpec {
                 status = "NEW"
                 name = "itemScope"
 
+                def riskRefRef = new RiskDefinitionRef(RISK_DEF_ID)
                 aspects = new TemplateItemAspects(
                         [
-                            (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
-                            (new ImpactValues([
-                                ( CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
-                                .getCategory("C").get())):
-                                (
-                                ImpactRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
-                                .getCategory("C").get().getLevel(2).get())
-                                )
-                            ])
-                            )]
-                        ,null, RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID)))
+                            (riskRefRef): new ImpactValues([
+                                (new CategoryRef("C")): (new ImpactRef(2))
+                            ]),
+                        ], null, riskRefRef)
             }
             itemMember = newCatalogItem(domain) {
                 elementType = "process"

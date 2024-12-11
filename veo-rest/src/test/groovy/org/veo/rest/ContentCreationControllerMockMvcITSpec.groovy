@@ -1089,6 +1089,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             appliedCatalogItem.getNamespace() == dt
         }
 
+        when: "we recreate the catalog"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
+                [:], 204)
+
+        exportedProfile = parseJson(get("/domains/${domainId}/profiles/${profileId}/export"))
+
+        then: "the profile is exported"
+        with(exportedProfile.items.find{it.name == "Control-2" }) {
+            abbreviation == 'c-2'
+            appliedCatalogItem.name == 'Control-2'
+            appliedCatalogItem.namespaceId == domainId.toString()
+        }
+
         when:
         delete("/content-creation/domain-templates/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/profiles/$profileInTemplateId")
         dt = txTemplate.execute {
