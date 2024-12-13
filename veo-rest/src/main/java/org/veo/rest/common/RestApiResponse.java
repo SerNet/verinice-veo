@@ -18,6 +18,7 @@
 package org.veo.rest.common;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -65,6 +66,11 @@ public class RestApiResponse {
 
   public static ResponseEntity<ApiResponseBody> created(String location, String message) {
     return ResponseEntity.created(URI.create(location)).body(new ApiResponseBody(true, message));
+  }
+
+  public static ResponseEntity<ApiResponseBody> created(String location, UUID id, String message) {
+    return ResponseEntity.created(URI.create(location))
+        .body(new ApiResponseBody(true, Optional.of(id.toString()), message));
   }
 
   @Schema(

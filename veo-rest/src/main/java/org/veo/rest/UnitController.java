@@ -338,7 +338,9 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),
         out ->
             RestApiResponse.created(
-                referenceAssembler.targetReferenceOf(out.unit()), "Unit created successfully"));
+                referenceAssembler.targetReferenceOf(out.unit()),
+                out.unit().getId(),
+                "Unit created successfully"));
   }
 
   // TODO: veo-279 use the complete dto

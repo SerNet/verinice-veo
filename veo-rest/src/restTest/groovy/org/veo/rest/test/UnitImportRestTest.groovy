@@ -83,11 +83,10 @@ class UnitImportRestTest extends VeoRestTest {
         get("/processes/$processId", 404)
 
         when: "reviving the unit by importing the backup"
-        unitUri = post("/units/import", unitBackup).location
-        def unitId = (unitUri =~ /\/units\/(.+)/)[0][1]
+        def unitId = post("/units/import", unitBackup).body.resourceId
 
         then: "it's back"
-        with(get(unitUri).body) {
+        with(get("/units/$unitId").body) {
             name == "Lost Unit"
             abbreviation == "LU"
             description =~ /It used to be a .*/
