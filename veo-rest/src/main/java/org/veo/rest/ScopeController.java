@@ -54,7 +54,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
@@ -302,7 +301,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
   }
 
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/members")
   @Operation(summary = "Loads the members of a scope")
   @ApiResponse(
       responseCode = "200",
@@ -390,12 +389,12 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     Client client = getAuthenticatedClient(auth);
 
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scope.class, UUID.fromString(uuid), client),
+        new DeleteElementUseCase.InputData(Scope.class, uuid, client),
         output -> ResponseEntity.noContent().build());
   }
 

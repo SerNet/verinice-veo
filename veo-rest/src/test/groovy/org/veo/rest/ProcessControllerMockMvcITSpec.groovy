@@ -933,12 +933,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "inspection for invalid process id returns 404"() {
+    def "inspection for invalid process id returns 400"() {
         when:
-        get("/processes/helloworld/inspection?domain=${dsgvoDomain.idAsString}", 404)
+        get("/processes/helloworld/inspection?domain=${dsgvoDomain.idAsString}", 400)
 
         then:
-        thrown(NoResourceFoundException)
+        thrown(MethodArgumentTypeMismatchException)
     }
 
     @WithUserDetails("user@domain.example")

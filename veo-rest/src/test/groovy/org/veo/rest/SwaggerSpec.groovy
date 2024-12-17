@@ -501,7 +501,10 @@ class SwaggerSpec extends VeoSpringSpec {
             name == 'id'
             it.in == 'path'
             required == true
-            it.schema == [type: 'string']
+            it.schema == [
+                type: 'string',
+                format: 'uuid',
+            ]
         }
     }
 

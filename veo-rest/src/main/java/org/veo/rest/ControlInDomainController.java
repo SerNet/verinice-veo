@@ -46,7 +46,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.UUID;
@@ -231,15 +230,15 @@ public class ControlInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Control not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "404", description = "Control not associated with domain")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/control-implementations")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/control-implementations")
   public @Valid Future<PageDto<ControlImplementationDto>> getControlImplementations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid,
+          UUID uuid,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String domainId,
+          UUID domainId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -275,8 +274,8 @@ public class ControlInDomainController implements ElementInDomainResource {
         getControlImplementationsUseCase,
         new GetControlImplementationsUseCase.InputData(
             client,
-            UUID.fromString(uuid),
-            UUID.fromString(domainId),
+            uuid,
+            domainId,
             null,
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
@@ -287,7 +286,7 @@ public class ControlInDomainController implements ElementInDomainResource {
                     entityToDtoTransformer.mapControlImplementation(
                         ci,
                         ci.getOwner().getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .filter(d -> d.getId().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
   }
@@ -302,7 +301,7 @@ public class ControlInDomainController implements ElementInDomainResource {
               array =
                   @ArraySchema(schema = @Schema(implementation = FullControlInDomainDto.class))))
   @ApiResponse(responseCode = "404", description = "Control not found")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullControlInDomainDto>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

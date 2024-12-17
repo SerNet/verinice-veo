@@ -39,7 +39,6 @@ import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
@@ -218,12 +217,12 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             exportDomainUseCase,
-            new UseCase.IdAndClient(UUID.fromString(id), client),
+            new UseCase.IdAndClient(id, client),
             o -> entityToDtoTransformer.transformDomain2ExportDto(o.exportDomain()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
@@ -544,19 +543,14 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
-      @RequestParam(name = UNIT_PARAM) @Pattern(regexp = UUID_REGEX) String unitId) {
+      @PathVariable UUID id,
+      @PathVariable UUID profileId,
+      @RequestParam(name = UNIT_PARAM) UUID unitId) {
     return useCaseInteractor
         .execute(
             getProfileIncarnationDescriptionUseCase,
             new GetProfileIncarnationDescriptionUseCase.InputData(
-                getAuthenticatedClient(auth),
-                UUID.fromString(unitId),
-                UUID.fromString(id),
-                null,
-                UUID.fromString(profileId),
-                true),
+                getAuthenticatedClient(auth), unitId, id, null, profileId, true),
             out ->
                 out.references().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)
@@ -566,7 +560,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 useCaseInteractor.execute(
                     applyProfileIncarnationDescriptionUseCase,
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                        getAuthenticatedClient(auth), UUID.fromString(unitId), references),
+                        getAuthenticatedClient(auth), unitId, references),
                     out -> ResponseEntity.noContent().build()));
   }
 
@@ -583,9 +577,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfilenew(
       @Parameter(required = true, hidden = true) Authentication auth,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
+      @PathVariable UUID id,
+      @PathVariable UUID profileId,
+      @PathVariable UUID unitId) {
     return applyProfile(auth, id, profileId, unitId);
   }
 

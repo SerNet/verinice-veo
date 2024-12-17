@@ -28,7 +28,6 @@ import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.UUID;
 import java.util.concurrent.Future;
@@ -56,12 +55,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 public interface RiskAffectedResource {
-  @GetMapping(
-      "/{riskAffectedId:"
-          + UUID_REGEX
-          + "}/requirement-implementations/{controlId:"
-          + UUID_REGEX
-          + "}")
+  @GetMapping("/{riskAffectedId}/requirement-implementations/{controlId}")
   @Operation(summary = "Load a requirement implementation for a control")
   @ApiResponse(responseCode = "200", description = "Requirement implementation loaded")
   @ApiResponse(responseCode = "404", description = "Risk-affected not found")
@@ -76,12 +70,7 @@ public interface RiskAffectedResource {
           @PathVariable
           UUID controlId);
 
-  @PutMapping(
-      "/{riskAffectedId:"
-          + UUID_REGEX
-          + "}/requirement-implementations/{controlId:"
-          + UUID_REGEX
-          + "}")
+  @PutMapping("/{riskAffectedId}/requirement-implementations/{controlId}")
   @Operation(summary = "Update an existing requirement implementation")
   @ApiResponse(responseCode = "204", description = "Requirement implementation updated")
   @ApiResponse(responseCode = "404", description = "Risk-affected not found")
@@ -98,12 +87,7 @@ public interface RiskAffectedResource {
           UUID controlId,
       @RequestBody RequirementImplementationDto dto);
 
-  @GetMapping(
-      "/{riskAffectedId:"
-          + UUID_REGEX
-          + "}/control-implementations/{controlId:"
-          + UUID_REGEX
-          + "}/requirement-implementations")
+  @GetMapping("/{riskAffectedId}/control-implementations/{controlId}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")
   @ApiResponse(responseCode = "200", description = "Requirement implementations loaded")
   @ApiResponse(responseCode = "404", description = "Element not found")

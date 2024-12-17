@@ -46,7 +46,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.UUID;
@@ -224,7 +223,7 @@ public class PersonInDomainController implements ElementInDomainResource {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullPersonInDomainDto.class))))
   @ApiResponse(responseCode = "404", description = "Person not found")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullPersonInDomainDto>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

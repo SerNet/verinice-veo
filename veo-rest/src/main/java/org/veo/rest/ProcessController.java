@@ -54,7 +54,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
@@ -245,7 +244,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class))))
   @ApiResponse(responseCode = "404", description = "Process not found")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -291,7 +290,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
         output -> toResponseEntity(output.entity()));
   }
 
-  @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+  @DeleteMapping(value = "/{" + UUID_PARAM + "}")
   @Operation(summary = "Deletes a process")
   @ApiResponse(responseCode = "204", description = "Process deleted")
   @ApiResponse(responseCode = "404", description = "Process not found")
@@ -299,11 +298,10 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(
-            Process.class, UUID.fromString(uuid), getAuthenticatedClient(auth)),
+        new DeleteElementUseCase.InputData(Process.class, uuid, getAuthenticatedClient(auth)),
         output -> ResponseEntity.noContent().build());
   }
 

@@ -52,7 +52,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
@@ -240,7 +239,7 @@ public class ScenarioController
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class))))
   @ApiResponse(responseCode = "404", description = "Scenario not found")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -293,12 +292,12 @@ public class ScenarioController
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scenario.class, UUID.fromString(uuid), client),
+        new DeleteElementUseCase.InputData(Scenario.class, uuid, client),
         output -> ResponseEntity.noContent().build());
   }
 

@@ -48,7 +48,6 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.Set;
@@ -382,7 +381,7 @@ public class ScopeInDomainController
                   @ArraySchema(schema = @Schema(implementation = FullControlInDomainDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
-  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/members")
   public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

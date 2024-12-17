@@ -18,9 +18,7 @@
 package org.veo.adapter.presenter.api.io.mapper;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
@@ -32,16 +30,6 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
 public class UnitDumpMapper {
-
-  public static GetUnitDumpUseCase.InputData mapInput(String unitId) {
-    return mapInput(unitId, null);
-  }
-
-  public static GetUnitDumpUseCase.InputData mapInput(String unitId, String domainId) {
-    return new GetUnitDumpUseCase.InputData(
-        UUID.fromString(unitId), Optional.ofNullable(domainId).map(UUID::fromString).orElse(null));
-  }
-
   public static UnitDumpDto mapOutput(
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
     var elementDtos =

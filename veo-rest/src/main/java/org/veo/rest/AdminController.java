@@ -48,6 +48,7 @@ import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -120,10 +121,10 @@ public class AdminController {
 
   @GetMapping("/unit-dump/{unitId}")
   @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
-  public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
+  public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable UUID unitId) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
-        UnitDumpMapper.mapInput(unitId),
+        new GetUnitDumpUseCase.InputData(unitId, null),
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
@@ -132,18 +133,17 @@ public class AdminController {
       summary = "Migrates all clients to the domain created from given domain template",
       description =
           "Runs as a background task. For each client, elements associated with a previous version of the domain are migrated to the given version and the old domain is deactivated.")
+  @SuppressFBWarnings({"CRLF_INJECTION_LOGS"})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
-      @PathVariable String id) {
-    log.info(
-        "Submit updateAllClientDomainsUseCase task for domainTemplate: {}",
-        id.replaceAll("[\r\n]", ""));
+      @PathVariable UUID id) {
+    log.info("Submit updateAllClientDomainsUseCase task for domainTemplate: {}", id);
     taskExecutor.execute(
         // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the
         // task as event
         () -> {
           log.info("Start of updateAllClientDomainsUseCase task");
           updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(UUID.fromString(id)), out -> null);
+              new UpdateAllClientDomainsUseCase.InputData(id), out -> null);
           log.info("end of updateAllClientDomainsUseCase task");
         });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());

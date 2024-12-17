@@ -26,7 +26,6 @@ import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,12 +49,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 public interface RiskAffectedInDomainResource {
 
-  @GetMapping(
-      "/{riskAffectedId:"
-          + UUID_REGEX
-          + "}/control-implementations/{controlId:"
-          + UUID_REGEX
-          + "}/requirement-implementations")
+  @GetMapping("/{riskAffectedId}/control-implementations/{controlId}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")
   @ApiResponse(responseCode = "200", description = "Requirement implementations loaded")
   @ApiResponse(responseCode = "404", description = "Risk-affected element not found")

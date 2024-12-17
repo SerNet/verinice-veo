@@ -301,10 +301,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiResponseBody.class)))
   public CompletableFuture<UnitDumpDto> exportUnit(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
-        UnitDumpMapper.mapInput(id),
+        new GetUnitDumpUseCase.InputData(id, null),
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
@@ -391,11 +391,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          String uuid) {
+          UUID uuid) {
 
     return useCaseInteractor.execute(
         deleteUnitUseCase,
-        new DeleteUnitUseCase.InputData(UUID.fromString(uuid), getAuthenticatedClient(auth)),
+        new DeleteUnitUseCase.InputData(uuid, getAuthenticatedClient(auth)),
         output -> RestApiResponse.noContent());
   }
 

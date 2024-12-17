@@ -49,8 +49,7 @@ public final class ControllerConstants {
       "IDs of scopes that the new element should be a member of";
   static final String PARENT_PARAM = "parent";
   static final String UUID_PARAM = "uuid";
-  static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
-  static final String UUID_PARAM_SPEC = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}";
+  static final String UUID_PARAM_SPEC = "/{" + UUID_PARAM + "}";
   static final String UNIT_PARAM = "unit";
   static final String DESCRIPTION_PARAM = "description";
   static final String DESIGNATOR_PARAM = "designator";
