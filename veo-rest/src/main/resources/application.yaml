@@ -118,6 +118,8 @@ spring:
       enabled: true
 
 springdoc:
+  api-docs:
+    version: OPENAPI_3_0
   swagger-ui:
     disable-swagger-default-url: true
 
