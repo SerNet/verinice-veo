@@ -111,8 +111,8 @@ subprojects {
             // pull in fix for https://github.com/spockframework/spock/issues/1539
             dependency "org.spockframework:spock-core:2.4-M4-groovy-4.0"
             dependency "org.spockframework:spock-spring:2.4-M4-groovy-4.0"
-            dependency 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
-            dependency 'org.springdoc:springdoc-openapi-starter-common:2.7.0'
+            dependency 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1'
+            dependency 'org.springdoc:springdoc-openapi-starter-common:2.8.1'
             dependency 'io.swagger.core.v3:swagger-core-jakarta:2.2.27'
             dependency 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.27'
             dependency 'net.ttddyy:datasource-proxy:1.10.1'
