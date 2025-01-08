@@ -186,22 +186,3 @@ configurations{
     // https://github.com/gradle/gradle/issues/23477
     restTestImplementation.extendsFrom implementation
 }
-
-// specific "continuous integration" settings needed by Jenkins
-if (continuousIntegrationBuild) {
-
-    // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
-    task jenkinsRestTestFix {
-        inputs.files restTest.outputs.files
-        doLast {
-            if (!sourceSets.test.allSource.empty) {
-                def timestamp = System.currentTimeMillis()
-                restTest.reports.junitXml.outputLocation.get().asFile.eachFile { it.lastModified = timestamp }
-            }
-        }
-    }
-
-    restTest {
-        finalizedBy jenkinsRestTestFix
-    }
-}
