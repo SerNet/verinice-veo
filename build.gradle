@@ -143,7 +143,7 @@ subprojects {
     testing {
         suites {
             configureEach {
-                useSpock('2.4-M4-groovy-4.0')
+                useSpock(dependencyManagement.managedVersions['org.spockframework:spock-core'])
                 targets {
                     all {
                         testTask.configure {
