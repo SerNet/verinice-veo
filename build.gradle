@@ -140,10 +140,6 @@ subprojects {
 
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-
     testing {
         suites {
             configureEach {
