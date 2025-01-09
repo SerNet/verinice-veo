@@ -5,7 +5,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.1' apply false
     id 'io.spring.dependency-management' version '1.1.7' apply false
     id "com.github.spotbugs" version '6.0.27'
-    id "com.diffplug.spotless" version "6.25.0" apply false
+    id "com.diffplug.spotless" version "7.0.1" apply false
     id "io.freefair.lombok" version "8.11"
 }
 
