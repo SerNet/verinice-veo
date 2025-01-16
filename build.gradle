@@ -120,7 +120,7 @@ subprojects {
             dependency 'com.github.victools:jsonschema-module-jackson:4.37.0'
             dependency 'com.github.victools:jsonschema-module-jakarta-validation:4.37.0'
             dependency 'com.github.victools:jsonschema-module-swagger-2:4.37.0'
-            dependency 'com.networknt:json-schema-validator:1.5.4'
+            dependency 'com.networknt:json-schema-validator:1.5.5'
             dependency "org.testcontainers:spock:1.20.4"
             dependency "org.testcontainers:postgresql:1.20.4"
             dependency "org.keycloak:keycloak-authz-client:26.0.3"
