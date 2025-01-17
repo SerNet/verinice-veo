@@ -19,6 +19,8 @@ package org.veo.core.entity.compliance;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -29,7 +31,7 @@ import lombok.Value;
 @AllArgsConstructor(staticName = "from", access = AccessLevel.PUBLIC)
 @Value
 public class ReqImplRef {
-  @Getter String keyRef;
+  @Getter @JsonValue String keyRef;
 
   public static ReqImplRef from(RequirementImplementation reqImpl) {
     return new ReqImplRef(reqImpl.getId().toString());

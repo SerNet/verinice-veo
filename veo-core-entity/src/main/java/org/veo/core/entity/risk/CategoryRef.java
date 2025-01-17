@@ -20,6 +20,8 @@ package org.veo.core.entity.risk;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
 
@@ -38,6 +40,7 @@ public class CategoryRef {
 
   @Getter
   @Size(max = MAX_ID_LENGTH)
+  @JsonValue
   String idRef;
 
   public static CategoryRef from(CategoryDefinition cd) {

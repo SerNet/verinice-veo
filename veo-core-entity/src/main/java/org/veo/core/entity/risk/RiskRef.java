@@ -22,10 +22,11 @@ import java.math.BigDecimal;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.riskdefinition.RiskValue;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -41,13 +42,17 @@ import lombok.ToString;
  *
  * <p>As of now, only discrete reference values are supported.
  */
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Valid
 @EqualsAndHashCode
 @ToString
 public class RiskRef {
 
-  @PositiveOrZero @Getter BigDecimal idRef;
+  @JsonCreator
+  RiskRef(BigDecimal idRef) {
+    this.idRef = idRef;
+  }
+
+  @PositiveOrZero @Getter @JsonValue BigDecimal idRef;
 
   public static RiskRef from(RiskValue rd) {
     return new RiskRef(new BigDecimal(rd.getOrdinalValue()));

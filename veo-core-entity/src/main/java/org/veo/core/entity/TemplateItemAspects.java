@@ -25,7 +25,9 @@ import javax.annotation.Nullable;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 
 /**
@@ -38,7 +40,7 @@ import lombok.With;
 public record TemplateItemAspects(
     Map<RiskDefinitionRef, ImpactValues> impactValues,
     Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues,
-    RiskDefinitionRef scopeRiskDefinition) {
+    @Schema(maxLength = RiskDefinition.MAX_ID_SIZE) RiskDefinitionRef scopeRiskDefinition) {
   public TemplateItemAspects {
     impactValues = immutableCopy(impactValues);
     scenarioRiskValues = immutableCopy(scenarioRiskValues);

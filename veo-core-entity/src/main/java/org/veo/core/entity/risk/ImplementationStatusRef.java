@@ -20,6 +20,8 @@ package org.veo.core.entity.risk;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.riskdefinition.CategoryLevel;
 
 import lombok.AccessLevel;
@@ -32,7 +34,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 @Valid
 public class ImplementationStatusRef {
-  @Getter @PositiveOrZero private int ordinalValue;
+  @Getter @PositiveOrZero @JsonValue private int ordinalValue;
 
   public static ImplementationStatusRef from(CategoryLevel cl) {
     return new ImplementationStatusRef(cl.getOrdinalValue());

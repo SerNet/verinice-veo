@@ -19,6 +19,8 @@ package org.veo.core.entity.decision;
 
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.DomainBase;
 
 import lombok.AccessLevel;
@@ -37,6 +39,7 @@ import lombok.Value;
 public class DecisionRef {
   @Getter
   @Size(min = 1, max = DomainBase.DECISION_ID_MAX_LENGTH)
+  @JsonValue
   String keyRef;
 
   public DecisionRef(String keyRef, DomainBase domain) {

@@ -587,7 +587,15 @@ class SwaggerSpec extends VeoSpringSpec {
         where:
         type << [
             'MappingJacksonValue',
-            'KeyUUID'
+            'KeyUUID',
+            'ProbabilityRef',
+            'CategoryRef',
+            'ImpactRef',
+            'RiskDefinitionRef',
+            'ImplementationStatusRef',
+            'DecisionRef',
+            'RiskRef',
+            'ReqImplRef'
         ]
     }
 
@@ -911,15 +919,25 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    def "ProbabilityRef is well-documented"() {
+    def "TemplateItemAspects is well-documented"() {
         expect:
-        with(getSchema('ProbabilityRef')) {
+        with(getSchema('TemplateItemAspects')) {
             it.properties.keySet() ==~ [
-                'idRef'
+                'impactValues',
+                'scenarioRiskValues',
+                'scopeRiskDefinition'
             ]
-            with(it.properties.idRef) {
-                it.type == 'number'
-                it.minimum == 0
+            with(it.properties.impactValues) {
+                it.type == 'object'
+                it.additionalProperties == [$ref: '#/components/schemas/ImpactValues']
+            }
+            with(it.properties.scenarioRiskValues) {
+                it.type == 'object'
+                it.additionalProperties == [$ref: '#/components/schemas/PotentialProbability']
+            }
+            with(it.properties.scopeRiskDefinition) {
+                it.type == 'string'
+                it.maxLength == 120
             }
         }
     }

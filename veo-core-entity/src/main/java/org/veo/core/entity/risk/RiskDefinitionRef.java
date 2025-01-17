@@ -20,6 +20,8 @@ package org.veo.core.entity.risk;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
@@ -39,6 +41,7 @@ import lombok.Getter;
 public class RiskDefinitionRef {
   @Getter
   @Size(max = RiskDefinition.MAX_ID_SIZE)
+  @JsonValue
   String idRef;
 
   public static RiskDefinitionRef from(RiskDefinition rd) {

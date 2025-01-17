@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,7 +35,7 @@ import lombok.Value;
 @Value
 @Schema(description = "Index of a rule in a decision's rules list", type = "integer")
 public class DecisionRuleRef {
-  @Getter private final int index;
+  @Getter @JsonValue private final int index;
 
   public DecisionRuleRef(int index, Decision decision) {
     this(index);

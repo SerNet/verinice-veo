@@ -22,11 +22,12 @@ import java.math.BigDecimal;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import org.veo.core.entity.riskdefinition.ProbabilityLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -42,15 +43,20 @@ import lombok.ToString;
  *
  * <p>As of now, only discrete reference values are supported.
  */
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Valid
 @EqualsAndHashCode
 @ToString
 public class ProbabilityRef {
 
+  @JsonCreator
+  ProbabilityRef(BigDecimal idRef) {
+    this.idRef = idRef;
+  }
+
   @Getter
   @PositiveOrZero
   @Schema(minimum = "0")
+  @JsonValue
   BigDecimal idRef;
 
   public static ProbabilityRef from(ProbabilityLevel pl) {
