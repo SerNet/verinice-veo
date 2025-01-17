@@ -825,12 +825,17 @@ class DomainCreationRestTest extends DomainRestTest {
             it.categories.find { it.id == newCategory.id }.translations.de.name == newCategory.translations.de.name
         }
 
-        expect: "a changed value in a risk matrix to be illegal"
+        when: "changing a value in a risk matrix"
         get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
             definition.categories[0].valueMatrix[0][0] = definition.categories[0].valueMatrix[3][3]
-            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 422, CONTENT_CREATOR)) {
-                body.message ==~ /Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed.*/
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
+                body.message == "Risk definition updated"
             }
+        }
+
+        then: "the change is persisted"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            it.categories[0].valueMatrix[0][0] == it.categories[0].valueMatrix[3][3]
         }
     }
 

@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresImpactInheritanceRecalculation;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresMigration;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresRiskRecalculation;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -114,7 +118,7 @@ public class RiskComponentChangeListener {
     RiskDefinition rd = event.getRiskDefinition();
     Domain domain = event.getDomain();
     Client client = event.getClient();
-    if (event.isMigrateElements()) {
+    if (requiresMigration(event.getChanges())) {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
       // TODO #3142 migrate scenarios
@@ -127,14 +131,23 @@ public class RiskComponentChangeListener {
 
       templateItemMigrationService.migrateRiskDefinitionChange(domain);
     }
-
-    if (impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
+    if (requiresImpactInheritanceRecalculation(event.getChanges())
+        && impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
       List<Unit> units = unitRepository.findByDomain(domain.getId());
       units.stream()
           .forEach(
               unit -> {
                 impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId());
               });
+    }
+    if (requiresRiskRecalculation(event.getChanges())) {
+      ElementQuery<Element> query = elementRepository.query(client);
+      query.whereDomainsContain(domain);
+      query.whereElementTypeMatches(
+          new QueryCondition<>(
+              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      elements.forEach(riskService::evaluateChangedRiskComponent);
     }
   }
 

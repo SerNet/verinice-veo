@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import java.util.Set;
+
 public enum RiskDefinitionChangeType {
   NEW_RISK_DEFINITION,
   IMPACT_LINKS,
@@ -28,5 +30,26 @@ public enum RiskDefinitionChangeType {
   IMPACT_LIST_RESIZE,
   PROBABILITY_LIST_RESIZE,
   CATEGORY_LIST_RESIZE,
-  RISK_VALUE_LIST_RESIZE
+  RISK_VALUE_LIST_RESIZE;
+
+  static Set<RiskDefinitionChangeType> recalulateRiskChanges() {
+    return Set.of(RISK_MATRIX_DIFF, RISK_MATRIX_RESIZE);
+  }
+
+  static Set<RiskDefinitionChangeType> migrateRiskChanges() {
+    return Set.of(CATEGORY_LIST_RESIZE, RISK_MATRIX_RESIZE);
+  }
+
+  public static boolean requiresRiskRecalculation(Set<RiskDefinitionChangeType> detectedChanges) {
+    return detectedChanges.stream().anyMatch(t -> recalulateRiskChanges().contains(t));
+  }
+
+  public static boolean requiresMigration(Set<RiskDefinitionChangeType> detectedChanges) {
+    return detectedChanges.stream().anyMatch(t -> migrateRiskChanges().contains(t));
+  }
+
+  public static boolean requiresImpactInheritanceRecalculation(
+      Set<RiskDefinitionChangeType> detectedChanges) {
+    return detectedChanges.contains(IMPACT_LINKS);
+  }
 };

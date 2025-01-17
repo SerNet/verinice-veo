@@ -813,6 +813,21 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             inherentRisk == 0
             residualRisk == 0
         }
+
+        when: "we change a risk matrix value"
+        def rd = parseJson(get("/domains/${r1d1DomainId}")).riskDefinitions.r1d1
+        rd.categories.find{ it.id == "D" }.valueMatrix[1][1].ordinalValue = 3
+        rd.categories.find{ it.id == "D" }.valueMatrix[1][1].symbolicRisk = "symbolic_risk_4"
+        put("/content-customizing/domains/${r1d1DomainId}/risk-definitions/r1d1", rd, [:],200)
+        retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+
+        then: "the risk was calculated"
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 1
+        with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.first()) {
+            category=='D'
+            inherentRisk == 3
+            residualRisk == 3
+        }
     }
 
     def "Trying to create an existing risk updates its values"() {

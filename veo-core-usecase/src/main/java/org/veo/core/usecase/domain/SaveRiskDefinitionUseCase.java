@@ -85,17 +85,8 @@ public class SaveRiskDefinitionUseCase
                   .toList());
     }
     domain.applyRiskDefinition(input.riskDefinitionRef, input.riskDefinition);
-    // todo: handle the forbidden cases in #3137
-    if (detectedChanges.contains(CATEGORY_LIST_RESIZE)
-        || detectedChanges.contains(RISK_MATRIX_RESIZE)
-        || detectedChanges.contains(RISK_MATRIX_DIFF)) {
-      // ImpactRecalculation and ElementMigration
-      eventPublisher.publish(RiskDefinitionChangedEvent.from(domain, input.riskDefinition, this));
-    } else if (detectedChanges.contains(IMPACT_LINKS)) {
-      // only recalculate Impacts
-      eventPublisher.publish(
-          RiskDefinitionChangedEvent.from(domain, input.riskDefinition, false, this));
-    } // no event for other change types
+    eventPublisher.publish(
+        RiskDefinitionChangedEvent.from(domain, input.riskDefinition, detectedChanges, this));
     return new OutputData(detectedChanges.contains(NEW_RISK_DEFINITION));
   }
 

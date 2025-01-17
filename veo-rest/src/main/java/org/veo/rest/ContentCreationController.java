@@ -21,7 +21,6 @@ import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion
 import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.IMPACT_LIST_RESIZE;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.PROBABILITY_LIST_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_MATRIX_DIFF;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_VALUE_LIST_RESIZE;
 import static org.veo.rest.ControllerConstants.DEFAULT_CACHE_CONTROL;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
@@ -403,11 +402,7 @@ public class ContentCreationController extends AbstractVeoController {
             domainId,
             riskDefinitionId,
             riskDefinition,
-            Set.of(
-                IMPACT_LIST_RESIZE,
-                PROBABILITY_LIST_RESIZE,
-                RISK_MATRIX_DIFF,
-                RISK_VALUE_LIST_RESIZE)),
+            Set.of(IMPACT_LIST_RESIZE, PROBABILITY_LIST_RESIZE, RISK_VALUE_LIST_RESIZE)),
         out ->
             out.newRiskDefinition()
                 ? RestApiResponse.created(

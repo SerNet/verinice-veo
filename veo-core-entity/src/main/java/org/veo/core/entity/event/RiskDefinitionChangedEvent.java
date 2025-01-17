@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChangeType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,19 +39,16 @@ public class RiskDefinitionChangedEvent implements DomainEvent {
   Domain domain;
   RiskDefinition riskDefinition;
   Client client;
-  boolean migrateElements;
+  Set<RiskDefinitionChangeType> changes;
   Object source;
 
   public static RiskDefinitionChangedEvent from(
-      Domain domain, RiskDefinition riskDefinition, Object source) {
+      Domain domain,
+      RiskDefinition riskDefinition,
+      Set<RiskDefinitionChangeType> changes,
+      Object source) {
     return new RiskDefinitionChangedEvent(
-        domain, riskDefinition, domain.getOwningClient().orElseThrow(), true, source);
-  }
-
-  public static RiskDefinitionChangedEvent from(
-      Domain domain, RiskDefinition riskDefinition, boolean migrateElements, Object source) {
-    return new RiskDefinitionChangedEvent(
-        domain, riskDefinition, domain.getOwningClient().orElseThrow(), migrateElements, source);
+        domain, riskDefinition, domain.getOwningClient().orElseThrow(), changes, source);
   }
 
   @Override
