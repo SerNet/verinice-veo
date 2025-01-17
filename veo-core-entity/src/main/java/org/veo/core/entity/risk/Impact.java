@@ -22,12 +22,15 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * The effects of a threat event interfering with an asset / a process / a scope.
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
 @Valid
+@Schema(description = "A collection of impact values for a risk category.")
 public interface Impact extends PotentialImpact {
 
   int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
@@ -44,11 +47,25 @@ public interface Impact extends PotentialImpact {
    * lower (but usually should not be higher) than the potential impact that was initially
    * estimated.
    */
+  @Schema(
+      description =
+          "The impact of a scenario in a particular circumstance. A scalar value that matches a valid impact level from a risk-definition.",
+      example = "2")
   ImpactRef getSpecificImpact();
 
   /** The result of taking both the potential and the specific impact into account. */
+  @Schema(
+      description =
+          "The effective impact where a specific impact takes precedence over a potential impact. A scalar value that matches a valid probability level from a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
   ImpactRef getEffectiveImpact();
 
+  @Schema(
+      description = "A user-provided explanation for the choice of specific impact.",
+      example =
+          "While a fire will usually damage a computer in a serious way, our server cases are made out of asbestos.")
+  @Size(max = Impact.EXPLANATION_MAX_LENGTH)
   String getSpecificImpactExplanation();
 
   void setSpecificImpactExplanation(@Size(max = EXPLANATION_MAX_LENGTH) String explanation);

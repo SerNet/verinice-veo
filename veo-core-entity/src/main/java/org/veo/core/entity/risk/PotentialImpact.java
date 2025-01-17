@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import jakarta.validation.constraints.Size;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * The potential impact on one of the information security properties of an asset (or a
  * process/scope).
@@ -27,9 +31,20 @@ package org.veo.core.entity.risk;
  */
 public interface PotentialImpact {
 
+  @Schema(
+      description =
+          "The potential impact value derived from the entity associated with "
+              + "this risk. A scalar value that matches a valid impact level from a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
   ImpactRef getPotentialImpact();
 
   void setPotentialImpact(ImpactRef potential);
 
+  @Schema(
+      description =
+          "A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...",
+      example = "C")
+  @Size(max = CategoryRef.MAX_ID_LENGTH)
   CategoryRef getCategory();
 }

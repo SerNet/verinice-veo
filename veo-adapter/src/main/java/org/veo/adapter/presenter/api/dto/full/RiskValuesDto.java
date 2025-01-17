@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.veo.adapter.presenter.api.openapi.DeterminedRiskSchema;
-import org.veo.adapter.presenter.api.openapi.ImpactSchema;
 import org.veo.adapter.presenter.api.openapi.ProbabilitySchema;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
@@ -65,8 +64,7 @@ public class RiskValuesDto {
       arraySchema =
           @Schema(
               description =
-                  "Values describing the impacts of this risk in different risk categories"),
-      schema = @Schema(implementation = ImpactSchema.class))
+                  "Values describing the impacts of this risk in different risk categories"))
   private List<Impact> impactValues;
 
   @Valid
