@@ -808,6 +808,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 'riskValues'
             ]
             it.properties.probability == [$ref:'#/components/schemas/Probability']
+            it.properties.impactValues == [type:'array', items:[$ref:'#/components/schemas/Impact']]
+            it.properties.riskValues == [type:'array', items:[$ref:'#/components/schemas/DeterminedRisk']]
         }
     }
 
@@ -832,6 +834,79 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.example == 4
                 it.description == 'Either the potential probability or the specific probability where the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.'
                 it.minimum == 0
+            }
+        }
+    }
+
+    def "Impact is well-documented"() {
+        expect:
+        with(getSchema('Impact')) {
+            it.description == 'A collection of impact values for a risk category.'
+            it.properties.keySet() ==~ [
+                'category',
+                'potentialImpact',
+                'specificImpact',
+                'effectiveImpact',
+                'specificImpactExplanation'
+            ]
+            with(it.properties.potentialImpact) {
+                it.type == 'number'
+                it.example == 3
+                it.description == 'The potential impact value derived from the entity associated with this risk. A scalar value that matches a valid impact level from a risk-definition.'
+                it.readOnly == true
+            }
+            with(it.properties.specificImpactExplanation) {
+                it.type == 'string'
+                it.example == 'While a fire will usually damage a computer in a serious way, our server cases are made out of asbestos.'
+                it.description == 'A user-provided explanation for the choice of specific impact.'
+                it.maxLength == 65535
+            }
+        }
+    }
+
+    def "DeterminedRisk is well-documented"() {
+        expect:
+        with(getSchema('DeterminedRisk')) {
+            it.description == 'A collection of risk values for a risk category.'
+            it.properties.keySet() ==~ [
+                'category',
+                'inherentRisk',
+                'userDefinedResidualRisk',
+                'residualRiskExplanation',
+                'riskTreatments',
+                'riskTreatmentExplanation',
+                'residualRisk'
+            ]
+            with(it.properties.category) {
+                it.type == 'string'
+                it.example == 'C'
+                it.description == 'A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...'
+                it.maxLength == 120
+            }
+            with(it.properties.userDefinedResidualRisk) {
+                it.type == 'number'
+                it.example == 3
+                it.description == 'The risk that remains after taking controls into account as entered by the user. A scalar value that matches a valid risk level from a risk-definition.'
+            }
+            with(it.properties.residualRiskExplanation) {
+                it.type == 'string'
+                it.example == 'Our controls are so good, even our controls are controlled by controls.'
+                it.description == '''An explanation for the user's choice of residual risk.'''
+                it.maxLength == 65535
+            }
+            with(it.properties.riskTreatments) {
+                it.type == 'array'
+                it.uniqueItems == true
+                with(it.items) {
+                    it.description == 'A choice of risk-treatment options as selected by the user.'
+                    it.enum == [
+                        'RISK_TREATMENT_NONE',
+                        'RISK_TREATMENT_AVOIDANCE',
+                        'RISK_TREATMENT_ACCEPTANCE',
+                        'RISK_TREATMENT_TRANSFER',
+                        'RISK_TREATMENT_REDUCTION'
+                    ]
+                }
             }
         }
     }
