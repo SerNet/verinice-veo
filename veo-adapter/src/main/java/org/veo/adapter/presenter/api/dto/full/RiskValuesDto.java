@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import org.veo.adapter.presenter.api.openapi.DeterminedRiskSchema;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.risk.DeterminedRisk;
@@ -68,8 +67,7 @@ public class RiskValuesDto {
   @JsonDeserialize(contentAs = DeterminedRiskImpl.class)
   @ArraySchema(
       arraySchema =
-          @Schema(description = "Values describing the evaluated risk in different categories"),
-      schema = @Schema(implementation = DeterminedRiskSchema.class))
+          @Schema(description = "Values describing the evaluated risk in different categories"))
   private List<DeterminedRisk> riskValues;
 
   public static RiskValuesDto from(AbstractRisk<?, ?> risk, RiskDefinitionRef rd, Domain domain) {
