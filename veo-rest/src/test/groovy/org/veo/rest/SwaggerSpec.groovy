@@ -587,7 +587,6 @@ class SwaggerSpec extends VeoSpringSpec {
         where:
         type << [
             'MappingJacksonValue',
-            'KeyUUID',
             'ProbabilityRef',
             'CategoryRef',
             'ImpactRef',
