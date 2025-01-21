@@ -54,11 +54,7 @@ public class IncarnateTemplateItemDescriptionDto<
       implementation = IdRefTemplateItem.class)
   private SymIdRef<T, TNamespace> item;
 
-  @ArraySchema(
-      schema =
-          @Schema(
-              title = "A list of references this element needs to set.",
-              implementation = TailoringReferenceParameterDto.class))
+  @ArraySchema(arraySchema = @Schema(title = "A list of references this element needs to set."))
   private List<TailoringReferenceParameterDto> references;
 
   public IncarnateTemplateItemDescriptionDto(

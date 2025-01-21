@@ -815,8 +815,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 'riskValues'
             ]
             it.properties.probability == [$ref:'#/components/schemas/Probability']
-            it.properties.impactValues == [type:'array', items:[$ref:'#/components/schemas/Impact']]
-            it.properties.riskValues == [type:'array', items:[$ref:'#/components/schemas/DeterminedRisk']]
+            it.properties.impactValues == [type:'array', items:[$ref:'#/components/schemas/Impact'], description:'Values describing the impacts of this risk in different risk categories']
+            it.properties.riskValues == [type:'array', items:[$ref:'#/components/schemas/DeterminedRisk'], description: 'Values describing the evaluated risk in different categories']
         }
     }
 
@@ -904,8 +904,8 @@ class SwaggerSpec extends VeoSpringSpec {
             with(it.properties.riskTreatments) {
                 it.type == 'array'
                 it.uniqueItems == true
+                it.description == 'A choice of risk-treatment options as selected by the user.'
                 with(it.items) {
-                    it.description == 'A choice of risk-treatment options as selected by the user.'
                     it.enum == [
                         'RISK_TREATMENT_NONE',
                         'RISK_TREATMENT_AVOIDANCE',
@@ -937,6 +937,23 @@ class SwaggerSpec extends VeoSpringSpec {
             with(it.properties.scopeRiskDefinition) {
                 it.type == 'string'
                 it.maxLength == 120
+            }
+        }
+    }
+
+    def "IncarnateTemplateItemDescriptionDtoCatalogItemDomainBase is well-documented"() {
+        expect:
+        with(getSchema('IncarnateTemplateItemDescriptionDtoCatalogItemDomainBase')) {
+            it.description == 'Describes the incarnation parameters of one template item.'
+            it.properties.keySet() ==~ [
+                'item',
+                'references'
+            ]
+            it.properties.item == [$ref: '#/components/schemas/IdRefTemplateItem']
+            with(it.properties.references) {
+                it.type == 'array'
+                it.title == 'A list of references this element needs to set.'
+                it.items == [$ref:'#/components/schemas/TailoringReferenceParameterDto']
             }
         }
     }

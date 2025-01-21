@@ -62,20 +62,19 @@ public class RiskValuesDto {
   @Valid
   @JsonDeserialize(contentAs = ImpactImpl.class)
   @ArraySchema(
-      schema =
+      arraySchema =
           @Schema(
               description =
-                  "Values describing the impacts of this risk in different risk " + "categories",
-              implementation = ImpactSchema.class))
+                  "Values describing the impacts of this risk in different risk categories"),
+      schema = @Schema(implementation = ImpactSchema.class))
   private List<Impact> impactValues;
 
   @Valid
   @JsonDeserialize(contentAs = DeterminedRiskImpl.class)
   @ArraySchema(
-      schema =
-          @Schema(
-              description = "Values describing the evaluated risk " + "in different categories",
-              implementation = DeterminedRiskSchema.class))
+      arraySchema =
+          @Schema(description = "Values describing the evaluated risk in different categories"),
+      schema = @Schema(implementation = DeterminedRiskSchema.class))
   private List<DeterminedRisk> riskValues;
 
   public static RiskValuesDto from(AbstractRisk<?, ?> risk, RiskDefinitionRef rd, Domain domain) {

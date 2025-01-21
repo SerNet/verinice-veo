@@ -68,7 +68,8 @@ public interface DeterminedRiskSchema {
   String getResidualRiskExplanation();
 
   @ArraySchema(
-      schema = @Schema(description = "A choice of risk-treatment options as selected by the user."))
+      arraySchema =
+          @Schema(description = "A choice of risk-treatment options as selected by the user."))
   Set<RiskTreatmentOption> getRiskTreatments();
 
   @Schema(
