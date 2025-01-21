@@ -3,7 +3,6 @@ import org.veo.SpockBlockFormatterStep
 
 plugins {
     id 'org.springframework.boot' version '3.4.1' apply false
-    id 'io.spring.dependency-management' version '1.1.7' apply false
     id "com.github.spotbugs" version '6.1.0'
     id "com.diffplug.spotless" version "7.0.2" apply false
     id "io.freefair.lombok" version "8.11"
@@ -90,17 +89,10 @@ allprojects  {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.github.spotbugs'
     apply plugin: 'pmd'
     apply plugin: 'jacoco'
     apply plugin: 'io.freefair.lombok'
-
-    dependencyManagement {
-        imports {
-            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-        }
-    }
 
     java {
         toolchain {
@@ -162,6 +154,7 @@ subprojects {
     }
 
     dependencies {
+        implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
         compileOnly 'org.slf4j:slf4j-api'
         runtimeOnly 'ch.qos.logback:logback-classic'
         runtimeOnly 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
