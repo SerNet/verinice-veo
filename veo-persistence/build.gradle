@@ -4,7 +4,7 @@ apply plugin: 'java-library'
 dependencies {
 
     api project(":veo-core-usecase")
-    api 'net.ttddyy:datasource-proxy'
+    api 'net.ttddyy:datasource-proxy:1.10.1'
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -18,8 +18,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'io.hypersistence:hypersistence-utils-hibernate-62'
-    implementation 'org.apache.commons:commons-collections4'
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.9.0'
+    implementation 'org.apache.commons:commons-collections4:4.4'
 
     runtimeOnly 'org.flywaydb:flyway-database-postgresql'
 }
@@ -34,7 +34,7 @@ testing {
 
                 runtimeOnly "org.testcontainers:postgresql"
                 runtimeOnly 'org.postgresql:postgresql'
-                runtimeOnly 'org.spockframework:spock-spring'
+                runtimeOnly 'org.spockframework:spock-spring:2.4-M5-groovy-4.0'
             }
         }
     }

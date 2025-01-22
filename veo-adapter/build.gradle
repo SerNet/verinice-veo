@@ -6,13 +6,14 @@ dependencies {
     api project(":veo-core-usecase")
 
     implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'com.github.victools:jsonschema-generator'
-    implementation 'com.github.victools:jsonschema-module-jackson'
-    implementation 'com.github.victools:jsonschema-module-jakarta-validation'
-    implementation 'com.github.victools:jsonschema-module-swagger-2'
-    implementation 'org.springdoc:springdoc-openapi-starter-common'
+    implementation 'com.github.victools:jsonschema-generator:4.37.0'
+    implementation 'com.github.victools:jsonschema-module-jackson:4.37.0'
+    implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.37.0'
+    implementation 'com.github.victools:jsonschema-module-swagger-2:4.37.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.3'
+    implementation 'io.swagger.core.v3:swagger-core-jakarta:2.2.28'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
-    implementation 'com.fasterxml.uuid:java-uuid-generator'
+    implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
 
     compileOnly('org.projectlombok:lombok')
 }
@@ -21,7 +22,7 @@ testing {
     suites {
         test{
             dependencies {
-                implementation 'com.networknt:json-schema-validator'
+                implementation 'com.networknt:json-schema-validator:1.5.5'
                 implementation 'io.swagger.core.v3:swagger-core-jakarta'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.apache.groovy:groovy-json'

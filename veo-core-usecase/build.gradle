@@ -13,8 +13,8 @@ dependencies {
     // These would support readonly transactions among other additional features.
     api 'jakarta.transaction:jakarta.transaction-api'
 
-    implementation 'org.jgrapht:jgrapht-core'
-    implementation 'org.jgrapht:jgrapht-io'
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
+    implementation 'org.jgrapht:jgrapht-io:1.5.2'
 }
 
 testing {
