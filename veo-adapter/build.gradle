@@ -23,7 +23,6 @@ testing {
             dependencies {
                 implementation 'com.networknt:json-schema-validator'
                 implementation 'io.swagger.core.v3:swagger-core-jakarta'
-                implementation 'org.spockframework:spock-core'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.apache.groovy:groovy-json'
             }

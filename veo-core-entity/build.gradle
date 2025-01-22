@@ -12,7 +12,6 @@ testing {
     suites {
         test {
             dependencies {
-                implementation 'org.spockframework:spock-core'
                 implementation 'jakarta.validation:jakarta.validation-api'
                 implementation 'org.hibernate.validator:hibernate-validator'
                 implementation 'org.springframework.boot:spring-boot-starter-test'

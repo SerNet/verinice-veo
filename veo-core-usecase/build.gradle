@@ -21,7 +21,6 @@ testing {
     suites {
         test {
             dependencies {
-                implementation 'org.spockframework:spock-core'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'commons-codec:commons-codec'
             }
