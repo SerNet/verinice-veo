@@ -13,7 +13,6 @@ dependencies {
     // These would support readonly transactions among other additional features.
     api 'jakarta.transaction:jakarta.transaction-api'
 
-    implementation 'com.github.zafarkhaja:java-semver'
     implementation 'org.jgrapht:jgrapht-core'
     implementation 'org.jgrapht:jgrapht-io'
 }
