@@ -13,9 +13,10 @@ _Please delete not applicable_
 ~"1.Component::1.Backend"
 ~"1.Component::2.Frontend"
 ~"1.Component::3.Content"
-~"1.Component::4.Shop"
-~"1.Component::5.Marketing"
-~"1.Component::6.IIT"
+~"1.Component::4.Documentation"
+~"1.Component::5.Shop"
+~"1.Component::6.Marketing"
+~"1.Component::7.IIT"
 
 # Specification
 
