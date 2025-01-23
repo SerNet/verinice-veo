@@ -79,7 +79,8 @@ class DomainUpdateRestTest extends VeoRestTest {
 
         and: "an incarnated catalog item"
         def c1SymId = get("/domains/$oldDomainId/catalog-items").body.items.first().id
-        post("/units/${unitId}/incarnations", get("/units/${unitId}/domains/${oldDomainId}/incarnation-descriptions?itemIds=${c1SymId}").body)
+        def c1AssetId = post("/units/${unitId}/incarnations", get("/units/${unitId}/domains/${oldDomainId}/incarnation-descriptions?itemIds=${c1SymId}").body)
+                .body.first().id
 
         when: "migrating to the new domain"
         def newDomainId = createNewTemplateAndMigrate {
@@ -108,6 +109,13 @@ class DomainUpdateRestTest extends VeoRestTest {
 
         and: "decision results are present on migrated element"
         migratedProcess.domains[newDomainId].decisionResults.riskAnalyzed.decisiveRule == 0
+
+        expect: "the old incarnation to be readable and writable"
+        get("/domains/$newDomainId/assets/$c1AssetId").with{
+            body.name == "c1"
+            body.subTpe == "AST_Application"
+            put(body._self, body, getETag()) // update should succeed
+        }
 
         when: "fetching incarnation descriptions for the catalog item in the new domain"
         def c1IncarnationDescriptions = get("/units/$unitId/domains/$newDomainId/incarnation-descriptions?itemIds=$c1SymId&useExistingIncarnations=ALWAYS").body

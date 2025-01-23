@@ -330,6 +330,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       getLinks().removeIf(l -> l.getDomain().equals(domain));
       removeAspect(domainAssociations, domain);
       removeAspect(decisionResultsAspects, domain);
+      appliedCatalogItems.removeIf(ci -> ci.getDomainBase().equals(domain));
     }
     return removed;
   }
