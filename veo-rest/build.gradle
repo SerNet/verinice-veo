@@ -32,7 +32,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'
+    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 }
 
 jar {
