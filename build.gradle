@@ -24,7 +24,7 @@ allprojects  {
         groovyGradle {
             greclipse()
             replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
-            indentWithSpaces(4)
+            leadingTabsToSpaces(4)
             trimTrailingWhitespace()
         }
         java {
@@ -49,7 +49,7 @@ allprojects  {
             addStep SpockBlockFormatterStep.create()
             greclipse()
             importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
-            indentWithSpaces(4)
+            leadingTabsToSpaces(4)
             trimTrailingWhitespace()
             replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
             replaceRegex('Extra space around equals sign', /(  += )|( =  +)/, ' = ')
@@ -69,7 +69,7 @@ allprojects  {
             target '**/*.md'
             targetExclude '**/bin/**', '**/target/**'
             trimTrailingWhitespace()
-            indentWithTabs()
+            leadingSpacesToTabs()
             endWithNewline()
         }
         json {
