@@ -79,12 +79,12 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.FullElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
@@ -376,7 +376,7 @@ public class ScopeInDomainController
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array =
-                  @ArraySchema(schema = @Schema(implementation = FullControlInDomainDto.class))))
+                  @ArraySchema(schema = @Schema(implementation = FullElementInDomainDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/members")
   public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(

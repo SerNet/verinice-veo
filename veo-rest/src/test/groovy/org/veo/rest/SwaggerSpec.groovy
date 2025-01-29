@@ -626,6 +626,22 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /scopes/{uuid}/members"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/scopes/{uuid}/members"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/FullElementDto']]
+    }
+
+    def "endpoint documentation is correct for GET /domains/{domainId}/scopes/{uuid}/members"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/scopes/{uuid}/members"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/FullElementInDomainDto']]
+    }
+
     def "security is configured globally"() {
         expect:
         with(parsedApiDocs.security) {
@@ -1081,6 +1097,23 @@ class SwaggerSpec extends VeoSpringSpec {
                 [$ref:'#/components/schemas/FullProcessDto'],
                 [$ref:'#/components/schemas/FullScenarioDto'],
                 [$ref:'#/components/schemas/FullScopeDto']
+            ]
+        }
+    }
+
+    def "FullElementInDomainDto is well-documented"() {
+        expect:
+        with(getSchema('FullElementInDomainDto')) {
+
+            it.oneOf ==~ [
+                [$ref:'#/components/schemas/FullAssetInDomainDto'],
+                [$ref:'#/components/schemas/FullControlInDomainDto'],
+                [$ref:'#/components/schemas/FullDocumentInDomainDto'],
+                [$ref:'#/components/schemas/FullIncidentInDomainDto'],
+                [$ref:'#/components/schemas/FullPersonInDomainDto'],
+                [$ref:'#/components/schemas/FullProcessInDomainDto'],
+                [$ref:'#/components/schemas/FullScenarioInDomainDto'],
+                [$ref:'#/components/schemas/FullScopeInDomainDto']
             ]
         }
     }

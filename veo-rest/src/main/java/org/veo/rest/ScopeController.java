@@ -86,6 +86,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.FullElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -309,7 +310,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class))))
+              array = @ArraySchema(schema = @Schema(implementation = FullElementDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
       @Parameter(hidden = true) Authentication auth,
