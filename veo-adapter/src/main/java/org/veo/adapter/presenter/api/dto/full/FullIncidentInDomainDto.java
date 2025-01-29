@@ -36,9 +36,4 @@ public class FullIncidentInDomainDto extends AbstractIncidentInDomainDto
     implements IdentifiableDto {
 
   @ToString.Include private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

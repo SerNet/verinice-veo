@@ -30,9 +30,4 @@ import lombok.EqualsAndHashCode;
 public class FullUnitDto extends AbstractUnitDto implements IdentifiableDto {
 
   private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

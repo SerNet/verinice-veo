@@ -35,7 +35,7 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface DomainBaseState extends EntityState {
 
-  UUID getSelfId();
+  UUID getId();
 
   @NotNull
   String getAuthority();

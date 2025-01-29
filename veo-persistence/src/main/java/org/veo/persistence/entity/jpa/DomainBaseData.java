@@ -154,11 +154,6 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   }
 
   @Override
-  public UUID getSelfId() {
-    return getId();
-  }
-
-  @Override
   public Map<String, Inspection> getInspections() {
     return inspectionSet.getInspections();
   }

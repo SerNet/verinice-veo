@@ -35,9 +35,4 @@ public class FullScenarioInDomainDto extends AbstractScenarioInDomainDto
     implements IdentifiableDto {
 
   private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

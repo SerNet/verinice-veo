@@ -31,9 +31,4 @@ import lombok.ToString;
 public class FullScenarioDto extends AbstractScenarioDto implements IdentifiableDto {
 
   @ToString.Include private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

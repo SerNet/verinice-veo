@@ -52,14 +52,13 @@ public class UnitImportUseCase
   @Override
   public OutputData execute(InputData input) {
     var resolver = refResolverFactory.db(input.client);
-    var unit = resolver.injectNewEntity(TypedId.from(input.unit.getSelfId(), Unit.class));
+    var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
     var elements =
         input.elements.stream()
             .map(
                 e ->
                     (Element)
-                        resolver.injectNewEntity(
-                            TypedId.from(e.getSelfId(), e.getModelInterface())))
+                        resolver.injectNewEntity(TypedId.from(e.getId(), e.getModelInterface())))
             .toList();
 
     unit.setClient(input.client);
@@ -80,7 +79,7 @@ public class UnitImportUseCase
 
   private <T extends Element, TState extends ElementState<T>> void mapElement(
       TState source, IdRefResolver resolver) {
-    var target = resolver.resolve(TypedId.from(source.getSelfId(), source.getModelInterface()));
+    var target = resolver.resolve(TypedId.from(source.getId(), source.getModelInterface()));
     entityStateMapper.mapState(source, target, false, resolver);
   }
 

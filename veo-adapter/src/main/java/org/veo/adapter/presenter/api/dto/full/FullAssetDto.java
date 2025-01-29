@@ -40,9 +40,4 @@ public class FullAssetDto extends AbstractAssetDto implements IdentifiableDto {
   @JsonProperty(access = READ_ONLY)
   @Schema(description = "An optional map of all risks and risk-values for this asset.")
   private Set<AssetRiskDto> risks;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

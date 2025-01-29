@@ -91,7 +91,7 @@ public class DomainStateMapper {
 
   private void map(DomainBaseState source, DomainBase target, boolean copyProfiles) {
     var resolver = refResolverFactory.local();
-    var domainRef = TypedId.from(source.getSelfId(), source.getModelInterface());
+    var domainRef = TypedId.from(source.getId(), source.getModelInterface());
     target.setAbbreviation(source.getAbbreviation());
     target.setDescription(source.getDescription());
     target.setElementTypeDefinitions(
@@ -155,7 +155,7 @@ public class DomainStateMapper {
   }
 
   private Profile toProfile(ProfileState source, LocalRefResolver resolver, DomainBase owner) {
-    var profileRef = TypedId.from(source.getSelfId(), Profile.class);
+    var profileRef = TypedId.from(source.getId(), Profile.class);
     var target = entityFactory.createProfile(owner);
     target.setName(source.getName());
     target.setDescription(source.getDescription());

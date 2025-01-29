@@ -36,9 +36,4 @@ public class FullDocumentInDomainDto extends AbstractDocumentInDomainDto
     implements IdentifiableDto {
 
   @ToString.Include private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

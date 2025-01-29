@@ -41,9 +41,4 @@ public class FullProcessDto extends AbstractProcessDto implements IdentifiableDt
   @JsonProperty(access = READ_ONLY)
   @Schema(description = "An optional map of all risks and risk-values for this process.")
   private Set<ProcessRiskDto> risks;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

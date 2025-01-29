@@ -45,12 +45,6 @@ public class ExportProfileDto extends AbstractProfileDto implements Identifiable
 
   @Override
   @JsonIgnore
-  public UUID getSelfId() {
-    return id;
-  }
-
-  @Override
-  @JsonIgnore
   public Set<ProfileItemState> getItemStates() {
     return items.stream().map(pi -> (ProfileItemState) pi).collect(Collectors.toSet());
   }

@@ -71,7 +71,7 @@ public class EvaluateElementUseCase
 
   private <T extends Element> T fetchOrCreateElement(ElementState<T> source, Client client) {
     var element =
-        Optional.ofNullable(source.getSelfId())
+        Optional.ofNullable(source.getId())
             .map(id -> elementRepository.getById(id, source.getModelInterface(), client))
             .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
     entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));

@@ -35,9 +35,4 @@ import lombok.ToString;
 public class FullControlInDomainDto extends AbstractControlInDomainDto implements IdentifiableDto {
 
   @ToString.Include private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

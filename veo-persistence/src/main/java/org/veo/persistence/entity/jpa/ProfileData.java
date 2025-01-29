@@ -142,9 +142,4 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   public String getDisplayName() {
     return name;
   }
-
-  @Override
-  public UUID getSelfId() {
-    return getId();
-  }
 }

@@ -26,7 +26,7 @@ import org.veo.core.entity.state.ProfileItemState;
 public interface ProfileState {
   int PRODUCT_ID_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
-  UUID getSelfId();
+  UUID getId();
 
   /** Human-readable profile name in the profile's language */
   String getName();

@@ -141,11 +141,6 @@ public class ControlImplementationData implements ControlImplementation {
   }
 
   @Override
-  public UUID getId() {
-    return id;
-  }
-
-  @Override
   public void disassociateFromOwner() {
     owner.disassociateControl(control);
   }

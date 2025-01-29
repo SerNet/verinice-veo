@@ -76,12 +76,6 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
 
   @Override
   @JsonIgnore
-  public UUID getSelfId() {
-    return id;
-  }
-
-  @Override
-  @JsonIgnore
   public Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
     return elementTypeDefinitions.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

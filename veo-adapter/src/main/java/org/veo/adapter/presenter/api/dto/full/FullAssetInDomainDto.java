@@ -34,9 +34,4 @@ import lombok.NoArgsConstructor;
 public class FullAssetInDomainDto extends AbstractAssetInDomainDto implements IdentifiableDto {
 
   private UUID id;
-
-  @Override
-  public UUID getSelfId() {
-    return id;
-  }
 }

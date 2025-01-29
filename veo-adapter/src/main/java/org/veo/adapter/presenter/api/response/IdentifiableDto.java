@@ -19,9 +19,12 @@ package org.veo.adapter.presenter.api.response;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.DeviatingIdException;
 
 public interface IdentifiableDto {
+  @JsonIgnore(value = false)
   UUID getId();
 
   void setId(UUID id);
