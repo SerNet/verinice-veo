@@ -30,7 +30,7 @@ import org.veo.core.entity.TemplateItemAspects;
 public interface TemplateItemState<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends Nameable {
-  UUID getSelfId();
+  UUID getSymbolicId();
 
   @NotNull
   String getElementType();

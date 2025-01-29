@@ -20,7 +20,6 @@ package org.veo.core.entity;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
@@ -44,11 +43,6 @@ public interface TemplateItem<
   void setStatus(String status);
 
   Map<String, Map<String, Object>> getCustomAspects();
-
-  @Override
-  default UUID getSelfId() {
-    return getSymbolicId();
-  }
 
   @Override
   default Set<CustomAspectState> getCustomAspectStates() {

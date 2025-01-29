@@ -24,6 +24,8 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
@@ -45,7 +47,9 @@ import lombok.ToString;
 public class FullProfileItemDto extends AbstractProfileItemDto
     implements FullTemplateItemDto<ProfileItem, Profile> {
 
-  @ToString.Include private UUID id;
+  @ToString.Include
+  @JsonProperty("id")
+  private UUID symbolicId;
 
   @Valid @NotNull private TemplateItemAspects aspects = new TemplateItemAspects();
 

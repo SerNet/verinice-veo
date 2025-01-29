@@ -117,7 +117,7 @@ public class DomainStateMapper {
             .map(
                 ci ->
                     resolver.injectNewEntity(
-                        TypedSymbolicId.from(ci.getSelfId(), CatalogItem.class, domainRef)))
+                        TypedSymbolicId.from(ci.getSymbolicId(), CatalogItem.class, domainRef)))
             .collect(toSet()));
     source
         .getCatalogItemStates()
@@ -126,7 +126,8 @@ public class DomainStateMapper {
                 mapTemplateItem(
                     ciState,
                     resolver.resolve(
-                        TypedSymbolicId.from(ciState.getSelfId(), CatalogItem.class, domainRef)),
+                        TypedSymbolicId.from(
+                            ciState.getSymbolicId(), CatalogItem.class, domainRef)),
                     resolver));
     if (copyProfiles) {
       target.setProfiles(
@@ -168,7 +169,8 @@ public class DomainStateMapper {
             .map(
                 itemState ->
                     resolver.injectNewEntity(
-                        TypedSymbolicId.from(itemState.getSelfId(), ProfileItem.class, profileRef)))
+                        TypedSymbolicId.from(
+                            itemState.getSymbolicId(), ProfileItem.class, profileRef)))
             .collect(toSet()));
     source
         .getItemStates()
@@ -177,7 +179,8 @@ public class DomainStateMapper {
                 mapProfileItem(
                     itemState,
                     resolver.resolve(
-                        TypedSymbolicId.from(itemState.getSelfId(), ProfileItem.class, profileRef)),
+                        TypedSymbolicId.from(
+                            itemState.getSymbolicId(), ProfileItem.class, profileRef)),
                     resolver));
 
     return target;
@@ -193,7 +196,7 @@ public class DomainStateMapper {
       void mapTemplateItem(
           TemplateItemState<T, TNamespace> source, T target, IdRefResolver resolver) {
     EntityStateMapper.mapNameableProperties(source, target);
-    target.setSymbolicId(source.getSelfId());
+    target.setSymbolicId(source.getSymbolicId());
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
     target.setSubType(source.getSubType());

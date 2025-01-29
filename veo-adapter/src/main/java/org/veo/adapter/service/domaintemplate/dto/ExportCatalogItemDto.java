@@ -18,12 +18,10 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.state.CustomAspectState;
@@ -37,12 +35,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ExportCatalogItemDto extends FullCatalogItemDto
-    implements TemplateItemState<CatalogItem, DomainBase>, IdentifiableDto {
-  @Override
-  @JsonIgnore
-  public UUID getSelfId() {
-    return getId();
-  }
+    implements TemplateItemState<CatalogItem, DomainBase> {
 
   @Override
   @JsonIgnore

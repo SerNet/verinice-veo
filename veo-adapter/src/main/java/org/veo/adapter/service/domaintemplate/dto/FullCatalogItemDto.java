@@ -25,11 +25,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TailoringReference;
@@ -46,9 +47,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, DomainBase>
-    implements IdentifiableDto, FullTemplateItemDto<CatalogItem, DomainBase> {
+    implements FullTemplateItemDto<CatalogItem, DomainBase> {
 
-  @ToString.Include private UUID id;
+  @ToString.Include
+  @JsonProperty("id")
+  private UUID symbolicId;
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")

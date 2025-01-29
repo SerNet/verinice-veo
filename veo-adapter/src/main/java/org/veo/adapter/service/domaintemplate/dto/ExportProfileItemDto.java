@@ -18,7 +18,6 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -27,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Profile;
@@ -42,8 +40,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ExportProfileItemDto extends FullProfileItemDto
-    implements IdentifiableDto, ProfileItemState {
+public class ExportProfileItemDto extends FullProfileItemDto implements ProfileItemState {
   private SymIdRef<CatalogItem, DomainBase> appliedCatalogItem;
 
   @Nullable
@@ -51,12 +48,6 @@ public class ExportProfileItemDto extends FullProfileItemDto
   @JsonIgnore
   public ITypedSymbolicId<CatalogItem, DomainBase> getAppliedCatalogItemRef() {
     return appliedCatalogItem;
-  }
-
-  @Override
-  @JsonIgnore
-  public UUID getSelfId() {
-    return getId();
   }
 
   @Override

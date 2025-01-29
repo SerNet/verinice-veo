@@ -41,13 +41,11 @@ import lombok.NonNull;
 public interface FullTemplateItemDto<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends NameableDto {
-  UUID getId();
-
   String getStatus();
 
   CustomAspectMapDto getCustomAspects();
 
-  void setId(UUID id);
+  void setSymbolicId(UUID id);
 
   void setStatus(String status);
 

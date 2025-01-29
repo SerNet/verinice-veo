@@ -493,7 +493,7 @@ public final class EntityToDtoTransformer {
       void mapFullTemplateItem(TEntity source, TDto target) {
     mapVersionedSelfReferencingProperties(source, target);
     mapTemplateItem(source, target);
-    target.setId(source.getSymbolicId());
+    target.setSymbolicId(source.getSymbolicId());
     target.setStatus(source.getStatus());
     target.setAspects(source.getAspects());
     target.setCustomAspects(CustomAspectMapDto.from(source.getCustomAspects()));
