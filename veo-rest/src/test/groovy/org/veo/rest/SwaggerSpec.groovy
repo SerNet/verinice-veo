@@ -387,6 +387,7 @@ class SwaggerSpec extends VeoSpringSpec {
         and: 'it contains information about the query parameters'
         with(endPointInfo.get) {
             summary == 'Retrieves a map of UI translation key-value pairs.'
+            responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/TranslationsDto'
         }
 
         when:

@@ -60,10 +60,11 @@ public interface TranslationsResource {
   @ApiResponses({
     @ApiResponse(
         responseCode = "200",
-        description = "Translations for requested languages", // TODO
-        // add
-        // meta-schema
-        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        description = "Translations for requested languages",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = TranslationsDto.class))),
     @ApiResponse(responseCode = "404", description = "Translation not found")
   })
   CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
