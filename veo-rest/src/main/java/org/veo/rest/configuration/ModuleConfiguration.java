@@ -21,6 +21,8 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -34,6 +36,7 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,6 +48,7 @@ import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -236,6 +240,11 @@ import org.veo.service.TemplateItemMigrationService;
 import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.ImpactInheritanceCalculatorHighWatermark;
 import org.veo.service.risk.RiskService;
+
+import io.swagger.v3.core.util.AnnotationsUtils;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Schema;
 
 /**
  * This configuration takes care of wiring classes from core modules (Entity-Layer, Use-Case-Layer)
@@ -1418,5 +1427,34 @@ public class ModuleConfiguration {
     try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
       return factory.getValidator();
     }
+  }
+
+  // by default, the content schema for every response is derived from the
+  // method return type. But for client errors (e.g. 400, 404 etc.), we return
+  // a ApiResponseBody content. To avoid having to specify this for every
+  // @ApiResponse with a 4xx response code, we override it in the generated
+  // schema for all the operations.
+  @Bean
+  public OperationCustomizer errorResponseSchemas(
+      final SpringDocConfigProperties springDocConfigProperties) {
+    Schema schema =
+        AnnotationsUtils.resolveSchemaFromType(
+            ApiResponseBody.class, null, null, springDocConfigProperties.isOpenapi31());
+    Content content =
+        new Content()
+            .addMediaType(
+                org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+                new MediaType().schema(schema));
+    return (operation, handlerMethod) -> {
+      operation
+          .getResponses()
+          .forEach(
+              (status, response) -> {
+                if (HttpStatus.resolve(Integer.parseInt(status)).is4xxClientError()) {
+                  response.setContent(content);
+                }
+              });
+      return operation;
+    };
   }
 }

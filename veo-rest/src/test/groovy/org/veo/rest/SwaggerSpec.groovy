@@ -19,8 +19,10 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
+import org.spockframework.spring.EnableSharedInjection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -31,11 +33,14 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
+import spock.lang.Shared
 
 @AutoConfigureMockMvc
+@EnableSharedInjection
 class SwaggerSpec extends VeoSpringSpec {
 
     @Autowired
+    @Shared
     private MockMvc mvc
 
     def "Swagger documentation is available"() {
@@ -556,6 +561,27 @@ class SwaggerSpec extends VeoSpringSpec {
             it.in == 'query'
             required == true
             description ==~ /UUID of the containing unit.*/
+        }
+    }
+
+    def "Content schema for #method request to #path, response status #status is ApiResponseBody"() {
+        expect:
+        statusInfo.content == ['application/json':[schema:[$ref:'#/components/schemas/ApiResponseBody']]]
+
+        where:
+        [
+            path,
+            method,
+            status,
+            statusInfo
+        ] << parsedApiDocs.paths.collectMany {path, pathData->
+            pathData.collectMany {method, methodData ->
+                methodData.responses.findAll {HttpStatus.resolve(it.key as int).is4xxClientError()}.collect{ status, statusInfo->
+                    return [
+                        path:path, method:method, status:status, statusInfo:statusInfo
+                    ]
+                }
+            }
         }
     }
 
