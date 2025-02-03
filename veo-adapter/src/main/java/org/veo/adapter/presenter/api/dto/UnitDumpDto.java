@@ -48,6 +48,8 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -75,6 +77,7 @@ public class UnitDumpDto {
     @Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
   })
   @NotNull(message = "Elements must be present.")
+  @ArraySchema(schema = @Schema(implementation = FullElementDto.class))
   private Set<@Valid AbstractElementDto> elements;
 
   @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)

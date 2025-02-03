@@ -622,7 +622,8 @@ class SwaggerSpec extends VeoSpringSpec {
             'ImplementationStatusRef',
             'DecisionRef',
             'RiskRef',
-            'ReqImplRef'
+            'ReqImplRef',
+            'AbstractElementDto'
         ]
     }
 
@@ -1010,6 +1011,36 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.title == 'A list of references this element needs to set.'
                 it.items == [$ref:'#/components/schemas/TailoringReferenceParameterDto']
             }
+        }
+    }
+
+    def "UnitDumpDto is well-documented"() {
+        expect:
+        with(getSchema('UnitDumpDto')) {
+            it.properties.keySet() ==~ [
+                'unit',
+                'domains',
+                'elements',
+                'risks'
+            ]
+            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/FullElementDto']]
+        }
+    }
+
+    def "FullElementDto is well-documented"() {
+        expect:
+        with(getSchema('FullElementDto')) {
+
+            it.oneOf ==~ [
+                [$ref:'#/components/schemas/FullAssetDto'],
+                [$ref:'#/components/schemas/FullControlDto'],
+                [$ref:'#/components/schemas/FullDocumentDto'],
+                [$ref:'#/components/schemas/FullIncidentDto'],
+                [$ref:'#/components/schemas/FullPersonDto'],
+                [$ref:'#/components/schemas/FullProcessDto'],
+                [$ref:'#/components/schemas/FullScenarioDto'],
+                [$ref:'#/components/schemas/FullScopeDto']
+            ]
         }
     }
 
