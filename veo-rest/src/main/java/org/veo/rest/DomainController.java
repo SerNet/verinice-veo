@@ -564,25 +564,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                     out -> ResponseEntity.noContent().build()));
   }
 
-  @PostMapping("/{id}/profilesnew/{profileId}/units/{unitId}")
-  @Operation(
-      summary =
-          "Incarnates all profile items in the unit. DEPRECATED: use POST "
-              + URL_BASE_PATH
-              + "/{domainId}/profiles/{profileId}/incarnation",
-      deprecated = true)
-  @ApiResponse(responseCode = "204", description = "Profile applied")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Unit not found")
-  @Deprecated
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfilenew(
-      @Parameter(required = true, hidden = true) Authentication auth,
-      @PathVariable UUID id,
-      @PathVariable UUID profileId,
-      @PathVariable UUID unitId) {
-    return applyProfile(auth, id, profileId, unitId);
-  }
-
   @GetMapping(value = "/{domainId}/breaking-changes")
   @Operation(summary = "Retrieve breaking changes wrt. domain template")
   @ApiResponse(responseCode = "200", description = "Breaking changes computed")
