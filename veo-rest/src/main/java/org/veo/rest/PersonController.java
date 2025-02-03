@@ -251,6 +251,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @PostMapping()
   @Operation(summary = "Creates a person")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Person created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreatePersonDto dto,
@@ -270,6 +271,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @Operation(summary = "Updates a person")
   @ApiResponse(responseCode = "200", description = "Person updated")
   @ApiResponse(responseCode = "404", description = "Person not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullPersonDto>> updatePerson(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

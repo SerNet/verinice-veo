@@ -257,6 +257,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @PostMapping()
   @Operation(summary = "Creates a process")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Process created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateProcessDto dto,
@@ -277,6 +278,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @Operation(summary = "Updates a process")
   @ApiResponse(responseCode = "200", description = "Process updated")
   @ApiResponse(responseCode = "404", description = "Process not found")
+  @Deprecated
   public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> updateProcess(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

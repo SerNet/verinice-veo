@@ -27,6 +27,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.usecase.base.CreateElementUseCase;
 
+@Deprecated
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
   public static <T extends Element> CreateElementUseCase.InputData<T> map(

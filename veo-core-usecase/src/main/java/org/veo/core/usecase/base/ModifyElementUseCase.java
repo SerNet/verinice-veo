@@ -39,6 +39,7 @@ import org.veo.core.usecase.service.RefResolverFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Deprecated
 public abstract class ModifyElementUseCase<T extends Element>
     implements TransactionalUseCase<
             ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>>,

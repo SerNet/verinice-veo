@@ -252,6 +252,7 @@ public class DocumentController
   @PostMapping()
   @Operation(summary = "Creates a document")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Document created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDocument(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateDocumentDto dto,
@@ -271,6 +272,7 @@ public class DocumentController
   @Operation(summary = "Updates a document")
   @ApiResponse(responseCode = "200", description = "Document updated")
   @ApiResponse(responseCode = "404", description = "Document not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullDocumentDto>> updateDocument(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

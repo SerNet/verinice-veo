@@ -27,6 +27,7 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
 /** Update a persisted process object. */
+@Deprecated
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
   private final EventPublisher eventPublisher;
 

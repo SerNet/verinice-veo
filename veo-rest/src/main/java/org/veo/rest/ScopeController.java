@@ -338,6 +338,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @PostMapping()
   @Operation(summary = "Creates a scope")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scope created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateScopeDto createScopeDto,
@@ -360,6 +361,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @Operation(summary = "Updates a scope")
   @ApiResponse(responseCode = "200", description = "Scope updated")
   @ApiResponse(responseCode = "404", description = "Scope not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullScopeDto>> updateScope(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

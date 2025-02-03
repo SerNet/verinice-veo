@@ -320,6 +320,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @PostMapping()
   @Operation(summary = "Creates an asset")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Asset created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateAssetDto dto,
@@ -340,6 +341,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @Operation(summary = "Updates an asset")
   @ApiResponse(responseCode = "200", description = "Asset updated")
   @ApiResponse(responseCode = "404", description = "Asset not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullAssetDto>> updateAsset(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

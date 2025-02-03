@@ -252,6 +252,7 @@ public class ScenarioController
   @PostMapping()
   @Operation(summary = "Creates a scenario")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scenario created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createScenario(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateScenarioDto dto,
@@ -271,6 +272,7 @@ public class ScenarioController
   @Operation(summary = "Updates a scenario")
   @ApiResponse(responseCode = "200", description = "Scenario updated")
   @ApiResponse(responseCode = "404", description = "Scenario not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullScenarioDto>> updateScenario(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

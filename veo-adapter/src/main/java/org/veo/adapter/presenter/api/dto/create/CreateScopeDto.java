@@ -19,9 +19,12 @@ package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Deprecated
+@Schema(deprecated = true)
 public final class CreateScopeDto extends AbstractScopeDto {}

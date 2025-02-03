@@ -252,6 +252,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @PostMapping()
   @Operation(summary = "Creates a control")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Control created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateControlDto dto,
@@ -271,6 +272,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @Operation(summary = "Updates a control")
   @ApiResponse(responseCode = "200", description = "Control updated")
   @ApiResponse(responseCode = "404", description = "Control not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullControlDto>> updateControl(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

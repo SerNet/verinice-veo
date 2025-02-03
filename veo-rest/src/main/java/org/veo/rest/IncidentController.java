@@ -252,6 +252,7 @@ public class IncidentController
   @PostMapping()
   @Operation(summary = "Creates an incident")
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Incident created")})
+  @Deprecated
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createIncident(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody CreateIncidentDto dto,
@@ -271,6 +272,7 @@ public class IncidentController
   @Operation(summary = "Updates an incident")
   @ApiResponse(responseCode = "200", description = "Incident updated")
   @ApiResponse(responseCode = "404", description = "Incident not found")
+  @Deprecated
   public CompletableFuture<ResponseEntity<FullIncidentDto>> updateIncident(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)

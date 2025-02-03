@@ -626,6 +626,32 @@ class SwaggerSpec extends VeoSpringSpec {
         ]
     }
 
+    def "#type schema is deprecated"() {
+        given:
+        def componentSchemas = parsedApiDocs.components.schemas
+
+        expect:
+        componentSchemas[type].deprecated
+
+        where:
+        type << [
+            'CreateAssetDto',
+            'CreateControlDto',
+            'CreateScopeDto'
+        ]
+    }
+
+    def "#method on #endpoint is deprecated"() {
+        expect:
+        parsedApiDocs.paths[endpoint][method.toLowerCase()].deprecated
+
+        where:
+        endpoint | method
+        '/assets/{id}' | 'PUT'
+        '/controls' | 'POST'
+        '/scopes' | 'POST'
+    }
+
     def "Inspection schema is complete"() {
         expect:
         with(getSchema('Inspection')) {

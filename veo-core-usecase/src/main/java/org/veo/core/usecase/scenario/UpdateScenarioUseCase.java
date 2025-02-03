@@ -26,6 +26,7 @@ import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
+@Deprecated
 public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
 
   private final EventPublisher eventPublisher;

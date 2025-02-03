@@ -24,6 +24,7 @@ import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
+@Deprecated
 public class UpdateDocumentUseCase extends ModifyElementUseCase<Document> {
 
   public UpdateDocumentUseCase(
