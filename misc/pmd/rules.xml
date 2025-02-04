@@ -16,7 +16,6 @@
         <exclude name="AvoidDuplicateLiterals" />
         <exclude name="AvoidLiteralsInIfCondition" />
         <exclude name="AvoidFieldNameMatchingMethodName" />
-        <exclude name="CloseResource" />
         <exclude name="MissingSerialVersionUID" />
         <exclude name="NullAssignment" />
         <exclude name="UseLocaleWithCaseConversions" />

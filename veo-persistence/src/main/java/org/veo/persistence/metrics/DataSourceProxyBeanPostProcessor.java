@@ -70,7 +70,10 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
   public Object postProcessAfterInitialization(Object bean, String beanName) {
     if (bean instanceof DataSource datasource) {
       String jdbcUrl = "unknown";
-      if (bean instanceof HikariDataSource hikariData) {
+      if (bean
+          instanceof
+          // https://github.com/pmd/pmd/issues/5042
+          @SuppressWarnings("PMD.CloseResource") HikariDataSource hikariData) {
         jdbcUrl = hikariData.getJdbcUrl();
       }
       log.info(
