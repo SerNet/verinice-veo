@@ -20,6 +20,7 @@ package org.veo.persistence.metrics;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -60,10 +61,10 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
   @Value("${veo.logging.datasource.row_count:false}")
   private boolean logResultSetRowCount;
 
-  static int totalResultSetRowsRead = 0;
+  private static final AtomicInteger TOTAL_RESULT_ROWS_READ = new AtomicInteger();
 
   public static int getTotalResultSetRowsRead() {
-    return totalResultSetRowsRead;
+    return TOTAL_RESULT_ROWS_READ.get();
   }
 
   @Override
@@ -123,10 +124,9 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
                   if (ResultSet.class.isAssignableFrom(executionContext.getTarget().getClass())
                       && Boolean.TRUE.equals(executionContext.getResult())
                       && method.getName().equals("next")) {
-                    DataSourceProxyBeanPostProcessor.totalResultSetRowsRead++;
-                    log.debug(
-                        "Total ResultSet rows processed: {}",
-                        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead);
+                    int totalResultSetRowsRead =
+                        DataSourceProxyBeanPostProcessor.TOTAL_RESULT_ROWS_READ.incrementAndGet();
+                    log.debug("Total ResultSet rows processed: {}", totalResultSetRowsRead);
                   }
                 });
       }
