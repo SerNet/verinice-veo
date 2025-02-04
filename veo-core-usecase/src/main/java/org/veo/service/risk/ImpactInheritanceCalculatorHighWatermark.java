@@ -558,7 +558,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   private Set<RiskAffected<?, ?>> loadRiskElements(Unit unit, Domain domain, Set<UUID> ids) {
     long startTime = System.currentTimeMillis();
 
-    HashSet<RiskAffected<?, ?>> allElements = new HashSet<RiskAffected<?, ?>>(ids.size());
+    HashSet<RiskAffected<?, ?>> allElements = new HashSet<>(ids.size());
     allElements.addAll(queryElements(unit, domain, processRepository, ids));
     allElements.addAll(queryElements(unit, domain, assetRepository, ids));
     allElements.addAll(queryElements(unit, domain, scopeRepository, ids));
@@ -572,7 +572,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   private Set<RiskAffected<?, ?>> loadAllRiskElements(Unit unit, Domain domain) {
     long startTime = System.currentTimeMillis();
 
-    HashSet<RiskAffected<?, ?>> allElements = new HashSet<RiskAffected<?, ?>>(200);
+    HashSet<RiskAffected<?, ?>> allElements = new HashSet<>(200);
     allElements.addAll(queryElements(unit, domain, processRepository, null));
     allElements.addAll(queryElements(unit, domain, assetRepository, null));
     allElements.addAll(queryElements(unit, domain, scopeRepository, null));

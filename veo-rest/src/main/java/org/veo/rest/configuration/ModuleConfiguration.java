@@ -367,7 +367,7 @@ public class ModuleConfiguration {
       EntityStateMapper entityStateMapper,
       Decider decider,
       RefResolverFactory refResolverFactory) {
-    return new CreateElementUseCase(
+    return new CreateElementUseCase<>(
         refResolverFactory,
         repositoryProvider,
         designatorService,

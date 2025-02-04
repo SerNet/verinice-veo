@@ -72,7 +72,8 @@ public class WebSecurity {
     DomainController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES
   };
 
-  // Paths to domain specifications and resources that are part of the domain aggregate:
+  // Paths to domain specifications and resources that are part of the domain
+  // aggregate:
   private static final String[] DOMAIN_RESOURCE_PATHS = {
     EntitySchemaResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     TranslationsResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
@@ -83,12 +84,14 @@ public class WebSecurity {
   private static final Stream<String> ELEMENT_PATHS =
       EntityType.ELEMENT_PLURAL_TERMS.stream().map("/%s/**"::formatted);
 
-  // Resources that are not domain elements (see above) but should be protected by the same
+  // Resources that are not domain elements (see above) but should be
+  // protected by the same
   // policies:
   private static final Stream<String> NON_ELEMENT_PATHS =
       Stream.of(UnitController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES);
 
-  // Paths that should be writable by regular users (users that do not have a special role):
+  // Paths that should be writable by regular users (users that do not have a
+  // special role):
   private static final String[] USER_EDITABLE_PATHS =
       Stream.of(ELEMENT_PATHS, NON_ELEMENT_PATHS, Stream.of(DOMAIN_PATHS))
           .flatMap(identity())
@@ -110,7 +113,8 @@ public class WebSecurity {
   private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
 
   // Paths that never change state on the server:
-  // Searches and inspections are transient and may be POSTed by regular users.
+  // Searches and inspections are transient and may be POSTed by regular
+  // users.
   private static final String[] TRANSIENT_PATHS = {"/**/searches/**", "/**/evaluation/**"};
 
   // Paths to monitoring and metrics information:
@@ -136,7 +140,7 @@ public class WebSecurity {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(
-        new Customizer<CsrfConfigurer<HttpSecurity>>() {
+        new Customizer<>() {
           @Override
           @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
           public void customize(CsrfConfigurer<HttpSecurity> csrf) {
@@ -146,7 +150,8 @@ public class WebSecurity {
     http.cors(Customizer.withDefaults());
     http.headers(headers -> headers.cacheControl(cc -> cc.disable()));
 
-    // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
+    // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled
+    // for
     // swagger-ui). We cannot disable it.
     // Make sure that no critical API can be accessed by an anonymous user!
     // .anonymous().disable()
@@ -197,7 +202,8 @@ public class WebSecurity {
                                   auth.requestMatchers(antMatcher(method, path))
                                       .hasRole("veo-write")));
 
-          // authentication without specific role requirements and fallback in case of missing
+          // authentication without specific role requirements and fallback in
+          // case of missing
           // paths:
           auth.anyRequest().hasRole("veo-user");
         });

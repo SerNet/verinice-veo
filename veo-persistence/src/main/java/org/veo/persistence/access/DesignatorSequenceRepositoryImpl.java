@@ -44,7 +44,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    */
   public void createSequences(UUID clientId) {
     EntityType.TYPE_DESIGNATORS.forEach(
-        new Consumer<String>() {
+        new Consumer<>() {
           @Override
           @SuppressFBWarnings("SQL_INJECTION_JPA")
           public void accept(String typeDesignator) {
@@ -84,7 +84,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
    */
   public void deleteSequences(UUID clientId) {
     EntityType.TYPE_DESIGNATORS.forEach(
-        new Consumer<String>() {
+        new Consumer<>() {
           @Override
           @SuppressFBWarnings("SQL_INJECTION_JPA")
           public void accept(String typeDesignator) {

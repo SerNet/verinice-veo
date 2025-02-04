@@ -70,7 +70,7 @@ public class SaveRiskDefinitionUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    Set<RiskDefinitionChangeType> detectedChanges = new HashSet<RiskDefinitionChangeType>();
+    Set<RiskDefinitionChangeType> detectedChanges = new HashSet<>();
     domain
         .getRiskDefinition(input.riskDefinitionRef)
         .ifPresentOrElse(
