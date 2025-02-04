@@ -111,8 +111,6 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
         case SERIALIZABLE:
           transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
           break;
-        default:
-          throw new IllegalStateException("Unhandled isolation level: " + isolation);
       }
       return CompletableFuture.completedFuture(
           transactionTemplate.execute(status -> resultSupplier.get()));
