@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
@@ -59,7 +59,7 @@ public class UpdateElementTypeDefinitionUseCase
     }
     var elementTypeDefinition =
         domainStateMapper.toElementTypeDefinition(
-            input.entityType.getSingularTerm(), input.elementTypeDefinition, domain);
+            input.elementType.getSingularTerm(), input.elementTypeDefinition, domain);
 
     // TODO #3042: remove this when we remove support for JSON schema
     if (input.preserveSortKeys) {
@@ -68,7 +68,7 @@ public class UpdateElementTypeDefinitionUseCase
           .forEach(
               (subTypeId, subTypeDefinition) ->
                   domain
-                      .findElementTypeDefinition(input.entityType.getSingularTerm())
+                      .findElementTypeDefinition(input.elementType.getSingularTerm())
                       .ifPresent(
                           existingDefinition ->
                               Optional.ofNullable(existingDefinition.getSubTypes().get(subTypeId))
@@ -92,7 +92,7 @@ public class UpdateElementTypeDefinitionUseCase
   public record InputData(
       @Valid Client authenticatedClient,
       UUID domainId,
-      EntityType entityType,
+      ElementType elementType,
       ElementTypeDefinitionState elementTypeDefinition,
       // TODO #3042: remove this when we remove support for JSON schema
       boolean preserveSortKeys)

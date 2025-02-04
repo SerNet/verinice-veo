@@ -19,7 +19,7 @@ package org.veo.adapter.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
@@ -45,7 +45,7 @@ class ObjectSchemaParserITSpec extends Specification {
         def elementDefinition = Mock(ElementTypeDefinition)
 
         when:
-        def result = objectSchemaParser.parseTypeDefinitionFromObjectSchema(EntityType.PROCESS, schemaNode)
+        def result = objectSchemaParser.parseTypeDefinitionFromObjectSchema(ElementType.PROCESS, schemaNode)
 
         then:
         result == elementDefinition
@@ -146,7 +146,7 @@ class ObjectSchemaParserITSpec extends Specification {
         def schemaNode = objectMapper.readTree(content)
 
         when:
-        objectSchemaParser.parseTypeDefinitionFromObjectSchema(EntityType.PROCESS, schemaNode)
+        objectSchemaParser.parseTypeDefinitionFromObjectSchema(ElementType.PROCESS, schemaNode)
 
         then:
         thrown(IllegalArgumentException)

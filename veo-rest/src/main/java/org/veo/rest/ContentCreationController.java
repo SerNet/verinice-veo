@@ -75,7 +75,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
@@ -200,7 +200,7 @@ public class ContentCreationController extends AbstractVeoController {
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
       Authentication auth,
       @PathVariable UUID id,
-      @PathVariable EntityType type,
+      @PathVariable ElementType type,
       @Valid @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
@@ -220,7 +220,7 @@ public class ContentCreationController extends AbstractVeoController {
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,
       @PathVariable UUID id,
-      @PathVariable EntityType type,
+      @PathVariable ElementType type,
       @RequestBody JsonNode schemaNode) {
     Client client = getAuthenticatedClient(auth);
     try {
@@ -673,6 +673,6 @@ public class ContentCreationController extends AbstractVeoController {
   @InitBinder
   public void initBinder(WebDataBinder dataBinder) {
     dataBinder.registerCustomEditor(
-        EntityType.class, new IgnoreCaseEnumConverter<>(EntityType.class));
+        ElementType.class, new IgnoreCaseEnumConverter<>(ElementType.class));
   }
 }

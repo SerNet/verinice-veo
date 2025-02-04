@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -69,7 +69,7 @@ public class ObjectSchemaParser {
   }
 
   public ElementTypeDefinition parseTypeDefinitionFromObjectSchema(
-      EntityType type, JsonNode schemaNode) throws JsonProcessingException {
+      ElementType type, JsonNode schemaNode) throws JsonProcessingException {
     JsonNode properties = schemaNode.required(PROPERTIES);
     ElementTypeDefinition typeDefinition =
         entityFactory.createElementTypeDefinition(type.getSingularTerm(), null);

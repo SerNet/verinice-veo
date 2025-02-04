@@ -564,6 +564,31 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for PUT /content-creation//domains/{id}/element-type-definitions/{type}"() {
+        given:
+        def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{id}/element-type-definitions/{type}"].put
+
+        expect:
+        with(endPointInfo.parameters.last()) {
+            it.name == 'type'
+            it.in == 'path'
+            it.required == true
+            it.schema ==  [
+                type:'string',
+                enum:[
+                    'ASSET',
+                    'CONTROL',
+                    'DOCUMENT',
+                    'INCIDENT',
+                    'PERSON',
+                    'PROCESS',
+                    'SCENARIO',
+                    'SCOPE'
+                ]
+            ]
+        }
+    }
+
     def "Content schema for #method request to #path, response status #status is ApiResponseBody"() {
         expect:
         statusInfo.content == ['application/json':[schema:[$ref:'#/components/schemas/ApiResponseBody']]]
