@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions.attribute;
 
-import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import org.veo.core.entity.exception.InvalidAttributeException;
@@ -34,7 +34,7 @@ public class DateTimeAttributeDefinition extends AttributeDefinition {
   public void validate(Object value) throws InvalidAttributeException {
     if (value instanceof String str) {
       try {
-        Instant.parse(str);
+        DateTimeFormatter.ISO_INSTANT.parse(str);
       } catch (DateTimeParseException ex) {
         throw new InvalidAttributeException("must be an ISO-8601 instant");
       }

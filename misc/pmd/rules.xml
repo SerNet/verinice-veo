@@ -19,7 +19,6 @@
         <exclude name="MissingSerialVersionUID" />
         <exclude name="NullAssignment" />
         <exclude name="UseLocaleWithCaseConversions" />
-        <exclude name="UselessOperationOnImmutable" />
     </rule>
 
     <rule ref="category/java/bestpractices.xml">
