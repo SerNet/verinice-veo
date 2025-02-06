@@ -269,7 +269,7 @@ public class TranslationValidator {
         .map(
             s ->
                 SUBTYPE_STATUS_PATTERN.formatted(
-                    type.toLowerCase(), // type must be lower case
+                    type.toLowerCase(Locale.US), // type must be lower case
                     subtype, // subtype and status must retain mixed case characters
                     s));
   }

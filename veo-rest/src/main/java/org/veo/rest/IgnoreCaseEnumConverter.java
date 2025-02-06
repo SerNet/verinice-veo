@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Locale;
 
 import org.apache.commons.lang3.EnumUtils;
 
@@ -38,6 +39,6 @@ public class IgnoreCaseEnumConverter<E extends Enum<E>> extends PropertyEditorSu
 
   @Override
   public void setAsText(String text) {
-    setValue(EnumUtils.getEnum(type, text.toUpperCase()));
+    setValue(EnumUtils.getEnum(type, text.toUpperCase(Locale.US)));
   }
 }

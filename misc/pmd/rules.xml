@@ -17,7 +17,6 @@
         <exclude name="AvoidFieldNameMatchingMethodName" />
         <exclude name="MissingSerialVersionUID" />
         <exclude name="NullAssignment" />
-        <exclude name="UseLocaleWithCaseConversions" />
     </rule>
 
     <rule ref="category/java/bestpractices.xml">

@@ -20,6 +20,8 @@ package org.veo.adapter.presenter.api.io.mapper;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Identifiable;
 
@@ -31,13 +33,7 @@ public final class CreateOutputMapper {
     return new ApiResponseBody(
         true,
         id,
-        String.format("%s created successfully.", upperFirst(identifiable.getModelType())));
-  }
-
-  private static String upperFirst(String in) {
-    if (in.isEmpty()) {
-      return "";
-    }
-    return in.substring(0, 1).toUpperCase() + in.substring(1);
+        String.format(
+            "%s created successfully.", StringUtils.capitalize(identifiable.getModelType())));
   }
 }
