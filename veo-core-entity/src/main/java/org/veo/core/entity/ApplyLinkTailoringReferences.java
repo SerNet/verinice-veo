@@ -58,7 +58,6 @@ public final class ApplyLinkTailoringReferences extends ActionStep {
               })
           .collect(Collectors.toSet());
     }
-    ;
     throw new UnprocessableDataException(
         "Cannot reapply catalog items for %s, expected a collection of elements"
             .formatted(targets.getClass()));

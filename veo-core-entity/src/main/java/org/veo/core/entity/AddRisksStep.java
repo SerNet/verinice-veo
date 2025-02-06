@@ -51,7 +51,6 @@ public final class AddRisksStep extends ActionStep {
               })
           .collect(Collectors.toSet());
     }
-    ;
     throw new UnprocessableDataException(
         "Cannot add risks for %s, expected a collection of scenarios".formatted(result.getClass()));
   }

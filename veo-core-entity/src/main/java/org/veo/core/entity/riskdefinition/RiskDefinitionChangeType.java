@@ -52,4 +52,4 @@ public enum RiskDefinitionChangeType {
       Set<RiskDefinitionChangeType> detectedChanges) {
     return detectedChanges.contains(IMPACT_LINKS);
   }
-};
+}

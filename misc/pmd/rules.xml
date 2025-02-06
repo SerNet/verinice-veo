@@ -55,7 +55,6 @@
         <exclude name="UnnecessaryConstructor" />
         <exclude name="UnnecessaryLocalBeforeReturn" />
         <exclude name="UnnecessaryModifier" />
-        <exclude name="UnnecessarySemicolon" />
         <exclude name="UseExplicitTypes" />
         <exclude name="UseShortArrayInitializer" />
         <exclude name="UseUnderscoresInNumericLiterals" />
