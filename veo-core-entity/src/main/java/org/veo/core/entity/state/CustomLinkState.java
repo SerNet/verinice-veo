@@ -31,7 +31,7 @@ public interface CustomLinkState extends CustomAspectState {
 
   @Value
   @EqualsAndHashCode(callSuper = true)
-  static class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
+  class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
 
     private ITypedId<Element> target;
 

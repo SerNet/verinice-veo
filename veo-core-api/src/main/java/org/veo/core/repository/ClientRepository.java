@@ -34,7 +34,7 @@ import org.veo.core.entity.exception.NotFoundException;
  * methods - i.e. queries based on particular fields.
  */
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
-  static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == ClientState.ACTIVATED;
+  Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == ClientState.ACTIVATED;
 
   Optional<Client> findByIdFetchCatalogsAndItems(UUID id);
 

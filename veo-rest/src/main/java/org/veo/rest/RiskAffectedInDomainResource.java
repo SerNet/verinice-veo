@@ -56,7 +56,7 @@ public interface RiskAffectedInDomainResource {
       responseCode = "404",
       description =
           "Risk-affected element or control not found, or control not implemented or not associated with domain")
-  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+  Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID domainId,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID riskAffectedId,

@@ -875,7 +875,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     return new UnprocessableDataException("Invalid entity reference: %s".formatted(uri));
   }
 
-  private static final UriComponents createTemplate(Link dummyLink) {
+  private static UriComponents createTemplate(Link dummyLink) {
     return UriComponentsBuilder.fromUriString(
             trimVariables(dummyLink.getHref()).replace(DUMMY_UUID_STRING, "{id}"))
         .build();

@@ -30,7 +30,7 @@ public interface CustomAspectState {
 
   @Value
   @NonFinal
-  static class CustomAspectStateImpl implements CustomAspectState {
+  class CustomAspectStateImpl implements CustomAspectState {
     private final String type;
     private final Map<String, Object> attributes;
   }

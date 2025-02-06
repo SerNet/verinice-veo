@@ -25,21 +25,21 @@ public interface SystemMessage extends Entity, SystemMessageState {
   String SINGULAR_TERM = "message";
   String PLURAL_TERM = "messages";
 
-  public enum MessageLevel {
+  enum MessageLevel {
     INFO,
     WARNING,
     URGENT
   }
 
-  public void setId(Long id);
+  void setId(Long id);
 
-  public void setMessage(TranslatedText message);
+  void setMessage(TranslatedText message);
 
-  public void setPublication(Instant publication);
+  void setPublication(Instant publication);
 
-  public void setEffective(Instant effective);
+  void setEffective(Instant effective);
 
-  public void setLevel(MessageLevel level);
+  void setLevel(MessageLevel level);
 
   @Override
   default Class<? extends Entity> getModelInterface() {

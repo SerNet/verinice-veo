@@ -68,7 +68,7 @@ public interface ProfileItem
         .flatMap(ClientOwned::getOwningClient);
   }
 
-  public Profile getOwner();
+  Profile getOwner();
 
   /**
    * @return this item's domain if the item belongs to a domain and can be applied

@@ -94,7 +94,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       RemoveExpression.class
     })
 public interface VeoExpression {
-  public Object getValue(Element element, Domain domain);
+  Object getValue(Element element, Domain domain);
 
   /** Determines whether this provider may yield a different value after given event. */
   default boolean isAffectedByEvent(ElementEvent event, Domain domain) {

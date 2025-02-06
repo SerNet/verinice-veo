@@ -54,7 +54,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface MigrationTransformDefinition {
 
   @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
-  static final Logger LOGGER = LoggerFactory.getLogger(MigrationTransformDefinition.class);
+  Logger LOGGER = LoggerFactory.getLogger(MigrationTransformDefinition.class);
 
   @NotNull
   @Schema(description = "An expression to transform the value from the old domain")

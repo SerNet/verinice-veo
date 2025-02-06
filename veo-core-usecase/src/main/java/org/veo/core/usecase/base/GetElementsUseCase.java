@@ -145,7 +145,7 @@ public class GetElementsUseCase
   @Valid
   @Builder
   @With
-  public static record InputData(
+  public record InputData(
       Client authenticatedClient,
       QueryCondition<String> elementTypes,
       QueryCondition<UUID> unitUuid,

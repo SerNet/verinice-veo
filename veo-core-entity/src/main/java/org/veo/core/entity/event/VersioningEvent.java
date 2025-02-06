@@ -28,7 +28,7 @@ public interface VersioningEvent<T extends Versioned> {
 
   VersioningEvent<T> withChangeNumber(long changeNumber);
 
-  public enum ModificationType {
+  enum ModificationType {
     PERSIST,
     UPDATE,
     REMOVE

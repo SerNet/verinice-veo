@@ -30,7 +30,7 @@ public enum ClientState {
   ACTIVATED(
       Set.of(ClientEvent.ClientChangeType.MODIFICATION, ClientEvent.ClientChangeType.DEACTIVATION));
 
-  private ClientState(Set<ClientEvent.ClientChangeType> validChanges) {
+  ClientState(Set<ClientEvent.ClientChangeType> validChanges) {
     this.validChanges = validChanges;
   }
 

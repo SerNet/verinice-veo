@@ -24,15 +24,15 @@ import org.veo.core.entity.TranslatedText;
 
 public interface SystemMessageState {
 
-  public Long getId();
+  Long getId();
 
-  public TranslatedText getMessage();
+  TranslatedText getMessage();
 
-  public Instant getCreatedAt();
+  Instant getCreatedAt();
 
-  public Instant getPublication();
+  Instant getPublication();
 
-  public Instant getEffective();
+  Instant getEffective();
 
-  public MessageLevel getLevel();
+  MessageLevel getLevel();
 }
