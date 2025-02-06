@@ -34,7 +34,11 @@ import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /** Validates template items according to the domain's element type definitions. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TemplateItemValidator {
   public static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
       void validate(T item) {

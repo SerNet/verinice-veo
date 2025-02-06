@@ -28,6 +28,9 @@ import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Map between the request DTO received from a client and the input expected by the data source.
  * (This is not needed for simple input data. In these cases the constructor of InputData can be
@@ -44,6 +47,7 @@ import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
  *
  * @see CreateOutputMapper
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CreateUnitInputMapper {
 
   public static CreateUnitUseCase.InputData map(

@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapFunctions {
   public static <TKey, TValue> void renameKey(
       java.util.Map<TKey, TValue> map, TKey currentKey, TKey newKey) {

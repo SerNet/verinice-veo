@@ -29,6 +29,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 import org.veo.core.repository.QueryCondition;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QueryFunctions {
   static <T> Specification<T> andInIgnoringCase(
       String propertyName, QueryCondition<String> condition, Specification<T> spec) {

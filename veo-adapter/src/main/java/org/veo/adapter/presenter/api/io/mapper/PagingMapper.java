@@ -23,6 +23,10 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PagingMapper {
 
   public static <TDto, TItem, TSortCriterion> PageDto<TDto> toPage(

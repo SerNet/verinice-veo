@@ -20,6 +20,10 @@ package org.veo.core.usecase.domaintemplate;
 import com.github.zafarkhaja.semver.ParseException;
 import com.github.zafarkhaja.semver.Version;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainTemplateValidator {
   public static void validateVersion(String version) {
     try {

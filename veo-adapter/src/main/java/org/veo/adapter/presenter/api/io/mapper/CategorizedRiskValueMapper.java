@@ -27,9 +27,10 @@ import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.core.entity.risk.RiskValues;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CategorizedRiskValueMapper {
 
   /**

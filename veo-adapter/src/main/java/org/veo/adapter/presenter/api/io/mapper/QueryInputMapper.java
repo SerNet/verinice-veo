@@ -36,6 +36,10 @@ import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QueryInputMapper {
 
   public static GetElementsUseCase.InputData map(

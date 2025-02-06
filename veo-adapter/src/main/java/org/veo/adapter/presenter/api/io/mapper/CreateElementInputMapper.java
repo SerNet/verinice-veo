@@ -27,7 +27,11 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.usecase.base.CreateElementUseCase;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 @Deprecated
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
   public static <T extends Element> CreateElementUseCase.InputData<T> map(

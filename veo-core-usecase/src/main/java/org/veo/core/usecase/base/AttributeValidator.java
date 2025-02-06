@@ -22,7 +22,11 @@ import java.util.Map;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.exception.InvalidAttributeException;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /** Validates custom aspect / link attributes according to the domain's element type definitions. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AttributeValidator {
 
   static void validate(

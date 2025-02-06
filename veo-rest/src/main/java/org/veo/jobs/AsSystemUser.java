@@ -28,11 +28,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.veo.core.entity.Client;
 import org.veo.rest.security.ApplicationUser;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Runs the given task with the system user account. The system user is always bound to a specific
  * client during execution. The security context is reset to its previous state after the task was
  * executed.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class AsSystemUser {
 
   private static final String VEO_USER = "SCOPE_veo-user";

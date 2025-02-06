@@ -25,7 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Identifiable;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /** Returns just the id of the newly created {@link Identifiable} as output. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CreateOutputMapper {
 
   public static ApiResponseBody map(Identifiable identifiable) {

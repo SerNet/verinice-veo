@@ -26,6 +26,10 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetRequirementImplementationsByControlImplementationInputMapper {
   public static GetRequirementImplementationsByControlImplementationUseCase.InputData map(
       Client authenticatedClient,

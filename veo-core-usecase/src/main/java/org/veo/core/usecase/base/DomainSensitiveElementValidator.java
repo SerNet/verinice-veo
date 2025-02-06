@@ -32,10 +32,13 @@ import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 import org.veo.core.entity.specification.ElementOnlyReferencesAssociatedDomains;
 import org.veo.core.entity.specification.ElementOnlyReferencesItsOwnUnitSpecification;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DomainSensitiveElementValidator {
 
   public static boolean isValid(Element element, Domain domain) {

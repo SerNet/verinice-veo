@@ -29,6 +29,10 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UnitDumpMapper {
   public static UnitDumpDto mapOutput(
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {

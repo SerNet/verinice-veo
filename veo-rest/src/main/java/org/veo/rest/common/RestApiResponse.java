@@ -36,7 +36,10 @@ import org.veo.core.entity.Versioned;
 import org.veo.core.usecase.common.ETag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestApiResponse {
 
   public static ResponseEntity<ApiResponseBody> ok(String message) {

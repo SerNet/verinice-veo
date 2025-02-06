@@ -20,6 +20,10 @@ package org.veo.adapter.presenter.api.io.mapper;
 import com.github.zafarkhaja.semver.UnexpectedCharacterException;
 import com.github.zafarkhaja.semver.Version;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VersionMapper {
   public static Version parseVersion(String version) {
     try {

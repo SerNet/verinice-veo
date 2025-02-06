@@ -30,6 +30,10 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DomainDiff {
 
   public static List<BreakingChange> determineBreakingChanges(

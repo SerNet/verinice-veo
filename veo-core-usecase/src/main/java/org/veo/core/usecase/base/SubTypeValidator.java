@@ -21,7 +21,11 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /** Validates an element's subtype / status according to the domains' element type definitions. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class SubTypeValidator {
   static void validate(Element element, Domain domain) {
     element

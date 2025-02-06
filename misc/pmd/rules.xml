@@ -80,7 +80,6 @@
         <exclude name="SimplifyBooleanReturns" />
         <exclude name="TooManyMethods" />
         <exclude name="UseObjectForClearerAPI" />
-        <exclude name="UseUtilityClass" />
     </rule>
 
     <rule ref="category/java/multithreading.xml">

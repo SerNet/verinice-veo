@@ -26,6 +26,10 @@ import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class RiskValuesValidator {
   public static void validateScenarioRiskValues(
       Map<RiskDefinitionRef, PotentialProbability> riskValues,
