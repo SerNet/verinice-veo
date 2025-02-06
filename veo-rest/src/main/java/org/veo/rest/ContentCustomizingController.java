@@ -17,13 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.CATEGORY_LIST_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.IMPACT_LINKS;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.IMPACT_LIST_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.IMPLEMENTATION_STATE_LIST_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.PROBABILITY_LIST_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_MATRIX_RESIZE;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.RISK_VALUE_LIST_RESIZE;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
@@ -44,6 +37,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -92,13 +86,12 @@ public class ContentCustomizingController extends AbstractVeoController {
             riskDefinitionId,
             riskDefinition,
             Set.of(
-                PROBABILITY_LIST_RESIZE,
-                RISK_VALUE_LIST_RESIZE,
-                IMPACT_LINKS,
-                IMPACT_LIST_RESIZE,
-                IMPLEMENTATION_STATE_LIST_RESIZE,
-                CATEGORY_LIST_RESIZE,
-                RISK_MATRIX_RESIZE)),
+                RiskDefinitionChange.ColorDiff.class,
+                RiskDefinitionChange.NewRiskDefinition.class,
+                RiskDefinitionChange.RiskMatrixAdd.class,
+                RiskDefinitionChange.RiskMatrixDiff.class,
+                RiskDefinitionChange.RiskMatrixRemove.class,
+                RiskDefinitionChange.TranslationDiff.class)),
         out ->
             out.newRiskDefinition()
                 ? RestApiResponse.created(

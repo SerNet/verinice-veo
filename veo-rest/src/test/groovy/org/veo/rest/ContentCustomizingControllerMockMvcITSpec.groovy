@@ -97,7 +97,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
 
         when: "removing a riskvalue"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
@@ -106,7 +106,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
     }
 
     def"normal user cannot add or remove category"() {
@@ -121,7 +121,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
 
         when: "we remove a category"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
@@ -130,7 +130,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
     }
 
     def "normal user cannot add or remove impact of category"() {
@@ -141,7 +141,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
 
         when: "we remove a category impact"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
@@ -150,7 +150,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
     }
 
     def "normal user cannot add or remove probability"() {
@@ -161,7 +161,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
 
         when: "we remove the probability"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
@@ -170,7 +170,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "unsupported change"
         ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [NEW_RISK_DEFINITION, TRANSLATION_DIFF, COLOR_DIFF, RISK_MATRIX_DIFF]"
+        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
     }
 
     def "normal user can change the riskMatrix"() {

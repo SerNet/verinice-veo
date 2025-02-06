@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.veo.listeners;
 
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresImpactInheritanceRecalculation;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresMigration;
-import static org.veo.core.entity.riskdefinition.RiskDefinitionChangeType.requiresRiskRecalculation;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.requiresImpactInheritanceRecalculation;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.requiresMigration;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.requiresRiskRecalculation;
 
 import java.util.List;
 import java.util.Optional;
