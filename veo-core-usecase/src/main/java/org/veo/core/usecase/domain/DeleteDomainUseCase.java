@@ -57,9 +57,7 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
         units.stream()
             .anyMatch(
                 u ->
-                    u.getDomains().stream()
-                        .map(d -> d.getId())
-                        .anyMatch(k -> k.equals(input.id())));
+                    u.getDomains().stream().map(Domain::getId).anyMatch(k -> k.equals(input.id())));
 
     if (isUsed) {
       throw new DomainInUseException("Domain in use: " + input.id());

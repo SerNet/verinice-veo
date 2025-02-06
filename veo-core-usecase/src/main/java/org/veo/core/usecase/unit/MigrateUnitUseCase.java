@@ -99,7 +99,7 @@ public class MigrateUnitUseCase
             ? newDomain.getDomainMigrationDefinition().migrations().stream()
                 .map(DomainMigrationStep::oldDefinitions)
                 .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(e -> e.elementType()))
+                .collect(Collectors.groupingBy(DomainSpecificValueLocation::elementType))
             : Collections.emptyMap();
 
     elements.forEach(
@@ -132,7 +132,7 @@ public class MigrateUnitUseCase
   private void applyMigrationDefinition(
       Domain oldDomain, Domain newDomain, List<Element> skipedElements) {
     Map<String, List<Element>> elementsByType =
-        skipedElements.stream().collect(Collectors.groupingBy(e -> e.getModelType()));
+        skipedElements.stream().collect(Collectors.groupingBy(Element::getModelType));
     newDomain.getDomainMigrationDefinition().migrations().stream()
         .map(DomainMigrationStep::newDefinitions)
         .flatMap(List::stream)

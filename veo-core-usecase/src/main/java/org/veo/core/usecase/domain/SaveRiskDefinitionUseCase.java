@@ -163,7 +163,7 @@ public class SaveRiskDefinitionUseCase
             index ->
                 detectChanges(
                     RISK_MATRIX_DIFF, newValueMatrix.get(index), oldValueMatrix.get(index)))
-        .flatMap(e -> e.stream())
+        .flatMap(Set::stream)
         .collect(Collectors.toSet());
   }
 
@@ -177,7 +177,7 @@ public class SaveRiskDefinitionUseCase
     return IntStream.range(0, oldLevels.size())
         .mapToObj(
             index -> detectChanges(structureChangeType, oldLevels.get(index), newLevels.get(index)))
-        .flatMap(s -> s.stream())
+        .flatMap(Set::stream)
         .collect(Collectors.toSet());
   }
 

@@ -181,7 +181,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     // we group the elements by the number of incoming edges
     Map<Integer, List<FlyweightElement>> inDegree =
         data.completeGraph.vertexSet().stream()
-            .collect(Collectors.groupingBy(v -> data.completeGraph.inDegreeOf(v)));
+            .collect(Collectors.groupingBy(data.completeGraph::inDegreeOf));
     // we select the root elements, which are all elements with zero incoming edges
     List<FlyweightElement> listOfRootElements = inDegree.get(0);
     if (listOfRootElements == null) {
@@ -364,7 +364,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
     // walk the graph down in a predictable manner
     outgoingEdges.stream()
-        .map(e -> graphData.elementGraph.getEdgeTarget(e))
+        .map(graphData.elementGraph::getEdgeTarget)
         .map(RiskAffected.class::cast)
         .sorted(comparing(Nameable::getName))
         .forEach(e -> updateAffectedGraph(graphData, e, changedElements));
@@ -438,7 +438,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
           riskDefinitionId);
       return fd;
     }
-    fd.catRefs = fd.riskDefinition.getCategories().stream().map(c -> CategoryRef.from(c)).toList();
+    fd.catRefs = fd.riskDefinition.getCategories().stream().map(CategoryRef::from).toList();
     if (fd.catRefs.isEmpty()) {
       log.debug("no Categories defined in {}", riskDefinitionId);
       return fd;
@@ -676,7 +676,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
   private Predicate<? super FlyweightElement> isPartOfGraph(
       Graph<FlyweightElement, FlyweightLink> elementSubGraph) {
-    return v -> elementSubGraph.containsVertex(v);
+    return elementSubGraph::containsVertex;
   }
 
   private Predicate<? super FlyweightElement> notProcessed(Set<FlyweightElement> processed) {
@@ -695,7 +695,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
   private Set<UUID> toIds(Collection<FlyweightElement> rootElementsForSubGraph) {
     return rootElementsForSubGraph.stream()
-        .map(f -> f.sourceId())
+        .map(FlyweightElement::sourceId)
         .map(UUID::fromString)
         .collect(Collectors.toSet());
   }

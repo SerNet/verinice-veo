@@ -196,7 +196,7 @@ public class TemplateItemMigrationService {
                           RiskDefinition domainDefinition = riskDefinition.get();
                           List<CategoryRef> domainCategoryRefs =
                               domainDefinition.getCategories().stream()
-                                  .map(c -> CategoryRef.from(c))
+                                  .map(CategoryRef::from)
                                   .toList();
                           allCategories.removeAll(domainCategoryRefs);
                           RiskTailoringReferenceValues values =
@@ -218,7 +218,7 @@ public class TemplateItemMigrationService {
       Function<Entry<TKey, TValue>, TValue> transformer) {
     return map.entrySet().stream()
         .filter(e -> validKeys.contains(e.getKey()))
-        .collect(Collectors.toMap(e -> e.getKey(), e -> transformer.apply(e)));
+        .collect(Collectors.toMap(Entry::getKey, transformer::apply));
   }
 
   private RiskTailoringReferenceValues newRiskTailoringReferenceValues(
@@ -226,7 +226,7 @@ public class TemplateItemMigrationService {
     var categories =
         value.categories().entrySet().stream()
             .filter(t -> !keySet.contains(t.getKey()))
-            .collect(Collectors.toMap(t -> t.getKey(), t -> t.getValue()));
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
     return new RiskTailoringReferenceValues(
         value.specificProbability(), value.specificProbabilityExplanation(), categories);

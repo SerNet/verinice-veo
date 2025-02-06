@@ -176,9 +176,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         getDomainsUseCase,
         inputData,
         output ->
-            output.objects().stream()
-                .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
-                .toList());
+            output.objects().stream().map(entityToDtoTransformer::transformDomain2Dto).toList());
   }
 
   @GetMapping(value = "/{id}")
@@ -303,7 +301,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             TypedId.from(profileId, Profile.class)),
         out ->
             out.items().stream()
-                .map(v -> entityToDtoTransformer.transformShortProfileItem2Dto(v))
+                .map(entityToDtoTransformer::transformShortProfileItem2Dto)
                 .toList());
   }
 

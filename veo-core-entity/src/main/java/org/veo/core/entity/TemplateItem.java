@@ -82,7 +82,7 @@ public interface TemplateItem<
               + type
               + "' is not a valid template type. Valid types are: "
               + EntityType.ELEMENT_TYPES.stream()
-                  .map(et -> et.getSingularTerm())
+                  .map(EntityType::getSingularTerm)
                   .collect(Collectors.joining(", ")));
     }
   }

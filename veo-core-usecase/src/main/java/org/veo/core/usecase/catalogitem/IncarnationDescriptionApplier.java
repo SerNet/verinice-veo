@@ -102,7 +102,7 @@ public class IncarnationDescriptionApplier {
                 .collect(Collectors.toSet()),
             client)
         .stream()
-        .collect(Collectors.toMap(it -> it.getSymbolicId(), identity()));
+        .collect(Collectors.toMap(TemplateItem::getSymbolicId, identity()));
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>

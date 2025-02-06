@@ -109,7 +109,7 @@ public class CategoryDefinition extends DimensionDefinition {
 
     Map<Integer, String> ordinalToSymbolicMap =
         riskValues.stream()
-            .collect(Collectors.toMap(rv -> rv.getOrdinalValue(), rv -> rv.getSymbolicRisk()));
+            .collect(Collectors.toMap(RiskValue::getOrdinalValue, RiskValue::getSymbolicRisk));
     Set<RiskValue> undefinedRiskValues =
         valueMatrix.stream()
             .flatMap(Collection::stream)

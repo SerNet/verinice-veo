@@ -40,7 +40,6 @@
         <exclude name="ConfusingTernary" />
         <exclude name="ControlStatementBraces" />
         <exclude name="FieldDeclarationsShouldBeAtStartOfClass" />
-        <exclude name="LambdaCanBeMethodReference" />
         <exclude name="LinguisticNaming" />
         <exclude name="LocalVariableCouldBeFinal" />
         <exclude name="LongVariable" />

@@ -128,7 +128,7 @@ public class TranslationValidator {
                       Set.of("impactMethod", Nameable.DESCRIPTION),
                       validationContext + " risk method: ");
                 })
-            .flatMap(l -> l.stream())
+            .flatMap(List::stream)
             .collect(Collectors.toList()));
 
     violations.addAll(
@@ -137,7 +137,7 @@ public class TranslationValidator {
                 t ->
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " probability: "))
-            .flatMap(l -> l.stream())
+            .flatMap(List::stream)
             .collect(Collectors.toList()));
 
     violations.addAll(
@@ -146,7 +146,7 @@ public class TranslationValidator {
                 t ->
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " implementation state: "))
-            .flatMap(l -> l.stream())
+            .flatMap(List::stream)
             .collect(Collectors.toList()));
 
     violations.addAll(
@@ -158,7 +158,7 @@ public class TranslationValidator {
                         t.getKey(),
                         t.getValue(),
                         validationContext + " category " + t.getKey() + ": "))
-            .flatMap(l -> l.stream())
+            .flatMap(List::stream)
             .collect(Collectors.toList()));
 
     violations.addAll(
@@ -168,7 +168,7 @@ public class TranslationValidator {
                 t ->
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " risk-values: "))
-            .flatMap(l -> l.stream())
+            .flatMap(List::stream)
             .collect(Collectors.toList()));
 
     if (violations.size() > 0) {

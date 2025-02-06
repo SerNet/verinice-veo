@@ -160,7 +160,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     setValues(tailoringReferenceValues, newDomain);
 
     getRiskDefinitions(oldDomain).stream()
-        .filter(e -> newRiskDefinition.contains(e))
+        .filter(newRiskDefinition::contains)
         .forEach(
             rd -> {
               RiskValuesAspectData oldAspect = getOrCreateRiskAspect(oldDomain, rd);

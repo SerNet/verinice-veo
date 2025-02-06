@@ -82,7 +82,7 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
   default Set<R> getOrCreateRisks(Set<Scenario> scenarios, Set<RiskDefinitionRef> riskDefinitions) {
     scenarios.forEach(s -> s.checkSameClient(this));
 
-    return scenarios.stream().map(s -> obtainRisk(s)).collect(Collectors.toSet());
+    return scenarios.stream().map(this::obtainRisk).collect(Collectors.toSet());
   }
 
   default Optional<R> getRisk(Scenario scenario) {

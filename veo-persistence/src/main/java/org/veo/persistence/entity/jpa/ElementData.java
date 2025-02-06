@@ -230,7 +230,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
               appliedCatalogItems.remove(oldItem);
               newDomain
                   .findCatalogItem(oldItem.getSymbolicId())
-                  .ifPresent(newItem -> appliedCatalogItems.add(newItem));
+                  .ifPresent(appliedCatalogItems::add);
             });
   }
 
@@ -262,7 +262,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
     findAppliedCatalogItem(oldDomain)
         .flatMap(oldItem -> newDomain.findCatalogItem(oldItem.getSymbolicId()))
-        .ifPresent(newItem -> appliedCatalogItems.add(newItem));
+        .ifPresent(appliedCatalogItems::add);
   }
 
   private void migrateCustomAspects(
@@ -441,7 +441,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     getAppliedCatalogItems().stream()
         .filter(ci -> ci.getDomainBase().getIdAsString().equals(profile.getOwner().getIdAsString()))
         .findAny()
-        .ifPresent(ci -> item.setAppliedCatalogItem(ci));
+        .ifPresent(item::setAppliedCatalogItem);
     return item;
   }
 
@@ -465,7 +465,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.setSubType(getSubType(domain));
     item.setCustomAspects(
         getCustomAspects(domain).stream()
-            .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
+            .collect(Collectors.toMap(CustomAspect::getType, CustomAspect::getAttributes)));
     item.setAspects(mapAspectsToItem(domain));
     if (item.getUpdatedAt() != null) {
       item.setUpdatedAt(Instant.now());

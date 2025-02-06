@@ -256,8 +256,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     return useCaseInteractor.execute(
         getUnitsUseCase,
         inputData,
-        output ->
-            output.units().stream().map(u -> entityToDtoTransformer.transformUnit2Dto(u)).toList());
+        output -> output.units().stream().map(entityToDtoTransformer::transformUnit2Dto).toList());
   }
 
   @GetMapping(value = "/{id}")

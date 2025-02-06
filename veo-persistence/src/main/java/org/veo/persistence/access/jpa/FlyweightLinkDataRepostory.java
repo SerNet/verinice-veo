@@ -19,6 +19,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -60,7 +61,7 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
             .entrySet()
             .stream()
             .map(entry -> new FlyweightElementData(entry.getKey(), new HashSet<>(entry.getValue())))
-            .collect(Collectors.toMap(k -> k.sourceId(), Function.identity()));
+            .collect(Collectors.toMap(FlyweightElementData::sourceId, Function.identity()));
 
     Set<FlyweightElement> allLeafs =
         allFlyweightElements.stream()
@@ -74,7 +75,7 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
             .collect(Collectors.toSet());
 
     Set<FlyweightElement> allNonLeafs =
-        elementsById.entrySet().stream().map(e -> e.getValue()).collect(Collectors.toSet());
+        elementsById.entrySet().stream().map(Entry::getValue).collect(Collectors.toSet());
     Set<FlyweightElement> all = new HashSet<>(allLeafs);
     all.addAll(allNonLeafs);
     return all;
