@@ -28,8 +28,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ExternalDocumentAttributeDefinition extends AttributeDefinition {
-  private static final String[] SUPPORTED_PROTOCOLS =
-      new String[] {"http", "https", "ftp", "ftps", "smb"};
+  private static final String[] SUPPORTED_PROTOCOLS = {"http", "https", "ftp", "ftps", "smb"};
   public static final String PROTOCOL_PATTERN =
       "^(" + String.join("|", SUPPORTED_PROTOCOLS) + ")://";
   public static final String TYPE = "externalDocument";
