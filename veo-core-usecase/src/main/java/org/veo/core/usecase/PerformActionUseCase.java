@@ -53,7 +53,6 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
-import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.RequiredArgsConstructor;
@@ -207,85 +206,6 @@ public class PerformActionUseCase
               control.addLink(factory.createCustomLink(scenario, control, linkType, domain));
               genericElementRepository.saveAll(List.of(control));
             });
-  }
-
-  private void incarnateScenarios(
-      Unit unit,
-      Domain domain,
-      Set<Entity> createdEntities,
-      ApplyLinkTailoringReferences createLinkedScenariosStep,
-      Element control,
-      CatalogItem controlCatalogItem,
-      List<UUID> scenarioCatalogItems) {
-
-    if (scenarioCatalogItems.isEmpty()) {
-      return;
-    }
-    var config =
-        Optional.ofNullable(createLinkedScenariosStep.getConfig())
-            .orElse(domain.getIncarnationConfiguration());
-
-    var incarnationDescriptions =
-        getIncarnationDescriptionUseCase
-            .execute(
-                new GetCatalogIncarnationDescriptionUseCase.InputData(
-                    unit.getClient(),
-                    unit.getId(),
-                    domain.getId(),
-                    scenarioCatalogItems,
-                    config.mode(),
-                    config.useExistingIncarnations(),
-                    config.include(),
-                    config.exclude()))
-            .references();
-
-    incarnationDescriptions.stream()
-        .forEach(
-            icd -> {
-              var trp =
-                  getReferenceParameterForReference(
-                      icd,
-                      getTailoringReferences(
-                          controlCatalogItem, icd, createLinkedScenariosStep.getLinkType()));
-
-              trp.setReferencedElement(control);
-              icd.setReferences(List.of(trp));
-            });
-
-    List<Element> newScenario =
-        applyIncarnationDescriptionUseCase
-            .execute(
-                new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                    unit.getClient(),
-                    unit.getId(),
-                    incarnationDescriptions.stream()
-                        .map(
-                            r ->
-                                (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>)
-                                    r)
-                        .toList()))
-            .newElements();
-
-    createdEntities.addAll(newScenario);
-  }
-
-  private TailoringReferenceParameter getReferenceParameterForReference(
-      TemplateItemIncarnationDescription<CatalogItem, DomainBase> icd,
-      TailoringReference<CatalogItem, DomainBase> reference) {
-    return icd.getReferences().stream()
-        .filter(r -> r.getId().equals(reference.getIdAsString()))
-        .findAny()
-        .orElseThrow();
-  }
-
-  private TailoringReference<CatalogItem, DomainBase> getTailoringReferences(
-      CatalogItem controlCatalogItem,
-      TemplateItemIncarnationDescription<CatalogItem, DomainBase> incarnationDescription,
-      String linkType) {
-    return incarnationDescription.getItem().getTailoringReferences().stream()
-        .filter(l -> l.isLinkRef(linkType) && l.getTarget().equals(controlCatalogItem))
-        .findAny()
-        .orElseThrow();
   }
 
   private List<Element> loadExistingIncarnations(Domain domain, Set<CatalogItem> items, Unit unit) {

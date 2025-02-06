@@ -568,12 +568,6 @@ public final class EntityToDtoTransformer {
     return ControlImplementationDto.from(source, referenceAssembler, domain);
   }
 
-  private <T extends Element> IdRef<T> ref(T element, @Nullable Domain domain) {
-    return domain != null
-        ? ElementInDomainIdRef.from(element, domain, referenceAssembler)
-        : IdRef.from(element, referenceAssembler);
-  }
-
   private <TEntity extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
       TEntity source, AbstractVersionedSelfReferencingDto target) {
     target.setSelfRef(IdRef.from(source, referenceAssembler));
