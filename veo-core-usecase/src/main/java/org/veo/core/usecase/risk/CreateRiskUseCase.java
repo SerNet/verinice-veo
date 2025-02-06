@@ -55,7 +55,6 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   @Transactional
   @Override
   public OutputData<R> execute(InputData input) {
-    boolean newRiskCreated = false;
     // Retrieve the necessary entities for the requested operation:
     var riskAffected = findEntity(entityClass, input.riskAffectedRef()).orElseThrow();
 
@@ -72,6 +71,8 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
     // Apply requested operation:
     var risk = riskAffected.obtainRisk(scenario);
+    boolean newRiskCreated = false;
+
     if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
       designatorService.assignDesignator(risk, input.authenticatedClient());
       newRiskCreated = true;

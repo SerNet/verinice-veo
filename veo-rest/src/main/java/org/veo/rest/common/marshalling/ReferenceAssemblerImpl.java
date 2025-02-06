@@ -804,11 +804,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     try {
       var segments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
       var size = segments.size();
-      var idSeg = segments.get(size - 1);
       var typeSeg = segments.get(size - 2);
       if (typeSeg.equals(Client.PLURAL_TERM)) {
         throw invalidReference(uri);
       }
+      var idSeg = segments.get(size - 1);
       return TypedId.from(UUID.fromString(idSeg), parseType(typeSeg, superType));
     } catch (IllegalArgumentException | IndexOutOfBoundsException ex) {
       throw invalidReference(uri);
