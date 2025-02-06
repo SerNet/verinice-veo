@@ -126,9 +126,9 @@ public class PersonInDomainController implements ElementInDomainResource {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullPersonInDomainDto.class)))
-  @ApiResponse(responseCode = "404", description = "Person not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Person not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Person or domain not found or person not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullPersonInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -303,9 +303,9 @@ public class PersonInDomainController implements ElementInDomainResource {
   @Operation(summary = "Associates an existing person with a domain")
   @PostMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Person associated with domain")
-  @ApiResponse(responseCode = "404", description = "Person not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "409", description = "Person already associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Person or domain not found or person already associated with domain")
   public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -322,8 +322,9 @@ public class PersonInDomainController implements ElementInDomainResource {
   @Operation(summary = "Updates a person from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Person updated")
-  @ApiResponse(responseCode = "404", description = "Person not found")
-  @ApiResponse(responseCode = "404", description = "Person not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Person not found or person not associated with domain")
   public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -348,9 +349,9 @@ public class PersonInDomainController implements ElementInDomainResource {
   @Operation(summary = "Retrieve inbound and outbound links for a person in a domain")
   @GetMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "200", description = "Links loaded")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Person not found")
-  @ApiResponse(responseCode = "404", description = "Person not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Person or domain not found or person not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -386,9 +387,9 @@ public class PersonInDomainController implements ElementInDomainResource {
   @PostMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "204", description = "Links added")
   @ApiResponse(responseCode = "400", description = "Invalid link")
-  @ApiResponse(responseCode = "404", description = "Person not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Person not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Person or domain not found or person not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
       @Parameter(hidden = true) Authentication auth,

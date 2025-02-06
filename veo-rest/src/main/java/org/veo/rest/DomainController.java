@@ -415,8 +415,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @Operation(summary = "Loads a catalog item in a domain")
   @ApiResponse(responseCode = "200", description = "Catalog item found")
   @ApiResponse(responseCode = "304", description = "Not modified")
-  @ApiResponse(responseCode = "404", description = "Catalog item not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Domain or catalog item not found")
   public @Valid Future<ResponseEntity<ShortCatalogItemDto>> getCatalogItem(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -499,8 +498,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @GetMapping(value = "/{domainId}/inspections/{inspectionId}")
   @Operation(summary = "Retrieve inspection")
   @ApiResponse(responseCode = "200", description = "Inspection found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Inspection not found")
+  @ApiResponse(responseCode = "404", description = "Domain or inspection not found")
   public @Valid Future<ResponseEntity<Inspection>> getInspection(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable UUID domainId,
@@ -539,8 +537,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @PostMapping("/{id}/profiles/{profileId}/incarnation")
   @Operation(summary = "Incarnates all profile items in the unit.")
   @ApiResponse(responseCode = "204", description = "Profile applied")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Unit not found")
+  @ApiResponse(responseCode = "404", description = "Domain or unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable UUID id,

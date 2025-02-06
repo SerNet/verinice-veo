@@ -102,4 +102,43 @@
     </rule>
     
     <rule ref="category/java/security.xml" />
+
+    <rule name="DuplicateApiResponse"
+          message="Duplicate @ApiResponse annotations with the same response code found on a method."
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+
+        <description>
+            Ensures that each response code in @ApiResponse annotations is unique within a method.
+        </description>
+
+        <priority>2</priority>
+
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //MethodDeclaration[
+                            let $codes := .//Annotation[
+                                pmd-java:typeIsExactly("io.swagger.v3.oas.annotations.responses.ApiResponse")
+                            ]/AnnotationMemberList/MemberValuePair[@Image = 'responseCode']/StringLiteral/@Image
+                            return count($codes) != count(distinct-values($codes))
+                        ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+
+        <example>
+            @ApiResponses({
+                @ApiResponse(responseCode = "200", description = "OK"),
+                @ApiResponse(responseCode = "400", description = "Bad Request")
+            })  // ✅ Allowed
+
+            @ApiResponses({
+                @ApiResponse(responseCode = "200", description = "OK"),
+                @ApiResponse(responseCode = "200", description = "Duplicate OK")
+            })  // ❌ This will be flagged
+        </example>
+    </rule>
 </ruleset>

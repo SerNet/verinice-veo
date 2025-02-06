@@ -58,9 +58,9 @@ public interface RiskAffectedResource {
   @GetMapping("/{riskAffectedId}/requirement-implementations/{controlId}")
   @Operation(summary = "Load a requirement implementation for a control")
   @ApiResponse(responseCode = "200", description = "Requirement implementation loaded")
-  @ApiResponse(responseCode = "404", description = "Risk-affected not found")
-  @ApiResponse(responseCode = "404", description = "Control not found")
-  @ApiResponse(responseCode = "404", description = "Requirement implementation not found")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Risk-affected, control, or requirement implementation not found")
   Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -73,9 +73,9 @@ public interface RiskAffectedResource {
   @PutMapping("/{riskAffectedId}/requirement-implementations/{controlId}")
   @Operation(summary = "Update an existing requirement implementation")
   @ApiResponse(responseCode = "204", description = "Requirement implementation updated")
-  @ApiResponse(responseCode = "404", description = "Risk-affected not found")
-  @ApiResponse(responseCode = "404", description = "Control not found")
-  @ApiResponse(responseCode = "404", description = "Requirement implementation not found")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Risk-affected, control, or requirement implementation not found")
   Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
       @RequestHeader(name = IF_MATCH_HEADER) @NotNull String eTag,
       @Parameter(hidden = true) Authentication auth,
@@ -90,9 +90,9 @@ public interface RiskAffectedResource {
   @GetMapping("/{riskAffectedId}/control-implementations/{controlId}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")
   @ApiResponse(responseCode = "200", description = "Requirement implementations loaded")
-  @ApiResponse(responseCode = "404", description = "Element not found")
-  @ApiResponse(responseCode = "404", description = "Control not found")
-  @ApiResponse(responseCode = "404", description = "Control not implemented")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Element or control not found or control not implemented")
   Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

@@ -52,10 +52,10 @@ public interface RiskAffectedInDomainResource {
   @GetMapping("/{riskAffectedId}/control-implementations/{controlId}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")
   @ApiResponse(responseCode = "200", description = "Requirement implementations loaded")
-  @ApiResponse(responseCode = "404", description = "Risk-affected element not found")
-  @ApiResponse(responseCode = "404", description = "Control not found")
-  @ApiResponse(responseCode = "404", description = "Control not implemented")
-  @ApiResponse(responseCode = "404", description = "Control not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description =
+          "Risk-affected element or control not found, or control not implemented or not associated with domain")
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID domainId,

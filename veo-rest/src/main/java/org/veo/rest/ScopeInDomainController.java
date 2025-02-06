@@ -146,9 +146,9 @@ public class ScopeInDomainController
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullScopeInDomainDto.class)))
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Scope not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Scope or domain not found or scope not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullScopeInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -256,8 +256,7 @@ public class ScopeInDomainController
   @Operation(summary = "Associates an existing scope with a domain")
   @PostMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Scope associated with domain")
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   @ApiResponse(responseCode = "409", description = "Scope already associated with domain")
   public CompletableFuture<ResponseEntity<FullScopeInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
@@ -275,8 +274,7 @@ public class ScopeInDomainController
   @Operation(summary = "Updates a scope from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Scope updated")
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Scope not associated with domain")
+  @ApiResponse(responseCode = "404", description = "Scope not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullScopeInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -295,9 +293,9 @@ public class ScopeInDomainController
   @Operation(summary = "Retrieve inbound and outbound links for a scope in a domain")
   @GetMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "200", description = "Links loaded")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Scope not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Scope or domain not found or scope not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -333,9 +331,9 @@ public class ScopeInDomainController
   @PostMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "204", description = "Links added")
   @ApiResponse(responseCode = "400", description = "Invalid link")
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Scope not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Scope or domain not found or scope not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
       @Parameter(hidden = true) Authentication auth,
@@ -379,8 +377,7 @@ public class ScopeInDomainController
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array =
                   @ArraySchema(schema = @Schema(implementation = FullControlInDomainDto.class))))
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/members")
   public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
@@ -466,8 +463,7 @@ public class ScopeInDomainController
       responseCode = "200",
       description = "Control implementations loaded",
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   public Future<PageDto<ControlImplementationDto>> getControlImplementations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

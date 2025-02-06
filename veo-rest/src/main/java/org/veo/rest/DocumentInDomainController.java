@@ -126,9 +126,9 @@ public class DocumentInDomainController implements ElementInDomainResource {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullDocumentInDomainDto.class)))
-  @ApiResponse(responseCode = "404", description = "Document not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Document not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Document or domain not found or document not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullDocumentInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -304,8 +304,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Associates an existing document with a domain")
   @PostMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Document associated with domain")
-  @ApiResponse(responseCode = "404", description = "Document not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Document or domain not found")
   @ApiResponse(responseCode = "409", description = "Document already associated with domain")
   public CompletableFuture<ResponseEntity<FullDocumentInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
@@ -323,8 +322,9 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Updates a document from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Document updated")
-  @ApiResponse(responseCode = "404", description = "Document not found")
-  @ApiResponse(responseCode = "404", description = "Document not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Document not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullDocumentInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -349,9 +349,9 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Retrieve inbound and outbound links for a document in a domain")
   @GetMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "200", description = "Links loaded")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Document not found")
-  @ApiResponse(responseCode = "404", description = "Document not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Document or domain not found or document not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -387,9 +387,9 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @PostMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "204", description = "Links added")
   @ApiResponse(responseCode = "400", description = "Invalid link")
-  @ApiResponse(responseCode = "404", description = "Document not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Document not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Document or domain not found or document not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
       @Parameter(hidden = true) Authentication auth,

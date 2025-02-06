@@ -129,9 +129,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullIncidentInDomainDto.class)))
-  @ApiResponse(responseCode = "404", description = "Incident not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Incident or domain not found or incident not associated with domain")
   public @Valid Future<ResponseEntity<FullIncidentInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -306,9 +306,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Associates an existing incident with a domain")
   @PostMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Incident associated with domain")
-  @ApiResponse(responseCode = "404", description = "Incident not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "409", description = "Incident already associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Incident or domain not found or incident already associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -325,8 +325,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Updates a incident from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
   @ApiResponse(responseCode = "200", description = "Incident updated")
-  @ApiResponse(responseCode = "404", description = "Incident not found")
-  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Incident not found or incident not associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -351,9 +352,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @Operation(summary = "Retrieve inbound and outbound links for an incident in a domain")
   @GetMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "200", description = "Links loaded")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Incident not found")
-  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Incident or domain not found or incident not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -389,9 +390,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @PostMapping(UUID_PARAM_SPEC + "/links")
   @ApiResponse(responseCode = "204", description = "Links added")
   @ApiResponse(responseCode = "400", description = "Invalid link")
-  @ApiResponse(responseCode = "404", description = "Incident not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
+  @ApiResponse(
+      responseCode = "404",
+      description = "Incident or domain not found or incident not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
       @Parameter(hidden = true) Authentication auth,

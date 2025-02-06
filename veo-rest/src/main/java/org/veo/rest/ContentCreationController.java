@@ -301,8 +301,7 @@ public class ContentCreationController extends AbstractVeoController {
   @DeleteMapping("/domains/{domainId}/decisions/{decisionKey}")
   @Operation(summary = "Delete decision with given key")
   @ApiResponse(responseCode = "204", description = "Decision deleted")
-  @ApiResponse(responseCode = "404", description = "Decision not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Domain or decision not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDecision(
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -353,8 +352,7 @@ public class ContentCreationController extends AbstractVeoController {
   @DeleteMapping("/domains/{domainId}/inspections/{inspectionId}")
   @Operation(summary = "Delete inspection with given key")
   @ApiResponse(responseCode = "204", description = "Inspection deleted")
-  @ApiResponse(responseCode = "404", description = "Inspection not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Domain or inspection not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteInspection(
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -413,8 +411,7 @@ public class ContentCreationController extends AbstractVeoController {
   @DeleteMapping("/domains/{domainId}/risk-definitions/{riskDefinitionKey}")
   @Operation(summary = "Delete risk definition with given key")
   @ApiResponse(responseCode = "204", description = "Risk definition deleted")
-  @ApiResponse(responseCode = "404", description = "Risk definition not found")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Domain or risk definition not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRiskDefinition(
       @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -436,8 +433,7 @@ public class ContentCreationController extends AbstractVeoController {
   @PutMapping("/domains/{domainId}/catalog-items")
   @Operation(summary = "Creates a new catalog from a unit for a domain")
   @ApiResponse(responseCode = "204", description = "Catalog items created")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Unit not found")
+  @ApiResponse(responseCode = "404", description = "Domain or unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createCatalogForDomain(
       Authentication auth,
       @PathVariable UUID domainId,
@@ -509,8 +505,7 @@ public class ContentCreationController extends AbstractVeoController {
   @DeleteMapping(value = "/domains/{domainId}/profiles/{profileId}")
   @Operation(summary = "Delete a profile")
   @ApiResponse(responseCode = "204", description = "Profile deleted")
-  @ApiResponse(responseCode = "404", description = "Domain not found")
-  @ApiResponse(responseCode = "404", description = "Profile not found")
+  @ApiResponse(responseCode = "404", description = "Domain or profile not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProfile(
       Authentication auth, @PathVariable UUID domainId, @PathVariable @NotNull UUID profileId) {
     return useCaseInteractor.execute(
