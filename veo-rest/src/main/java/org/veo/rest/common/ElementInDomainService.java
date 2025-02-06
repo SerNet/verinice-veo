@@ -50,10 +50,9 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
@@ -139,11 +138,10 @@ public class ElementInDomainService {
           UUID domainId,
           GetElementsUseCase.InputData input,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper,
-          Class<TElement> type) {
+          ElementType elementType) {
     return getElements(
         domainId,
-        input.withElementTypes(
-            new QueryCondition<>(Set.of(EntityType.getSingularTermByType(type)))),
+        input.withElementTypes(new QueryCondition<>(Set.of(elementType))),
         (Element e, Domain d) -> toDtoMapper.apply((TElement) e, d));
   }
 
@@ -268,7 +266,7 @@ public class ElementInDomainService {
   }
 
   public CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, UUID domainId, String elementType) {
+      Authentication auth, UUID domainId, ElementType elementType) {
     return CompletableFuture.supplyAsync(
         () -> {
           var domain =
@@ -279,7 +277,7 @@ public class ElementInDomainService {
   }
 
   public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
-      UUID domainId, UUID uuid, Class<? extends Element> type, Authentication auth) {
+      UUID domainId, UUID uuid, ElementType type, Authentication auth) {
     return useCaseInteractor.execute(
         getAvailableActionsUseCase,
         new GetAvailableActionsUseCase.InputData(
@@ -333,7 +331,7 @@ public class ElementInDomainService {
                   if (controlCustomAspectKeys != null) {
                     List<String> availableCAs =
                         domain
-                            .getElementTypeDefinition(Control.SINGULAR_TERM)
+                            .getElementTypeDefinition(ElementType.CONTROL)
                             .getCustomAspects()
                             .keySet()
                             .stream()

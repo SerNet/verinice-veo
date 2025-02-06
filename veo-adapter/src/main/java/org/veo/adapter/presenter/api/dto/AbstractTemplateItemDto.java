@@ -29,6 +29,7 @@ import org.veo.adapter.service.domaintemplate.dto.ControlImplementationTailoring
 import org.veo.adapter.service.domaintemplate.dto.RequirementImplementationTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.RiskTailoringReferenceDto;
 import org.veo.core.entity.ControlImplementationTailoringReference;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.RequirementImplementationTailoringReference;
@@ -53,9 +54,8 @@ public abstract class AbstractTemplateItemDto<
   private String description;
 
   @NotNull
-  @Schema(description = "Entity type identifier", example = "person")
-  @Size(min = 1, max = 32)
-  private String elementType;
+  @Schema(description = "Entity type identifier")
+  private ElementType elementType;
 
   @NotNull
   @Schema(description = "The subtype for the Element.", example = "PER")

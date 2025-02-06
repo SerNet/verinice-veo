@@ -23,11 +23,12 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 
 public interface ElementTypeDefinition extends ElementTypeDefinitionState {
   @NotNull
-  String getElementType();
+  ElementType getElementType();
 
   void setSubTypes(Map<String, SubTypeDefinition> definitions);
 

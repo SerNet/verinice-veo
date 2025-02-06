@@ -45,7 +45,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         def client= createTestClient()
         def domain =domainDataRepository.save(newDomain(client) {d->
             ElementType.values().each {
-                applyElementTypeDefinition(newElementTypeDefinition(it.singularTerm, d) {
+                applyElementTypeDefinition(newElementTypeDefinition(it, d) {
                     subTypes = [
                         MyType: newSubTypeDefinition()
                     ]

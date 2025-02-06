@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2025  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.persistence.entity.jpa;
 
-import java.util.Set;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.Profile;
-import org.veo.core.entity.ProfileItem;
 
-public interface ProfileItemRepository
-    extends AbstractTemplateItemRepository<ProfileItem, Profile> {
-  Set<ProfileItem> findAllByProfile(Profile profile, ElementType type);
+@Converter(autoApply = true)
+class ElementTypeConverter implements AttributeConverter<ElementType, String> {
+
+  @Override
+  public String convertToDatabaseColumn(ElementType attribute) {
+    return attribute == null ? null : attribute.getSingularTerm();
+  }
+
+  @Override
+  public ElementType convertToEntityAttribute(String dbData) {
+    return dbData == null ? null : ElementType.fromString(dbData);
+  }
 }

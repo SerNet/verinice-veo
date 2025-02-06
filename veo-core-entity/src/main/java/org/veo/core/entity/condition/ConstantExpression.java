@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,7 @@ public class ConstantExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     if (value != null
         && Stream.of(String.class, Boolean.class, Number.class, Map.class)
             .noneMatch(t -> t.isInstance(value))) {
@@ -52,7 +53,7 @@ public class ConstantExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Optional.ofNullable(value).map(Object::getClass).orElse(null);
   }
 }

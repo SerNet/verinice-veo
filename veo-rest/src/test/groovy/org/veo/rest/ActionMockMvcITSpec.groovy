@@ -21,13 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Control
-import org.veo.core.entity.EntityType
-import org.veo.core.entity.Scenario
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.CatalogItemData
 
 @WithUserDetails("user@domain.example")
 class ActionMockMvcITSpec extends VeoMvcSpec{
@@ -43,34 +40,34 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
         def client = createTestClient()
         def domain = newDomain(client) { d ->
             name = "IT-Grundschutz"
-            EntityType.RISK_AFFECTED_TYPES.forEach {
-                applyElementTypeDefinition(newElementTypeDefinition(it.singularTerm, d) {
+            ElementType.RISK_AFFECTED_TYPES.forEach {
+                applyElementTypeDefinition(newElementTypeDefinition(it, d) {
                     subTypes.NotMyType = newSubTypeDefinition {}
                 })
             }
-            applyElementTypeDefinition(newElementTypeDefinition("control", d) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, d) {
                 subTypes.RemoteControl = newSubTypeDefinition {}
-                links.control_relevantAppliedThreat = newLinkDefinition(Scenario.SINGULAR_TERM, "Scarynario")
+                links.control_relevantAppliedThreat = newLinkDefinition(ElementType.SCENARIO, "Scarynario")
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", d) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, d) {
                 subTypes.Scarynario = newSubTypeDefinition {}
             })
             def scenario1 = newCatalogItem(d) {
                 name = "bad things happen"
-                elementType = Scenario.SINGULAR_TERM
+                elementType = ElementType.SCENARIO
                 subType = "Scarynario"
                 status = "NEW"
             }
             def scenario2 = newCatalogItem(d) {
                 name = "worse things happen"
-                elementType = Scenario.SINGULAR_TERM
+                elementType = ElementType.SCENARIO
                 subType = "Scarynario"
                 status = "NEW"
             }
 
             def subControl1 = newCatalogItem(d) {
                 name = "remotely controlled"
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 subType = "RemoteControl"
                 status = "NEW"
                 addLinkTailoringReference(TailoringReferenceType.LINK, scenario1, "control_relevantAppliedThreat", [:])
@@ -79,7 +76,7 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
 
             def subControl2 = newCatalogItem(d) {
                 name = "con troll"
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 subType = "RemoteControl"
                 status = "NEW"
                 addLinkTailoringReference(TailoringReferenceType.LINK, scenario2, "control_relevantAppliedThreat", [:])
@@ -92,7 +89,7 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
                 subControl2,
                 newCatalogItem(d) {
                     name = "super troll"
-                    elementType = Control.SINGULAR_TERM
+                    elementType = ElementType.CONTROL
                     subType = "RemoteControl"
                     status = "NEW"
                     addTailoringReference(TailoringReferenceType.PART, subControl1)
@@ -167,7 +164,7 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
         result.createdEntities.empty
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     private String incarnate(String itemName, Collection<String> exclude) {

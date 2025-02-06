@@ -27,7 +27,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 
@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "A custom aspect attribute")
 public record CustomAspectAttribute(
-    @NotNull @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH) String elementType,
+    @NotNull ElementType elementType,
     @NotNull
         @Schema(description = "The custom aspect")
         @Size(max = CustomAttributeContainer.TYPE_MAX_LENGTH)
@@ -48,19 +48,19 @@ public record CustomAspectAttribute(
 
   @Override
   public Class<?> getValueType(DomainBase domain) {
-    EntityType.validateElementType(elementType());
     ElementTypeDefinition elementTypeDefinition = domain.getElementTypeDefinition(elementType());
     CustomAspectDefinition customAspectDefinition =
         elementTypeDefinition.getCustomAspects().get(customAspect());
     if (customAspectDefinition == null) {
       throw new IllegalArgumentException(
-          "No customAspect '%s' for element type %s.".formatted(customAspect(), elementType()));
+          "No customAspect '%s' for element type %s."
+              .formatted(customAspect(), elementType().getSingularTerm()));
     }
     var attributeDefinition = customAspectDefinition.getAttributeDefinitions().get(attribute());
     if (attributeDefinition == null) {
       throw new IllegalArgumentException(
           "No attribute '%s.%s' for element type %s."
-              .formatted(customAspect(), attribute(), elementType()));
+              .formatted(customAspect(), attribute(), elementType().getSingularTerm()));
     }
     return attributeDefinition.getValueType();
   }

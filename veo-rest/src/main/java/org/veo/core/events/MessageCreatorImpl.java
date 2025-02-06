@@ -33,7 +33,7 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
@@ -107,10 +107,10 @@ public class MessageCreatorImpl implements MessageCreator {
 
   @Override
   @Transactional(propagation = Propagation.MANDATORY)
-  public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
+  public void createElementTypeDefinitionUpdateMessage(Domain domain, ElementType elementType) {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getIdAsString());
-    json.put("elementType", entityType.getSingularTerm());
+    json.put("elementType", elementType.getSingularTerm());
     storeMessage(
         EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
         json,

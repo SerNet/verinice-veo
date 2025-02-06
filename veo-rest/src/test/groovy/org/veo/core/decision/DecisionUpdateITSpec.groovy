@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
@@ -48,7 +49,7 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
     def setup() {
         client = createTestClient()
         domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-        domain.decisions.put("isGroup", newDecision("control", "CTL_TOM") {
+        domain.decisions.put("isGroup", newDecision(ElementType.CONTROL, "CTL_TOM") {
             rules.add(newRule(true) {
                 conditions.add(new Condition(new PartCountExpression("CTL_TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
             })

@@ -81,6 +81,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
@@ -153,7 +154,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(
-        Process.class,
+        ElementType.PROCESS,
         getProcessUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

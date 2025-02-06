@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.common.Ref;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.inspection.Severity;
 
@@ -35,7 +36,7 @@ public class ShortInspectionDto {
   private String id;
   private Severity severity;
   private TranslatedText description;
-  private String elementType;
+  private ElementType elementType;
 
   @JsonIgnore
   @Getter(AccessLevel.NONE)

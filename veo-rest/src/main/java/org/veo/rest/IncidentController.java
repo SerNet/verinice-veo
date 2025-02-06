@@ -73,6 +73,7 @@ import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -106,7 +107,7 @@ public class IncidentController
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
     super(
-        Incident.class,
+        ElementType.INCIDENT,
         getIncidentUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

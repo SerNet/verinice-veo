@@ -22,15 +22,15 @@ import static org.veo.core.entity.aspects.ElementDomainAssociation.SUB_TYPE_MAX_
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.ElementType;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LinkDefinition extends CustomAspectDefinition {
-  @NotNull
-  @Size(min = 1, max = 32)
-  private String targetType;
+  @NotNull private ElementType targetType;
 
   @NotNull
   @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)

@@ -19,7 +19,7 @@ package org.veo.rest.test
 
 import static java.util.UUID.randomUUID
 
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 
 class MultiDomainElementRestTest extends VeoRestTest {
 
@@ -113,7 +113,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "identically defined custom aspects for #type.pluralTerm are synced across domains"() {
@@ -192,7 +192,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "identically defined custom aspects are synced when associating a #type.singularTerm with a domain"() {
@@ -242,7 +242,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         elementInDomainB.customAspects.separateCa == null
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "#type.singularTerm ETags are handled correctly across domains"() {
@@ -305,7 +305,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "#type.singularTerm domains must be a subset of unit's domains"() {
@@ -358,7 +358,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "cannot re-associate #type.singularTerm with domain"() {
@@ -378,7 +378,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ], 409).body.message == "$type.singularTerm $elementId is already associated with domain $domainIdA"
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "blank If-Match header is handled for #type.pluralTerm"() {
@@ -397,7 +397,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
                 .body.message == "updateElement.eTag: If-Match header must not be blank"
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "decisions are evaluated for #type.pluralTerm"() {
@@ -470,10 +470,10 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ], 200).body.decisionResults.easyDecision.value
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
-    private void putElementTypeDefinitions(EntityType type) {
+    private void putElementTypeDefinitions(ElementType type) {
         put("/content-creation/domains/$domainIdA/element-type-definitions/$type.singularTerm", [
             subTypes: [
                 STA: [

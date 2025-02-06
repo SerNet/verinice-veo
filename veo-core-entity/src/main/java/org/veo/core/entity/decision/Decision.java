@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
-import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +27,7 @@ import jakarta.validation.constraints.Size;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.event.ElementEvent;
@@ -50,9 +49,7 @@ import lombok.NoArgsConstructor;
 public class Decision {
   @NotNull private TranslatedText name;
 
-  @NotNull
-  @Size(max = ELEMENT_TYPE_MAX_LENGTH)
-  private String elementType;
+  @NotNull private ElementType elementType;
 
   @NotNull
   @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
@@ -94,7 +91,7 @@ public class Decision {
   }
 
   public boolean isApplicableToElement(Element element, Domain domain) {
-    return getElementType().equals(element.getModelType())
+    return getElementType().equals(element.getType())
         && getElementSubType().equals(element.findSubType(domain).orElse(null));
   }
 

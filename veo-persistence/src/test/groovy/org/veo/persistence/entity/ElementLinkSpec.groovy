@@ -19,7 +19,7 @@ package org.veo.persistence.entity
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Element
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
@@ -33,18 +33,18 @@ class ElementLinkSpec extends Specification {
     private identifiableFactory = new IdentifiableDataFactory()
     private factory = new EntityDataFactory()
 
-    def "links are handled correctly on #entityType.pluralTerm"() {
+    def "links are handled correctly on #elementType.pluralTerm"() {
         given: "two domains with some link definitions"
         def domainA = factory.createDomain("", "", "").tap {
-            getElementTypeDefinition(entityType.singularTerm).links = [
+            getElementTypeDefinition(elementType).links = [
                 someType: new LinkDefinition().tap {
-                    targetType = "asset"
+                    targetType = ElementType.ASSET
                     attributeDefinitions = [
                         attr: new TextAttributeDefinition()
                     ]
                 },
                 someOtherType: new LinkDefinition().tap {
-                    targetType = "asset"
+                    targetType = ElementType.ASSET
                     attributeDefinitions = [
                         attr: new TextAttributeDefinition()
                     ]
@@ -52,9 +52,9 @@ class ElementLinkSpec extends Specification {
             ]
         }
         def domainB = factory.createDomain("", "", "").tap {
-            getElementTypeDefinition(entityType.singularTerm).links = [
+            getElementTypeDefinition(elementType).links = [
                 someType: new LinkDefinition().tap {
-                    targetType = "asset"
+                    targetType = ElementType.ASSET
                     attributeDefinitions = [
                         attr: new IntegerAttributeDefinition()
                     ]
@@ -63,7 +63,7 @@ class ElementLinkSpec extends Specification {
         }
 
         and: "an element associated with both domains"
-        def element = identifiableFactory.create(entityType.type) as Element
+        def element = identifiableFactory.create(elementType.type) as Element
         element.associateWithDomain(domainA, "STA", "NEW")
         element.associateWithDomain(domainB, "STB", "NEW")
 
@@ -181,6 +181,6 @@ class ElementLinkSpec extends Specification {
         }
 
         where:
-        entityType << EntityType.ELEMENT_TYPES
+        elementType << ElementType.values()
     }
 }

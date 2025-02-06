@@ -21,14 +21,14 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.response.IdentifiableDto
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 
 import spock.lang.Specification
 
 class ElementTypeDtoInfoSpec extends Specification {
-    def "DTO info for #entityType.pluralTerm is correct"() {
+    def "DTO info for #elementType.pluralTerm is correct"() {
         when:
-        var dtoInfo = ElementTypeDtoInfo.get(entityType)
+        var dtoInfo = ElementTypeDtoInfo.get(elementType)
 
         then:
         AbstractElementDto.isAssignableFrom(dtoInfo.fullDtoClass)
@@ -42,10 +42,10 @@ class ElementTypeDtoInfoSpec extends Specification {
         var fullDomainSpecificDto = dtoInfo.fullDomainSpecificDtoClass.newInstance(new Object[0])
 
         then: "they have the correct model class"
-        fullDto.modelInterface.equals(entityType.type)
-        fullDomainSpecificDto.modelInterface.equals(entityType.type)
+        fullDto.modelInterface.equals(elementType.type)
+        fullDomainSpecificDto.modelInterface.equals(elementType.type)
 
         where:
-        entityType << EntityType.ELEMENT_TYPES
+        elementType << ElementType.values()
     }
 }

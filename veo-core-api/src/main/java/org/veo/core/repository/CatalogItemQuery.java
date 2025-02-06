@@ -18,9 +18,10 @@
 package org.veo.core.repository;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ElementType;
 
 public interface CatalogItemQuery extends Query<CatalogItem, String> {
-  void whereElementTypeMatches(QueryCondition<String> elementTypes);
+  void whereElementTypeMatches(QueryCondition<ElementType> elementTypes);
 
   void whereSubTypeMatches(QueryCondition<String> subTypes);
 

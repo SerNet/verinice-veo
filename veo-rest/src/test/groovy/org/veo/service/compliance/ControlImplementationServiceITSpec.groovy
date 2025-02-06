@@ -30,7 +30,7 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ReqImplRef
 import org.veo.core.entity.event.ControlPartsChangedEvent
@@ -230,7 +230,7 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         elmt2.getRequirementImplementation(reqImplRef2).status == YES
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def makeType(String type) {

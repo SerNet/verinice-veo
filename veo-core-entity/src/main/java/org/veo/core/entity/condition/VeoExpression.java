@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ElementEvent;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
@@ -104,10 +105,10 @@ public interface VeoExpression {
   /**
    * @throws RuntimeException If this provider is invalid for given domain & element type
    */
-  default void selfValidate(DomainBase domain, String elementType) {}
+  default void selfValidate(DomainBase domain, ElementType elementType) {}
 
   /**
    * @return type of the values that this provider will yield in given domain for given element type
    */
-  Class<?> getValueType(DomainBase domain, String elementType);
+  Class<?> getValueType(DomainBase domain, ElementType elementType);
 }

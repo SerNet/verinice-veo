@@ -25,11 +25,11 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.CustomAspectDefinition
-import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.CategoryRef
@@ -105,26 +105,26 @@ class CatalogSpec extends VeoMvcSpec {
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
                 riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
-                applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
                     subTypes = [
                         CTL_TOM: newSubTypeDefinition {
                             statuses = ["NEW", "NEW1"]
                         }
                     ]
                     links = [
-                        link_to_zz1: newLinkDefinition("control", "CTL_TOM") {
+                        link_to_zz1: newLinkDefinition(ElementType.CONTROL, "CTL_TOM") {
                             attributeDefinitions = [
                                 control_comment: new TextAttributeDefinition(),
                                 control_another_attribute: new TextAttributeDefinition(),
                             ]
                         },
-                        link_to_zz2: newLinkDefinition("control", "CTL_TOM") {
+                        link_to_zz2: newLinkDefinition(ElementType.CONTROL, "CTL_TOM") {
                             attributeDefinitions = [
                                 control_comment: new TextAttributeDefinition(),
                                 control_operatingStage: new TextAttributeDefinition(),
                             ]
                         },
-                        control_relevantAppliedThreat: newLinkDefinition("scenario", "SCN_Scenario") {
+                        control_relevantAppliedThreat: newLinkDefinition(ElementType.SCENARIO, "SCN_Scenario") {
                             attributeDefinitions = [
                                 control_comment: new TextAttributeDefinition(),
                                 control_operatingStage: new TextAttributeDefinition(),
@@ -132,7 +132,7 @@ class CatalogSpec extends VeoMvcSpec {
                         }
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         normalProcess: newSubTypeDefinition {},
                         MY_SUBTYPE: newSubTypeDefinition {
@@ -140,9 +140,9 @@ class CatalogSpec extends VeoMvcSpec {
                         },
                     ]
                     links = [
-                        link_to_item_1: newLinkDefinition("control", "CTL_TOM"),
-                        link_to_item_2: newLinkDefinition("control", "CTL_TOM"),
-                        externallinktest: newLinkDefinition("control", "CTL_TOM"),
+                        link_to_item_1: newLinkDefinition(ElementType.CONTROL, "CTL_TOM"),
+                        link_to_item_2: newLinkDefinition(ElementType.CONTROL, "CTL_TOM"),
+                        externallinktest: newLinkDefinition(ElementType.CONTROL, "CTL_TOM"),
                     ]
                     customAspects = [
                         process_resilience: newCustomAspectDefinition {
@@ -161,12 +161,12 @@ class CatalogSpec extends VeoMvcSpec {
                         }
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         SCN_Scenario: newSubTypeDefinition {},
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                     subTypes = [
                         kaleidoscope: newSubTypeDefinition {},
                     ]
@@ -175,18 +175,18 @@ class CatalogSpec extends VeoMvcSpec {
 
             item1 = newCatalogItem(domain, {
                 name = 'c1'
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
             })
             item2 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'c2'
             })
             item3 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'c3'
@@ -195,7 +195,7 @@ class CatalogSpec extends VeoMvcSpec {
             newTailoringReference(item3, item1, TailoringReferenceType.COPY_ALWAYS)
 
             item4 = newCatalogItem(domain, {
-                elementType = "process"
+                elementType = ElementType.PROCESS
                 subType = "normalProcess"
                 status = "NEW"
                 name = 'p1'
@@ -209,14 +209,14 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item5 = newCatalogItem(domain, {
-                elementType = "process"
+                elementType = ElementType.PROCESS
                 subType = "MY_SUBTYPE"
                 status = "NEW"
                 name = 'p2'
             })
 
             item6 = newCatalogItem(domain, {
-                elementType = "process"
+                elementType = ElementType.PROCESS
                 subType = "MY_SUBTYPE"
                 status = "START"
                 abbreviation = "caf"
@@ -239,7 +239,7 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item7 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW1"
                 name = 'tom1'
@@ -251,14 +251,14 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             zz1 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'zz1'
                 description = "a control linked in a circle"
             })
             zz2 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'zz2'
@@ -280,7 +280,7 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             processImpactExample = newCatalogItem(domain, {
-                elementType = "process"
+                elementType = ElementType.PROCESS
                 subType = "normalProcess"
                 status = "NEW"
                 name = 'processImpactExample'
@@ -302,7 +302,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             controlImpactExample = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'controlImpactExample'
@@ -310,7 +310,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             controlImpactExample1 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'controlImpactExample1'
@@ -318,7 +318,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             controlImpactExample2 = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'controlImpactExample2'
@@ -326,7 +326,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             scenarioProbabilityExample = newCatalogItem(domain, {
-                elementType = "scenario"
+                elementType = ElementType.SCENARIO
                 subType = "SCN_Scenario"
                 status = "NEW"
                 name = 'scenarioProbabilityExample'
@@ -339,7 +339,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             scenarioProbabilityExample1 = newCatalogItem(domain, {
-                elementType = "scenario"
+                elementType = ElementType.SCENARIO
                 subType = "SCN_Scenario"
                 status = "NEW"
                 name = 'scenarioProbabilityExample1'
@@ -347,7 +347,7 @@ class CatalogSpec extends VeoMvcSpec {
             })
 
             scenarioProbabilityExample2 = newCatalogItem(domain, {
-                elementType = "scenario"
+                elementType = ElementType.SCENARIO
                 subType = "SCN_Scenario"
                 status = "NEW"
                 name = 'scenarioProbabilityExample2'
@@ -383,14 +383,14 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             itemComposite = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'itemComposite'
             })
 
             itemPart = newCatalogItem(domain, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'itemPart'
@@ -400,7 +400,7 @@ class CatalogSpec extends VeoMvcSpec {
             newTailoringReference(itemPart, itemComposite, TailoringReferenceType.COMPOSITE)
 
             itemScope = newCatalogItem(domain) {
-                elementType = "scope"
+                elementType = ElementType.SCOPE
                 subType = "kaleidoscope"
                 status = "NEW"
                 name = "itemScope"
@@ -414,7 +414,7 @@ class CatalogSpec extends VeoMvcSpec {
                         ], null, riskRefRef)
             }
             itemMember = newCatalogItem(domain) {
-                elementType = "process"
+                elementType = ElementType.PROCESS
                 subType = "normalProcess"
                 status = "NEW"
                 name = "itemMember"
@@ -475,7 +475,7 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             newCatalogItem(domain3, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'c15'

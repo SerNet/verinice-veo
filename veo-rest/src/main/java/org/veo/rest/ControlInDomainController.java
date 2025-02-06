@@ -85,6 +85,7 @@ import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -216,7 +217,7 @@ public class ControlInDomainController implements ElementInDomainResource {
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformControl2Dto,
-        Control.class);
+        ElementType.CONTROL);
   }
 
   @Operation(summary = "Loads the control implementations of a control")
@@ -356,7 +357,7 @@ public class ControlInDomainController implements ElementInDomainResource {
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformControl2Dto,
-        Control.class);
+        ElementType.CONTROL);
   }
 
   @Operation(summary = "Creates a control, assigning it to the domain")
@@ -505,6 +506,6 @@ public class ControlInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Control.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.CONTROL);
   }
 }

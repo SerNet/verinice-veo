@@ -46,7 +46,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "scenario")
+@Entity(name = "SCENARIO")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScenarioData extends ElementData implements Scenario {
 

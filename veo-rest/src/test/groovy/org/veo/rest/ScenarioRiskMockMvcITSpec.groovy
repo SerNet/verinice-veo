@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -50,7 +51,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition")
                 ]
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         RiskyScenario: newSubTypeDefinition()
                     ]

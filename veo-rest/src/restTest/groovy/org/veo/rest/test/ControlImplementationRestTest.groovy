@@ -19,7 +19,7 @@ package org.veo.rest.test
 
 import static org.veo.rest.CompactJsonHttpMessageConverter.MEDIA_TYPE_JSON_COMPACT
 
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 
 import spock.lang.Issue
 
@@ -219,7 +219,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "CRUD CIs & RIs for #elementType.singularTerm"() {
@@ -351,7 +351,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "CRUD CIs for #elementType.singularTerm with domain-specific API"() {
@@ -466,7 +466,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "CIs are maintained for mitigations on #elementType.pluralTerm"() {
@@ -612,7 +612,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl4Id", 404)
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "elements used by #elementType.singularTerm CIs & RIs can be deleted"() {
@@ -675,7 +675,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id", 404)
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     @Issue("#2815")
@@ -812,7 +812,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         put(riUri, body, newETag, 204)
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "origin of a requirement implementation on #elementType.singularTerm cannot be changed"() {
@@ -846,7 +846,7 @@ class ControlImplementationRestTest extends VeoRestTest {
                 .body.origin.targetUri.endsWith("/$elementType.pluralTerm/$elementId")
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "control of a requirement implementation on #elementType.singularTerm cannot be changed"() {
@@ -874,7 +874,7 @@ class ControlImplementationRestTest extends VeoRestTest {
                 .body.control.targetUri.endsWith("/controls/$subControl2Id")
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "cannot create control implementation for control from another unit"() {
@@ -895,7 +895,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         ], 422).body.message == "Elements in other units must not be referenced"
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "cannot assign person from another unit as responsible for control implementation"() {
@@ -923,7 +923,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         ], 422).body.message == "Elements in other units must not be referenced"
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "cannot assign person from another unit as responsible for requirement implementation"() {
@@ -956,7 +956,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }.body.message == "Elements in other units must not be referenced"
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "can use linked person as responsible for RI"() {
@@ -1055,7 +1055,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "CIs and RIs for #elementType.pluralTerm can be fetched in compact representation"() {
@@ -1086,7 +1086,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "RIs are synced with control parts"() {
@@ -1204,7 +1204,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]
     }
 
-    String defineSubTypeAndStatus(EntityType type) {
+    String defineSubTypeAndStatus(ElementType type) {
         put("/content-creation/domains/$domainId/element-type-definitions/${type.singularTerm}", [
             subTypes: [
                 A: [

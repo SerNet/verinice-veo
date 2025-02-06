@@ -83,6 +83,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Incident;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -213,7 +214,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformIncident2Dto,
-        Incident.class);
+        ElementType.INCIDENT);
   }
 
   @Operation(summary = "Loads the parts of an incident in a domain")
@@ -281,7 +282,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformIncident2Dto,
-        Incident.class);
+        ElementType.INCIDENT);
   }
 
   @Operation(summary = "Creates an incident, assigning it to the domain")
@@ -431,6 +432,6 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Incident.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.INCIDENT);
   }
 }

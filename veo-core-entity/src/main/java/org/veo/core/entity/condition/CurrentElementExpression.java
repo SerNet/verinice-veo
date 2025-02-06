@@ -20,7 +20,7 @@ package org.veo.core.entity.condition;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 
 import lombok.Data;
 
@@ -36,16 +36,12 @@ public class CurrentElementExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     // It's fine
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
-    return EntityType.ELEMENT_TYPES.stream()
-        .filter(et -> et.getSingularTerm().equals(elementType))
-        .findAny()
-        .get()
-        .getType();
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
+    return elementType.getType();
   }
 }

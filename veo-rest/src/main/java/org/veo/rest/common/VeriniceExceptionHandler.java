@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
@@ -167,6 +169,11 @@ public class VeriniceExceptionHandler {
       HandlerMethodValidationException ex) {
     log.error("Error validating request", ex);
     return handle(ex.getAllErrors());
+  }
+
+  @ExceptionHandler({InvalidFormatException.class})
+  protected ResponseEntity<ApiResponseBody> handle(InvalidFormatException exception) {
+    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   private static ResponseEntity<Map<String, String>> handle(

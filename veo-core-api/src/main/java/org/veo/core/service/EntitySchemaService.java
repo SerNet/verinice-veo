@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.veo.core.Translations;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 
 /**
  * Builds and returns an entity JSON-schema that matches the requestes entity type and domain(s).
@@ -37,10 +38,10 @@ public interface EntitySchemaService {
    * @return a JSON schema document dynamically generated for the above parameters
    */
   @Deprecated
-  String getSchema(String type, Set<Domain> domains);
+  String getSchema(ElementType type, Set<Domain> domains);
 
   /** Build domain-specific element DTO schema */
-  String getSchema(String elementType, Domain domain);
+  String getSchema(ElementType elementType, Domain domain);
 
   /**
    * Returns a translations for the given language identifiers. If no translation is present for any

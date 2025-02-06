@@ -30,6 +30,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Person;
@@ -85,7 +86,7 @@ public interface EntityFactory {
 
   UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
 
-  ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner);
+  ElementTypeDefinition createElementTypeDefinition(ElementType elementType, DomainBase owner);
 
   ProfileItem createProfileItem(Profile profile);
 

@@ -18,9 +18,7 @@
 package org.veo.core.usecase.service;
 
 import static java.util.HashMap.newHashMap;
-import static org.veo.core.entity.EntityType.RISK_AFFECTED_TYPES;
-import static org.veo.core.entity.EntityType.getBySingularTerm;
-import static org.veo.core.entity.EntityType.getSingularTermByType;
+import static org.veo.core.entity.ElementType.RISK_AFFECTED_TYPES;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.time.LocalDate;
@@ -175,9 +173,7 @@ public class EntityStateMapper {
   }
 
   private void publishLinkRemoved(Domain domain, Element target, String type) {
-    if (target.getOwningClient().isPresent()
-        && RISK_AFFECTED_TYPES.contains(
-            getBySingularTerm(getSingularTermByType(target.getModelInterface())))) {
+    if (target.getOwningClient().isPresent() && RISK_AFFECTED_TYPES.contains(target.getType())) {
       eventPublisher.publish(new RiskAffectedLinkDeletedEvent(target, domain, type, this));
     }
   }

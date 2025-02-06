@@ -90,6 +90,7 @@ import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
@@ -223,7 +224,7 @@ public class ProcessInDomainController
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformProcess2Dto,
-        Process.class);
+        ElementType.PROCESS);
   }
 
   @Operation(summary = "Loads the parts of a process in a domain")
@@ -291,7 +292,7 @@ public class ProcessInDomainController
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformProcess2Dto,
-        Process.class);
+        ElementType.PROCESS);
   }
 
   @Operation(summary = "Creates a process, assigning it to the domain")
@@ -440,7 +441,7 @@ public class ProcessInDomainController
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Process.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.PROCESS);
   }
 
   @Operation(summary = "Loads available domain-specific actions for a process")
@@ -453,7 +454,7 @@ public class ProcessInDomainController
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    return elementService.getActions(domainId, uuid, Process.class, auth);
+    return elementService.getActions(domainId, uuid, ElementType.PROCESS, auth);
   }
 
   @Operation(summary = "Performs a domain-specific action on a process")

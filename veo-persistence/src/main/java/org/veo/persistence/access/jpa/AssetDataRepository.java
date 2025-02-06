@@ -32,14 +32,14 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface AssetDataRepository extends CompositeRiskAffectedDataRepository<AssetData> {
   @Query(
-      "select distinct a from asset a "
+      "select distinct a from #{#entityName} a "
           + "left join fetch a.risks risks "
           + "left join fetch risks.riskAspects "
           + "where risks.scenario in ?1")
   Set<AssetData> findRisksWithValue(Collection<ScenarioData> causes);
 
   @Query(
-      "select distinct a from asset a "
+      "select distinct a from #{#entityName} a "
           + "left join fetch a.risks risks "
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "

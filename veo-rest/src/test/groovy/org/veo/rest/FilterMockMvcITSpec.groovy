@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
@@ -45,7 +45,7 @@ class FilterMockMvcITSpec extends VeoMvcSpec {
     def "filter #type.pluralTerm by abbreviation"() {
         given:
         txTemplate.execute {
-            domainDataRepository.findById(domainId).get().getElementTypeDefinition(type.singularTerm).with {
+            domainDataRepository.findById(domainId).get().getElementTypeDefinition(type).with {
                 subTypes["megaType"] = newSubTypeDefinition()
             }
         }
@@ -87,6 +87,6 @@ class FilterMockMvcITSpec extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 }

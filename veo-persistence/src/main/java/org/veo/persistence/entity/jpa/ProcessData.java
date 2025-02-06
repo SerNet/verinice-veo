@@ -35,7 +35,7 @@ import org.veo.core.entity.Scenario;
 import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "process")
+@Entity(name = "PROCESS")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 

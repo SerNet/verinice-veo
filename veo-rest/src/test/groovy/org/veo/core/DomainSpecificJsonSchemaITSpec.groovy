@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.ValidationMessage
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
@@ -63,7 +63,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         }
     }
 
-    def "#elementType sub type and status is validated"() {
+    def "#elementType.singularTerm sub type and status is validated"() {
         given:
         createElementTypeDefinition(elementType)
         def element = [
@@ -93,10 +93,10 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         where:
-        elementType << EntityType.ELEMENT_TYPES*.singularTerm
+        elementType << ElementType.values()
     }
 
-    def "#elementType custom aspects are validated"() {
+    def "#elementType.singularTerm custom aspects are validated"() {
         given:
         createElementTypeDefinition(elementType)
         def element = [
@@ -127,10 +127,10 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         where:
-        elementType << EntityType.ELEMENT_TYPES*.singularTerm
+        elementType << ElementType.values()
     }
 
-    def "#elementType link attribute values are validated"() {
+    def "#elementType.singularTerm link attribute values are validated"() {
         given:
         createElementTypeDefinition(elementType)
         def element = [
@@ -162,10 +162,10 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         where:
-        elementType << EntityType.ELEMENT_TYPES*.singularTerm
+        elementType << ElementType.values()
     }
 
-    def "#elementType potential impact is validated"() {
+    def "#elementType.singularTerm potential impact is validated"() {
         given:
         createElementTypeDefinition(elementType)
         def element = [
@@ -231,12 +231,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         where:
-        elementType << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        elementType << ElementType.RISK_AFFECTED_TYPES
     }
 
     def "scope risk definition is validated"() {
         given:
-        createElementTypeDefinition("scope")
+        createElementTypeDefinition(ElementType.SCOPE)
         def element = [
             name: "who can cope with the scope?",
             subType: "A",
@@ -246,13 +246,13 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         expect:
-        validate(element, "scope").empty
+        validate(element, ElementType.SCOPE).empty
 
         when:
         element.riskDefinition = "riskEverything"
 
         then:
-        validate(element, "scope")*.message ==~ [
+        validate(element, ElementType.SCOPE)*.message ==~ [
             '$.riskDefinition: does not have a value in the enumeration ["noRiskNoFun"]'
         ]
     }
@@ -262,7 +262,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         domain.setRiskDefinitions([:])
 
         and:
-        createElementTypeDefinition("scope")
+        createElementTypeDefinition(ElementType.SCOPE)
         def element = [
             name: "risky scope",
             subType: "A",
@@ -271,7 +271,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         expect:
-        validate(element, "scope").empty
+        validate(element, ElementType.SCOPE).empty
 
         when: "a risk definition is used anyway"
         element.riskDefinition = 'illegal'
@@ -279,12 +279,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         // TODO #3211 ban additional properties
 
         then: "it is tolerated for now"
-        validate(element, "scope")*.message ==~ []
+        validate(element, ElementType.SCOPE)*.message ==~ []
     }
 
     def "essential properties are required for #type.pluralTerm"() {
         given:
-        createElementTypeDefinition(type.singularTerm)
+        createElementTypeDefinition(type)
         def element = [
             links: [
                 LA: [
@@ -294,7 +294,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         expect:
-        validate(element, type.singularTerm)*.message ==~ [
+        validate(element, type)*.message ==~ [
             '''$: required property 'name' not found''',
             '''$: required property 'subType' not found''',
             '''$: required property 'status' not found''',
@@ -310,7 +310,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.links.LA[0].target = null
 
         then:
-        validate(element, type.singularTerm)*.message ==~ [
+        validate(element, type)*.message ==~ [
             '$.name: null found, string expected',
             '$.owner: null found, object expected',
             '$.status: null found, string expected',
@@ -321,12 +321,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "potential impact maps are not required for #type.pluralTerm"() {
         given:
-        createElementTypeDefinition(type.singularTerm)
+        createElementTypeDefinition(type)
         def element = [
             name: "impactless",
             subType: "A",
@@ -338,27 +338,27 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         expect:
-        validate(element, type.singularTerm).empty
+        validate(element, type).empty
 
         when:
         element.riskValues.noRiskNoFun.potentialImpacts = null
         element.riskValues.noRiskNoFun.potentialImpactReasons = null
 
         then:
-        validate(element, type.singularTerm)*.message ==~ [
+        validate(element, type)*.message ==~ [
             '$.riskValues.noRiskNoFun.potentialImpacts: null found, object expected',
             '$.riskValues.noRiskNoFun.potentialImpactReasons: null found, object expected',
         ]
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
-    private Set<ValidationMessage> validate(Map element, String elementType) {
+    private Set<ValidationMessage> validate(Map element, ElementType elementType) {
         getSchema(domain, elementType).validate(om.valueToTree(element))
     }
 
-    private void createElementTypeDefinition(String elementType) {
+    private void createElementTypeDefinition(ElementType elementType) {
         domain.applyElementTypeDefinition(newElementTypeDefinition(domain, elementType) {
             subTypes.A = newSubTypeDefinition {
                 statuses = ["A1", "A2"]
@@ -370,7 +370,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
                 attributeDefinitions.foo = new TextAttributeDefinition()
             }
             links.LA = new LinkDefinition().tap {
-                targetType = "person"
+                targetType = ElementType.PERSON
                 targetSubType = "P"
                 attributeDefinitions.goo = new TextAttributeDefinition()
             }

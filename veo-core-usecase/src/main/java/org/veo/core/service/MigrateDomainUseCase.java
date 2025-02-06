@@ -29,6 +29,7 @@ import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
@@ -143,8 +144,8 @@ public class MigrateDomainUseCase
         migrate(riskDef.getImpactInheritingLinks(), newDomain));
   }
 
-  private Map<String, List<String>> migrate(
-      Map<String, List<String>> impactInheritingLinks, Domain newDomain) {
+  private Map<ElementType, List<String>> migrate(
+      Map<ElementType, List<String>> impactInheritingLinks, Domain newDomain) {
     return impactInheritingLinks.entrySet().stream()
         .collect(
             Collectors.toMap(

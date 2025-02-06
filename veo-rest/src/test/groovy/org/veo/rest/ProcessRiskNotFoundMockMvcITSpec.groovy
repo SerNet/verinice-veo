@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -51,17 +52,17 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),
                 ]
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         RiskyProcess: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         BestCase: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                     subTypes = [
                         SmallScope: newSubTypeDefinition()
                     ]

@@ -35,7 +35,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -51,7 +51,7 @@ import lombok.RequiredArgsConstructor;
 public abstract class AbstractElementController<T extends Element, E extends AbstractElementDto<T>>
     extends AbstractEntityController {
 
-  protected final Class<T> modelType;
+  protected final ElementType elementType;
 
   protected final GetElementUseCase<T> getElementUseCase;
   private final EvaluateElementUseCase evaluateElementUseCase;
@@ -73,7 +73,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
       Authentication auth, UUID uuid, WebRequest request) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
-    if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
+    if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<E> entityFuture =
@@ -93,8 +93,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
       GetElementsUseCase.InputData inputData, Function<T, E> dtoMapper) {
     return useCaseInteractor.execute(
         getElementsUseCase,
-        inputData.withElementTypes(
-            new QueryCondition<>(Set.of(EntityType.getSingularTermByType(modelType)))),
+        inputData.withElementTypes(new QueryCondition<>(Set.of(elementType))),
         o -> PagingMapper.toPage(o.elements(), e -> dtoMapper.apply((T) e)));
   }
 

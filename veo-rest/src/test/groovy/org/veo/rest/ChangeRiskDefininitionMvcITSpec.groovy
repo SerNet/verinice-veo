@@ -23,12 +23,11 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.RiskTailoringReferenceValues
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.Translated
-import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
@@ -38,8 +37,6 @@ import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.CategoryLevel
-import org.veo.core.entity.riskdefinition.ProbabilityLevel
-import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -66,13 +63,13 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             def rd = riskDefinitions.get("r1d1")
             def rdRef = RiskDefinitionRef.from(rd)
 
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                 subTypes = [
                     scenario: newSubTypeDefinition()
                 ]
             })
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
-                applyElementTypeDefinition(newElementTypeDefinition(ra.singularTerm, it) {
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
+                applyElementTypeDefinition(newElementTypeDefinition(ra, it) {
                     subTypes = [
                         (ra.singularTerm): newSubTypeDefinition()
                     ]
@@ -80,7 +77,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
                 newCatalogItem(it, {
                     name = ra.singularTerm
-                    elementType = ra.singularTerm
+                    elementType = ra
                     subType = ra.singularTerm
                     status = "NEW"
                     aspects = new TemplateItemAspects([(rdRef):(impactValues())],null, null)
@@ -88,7 +85,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
             newCatalogItem(it, {
                 name = "scenario"
-                elementType = "scenario"
+                elementType = ElementType.SCENARIO
                 subType = "scenario"
                 status = "NEW"
                 aspects = new TemplateItemAspects(null,
@@ -103,7 +100,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
                 def npi = newProfileItem(p,{
                     name = "scenario1"
-                    elementType = "scenario"
+                    elementType = ElementType.SCENARIO
                     subType = "scenario"
                     status = "NEW"
                     aspects = new TemplateItemAspects(null,
@@ -111,11 +108,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                             , null)
                 })
 
-                EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+                ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
 
                     newProfileItem(p) {
                         name = ra.singularTerm
-                        elementType = ra.singularTerm
+                        elementType = ra
                         subType = ra.singularTerm
                         status = "NEW"
                         aspects = new TemplateItemAspects([
@@ -137,7 +134,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "change a value in the riskmatrix"(EntityType type) {
+    def "change a value in the riskmatrix"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -173,7 +170,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the catalogItems and profileItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
@@ -185,11 +182,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "add/remove riskmatrix"(EntityType type) {
+    def "add/remove riskmatrix"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -272,7 +269,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the catalogItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
@@ -291,7 +288,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         then:"the catalogItems are unchanged but the category D is removed in the tailoringRef"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
 
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
@@ -302,11 +299,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "add/remove category"(EntityType type) {
+    def "add/remove category"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -387,7 +384,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the impacts C, I, A, R, D are also gone in the catalogItems and the profileItems"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [:]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [:]
@@ -399,11 +396,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "add/remove risk value"(EntityType type) {
+    def "add/remove risk value"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -504,7 +501,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the catalogItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
@@ -516,11 +513,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "add probability value"(EntityType type) {
+    def "add probability value"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -581,7 +578,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
@@ -593,11 +590,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "remove probability value"(EntityType type) {
+    def "remove probability value"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -650,7 +647,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
@@ -662,11 +659,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "add impact value"(EntityType type) {
+    def "add impact value"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -777,7 +774,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the value for D is cleared in the catalogItems and profiles"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, I:2, R:2]
@@ -789,11 +786,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
-    def "remove impact value"(EntityType type) {
+    def "remove impact value"(ElementType type) {
         given: "a risk affected in a domain"
         def raId = createRiskAffected(type)
         def scenarioId = createScenario()
@@ -841,7 +838,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and:"the category D in the catalogItems and profiles is removed"
         with(parseJson(get("/domains/${domainId}/export"))) {
-            EntityType.RISK_AFFECTED_TYPES.forEach{ra ->
+            ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
                 catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2,I:2, R:2]
                 with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
                     aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, I:2, R:2]
@@ -853,7 +850,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES
+        type << ElementType.RISK_AFFECTED_TYPES
     }
 
     @WithUserDetails("user@domain.example")
@@ -1187,7 +1184,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         ])
     }
 
-    private String createRiskAffected(EntityType type) {
+    private String createRiskAffected(ElementType type) {
         return parseJson(post("/domains/$domainId/${type.pluralTerm}", [
             subType: "${type.singularTerm}",
             status: "NEW",
@@ -1221,7 +1218,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         ])).resourceId
     }
 
-    private void createRisk(EntityType type, String raId, String scenarioId) {
+    private void createRisk(ElementType type, String raId, String scenarioId) {
         post("/${type.pluralTerm}/$raId/risks", [
             domains : [
                 (domainId): [

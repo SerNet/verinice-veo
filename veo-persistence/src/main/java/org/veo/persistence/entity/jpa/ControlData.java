@@ -37,7 +37,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Entity(name = "control")
+@Entity(name = "CONTROL")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ControlData extends ElementData implements Control {
 

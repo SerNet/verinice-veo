@@ -47,8 +47,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public interface Element
     extends Nameable, Identifiable, ClientOwned, Designated, Versioned, Displayable {
 
-  int ELEMENT_TYPE_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
-
   @Override
   default Optional<Client> getOwningClient() {
     return Optional.ofNullable(getOwner()).map(Unit::getClient);
@@ -243,4 +241,8 @@ public interface Element
       Collection<DomainSpecificValueLocation> excludedDefinitions);
 
   CustomAspect findOrAddCustomAspect(Domain domain, String type);
+
+  default ElementType getType() {
+    return ElementType.fromModelInterface(getModelInterface());
+  }
 }

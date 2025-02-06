@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.CatalogItemQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
@@ -58,7 +59,7 @@ public class CatalogItemQueryImpl implements CatalogItemQuery {
   }
 
   @Override
-  public void whereElementTypeMatches(QueryCondition<String> elementTypes) {
+  public void whereElementTypeMatches(QueryCondition<ElementType> elementTypes) {
     spec = andIn(spec, "elementType", elementTypes);
   }
 

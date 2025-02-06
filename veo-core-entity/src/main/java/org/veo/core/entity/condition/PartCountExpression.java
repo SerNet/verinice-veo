@@ -26,6 +26,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.event.ElementEvent;
 
@@ -68,12 +69,12 @@ public class PartCountExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     domain.getElementTypeDefinition(elementType).getSubTypeDefinition(getPartSubType());
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Integer.class;
   }
 }

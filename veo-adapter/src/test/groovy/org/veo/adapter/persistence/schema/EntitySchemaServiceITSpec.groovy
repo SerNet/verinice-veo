@@ -25,8 +25,7 @@ import com.networknt.schema.SchemaLocation
 import com.networknt.schema.SpecVersion
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
-import org.veo.core.entity.Process
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -57,7 +56,7 @@ class EntitySchemaServiceITSpec extends Specification {
     def "entity schema is a valid schema"() {
         given:
         def schema201909 = getMetaSchemaV2019_09()
-        def schema = getSchema(Set.of(getTestDomain()), "asset")
+        def schema = getSchema(Set.of(getTestDomain()),  ElementType.ASSET)
 
         expect:
         schema201909.validate(schema).empty
@@ -65,7 +64,7 @@ class EntitySchemaServiceITSpec extends Specification {
 
     def "schema for a single domain allows other domains"() {
         given:
-        def schema = getSchema(Set.of(testDomain), "asset")
+        def schema = getSchema(Set.of(testDomain), ElementType.ASSET)
 
         expect:
         with(schema.get(PROPS).get("domains")) {d->
@@ -77,13 +76,13 @@ class EntitySchemaServiceITSpec extends Specification {
 
     def "designator is marked read-only in entity schema #schema.title"() {
         expect:
-        def schema = getSchema(Set.of(getTestDomain()), "asset")
+        def schema = getSchema(Set.of(getTestDomain()), ElementType.ASSET)
         schema.get(PROPS).get("designator").get("readOnly").booleanValue()
     }
 
     def "_self is marked read-only in entity schema #schema.title"() {
         given:
-        def schema = getSchema(Set.of(getTestDomain()), "asset")
+        def schema = getSchema(Set.of(getTestDomain()), ElementType.ASSET)
 
         expect:
         schema.get(PROPS).get("_self").get("readOnly").booleanValue()
@@ -94,7 +93,7 @@ class EntitySchemaServiceITSpec extends Specification {
         def testDomain = getTestDomain()
 
         when:
-        def schema = getSchema(Set.of(testDomain), "scenario")
+        def schema = getSchema(Set.of(testDomain), ElementType.SCENARIO)
 
         then:
         def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
@@ -108,7 +107,7 @@ class EntitySchemaServiceITSpec extends Specification {
         def extraTestDomain = getExtraTestDomain()
 
         when:
-        def schema = getSchema(Set.of(testDomain, extraTestDomain), "scope")
+        def schema = getSchema(Set.of(testDomain, extraTestDomain), ElementType.SCOPE)
 
         then:
         schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["riskDefA", "riskDefB"]
@@ -120,7 +119,7 @@ class EntitySchemaServiceITSpec extends Specification {
         def testDomain = getTestDomain()
 
         when:
-        def schema = new JsonSlurper().parseText(entitySchemaService.getSchema(Process.SINGULAR_TERM, Set.of(testDomain)))
+        def schema = new JsonSlurper().parseText(entitySchemaService.getSchema(ElementType.PROCESS, Set.of(testDomain)))
 
         then:
         def riskValueProps = schema.properties.domains.properties.(testDomain.idAsString).properties.riskValues.properties
@@ -131,7 +130,7 @@ class EntitySchemaServiceITSpec extends Specification {
         given:
         def testDomain = getTestDomain()
         def extraTestDomain = getExtraTestDomain()
-        def schema = getSchema(Set.of(testDomain, extraTestDomain), "asset")
+        def schema = getSchema(Set.of(testDomain, extraTestDomain), ElementType.ASSET)
         // we cannot access the constant from within the `with` https://issues.apache.org/jira/browse/GROOVY-10604
         def p = PROPS
 
@@ -142,11 +141,11 @@ class EntitySchemaServiceITSpec extends Specification {
         }
         with(schema.get(PROPS).get("links").get(PROPS)) {
             get("test").get("items").get(p).get("attributes").get(p).get("linkTestAttr").get("type").textValue() == "string"
-            get("test").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["otherType"]
+            get("test").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["process"]
             get("test").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["otherSubType"]
 
             get("extraTest").get("items").get(p).get("attributes").get(p).get("extraLinkTestAttr").get("type").textValue() == "integer"
-            get("extraTest").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["extraType"]
+            get("extraTest").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["scenario"]
             get("extraTest").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["extraSubType"]
         }
         with(schema.get(PROPS).get("domains").get(PROPS)) {
@@ -194,19 +193,19 @@ class EntitySchemaServiceITSpec extends Specification {
     }
 
     private List<JsonNode> getEntitySchemas() {
-        EntityType.ELEMENT_TYPES
+        ElementType.values()
                 .collect { it.singularTerm }
                 .collect { getSchema(Set.of(getTestDomain()), "asset") }
     }
 
-    private JsonNode getSchema(Set<Domain> domains, String type) {
+    private JsonNode getSchema(Set<Domain> domains, ElementType type) {
         Json.mapper().readTree(entitySchemaService.getSchema(type, domains))
     }
 
     private Domain getTestDomain() {
         return Mock(Domain) {
             idAsString >> UUID.randomUUID()
-            getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
                 customAspects >> [
                     test: Mock(CustomAspectDefinition) {
                         attributeDefinitions >> [
@@ -219,7 +218,7 @@ class EntitySchemaServiceITSpec extends Specification {
                         attributeDefinitions >> [
                             linkTestAttr: new TextAttributeDefinition()
                         ]
-                        targetType >> "otherType"
+                        targetType >> ElementType.PROCESS
                         targetSubType >> "otherSubType"
                     }
                 ]
@@ -229,7 +228,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     }
                 ]
             }
-            getElementTypeDefinition("control") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.CONTROL) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
                 links >> [:]
                 subTypes >> [
@@ -238,7 +237,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     }
                 ]
             }
-            getElementTypeDefinition("scenario") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.SCENARIO) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
                 links >> [:]
                 subTypes >> [
@@ -253,7 +252,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     }
                 ]
             }
-            getElementTypeDefinition("scope") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.SCOPE) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
                 links >> [:]
                 subTypes >> [
@@ -262,7 +261,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     }
                 ]
             }
-            getElementTypeDefinition(Process.SINGULAR_TERM) >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.PROCESS) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
                 links >> [:]
                 subTypes >> [
@@ -343,7 +342,7 @@ class EntitySchemaServiceITSpec extends Specification {
     private Domain getExtraTestDomain() {
         return Mock(Domain) {
             idAsString >> UUID.randomUUID()
-            getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
                 customAspects >> [
                     extraTest: Mock(CustomAspectDefinition) {
                         attributeDefinitions >> [
@@ -356,7 +355,7 @@ class EntitySchemaServiceITSpec extends Specification {
                         attributeDefinitions >> [
                             extraLinkTestAttr: new IntegerAttributeDefinition()
                         ]
-                        targetType >> "extraType"
+                        targetType >> ElementType.SCENARIO
                         targetSubType >> "extraSubType"
                     }
                 ]
@@ -369,7 +368,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     },
                 ]
             }
-            getElementTypeDefinition("scope") >> Mock(ElementTypeDefinition) {
+            getElementTypeDefinition(ElementType.SCOPE) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
                 links >> [:]
                 subTypes >> [:]

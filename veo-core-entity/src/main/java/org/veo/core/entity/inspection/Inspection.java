@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.condition.Condition;
@@ -59,11 +60,10 @@ public class Inspection {
   TranslatedText description;
 
   @Nullable
-  @Size(min = 1, max = 32)
   @Schema(
       description =
           "Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.")
-  String elementType;
+  ElementType elementType;
 
   @Nullable
   @Size(min = 1, max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
@@ -76,7 +76,7 @@ public class Inspection {
   final List<Suggestion> suggestions = new ArrayList<>();
 
   public Optional<Finding> run(Element element, Domain domain) {
-    if (elementType != null && !elementType.equals(element.getModelType())) {
+    if (elementType != null && !elementType.matches(element)) {
       return Optional.empty();
     }
     if (elementSubType != null

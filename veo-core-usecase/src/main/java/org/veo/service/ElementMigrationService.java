@@ -51,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ElementMigrationService {
 
   public void migrate(Element element, Domain domain) {
-    var definition = domain.getElementTypeDefinition(element.getModelType());
+    var definition = domain.getElementTypeDefinition(element.getType());
     element
         .getCustomAspects(domain)
         .forEach(
@@ -189,7 +189,7 @@ public class ElementMigrationService {
   }
 
   private boolean isValidTarget(Element target, Domain domain, LinkDefinition linkDef) {
-    return linkDef.getTargetType().equals(target.getModelType())
+    return linkDef.getTargetType().equals(target.getType())
         && linkDef.getTargetSubType().equals(target.findSubType(domain).orElse(null));
   }
 

@@ -37,7 +37,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Entity(name = "asset")
+@Entity(name = "ASSET")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Asset {
 

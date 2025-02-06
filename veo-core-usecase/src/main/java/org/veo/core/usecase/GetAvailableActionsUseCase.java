@@ -23,7 +23,7 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Action;
-import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.DomainRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class GetAvailableActionsUseCase
   public record InputData(
       @NotNull UUID domainId,
       @NotNull UUID elementId,
-      @NotNull Class<? extends Element> elementType,
+      @NotNull ElementType elementType,
       @NotNull UUID clientId)
       implements UseCase.InputData {}
 

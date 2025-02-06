@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import org.veo.core.entity.ElementType;
+
 import lombok.Data;
 
 @Data
 public class SubTypeStatusCount {
-  private final String type;
+  private final ElementType type;
   private final String subType;
   private final String status;
   private final long count;

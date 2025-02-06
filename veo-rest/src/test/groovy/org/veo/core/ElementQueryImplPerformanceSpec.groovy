@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.DomainRepository
@@ -61,7 +62,7 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
     def setup() {
         client = clientRepository.save(newClient {
             newDomain(it) {
-                getElementTypeDefinition("process").with{
+                getElementTypeDefinition(ElementType.PROCESS).with{
                     subTypes = [
                         "NormalProcess": newSubTypeDefinition {
                             statuses = ["NEW"]

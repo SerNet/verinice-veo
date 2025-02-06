@@ -30,6 +30,7 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.ClientRepository
@@ -83,7 +84,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
     def setup() {
         def client = createTestClient()
         domain = newDomain(client) {
-            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes = [
                     NormalAsset: newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -103,7 +104,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                     }
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                 subTypes.NormalScenario = newSubTypeDefinition()
             })
         }
@@ -138,7 +139,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
             catalogItemRepository.save(newCatalogItem(domain) {
                 name = "my little catalog asset"
                 status = "NEW"
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "NormalAsset"
                 customAspects = [
                     "aspectOne": [

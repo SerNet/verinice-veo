@@ -17,12 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity.statistics;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -32,16 +33,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
     accessMode = Schema.AccessMode.READ_ONLY)
 public class CatalogItemsTypeCount {
 
-  private final Map<String, Map<String, Long>> values = new HashMap<>();
+  private final Map<ElementType, Map<String, Long>> values = new EnumMap<>(ElementType.class);
 
-  public void setCount(EntityType type, String subType, Long count) {
-    values
-        .computeIfAbsent(type.getSingularTerm(), k -> new HashMap<String, Long>())
-        .put(subType, count);
+  public void setCount(ElementType type, String subType, Long count) {
+    values.computeIfAbsent(type, k -> new HashMap<String, Long>()).put(subType, count);
   }
 
   @JsonAnyGetter
-  public Map<String, Map<String, Long>> getValues() {
+  public Map<ElementType, Map<String, Long>> getValues() {
     return values;
   }
 }

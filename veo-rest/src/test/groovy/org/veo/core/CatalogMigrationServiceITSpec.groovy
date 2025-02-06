@@ -17,14 +17,10 @@
  ******************************************************************************/
 package org.veo.core
 
-import static org.veo.core.entity.EntityType.DOCUMENT
-
 import org.springframework.beans.factory.annotation.Autowired
 
-import org.veo.core.entity.Asset
-import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Person
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -50,7 +46,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     def setup() {
         def client = createTestClient()
         domain = domainRepository.save(newDomain(client) {domain ->
-            applyElementTypeDefinition(newElementTypeDefinition("document", domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, domain) {
                 subTypes = [
                     Manual: newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -69,19 +65,19 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                             copyrightYear: new IntegerAttributeDefinition(),
                             placeOfAuthoring: new TextAttributeDefinition(),
                         ]
-                        targetType = "person"
+                        targetType = ElementType.PERSON
                         targetSubType = "author"
                     }
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition(Person.SINGULAR_TERM, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, domain) {
                 subTypes = [
                     author : newSubTypeDefinition {
                         statuses = ["NEW"]
                     }
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition(Asset.SINGULAR_TERM, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, domain) {
                 subTypes = [
                     asset : newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -94,7 +90,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     def "invalid custom aspect attribute is removed"() {
         given:
         newCatalogItem(domain) {
-            elementType = Document.SINGULAR_TERM
+            elementType = ElementType.DOCUMENT
             subType = "Manual"
             status = "NEW"
             name = "router manual"
@@ -109,7 +105,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when:
         executeInTransaction {
-            catalogItemMigrationService.migrate(DOCUMENT, domain)
+            catalogItemMigrationService.migrate(ElementType.DOCUMENT, domain)
         }
 
         and:
@@ -130,19 +126,19 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     def "link reference with invalid target is removed"() {
         given:
         def manualAuthor = newCatalogItem(domain, {
-            elementType = Person.SINGULAR_TERM
+            elementType = ElementType.PERSON
             name = "manual author"
             subType = "author"
             status = "NEW"
         })
         def randomAsset = newCatalogItem(domain, {
-            elementType = Asset.SINGULAR_TERM
+            elementType = ElementType.ASSET
             name = "random asset"
             subType = "asset"
             status = "NEW"
         })
         newCatalogItem(domain, {
-            elementType = Document.SINGULAR_TERM
+            elementType = ElementType.DOCUMENT
             name = "router manual"
             subType = "Manual"
             status = "NEW"
@@ -159,7 +155,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when:
         executeInTransaction {
-            catalogItemMigrationService.migrate(DOCUMENT, domain)
+            catalogItemMigrationService.migrate(ElementType.DOCUMENT, domain)
         }
 
         and:
@@ -179,13 +175,13 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         given: "a catalog with two links that have some invalid attributes"
         def routerManual = newCatalogItem(domain, {
             name = "router manual"
-            elementType = Document.SINGULAR_TERM
+            elementType = ElementType.DOCUMENT
             subType = "Manual"
             status = "NEW"
         })
         def manualAuthor = newCatalogItem(domain, {
             name = "manual author"
-            elementType = Person.SINGULAR_TERM
+            elementType = ElementType.PERSON
             subType = "author"
             status = "NEW"
             tailoringReferences = [
@@ -198,7 +194,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         })
         newCatalogItem(domain,{
             name = "thermometer manual"
-            elementType = Document.SINGULAR_TERM
+            elementType = ElementType.DOCUMENT
             subType = "Manual"
             status = "NEW"
             tailoringReferences = [
@@ -213,7 +209,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when: "migrating"
         executeInTransaction {
-            catalogItemMigrationService.migrate(DOCUMENT, domain)
+            catalogItemMigrationService.migrate(ElementType.DOCUMENT, domain)
         }
 
         and: "fetching the catalog"

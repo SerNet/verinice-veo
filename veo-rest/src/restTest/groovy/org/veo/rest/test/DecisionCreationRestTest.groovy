@@ -112,7 +112,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR)
 
         then: "there is an error"
-        response.body.message == "Validation error in decision 'elephantInTheRoom': Domain has no definition for entity type elephant"
+        response.body.message.contains('Cannot deserialize value of type `org.veo.core.entity.ElementType` from String "elephant"')
     }
 
     def "invalid element sub type is detected"() {

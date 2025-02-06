@@ -82,6 +82,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -210,7 +211,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto,
-        Scenario.class);
+        ElementType.SCENARIO);
   }
 
   @Operation(summary = "Loads the parts of a scenario in a domain")
@@ -278,7 +279,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto,
-        Scenario.class);
+        ElementType.SCENARIO);
   }
 
   @Operation(summary = "Creates a scenario, assigning it to the domain")
@@ -427,6 +428,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Scenario.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.SCENARIO);
   }
 }

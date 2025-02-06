@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -69,7 +69,7 @@ public class GetElementStatusCountUseCase
 
     counts.forEach(
         c -> {
-          String type = c.getType();
+          ElementType type = c.getType();
           String subType = c.getSubType();
           if (!domain.getElementTypeDefinition(type).getSubTypes().containsKey(subType)) {
             log.error(
@@ -81,8 +81,7 @@ public class GetElementStatusCountUseCase
                 domain.getIdAsString());
             return;
           }
-          elementStatusCounts.setCount(
-              EntityType.getBySingularTerm(type), subType, c.getStatus(), c.getCount());
+          elementStatusCounts.setCount(type, subType, c.getStatus(), c.getCount());
         });
 
     return new OutputData(elementStatusCounts);

@@ -50,6 +50,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Entity;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
@@ -157,11 +158,16 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void whereElementTypeMatches(QueryCondition<String> elementType) {
+  public void whereElementTypeMatches(QueryCondition<ElementType> elementType) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
-                in(root.get("elementType"), elementType.getValues(), criteriaBuilder));
+                in(
+                    root.get("elementType"),
+                    elementType.getValues().stream()
+                        .map(v -> criteriaBuilder.literal(v.name()))
+                        .collect(Collectors.toSet()),
+                    criteriaBuilder));
   }
 
   @Override

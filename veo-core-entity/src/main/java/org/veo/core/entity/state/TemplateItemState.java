@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TemplateItem;
@@ -33,7 +34,7 @@ public interface TemplateItemState<
   UUID getSymbolicId();
 
   @NotNull
-  String getElementType();
+  ElementType getElementType();
 
   String getSubType();
 

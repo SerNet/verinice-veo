@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
@@ -63,7 +65,8 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
   @JsonProperty("profiles_v2")
   private Set<ExportProfileDto> profilesNew = new HashSet<>();
 
-  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+  private Map<ElementType, ElementTypeDefinitionDto> elementTypeDefinitions =
+      new EnumMap<>(ElementType.class);
 
   private Map<String, Inspection> inspections = new HashMap<>();
 
@@ -80,7 +83,7 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
 
   @Override
   @JsonIgnore
-  public Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
+  public Map<ElementType, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
     return elementTypeDefinitions.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }

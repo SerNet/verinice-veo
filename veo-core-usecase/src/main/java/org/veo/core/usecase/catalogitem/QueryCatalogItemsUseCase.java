@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.PagedResult;
@@ -59,7 +60,7 @@ public class QueryCatalogItemsUseCase
       @NotNull UUID clientId,
       @NotNull UUID domainId,
       @NotNull PagingConfiguration<String> pagingConfiguration,
-      QueryCondition<String> elementTypes,
+      QueryCondition<ElementType> elementTypes,
       QueryCondition<String> subTypes,
       QueryCondition<String> abbreviation,
       QueryCondition<String> name,

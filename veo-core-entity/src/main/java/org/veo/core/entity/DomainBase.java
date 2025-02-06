@@ -68,7 +68,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   Set<ElementTypeDefinition> getElementTypeDefinitions();
 
   @Override
-  default Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
+  default Map<ElementType, ElementTypeDefinitionState> getElementTypeDefinitionStates() {
     return getElementTypeDefinitions().stream()
         .collect(Collectors.toMap(ElementTypeDefinition::getElementType, identity()));
   }
@@ -91,13 +91,13 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   void setControlImplementationConfiguration(
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration);
 
-  default Optional<ElementTypeDefinition> findElementTypeDefinition(String type) {
+  default Optional<ElementTypeDefinition> findElementTypeDefinition(ElementType type) {
     return getElementTypeDefinitions().stream()
         .filter(d -> d.getElementType().equals(type))
         .findFirst();
   }
 
-  default ElementTypeDefinition getElementTypeDefinition(String type) {
+  default ElementTypeDefinition getElementTypeDefinition(ElementType type) {
     return findElementTypeDefinition(type)
         .orElseThrow(
             () ->
@@ -151,12 +151,12 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
    *     identical to given definition, otherwise {@code false}
    */
   default boolean containsCustomAspectDefinition(
-      String elementType, String caType, CustomAspectDefinition definition) {
+      ElementType elementType, String caType, CustomAspectDefinition definition) {
     return findCustomAspectDefinition(elementType, caType).map(definition::equals).orElse(false);
   }
 
   default Optional<CustomAspectDefinition> findCustomAspectDefinition(
-      String elementType, String caType) {
+      ElementType elementType, String caType) {
     return Optional.ofNullable(
         getElementTypeDefinition(elementType).getCustomAspects().get(caType));
   }

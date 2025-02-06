@@ -32,6 +32,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Entity
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
@@ -174,7 +175,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ElementTypeDefinition newElementTypeDefinition(String type, Domain it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
+    static ElementTypeDefinition newElementTypeDefinition(ElementType type, Domain it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, it).tap{
             VeoSpec.execute(it, init)
@@ -196,7 +197,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static LinkDefinition newLinkDefinition(String targetType, String targetSubType, @DelegatesTo(value = LinkDefinition.class, strategy = Closure.DELEGATE_FIRST)
+    static LinkDefinition newLinkDefinition(ElementType targetType, String targetSubType, @DelegatesTo(value = LinkDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.LinkDefinition") Closure init = null) {
         return new LinkDefinition().tap{
             it.targetType = targetType
@@ -315,7 +316,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, String type, @DelegatesTo(value = CustomLink.class)
+    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, ElementType type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
@@ -469,7 +470,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static Decision newDecision(String elementType, String elementSubType, @DelegatesTo(value = Decision.class)
+    static Decision newDecision(ElementType elementType, String elementSubType, @DelegatesTo(value = Decision.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.Decision") Closure init = null) {
         return new Decision(new TranslatedText(Map.of()), elementType, elementSubType, [], null).tap {
             VeoSpec.execute(it, init)

@@ -20,6 +20,7 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.ElementType
 import org.veo.rest.common.ClientNotActiveException
 
 /**
@@ -85,7 +86,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
 
         def domain2 =
                 createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).with {
-                    elementTypeDefinitions.find { it.elementType=='person' }.translations.get(Locale.ENGLISH).'person_contactInformation_office' = 'Office phone'
+                    elementTypeDefinitions.find { it.elementType== ElementType.PERSON }.translations.get(Locale.ENGLISH).'person_contactInformation_office' = 'Office phone'
                     domainDataRepository.save(it)
                 }
 

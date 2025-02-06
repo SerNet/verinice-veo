@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
@@ -60,9 +59,7 @@ public class GetCatalogItemsTypeCountUseCase
     CatalogItemsTypeCount catalogItemTypeCounts = new CatalogItemsTypeCount();
     Set<SubTypeCount> counts = itemRepository.getCountsBySubType(domain);
     counts.forEach(
-        c ->
-            catalogItemTypeCounts.setCount(
-                EntityType.getBySingularTerm(c.getElementType()), c.getSubType(), c.getCount()));
+        c -> catalogItemTypeCounts.setCount(c.getElementType(), c.getSubType(), c.getCount()));
 
     return new OutputData(catalogItemTypeCounts);
   }

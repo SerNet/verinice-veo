@@ -21,6 +21,7 @@ import static java.util.UUID.randomUUID
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
@@ -363,8 +364,8 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         get("$scopeUri/members?elementType=wtf", 400)
 
         then:
-        def ex = thrown(IllegalArgumentException)
-        ex.message ==~ /'wtf' is not a valid element type - must be one of asset, control, .*/
+        def ex = thrown(MethodArgumentTypeMismatchException)
+        ex.message.contains('Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam org.veo.core.entity.ElementType] for value [wtf]')
     }
 
     def "missing scope is handled"() {

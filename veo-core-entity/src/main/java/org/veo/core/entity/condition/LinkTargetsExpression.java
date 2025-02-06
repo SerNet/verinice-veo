@@ -28,6 +28,7 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AccessLevel;
@@ -62,7 +63,7 @@ public class LinkTargetsExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     var sourcesType = sources.getValueType(domain, elementType);
     if (Collection.class.isAssignableFrom(sourcesType)) {
       throw new UnprocessableDataException(
@@ -77,7 +78,7 @@ public class LinkTargetsExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Boolean.class;
   }
 }

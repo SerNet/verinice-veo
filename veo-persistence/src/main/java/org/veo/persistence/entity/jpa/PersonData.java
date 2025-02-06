@@ -35,7 +35,7 @@ import org.veo.core.entity.TemplateItemAspects;
 import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "person")
+@Entity(name = "PERSON")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class PersonData extends ElementData implements Person {
 

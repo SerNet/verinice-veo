@@ -93,7 +93,7 @@ public interface Domain extends DomainBase, ClientOwned {
                       "Gefährdungsübersicht erstellen",
                       Locale.ENGLISH,
                       "Draw up threat overview")),
-              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM),
+              Set.of(ElementType.ASSET, ElementType.PROCESS, ElementType.SCOPE),
               List.of(
                   new ApplyLinkTailoringReferences(
                       new ImplementedRequirementsExpression(new CurrentElementExpression()),
@@ -125,11 +125,9 @@ public interface Domain extends DomainBase, ClientOwned {
     return Collections.emptyMap();
   }
 
-  default Map<String, Action> getAvailableActions(Class<? extends Element> elementType) {
+  default Map<String, Action> getAvailableActions(ElementType elementType) {
     return getActions().entrySet().stream()
-        .filter(
-            e ->
-                e.getValue().elementTypes().contains(EntityType.getSingularTermByType(elementType)))
+        .filter(e -> e.getValue().elementTypes().contains(elementType))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

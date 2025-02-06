@@ -32,6 +32,7 @@ import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.repository.DomainRepository;
@@ -95,7 +96,7 @@ public class MigrateUnitUseCase
     unit.addToDomains(newDomain);
 
     associateNewDomain(oldDomain, newDomain, elements);
-    Map<String, List<DomainSpecificValueLocation>> deprecatedDefinitions =
+    Map<ElementType, List<DomainSpecificValueLocation>> deprecatedDefinitions =
         needsMigrationDefinition
             ? newDomain.getDomainMigrationDefinition().migrations().stream()
                 .map(DomainMigrationStep::oldDefinitions)
@@ -108,8 +109,7 @@ public class MigrateUnitUseCase
             element.copyDomainData(
                 oldDomain,
                 newDomain,
-                deprecatedDefinitions.getOrDefault(
-                    element.getModelType(), Collections.emptyList())));
+                deprecatedDefinitions.getOrDefault(element.getType(), Collections.emptyList())));
     if (needsMigrationDefinition) {
       applyMigrationDefinition(oldDomain, newDomain, elements);
     }
@@ -132,8 +132,8 @@ public class MigrateUnitUseCase
 
   private void applyMigrationDefinition(
       Domain oldDomain, Domain newDomain, List<Element> skipedElements) {
-    Map<String, List<Element>> elementsByType =
-        skipedElements.stream().collect(Collectors.groupingBy(Element::getModelType));
+    Map<ElementType, List<Element>> elementsByType =
+        skipedElements.stream().collect(Collectors.groupingBy(Element::getType));
     newDomain.getDomainMigrationDefinition().migrations().stream()
         .map(DomainMigrationStep::newDefinitions)
         .flatMap(List::stream)

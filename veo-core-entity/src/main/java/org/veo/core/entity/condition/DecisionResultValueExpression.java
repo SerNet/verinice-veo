@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.DecisionRef;
 
 import lombok.AccessLevel;
@@ -46,7 +47,7 @@ public class DecisionResultValueExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Boolean.class;
   }
 }

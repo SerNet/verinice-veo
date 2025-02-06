@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Profile
 import org.veo.core.entity.ProfileItem
 import org.veo.core.entity.TailoringReferenceType
@@ -55,19 +56,19 @@ class IncarnationDescriptionApplierITSpec extends VeoSpringSpec {
                 name = "Provielfältig"
                 def subControl = newProfileItem(it) {
                     name = "sub control"
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "A"
                     status = "NEW"
                 }
                 def superControl = newProfileItem(it) {
                     name = "super control"
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "A"
                     status = "NEW"
                 }
                 def asset = newProfileItem(it) {
                     name = "asset"
-                    elementType = "asset"
+                    elementType = ElementType.ASSET
                     subType = "A"
                     status = "NEW"
                 }

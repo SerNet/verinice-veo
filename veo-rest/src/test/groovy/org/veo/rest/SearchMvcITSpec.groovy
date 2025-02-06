@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 
 @WithUserDetails("user@domain.example")
 class SearchMvcITSpec extends VeoMvcSpec {
@@ -50,13 +50,13 @@ class SearchMvcITSpec extends VeoMvcSpec {
         given:
         newDomain(client) {
             name = "Domain 1"
-            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                 subTypes = [
                     SCP_Scope: newSubTypeDefinition {
                     }
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                 subTypes = [
                     SCP_Institution: newSubTypeDefinition {
                     }
@@ -111,7 +111,7 @@ class SearchMvcITSpec extends VeoMvcSpec {
         results.items*.name == ["two"]
 
         where:
-        type << EntityType.ELEMENT_TYPES*.pluralTerm
+        type << ElementType.values()*.pluralTerm
     }
 
     def 'find by displayname'() {

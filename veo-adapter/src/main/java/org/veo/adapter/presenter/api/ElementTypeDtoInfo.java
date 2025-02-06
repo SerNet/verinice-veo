@@ -42,7 +42,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
@@ -51,63 +51,63 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ElementTypeDtoInfo {
   ASSET(
-      EntityType.ASSET,
+      ElementType.ASSET,
       FullAssetDto.class,
       FullAssetInDomainDto.class,
       AssetDomainAssociationDto.class),
   CONTROL(
-      EntityType.CONTROL,
+      ElementType.CONTROL,
       FullControlDto.class,
       FullControlInDomainDto.class,
       DomainAssociationDto.class),
   DOCUMENT(
-      EntityType.DOCUMENT,
+      ElementType.DOCUMENT,
       FullDocumentDto.class,
       FullDocumentInDomainDto.class,
       DomainAssociationDto.class),
   INCIDENT(
-      EntityType.INCIDENT,
+      ElementType.INCIDENT,
       FullIncidentDto.class,
       FullIncidentInDomainDto.class,
       DomainAssociationDto.class),
   PERSON(
-      EntityType.PERSON,
+      ElementType.PERSON,
       FullPersonDto.class,
       FullPersonInDomainDto.class,
       DomainAssociationDto.class),
   PROCESS(
-      EntityType.PROCESS,
+      ElementType.PROCESS,
       FullProcessDto.class,
       FullProcessInDomainDto.class,
       ProcessDomainAssociationDto.class),
   SCENARIO(
-      EntityType.SCENARIO,
+      ElementType.SCENARIO,
       FullScenarioDto.class,
       FullScenarioInDomainDto.class,
       ScenarioDomainAssociationDto.class),
   SCOPE(
-      EntityType.SCOPE,
+      ElementType.SCOPE,
       FullScopeDto.class,
       FullScopeInDomainDto.class,
       ScopeDomainAssociationDto.class),
   ;
 
-  @Getter private final EntityType entityType;
+  @Getter private final ElementType elementType;
   @Getter private final Class<? extends AbstractElementDto> fullDtoClass;
   @Getter private final Class<? extends AbstractElementInDomainDto> fullDomainSpecificDtoClass;
   @Getter private final Class<? extends DomainAssociationDto> domainAssociationDtoClass;
 
   public String getSingularTerm() {
-    return entityType.getSingularTerm();
+    return elementType.getSingularTerm();
   }
 
-  public static ElementTypeDtoInfo get(EntityType entityType) {
+  public static ElementTypeDtoInfo get(ElementType elementType) {
     return Arrays.stream(values())
-        .filter(et -> et.getEntityType().equals(entityType))
+        .filter(et -> et.getElementType().equals(elementType))
         .findFirst()
         .orElseThrow(
             () ->
                 new NotFoundException(
-                    "element type %s not found".formatted(entityType.getSingularTerm())));
+                    "element type %s not found".formatted(elementType.getSingularTerm())));
   }
 }

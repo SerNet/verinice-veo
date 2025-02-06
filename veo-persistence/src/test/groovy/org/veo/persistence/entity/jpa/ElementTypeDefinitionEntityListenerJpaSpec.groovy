@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.event.ElementTypeDefinitionUpdateEvent
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -64,7 +64,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         def domainId = txTemplate.execute {
             def client = clientRepo.save(newClient())
             def domain = newDomain(client) {
-                applyElementTypeDefinition(newElementTypeDefinition(it, "asset") { assetDefinition ->
+                applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.ASSET) { assetDefinition ->
                     assetDefinition.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                         it.statuses = ["NEW"]
                     }
@@ -80,7 +80,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).tap {
+            domain.getElementTypeDefinition(ElementType.ASSET).tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW"]
                 }
@@ -93,7 +93,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition again"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).tap {
+            domain.getElementTypeDefinition(ElementType.ASSET).tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW", "USED"]
                 }
@@ -106,7 +106,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "updating the asset definition"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition("asset").subTypes["AST_Server"].statuses.add("OLD")
+            domain.getElementTypeDefinition(ElementType.ASSET).subTypes["AST_Server"].statuses.add("OLD")
         }
 
         then: "an entity type definition update event was published"
@@ -115,7 +115,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "updating the asset definition again"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition("asset").subTypes["AST_Server"].statuses.add("ANCIENT")
+            domain.getElementTypeDefinition(ElementType.ASSET).subTypes["AST_Server"].statuses.add("ANCIENT")
         }
 
         then: "another entity type definition update event was published"

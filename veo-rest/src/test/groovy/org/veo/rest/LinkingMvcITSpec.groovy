@@ -22,8 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Person
-import org.veo.core.entity.Scope
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.repository.UnitRepository
@@ -52,7 +51,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             domainId = newDomain(client) {
-                applyElementTypeDefinition(newElementTypeDefinition(Person.SINGULAR_TERM, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, it) {
                     subTypes["Normal"] = new SubTypeDefinition().tap{
                         it.statuses = ["NEW"]
                     }
@@ -60,24 +59,24 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         it.statuses = ["NEW"]
                     }
                     links["favScope"] = new LinkDefinition().tap{
-                        targetType = Scope.SINGULAR_TERM
+                        targetType = ElementType.SCOPE
                         targetSubType = "Normal"
                     }
                 })
-                applyElementTypeDefinition(newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                     subTypes["Normal"] = new SubTypeDefinition().tap{
                         it.statuses = ["NEW"]
                     }
                     links["linkToNormalPerson"] = new LinkDefinition().tap{
-                        targetType = Person.SINGULAR_TERM
+                        targetType = ElementType.PERSON
                         targetSubType = "Normal"
                     }
                     links["linkToNicePersonA"] = new LinkDefinition().tap{
-                        targetType = Person.SINGULAR_TERM
+                        targetType = ElementType.PERSON
                         targetSubType = "Nice"
                     }
                     links["linkToNicePersonB"] = new LinkDefinition().tap{
-                        targetType = Person.SINGULAR_TERM
+                        targetType = ElementType.PERSON
                         targetSubType = "Nice"
                     }
                 })

@@ -209,18 +209,18 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             "delete from custom_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
             "delete from decision_results_aspect where owner_db_id in (select db_id from element where owner_id = ?1)",
             "delete from element_domain_association where owner_db_id in (select db_id from element where owner_id = ?1)",
-            "delete from scenario_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
-            "delete from impact_values_aspect where owner_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1)",
-            "delete from scope_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",
-            "delete from asset_parts where composite_id in (select db_id from element where dtype = 'asset' and owner_id = ?1)",
-            "delete from control_parts where composite_id in (select db_id from element where dtype = 'control' and owner_id = ?1)",
-            "delete from document_parts where composite_id in (select db_id from element where dtype = 'document' and owner_id = ?1)",
-            "delete from incident_parts where composite_id in (select db_id from element where dtype = 'incident' and owner_id = ?1)",
-            "delete from person_parts where composite_id in (select db_id from element where dtype = 'person' and owner_id = ?1)",
-            "delete from process_parts where composite_id in (select db_id from element where dtype = 'process' and owner_id = ?1)",
-            "delete from scenario_parts where composite_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
-            "delete from scope_members where scope_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",
-            "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1))")
+            "delete from scenario_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'SCENARIO' and owner_id = ?1)",
+            "delete from impact_values_aspect where owner_db_id in (select db_id from element where dtype in ('ASSET', 'PROCESS', 'SCOPE') and owner_id = ?1)",
+            "delete from scope_risk_values_aspect where owner_db_id in (select db_id from element where dtype = 'SCOPE' and owner_id = ?1)",
+            "delete from asset_parts where composite_id in (select db_id from element where dtype = 'ASSET' and owner_id = ?1)",
+            "delete from control_parts where composite_id in (select db_id from element where dtype = 'CONTROL' and owner_id = ?1)",
+            "delete from document_parts where composite_id in (select db_id from element where dtype = 'DOCUMENT' and owner_id = ?1)",
+            "delete from incident_parts where composite_id in (select db_id from element where dtype = 'INCIDENT' and owner_id = ?1)",
+            "delete from person_parts where composite_id in (select db_id from element where dtype = 'PERSON' and owner_id = ?1)",
+            "delete from process_parts where composite_id in (select db_id from element where dtype = 'PROCESS' and owner_id = ?1)",
+            "delete from scenario_parts where composite_id in (select db_id from element where dtype = 'SCENARIO' and owner_id = ?1)",
+            "delete from scope_members where scope_id in (select db_id from element where dtype = 'SCOPE' and owner_id = ?1)",
+            "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('ASSET', 'PROCESS', 'SCOPE') and owner_id = ?1))")
         .forEach(
             statement -> em.createNativeQuery(statement).setParameter(1, unitId).executeUpdate());
     em.clear();

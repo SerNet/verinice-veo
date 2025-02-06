@@ -37,6 +37,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Entity;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.TailoringReference;
@@ -92,10 +93,14 @@ public class PerformActionUseCase
   }
 
   private ActionResult perform(Action action, Element element, Domain domain) {
-    if (!action.elementTypes().contains(element.getModelType())) {
+    if (!action.elementTypes().contains(element.getType())) {
       throw new UnprocessableDataException(
           "Action cannot be performed on %s - must be one of %s"
-              .formatted(element.getModelType(), String.join(",", action.elementTypes())));
+              .formatted(
+                  element.getModelType(),
+                  String.join(
+                      ",",
+                      action.elementTypes().stream().map(ElementType::getSingularTerm).toList())));
     }
     return action.steps().stream()
         .map(s -> perform(s, element, domain))

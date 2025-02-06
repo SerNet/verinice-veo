@@ -24,6 +24,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Profile;
 import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ProfileTailoringReferenceData;
@@ -57,5 +58,5 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
   Set<ProfileItemData> findAllByDomainTemplateFetchTailoringReferences(UUID s);
 
   @Query("select pi from #{#entityName} pi where pi.owner = ?1 and pi.elementType= ?2")
-  Set<ProfileItemData> findAllByProfile(Profile profile, String type);
+  Set<ProfileItemData> findAllByProfile(Profile profile, ElementType type);
 }

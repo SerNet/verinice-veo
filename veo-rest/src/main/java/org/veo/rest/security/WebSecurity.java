@@ -42,7 +42,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.rest.DomainController;
 import org.veo.rest.UnitController;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
@@ -81,7 +81,7 @@ public class WebSecurity {
 
   // Paths to domain elements:
   private static final Stream<String> ELEMENT_PATHS =
-      EntityType.ELEMENT_PLURAL_TERMS.stream().map("/%s/**"::formatted);
+      Stream.of(ElementType.values()).map(ElementType::getPluralTerm).map("/%s/**"::formatted);
 
   // Resources that are not domain elements (see above) but should be
   // protected by the same

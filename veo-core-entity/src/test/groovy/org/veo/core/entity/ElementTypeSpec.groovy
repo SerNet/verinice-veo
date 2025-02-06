@@ -21,12 +21,6 @@ import spock.lang.Specification
 
 class ElementTypeSpec extends Specification {
 
-    def "ElementType enum matches constants in EntityType"() {
-        expect:
-        EntityType.ELEMENT_TYPES ==~ ElementType.values()*.entityType
-        EntityType.ELEMENT_SINGULAR_TERMS ==~ ElementType.values()*.singularTerm
-    }
-
     def "ElementType #type has a matching EntityType value"() {
         when:
         def singularTerm = type.singularTerm
@@ -35,11 +29,10 @@ class ElementTypeSpec extends Specification {
         singularTerm != null
 
         when:
-        def entityType = EntityType.getBySingularTerm(singularTerm)
+        def entityType = type.entityType
 
         then:
-        entityType.name() == type.name()
-        type.entityType == entityType
+        entityType.name() == type.name().toUpperCase(Locale.US)
 
         where:
         type << ElementType.values()

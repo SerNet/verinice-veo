@@ -32,7 +32,7 @@ import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.Translations;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.VeoMessage;
@@ -82,13 +82,12 @@ public class TranslationController implements TranslationsResource {
                       messageSource.getMessage(veoMessage.getMessageKey(), null, loc));
                 }
                 // Add alternative element type plural keys for convenience
-                EntityType.ELEMENT_TYPES.forEach(
-                    type -> {
-                      t10n.add(
-                          loc,
-                          type.getSingularTerm() + "_plural",
-                          messageSource.getMessage(type.getPluralTerm(), null, loc));
-                    });
+                for (ElementType type : ElementType.values()) {
+                  t10n.add(
+                      loc,
+                      type.getSingularTerm() + "_plural",
+                      messageSource.getMessage(type.getPluralTerm(), null, loc));
+                }
               });
           return ResponseEntity.ok().body((TranslationsDto) t10n);
         });

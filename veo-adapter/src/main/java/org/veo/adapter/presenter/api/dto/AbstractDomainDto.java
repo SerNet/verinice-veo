@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -93,7 +95,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @Schema(
       description = "The definitions of domain-specific element properties",
       requiredMode = REQUIRED)
-  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+  private Map<ElementType, ElementTypeDefinitionDto> elementTypeDefinitions =
+      new EnumMap<>(ElementType.class);
 
   @Override
   public Class<Domain> getModelInterface() {

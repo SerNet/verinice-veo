@@ -24,6 +24,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -87,13 +88,13 @@ class DomainJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
         domain0 = newDomain(client) {}
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
 
         when: "saving"
@@ -116,13 +117,13 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domain0.domainTemplate = domainTemplate
 
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
 
         when: "saving"
@@ -142,15 +143,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
         domain0 = newDomain(client)
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c1'
         })
         def item2 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c2'
         })
         def item3 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c3'
         })
         newTailoringReference(item3, item2, TailoringReferenceType.COPY)
@@ -178,7 +179,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
         domain0 = newDomain(client) {domain->
-            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, domain) {
                 subTypes = [
                     ctl : newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -188,7 +189,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         CatalogItem item1 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c1'
             abbreviation = 'c1'
             description = 'control number one'
@@ -196,26 +197,26 @@ class DomainJpaSpec extends AbstractJpaSpec {
             status = "NEW"
         })
         CatalogItem item2 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c2'
             subType = "ctl"
             status = "NEW"
         })
         CatalogItem item3 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c3'
             subType = "ctl"
             status = "NEW"
         })
         newTailoringReference(item3, item2, TailoringReferenceType.COPY)
         newCatalogItem(domain0, {
-            elementType = "asset"
+            elementType = ElementType.ASSET
             name = 'd1'
             subType = "asset"
             status = "NEW"
         })
         CatalogItem item5 = newCatalogItem(domain0, {
-            elementType = "process"
+            elementType = ElementType.PROCESS
             name = 'p1'
             subType = "Test"
             status = "NEW"
@@ -226,7 +227,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         CatalogItem item6 = newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             name = 'c-p'
             subType = "ctl"
             status = "NEW"

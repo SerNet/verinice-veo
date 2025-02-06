@@ -71,8 +71,7 @@ public class ObjectSchemaParser {
   public ElementTypeDefinition parseTypeDefinitionFromObjectSchema(
       ElementType type, JsonNode schemaNode) throws JsonProcessingException {
     JsonNode properties = schemaNode.required(PROPERTIES);
-    ElementTypeDefinition typeDefinition =
-        entityFactory.createElementTypeDefinition(type.getSingularTerm(), null);
+    ElementTypeDefinition typeDefinition = entityFactory.createElementTypeDefinition(type, null);
     typeDefinition.setSubTypes(extractSubTypeDefinitions(properties));
     typeDefinition.setCustomAspects(extractCustomAspectDefinitions(properties));
     typeDefinition.setLinks(extractLinkDefinitions(properties));
@@ -190,7 +189,8 @@ public class ObjectSchemaParser {
       JsonNode targetProperties = linkProperties.required("target").required(PROPERTIES);
 
       linkDefinition.setTargetType(
-          targetProperties.required("type").required("enum").required(0).asText());
+          ElementType.fromString(
+              targetProperties.required("type").required("enum").required(0).asText()));
       linkDefinition.setTargetSubType(
           targetProperties.required("subType").required("enum").required(0).asText());
       links.put(linkName, linkDefinition);

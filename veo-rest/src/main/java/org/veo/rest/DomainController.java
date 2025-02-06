@@ -51,9 +51,7 @@ import jakarta.validation.constraints.Size;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +74,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -363,7 +361,7 @@ public class DomainController extends AbstractEntityController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) String elementType,
+      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) ElementType elementType,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
       @RequestParam(value = ABBREVIATION_PARAM, required = false) String abbreviation,
       @RequestParam(value = NAME_PARAM, required = false) String name,
@@ -583,11 +581,5 @@ public class DomainController extends AbstractEntityController {
             null,
             Collections.emptySet()),
         out -> ResponseEntity.ok(out.riskDefinition()));
-  }
-
-  @InitBinder
-  public void initBinder(WebDataBinder dataBinder) {
-    dataBinder.registerCustomEditor(
-        EntityType.class, new IgnoreCaseEnumConverter<>(EntityType.class));
   }
 }

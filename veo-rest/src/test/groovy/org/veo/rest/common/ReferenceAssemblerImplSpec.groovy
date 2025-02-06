@@ -26,7 +26,7 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
-import org.veo.core.entity.Element
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
@@ -94,9 +94,9 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
-    def "create #entityType.singularTerm references in domain"() {
+    def "create #elementType.singularTerm references in domain"() {
         given:
-        def clazz = entityType.type as Class<Element>
+        def clazz = elementType.type
         def elementId = randomUUID()
         def domainId = randomUUID()
         def element = Stub(clazz) {
@@ -108,10 +108,10 @@ class ReferenceAssemblerImplSpec extends Specification {
         }
 
         expect:
-        referenceAssembler.elementInDomainRefOf(element, domain) == "/domains/$domainId/${entityType.pluralTerm}/$elementId"
+        referenceAssembler.elementInDomainRefOf(element, domain) == "/domains/$domainId/${elementType.pluralTerm}/$elementId"
 
         where:
-        entityType << EntityType.ELEMENT_TYPES
+        elementType << ElementType.values()
     }
 
     def "create target URI for catalog item"() {

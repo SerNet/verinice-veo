@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.event.ElementEvent;
@@ -79,7 +80,7 @@ public class Rule {
    * @throws NotFoundException if a reference inside this rule cannot be resolved
    * @throws IllegalArgumentException for other validation errors
    */
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     conditions.forEach(c -> c.selfValidate(domain, elementType));
   }
 }

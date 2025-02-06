@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -59,12 +60,12 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         SomeProcess: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         WorstCase: newSubTypeDefinition()
                     ]

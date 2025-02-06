@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
@@ -57,7 +58,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, it) {
                     subTypes = [
                         Manual: newSubTypeDefinition()
                     ]

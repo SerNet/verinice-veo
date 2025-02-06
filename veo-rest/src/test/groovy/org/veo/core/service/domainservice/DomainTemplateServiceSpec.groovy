@@ -25,6 +25,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.usecase.service.DomainStateMapper
@@ -73,7 +74,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
                 name == 'Control-1'
                 abbreviation == 'c-1'
                 description.startsWith('Lore')
-                elementType == 'control'
+                elementType == ElementType.CONTROL
                 //                getRiskValues(domainFromTemplate).present
                 // TODO: VEO-2285
             }
@@ -274,7 +275,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         def template = newDomainTemplate() {t->
             catalogItems = [
                 newCatalogItem(t) {
-                    elementType = 'scenario'
+                    elementType = ElementType.SCENARIO
                 }
             ]
             profiles = [
@@ -282,11 +283,11 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
                     id = UUID.randomUUID()
                     items = [
                         newProfileItem(it) {
-                            elementType = 'scenario'
+                            elementType = ElementType.SCENARIO
                             appliedCatalogItem = t.catalogItems.first()
                         },
                         newProfileItem(it) {
-                            elementType = 'scenario'
+                            elementType = ElementType.SCENARIO
                             appliedCatalogItem = t.catalogItems.first()
                         }
                     ]

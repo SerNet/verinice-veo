@@ -25,5 +25,5 @@ package org.veo.core.entity;
  * layer. The sealed class structure aids in this external implementation approach.
  */
 public abstract sealed class ActionStep permits AddRisksStep, ApplyLinkTailoringReferences {
-  abstract void selfValidate(Domain domain, String elementType);
+  abstract void selfValidate(Domain domain, ElementType elementType);
 }

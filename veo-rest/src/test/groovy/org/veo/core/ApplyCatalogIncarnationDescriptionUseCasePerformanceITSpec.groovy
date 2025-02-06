@@ -27,14 +27,12 @@ import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto
-import org.veo.core.entity.Asset
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
-import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.RepositoryProvider
@@ -138,28 +136,28 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             client = newClient()
             def domain = newDomain(client) {
                 name = "domain1"
-                applyElementTypeDefinition(newElementTypeDefinition(Asset.SINGULAR_TERM, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                     subTypes = [
                         Test: newSubTypeDefinition {
                         }
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
                     subTypes = [
                         Test: newSubTypeDefinition {
                         }
                     ]
                     links = [
-                        externallinktest: newLinkDefinition(Control.SINGULAR_TERM, "Test")
+                        externallinktest: newLinkDefinition(ElementType.CONTROL, "Test")
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition(Process.SINGULAR_TERM, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         Test: newSubTypeDefinition {
                         }
                     ]
                     links = [
-                        aLink: newLinkDefinition(Control.SINGULAR_TERM, "Test")
+                        aLink: newLinkDefinition(ElementType.CONTROL, "Test")
                     ]
                 })
             }
@@ -176,7 +174,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         executeInTransaction {
             def domain = client.domains.first()
             newCatalogItem(domain, {
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 subType = "Test"
                 status = "NEW"
                 name = 'c1'
@@ -185,14 +183,14 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             })
 
             CatalogItem item2 = newCatalogItem(domain, {
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 name = 'c2'
                 subType = "Test"
                 status = "NEW"
             })
 
             CatalogItem item3 = newCatalogItem(domain, {
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 name = 'c3'
                 subType = "Test"
                 status = "NEW"
@@ -201,14 +199,14 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             newTailoringReference(item3, item2, TailoringReferenceType.COPY)
 
             newCatalogItem(domain, {
-                elementType = Asset.SINGULAR_TERM
+                elementType = ElementType.ASSET
                 name = 'd1'
                 subType = "Test"
                 status = "NEW"
             })
 
             CatalogItem item5 = newCatalogItem(domain, {
-                elementType = Process.SINGULAR_TERM
+                elementType = ElementType.PROCESS
                 name = 'p1'
                 subType = "Test"
                 status = "NEW"
@@ -221,7 +219,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             }
 
             CatalogItem item6 = newCatalogItem(domain,{
-                elementType = Control.SINGULAR_TERM
+                elementType = ElementType.CONTROL
                 name = 'c-p'
                 subType = "Test"
                 status = "NEW"

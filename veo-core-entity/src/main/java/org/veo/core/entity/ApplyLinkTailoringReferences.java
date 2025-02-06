@@ -64,7 +64,7 @@ public final class ApplyLinkTailoringReferences extends ActionStep {
   }
 
   @Override
-  void selfValidate(Domain domain, String elementType) {
+  void selfValidate(Domain domain, ElementType elementType) {
     incarnations.selfValidate(domain, elementType);
   }
 }

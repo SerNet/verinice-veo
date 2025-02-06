@@ -68,7 +68,7 @@ public class TranslationValidator {
   public static void validate(ElementTypeDefinition definition) {
     validate(
         definition.getTranslations(),
-        definition.getElementType(),
+        definition.getElementType().getSingularTerm(),
         definition.getCustomAspects(),
         definition.getLinks(),
         definition.getSubTypes());

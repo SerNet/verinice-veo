@@ -24,6 +24,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -63,7 +64,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
                         newProfileItem(it) {
                             name = "Meeting-Metadaten"
                             description = "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse"
-                            elementType ="asset"
+                            elementType = ElementType.ASSET
                             subType = "AST_Datatype"
                             status = "FOR_REVIEW"
                         }
@@ -92,13 +93,13 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate() {
             newCatalogItem(it, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
             })
             newCatalogItem(it, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
             })
             newCatalogItem(it, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
             })
         }
 
@@ -121,16 +122,16 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate()
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0, {
-            elementType = "process"
+            elementType = ElementType.PROCESS
             name = "p1"
             subType = "Test"
             status = "NEW"
@@ -157,26 +158,26 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate()
         newCatalogItem(domain0, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0,{
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         newCatalogItem(domain0,{
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
         def itemP1 = newCatalogItem(domain0, {
             name = 'p1'
             status = "NEW"
             subType = "Test"
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
 
         def ci = newCatalogItem(domain0, {
             name = 'p2'
             status = "NOT-NEW"
             subType = "Test1"
-            elementType = "control"
+            elementType = ElementType.CONTROL
         })
 
         newLinkTailoringReference(ci, itemP1, LINK) {
@@ -198,12 +199,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         with (d.catalogItems.find { it.name == 'p1' }) {
             subType == 'Test'
             status == 'NEW'
-            elementType == "control"
+            elementType == ElementType.CONTROL
         }
         with (d.catalogItems.find { it.name == 'p2' }) {
             subType == 'Test1'
             status == 'NOT-NEW'
-            elementType == "control"
+            elementType == ElementType.CONTROL
 
             tailoringReferences.size() == 1
             tailoringReferences[0].linkType == 'p2->p1'

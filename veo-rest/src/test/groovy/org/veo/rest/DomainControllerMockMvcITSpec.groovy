@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
@@ -59,7 +60,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
-                applyElementTypeDefinition(newElementTypeDefinition("person", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, it) {
                     subTypes = [
                         Team: newSubTypeDefinition {
                             sortKey = 1
@@ -69,7 +70,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                         },
                     ]
                 })
-                applyDecision('isBigTeam', newDecision('person', 'Team') {
+                applyDecision('isBigTeam', newDecision(ElementType.PERSON, 'Team') {
                     it.name = newTranslatedText("Big team")
                     it.rules.add(newRule(true) {
                         description = newTranslatedText("Team has more than 10 members")
@@ -82,7 +83,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             newDomain(client) {
                 name = "Domain 2"
-                applyElementTypeDefinition(newElementTypeDefinition("person", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, it) {
                     subTypes = [
                         Team: newSubTypeDefinition {},
                         Member: newSubTypeDefinition {},
@@ -91,7 +92,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             newDomain(client) { d->
                 name = "Domain-complete"
-                applyElementTypeDefinition(newElementTypeDefinition("scope", d) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, d) {
                     subTypes = [
                         S1: newSubTypeDefinition {
                             sortKey = 1
@@ -100,25 +101,25 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 })
 
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c1'
                 })
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c2'
                 })
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c3'
                 })
                 newCatalogItem(d,{
-                    elementType = "scope"
+                    elementType = ElementType.SCOPE
                     subType = "S1"
                     status = "NEW"
                     name = 'scp1'
@@ -130,7 +131,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     description = "my description"
                     language = "de_DE"
                     newProfileItem(p,{
-                        elementType = "control"
+                        elementType = ElementType.CONTROL
                         subType = "CTL_TOM"
                         status = "NEW"
                         name = "profile-tom"
@@ -475,10 +476,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         when:
         domainDataRepository.save(domain.tap {
-            getElementTypeDefinition('asset').tap {
+            getElementTypeDefinition(ElementType.ASSET).tap {
                 customAspects.remove('asset_details')
             }
-            getElementTypeDefinition('scope').customAspects.get('scope_contactInformation').tap {
+            getElementTypeDefinition(ElementType.SCOPE).customAspects.get('scope_contactInformation').tap {
                 attributeDefinitions.remove('scope_contactInformation_fax')
                 def oldWebSite = attributeDefinitions.get('scope_contactInformation_website')
                 attributeDefinitions.put('scope_contactInformation_website', new ExternalDocumentAttributeDefinition())

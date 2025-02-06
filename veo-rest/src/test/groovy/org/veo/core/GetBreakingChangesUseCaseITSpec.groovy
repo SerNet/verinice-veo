@@ -24,6 +24,7 @@ import org.veo.core.entity.BreakingChange
 import org.veo.core.entity.BreakingChange.ChangeType
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
@@ -64,7 +65,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "No breaking change for added enum value"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('process').customAspects.get('process_processingDetails').tap {
+            getElementTypeDefinition(ElementType.PROCESS).customAspects.get('process_processingDetails').tap {
                 attributeDefinitions.get('process_processingDetails_operatingStage').tap {
                     allowedValues.add('process_processingDetails_operatingStage_broken')
                 }
@@ -78,7 +79,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "No breaking change for added enum value in list type"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('process').customAspects.get('process_dataSubjects').tap {
+            getElementTypeDefinition(ElementType.PROCESS).customAspects.get('process_dataSubjects').tap {
                 attributeDefinitions.get('process_dataSubjects_dataSubjects').itemDefinition.tap {
                     allowedValues.add('process_dataSubjects_dataSubjects_pets')
                 }
@@ -92,7 +93,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "No breaking change for added CA"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('asset').customAspects.put('asset_leaves', new CustomAspectDefinition().tap {
+            getElementTypeDefinition(ElementType.ASSET).customAspects.put('asset_leaves', new CustomAspectDefinition().tap {
                 attributeDefinitions.put('asset_leaves_numberOfLeaves', new IntegerAttributeDefinition())
             })
         }
@@ -104,7 +105,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "No breaking change for added CA attribute"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('control').customAspects.get('control_generalInformation').tap {
+            getElementTypeDefinition(ElementType.CONTROL).customAspects.get('control_generalInformation').tap {
                 attributeDefinitions.put('control_generalInformation_documentary', new BooleanAttributeDefinition())
             }
         }
@@ -116,7 +117,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "No breaking change for changed CA attribute translation"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('person').translations[Locale.of("de")].person_generalInformation_familyName = "Familienname"
+            getElementTypeDefinition(ElementType.PERSON).translations[Locale.of("de")].person_generalInformation_familyName = "Familienname"
         }
 
         then:
@@ -126,7 +127,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "Breaking change for removed enum value"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('process').customAspects.get('process_processingDetails').tap {
+            getElementTypeDefinition(ElementType.PROCESS).customAspects.get('process_processingDetails').tap {
                 attributeDefinitions.get('process_processingDetails_operatingStage').tap {
                     allowedValues.remove('process_processingDetails_operatingStage_test')
                 }
@@ -139,14 +140,14 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             change == ChangeType.MODIFICATION
             attribute == 'process_processingDetails_operatingStage'
             customAspect == 'process_processingDetails'
-            elementType == 'process'
+            elementType == ElementType.PROCESS
         }
     }
 
     def "Breaking change for removed enum value in list type"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('control').customAspects.get('control_dataProtection').tap {
+            getElementTypeDefinition(ElementType.CONTROL).customAspects.get('control_dataProtection').tap {
                 attributeDefinitions.get('control_dataProtection_objectives').itemDefinition.tap {
                     allowedValues.remove('control_dataProtection_objectives_recoverability')
                 }
@@ -159,7 +160,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             change == ChangeType.MODIFICATION
             attribute == 'control_dataProtection_objectives'
             customAspect == 'control_dataProtection'
-            elementType == 'control'
+            elementType == ElementType.CONTROL
             with(oldValue as ListAttributeDefinition) {
                 with(itemDefinition as EnumAttributeDefinition) {
                     allowedValues.contains('control_dataProtection_objectives_recoverability')
@@ -177,7 +178,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "Breaking changes for removed CA"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('scope').customAspects.remove('scope_regulatoryAuthority')
+            getElementTypeDefinition(ElementType.SCOPE).customAspects.remove('scope_regulatoryAuthority')
         }
 
         then:
@@ -186,7 +187,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             with(it) {
                 change == ChangeType.REMOVAL
                 customAspect == 'scope_regulatoryAuthority'
-                elementType == 'scope'
+                elementType == ElementType.SCOPE
                 oldValue != null
                 value == null
             }
@@ -196,7 +197,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "Breaking change for removed CA attribute"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('scenario').customAspects.get('scenario_vulnerability').tap {
+            getElementTypeDefinition(ElementType.SCENARIO).customAspects.get('scenario_vulnerability').tap {
                 attributeDefinitions.remove('scenario_vulnerability_otherType')
             }
         }
@@ -207,7 +208,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             change == ChangeType.REMOVAL
             attribute == 'scenario_vulnerability_otherType'
             customAspect == 'scenario_vulnerability'
-            elementType == 'scenario'
+            elementType == ElementType.SCENARIO
             oldValue instanceof TextAttributeDefinition
             value == null
         }
@@ -216,7 +217,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "Breaking change for changed CA attribute type"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('person').customAspects.get('person_address').tap {
+            getElementTypeDefinition(ElementType.PERSON).customAspects.get('person_address').tap {
                 attributeDefinitions.put('person_address_postcode', new IntegerAttributeDefinition())
             }
         }
@@ -227,7 +228,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             change == ChangeType.MODIFICATION
             attribute == 'person_address_postcode'
             customAspect == 'person_address'
-            elementType == 'person'
+            elementType == ElementType.PERSON
             oldValue instanceof TextAttributeDefinition
             value instanceof IntegerAttributeDefinition
         }
@@ -236,7 +237,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
     def "Breaking change for changed list item definition enum value"() {
         when:
         def result = getBreakingChanges {
-            getElementTypeDefinition('control').customAspects.get('control_dataProtection').tap {
+            getElementTypeDefinition(ElementType.CONTROL).customAspects.get('control_dataProtection').tap {
                 attributeDefinitions.get('control_dataProtection_objectives').tap {
                     itemDefinition = new TextAttributeDefinition()
                 }
@@ -249,7 +250,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
             change == ChangeType.MODIFICATION
             attribute == 'control_dataProtection_objectives'
             customAspect == 'control_dataProtection'
-            elementType == 'control'
+            elementType == ElementType.CONTROL
             (oldValue as ListAttributeDefinition).itemDefinition instanceof EnumAttributeDefinition
             (value as ListAttributeDefinition).itemDefinition instanceof TextAttributeDefinition
         }

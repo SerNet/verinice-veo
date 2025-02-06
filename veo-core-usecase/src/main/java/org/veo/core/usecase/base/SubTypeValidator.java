@@ -20,6 +20,7 @@ package org.veo.core.usecase.base;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ class SubTypeValidator {
         .findSubType(domain)
         .ifPresentOrElse(
             subType -> {
-              validate(domain, subType, element.getStatus(domain), element.getModelType());
+              validate(domain, subType, element.getStatus(domain), element.getType());
             },
             () -> {
               throw new IllegalArgumentException(
@@ -40,7 +41,7 @@ class SubTypeValidator {
             });
   }
 
-  static void validate(DomainBase domain, String subType, String status, String modelType) {
+  static void validate(DomainBase domain, String subType, String status, ElementType modelType) {
     if (subType == null)
       throw new IllegalArgumentException(
           "Cannot assign element to domain without specifying a sub type");
@@ -48,7 +49,9 @@ class SubTypeValidator {
     var definition = domain.getElementTypeDefinition(modelType).getSubTypes().get(subType);
     if (definition == null) {
       throw new IllegalArgumentException(
-          String.format("Sub type '%s' is not defined for element type %s", subType, modelType));
+          String.format(
+              "Sub type '%s' is not defined for element type %s",
+              subType, modelType.getSingularTerm()));
     }
     if (!definition.getStatuses().contains(status)) {
       throw new IllegalArgumentException(

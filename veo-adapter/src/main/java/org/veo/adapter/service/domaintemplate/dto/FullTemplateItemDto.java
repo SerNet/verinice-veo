@@ -30,6 +30,7 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
@@ -51,9 +52,9 @@ public interface FullTemplateItemDto<
 
   void setCustomAspects(CustomAspectMapDto customAspects);
 
-  String getElementType();
+  ElementType getElementType();
 
-  void setElementType(String elementType);
+  void setElementType(ElementType elementType);
 
   String getSubType();
 

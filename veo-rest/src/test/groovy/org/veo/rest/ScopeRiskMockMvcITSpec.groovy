@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -64,12 +65,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition")
                 ]
-                applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                     subTypes = [
                         RiskyScope: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         SCN_Scenario: newSubTypeDefinition()
                     ]

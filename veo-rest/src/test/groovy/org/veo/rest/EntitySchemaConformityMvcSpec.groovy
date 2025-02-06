@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.repository.UnitRepository
 
@@ -54,7 +55,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created asset with custom aspect conforms to schema"() {
         given: "the asset schema and a newly created asset"
-        def schema = getSchema(client, "asset")
+        def schema = getSchema(client, ElementType.ASSET)
         def assetId = (String)parseJson(post("/domains/$domainId/assets", [
             customAspects: [
                 asset_details: [
@@ -172,7 +173,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "control with custom aspect conforms to schema"() {
         given: "the control schema and a newly created control in a scope"
-        def schema = getSchema(client, "control")
+        def schema = getSchema(client, ElementType.CONTROL)
         def controlId = (String)parseJson(post("/domains/$domainId/controls", [
             subType: "CTL_TOM",
             status: "NEW",
@@ -218,7 +219,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created document with custom aspect conforms to schema"() {
         given: "the document schema and a newly created document"
-        def documentSchema = getSchema(client, "document")
+        def documentSchema = getSchema(client, ElementType.DOCUMENT)
         def documentId = (String)parseJson(post("/domains/$domainId/documents", [
             name: "doc",
             owner: [
@@ -243,7 +244,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created incident conforms to schema"() {
         given: "the incident schema and a newly created incident"
-        def incidentSchema = getSchema(client, "incident")
+        def incidentSchema = getSchema(client, ElementType.INCIDENT)
         // TODO VEO-320 add custom aspect & link.
         def incidentId = (String)parseJson(post("/domains/$domainId/incidents", [
             name: "incident",
@@ -264,7 +265,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created person with custom aspect conforms to schema"() {
         given: "the person schema and a newly created person"
-        def personSchema = getSchema(client, "person")
+        def personSchema = getSchema(client, ElementType.PERSON)
         def personId = (String)parseJson(post("/domains/$domainId/persons", [
             name: "person",
             owner: [
@@ -289,7 +290,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created process with custom aspect & links conforms to schema"() {
         given: "the process schema and a newly created process"
-        def processSchema = getSchema(client, "process")
+        def processSchema = getSchema(client, ElementType.PROCESS)
         def scopeId = (String)parseJson(post("/domains/$domainId/scopes", [
             subType: "SCP_Controller",
             status: "NEW",
@@ -334,7 +335,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created scenario with custom aspect conforms to schema"() {
         given: "the scenario schema and a newly created scenario"
-        def scenarioSchema = getSchema(client, "scenario")
+        def scenarioSchema = getSchema(client, ElementType.SCENARIO)
         def scenarioId = (String)parseJson(post("/domains/$domainId/scenarios", [
             name: "scenario",
             owner: [
@@ -359,7 +360,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created scope with custom aspect, link & member conforms to schema"() {
         given: "the scope schema and a scope with one member"
-        def schema = getSchema(client, "scope")
+        def schema = getSchema(client, ElementType.SCOPE)
         def memberAssetId = parseJson(post("/domains/$domainId/assets", [
             name: "member",
             owner: [

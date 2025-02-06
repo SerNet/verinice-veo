@@ -26,6 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -70,12 +71,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 "r1d1": createRiskDefinition("r1d1"),
                 "r2d2": createRiskDefinition("r2d2")
             ]
-            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                 subTypes = [
                     DifficultProcess: newSubTypeDefinition()
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                 subTypes = [
                     BestCase: newSubTypeDefinition()
                 ]
@@ -87,12 +88,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             riskDefinitions = [
                 "r1d1": createRiskDefinition("r1d1"),
             ]
-            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                 subTypes = [
                     RiskyProcess: newSubTypeDefinition()
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                 subTypes = [
                     HypotheticalScenario: newSubTypeDefinition()
                 ]

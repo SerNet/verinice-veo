@@ -25,6 +25,8 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -36,6 +38,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -58,7 +61,9 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   @Column(name = "db_id")
   private UUID id;
 
-  @NotNull private String elementType;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private ElementType elementType;
 
   @ManyToOne(targetEntity = DomainBaseData.class, optional = false, fetch = FetchType.LAZY)
   @NotNull

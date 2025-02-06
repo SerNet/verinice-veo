@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -50,7 +51,7 @@ public class MapExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     source.selfValidate(domain, elementType);
     mapping.selfValidate(domain, elementType);
     var sourceType = source.getValueType(domain, elementType);
@@ -66,7 +67,7 @@ public class MapExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return List.class;
   }
 }

@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
@@ -50,7 +51,7 @@ public class ImplementedRequirementsExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     riskAffected.selfValidate(domain, elementType);
     var valueType = riskAffected.getValueType(domain, elementType);
     if (!RiskAffected.class.isAssignableFrom(valueType)) {
@@ -60,7 +61,7 @@ public class ImplementedRequirementsExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Collection.class;
   }
 }

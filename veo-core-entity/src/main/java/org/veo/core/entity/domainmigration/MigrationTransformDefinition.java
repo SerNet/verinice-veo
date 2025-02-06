@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.condition.VeoExpression;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -63,7 +64,7 @@ public interface MigrationTransformDefinition {
   DomainSpecificValueLocation target();
 
   default void migrate(
-      Map<String, List<Element>> elementsByType, Domain oldDomain, Domain newDomain) {
+      Map<ElementType, List<Element>> elementsByType, Domain oldDomain, Domain newDomain) {
     elementsByType
         .getOrDefault(target().elementType(), Collections.emptyList())
         .forEach(

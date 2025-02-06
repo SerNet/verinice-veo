@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -383,7 +384,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         given: "a domain for another client"
         def otherClient = clientRepository.save(newClient {})
         def otherClientsDomainId = domainDataRepository.save(newDomain(otherClient) {
-            applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
                 subTypes = [
                     SuperControl: newSubTypeDefinition()
                 ]

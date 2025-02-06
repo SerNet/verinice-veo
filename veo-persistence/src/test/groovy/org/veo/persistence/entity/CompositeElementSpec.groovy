@@ -21,6 +21,7 @@ import java.time.Instant
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.LinkDefinition
@@ -247,7 +248,7 @@ class CompositeElementSpec extends VeoSpec {
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"
         def domain = newDomain(client) {
-            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                 subTypes = [
                     ST: newSubTypeDefinition {
                         statuses = ["NEW"]

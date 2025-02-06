@@ -23,28 +23,25 @@ import static java.util.stream.Collectors.toMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 
 public class ElementStatusCounts {
 
-  private final Map<String, Map<String, Map<String, Long>>> values;
+  private final Map<ElementType, Map<String, Map<String, Long>>> values;
 
   public ElementStatusCounts(Domain domain) {
     values =
-        EntityType.ELEMENT_TYPES.stream()
+        Stream.of(ElementType.values())
             .collect(
                 toMap(
-                    EntityType::getSingularTerm,
+                    identity(),
                     type ->
-                        domain
-                            .getElementTypeDefinition(type.getSingularTerm())
-                            .getSubTypes()
-                            .entrySet()
-                            .stream()
+                        domain.getElementTypeDefinition(type).getSubTypes().entrySet().stream()
                             .collect(
                                 toMap(
                                     Entry::getKey,
@@ -54,8 +51,8 @@ public class ElementStatusCounts {
                                                 .collect(toMap(identity(), s -> 0L)))))));
   }
 
-  public void setCount(EntityType type, String subType, String status, Long count) {
-    Map<String, Long> valuesForSubType = values.get(type.getSingularTerm()).get(subType);
+  public void setCount(ElementType type, String subType, String status, Long count) {
+    Map<String, Long> valuesForSubType = values.get(type).get(subType);
     if (valuesForSubType == null) {
       throw new IllegalArgumentException("Invalid subType: " + subType);
     }
@@ -63,7 +60,7 @@ public class ElementStatusCounts {
   }
 
   @JsonAnyGetter
-  public Map<String, Map<String, Map<String, Long>>> getValues() {
+  public Map<ElementType, Map<String, Map<String, Long>>> getValues() {
     return values;
   }
 }

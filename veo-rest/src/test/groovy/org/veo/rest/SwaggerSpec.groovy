@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc
 import com.fasterxml.jackson.annotation.JsonSubTypes
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
@@ -235,11 +235,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
-        def schemaTypes = EntityType.ELEMENT_TYPES
-                .collect{
-                    it.singularTerm
-                }
-                .sort()
+        def schemaTypes = ElementType.values()*.singularTerm.sort()
 
         when: "fetching allowed schemas from OpenAPI parameter doc"
         List<String> allowedTypes = parsedApiDocs.paths["/schemas/{type}"].get.parameters[0].schema.enum
@@ -629,7 +625,6 @@ class SwaggerSpec extends VeoSpringSpec {
                 ]
                 with(it.elementType) {
                     it.description == 'Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.'
-                    it.maxLength == 32
                 }
                 it.condition == [$ref:'#/components/schemas/VeoExpression']
                 with(it.suggestions) {
@@ -785,7 +780,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 ]
                 with(it.properties.elementType) {
                     it.type == 'string'
-                    it.enum ==~ EntityType.ELEMENT_SINGULAR_TERMS
+                    it.enum ==~ ElementType.values().collect{it.singularTerm}
                     it.description == 'The element type'
                 }
                 with(it.properties.attribute) {
@@ -1318,6 +1313,58 @@ class SwaggerSpec extends VeoSpringSpec {
         with(schemas.ImpactMethodAndDescription) {
             properties.keySet() ==~ ['impactMethod', 'description']
         }
+    }
+
+    def "elementType property in #entry.key is sufficiently documented"() {
+        expect:
+        with(entry.value.properties.elementType) {
+            it.enum ==~ [
+                'asset',
+                'control',
+                'document',
+                'incident',
+                'person',
+                'process',
+                'scenario',
+                'scope'
+            ]
+            !it.containsKey('minLength')
+            !it.containsKey('maxLength')
+            !it.containsKey('example')
+        }
+
+        where:
+        entry << parsedApiDocs.components.schemas.entrySet().findAll {
+            it.value.properties?.containsKey('elementType')
+        }
+    }
+
+    def "element type parameters for #item.method #item.path are sufficiently documented"() {
+        expect:
+        item.spec.parameters.findAll{it.name == 'elementType'}.each {
+            def schema = it.schema
+            if(schema.type == 'array') {
+                schema = schema.items
+            }
+            with(schema) {
+                it.enum ==~ [
+                    'asset',
+                    'control',
+                    'document',
+                    'incident',
+                    'person',
+                    'process',
+                    'scenario',
+                    'scope'
+                ]
+                !it.containsKey('minLength')
+                !it.containsKey('maxLength')
+                !it.containsKey('example')
+            }
+        }
+
+        where:
+        item << parsedApiDocs.paths.entrySet().collectMany { pathEntry-> pathEntry.value.entrySet().collect{[path: pathEntry.key, method: it.key, spec: it.value ]}}.findAll {it.spec.parameters.find{it.name == 'elementType'} != null }
     }
 
     def getSchema(String name) {

@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -81,7 +83,8 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       description = "The definitions of domain-specific element properties",
       requiredMode = REQUIRED)
   @Valid
-  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+  private Map<ElementType, ElementTypeDefinitionDto> elementTypeDefinitions =
+      new EnumMap<>(ElementType.class);
 
   private Map<String, Decision> decisions = new HashMap<>();
 

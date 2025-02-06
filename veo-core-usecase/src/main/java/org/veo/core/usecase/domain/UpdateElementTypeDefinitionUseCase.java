@@ -59,7 +59,7 @@ public class UpdateElementTypeDefinitionUseCase
     }
     var elementTypeDefinition =
         domainStateMapper.toElementTypeDefinition(
-            input.elementType.getSingularTerm(), input.elementTypeDefinition, domain);
+            input.elementType, input.elementTypeDefinition, domain);
 
     // TODO #3042: remove this when we remove support for JSON schema
     if (input.preserveSortKeys) {
@@ -68,7 +68,7 @@ public class UpdateElementTypeDefinitionUseCase
           .forEach(
               (subTypeId, subTypeDefinition) ->
                   domain
-                      .findElementTypeDefinition(input.elementType.getSingularTerm())
+                      .findElementTypeDefinition(input.elementType)
                       .ifPresent(
                           existingDefinition ->
                               Optional.ofNullable(existingDefinition.getSubTypes().get(subTypeId))

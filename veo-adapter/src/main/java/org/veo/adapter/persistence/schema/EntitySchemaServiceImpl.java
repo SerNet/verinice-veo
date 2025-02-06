@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.service.EntitySchemaService;
 
@@ -39,27 +39,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EntitySchemaServiceImpl implements EntitySchemaService {
 
-  private static final List<String> VALID_TYPE_SINGULAR_TERMS =
-      EntityType.ELEMENT_TYPES.stream().map(EntityType::getSingularTerm).toList();
   private final EntitySchemaGenerator generator;
 
   @Override
-  public String getSchema(String type, Set<Domain> domains) {
-    validateElementType(type);
+  public String getSchema(ElementType type, Set<Domain> domains) {
     log.debug("Getting dynamic JSON schema for type: {}", type);
     return generator.createSchema(type, domains);
   }
 
   @Override
-  public String getSchema(String elementType, Domain domain) {
-    validateElementType(elementType);
+  public String getSchema(ElementType elementType, Domain domain) {
     return generator.createSchema(elementType, domain);
-  }
-
-  private static void validateElementType(String type) {
-    if (!VALID_TYPE_SINGULAR_TERMS.contains(type)) {
-      throw new IllegalArgumentException(String.format("Type \"%s\" is not a valid schema.", type));
-    }
   }
 
   @Override

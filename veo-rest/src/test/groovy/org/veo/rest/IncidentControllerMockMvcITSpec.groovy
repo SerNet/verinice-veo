@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.IncidentRepositoryImpl
@@ -58,7 +59,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                applyElementTypeDefinition(newElementTypeDefinition("incident", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.INCIDENT, it) {
                     subTypes = [
                         NormalIncident: newSubTypeDefinition()
                     ]

@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ public class ContainsExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     needle.selfValidate(domain, elementType);
     haystack.selfValidate(domain, elementType);
     var hayStackType = haystack.getValueType(domain, elementType);
@@ -57,7 +58,7 @@ public class ContainsExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Boolean.class;
   }
 }

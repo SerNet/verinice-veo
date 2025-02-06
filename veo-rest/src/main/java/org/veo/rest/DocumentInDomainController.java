@@ -84,6 +84,7 @@ import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
@@ -211,7 +212,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformDocument2Dto,
-        Document.class);
+        ElementType.DOCUMENT);
   }
 
   @Operation(summary = "Loads the parts of a document in a domain")
@@ -279,7 +280,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformDocument2Dto,
-        Document.class);
+        ElementType.DOCUMENT);
   }
 
   @Operation(summary = "Creates a document, assigning it to the domain")
@@ -428,6 +429,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Document.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.DOCUMENT);
   }
 }

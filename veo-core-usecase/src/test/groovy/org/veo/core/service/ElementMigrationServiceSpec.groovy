@@ -25,6 +25,7 @@ import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -47,7 +48,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete custom aspect'() {
         given:
-        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeDefinitions >> [
@@ -58,7 +59,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> ([
                 Spy(CustomAspect) {
                     type >> "typeA"
@@ -88,7 +89,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete custom aspect attribute'() {
         given:
-        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeDefinitions >> [
@@ -99,7 +100,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> ([
                 Spy(CustomAspect) {
                     type >> "typeA"
@@ -123,22 +124,22 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete link'() {
         given:
-        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Mock(LinkDefinition) {
                     attributeDefinitions >> [:]
-                    targetType >> "person"
+                    targetType >> ElementType.PERSON
                     targetSubType >> "PER_Person"
                 }
             ]
         }
         def targetPerson = Mock(Element) {
-            modelType >> "person"
+            type >> ElementType.PERSON
             findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -166,24 +167,24 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete link attribute'() {
         given:
-        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Spy(LinkDefinition) {
                     attributeDefinitions >> [
                         attrA: new TextAttributeDefinition()
                     ]
-                    targetType >> "person"
+                    targetType >> ElementType.PERSON
                     targetSubType >> "PER_Person"
                 }
             ]
         }
         def targetPerson = Mock(Element) {
-            modelType >> "person"
+            type >> ElementType.PERSON
             findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -208,7 +209,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes invalid custom aspect attribute'() {
         given:
-        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeDefinitions >> [
@@ -220,7 +221,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> [
                 Spy(CustomAspect) {
                     type >> "typeA"
@@ -244,32 +245,32 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes links with wrong target type or sub type'() {
         given:
-        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
             links >> [
                 veryNicePersonLink: Spy(LinkDefinition) {
                     attributeDefinitions >> [:]
-                    targetType >> "person"
+                    targetType >> ElementType.PERSON
                     targetSubType >> "PER_VeryNice"
                 },
                 verySmartPeronLink: Spy(LinkDefinition) {
                     attributeDefinitions >> [:]
-                    targetType >> "person"
+                    targetType >> ElementType.PERSON
                     targetSubType >> "PER_VerySmart"
                 },
                 serverLink: Spy(LinkDefinition) {
                     attributeDefinitions >> [:]
-                    targetType >> "asset"
+                    targetType >> ElementType.ASSET
                     targetSubType >> "AST_Server"
                 },
             ]
         }
         def veryNiceTargetPerson = Spy(Element) {
-            modelType >> "person"
+            type >> ElementType.PERSON
             findSubType(domain) >> Optional.of("PER_VeryNice")
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -303,7 +304,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes element with obsolete sub type from domain'() {
         given:
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -317,7 +318,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Mock(Element) {
             id >> UUID.randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             getCustomAspects(domain) >> ([] as Set)
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Building")
@@ -333,7 +334,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete status'() {
         given:
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -344,7 +345,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Mock(Element) {
             it.idAsString >> randomUUID()
-            modelType >> "asset"
+            type >> ElementType.ASSET
             getCustomAspects(domain) >> ([] as Set)
             getLinks(domain) >> ([] as Set)
             findSubType(domain) >> Optional.of("AST_Server")
@@ -374,7 +375,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -441,7 +442,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -507,7 +508,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -571,7 +572,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [

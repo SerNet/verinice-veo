@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
 
 /**
@@ -105,5 +106,5 @@ public interface ElementQuery<T extends Element> extends Query<T, String> {
 
   void whereIdIn(QueryCondition<UUID> ids);
 
-  void whereElementTypeMatches(QueryCondition<String> elementType);
+  void whereElementTypeMatches(QueryCondition<ElementType> elementType);
 }

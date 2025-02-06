@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection
 
-import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.condition.AndExpression
 import org.veo.core.entity.condition.ConstantExpression
@@ -43,7 +43,7 @@ class InspectionITSpec extends VeoSpec {
         def stickerInspection = newInspection() {
             severity = Severity.WARNING
             description.translations.(Locale.ENGLISH) = "Every computer running linux needs a tux sticker"
-            elementType = Asset.SINGULAR_TERM
+            elementType = ElementType.ASSET
             elementSubType = "computer"
             condition = new AndExpression([
                 new EqualsExpression(
@@ -104,7 +104,7 @@ class InspectionITSpec extends VeoSpec {
         def inspection = newInspection() {
             severity = Severity.HINT
             description.translations.(Locale.ENGLISH) = "A dog might find the needle in the haystack"
-            elementType = Asset.SINGULAR_TERM
+            elementType = ElementType.ASSET
             elementSubType = "farm"
             condition =
                     new ContainsExpression(

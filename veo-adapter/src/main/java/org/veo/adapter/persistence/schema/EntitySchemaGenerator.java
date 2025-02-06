@@ -32,20 +32,21 @@ import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.EntitySchemaException;
 
 public class EntitySchemaGenerator {
-  private final Map<String, Supplier<ObjectNode>> dtoByElementType =
+  private final Map<ElementType, Supplier<ObjectNode>> dtoByElementType =
       Arrays.stream(ElementTypeDtoInfo.values())
           .collect(
               Collectors.toMap(
-                  ElementTypeDtoInfo::getSingularTerm,
+                  ElementTypeDtoInfo::getElementType,
                   et -> SchemaProvider.getInstance().schema(et.getFullDtoClass())));
-  private final Map<String, Supplier<ObjectNode>> dtoInDomainByElementType =
+  private final Map<ElementType, Supplier<ObjectNode>> dtoInDomainByElementType =
       Arrays.stream(ElementTypeDtoInfo.values())
           .collect(
               Collectors.toMap(
-                  ElementTypeDtoInfo::getSingularTerm,
+                  ElementTypeDtoInfo::getElementType,
                   et -> SchemaProvider.getInstance().schema(et.getFullDomainSpecificDtoClass())));
   private final SchemaExtender schemaExtender;
 
@@ -59,10 +60,10 @@ public class EntitySchemaGenerator {
     writer = new ObjectMapper().registerModule(new BlackbirdModule()).writer(prettyPrinter);
   }
 
-  public String createSchema(String baseName, Set<Domain> domains) {
+  public String createSchema(ElementType elementType, Set<Domain> domains) {
     try {
-      ObjectNode jsonSchema = dtoByElementType.get(baseName).get();
-      schemaExtender.extendSchema(jsonSchema, baseName, domains);
+      ObjectNode jsonSchema = dtoByElementType.get(elementType).get();
+      schemaExtender.extendSchema(jsonSchema, elementType, domains);
 
       return writer.writeValueAsString(jsonSchema);
     } catch (JsonProcessingException e) {
@@ -70,7 +71,7 @@ public class EntitySchemaGenerator {
     }
   }
 
-  public String createSchema(String elementType, Domain domain) {
+  public String createSchema(ElementType elementType, Domain domain) {
     try {
       ObjectNode jsonSchema = dtoInDomainByElementType.get(elementType).get();
       schemaExtender.extendSchema(jsonSchema, elementType, domain);

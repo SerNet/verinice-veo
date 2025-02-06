@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class AndExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     operands.forEach(o -> o.selfValidate(domain, elementType));
     if (!operands.stream()
         .allMatch(o -> o.getValueType(domain, elementType).equals(Boolean.class))) {
@@ -54,7 +55,7 @@ public class AndExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return Boolean.class;
   }
 }

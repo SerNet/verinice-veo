@@ -28,6 +28,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -80,7 +81,7 @@ public class DomainStateMapper {
   }
 
   public ElementTypeDefinition toElementTypeDefinition(
-      String elementType, ElementTypeDefinitionState source, DomainBase owner) {
+      ElementType elementType, ElementTypeDefinitionState source, DomainBase owner) {
     var target = entityFactory.createElementTypeDefinition(elementType, owner);
     target.setSubTypes(source.getSubTypes());
     target.setCustomAspects(source.getCustomAspects());

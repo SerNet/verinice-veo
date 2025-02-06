@@ -18,9 +18,12 @@
 package org.veo.rest;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -28,6 +31,8 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.veo.core.entity.ElementType;
 
 /** Adds custom controller method parameter resolvers. */
 @Configuration
@@ -48,5 +53,16 @@ class WebMvcContext implements WebMvcConfigurer {
   @Override
   public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
     converters.addFirst(new CompactJsonHttpMessageConverter(defaultMapper));
+  }
+
+  @Override
+  public void addFormatters(FormatterRegistry registry) {
+    registry.addConverter(
+        new Converter<String, ElementType>() {
+          @Override
+          public ElementType convert(String source) {
+            return ElementType.valueOf(source.toUpperCase(Locale.US));
+          }
+        });
   }
 }

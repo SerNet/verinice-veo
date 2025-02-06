@@ -26,14 +26,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record BreakingChange(
     @Nonnull String type,
     @Nonnull ChangeType change,
-    @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String elementType,
+    @Nonnull ElementType elementType,
     @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String customAspect,
     @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String attribute,
     @Nonnull AttributeDefinition oldValue,
     AttributeDefinition value) {
 
   public static BreakingChange removal(
-      String elementType, String customAspect, String attribute, AttributeDefinition oldValue) {
+      ElementType elementType,
+      String customAspect,
+      String attribute,
+      AttributeDefinition oldValue) {
     return new BreakingChange(
         "customAspectAttribute",
         ChangeType.REMOVAL,
@@ -45,7 +48,7 @@ public record BreakingChange(
   }
 
   public static BreakingChange modification(
-      String elementType,
+      ElementType elementType,
       String customAspect,
       String attribute,
       AttributeDefinition oldValue,
@@ -67,7 +70,7 @@ public record BreakingChange(
             change == ChangeType.REMOVAL ? "Removed" : "Modified",
             attribute,
             customAspect,
-            elementType);
+            elementType.getSingularTerm());
   }
 
   enum ChangeType {

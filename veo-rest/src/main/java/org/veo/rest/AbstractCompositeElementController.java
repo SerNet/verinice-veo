@@ -30,6 +30,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.ElementType;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -40,13 +41,13 @@ public abstract class AbstractCompositeElementController<
     extends AbstractElementController<T, E> {
 
   public AbstractCompositeElementController(
-      Class<T> modelType,
+      ElementType elementType,
       GetElementUseCase<T> getElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase,
       GetElementsUseCase getElementsUseCase) {
     super(
-        modelType,
+        elementType,
         getElementUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,
@@ -56,7 +57,7 @@ public abstract class AbstractCompositeElementController<
   public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
       Authentication auth, UUID uuid, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
-    if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
+    if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor.execute(

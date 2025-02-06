@@ -113,6 +113,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Nameable;
@@ -429,7 +430,7 @@ public final class EntityToDtoTransformer {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setCatalogItems(convertSet(source.getCatalogItems(), this::transformCatalogItem2Dto));
-    Map<String, ElementTypeDefinitionDto> elementTypeDefinitionsByType =
+    Map<ElementType, ElementTypeDefinitionDto> elementTypeDefinitionsByType =
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition));
 

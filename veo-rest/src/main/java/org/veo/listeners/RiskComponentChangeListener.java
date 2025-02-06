@@ -23,7 +23,6 @@ import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.requiresRi
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,7 +32,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Unit;
@@ -125,11 +124,7 @@ public class RiskComponentChangeListener {
     if (requiresMigration(event.getChanges())) {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
-      query.whereElementTypeMatches(
-          new QueryCondition<>(
-              EntityType.RISK_RELETATED_ELEMENTS.stream()
-                  .map(EntityType::getSingularTerm)
-                  .collect(Collectors.toSet())));
+      query.whereElementTypeMatches(new QueryCondition<>(ElementType.RISK_RELATED_ELEMENTS));
 
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       elements.forEach(
@@ -141,11 +136,7 @@ public class RiskComponentChangeListener {
     if (requiresRiskRecalculation(event.getChanges())) {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
-      query.whereElementTypeMatches(
-          new QueryCondition<>(
-              EntityType.RISK_AFFECTED_TYPES.stream()
-                  .map(EntityType::getSingularTerm)
-                  .collect(Collectors.toSet())));
+      query.whereElementTypeMatches(new QueryCondition<>(ElementType.RISK_AFFECTED_TYPES));
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       elements.forEach(riskService::evaluateChangedRiskComponent);
     }

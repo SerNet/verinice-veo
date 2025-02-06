@@ -21,14 +21,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.SingleValueQueryCondition;
@@ -84,10 +83,8 @@ public class QueryInputMapper {
       Client client,
       UUID domainId,
       UUID scopeId,
-      Set<String> elementTypes,
+      Set<ElementType> elementTypes,
       PagingConfiguration<String> config) {
-    Optional.ofNullable(elementTypes)
-        .ifPresent(types -> types.forEach(EntityType::validateElementType));
     return GetElementsUseCase.InputData.builder()
         .authenticatedClient(client)
         .elementTypes(whereIn(elementTypes))
@@ -100,7 +97,7 @@ public class QueryInputMapper {
   public static QueryCatalogItemsUseCase.InputData map(
       Client client,
       UUID domainId,
-      String elementType,
+      ElementType elementType,
       String subType,
       String abbreviation,
       String name,
@@ -181,6 +178,14 @@ public class QueryInputMapper {
     if (value.isEmpty()) {
       return new QueryCondition<>(Collections.singleton(null));
     }
+    return new QueryCondition<>(Set.of(value));
+  }
+
+  static QueryCondition<ElementType> whereEqualsOrNull(ElementType value) {
+    if (value == null) {
+      return null;
+    }
+
     return new QueryCondition<>(Set.of(value));
   }
 }

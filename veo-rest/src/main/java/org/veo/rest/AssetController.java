@@ -82,6 +82,7 @@ import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControl
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -142,7 +143,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(
-        Asset.class,
+        ElementType.ASSET,
         getAssetUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

@@ -26,6 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -76,12 +77,12 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 "r1d1": createRiskDefinition("r1d1"),
                 "r2d2": createRiskDefinition("r2d2")
             ]
-            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
                 subTypes = [
                     Difficultscope: newSubTypeDefinition()
                 ]
             })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                 subTypes = [
                     BestCase: newSubTypeDefinition()
                 ]

@@ -83,6 +83,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Person;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -211,7 +212,7 @@ public class PersonInDomainController implements ElementInDomainResource {
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformPerson2Dto,
-        Person.class);
+        ElementType.PERSON);
   }
 
   @Operation(summary = "Loads the parts of a person in a domain")
@@ -278,7 +279,7 @@ public class PersonInDomainController implements ElementInDomainResource {
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformPerson2Dto,
-        Person.class);
+        ElementType.PERSON);
   }
 
   @Operation(summary = "Creates a person, assigning it to the domain")
@@ -428,6 +429,6 @@ public class PersonInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Person.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.PERSON);
   }
 }

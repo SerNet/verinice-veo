@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
@@ -885,5 +886,19 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         then:
         result.resultPage.toSorted{it.name}*.name == ["one", "two"]
+    }
+
+    def 'queries by element type'() {
+        given:
+        def query = elementQueryFactory.queryElements(client)
+        processDataRepository.save(newProcess(unit))
+        assetDataRepository.save(newAsset(unit))
+
+        when:
+        query.whereElementTypeMatches(new QueryCondition<ElementType>(Set.of(ElementType.PROCESS)))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.totalResults == 1
     }
 }

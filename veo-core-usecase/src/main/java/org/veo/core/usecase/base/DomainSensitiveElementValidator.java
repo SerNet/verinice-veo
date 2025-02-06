@@ -23,6 +23,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -121,17 +122,19 @@ public class DomainSensitiveElementValidator {
   }
 
   static void validateLinkTargetType(
-      String linkType, LinkDefinition linkDefinition, String targetType) {
+      String linkType, LinkDefinition linkDefinition, ElementType targetType) {
     if (!linkDefinition.getTargetType().equals(targetType)) {
       throw new IllegalArgumentException(
-          String.format("Invalid target type '%s' for link type '%s'", targetType, linkType));
+          String.format(
+              "Invalid target type '%s' for link type '%s'",
+              targetType.getSingularTerm(), linkType));
     }
   }
 
   private static void validateCustomAspect(Element element, CustomAspect ca) {
     var caDefinition =
         ca.getDomain()
-            .getElementTypeDefinition(element.getModelType())
+            .getElementTypeDefinition(element.getType())
             .getCustomAspectDefinition(ca.getType());
     try {
       AttributeValidator.validate(ca.getAttributes(), caDefinition.getAttributeDefinitions());
@@ -149,7 +152,7 @@ public class DomainSensitiveElementValidator {
       Element target,
       Map<String, Object> attributes,
       Domain domain) {
-    String modelType = source.getModelType();
+    ElementType modelType = source.getType();
     var linkDefinition = getLinkDefinition(linkType, domain, modelType);
     validateLinkTargetType(linkType, target, linkDefinition);
     validateLinkTargetSubType(linkType, target, domain, linkDefinition);
@@ -163,19 +166,20 @@ public class DomainSensitiveElementValidator {
   }
 
   private static LinkDefinition getLinkDefinition(
-      String linkType, Domain domain, String modelType) {
+      String linkType, Domain domain, ElementType modelType) {
     var linkDefinition = domain.getElementTypeDefinition(modelType).getLinks().get(linkType);
     if (linkDefinition == null) {
       throw new IllegalArgumentException(
           String.format(
-              "Link type '%s' is not defined for element type '%s'", linkType, modelType));
+              "Link type '%s' is not defined for element type '%s'",
+              linkType, modelType.getSingularTerm()));
     }
     return linkDefinition;
   }
 
   private static void validateLinkTargetType(
       String linkType, Element target, LinkDefinition linkDefinition) {
-    var targetType = target.getModelType();
+    var targetType = target.getType();
     validateLinkTargetType(linkType, linkDefinition, targetType);
   }
 

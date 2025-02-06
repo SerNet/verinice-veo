@@ -54,6 +54,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -75,7 +76,6 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
@@ -167,10 +167,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Setter(AccessLevel.NONE)
   private String displayName;
 
-  @Getter(value = AccessLevel.NONE)
   @Setter(value = AccessLevel.NONE)
-  @Column(insertable = false, updatable = false, name = "dtype")
-  private String elementType;
+  @Formula("dtype")
+  private ElementType elementType;
 
   protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
     return source.stream().filter(aspect -> domain.equals(aspect.getDomain())).findFirst();
@@ -237,8 +236,8 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       Domain newDomain,
       Collection<DomainSpecificValueLocation> excludedDefinitions) {
 
-    var nETD = newDomain.getElementTypeDefinition(getModelType());
-    var oETD = oldDomain.getElementTypeDefinition(getModelType());
+    var nETD = newDomain.getElementTypeDefinition(getType());
+    var oETD = oldDomain.getElementTypeDefinition(getType());
 
     migrateCustomAspects(oldDomain, newDomain, excludedDefinitions);
     migrateCustomLinks(oldDomain, newDomain, nETD, oETD);
@@ -275,7 +274,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       CustomAspect ca,
       Entry<String, Object> e) {
     return !deprecatedDefinitions.contains(
-        new CustomAspectAttribute(getModelType(), ca.getType(), e.getKey()));
+        new CustomAspectAttribute(getType(), ca.getType(), e.getKey()));
   }
 
   private void migrateCustomLinks(
@@ -439,7 +438,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.setName(getName());
     item.setAbbreviation(getAbbreviation());
     item.setDescription(getDescription());
-    item.setElementType(getModelType());
+    item.setElementType(getType());
     item.setStatus(getStatus(domain));
     item.setSubType(getSubType(domain));
     item.setCustomAspects(
@@ -461,14 +460,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    */
   private Set<Domain> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
     return ca.getDomain()
-        .findCustomAspectDefinition(getModelType(), ca.getType())
+        .findCustomAspectDefinition(getType(), ca.getType())
         .map(
             definition ->
                 getDomains().stream()
                     .filter(
-                        d ->
-                            d.containsCustomAspectDefinition(
-                                getModelType(), ca.getType(), definition))
+                        d -> d.containsCustomAspectDefinition(getType(), ca.getType(), definition))
                     .collect(Collectors.toSet()))
         // TODO VEO-2011 throw an exception if the custom aspect type is not defined in the target
         // domain. This workaround here (applying the custom aspect to the target domain anyway) is

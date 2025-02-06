@@ -23,7 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
 import org.veo.core.entity.compliance.Origination
@@ -121,7 +121,7 @@ class ControlImplementationITSpec extends AbstractJpaSpec {
         reqImpls.collect{it.id.toString()} ==~ refs.collect{it.keyRef}
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def makeType(String type) {

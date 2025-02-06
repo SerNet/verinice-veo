@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.core.entity.risk.ImpactReason
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -51,7 +52,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             def domain = newDomain(client) {
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         DifficultProcess: newSubTypeDefinition()
                     ]

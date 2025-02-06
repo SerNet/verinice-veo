@@ -24,7 +24,7 @@ import java.util.Set;
  * A domain-specific procedure that a user can trigger for an {@link Element}. Actions may alter the
  * element itself or create new related entities (e.g., adding risks to a risk-affected element).
  */
-public record Action(TranslatedText name, Set<String> elementTypes, List<ActionStep> steps) {
+public record Action(TranslatedText name, Set<ElementType> elementTypes, List<ActionStep> steps) {
   // TODO #2844 call this when a user PUTs an action
   void selfValidate(Domain domain) {
     // Make sure that each step is valid for each element type.

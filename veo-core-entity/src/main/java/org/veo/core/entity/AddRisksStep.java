@@ -56,9 +56,8 @@ public final class AddRisksStep extends ActionStep {
   }
 
   @Override
-  void selfValidate(Domain domain, String elementType) {
-    if (EntityType.RISK_AFFECTED_TYPES.stream()
-        .noneMatch(t -> t.getSingularTerm().equals(elementType))) {
+  void selfValidate(Domain domain, ElementType elementType) {
+    if (!ElementType.RISK_AFFECTED_TYPES.contains(elementType)) {
       throw new UnprocessableDataException("Cannot create risks for %s".formatted(elementType));
     }
     scenarios.selfValidate(domain, elementType);

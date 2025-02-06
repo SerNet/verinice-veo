@@ -24,6 +24,7 @@ import java.util.Map;
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
@@ -40,7 +41,7 @@ public class DomainDiff {
       Domain domain, DomainTemplate template) {
     List<BreakingChange> result = new ArrayList<>();
     for (ElementTypeDefinition etdTemplate : template.getElementTypeDefinitions()) {
-      String elementType = etdTemplate.getElementType();
+      ElementType elementType = etdTemplate.getElementType();
       ElementTypeDefinition etdDomain = domain.getElementTypeDefinition(elementType);
       Map<String, CustomAspectDefinition> casDomain = etdDomain.getCustomAspects();
       for (Map.Entry<String, CustomAspectDefinition> e :

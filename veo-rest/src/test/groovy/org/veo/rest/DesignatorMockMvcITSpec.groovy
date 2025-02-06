@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -42,27 +43,27 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             newDomain(client) {
-                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                     subTypes = [
                         Server: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         Development: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         WorstCase: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("incident", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.INCIDENT, it) {
                     subTypes = [
                         Failure: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, it) {
                     subTypes = [
                         Manual: newSubTypeDefinition()
                     ]

@@ -75,6 +75,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
@@ -109,7 +110,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
     super(
-        Control.class,
+        ElementType.CONTROL,
         getControlUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

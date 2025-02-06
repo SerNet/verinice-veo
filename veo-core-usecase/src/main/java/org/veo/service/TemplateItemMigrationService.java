@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.service;
 
-import static org.veo.core.entity.EntityType.RISK_RELETATED_ELEMENTS;
+import static org.veo.core.entity.ElementType.RISK_RELATED_ELEMENTS;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.isPropablilityChanged;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedImpactCategories;
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedRiskValueCategories;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -69,10 +69,8 @@ public class TemplateItemMigrationService {
     var items = catalogItemRepository.findAllByDomain(domain);
     List<RiskDefinitionRef> validRiskDefinitionRefs =
         domain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
-    List<String> riskRelated =
-        RISK_RELETATED_ELEMENTS.stream().map(EntityType::getSingularTerm).toList();
     items.stream()
-        .filter(ci -> riskRelated.contains(ci.getElementType()))
+        .filter(ci -> RISK_RELATED_ELEMENTS.contains(ci.getElementType()))
         .forEach(
             templateItem -> removeRiskDefinitionFromItem(templateItem, validRiskDefinitionRefs));
     removeRiskDefinitionFromRiskTailorRef(items, validRiskDefinitionRefs);
@@ -81,7 +79,7 @@ public class TemplateItemMigrationService {
   }
 
   private void removeRiskDefinitionFromProfile(Profile p, List<RiskDefinitionRef> keySet) {
-    RISK_RELETATED_ELEMENTS.stream()
+    RISK_RELATED_ELEMENTS.stream()
         .forEach(
             type -> {
               Set<ProfileItem> items = profileItemRepository.findAllByProfile(p, type);
@@ -116,11 +114,7 @@ public class TemplateItemMigrationService {
         Stream.concat(
                 catalogItemRepository.findAllByDomain(domain).stream(),
                 domain.getProfiles().stream().map(Profile::getItems).flatMap(Collection::stream))
-            .filter(
-                catalogItem ->
-                    EntityType.RISK_RELETATED_ELEMENTS.stream()
-                        .map(EntityType::getSingularTerm)
-                        .anyMatch(s -> catalogItem.getElementType().equals(s)))
+            .filter(catalogItem -> RISK_RELATED_ELEMENTS.contains(catalogItem.getElementType()))
             .collect(Collectors.toSet());
     items.forEach(item -> migrateAspects(item, rd, detectedChanges));
     migrateAllRiskTailoringReference(items, rd, detectedChanges);
@@ -173,12 +167,12 @@ public class TemplateItemMigrationService {
             });
   }
 
-  public void migrate(EntityType type, Domain domain) {
+  public void migrate(ElementType type, Domain domain) {
     migrateCatatlog(type, domain);
     domain.getProfiles().forEach(p -> migrateProfile(p, type));
   }
 
-  private void migrateProfile(Profile p, EntityType type) {
+  private void migrateProfile(Profile p, ElementType type) {
     log.info(
         "migrate {} items in Profile {} ({})",
         type.getSingularTerm(),
@@ -190,13 +184,11 @@ public class TemplateItemMigrationService {
     migrateAllTailoringReferences(type, domain, items);
   }
 
-  private void migrateCatatlog(EntityType type, Domain domain) {
+  private void migrateCatatlog(ElementType type, Domain domain) {
     var items = catalogItemRepository.findAllByDomain(domain);
 
     // Migrate elements
-    items.stream()
-        .filter(e -> e.getElementType().equals(type.getSingularTerm()))
-        .forEach(e -> migrate(e, domain));
+    items.stream().filter(e -> e.getElementType().equals(type)).forEach(e -> migrate(e, domain));
     migrateAllTailoringReferences(type, domain, items);
   }
 
@@ -221,16 +213,16 @@ public class TemplateItemMigrationService {
   }
 
   private void migrateAllTailoringReferences(
-      EntityType type, Domain domain, Set<? extends TemplateItem<?, ?>> items) {
+      ElementType type, Domain domain, Set<? extends TemplateItem<?, ?>> items) {
     items.stream()
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(LinkTailoringReference.class::isInstance)
         .map(LinkTailoringReference.class::cast)
-        .filter(ltr -> ltr.getLinkSourceItem().getElementType().equals(type.getSingularTerm()))
+        .filter(ltr -> ltr.getLinkSourceItem().getElementType().equals(type))
         .forEach(
             linkTailoringReference ->
                 domain
-                    .getElementTypeDefinition(type.getSingularTerm())
+                    .getElementTypeDefinition(type)
                     .findLink(linkTailoringReference.getLinkType())
                     .ifPresentOrElse(
                         linkDef -> {

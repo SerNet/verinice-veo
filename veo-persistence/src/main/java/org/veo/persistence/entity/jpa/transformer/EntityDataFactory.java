@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
@@ -34,7 +35,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Person;
@@ -206,7 +207,8 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner) {
+  public ElementTypeDefinition createElementTypeDefinition(
+      ElementType elementType, DomainBase owner) {
     var definition = new ElementTypeDefinitionData();
     definition.setElementType(elementType);
     definition.setOwner(owner);
@@ -224,8 +226,8 @@ public class EntityDataFactory implements EntityFactory {
 
   private void initElementTypeDefinitions(DomainBase domainTemplate) {
     domainTemplate.setElementTypeDefinitions(
-        EntityType.ELEMENT_TYPES.stream()
-            .map(t -> createElementTypeDefinition(t.getSingularTerm(), domainTemplate))
+        Stream.of(ElementType.values())
+            .map(t -> createElementTypeDefinition(t, domainTemplate))
             .collect(toSet()));
   }
 

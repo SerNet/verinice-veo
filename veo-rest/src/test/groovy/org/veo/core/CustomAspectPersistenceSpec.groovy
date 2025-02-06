@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
@@ -48,7 +49,7 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         given: "a Unit and an asset"
         Client client = clientRepository.save(newClient{
             newDomain(it) {
-                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                     subTypes = [
                         ST: newSubTypeDefinition {
                             statuses = ["NEW"]

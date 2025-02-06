@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
@@ -58,7 +59,7 @@ public class EntitySchemaController implements EntitySchemaResource {
   @Override
   public Future<ResponseEntity<String>> getSchema(
       Authentication auth,
-      @PathVariable String type,
+      @PathVariable ElementType type,
       @RequestParam(value = "domains") List<UUID> domainIDs) {
     return CompletableFuture.supplyAsync(
         () -> {

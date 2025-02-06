@@ -83,6 +83,7 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
@@ -150,7 +151,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       GetRequirementImplementationUseCase getRequirementImplementationUseCase,
       UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(
-        Scope.class,
+        ElementType.SCOPE,
         getElementUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

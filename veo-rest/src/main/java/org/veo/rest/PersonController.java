@@ -73,6 +73,7 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -108,7 +109,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
     super(
-        Person.class,
+        ElementType.PERSON,
         getPersonUseCase,
         evaluateElementUseCase,
         inspectElementUseCase,

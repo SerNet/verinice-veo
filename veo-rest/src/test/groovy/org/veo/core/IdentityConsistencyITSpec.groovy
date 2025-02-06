@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -63,7 +64,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     def setup() {
         client = clientRepository.save(newClient() {
             domain = newDomain(it) {
-                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                     subTypes.NormalAsset = newSubTypeDefinition {
                         statuses = ["NEW"]
                     }

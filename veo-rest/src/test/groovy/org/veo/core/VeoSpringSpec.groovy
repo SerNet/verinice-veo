@@ -38,6 +38,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
 import org.veo.core.service.EntitySchemaService
@@ -194,11 +195,11 @@ abstract class VeoSpringSpec extends VeoSpec {
         }
     }
 
-    JsonSchema getSchema(Client client, String type) {
+    JsonSchema getSchema(Client client, ElementType type) {
         parseSchema(entitySchemaService.getSchema(type, client.domains))
     }
 
-    JsonSchema getSchema(Domain domain, String elementType) {
+    JsonSchema getSchema(Domain domain, ElementType elementType) {
         parseSchema(entitySchemaService.getSchema(elementType, domain))
     }
 

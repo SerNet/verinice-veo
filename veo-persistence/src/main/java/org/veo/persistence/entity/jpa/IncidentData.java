@@ -34,7 +34,7 @@ import org.veo.core.entity.TemplateItemAspects;
 import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "incident")
+@Entity(name = "INCIDENT")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class IncidentData extends ElementData implements Incident {
 

@@ -20,7 +20,7 @@ package org.veo.rest.test
 import static java.util.UUID.randomUUID
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 
 class LinkingRestTest extends VeoRestTest {
     String domainId
@@ -87,7 +87,7 @@ class LinkingRestTest extends VeoRestTest {
         }
 
         where:
-        targetType << EntityType.ELEMENT_TYPES
+        targetType << ElementType.values()
     }
 
     def "links for #type.pluralTerm can be added using sub resource"() {
@@ -188,7 +188,7 @@ class LinkingRestTest extends VeoRestTest {
         ], 409).body.message ==~ /Link with type 'linkTypeA' and target ID .+ already exists/
 
         where:
-        type << EntityType.ELEMENT_TYPES
+        type << ElementType.values()
     }
 
     def "link definition must have a sub type"() {

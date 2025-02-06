@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -58,7 +59,7 @@ public class Condition {
    * @throws NotFoundException if a reference inside this condition cannot be resolved
    * @throws IllegalArgumentException for other validation errors
    */
-  public void selfValidate(DomainBase domain, String elementType) {
+  public void selfValidate(DomainBase domain, ElementType elementType) {
     inputProvider.selfValidate(domain, elementType);
     var supportedTypes = inputMatcher.getSupportedTypes();
     var inputType = inputProvider.getValueType(domain, elementType);

@@ -39,11 +39,8 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.ImpactValuesDto;
 import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Process;
-import org.veo.core.entity.Scenario;
-import org.veo.core.entity.Scope;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -69,11 +66,11 @@ public class SchemaExtender {
   private final Supplier<ObjectNode> customLinkDto = provider.schema(CustomLinkDto.class);
   private final Supplier<ObjectNode> linkDto = provider.schema(LinkDto.class);
   private final Supplier<ObjectNode> impactValuesDto = provider.schema(ImpactValuesDto.class);
-  private final Map<String, Supplier<ObjectNode>> domainAssociationDtoByElementType =
+  private final Map<ElementType, Supplier<ObjectNode>> domainAssociationDtoByElementType =
       Arrays.stream(ElementTypeDtoInfo.values())
           .collect(
               Collectors.toMap(
-                  ElementTypeDtoInfo::getSingularTerm,
+                  ElementTypeDtoInfo::getElementType,
                   et -> provider.schema(et.getDomainAssociationDtoClass())));
 
   public static final String PROPS = "properties";
@@ -90,7 +87,7 @@ public class SchemaExtender {
    * definitions
    */
   @Deprecated
-  public void extendSchema(JsonNode schema, String elementType, Set<Domain> domains) {
+  public void extendSchema(JsonNode schema, ElementType elementType, Set<Domain> domains) {
     var domainsRoot = (ObjectNode) schema.get(PROPS).get("domains");
     var domainProps = domainsRoot.putObject(PROPS);
 
@@ -111,7 +108,7 @@ public class SchemaExtender {
    * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto} schema with
    * domain-specific definitions
    */
-  public void extendSchema(ObjectNode schema, String elementType, Domain domain) {
+  public void extendSchema(ObjectNode schema, ElementType elementType, Domain domain) {
     var linkProps = putProps(schema, "links");
     var customAspectProps = putProps(schema, "customAspects");
     var typeDef = domain.getElementTypeDefinition(elementType);
@@ -131,7 +128,7 @@ public class SchemaExtender {
 
   @Deprecated
   private ObjectNode addDomainAssociation(
-      ObjectNode domainProps, Domain domain, String elementType) {
+      ObjectNode domainProps, Domain domain, ElementType elementType) {
     var domainAssociationNode = domainAssociationDtoByElementType.get(elementType).get();
     extendDomainAssociationSchema(domainAssociationNode, elementType, domain);
     domainAssociationNode.put(ADDITIONAL_PROPERTIES, false);
@@ -139,17 +136,18 @@ public class SchemaExtender {
     return domainAssociationNode;
   }
 
-  private void extendDomainAssociationSchema(ObjectNode target, String elementType, Domain domain) {
-    if (elementType.equals(Scenario.SINGULAR_TERM)) {
+  private void extendDomainAssociationSchema(
+      ObjectNode target, ElementType elementType, Domain domain) {
+    if (elementType.equals(ElementType.SCENARIO)) {
       extendSchemaForScenario(target, domain);
     }
-    if (elementType.equals(Process.SINGULAR_TERM)) {
+    if (elementType.equals(ElementType.PROCESS)) {
       extendSchemaForProcess(target, domain);
     }
-    if (elementType.equals(Asset.SINGULAR_TERM)) {
+    if (elementType.equals(ElementType.ASSET)) {
       extendSchemaForAsset(target, domain);
     }
-    if (elementType.equals(Scope.SINGULAR_TERM)) {
+    if (elementType.equals(ElementType.SCOPE)) {
       extendSchemaForScope(target, domain);
     }
   }
@@ -272,7 +270,7 @@ public class SchemaExtender {
     // by JSON schema validation and are only addded to the schema as meta
     // information for the client.
     var targetProps = (ObjectNode) linkSchema.get(PROPS).get("target").get(PROPS);
-    targetProps.putObject(TYPE).putArray("enum").add(definition.getTargetType());
+    targetProps.putObject(TYPE).putArray("enum").add(definition.getTargetType().getSingularTerm());
     targetProps.putObject("subType").putArray("enum").add(definition.getTargetSubType());
     return linkSchema;
   }

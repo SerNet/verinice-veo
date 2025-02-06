@@ -24,19 +24,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.BreakingChange;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Incident;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.Process;
-import org.veo.core.entity.Scenario;
-import org.veo.core.entity.Scope;
+import org.veo.core.entity.ElementType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,20 +47,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
     oneOf = CustomAspectAttribute.class)
 public interface DomainSpecificValueLocation {
 
-  @Schema(
-      description = "The element type",
-      allowableValues = {
-        Asset.SINGULAR_TERM,
-        Process.SINGULAR_TERM,
-        Control.SINGULAR_TERM,
-        Scenario.SINGULAR_TERM,
-        Document.SINGULAR_TERM,
-        Incident.SINGULAR_TERM,
-        Person.SINGULAR_TERM,
-        Scope.SINGULAR_TERM
-      })
+  @Schema(description = "The element type")
   @NotNull
-  String elementType();
+  ElementType elementType();
 
   void validate(DomainTemplate domain);
 

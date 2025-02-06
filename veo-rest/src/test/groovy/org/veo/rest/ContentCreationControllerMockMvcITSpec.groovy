@@ -33,6 +33,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
@@ -86,19 +87,19 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             newDomain(client) { d->
                 name = "Domain-complete"
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c1'
                 })
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c2'
                 })
                 newCatalogItem(d,{
-                    elementType = "control"
+                    elementType = ElementType.CONTROL
                     subType = "CTL_TOM"
                     status = "NEW"
                     name = 'c3'
@@ -215,7 +216,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "update the element type schema in a domain with an object schema"() {
         given:
-        testDomain.applyElementTypeDefinition(newElementTypeDefinition("scope", testDomain) {
+        testDomain.applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, testDomain) {
             subTypes = [
                 SCP_Scope: newSubTypeDefinition {
                     sortKey = 1
@@ -253,7 +254,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: 'the entity schemas are updated'
         updatedDomain.version > lastVersion
-        with(updatedDomain.getElementTypeDefinition('scope')) {
+        with(updatedDomain.getElementTypeDefinition(ElementType.SCOPE)) {
             with(it.subTypes) {
                 it.keySet() == [
                     'SCP_Scope',
@@ -352,7 +353,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: 'the entity schemas are updated'
         updatedDomain.version > lastVersion
-        with(updatedDomain.getElementTypeDefinition('scope')) {
+        with(updatedDomain.getElementTypeDefinition(ElementType.SCOPE)) {
             with(it.subTypes) {
                 it.keySet() ==~ [
                     'SCP_Container',
@@ -497,7 +498,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         catalogItems.size() == 12
         with(catalogItems.sort{it.name}[0]) {
             name == "asset"
-            elementType == "asset"
+            elementType == ElementType.ASSET
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
@@ -507,7 +508,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         with(catalogItems.find{it.name == "example scenario Container" }) {
-            elementType == "scenario"
+            elementType == ElementType.SCENARIO
             status == "NEW"
             subType == "SCN_Scenario"
             abbreviation == "Cont"
@@ -516,7 +517,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         with(catalogItems.find{it.name == "example scope" }) {
-            elementType == "scope"
+            elementType == ElementType.SCOPE
             status == "NEW"
             subType == "SCP_Scope"
             abbreviation == "Cont"
@@ -525,7 +526,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         with(catalogItems.find{it.name == "asset scope member 1" }) {
-            elementType == "asset"
+            elementType == ElementType.ASSET
             status == "NEW"
             subType == "AST_Application"
             tailoringReferences.size() == 1
@@ -1293,7 +1294,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         domain1.profiles[0].items.size() == 10
         with(domain1.profiles[0].items.sort{it.name}[0]) {
             name == "asset"
-            elementType == "asset"
+            elementType == ElementType.ASSET
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
@@ -1305,7 +1306,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
         }
         with(domain1.profiles[0].items.find{it.name == "example scenario Container" }) {
-            elementType == "scenario"
+            elementType == ElementType.SCENARIO
             status == "NEW"
             subType == "SCN_Scenario"
             abbreviation == "Cont"
@@ -1332,7 +1333,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         profileItems.size() == 10
         with(profileItems.sort{it.name}[0]) {
             name == "asset"
-            elementType == "asset"
+            elementType == 'asset'
             subType == "AST_Application"
             abbreviation == null
         }
@@ -1462,7 +1463,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         catalogItems.size() == 8
         with(catalogItems.sort{it.name}[0]) {
             name == "asset"
-            elementType == "asset"
+            elementType == ElementType.ASSET
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
@@ -1522,7 +1523,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         profile.targetUri.endsWith(domain1.profiles[0].idAsString)
         with(domain1.profiles[0].items.sort{it.name}[0]) {
             name == "asset"
-            elementType == "asset"
+            elementType == ElementType.ASSET
             status == "NEW"
             subType == "AST_Application"
             abbreviation == null
@@ -1601,14 +1602,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             productId == 'EXAMPLE_ELEMENTS'
 
             items*.elementType ==~ [
-                "asset",
-                "control",
-                "document",
-                "incident",
-                "person",
-                "process",
-                "scenario",
-                "scope"
+                ElementType.ASSET,
+                ElementType.CONTROL,
+                ElementType.DOCUMENT,
+                ElementType.INCIDENT,
+                ElementType.PERSON,
+                ElementType.PROCESS,
+                ElementType.SCENARIO,
+                ElementType.SCOPE
             ]
             items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
         }
@@ -1647,14 +1648,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newDomain.name == "DSGVO-test"
         with(newDomain.profiles.find { it.name == "Example elements" }) {
             items*.elementType ==~ [
-                "asset",
-                "control",
-                "document",
-                "incident",
-                "person",
-                "process",
-                "scenario",
-                "scope"
+                ElementType.ASSET,
+                ElementType.CONTROL,
+                ElementType.DOCUMENT,
+                ElementType.INCIDENT,
+                ElementType.PERSON,
+                ElementType.PROCESS,
+                ElementType.SCENARIO,
+                ElementType.SCOPE
             ]
             items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
         }
@@ -1945,7 +1946,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         executeInTransaction {
             def domain = domainDataRepository.findById(domainId).get()
             domainDataRepository.save(domain.tap {
-                getElementTypeDefinition('scope').customAspects.scope_contactInformation.attributeDefinitions.scope_contactInformation_website = new ExternalDocumentAttributeDefinition()
+                getElementTypeDefinition(ElementType.SCOPE).customAspects.scope_contactInformation.attributeDefinitions.scope_contactInformation_website = new ExternalDocumentAttributeDefinition()
             })
         }
 
@@ -2028,8 +2029,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:"the data is rejected"
-        updateEx = thrown(UnprocessableDataException)
-        updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. 'none_existing_element_type' is not a valid element type - must be one of asset, control, document, incident, person, process, scenario, scope"
+        updateEx = thrown(HttpMessageNotReadableException)
+        updateEx.message.contains('Cannot deserialize value of type `org.veo.core.entity.ElementType` from String "none_existing_element_type"')
 
         when: "the customAspect does not exist"
         migrationDefinition().tap {
@@ -2079,7 +2080,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         executeInTransaction {
             def domain = domainDataRepository.findById(domainId).get()
             domainDataRepository.save(domain.tap {
-                getElementTypeDefinition('process').customAspects.get('process_opinionDPO').tap {
+                getElementTypeDefinition(ElementType.PROCESS).customAspects.get('process_opinionDPO').tap {
                     attributeDefinitions.remove('process_opinionDPO_opinionDPO')
                     attributeDefinitions.put('process_opinionDPO_new', new TextAttributeDefinition())
                 }

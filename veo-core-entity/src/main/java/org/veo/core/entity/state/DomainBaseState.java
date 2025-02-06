@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
 import org.veo.core.entity.decision.Decision;
@@ -40,7 +41,7 @@ public interface DomainBaseState extends EntityState {
   @NotNull
   String getAuthority();
 
-  Map<String, ElementTypeDefinitionState> getElementTypeDefinitionStates();
+  Map<ElementType, ElementTypeDefinitionState> getElementTypeDefinitionStates();
 
   Map<String, Inspection> getInspections();
 

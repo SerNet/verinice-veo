@@ -38,10 +38,8 @@ import jakarta.validation.constraints.Size;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -682,11 +680,5 @@ public class ContentCreationController extends AbstractVeoController {
           var body = CreateOutputMapper.map(out.domainTemplate());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
-  }
-
-  @InitBinder
-  public void initBinder(WebDataBinder dataBinder) {
-    dataBinder.registerCustomEditor(
-        ElementType.class, new IgnoreCaseEnumConverter<>(ElementType.class));
   }
 }

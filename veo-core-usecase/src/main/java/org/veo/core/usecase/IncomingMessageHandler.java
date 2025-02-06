@@ -18,8 +18,7 @@
 package org.veo.core.usecase;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.TemplateItemMigrationService;
@@ -35,9 +34,9 @@ public class IncomingMessageHandler {
   private final ElementMigrationService elementMigrationService;
   private final TemplateItemMigrationService templateItemMigrationService;
 
-  public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
+  public void handleElementTypeDefinitionUpdate(Domain domain, ElementType elementType) {
     repositoryProvider
-        .getElementRepositoryFor((Class<? extends Element>) elementType.getType())
+        .getElementRepositoryFor(elementType.getType())
         .findByDomain(domain)
         .forEach(element -> elementMigrationService.migrate(element, domain));
 

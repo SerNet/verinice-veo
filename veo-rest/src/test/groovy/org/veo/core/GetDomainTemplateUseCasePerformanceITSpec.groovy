@@ -24,7 +24,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
-import org.veo.core.entity.Control
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskMethod
@@ -76,7 +76,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
             }
             50.times {
                 dt.catalogItems.add(newCatalogItem(dt) {
-                    it.elementType = Control.SINGULAR_TERM
+                    it.elementType = ElementType.CONTROL
                     it.status = "BRAND_NEW"
                     it.subType = "RemoteControl"
                 })
@@ -89,7 +89,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
                 dt.profiles.add(newProfile(dt) { profile ->
                     30.times {
                         profile.items.add(newProfileItem(profile) {
-                            it.elementType = Control.SINGULAR_TERM
+                            it.elementType = ElementType.CONTROL
                             it.status = "BRAND_NEW"
                             it.subType = "RemoteControl"
                             it.appliedCatalogItem = dt.catalogItems[0]

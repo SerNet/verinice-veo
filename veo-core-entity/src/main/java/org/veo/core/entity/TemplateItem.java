@@ -27,7 +27,6 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.compliance.ImplementationStatus;
-import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.TailoringReferenceState;
@@ -36,7 +35,7 @@ import org.veo.core.entity.state.TemplateItemState;
 public interface TemplateItem<
         T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
     extends TemplateItemState<T, TNamespace>, SymIdentifiable<T, TNamespace>, Versioned {
-  void setElementType(String aType);
+  void setElementType(ElementType aType);
 
   void setSubType(String subType);
 
@@ -72,19 +71,7 @@ public interface TemplateItem<
   void setAspects(TemplateItemAspects aspects);
 
   default Class<? extends Element> getElementInterface() {
-    return (Class<? extends Element>) EntityType.getBySingularTerm(getElementType()).getType();
-  }
-
-  static void checkValidElementType(String type) {
-    if (EntityType.ELEMENT_TYPES.stream().noneMatch(et -> et.getSingularTerm().equals(type))) {
-      throw new UnprocessableDataException(
-          "The given elementType '"
-              + type
-              + "' is not a valid template type. Valid types are: "
-              + EntityType.ELEMENT_TYPES.stream()
-                  .map(EntityType::getSingularTerm)
-                  .collect(Collectors.joining(", ")));
-    }
+    return getElementType().getType();
   }
 
   DomainBase getDomainBase();

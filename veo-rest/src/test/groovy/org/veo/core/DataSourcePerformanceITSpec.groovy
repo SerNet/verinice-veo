@@ -23,6 +23,7 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
@@ -487,7 +488,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             client = clientRepository.save(newClient() {
                 newDomain(it) {
-                    applyElementTypeDefinition(newElementTypeDefinition("process",it) {
+                    applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS,it) {
                         customAspects.aType = newCustomAspectDefinition {}
                     })
                 }
@@ -507,7 +508,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             client = clientRepository.save(newClient() {
                 newDomain(it) {
-                    applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                         customAspects.aType = newCustomAspectDefinition {
                             attributeDefinitions = [
                                 PROP_KEY: new TextAttributeDefinition()
@@ -607,7 +608,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             }
             for (i in 0..<count) {
                 def type = "aType $i"
-                domain.getElementTypeDefinition("process").customAspects[type] = newCustomAspectDefinition {}
+                domain.getElementTypeDefinition(ElementType.PROCESS).customAspects[type] = newCustomAspectDefinition {}
                 process.applyCustomAspect(newCustomAspect(type, domain))
             }
             processRepository.save(process)

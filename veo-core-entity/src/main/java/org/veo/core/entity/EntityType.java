@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import static java.util.function.Function.identity;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -60,32 +58,8 @@ public enum EntityType {
   @Getter private final String singularTerm;
   @Getter private final String pluralTerm;
 
-  public static final Set<String> PLURAL_TERMS =
-      Stream.of(values()).map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
-
   public static final Set<Class<? extends Entity>> TYPES =
       Stream.of(values()).map(et -> et.type).collect(Collectors.toUnmodifiableSet());
-
-  public static final Set<EntityType> ELEMENT_TYPES =
-      Stream.of(values())
-          .filter(type -> Element.class.isAssignableFrom(type.type))
-          .collect(Collectors.toUnmodifiableSet());
-
-  public static final Set<EntityType> RISK_AFFECTED_TYPES =
-      Stream.of(values())
-          .filter(type -> RiskAffected.class.isAssignableFrom(type.type))
-          .collect(Collectors.toUnmodifiableSet());
-
-  public static final Set<String> ELEMENT_SINGULAR_TERMS =
-      ELEMENT_TYPES.stream().map(et -> et.singularTerm).collect(Collectors.toUnmodifiableSet());
-
-  public static final Set<String> ELEMENT_PLURAL_TERMS =
-      ELEMENT_TYPES.stream().map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
-
-  public static final Set<Class<? extends Element>> ELEMENT_TYPE_CLASSES =
-      ELEMENT_TYPES.stream()
-          .map(t -> (Class<? extends Element>) t.type)
-          .collect(Collectors.toUnmodifiableSet());
 
   public static final Set<String> TYPE_DESIGNATORS =
       Set.of(
@@ -99,16 +73,8 @@ public enum EntityType {
           Scenario.TYPE_DESIGNATOR,
           Scope.TYPE_DESIGNATOR);
 
-  public static final Set<EntityType> RISK_RELETATED_ELEMENTS =
-      ELEMENT_TYPES.stream()
-          .filter(type -> RiskRelated.class.isAssignableFrom(type.type))
-          .collect(Collectors.toUnmodifiableSet());
-
   private static final Map<String, Class<? extends Entity>> TYPE_BY_PLURAL_TERM =
       Stream.of(values()).collect(Collectors.toMap(EntityType::getPluralTerm, EntityType::getType));
-
-  private static final Map<String, EntityType> ENTITY_TYPE_BY_SINGULAR_TERM =
-      Stream.of(values()).collect(Collectors.toMap(EntityType::getSingularTerm, identity()));
 
   private static final Map<Class<? extends Entity>, String> SINGULAR_TERM_BY_TYPE =
       Stream.of(values())
@@ -123,25 +89,11 @@ public enum EntityType {
             () -> new IllegalArgumentException("Unknown entity type '%s'".formatted(pluralTerm)));
   }
 
-  public static EntityType getBySingularTerm(String singularTerm) {
-    return Optional.ofNullable(ENTITY_TYPE_BY_SINGULAR_TERM.get(singularTerm)).orElseThrow();
-  }
-
   public static String getSingularTermByType(Class<? extends Entity> type) {
     return Optional.ofNullable(SINGULAR_TERM_BY_TYPE.get(type)).orElseThrow();
   }
 
   public static String getPluralTermByType(Class<? extends Entity> type) {
     return Optional.ofNullable(PLURAL_TERM_BY_TYPE.get(type)).orElseThrow();
-  }
-
-  public static void validateElementType(String elementType) {
-    if (!ELEMENT_SINGULAR_TERMS.contains(elementType)) {
-      throw new IllegalArgumentException(
-          "'%s' is not a valid element type - must be one of %s"
-              .formatted(
-                  elementType,
-                  ELEMENT_SINGULAR_TERMS.stream().sorted().collect(Collectors.joining(", "))));
-    }
   }
 }

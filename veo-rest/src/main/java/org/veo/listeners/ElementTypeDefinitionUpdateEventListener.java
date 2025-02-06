@@ -23,7 +23,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.event.ElementTypeDefinitionUpdateEvent;
 import org.veo.core.usecase.MessageCreator;
 
@@ -43,8 +42,7 @@ public class ElementTypeDefinitionUpdateEventListener {
   @EventListener
   @Transactional(propagation = MANDATORY)
   void handle(ElementTypeDefinitionUpdateEvent event) {
-    var entityType =
-        EntityType.getBySingularTerm(event.getElementTypeDefinition().getElementType());
-    messageCreator.createElementTypeDefinitionUpdateMessage(event.getDomain(), entityType);
+    messageCreator.createElementTypeDefinitionUpdateMessage(
+        event.getDomain(), event.getElementTypeDefinition().getElementType());
   }
 }

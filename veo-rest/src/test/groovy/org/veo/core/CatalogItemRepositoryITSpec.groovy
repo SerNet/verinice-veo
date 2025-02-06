@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.ref.TypedSymbolicId
 import org.veo.persistence.access.CatalogItemRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -46,7 +46,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         given: "a client with a domain containing an item"
         Client client = newClient()
         def domain = newDomain(client) {domain->
-            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, domain) {
                 subTypes = [
                     ctl : newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -55,7 +55,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
             })
         }
         newCatalogItem(domain) {
-            elementType = Control.SINGULAR_TERM
+            elementType = ElementType.CONTROL
             name = 'Control 1'
             subType = "ctl"
             status = "NEW"
@@ -70,7 +70,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         item.present
         with( item.get() ) {
             name == 'Control 1'
-            elementType == 'control'
+            elementType == ElementType.CONTROL
         }
     }
 

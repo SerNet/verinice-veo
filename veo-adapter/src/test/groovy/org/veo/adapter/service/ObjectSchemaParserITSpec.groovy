@@ -32,6 +32,7 @@ import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
+
 //TODO #3042: remove this when we remove support for JSON schema
 class ObjectSchemaParserITSpec extends Specification {
 
@@ -49,7 +50,7 @@ class ObjectSchemaParserITSpec extends Specification {
 
         then:
         result == elementDefinition
-        1 * entityFactory.createElementTypeDefinition('process', null) >> elementDefinition
+        1 * entityFactory.createElementTypeDefinition(ElementType.PROCESS, null) >> elementDefinition
         1 * elementDefinition.setSubTypes({
             it.keySet() == [
                 'PRO_DataTransfer',
@@ -108,12 +109,12 @@ class ObjectSchemaParserITSpec extends Specification {
         1 * elementDefinition.setLinks({
             it.size() == 12
             with( it.process_requiredApplications) {
-                it.targetType == 'asset'
+                it.targetType == ElementType.ASSET
                 it.targetSubType == 'AST_Application'
                 it.attributeDefinitions == [:]
             }
             with( it.process_dataType) {
-                it.targetType == 'asset'
+                it.targetType == ElementType.ASSET
                 it.targetSubType == 'AST_Datatype'
                 with( it.attributeDefinitions) {
                     with (process_dataType_comment) {

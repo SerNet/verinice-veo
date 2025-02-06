@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.CompositeElementQuery;
@@ -70,13 +70,13 @@ public class GetElementsUseCase
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
-  private ElementQueryProvider<? extends Element> getRepo(QueryCondition<String> elementTypes) {
+  private ElementQueryProvider<? extends Element> getRepo(
+      QueryCondition<ElementType> elementTypes) {
     // Prefer specific repository, because it supports more query filters.
     // TODO #2902 fix filters with generic repo
     if (elementTypes != null && elementTypes.getValues().size() == 1) {
       return repositoryProvider.getElementRepositoryFor(
-          (Class<? extends Element>)
-              EntityType.getBySingularTerm(elementTypes.getValues().iterator().next()).getType());
+          elementTypes.getValues().iterator().next().getType());
     }
     return genericRepository;
   }
@@ -148,7 +148,7 @@ public class GetElementsUseCase
   @With
   public record InputData(
       Client authenticatedClient,
-      QueryCondition<String> elementTypes,
+      QueryCondition<ElementType> elementTypes,
       QueryCondition<UUID> unitUuid,
       SingleValueQueryCondition<UUID> domainId,
       QueryCondition<String> displayName,

@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -69,17 +70,17 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 domainTemplate = template
                 name = "ISO"
-                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                     subTypes = [
                         EventfulAsset: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
                     subTypes = [
                         EventfulControl: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, it) {
                     subTypes = [
                         EventfulDocument: newSubTypeDefinition()
                     ]
@@ -92,15 +93,15 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                         }
                     ]
                     links = [
-                        systems: newLinkDefinition("asset", "EventfulAsset")
+                        systems: newLinkDefinition(ElementType.ASSET, "EventfulAsset")
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         EventfulProcess: newSubTypeDefinition()
                     ]
                 })
-                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCENARIO, it) {
                     subTypes = [
                         EventfulScenario: newSubTypeDefinition()
                     ]
@@ -243,7 +244,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         def domainId = domain.idAsString
         def domain2 = newDomain(client) {
             name = "the other one"
-            applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, it) {
                 subTypes = [
                     Dogmatic: newSubTypeDefinition()
                 ]
@@ -484,12 +485,12 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             authority = 'me'
 
             def item1 = newCatalogItem(it, {
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "AST"
                 status = "NEW"
             })
             def item2 = newCatalogItem(it, {
-                elementType = "control"
+                elementType = ElementType.CONTROL
                 subType = "CTL_TOM"
                 status = "NEW"
             })
@@ -501,7 +502,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         when: "adding a catalog to the domain template"
         newCatalogItem(domainTemplate) {
-            elementType = "asset"
+            elementType = ElementType.ASSET
             name = "a2"
             subType = "CTL_TOM"
             status = "NEW"

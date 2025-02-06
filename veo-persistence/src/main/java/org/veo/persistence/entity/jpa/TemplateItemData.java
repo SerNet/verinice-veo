@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -30,12 +31,14 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
@@ -98,7 +101,9 @@ public abstract class TemplateItemData<
 
   @NotNull
   @Column(name = "elementtype")
-  protected String elementType;
+  @Enumerated
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  protected ElementType elementType;
 
   @NotNull
   @Column(name = "subtype")
@@ -118,8 +123,7 @@ public abstract class TemplateItemData<
   private TemplateItemAspects aspects = new TemplateItemAspects();
 
   @Override
-  public void setElementType(String elementType) {
-    TemplateItem.checkValidElementType(elementType);
+  public void setElementType(ElementType elementType) {
     this.elementType = elementType;
   }
 
@@ -212,10 +216,7 @@ public abstract class TemplateItemData<
       createRequirementImplementationTailoringReference();
 
   protected Element createElement(Unit owner) {
-    TemplateItem.checkValidElementType(getElementType());
-    var element =
-        new IdentifiableDataFactory()
-            .create((Class<Element>) EntityType.getBySingularTerm(getElementType()).getType());
+    var element = new IdentifiableDataFactory().create(getElementType().getType());
     element.setOwner(owner);
     return element;
   }

@@ -25,9 +25,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -48,7 +48,7 @@ public class SaveControlImplementationConfigurationUseCase
     var config =
         input.controlImplementationConfiguration.toConfig(
             domain.getControlImplementationConfiguration());
-    validate(domain.getElementTypeDefinition(Control.SINGULAR_TERM), config);
+    validate(domain.getElementTypeDefinition(ElementType.CONTROL), config);
     domain.setControlImplementationConfiguration(config);
     domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;

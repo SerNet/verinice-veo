@@ -39,7 +39,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.repository.DomainRepository;
@@ -130,7 +130,7 @@ public class MessageSubscriber {
 
   private void handleElementTypeDefinitionUpdate(JsonNode content) {
     var domainId = UUID.fromString(content.get("domainId").asText());
-    var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
+    var elementType = ElementType.fromString(content.get("elementType").asText());
     log.info(
         "Received {} message for element type {} in domain {}",
         EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,

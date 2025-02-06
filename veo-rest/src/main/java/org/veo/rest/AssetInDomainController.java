@@ -91,6 +91,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -224,7 +225,7 @@ public class AssetInDomainController
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformAsset2Dto,
-        Asset.class);
+        ElementType.ASSET);
   }
 
   @Operation(summary = "Loads the parts of an asset in a domain")
@@ -291,7 +292,7 @@ public class AssetInDomainController
             null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformAsset2Dto,
-        Asset.class);
+        ElementType.ASSET);
   }
 
   @Operation(summary = "Creates an asset, assigning it to the domain")
@@ -432,7 +433,7 @@ public class AssetInDomainController
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Asset.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.ASSET);
   }
 
   @Operation(summary = "Loads available domain-specific actions for an asset")
@@ -445,7 +446,7 @@ public class AssetInDomainController
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    return elementService.getActions(domainId, uuid, Asset.class, auth);
+    return elementService.getActions(domainId, uuid, ElementType.ASSET, auth);
   }
 
   @Operation(summary = "Performs a domain-specific action on an asset")

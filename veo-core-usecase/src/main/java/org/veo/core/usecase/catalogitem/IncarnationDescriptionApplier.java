@@ -35,6 +35,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
@@ -152,7 +153,7 @@ public class IncarnationDescriptionApplier {
             Comparator.comparing(
                 description -> {
                   var item = itemsById.get(description.getItemRef().getSymbolicId());
-                  return !Control.SINGULAR_TERM.equals(item.getElementType());
+                  return item.getElementType() != ElementType.CONTROL;
                 }))
         .forEach(
             description -> {

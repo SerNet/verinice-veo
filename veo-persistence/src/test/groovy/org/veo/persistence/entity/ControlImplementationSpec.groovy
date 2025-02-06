@@ -18,7 +18,7 @@
 package org.veo.persistence.entity
 
 import org.veo.core.entity.Control
-import org.veo.core.entity.EntityType
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
@@ -68,7 +68,7 @@ class ControlImplementationSpec extends VeoSpec {
         impl2 == impl
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def "implement a control for a #type"() {
@@ -110,7 +110,7 @@ class ControlImplementationSpec extends VeoSpec {
         reqImpls.collect{it.id.toString()} ==~ refs.collect{it.keyRef}
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def "disassociate a control from a #type"() {
@@ -155,7 +155,7 @@ class ControlImplementationSpec extends VeoSpec {
         elmt.requirementImplementations ==~ remainingRIs
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def "disassociate controls with a shared RI"() {
@@ -218,7 +218,7 @@ class ControlImplementationSpec extends VeoSpec {
         modified.getId() == reqImplId
 
         where:
-        type << EntityType.RISK_AFFECTED_TYPES*.singularTerm
+        type << ElementType.RISK_AFFECTED_TYPES*.singularTerm
     }
 
     def "existing RIs are added to new CI"() {

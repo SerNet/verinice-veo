@@ -20,6 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.GenericElementRepository
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -86,31 +87,31 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
         then:
         counts.size() == 5
         with(counts[0]) {
-            type == 'document'
+            type == ElementType.DOCUMENT
             subType == 'DOC_Contract'
             status == 'ARCHIVED'
             count == 1
         }
         with(counts[1]) {
-            type == 'person'
+            type == ElementType.PERSON
             subType == 'PER_DataProtectionOfficer'
             status == 'RELEASED'
             count == 1
         }
         with(counts[2]) {
-            type == 'person'
+            type == ElementType.PERSON
             subType == 'PER_Person'
             status == 'IN_PROGRESS'
             count == 1
         }
         with(counts[3]) {
-            type == 'person'
+            type == ElementType.PERSON
             subType == 'PER_Person'
             status == 'NEW'
             count == 2
         }
         with(counts[4]) {
-            type == 'scope'
+            type == ElementType.SCOPE
             subType == 'SCP_ResponsibleBody'
             status == 'NEW'
             count == 1

@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
@@ -55,7 +56,7 @@ public class MaxRiskExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, String elementType) {
+  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
     return BigDecimal.class;
   }
 

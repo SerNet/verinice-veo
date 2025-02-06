@@ -17,14 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
+import java.util.stream.Stream;
+
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 
 /** A domain must contain a definition for each supported element type. */
 public class CompleteEntityTypeDefinitionsSpecification implements EntitySpecification<Domain> {
   @Override
   public boolean test(Domain entity) {
-    return EntityType.ELEMENT_TYPES.stream()
-        .allMatch(t -> entity.findElementTypeDefinition(t.getSingularTerm()).isPresent());
+    return Stream.of(ElementType.values())
+        .allMatch(t -> entity.findElementTypeDefinition(t).isPresent());
   }
 }

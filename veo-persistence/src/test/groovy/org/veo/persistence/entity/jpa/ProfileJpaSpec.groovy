@@ -22,6 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -53,13 +54,13 @@ class ProfileJpaSpec extends AbstractJpaSpec{
             profileRepository.save(newProfile(domain) {
                 def item1 = newProfileItem(it) {
                     name = "target"
-                    elementType = "asset"
+                    elementType = ElementType.ASSET
                     subType = "assetoBalsamico"
                     status = "delicious"
                 }
                 def item2 = newProfileItem(it) {
                     name = "source"
-                    elementType = "asset"
+                    elementType = ElementType.ASSET
                     subType = "assetoBalsamico"
                     status = "delicious"
                     tailoringReferences = [

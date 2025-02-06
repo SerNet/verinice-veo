@@ -47,7 +47,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "scope")
+@Entity(name = "SCOPE")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Scope {
 

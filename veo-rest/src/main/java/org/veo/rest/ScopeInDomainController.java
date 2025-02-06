@@ -94,6 +94,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
@@ -231,7 +232,7 @@ public class ScopeInDomainController
             updatedBy,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScope2Dto,
-        Scope.class);
+        ElementType.SCOPE);
   }
 
   @Operation(summary = "Creates a scope, assigning it to the domain")
@@ -409,7 +410,7 @@ public class ScopeInDomainController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
-      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) Set<String> elementTypes) {
+      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) Set<ElementType> elementTypes) {
     var client = clientLookup.getClient(auth);
     elementService.ensureElementExists(client, domainId, uuid, getScopeUseCase);
     return elementService.getElements(
@@ -427,7 +428,7 @@ public class ScopeInDomainController
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
       Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, Scope.SINGULAR_TERM);
+    return elementService.getJsonSchema(auth, domainId, ElementType.SCOPE);
   }
 
   @Operation(summary = "Loads available domain-specific actions for a scope")
@@ -440,7 +441,7 @@ public class ScopeInDomainController
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    return elementService.getActions(domainId, uuid, Scope.class, auth);
+    return elementService.getActions(domainId, uuid, ElementType.SCOPE, auth);
   }
 
   @Operation(summary = "Performs a domain-specific action on a scope")

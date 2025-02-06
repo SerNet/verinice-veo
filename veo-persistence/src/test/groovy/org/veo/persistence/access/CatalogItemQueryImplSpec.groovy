@@ -20,6 +20,7 @@ package org.veo.persistence.access
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.repository.CatalogItemQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
@@ -54,13 +55,13 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         repo.saveAll([
             newCatalogItem(domain) {
                 name = "my CI 1"
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             },
             newCatalogItem(domain) {
                 name = "my CI 2"
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             }
@@ -70,7 +71,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
         newDomain(client) {
             newCatalogItem(it) {
                 name = "other CI"
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             }
@@ -91,21 +92,21 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
             newCatalogItem(domain) {
                 name = "1 One"
                 abbreviation = '1 O'
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             },
             newCatalogItem(domain) {
                 name = "2 Two"
                 abbreviation = '2 T'
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             },
             newCatalogItem(domain) {
                 name = "10 Ten"
                 abbreviation = '10 T'
-                elementType = "asset"
+                elementType = ElementType.ASSET
                 subType = "server"
                 status = "up"
             }
@@ -131,7 +132,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
                 abbreviation = "ab"
                 name = "abigail"
                 description = "a youtuber"
-                elementType = "person"
+                elementType = ElementType.PERSON
                 subType = "philosopher"
                 status = "alive"
             },
@@ -139,7 +140,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
                 abbreviation = "cl"
                 name = "clemens"
                 description = "a doctor"
-                elementType = "person"
+                elementType = ElementType.PERSON
                 subType = "doctor"
                 status = "alive"
             },
@@ -147,7 +148,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
                 abbreviation = "ea"
                 name = "earthQuake"
                 description = "shake the earth"
-                elementType = "incident"
+                elementType = ElementType.INCIDENT
                 subType = "naturalDisaster"
                 status = "old"
             },
@@ -162,7 +163,7 @@ class CatalogItemQueryImplSpec extends AbstractJpaSpec {
                 ]
 
         when:
-        query.whereElementTypeMatches(new QueryCondition<>(Set.of("person")))
+        query.whereElementTypeMatches(new QueryCondition<>(Set.of(ElementType.PERSON)))
 
         then:
         query.execute(PagingConfiguration.UNPAGED)

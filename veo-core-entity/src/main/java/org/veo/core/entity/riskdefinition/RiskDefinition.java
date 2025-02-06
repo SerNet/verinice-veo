@@ -20,7 +20,7 @@ package org.veo.core.entity.riskdefinition;
 import static org.veo.core.entity.riskdefinition.DimensionDefinition.initLevel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +32,7 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.EntityType;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -79,7 +79,8 @@ public class RiskDefinition {
    * <p>In the entries of this map, the key is the element type (singular term) and the value is a
    * list of link types.
    */
-  @With @Valid @NotNull private Map<String, List<String>> impactInheritingLinks = new HashMap<>();
+  @With @Valid @NotNull
+  private Map<ElementType, List<String>> impactInheritingLinks = new EnumMap<>(ElementType.class);
 
   public Optional<CategoryDefinition> getCategory(String categoryId) {
     return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();
@@ -119,8 +120,7 @@ public class RiskDefinition {
                 if (!elementTypeDefinition.getLinks().containsKey(link)) {
                   throw new UnprocessableDataException(
                       "Link type '%s' does not exist for %s"
-                          .formatted(
-                              link, EntityType.getBySingularTerm(elementType).getPluralTerm()));
+                          .formatted(link, elementType.getPluralTerm()));
                 }
               });
         });

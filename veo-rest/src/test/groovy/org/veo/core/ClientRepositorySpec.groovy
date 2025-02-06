@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
-import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
@@ -187,7 +187,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
-            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, domain) {
                 subTypes = [
                     ctl : newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -197,18 +197,18 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
 
         newCatalogItem(domain, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             subType = "ctl"
             status = "NEW"
         }
         )
         newCatalogItem(domain, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             subType = "ctl"
             status = "NEW"
         })
         newCatalogItem(domain, {
-            elementType = "control"
+            elementType = ElementType.CONTROL
             subType = "ctl"
             status = "NEW"
         })
