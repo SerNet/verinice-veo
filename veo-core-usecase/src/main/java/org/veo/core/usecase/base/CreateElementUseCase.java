@@ -44,7 +44,6 @@ import org.veo.core.usecase.service.RefResolverFactory;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Deprecated
 public class CreateElementUseCase<TEntity extends Element>
     implements TransactionalUseCase<
             CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>>,
