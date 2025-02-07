@@ -651,10 +651,7 @@
           }
         }
       ],
-      "riskMethod": {
-        "impactMethod": "highwatermark",
-        "description": "description"
-      }
+      "riskMethod": {}
     }
   }
 }

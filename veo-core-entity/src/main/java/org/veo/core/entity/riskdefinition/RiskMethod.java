@@ -20,8 +20,6 @@ package org.veo.core.entity.riskdefinition;
 import java.util.Locale;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
@@ -37,8 +35,6 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-// when all domains are migrated to the new structure this ignoreProperties can be removed
-@JsonIgnoreProperties({"description", "impactMethod"})
 public class RiskMethod implements TranslationProvider {
   @ToString.Include @EqualsAndHashCode.Include
   private TranslationMap translations = new TranslationMap();

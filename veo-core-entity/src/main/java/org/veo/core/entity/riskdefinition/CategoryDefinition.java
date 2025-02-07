@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.risk.ImpactRef;
@@ -50,8 +49,6 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-// when all domains are migrated to the new structure this ignoreProperties can be removed
-@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class CategoryDefinition extends DimensionDefinition {
   public CategoryDefinition(
       String id,

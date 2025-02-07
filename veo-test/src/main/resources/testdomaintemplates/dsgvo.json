@@ -2055,9 +2055,7 @@
             "impactMethod": "highwatermark",
             "description": "description"
           }
-        },
-        "impactMethod": "highwatermark",
-        "description": "description"
+        }
       },
       "impactInheritingLinks": {
         "process": [
