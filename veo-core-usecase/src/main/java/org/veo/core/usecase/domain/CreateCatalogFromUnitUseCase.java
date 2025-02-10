@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -69,6 +70,8 @@ public class CreateCatalogFromUnitUseCase
 
   public EmptyOutput execute(InputData input) {
     Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
+    Set<CatalogItem> previousCatalogItems = Set.copyOf(domain.getCatalogItems());
+
     Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
@@ -86,7 +89,11 @@ public class CreateCatalogFromUnitUseCase
             .collect(Collectors.toMap(Function.identity(), e -> e.toCatalogItem(domain)));
     createTailorreferences(elementsToCatalogItems, domain);
 
-    catalogItemRepository.saveAll(new HashSet<>(elementsToCatalogItems.values()));
+    Set<CatalogItem> newCatalogItems =
+        elementsToCatalogItems.values().stream()
+            .filter(Predicate.not(previousCatalogItems::contains))
+            .collect(Collectors.toSet());
+    catalogItemRepository.saveAll(newCatalogItems);
     log.info(
         "new catalog in domain {} with {} elements created", domain.getName(), elements.size());
     domain.setUpdatedAt(Instant.now());
