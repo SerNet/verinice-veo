@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.aspects;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Constraints;
 
 /**
@@ -39,4 +40,8 @@ public interface ElementDomainAssociation extends Aspect {
   String getSubType();
 
   void setStatus(String status);
+
+  CatalogItem getAppliedCatalogItem();
+
+  void setAppliedCatalogItem(CatalogItem item);
 }

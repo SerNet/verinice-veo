@@ -49,8 +49,6 @@ public class EntityValidator {
             new TypedValidator<>(Element.class, new ElementDomainsAreSubsetOfUnitDomains()),
             new TypedValidator<>(Element.class, new ElementOnlyReferencesItsOwnUnitSpecification()),
             new TypedValidator<>(Element.class, new ElementIsAssociatedWithActiveDomains()),
-            new TypedValidator<>(
-                Element.class, new ElementOnlyReferencesUpToOneCatalogItemPerDomain()),
             new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
             new TypedValidator<>(Unit.class, new UnitDomainsAreSubsetOfClientDomains()),
             new TypedValidator<>(

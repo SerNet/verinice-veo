@@ -79,7 +79,7 @@ public interface ElementQuery<T extends Element> extends Query<T, String> {
 
   void whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-  void whereAppliedItemsContain(Collection<CatalogItem> items);
+  void whereAppliedItemIn(Collection<CatalogItem> items, Domain domain);
 
   void whereOwnerIs(Unit unit);
 

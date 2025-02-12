@@ -125,11 +125,15 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void whereAppliedItemsContain(Collection<CatalogItem> items) {
+  public void whereAppliedItemIn(Collection<CatalogItem> items, Domain domain) {
     mySpec =
         mySpec.and(
-            (root, query, criteriaBuilder) ->
-                root.join("appliedCatalogItems", JoinType.LEFT).in(items));
+            (root, query, criteriaBuilder) -> {
+              Join<Object, Object> join = root.join("domainAssociations", JoinType.INNER);
+              return criteriaBuilder.and(
+                  criteriaBuilder.equal(join.get("domain"), domain),
+                  criteriaBuilder.in(join.get("appliedCatalogItem")).value(items));
+            });
   }
 
   @Override

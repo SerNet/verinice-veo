@@ -49,7 +49,6 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch e.decisionResultsAspects "
           + "left join fetch e.domainAssociations da "
           + "left join fetch da.domain "
-          + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
           + "where e.id = ?1")
   @Override
@@ -62,7 +61,6 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch e.decisionResultsAspects "
           + "left join fetch e.domainAssociations da "
           + "left join fetch da.domain "
-          + "left join fetch e.appliedCatalogItems "
           + "left join fetch e.links "
           + "where e.id = ?1 and e.owner.client.id = ?2")
   @Nonnull
@@ -85,7 +83,7 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "appliedCatalogItems")
+  @EntityGraph(attributePaths = "domainAssociations.appliedCatalogItem")
   List<T> findAllWithAppliedCatalogItemsByIdIn(Iterable<UUID> ids);
 
   @Override

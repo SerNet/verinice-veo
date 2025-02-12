@@ -220,7 +220,6 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             "delete from process_parts where composite_id in (select db_id from element where dtype = 'process' and owner_id = ?1)",
             "delete from scenario_parts where composite_id in (select db_id from element where dtype = 'scenario' and owner_id = ?1)",
             "delete from scope_members where scope_id in (select db_id from element where dtype = 'scope' and owner_id = ?1)",
-            "delete from element_applied_catalog_items where element_db_id in (select db_id from element where owner_id = ?1)",
             "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('asset', 'process', 'scope') and owner_id = ?1))")
         .forEach(
             statement -> em.createNativeQuery(statement).setParameter(1, unitId).executeUpdate());

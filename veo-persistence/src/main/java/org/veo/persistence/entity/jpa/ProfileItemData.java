@@ -31,6 +31,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationTailoringReference;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
@@ -75,7 +76,7 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
   /** create an instance of the described element* */
   @Override
   public Element incarnate(Unit owner) {
-    requireDomainMembership();
+    Domain domain = requireDomainMembership();
 
     Element element = createElement(owner);
     element.setName(name);
@@ -83,7 +84,7 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
     element.setAbbreviation(abbreviation);
     element.apply(this);
     if (getAppliedCatalogItem() != null) {
-      element.getAppliedCatalogItems().add(getAppliedCatalogItem());
+      element.setAppliedCatalogItem(domain, getAppliedCatalogItem());
     }
     return element;
   }

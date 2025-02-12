@@ -277,39 +277,6 @@ class EntityValidatorSpec extends VeoSpec {
         thrown(EntityValidationException)
     }
 
-    def "a person referencing a catalog item from an unassociated domain does not pass validation"() {
-        given:
-        Person person = newPerson(unit) {
-            associateWithDomain(domain, "NormalPerson", "NEW")
-            appliedCatalogItems = [
-                newCatalogItem(newDomain(client))
-            ]
-        }
-
-        when:
-        validator.validate(person)
-
-        then:
-        thrown(EntityValidationException)
-    }
-
-    def "a person referencing multiple catalog items from the same domain does not pass validation"() {
-        given:
-        Person person = newPerson(unit) {
-            associateWithDomain(domain, "NormalPerson", "NEW")
-            appliedCatalogItems = [
-                newCatalogItem(domain),
-                newCatalogItem(domain),
-            ]
-        }
-
-        when:
-        validator.validate(person)
-
-        then:
-        thrown(EntityValidationException)
-    }
-
     def "a unit using another client's domain does not pass validation"() {
         given: "a unit using another client's domain"
         def unit = newUnit(client) {

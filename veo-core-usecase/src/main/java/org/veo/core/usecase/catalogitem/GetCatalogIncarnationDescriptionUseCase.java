@@ -93,7 +93,8 @@ public class GetCatalogIncarnationDescriptionUseCase
             tailoringReferenceFilter,
             config.mode(),
             config.useExistingIncarnations(),
-            unit);
+            unit,
+            domain);
     var incarnationDescriptions =
         itemsToElements.entrySet().stream()
             // Only create incarnation descriptions for items without an existing incarnation.
@@ -156,8 +157,10 @@ public class GetCatalogIncarnationDescriptionUseCase
       Predicate<? super TailoringReference<?, ?>> tailoringReferenceFilter,
       IncarnationRequestModeType mode,
       IncarnationLookup lookup,
-      Unit unit) {
-    var current = buildIncarnationMap(requestedItems, unit, lookup == IncarnationLookup.ALWAYS);
+      Unit unit,
+      Domain domain) {
+    var current =
+        buildIncarnationMap(requestedItems, unit, domain, lookup == IncarnationLookup.ALWAYS);
     var result = new HashMap<>(current);
 
     switch (mode) {
@@ -174,7 +177,7 @@ public class GetCatalogIncarnationDescriptionUseCase
           break;
         }
         var referencedItems = getReferencedItems(current, result, tailoringReferenceFilter, false);
-        buildIncarnationMap(referencedItems, unit, true).entrySet().stream()
+        buildIncarnationMap(referencedItems, unit, domain, true).entrySet().stream()
             .filter(itemToElement -> itemToElement.getValue().isPresent())
             .forEach(itemToElement -> result.put(itemToElement.getKey(), itemToElement.getValue()));
       }
@@ -187,7 +190,8 @@ public class GetCatalogIncarnationDescriptionUseCase
           var nextLevelItems =
               getReferencedItems(
                   current, result, tailoringReferenceFilter, lookup == IncarnationLookup.ALWAYS);
-          current = buildIncarnationMap(nextLevelItems, unit, lookup != IncarnationLookup.NEVER);
+          current =
+              buildIncarnationMap(nextLevelItems, unit, domain, lookup != IncarnationLookup.NEVER);
           result.putAll(current);
         }
       }
@@ -228,11 +232,11 @@ public class GetCatalogIncarnationDescriptionUseCase
    *     the unit.
    */
   private Map<CatalogItem, Optional<Element>> buildIncarnationMap(
-      Collection<CatalogItem> items, Unit unit, boolean addExistingIncarnations) {
+      Collection<CatalogItem> items, Unit unit, Domain domain, boolean addExistingIncarnations) {
     if (addExistingIncarnations) {
       var query = genericElementRepository.query(unit.getClient());
       query.whereOwnerIs(unit);
-      query.whereAppliedItemsContain(items);
+      query.whereAppliedItemIn(items, domain);
       query.fetchAppliedCatalogItems();
       var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       return items.stream()
@@ -241,7 +245,8 @@ public class GetCatalogIncarnationDescriptionUseCase
                   Function.identity(),
                   item ->
                       elements.stream()
-                          .filter(e -> e.getAppliedCatalogItems().contains(item))
+                          .filter(
+                              e -> e.findAppliedCatalogItem(domain).map(item::equals).orElse(false))
                           .findAny()));
     } else {
       return items.stream()

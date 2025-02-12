@@ -276,9 +276,10 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }.first()
         Control controlEntity = newControl(unit) {
             name = 'c1'
+            associateWithDomain(d, 'CTL_Control', 'NEW')
         }
         controlEntity.description = "a linked entity"
-        controlEntity.appliedCatalogItems = [firstItemFromCatalog] as Set
+        controlEntity.setAppliedCatalogItem(d, firstItemFromCatalog)
         controlEntity = controlRepository.save(controlEntity)
         clientRepository.save(client)
 

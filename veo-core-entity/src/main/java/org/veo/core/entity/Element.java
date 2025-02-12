@@ -22,8 +22,10 @@ import static java.util.stream.Collectors.toSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.aspects.ElementDomainAssociation;
@@ -135,15 +137,16 @@ public interface Element
    *
    * <p>There may only be one catalog item per domain referenced in this set.
    */
-  Set<CatalogItem> getAppliedCatalogItems();
-
-  void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
-
-  default Optional<CatalogItem> findAppliedCatalogItem(Domain domain) {
-    return getAppliedCatalogItems().stream()
-        .filter(ci -> ci.requireDomainMembership().equals(domain))
-        .findFirst();
+  default Set<CatalogItem> getAppliedCatalogItems() {
+    return getDomainAssociations().stream()
+        .map(ElementDomainAssociation::getAppliedCatalogItem)
+        .filter(Predicate.not(Objects::isNull))
+        .collect(Collectors.toUnmodifiableSet());
   }
+
+  Optional<CatalogItem> findAppliedCatalogItem(Domain domain);
+
+  void setAppliedCatalogItem(Domain newDomain, CatalogItem item);
 
   /** Applies the properties of the template item to the element. */
   void apply(TemplateItem<?, ?> item);

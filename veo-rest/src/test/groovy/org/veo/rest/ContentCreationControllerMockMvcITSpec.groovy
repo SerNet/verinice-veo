@@ -560,7 +560,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
         def asset = txTemplate.execute {
-            assetDataRepository.findById(UUID.fromString(assetId)).get()
+            assetDataRepository.findById(UUID.fromString(assetId)).get().tap {
+                it.appliedCatalogItems.size()
+            }
         }
 
         def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}
@@ -586,7 +588,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [:], 204)
 
         asset = txTemplate.execute {
-            assetDataRepository.findById(UUID.fromString(assetId)).get()
+            assetDataRepository.findById(UUID.fromString(assetId)).get().tap {
+                it.appliedCatalogItems.size()
+            }
         }
 
         then: "the reference to the updated catalog item is intact"

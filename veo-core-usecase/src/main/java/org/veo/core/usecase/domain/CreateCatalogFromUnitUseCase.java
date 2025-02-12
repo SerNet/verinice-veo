@@ -116,17 +116,17 @@ public class CreateCatalogFromUnitUseCase
   private void deleteObsoleteCatalogItems(
       Domain domain, Client client, Collection<Element> newElements) {
     var relevantItems =
-        newElements.stream().flatMap(e -> e.getAppliedCatalogItems().stream()).toList();
+        newElements.stream().flatMap(e -> e.findAppliedCatalogItem(domain).stream()).toList();
     var obsoleteItems =
         domain.getCatalogItems().stream().filter(ci -> !relevantItems.contains(ci)).toList();
     var query = genericElementRepository.query(client);
     query.fetchAppliedCatalogItems();
-    query.whereAppliedItemsContain(obsoleteItems);
+    query.whereAppliedItemIn(obsoleteItems, domain);
     var incarnations = query.execute(PagingConfiguration.UNPAGED).getResultPage();
 
     log.info(
         "removing references to obsolete catalog items from {} incarnations", incarnations.size());
-    incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(obsoleteItems));
+    incarnations.forEach(e -> e.setAppliedCatalogItem(domain, null));
 
     log.info("remove references to obsolete catalog items from profiles");
     domain.getProfiles().stream()

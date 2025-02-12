@@ -20,7 +20,6 @@ package org.veo.core.usecase;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -129,15 +128,15 @@ public class PerformActionUseCase
         Set<Element> controls = createLinkedScenarios.getControls(element, domain);
         controls.forEach(
             control -> {
-              var controlCatalogItem = getCatalogItem(domain, control);
-              if (controlCatalogItem == null) {
+              var controlCatalogItem = control.findAppliedCatalogItem(domain);
+              if (controlCatalogItem.isEmpty()) {
                 log.debug(
                     "Control '{}' has no applied catalogItem ... skipping", control.getName());
                 return;
               }
 
               Set<CatalogItem> scenarios =
-                  getScenarios(controlCatalogItem, createLinkedScenarios.getLinkType());
+                  getScenarios(controlCatalogItem.get(), createLinkedScenarios.getLinkType());
               if (scenarios.isEmpty()) {
                 log.info(
                     "CatalogItem '{}' has no connections to any scenario.", controlCatalogItem);
@@ -153,7 +152,7 @@ public class PerformActionUseCase
                               domain.getOwningClient().get(),
                               element.getOwner().getId(),
                               scenarios.stream()
-                                  .filter(notIncarnated(existingScenarios))
+                                  .filter(notIncarnated(existingScenarios, domain))
                                   .map(
                                       item ->
                                           (TemplateItemIncarnationDescriptionState<
@@ -181,17 +180,11 @@ public class PerformActionUseCase
         .collect(Collectors.toSet());
   }
 
-  private CatalogItem getCatalogItem(Domain domain, Element control) {
-    Optional<CatalogItem> appliedControl =
-        control.getAppliedCatalogItems().stream()
-            .filter(ci -> ci.requireDomainMembership().equals(domain))
-            .findFirst();
-    CatalogItem controlCatalogItem = appliedControl.orElse(null);
-    return controlCatalogItem;
-  }
-
-  private Predicate<? super CatalogItem> notIncarnated(List<Element> existingScenarios) {
-    return s -> existingScenarios.stream().noneMatch(es -> es.getAppliedCatalogItems().contains(s));
+  private Predicate<? super CatalogItem> notIncarnated(
+      List<Element> existingScenarios, Domain domain) {
+    return s ->
+        existingScenarios.stream()
+            .noneMatch(es -> es.findAppliedCatalogItem(domain).map(s::equals).orElse(false));
   }
 
   private void createLink(Domain domain, Element control, Element scenario, String linkType) {
@@ -210,7 +203,7 @@ public class PerformActionUseCase
 
   private List<Element> loadExistingIncarnations(Domain domain, Set<CatalogItem> items, Unit unit) {
     ElementQuery<Element> query = genericElementRepository.query(domain.getOwner());
-    query.whereAppliedItemsContain(items);
+    query.whereAppliedItemIn(items, domain);
     query.whereOwnerIs(unit);
     query.fetchAppliedCatalogItems();
     var result = query.execute(PagingConfiguration.UNPAGED);

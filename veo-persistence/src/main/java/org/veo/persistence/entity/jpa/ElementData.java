@@ -152,9 +152,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Valid
   private final Set<DecisionResultsAspectData> decisionResultsAspects = new HashSet<>();
 
-  @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
-  private Set<CatalogItem> appliedCatalogItems = new HashSet<>();
-
   public void setOwner(Unit owner) {
     if (this.owner != null && !owner.equals(this.owner)) {
       throw new UnprocessableDataException("Elements cannot be moved between units");
@@ -192,8 +189,19 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
+  public Optional<CatalogItem> findAppliedCatalogItem(Domain domain) {
+    return findAspectByDomain(domainAssociations, domain)
+        .map(ElementDomainAssociation::getAppliedCatalogItem);
+  }
+
+  @Override
   public void setStatus(String status, Domain domain) {
     findAspectByDomain(domainAssociations, domain).orElseThrow().setStatus(status);
+  }
+
+  @Override
+  public void setAppliedCatalogItem(Domain domain, CatalogItem item) {
+    requireAssociationWithDomain(domain).setAppliedCatalogItem(item);
   }
 
   @Override
@@ -239,7 +247,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
     findAppliedCatalogItem(oldDomain)
         .flatMap(oldItem -> newDomain.findCatalogItem(oldItem.getSymbolicId()))
-        .ifPresent(appliedCatalogItems::add);
+        .ifPresent(item -> setAppliedCatalogItem(newDomain, item));
   }
 
   private void migrateCustomAspects(
@@ -307,7 +315,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       getLinks().removeIf(l -> l.getDomain().equals(domain));
       removeAspect(domainAssociations, domain);
       removeAspect(decisionResultsAspects, domain);
-      appliedCatalogItems.removeIf(ci -> ci.getDomainBase().equals(domain));
     }
     return removed;
   }
@@ -402,12 +409,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Override
   public CatalogItem toCatalogItem(Domain domain) {
     var item =
-        appliedCatalogItems.stream()
-            .filter(ci -> ci.getDomainBase().equals(domain))
-            .findFirst()
+        findAppliedCatalogItem(domain)
             .orElseGet(() -> new EntityDataFactory().createCatalogItem(domain));
     toItem(domain, item);
-    appliedCatalogItems.add(item);
+    setAppliedCatalogItem(domain, item);
     return item;
   }
 
@@ -415,10 +420,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   public ProfileItem toProfileItem(Profile profile) {
     ProfileItem item = new EntityDataFactory().createProfileItem(profile);
     toItem((Domain) profile.getOwner(), item);
-    getAppliedCatalogItems().stream()
-        .filter(ci -> ci.getDomainBase().getIdAsString().equals(profile.getOwner().getIdAsString()))
-        .findAny()
-        .ifPresent(item::setAppliedCatalogItem);
+    findAppliedCatalogItem((Domain) profile.getOwner()).ifPresent(item::setAppliedCatalogItem);
     return item;
   }
 
@@ -554,12 +556,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     aspects.removeIf(a -> a.getDomain().equals(domain));
   }
 
-  private void requireAssociationWithDomain(Domain domain) {
-    if (!isAssociatedWithDomain(domain)) {
-      throw new UnprocessableDataException(
-          "%s %s is not associated with domain %s"
-              .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
-    }
+  private ElementDomainAssociation requireAssociationWithDomain(Domain domain) {
+    return findAspectByDomain(domainAssociations, domain)
+        .orElseThrow(
+            () ->
+                new UnprocessableDataException(
+                    "%s %s is not associated with domain %s"
+                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
   /**

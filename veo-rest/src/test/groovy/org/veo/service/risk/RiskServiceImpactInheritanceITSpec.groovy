@@ -242,7 +242,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 15
+            queryCounts.select == 14
             queryCounts.insert == 0
             queryCounts.update == 2
             queryCounts.delete == 0
@@ -298,7 +298,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 15
+            queryCounts.select == 14
             queryCounts.insert == 0
             queryCounts.update == 2
             queryCounts.delete == 0
@@ -329,7 +329,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         then: "the root element is set to impactValues2 as all others are"
         def queryCounts = QueryCountHolder.grandTotal
         verifyAll {
-            queryCounts.select == 15
+            queryCounts.select == 14
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -387,7 +387,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 15
+            queryCounts.select == 14
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -411,7 +411,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         then:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 1
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -518,7 +518,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -586,7 +586,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -618,7 +618,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -712,7 +712,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -745,7 +745,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -788,7 +788,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -881,7 +881,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and: "one impact was insert"
         verifyAll {
-            queryCounts.select == 13
+            queryCounts.select == 12
             queryCounts.insert == 1
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -914,7 +914,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0
@@ -939,7 +939,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 2
             queryCounts.update == 1
             queryCounts.delete == 0
@@ -1017,7 +1017,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 9
+            queryCounts.select == 8
             queryCounts.insert == 4
             queryCounts.update == 0
             queryCounts.delete == 0
@@ -1531,7 +1531,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 13
+            queryCounts.select == 12
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.delete == 0

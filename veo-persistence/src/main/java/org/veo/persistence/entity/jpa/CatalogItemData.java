@@ -123,7 +123,7 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
     element.setDescription(description);
     element.setAbbreviation(abbreviation);
     element.apply(this);
-    element.getAppliedCatalogItems().add(this);
+    element.setAppliedCatalogItem(domain, this);
     return element;
   }
 

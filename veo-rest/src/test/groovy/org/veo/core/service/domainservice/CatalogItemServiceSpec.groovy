@@ -117,7 +117,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         def result = executeInTransaction {
             repo.query(client).with {
                 whereOwnerIs(unit)
-                whereAppliedItemsContain([item])
+                whereAppliedItemIn([item], testDomain)
                 fetchAppliedCatalogItems()
                 execute(PagingConfiguration.UNPAGED)
             }
@@ -130,7 +130,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         when: "searched in another unit"
         result = repo.query(client).with {
             whereOwnerIs(unit1)
-            whereAppliedItemsContain([item])
+            whereAppliedItemIn([item], testDomain)
             execute(PagingConfiguration.UNPAGED)
         }
 

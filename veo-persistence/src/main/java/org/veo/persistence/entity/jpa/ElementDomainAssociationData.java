@@ -18,8 +18,11 @@
 package org.veo.persistence.entity.jpa;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
@@ -45,4 +48,9 @@ public class ElementDomainAssociationData extends AspectData implements ElementD
   @NotNull @Getter @ToString.Include private String subType;
 
   @NotNull @Getter @Setter @ToString.Include private String status;
+
+  @OneToOne(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
+  @Getter
+  @Setter
+  private CatalogItem appliedCatalogItem;
 }
