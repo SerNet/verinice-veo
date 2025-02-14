@@ -409,6 +409,9 @@ public class ContentCreationController extends AbstractVeoController {
                 RiskDefinitionChange.RiskMatrixDiff.class,
                 RiskDefinitionChange.RiskMatrixRemove.class,
                 RiskDefinitionChange.RiskMatrixResize.class,
+                RiskDefinitionChange.RiskValueListResize.class,
+                RiskDefinitionChange.ImpactListResize.class,
+                RiskDefinitionChange.ProbabilityListResize.class,
                 RiskDefinitionChange.TranslationDiff.class)),
         out ->
             out.newRiskDefinition()

@@ -54,4 +54,8 @@ public record TemplateItemAspects(
   public TemplateItemAspects() {
     this(null, null, null);
   }
+
+  public Optional<ImpactValues> findImpactValues(RiskDefinitionRef ref) {
+    return Optional.ofNullable(impactValues).map(i -> i.get(ref));
+  }
 }

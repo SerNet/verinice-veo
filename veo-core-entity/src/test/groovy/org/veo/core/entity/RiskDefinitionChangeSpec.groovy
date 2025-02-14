@@ -90,7 +90,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         then: "change is detected"
         changes ==~ [
-            new RiskDefinitionChange.ProbabilityListResize()
+            new RiskDefinitionChange.ProbabilityListResize(rdOld)
         ]
 
         when: "remove probability value"
@@ -100,7 +100,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         then: "change is detected"
         changes ==~ [
-            new RiskDefinitionChange.ProbabilityListResize()
+            new RiskDefinitionChange.ProbabilityListResize(rdOld)
         ]
     }
 

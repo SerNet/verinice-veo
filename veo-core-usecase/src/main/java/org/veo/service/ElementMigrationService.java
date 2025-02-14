@@ -17,23 +17,28 @@
  ******************************************************************************/
 package org.veo.service;
 
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.addedRiskValueCategories;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.isPropablilityChanged;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedImpactCategories;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedRiskValueCategories;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
-import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactValues;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.usecase.base.AttributeValidator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -85,14 +90,14 @@ public class ElementMigrationService {
               }
               migrateAttributes(link.getAttributes(), linkDefinition.getAttributeDefinitions());
             });
-    boolean stillInDomain = migrateSubType(domain, definition, element);
-
-    if (stillInDomain && element instanceof RiskRelated rrl) {
-      migrateRiskRelated(rrl, domain);
-    }
+    migrateSubType(domain, definition, element);
   }
 
-  public void migrateRiskRelated(RiskRelated riskRelated, Domain domain) {
+  public void migrateRiskRelated(
+      RiskRelated riskRelated,
+      Domain domain,
+      RiskDefinition riskDefinition,
+      Set<RiskDefinitionChange> detectedChanges) {
     riskRelated
         .getRiskDefinitions(domain)
         .forEach(
@@ -100,34 +105,40 @@ public class ElementMigrationService {
                 domain
                     .getRiskDefinition(rdRef.getIdRef())
                     .ifPresentOrElse(
-                        rd -> migrateRiskRelated(riskRelated, domain, rd),
+                        rd -> {
+                          if (riskRelated instanceof RiskAffected<?, ?> ra) {
+                            migrateRiskAffected(ra, domain, riskDefinition, detectedChanges);
+                          } else if (riskRelated instanceof Scenario sce) {
+                            Map<RiskDefinitionRef, PotentialProbability> potentialProbability =
+                                sce.getPotentialProbability(domain);
+                            if (potentialProbability != null
+                                && isPropablilityChanged(detectedChanges)) {
+                              potentialProbability.put(
+                                  riskDefinition.toRef(), new PotentialProbability(null));
+                              sce.setPotentialProbability(domain, potentialProbability);
+                            }
+                          }
+                        },
                         () -> riskRelated.removeRiskDefinition(rdRef, domain)));
   }
 
-  public void migrateRiskRelated(RiskRelated riskRelated, Domain domain, RiskDefinition rd) {
-    if (riskRelated instanceof RiskAffected<?, ?> ra) {
-      migrateRiskAffected(ra, domain, rd);
-    }
-    // TODO #3142 migrate potential probabilities on scenarios
-  }
+  private void migrateRiskAffected(
+      RiskAffected<?, ?> ra,
+      Domain domain,
+      RiskDefinition rd,
+      Set<RiskDefinitionChange> detectedChanges) {
+    RiskDefinitionRef rdRef = rd.toRef();
 
-  private void migrateRiskAffected(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
-    RiskDefinitionRef rdRef = RiskDefinitionRef.from(rd);
-    migrateImpacts(ra, domain, rd);
+    migrateImpacts(ra, domain, rd, detectedChanges);
 
-    var availableCats =
-        rd.getCategories().stream()
-            .filter(CategoryDefinition::isRiskValuesSupported)
-            .map(CategoryRef::from)
-            .toList();
     ra.getRisks().stream()
         .filter(r -> r.getRiskDefinitions(domain).contains(rdRef))
         .forEach(
             risk -> {
-              availableCats.forEach(goodCat -> risk.addRiskCategory(rdRef, goodCat, domain));
-              risk.getImpactProvider(rdRef, domain).getAvailableCategories().stream()
-                  .filter(c -> !availableCats.contains(c))
+              removedRiskValueCategories(detectedChanges)
                   .forEach(badCat -> risk.removeRiskCategory(rdRef, badCat, domain));
+              addedRiskValueCategories(detectedChanges)
+                  .forEach(newCat -> risk.addRiskCategory(rdRef, newCat, domain));
             });
   }
 
@@ -182,25 +193,31 @@ public class ElementMigrationService {
         && linkDef.getTargetSubType().equals(target.findSubType(domain).orElse(null));
   }
 
-  private void migrateImpacts(RiskAffected<?, ?> ra, Domain domain, RiskDefinition rd) {
+  private void migrateImpacts(
+      RiskAffected<?, ?> ra,
+      Domain domain,
+      RiskDefinition rd,
+      Set<RiskDefinitionChange> detectedChanges) {
     var rdRef = RiskDefinitionRef.from(rd);
     var impactsForDomain = ra.getImpactValues(domain);
     var oldImpacts = impactsForDomain.getOrDefault(rdRef, null);
     if (oldImpacts == null) return;
-    var validCats = rd.getCategories().stream().map(CategoryRef::from).toList();
+
+    removedImpactCategories(detectedChanges)
+        .forEach(
+            remCat -> {
+              oldImpacts.potentialImpactsCalculated().remove(remCat);
+              oldImpacts.potentialImpacts().remove(remCat);
+              oldImpacts.potentialImpactReasons().remove(remCat);
+              oldImpacts.potentialImpactExplanations().remove(remCat);
+            });
+
     impactsForDomain.put(
         rdRef,
         new ImpactValues(
-            removeInvalidKeys(oldImpacts.potentialImpacts(), validCats),
-            removeInvalidKeys(oldImpacts.potentialImpactsCalculated(), validCats),
-            removeInvalidKeys(oldImpacts.potentialImpactReasons(), validCats),
-            removeInvalidKeys(oldImpacts.potentialImpactExplanations(), validCats)));
-  }
-
-  private <TKey, TValue> Map<TKey, TValue> removeInvalidKeys(
-      Map<TKey, TValue> map, List<TKey> validKeys) {
-    return map.entrySet().stream()
-        .filter(e -> validKeys.contains(e.getKey()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            oldImpacts.potentialImpacts(),
+            oldImpacts.potentialImpactsCalculated(),
+            oldImpacts.potentialImpactReasons(),
+            oldImpacts.potentialImpactExplanations()));
   }
 }

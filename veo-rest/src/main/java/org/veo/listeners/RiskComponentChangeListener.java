@@ -23,21 +23,19 @@ import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.requiresRi
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Process;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
@@ -46,6 +44,7 @@ import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
 import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -58,6 +57,7 @@ import org.veo.service.risk.ImpactInheritanceCalculator;
 import org.veo.service.risk.RiskService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens to {@link RiskAffectingElementChangeEvent}s from the use-case layer and invokes the
@@ -65,11 +65,13 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RiskComponentChangeListener {
   private final RiskService riskService;
   private final ImpactInheritanceCalculator impactInheritanceCalculator;
   private final GenericElementRepository elementRepository;
   private final UnitRepository unitRepository;
+  private final DomainRepository domainRepository;
   private final Decider decider;
   private final ElementMigrationService elementMigrationService;
   private final TemplateItemMigrationService templateItemMigrationService;
@@ -116,20 +118,36 @@ public class RiskComponentChangeListener {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(RiskDefinitionChangedEvent event) {
     RiskDefinition rd = event.getRiskDefinition();
-    Domain domain = event.getDomain();
-    Client client = event.getClient();
+    Domain domain = domainRepository.getActiveById(event.getDomainId(), event.getClientId());
+    Client client = domain.getOwner();
+
+    log.debug("RiskDefinitionChangedEvent: {}", event);
     if (requiresMigration(event.getChanges())) {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
-      // TODO #3142 migrate scenarios
       query.whereElementTypeMatches(
           new QueryCondition<>(
-              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
+              EntityType.RISK_RELETATED_ELEMENTS.stream()
+                  .map(EntityType::getSingularTerm)
+                  .collect(Collectors.toSet())));
+
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
       elements.forEach(
-          e -> elementMigrationService.migrateRiskRelated((RiskRelated) e, domain, rd));
-
-      templateItemMigrationService.migrateRiskDefinitionChange(domain);
+          e ->
+              elementMigrationService.migrateRiskRelated(
+                  (RiskRelated) e, domain, rd, event.getChanges()));
+      templateItemMigrationService.migrateRiskDefinitionChange(domain, rd, event.getChanges());
+    }
+    if (requiresRiskRecalculation(event.getChanges())) {
+      ElementQuery<Element> query = elementRepository.query(client);
+      query.whereDomainsContain(domain);
+      query.whereElementTypeMatches(
+          new QueryCondition<>(
+              EntityType.RISK_AFFECTED_TYPES.stream()
+                  .map(EntityType::getSingularTerm)
+                  .collect(Collectors.toSet())));
+      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      elements.forEach(riskService::evaluateChangedRiskComponent);
     }
     if (requiresImpactInheritanceRecalculation(event.getChanges())
         && impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
@@ -139,15 +157,7 @@ public class RiskComponentChangeListener {
               unit -> {
                 impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId());
               });
-    }
-    if (requiresRiskRecalculation(event.getChanges())) {
-      ElementQuery<Element> query = elementRepository.query(client);
-      query.whereDomainsContain(domain);
-      query.whereElementTypeMatches(
-          new QueryCondition<>(
-              Set.of(Asset.SINGULAR_TERM, Process.SINGULAR_TERM, Scope.SINGULAR_TERM)));
-      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
-      elements.forEach(riskService::evaluateChangedRiskComponent);
+      log.debug("{} units updated", units.size());
     }
   }
 

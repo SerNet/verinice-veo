@@ -36,6 +36,7 @@ import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.RiskDefinition
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange
 import org.veo.service.ElementMigrationService
 
 import spock.lang.Specification
@@ -371,6 +372,7 @@ class ElementMigrationServiceSpec extends Specification{
             getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+        riskDefinition.toRef() >> riskDefinitionRef
 
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -410,7 +412,9 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, domain)
+        elementMigrationService.migrateRiskRelated(element, domain, riskDefinition, [
+            new RiskDefinitionChange.RiskMatrixRemove(category)
+        ] as Set)
 
         then:
         1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
@@ -435,6 +439,7 @@ class ElementMigrationServiceSpec extends Specification{
             getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+        riskDefinition.toRef() >> riskDefinitionRef
 
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -477,7 +482,9 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, domain)
+        elementMigrationService.migrateRiskRelated(element, domain, riskDefinition, [
+            new RiskDefinitionChange.CategoryListRemove(category2)
+        ] as Set)
 
         then:
         1 * risk.removeRiskCategory(riskDefinitionRef, CategoryRef.from(category2), domain)
@@ -498,6 +505,7 @@ class ElementMigrationServiceSpec extends Specification{
             getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+        riskDefinition.toRef() >> riskDefinitionRef
 
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -539,7 +547,9 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, domain)
+        elementMigrationService.migrateRiskRelated(element, domain, riskDefinition, [
+            new RiskDefinitionChange.CategoryListAdd(category)
+        ] as Set)
 
         then:
         1 * risk.addRiskCategory(riskDefinitionRef, CategoryRef.from(category), domain)
@@ -559,6 +569,7 @@ class ElementMigrationServiceSpec extends Specification{
             getCategory(_) >> Optional.empty()
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+        riskDefinition.toRef() >> riskDefinitionRef
 
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -600,7 +611,9 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, domain)
+        elementMigrationService.migrateRiskRelated(element, domain, riskDefinition, [
+            new RiskDefinitionChange.CategoryListAdd(category)
+        ] as Set)
 
         then:
         0 * risk.addRiskCategory(_)
@@ -618,6 +631,7 @@ class ElementMigrationServiceSpec extends Specification{
             getCategories() >> [category]
         }
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
+        riskDefinition.toRef() >> riskDefinitionRef
 
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -657,7 +671,9 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, domain)
+        elementMigrationService.migrateRiskRelated(element, domain, riskDefinition,[
+            new RiskDefinitionChange.CategoryListAdd(category)
+        ] as Set)
 
         then:
         0 * risk.addRiskCategory(_)

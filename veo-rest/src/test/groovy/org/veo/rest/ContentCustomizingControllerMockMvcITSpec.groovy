@@ -88,89 +88,92 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "normal user cannot add or remove riskvalues"() {
+    def "normal user can add or remove riskvalues"() {
         when: "adding a riskvalue"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.riskValues.add(["ordinalValue":5,"htmlColor": "#101010", "symbolicRisk": "risky"])
+        rd.riskValues.add(["ordinalValue":4,"htmlColor": "#101010", "symbolicRisk": "risky"])
 
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
+            riskValues.size() == 5
+            riskValues[4].symbolicRisk == "risky"
+            riskValues[4].ordinalValue == 4
+        }
 
         when: "removing a riskvalue"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.riskValues.removeLast()
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.riskValues.size() == 4
     }
 
-    def"normal user cannot add or remove category"() {
+    def"normal user can add a category"() {
         when: "we add a category"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.categories.add(["id": "NEW",
+            "translations":["DE": ["name": "new kid on the block"]],
             "potentialImpacts":[
                 ["ordinalValue":0,"htmlColor": "#101010"]
             ]
         ])
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
-
-        when: "we remove a category"
-        rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.categories.removeLast()
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
-
-        then: "unsupported change"
-        ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
+            categories.find{ it.id == "NEW" }.translations.(DE).name == "new kid on the block"
+            categories.find{ it.id == "NEW" }.potentialImpacts.first().htmlColor == "#101010"
+        }
     }
 
-    def "normal user cannot add or remove impact of category"() {
+    def"normal user can remove a category"() {
+        when: "we remove a category"
+        def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
+        rd.categories.removeLast()
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
+
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.size() == 4
+    }
+
+    def "normal user can add or remove impact of category"() {
         when: "we add a category impact"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.categories.find{ it.id == "C" }.potentialImpacts.add(["ordinalValue":0,"htmlColor": "#101010"])
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{ it.id == "C" }.potentialImpacts.size() == 5
 
         when: "we remove a category impact"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.categories.find{ it.id == "C" }.potentialImpacts.removeLast()
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{ it.id == "C" }.potentialImpacts.size() == 4
     }
 
-    def "normal user cannot add or remove probability"() {
+    def "normal user can add or remove probability"() {
         when: "we add a probability"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.probability.levels.add(["ordinalValue":0,"htmlColor": "#101010"])
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        rd.categories.forEach{ it.valueMatrix = null }
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        UnprocessableDataException ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.probability.levels.size() == 5
 
         when: "we remove the probability"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.probability.levels.removeLast()
-        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],422)
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
-        then: "unsupported change"
-        ex = thrown()
-        ex.message == "Your modifications on this existing risk definition are not supported yet. Currently, only the following changes are allowed: [ColorDiff, NewRiskDefinition, RiskMatrixAdd, RiskMatrixDiff, RiskMatrixRemove, TranslationDiff]"
+        then: "the change is persisted"
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.probability.levels.size() == 4
     }
 
     def "normal user can change the riskMatrix"() {

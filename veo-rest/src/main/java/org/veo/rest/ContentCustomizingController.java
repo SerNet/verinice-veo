@@ -91,6 +91,11 @@ public class ContentCustomizingController extends AbstractVeoController {
                 RiskDefinitionChange.RiskMatrixAdd.class,
                 RiskDefinitionChange.RiskMatrixDiff.class,
                 RiskDefinitionChange.RiskMatrixRemove.class,
+                RiskDefinitionChange.ImpactListResize.class,
+                RiskDefinitionChange.CategoryListAdd.class,
+                RiskDefinitionChange.CategoryListRemove.class,
+                RiskDefinitionChange.ProbabilityListResize.class,
+                RiskDefinitionChange.RiskValueListResize.class,
                 RiskDefinitionChange.TranslationDiff.class)),
         out ->
             out.newRiskDefinition()

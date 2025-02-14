@@ -34,6 +34,7 @@ import org.veo.core.entity.Constraints;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -133,5 +134,9 @@ public class RiskDefinition {
 
   public Optional<RiskValue> getRiskValue(int ordinalValue) {
     return riskValues.stream().filter(rv -> rv.getOrdinalValue() == ordinalValue).findFirst();
+  }
+
+  public RiskDefinitionRef toRef() {
+    return RiskDefinitionRef.from(this);
   }
 }

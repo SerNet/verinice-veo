@@ -18,33 +18,33 @@
 package org.veo.service;
 
 import static org.veo.core.entity.EntityType.RISK_RELETATED_ELEMENTS;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.isPropablilityChanged;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedImpactCategories;
+import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedRiskValueCategories;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
-import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
-import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ProfileItemRepository;
 import org.veo.core.usecase.base.TemplateItemValidator;
@@ -74,30 +74,25 @@ public class TemplateItemMigrationService {
     items.stream()
         .filter(ci -> riskRelated.contains(ci.getElementType()))
         .forEach(
-            templateItem ->
-                removeRiskDefinitionFromItem(domain, templateItem, validRiskDefinitionRefs));
-    removeRiskDefinitionFromRiskTailorRef(domain, items, validRiskDefinitionRefs);
-    domain
-        .getProfiles()
-        .forEach(p -> removeRiskDefinitionFromProfile(domain, p, validRiskDefinitionRefs));
+            templateItem -> removeRiskDefinitionFromItem(templateItem, validRiskDefinitionRefs));
+    removeRiskDefinitionFromRiskTailorRef(items, validRiskDefinitionRefs);
+    domain.getProfiles().forEach(p -> removeRiskDefinitionFromProfile(p, validRiskDefinitionRefs));
     log.info("migration done.");
   }
 
-  private void removeRiskDefinitionFromProfile(
-      Domain domain, Profile p, List<RiskDefinitionRef> keySet) {
+  private void removeRiskDefinitionFromProfile(Profile p, List<RiskDefinitionRef> keySet) {
     RISK_RELETATED_ELEMENTS.stream()
         .forEach(
             type -> {
               Set<ProfileItem> items = profileItemRepository.findAllByProfile(p, type);
               items.stream()
-                  .forEach(
-                      templateItem -> removeRiskDefinitionFromItem(domain, templateItem, keySet));
-              removeRiskDefinitionFromRiskTailorRef(domain, items, keySet);
+                  .forEach(templateItem -> removeRiskDefinitionFromItem(templateItem, keySet));
+              removeRiskDefinitionFromRiskTailorRef(items, keySet);
             });
   }
 
   private void removeRiskDefinitionFromItem(
-      Domain domain, TemplateItem<?, ?> templateItem, List<RiskDefinitionRef> keySet) {
+      TemplateItem<?, ?> templateItem, List<RiskDefinitionRef> keySet) {
     TemplateItemAspects aspects = templateItem.getAspects();
     templateItem.setAspects(
         new TemplateItemAspects(
@@ -107,7 +102,7 @@ public class TemplateItemMigrationService {
   }
 
   private void removeRiskDefinitionFromRiskTailorRef(
-      Domain domain, Set<? extends TemplateItem<?, ?>> items, List<RiskDefinitionRef> keySet) {
+      Set<? extends TemplateItem<?, ?>> items, List<RiskDefinitionRef> keySet) {
     items.stream()
         .flatMap(ci -> ci.getTailoringReferences().stream())
         .filter(RiskTailoringReference.class::isInstance)
@@ -115,66 +110,50 @@ public class TemplateItemMigrationService {
         .forEach(r -> r.setRiskDefinitions(removeInvalidKeys(r.getRiskDefinitions(), keySet)));
   }
 
-  public void migrateRiskDefinitionChange(Domain domain) {
-    List<RiskDefinitionRef> validRiskDefinitionRefs =
-        domain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
-    var items = catalogItemRepository.findAllByDomain(domain);
-
-    // Migrate elements
-    items.stream()
-        .filter(RiskRelated.class::isInstance)
-        .forEach(item -> migrateAspects(item, domain, validRiskDefinitionRefs));
-    migrateAllRiskTailoringReference(domain, items);
-    log.info("catalog migration done.");
-
-    domain
-        .getProfiles()
-        .forEach(
-            p -> {
-              RISK_RELETATED_ELEMENTS.stream()
-                  .forEach(
-                      type -> {
-                        Set<ProfileItem> pitems = profileItemRepository.findAllByProfile(p, type);
-                        pitems.stream()
-                            .forEach(
-                                templateItem ->
-                                    migrateAspects(templateItem, domain, validRiskDefinitionRefs));
-                        migrateAllRiskTailoringReference(domain, pitems);
-                      });
-            });
-    log.info("profiles migration done.");
+  public void migrateRiskDefinitionChange(
+      Domain domain, RiskDefinition rd, Set<RiskDefinitionChange> detectedChanges) {
+    var items =
+        Stream.concat(
+                catalogItemRepository.findAllByDomain(domain).stream(),
+                domain.getProfiles().stream().map(Profile::getItems).flatMap(Collection::stream))
+            .filter(
+                catalogItem ->
+                    EntityType.RISK_RELETATED_ELEMENTS.stream()
+                        .map(EntityType::getSingularTerm)
+                        .anyMatch(s -> catalogItem.getElementType().equals(s)))
+            .collect(Collectors.toSet());
+    items.forEach(item -> migrateAspects(item, rd, detectedChanges));
+    migrateAllRiskTailoringReference(items, rd, detectedChanges);
   }
 
   private void migrateAspects(
-      TemplateItem<?, ?> item, Domain domain, List<RiskDefinitionRef> validRiskDefinitionRefs) {
+      TemplateItem<?, ?> item, RiskDefinition rd, Set<RiskDefinitionChange> detectedChanges) {
+    var impactCategoriesToUnset = removedImpactCategories(detectedChanges);
     TemplateItemAspects aspects = item.getAspects();
+    aspects
+        .findImpactValues(rd.toRef())
+        .ifPresent(
+            impactValues -> {
+              impactCategoriesToUnset.forEach(impactValues.potentialImpacts()::remove);
+              impactCategoriesToUnset.forEach(impactValues.potentialImpactReasons()::remove);
+              impactCategoriesToUnset.forEach(impactValues.potentialImpactExplanations()::remove);
+            });
+    Map<RiskDefinitionRef, PotentialProbability> scenarioValues = Collections.emptyMap();
+    if (aspects.scenarioRiskValues() != null) {
+      scenarioValues = new HashMap<>(aspects.scenarioRiskValues());
+      if (isPropablilityChanged(detectedChanges)) {
+        scenarioValues.put(rd.toRef(), new PotentialProbability(null, null));
+      }
+    }
     item.setAspects(
         new TemplateItemAspects(
-            Optional.ofNullable(aspects.impactValues())
-                .map(
-                    iv ->
-                        syncMap(
-                            aspects.impactValues(),
-                            validRiskDefinitionRefs,
-                            e ->
-                                newImpactValues(
-                                    e.getValue(), domain.getRiskDefinition(e.getKey().getIdRef()))))
-                .orElse(null),
-            Optional.ofNullable(aspects.scenarioRiskValues())
-                .map(
-                    srv ->
-                        syncMap(
-                            srv,
-                            validRiskDefinitionRefs,
-                            e ->
-                                newPotentialProbability(
-                                    e.getValue(), domain.getRiskDefinition(e.getKey().getIdRef()))))
-                .orElse(null),
-            aspects.scopeRiskDefinition()));
+            aspects.impactValues(), scenarioValues, aspects.scopeRiskDefinition()));
   }
 
   private void migrateAllRiskTailoringReference(
-      Domain domain, Set<? extends TemplateItem<?, ?>> items) {
+      Set<? extends TemplateItem<?, ?>> items,
+      RiskDefinition rd,
+      Set<RiskDefinitionChange> detectedChanges) {
     items.stream()
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(RiskTailoringReference.class::isInstance)
@@ -183,80 +162,15 @@ public class TemplateItemMigrationService {
             r -> {
               Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions =
                   r.getRiskDefinitions();
-              Map.copyOf(riskDefinitions)
-                  .entrySet()
-                  .forEach(
-                      entry -> {
-                        Optional<RiskDefinition> riskDefinition =
-                            domain.getRiskDefinition(entry.getKey().getIdRef());
-                        if (riskDefinition
-                            .isPresent()) { // remove all categories not present in the domain
-                          List<CategoryRef> allCategories =
-                              new ArrayList<>(entry.getValue().categories().keySet());
-                          RiskDefinition domainDefinition = riskDefinition.get();
-                          List<CategoryRef> domainCategoryRefs =
-                              domainDefinition.getCategories().stream()
-                                  .map(CategoryRef::from)
-                                  .toList();
-                          allCategories.removeAll(domainCategoryRefs);
-                          RiskTailoringReferenceValues values =
-                              newRiskTailoringReferenceValues(allCategories, entry.getValue());
-                          riskDefinitions.put(entry.getKey(), values);
-                          r.setRiskDefinitions(riskDefinitions);
-                        } else {
-                          // remove whole entry
-                          riskDefinitions.remove(entry.getKey());
-                          r.setRiskDefinitions(riskDefinitions);
-                        }
+              Optional.ofNullable(riskDefinitions.get(rd.toRef()))
+                  .ifPresent(
+                      riskTailoringReferenceValues -> {
+                        var categories = new HashMap<>(riskTailoringReferenceValues.categories());
+                        removedRiskValueCategories(detectedChanges).forEach(categories::remove);
+                        riskDefinitions.put(
+                            rd.toRef(), riskTailoringReferenceValues.withCategories(categories));
                       });
             });
-  }
-
-  private <TKey, TValue> Map<TKey, TValue> syncMap(
-      Map<TKey, TValue> map,
-      List<TKey> validKeys,
-      Function<Entry<TKey, TValue>, TValue> transformer) {
-    return map.entrySet().stream()
-        .filter(e -> validKeys.contains(e.getKey()))
-        .collect(Collectors.toMap(Entry::getKey, transformer::apply));
-  }
-
-  private RiskTailoringReferenceValues newRiskTailoringReferenceValues(
-      List<CategoryRef> keySet, RiskTailoringReferenceValues value) {
-    var categories =
-        value.categories().entrySet().stream()
-            .filter(t -> !keySet.contains(t.getKey()))
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-
-    return new RiskTailoringReferenceValues(
-        value.specificProbability(), value.specificProbabilityExplanation(), categories);
-  }
-
-  private PotentialProbability newPotentialProbability(
-      PotentialProbability value, Optional<RiskDefinition> riskDefinition) {
-    if (riskDefinition.isPresent()) {
-      RiskDefinition rd = riskDefinition.get();
-      List<ProbabilityRef> levels =
-          rd.getProbability().getLevels().stream().map(ProbabilityRef::from).toList();
-      if (levels.contains(value.potentialProbability())) {
-        return value;
-      }
-    }
-    return null;
-  }
-
-  private ImpactValues newImpactValues(
-      ImpactValues oldImpacts, Optional<RiskDefinition> riskDefinition) {
-    if (riskDefinition.isPresent()) {
-      RiskDefinition rd = riskDefinition.get();
-      var validCats = rd.getCategories().stream().map(CategoryRef::from).toList();
-      return new ImpactValues(
-          removeInvalidKeys(oldImpacts.potentialImpacts(), validCats),
-          removeInvalidKeys(oldImpacts.potentialImpactsCalculated(), validCats),
-          removeInvalidKeys(oldImpacts.potentialImpactReasons(), validCats),
-          removeInvalidKeys(oldImpacts.potentialImpactExplanations(), validCats));
-    }
-    return null;
   }
 
   public void migrate(EntityType type, Domain domain) {
@@ -283,8 +197,6 @@ public class TemplateItemMigrationService {
     items.stream()
         .filter(e -> e.getElementType().equals(type.getSingularTerm()))
         .forEach(e -> migrate(e, domain));
-
-    // Migrate link tailoring references
     migrateAllTailoringReferences(type, domain, items);
   }
 

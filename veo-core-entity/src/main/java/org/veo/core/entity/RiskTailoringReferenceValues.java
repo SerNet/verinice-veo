@@ -31,7 +31,10 @@ import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskRef;
 import org.veo.core.entity.risk.RiskTreatmentOption;
 
+import lombok.With;
+
 /** Serializable container for risk values to be used in a tailoring reference. */
+@With
 public record RiskTailoringReferenceValues(
     ProbabilityRef specificProbability,
     String specificProbabilityExplanation,

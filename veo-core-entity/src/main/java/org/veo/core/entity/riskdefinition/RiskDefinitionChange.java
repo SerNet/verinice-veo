@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.veo.core.entity.TranslationProvider;
+import org.veo.core.entity.risk.CategoryRef;
 
 public sealed interface RiskDefinitionChange
     permits RiskDefinitionChange.CategoryListAdd,
@@ -50,12 +51,20 @@ public sealed interface RiskDefinitionChange
     return false;
   }
 
-  default boolean requiresMigration() {
+  default boolean requiresImpactInheritanceRecalculation() {
     return false;
   }
 
-  default boolean requiresImpactInheritanceRecalculation() {
-    return false;
+  default List<CategoryRef> addedRiskValueCategories() {
+    return Collections.emptyList();
+  }
+
+  default List<CategoryRef> removedRiskValueCategories() {
+    return Collections.emptyList();
+  }
+
+  default List<CategoryRef> removedImpactCategories() {
+    return Collections.emptyList();
   }
 
   public record NewRiskDefinition() implements RiskDefinitionChange {}
@@ -85,15 +94,15 @@ public sealed interface RiskDefinitionChange
     }
 
     @Override
-    public boolean requiresMigration() {
-      return true;
+    public List<CategoryRef> addedRiskValueCategories() {
+      return List.of(CategoryRef.from(cat));
     }
   }
 
   public record RiskMatrixRemove(CategoryDefinition cat) implements RiskDefinitionChange {
     @Override
-    public boolean requiresMigration() {
-      return true;
+    public List<CategoryRef> removedRiskValueCategories() {
+      return List.of(CategoryRef.from(cat));
     }
   }
 
@@ -101,18 +110,34 @@ public sealed interface RiskDefinitionChange
 
   public record ImplementationStateListResize() implements RiskDefinitionChange {}
 
-  public record ImpactListResize(CategoryDefinition cat) implements RiskDefinitionChange {}
+  public record ImpactListResize(CategoryDefinition cat) implements RiskDefinitionChange {
 
-  public record ProbabilityListResize() implements RiskDefinitionChange {}
-
-  public record CategoryListAdd(CategoryDefinition newCat) implements RiskDefinitionChange {
     @Override
-    public boolean requiresRiskRecalculation() {
-      return true;
+    public List<CategoryRef> removedImpactCategories() {
+      return List.of(CategoryRef.from(cat));
     }
 
     @Override
-    public boolean requiresMigration() {
+    public List<CategoryRef> removedRiskValueCategories() {
+      return List.of(CategoryRef.from(cat));
+    }
+  }
+
+  public record ProbabilityListResize(RiskDefinition oldRd) implements RiskDefinitionChange {
+    @Override
+    public List<CategoryRef> removedRiskValueCategories() {
+      return oldRd.getCategories().stream().map(CategoryRef::from).toList();
+    }
+  }
+
+  public record CategoryListAdd(CategoryDefinition newCat) implements RiskDefinitionChange {
+    @Override
+    public List<CategoryRef> addedRiskValueCategories() {
+      return List.of(CategoryRef.from(newCat));
+    }
+
+    @Override
+    public boolean requiresRiskRecalculation() {
       return true;
     }
   }
@@ -124,19 +149,56 @@ public sealed interface RiskDefinitionChange
     }
 
     @Override
-    public boolean requiresMigration() {
-      return true;
+    public List<CategoryRef> removedImpactCategories() {
+      return List.of(CategoryRef.from(oldCat));
+    }
+
+    @Override
+    public List<CategoryRef> removedRiskValueCategories() {
+      return List.of(CategoryRef.from(oldCat));
     }
   }
 
   public record RiskValueListResize() implements RiskDefinitionChange {}
+
+  static List<CategoryRef> removedImpactCategories(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .map(RiskDefinitionChange::removedImpactCategories)
+        .flatMap(Collection::stream)
+        .distinct()
+        .toList();
+  }
+
+  static List<CategoryRef> addedRiskValueCategories(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .map(RiskDefinitionChange::addedRiskValueCategories)
+        .flatMap(Collection::stream)
+        .distinct()
+        .toList();
+  }
+
+  static List<CategoryRef> removedRiskValueCategories(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .map(RiskDefinitionChange::removedRiskValueCategories)
+        .flatMap(Collection::stream)
+        .distinct()
+        .toList();
+  }
+
+  static boolean isPropablilityChanged(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .anyMatch(RiskDefinitionChange.ProbabilityListResize.class::isInstance);
+  }
 
   static boolean requiresRiskRecalculation(Set<RiskDefinitionChange> detectedChanges) {
     return detectedChanges.stream().anyMatch(RiskDefinitionChange::requiresRiskRecalculation);
   }
 
   static boolean requiresMigration(Set<RiskDefinitionChange> detectedChanges) {
-    return detectedChanges.stream().anyMatch(RiskDefinitionChange::requiresMigration);
+    return isPropablilityChanged(detectedChanges)
+        || !removedImpactCategories(detectedChanges).isEmpty()
+        || !removedRiskValueCategories(detectedChanges).isEmpty()
+        || !addedRiskValueCategories(detectedChanges).isEmpty();
   }
 
   static boolean requiresImpactInheritanceRecalculation(Set<RiskDefinitionChange> detectedChanges) {
@@ -166,7 +228,7 @@ public sealed interface RiskDefinitionChange
         detectTranslationChanges(oldRiskDef.getProbability(), newRiskDef.getProbability()));
     changes.addAll(
         detectChanges(
-            ProbabilityListResize::new,
+            () -> new ProbabilityListResize(oldRiskDef),
             oldRiskDef.getProbability().getLevels(),
             newRiskDef.getProbability().getLevels()));
     changes.addAll(

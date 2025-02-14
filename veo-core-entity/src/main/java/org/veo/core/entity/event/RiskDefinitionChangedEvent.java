@@ -20,7 +20,6 @@ package org.veo.core.entity.event;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
@@ -36,9 +35,9 @@ import lombok.Value;
 @Value
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class RiskDefinitionChangedEvent implements DomainEvent {
-  Domain domain;
+  UUID domainId;
   RiskDefinition riskDefinition;
-  Client client;
+  UUID clientId;
   Set<RiskDefinitionChange> changes;
   Object source;
 
@@ -48,11 +47,10 @@ public class RiskDefinitionChangedEvent implements DomainEvent {
       Set<RiskDefinitionChange> changes,
       Object source) {
     return new RiskDefinitionChangedEvent(
-        domain, riskDefinition, domain.getOwningClient().orElseThrow(), changes, source);
-  }
-
-  @Override
-  public UUID getClientId() {
-    return client.getId();
+        domain.getId(),
+        riskDefinition,
+        domain.getOwningClient().orElseThrow().getId(),
+        changes,
+        source);
   }
 }
