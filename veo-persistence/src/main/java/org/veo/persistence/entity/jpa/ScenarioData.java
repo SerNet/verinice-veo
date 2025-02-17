@@ -147,10 +147,4 @@ public class ScenarioData extends ElementData implements Scenario {
         .map(ScenarioRiskValuesAspectData::getPotentialProbability)
         .orElse(Map.of());
   }
-
-  @Override
-  public void transferToDomain(Domain oldDomain, Domain newDomain) {
-    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-    super.transferToDomain(oldDomain, newDomain);
-  }
 }

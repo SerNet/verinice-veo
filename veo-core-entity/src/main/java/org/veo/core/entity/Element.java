@@ -66,13 +66,6 @@ public interface Element
   }
 
   /**
-   * Moves all domain-specific information for given old (associated) domain to a new (unassociated)
-   * domain. After this operation, the element will be associated with the new domain instead of the
-   * old domain.
-   */
-  void transferToDomain(Domain oldDomain, Domain newDomain);
-
-  /**
    * Removes given {@link CustomLink} from this element.
    *
    * @return {@code true} if removed

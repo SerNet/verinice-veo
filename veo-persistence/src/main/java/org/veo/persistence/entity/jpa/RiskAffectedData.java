@@ -77,13 +77,6 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     getRisks().forEach(r -> r.copyAspectData(oldDomain, newDomain));
   }
 
-  @Override
-  public void transferToDomain(Domain oldDomain, Domain newDomain) {
-    super.transferToDomain(oldDomain, newDomain);
-    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-    risks.forEach(r -> r.transferToDomain(oldDomain, newDomain));
-  }
-
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,

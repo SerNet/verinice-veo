@@ -212,29 +212,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public void transferToDomain(Domain oldDomain, Domain newDomain) {
-    requireAssociationWithDomain(oldDomain);
-    if (isAssociatedWithDomain(newDomain)) {
-      throw new EntityAlreadyExistsException(
-          "%s %s is already associated with domain %s"
-              .formatted(getModelType(), getIdAsString(), newDomain.getIdAsString()));
-    }
-    findAspectByDomain(domainAssociations, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-    findAspectByDomain(decisionResultsAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-    getCustomAspects(oldDomain).forEach(ca -> ca.setDomain(newDomain));
-    getLinks(oldDomain).forEach(cl -> cl.setDomain(newDomain));
-    // Update catalog item reference
-    findAppliedCatalogItem(oldDomain)
-        .ifPresent(
-            oldItem -> {
-              appliedCatalogItems.remove(oldItem);
-              newDomain
-                  .findCatalogItem(oldItem.getSymbolicId())
-                  .ifPresent(appliedCatalogItems::add);
-            });
-  }
-
-  @Override
   public void associateWithDomain(@NonNull Domain domain, String subType, String status) {
     if (isAssociatedWithDomain(domain)) {
       throw new EntityAlreadyExistsException(
