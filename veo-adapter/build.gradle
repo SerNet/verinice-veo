@@ -10,7 +10,7 @@ dependencies {
     implementation 'com.github.victools:jsonschema-module-jackson:4.37.0'
     implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.37.0'
     implementation 'com.github.victools:jsonschema-module-swagger-2:4.37.0'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.4'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.5'
     implementation 'io.swagger.core.v3:swagger-core-jakarta:2.2.28'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
