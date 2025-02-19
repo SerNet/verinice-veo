@@ -132,6 +132,7 @@ import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.inspection.Inspection;
+import org.veo.core.entity.ref.TypedId;
 
 /** A collection of transform functions to transform entities to Dto back and forth. */
 public final class EntityToDtoTransformer {
@@ -753,6 +754,7 @@ public final class EntityToDtoTransformer {
       TElement source, AbstractElementInDomainDto<TElement> target, Domain domain) {
     mapNameableProperties(source, target);
     mapVersionedProperties(source, target);
+    target.setDomain(TypedId.from(domain));
     target.setSelfRef(ElementInDomainIdRef.from(source, domain, referenceAssembler));
     target.setDesignator(source.getDesignator());
     target.setSubType(source.getSubType(domain));
