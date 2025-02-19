@@ -159,7 +159,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     this.owner = owner;
   }
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
   @JoinColumn(name = "owner_id")
   private Unit owner;

@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.NotNull;
+
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
@@ -151,6 +153,7 @@ public interface Element
   /** Applies the properties of the template item to the element. */
   void apply(TemplateItem<?, ?> item);
 
+  @NotNull
   Unit getOwner();
 
   void setOwner(Unit unit);
