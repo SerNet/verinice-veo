@@ -17,17 +17,25 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import java.time.LocalDate
+
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.compliance.ImplementationStatus
+import org.veo.core.entity.compliance.Origination
+import org.veo.core.entity.compliance.RequirementImplementation
 import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.state.PotentialImpactDomainAssociationState
@@ -61,6 +69,7 @@ class EntityStateMapperSpec extends Specification {
         entity.modelInterface >> Process
 
         dto.controlImplementationStates >> []
+        dto.requirementImplementationStates >> []
         dto.getDomainAssociationStates() >> [
             Mock(PotentialImpactDomainAssociationState) {
                 subType >> "foo"
@@ -93,6 +102,7 @@ class EntityStateMapperSpec extends Specification {
         1 * entity.getCustomAspects(domain0) >> []
         1 * entity.getCustomAspects(domain1) >> []
         1 * entity.getControlImplementations() >> []
+        1 * entity.getRequirementImplementations() >> []
         1 * entity.getDomains() >> []
     }
 
@@ -106,6 +116,7 @@ class EntityStateMapperSpec extends Specification {
         def newCompositeAssetEntity = Mock(Asset) {
             it.modelType >> Asset.SINGULAR_TERM
             it.controlImplementations >> []
+            it.requirementImplementations >> []
         }
 
         def compositeAssetId = UUID.randomUUID()
@@ -163,5 +174,48 @@ class EntityStateMapperSpec extends Specification {
         1 * entityFactory.createCustomLink(asset1, entity, 'hosting_server', domain0) >> link
         1 * link.setAttributes(['path': '/srv/contract.txt'])
         1 * entity.applyLink(link)
+    }
+
+    def "Transform asset DTO with RIs to entity"() {
+        given:
+        def entity = Mock(Asset) {
+            it.modelType >> Asset.SINGULAR_TERM
+            it.controlImplementations >> []
+            it.requirementImplementations >> []
+        }
+        Control control = Mock()
+        Person person = Mock()
+        IdRef controlRef = Mock()
+        IdRef personRef = Mock()
+        RequirementImplementation ri = Mock()
+
+        def assetId = UUID.randomUUID()
+        def dto = new FullAssetDto().tap {
+            id = assetId
+            name = "My asset"
+            requirementImplementations = [
+                new RequirementImplementationDto().tap {
+                    it.control = controlRef
+                    responsible = personRef
+                    status = ImplementationStatus.PARTIAL
+                    implementationUntil = '2025-01-01'
+                    origination = Origination.SYSTEM_SPECIFIC
+                }
+            ]
+        }
+
+        when:
+        entityStateMapper.mapState(dto, entity, true, idRefResolver)
+
+        then:
+        1 * idRefResolver.resolve(controlRef) >> control
+        1 * idRefResolver.resolve(personRef) >> person
+        1 * entity.getDomains() >> []
+        1 * entity.findRequirementImplementation(control) >> Optional.empty()
+        1 * entity.addRequirementImplementation(control) >> ri
+        1 * ri.setResponsible(person)
+        1 * ri.setStatus(ImplementationStatus.PARTIAL)
+        1 * ri.setImplementationUntil(LocalDate.parse('2025-01-01'))
+        1 * ri.setOrigination(Origination.SYSTEM_SPECIFIC)
     }
 }

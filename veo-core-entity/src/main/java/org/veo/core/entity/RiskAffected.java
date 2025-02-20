@@ -170,4 +170,6 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
         .filter(ri -> ri.getControl().equals(control))
         .findAny();
   }
+
+  RequirementImplementation addRequirementImplementation(Control control);
 }

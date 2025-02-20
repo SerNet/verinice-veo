@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Alexander Koderman
+ * Copyright (C) 2024  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,29 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.compliance.ImplementationStatus;
-import org.veo.core.entity.compliance.Origination;
-import org.veo.core.entity.ref.ITypedId;
+import java.util.Set;
 
-public interface RequirementImplementationState {
+import org.veo.core.entity.RiskAffected;
 
-  ITypedId<Control> getControl();
-
-  Origination getOrigination();
-
-  ITypedId<Person> getResponsible();
-
-  ImplementationStatus getStatus();
-
-  void setStatus(ImplementationStatus status);
-
-  String getImplementationStatement();
-
-  void setImplementationStatement(String implementationStatement);
-
-  String getImplementationUntil();
-
-  void setImplementationUntil(String implementationUntil);
+public interface RiskAffectedStateWithRIs<T extends RiskAffected<T, ?>>
+    extends RiskAffectedState<T> {
+  Set<RequirementImplementationState> getRequirementImplementationStates();
 }

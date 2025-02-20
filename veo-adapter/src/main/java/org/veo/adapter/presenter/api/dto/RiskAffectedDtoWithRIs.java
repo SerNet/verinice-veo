@@ -18,15 +18,29 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.state.RequirementImplementationState;
+import org.veo.core.entity.state.RiskAffectedStateWithRIs;
 
 /**
  * Represents {@link RiskAffected} elements with RIs in addition to CIs. Embedding RIs may not
  * always be desirable, because RI lists might get very long and add a lot of data to the requests.
  */
-public interface RiskAffectedDtoWithRIs<T extends RiskAffected<T, ?>> extends RiskAffectedDto<T> {
+public interface RiskAffectedDtoWithRIs<T extends RiskAffected<T, ?>>
+    extends RiskAffectedDto<T>, RiskAffectedStateWithRIs<T> {
   Set<RequirementImplementationDto> getRequirementImplementations();
+
+  @Override
+  @JsonIgnore
+  default Set<RequirementImplementationState> getRequirementImplementationStates() {
+    return getRequirementImplementations().stream()
+        .map(RequirementImplementationState.class::cast)
+        .collect(Collectors.toSet());
+  }
 
   void setRequirementImplementations(Set<RequirementImplementationDto> requirementImplementations);
 }

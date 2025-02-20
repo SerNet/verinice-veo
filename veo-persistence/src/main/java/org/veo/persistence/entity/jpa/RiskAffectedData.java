@@ -304,6 +304,11 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
+  public RequirementImplementation addRequirementImplementation(Control control) {
+    return addRequirementImplementation(RequirementImplementationData.createNew(control));
+  }
+
+  @Override
   public Set<ControlImplementation> getControlImplementations() {
     return controlImplementations;
   }

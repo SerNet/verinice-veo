@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -68,6 +69,7 @@ import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.PotentialImpactDomainAssociationState;
 import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.entity.state.RiskAffectedState;
+import org.veo.core.entity.state.RiskAffectedStateWithRIs;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
@@ -200,6 +202,9 @@ public class EntityStateMapper {
 
     if (source instanceof RiskAffectedState<?> sourceRa
         && target instanceof RiskAffected<?, ?> targetRa) {
+      if (sourceRa instanceof RiskAffectedStateWithRIs<?> sourceRaWithRIs) {
+        applyRequirementImplementations(sourceRaWithRIs, targetRa, idRefResolver);
+      }
       applyControlImplementations(sourceRa, targetRa, idRefResolver);
     }
   }
@@ -216,6 +221,45 @@ public class EntityStateMapper {
     // Apply new CIs
     Set<ControlImplementationState> states = source.getControlImplementationStates();
     states.forEach(ciState -> transferState(target, idRefResolver, ciState));
+  }
+
+  private static <T extends Element> void applyRequirementImplementations(
+      RiskAffectedStateWithRIs<?> source, RiskAffected<?, ?> target, IdRefResolver idRefResolver) {
+    // Remove old RIs that are absent in list of new RIs
+    Set<UUID> sourceRIControlIDs =
+        source.getRequirementImplementationStates().stream()
+            .map(RequirementImplementationState::getControl)
+            .map(ITypedId::getId)
+            .collect(Collectors.toSet());
+    Set.copyOf(target.getRequirementImplementations()).stream()
+        .map(RequirementImplementation::getControl)
+        .filter(targetRiControl -> !sourceRIControlIDs.contains(targetRiControl.getId()))
+        .forEach(target::removeRequirementImplementation);
+
+    source
+        .getRequirementImplementationStates()
+        .forEach(
+            ris -> {
+              Control control = idRefResolver.resolve(ris.getControl());
+              RequirementImplementation ri =
+                  target
+                      .findRequirementImplementation(control)
+                      .orElseGet(() -> target.addRequirementImplementation(control));
+              transferState(idRefResolver, ris, ri);
+            });
+  }
+
+  private static void transferState(
+      IdRefResolver idRefResolver,
+      RequirementImplementationState source,
+      RequirementImplementation target) {
+    target.setImplementationStatement(source.getImplementationStatement());
+    target.setImplementationUntil(
+        Optional.ofNullable(source.getImplementationUntil()).map(LocalDate::parse).orElse(null));
+    target.setOrigination(source.getOrigination());
+    target.setResponsible(
+        Optional.ofNullable(source.getResponsible()).map(idRefResolver::resolve).orElse(null));
+    target.setStatus(source.getStatus());
   }
 
   private static void transferState(
