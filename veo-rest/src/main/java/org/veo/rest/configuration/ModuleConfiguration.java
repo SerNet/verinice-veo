@@ -984,9 +984,10 @@ public class ModuleConfiguration {
   @Bean
   public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
       CatalogItemRepository catalogItemRepository,
-      IncarnationDescriptionApplier incarnationDescriptionApplier) {
+      IncarnationDescriptionApplier incarnationDescriptionApplier,
+      DomainRepository domainRepository) {
     return new ApplyCatalogIncarnationDescriptionUseCase(
-        catalogItemRepository, incarnationDescriptionApplier);
+        catalogItemRepository, incarnationDescriptionApplier, domainRepository);
   }
 
   @Bean

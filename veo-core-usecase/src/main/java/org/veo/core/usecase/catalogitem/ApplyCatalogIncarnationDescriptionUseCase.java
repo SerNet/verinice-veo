@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +26,13 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
@@ -48,12 +52,30 @@ public class ApplyCatalogIncarnationDescriptionUseCase
         ApplyCatalogIncarnationDescriptionUseCase.OutputData> {
   private final CatalogItemRepository catalogItemRepository;
   private final IncarnationDescriptionApplier applier;
+  private final DomainRepository domainRepository;
 
   @Override
   public OutputData execute(InputData input) {
+    if (input.descriptions.isEmpty()) {
+      return new OutputData(Collections.emptyList(), null);
+    }
+    var domain = getDomain(input.descriptions, input.authenticatedClient);
     return new OutputData(
         applier.incarnate(
-            input.unitId, input.descriptions, catalogItemRepository, input.authenticatedClient));
+            input.unitId, input.descriptions, catalogItemRepository, input.authenticatedClient),
+        domain);
+  }
+
+  private Domain getDomain(
+      @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions,
+      Client authenticatedClient) {
+    var domainIds =
+        descriptions.stream().map(d -> d.getItemRef().getNamespaceId()).distinct().toList();
+    if (domainIds.size() > 1) {
+      throw new UnprocessableDataException(
+          "Cannot apply incarnation descriptions for multiple domains in a single request.");
+    }
+    return domainRepository.getActiveById(domainIds.getFirst(), authenticatedClient.getId());
   }
 
   @Override
@@ -69,5 +91,6 @@ public class ApplyCatalogIncarnationDescriptionUseCase
       implements UseCase.InputData {}
 
   @Valid
-  public record OutputData(@Valid List<Element> newElements) implements UseCase.OutputData {}
+  public record OutputData(@Valid List<Element> newElements, Domain domain)
+      implements UseCase.OutputData {}
 }

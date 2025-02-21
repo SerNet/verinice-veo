@@ -74,6 +74,12 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "the 3 elements are created"
         postResult.size() == 3
+        postResult*.name ==~ ["c1", "c2", "c3"]
+        postResult*.subType ==~ [
+            "CTL_TOM",
+            "CTL_TOM",
+            "CTL_TOM"
+        ]
     }
 
     def "retrieve the apply info for item4 and post"() {

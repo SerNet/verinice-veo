@@ -58,7 +58,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
@@ -214,14 +214,14 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                               implementation =
                                   IdRefTailoringReferenceParameterReferencedElement.class,
                               description = "A reference list of the created elements"))))
-  public CompletableFuture<ResponseEntity<List<IdRef<Element>>>> applyIncarnations(
+  public CompletableFuture<ResponseEntity<List<ElementInDomainIdRef<Element>>>> applyIncarnations(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
       @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
     Client client = getAuthenticatedClient(auth);
-    CompletableFuture<List<IdRef<Element>>> completableFuture =
-        useCaseInteractor.execute(
+    return useCaseInteractor
+        .execute(
             applyCatalogIncarnationDescriptionUseCase,
             new ApplyCatalogIncarnationDescriptionUseCase.InputData(
                 client,
@@ -230,8 +230,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                     .map(d -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) d)
                     .toList()),
             output ->
-                output.newElements().stream().map(c -> IdRef.from(c, referenceAssembler)).toList());
-    return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+                output.newElements().stream()
+                    .map(e -> ElementInDomainIdRef.from(e, output.domain(), referenceAssembler))
+                    .toList())
+        .thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
   @GetMapping
