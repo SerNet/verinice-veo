@@ -66,14 +66,14 @@ public class CreateDomainTemplateFromDomainUseCase
       throw new NotFoundException("Domain is inactive.");
     }
 
-    domain = updateVersion(domain, input.version);
+    updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
         domainTemplateService.createDomainTemplateFromDomain(domain);
     return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
   }
 
   /** Validate and apply new version value. */
-  private Domain updateVersion(Domain domain, Version version) {
+  private void updateVersion(Domain domain, Version version) {
     validateVersion(version);
     if (domainTemplateRepository.templateExists(domain.getName(), version)) {
       throw new EntityAlreadyExistsException(
@@ -122,7 +122,6 @@ public class CreateDomainTemplateFromDomainUseCase
                       });
             });
     domain.setTemplateVersion(version.toString());
-    return repository.save(domain);
   }
 
   private static void throwMustBeMajor(Version templateVersion) {
