@@ -1563,7 +1563,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "create a domain template with unit"() {
+    def "create a domain template with a profile"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def unitId = createUnitWithElements(domain.id, true).first()
 
@@ -1621,12 +1621,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "creating and exporting the domain"
-        Domain newDomain = createTestDomain(client, dt.id)
-        def results = get("/domains/${newDomain.idAsString}/export")
+        def results = get("/domains/${domain.idAsString}/export")
         def exportedDomain = parseJson(results)
 
         then:" the export file contains the profile data"
-        exportedDomain.name == newDomain.name
+        exportedDomain.name == domain.name
         with(exportedDomain.profiles_v2.find { it.name == "Example elements" }) {
             items*.elementType ==~ [
                 "asset",
@@ -1649,7 +1648,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         UUID.fromString(domainTemplateId)
 
         when: "we create a domain from the domain template"
-        newDomain = createTestDomain(client, UUID.fromString(domainTemplateId))
+        def newDomain = createTestDomain(client, UUID.fromString(domainTemplateId))
 
         then: "the domain contains the profiles"
         newDomain.name == "DSGVO-test"

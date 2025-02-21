@@ -68,8 +68,9 @@ public class CreateDomainTemplateFromDomainUseCase
 
     updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
-        domainTemplateService.createDomainTemplateFromDomain(domain);
-    return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
+        domainTemplateRepository.save(domainTemplateService.createDomainTemplateFromDomain(domain));
+    domain.setDomainTemplate(domainTemplateFromDomain);
+    return new OutputData(domainTemplateFromDomain);
   }
 
   /** Validate and apply new version value. */
