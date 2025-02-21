@@ -21,12 +21,14 @@ import javax.annotation.Nonnull;
 
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record BreakingChange(
     @Nonnull String type,
     @Nonnull ChangeType change,
-    @Nonnull String elementType,
-    @Nonnull String customAspect,
-    @Nonnull String attribute,
+    @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String elementType,
+    @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String customAspect,
+    @Schema(maxLength = Constraints.DEFAULT_STRING_MAX_LENGTH) @Nonnull String attribute,
     @Nonnull AttributeDefinition oldValue,
     AttributeDefinition value) {
 

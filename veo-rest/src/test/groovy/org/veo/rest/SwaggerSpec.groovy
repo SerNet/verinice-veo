@@ -1069,6 +1069,32 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
+        expect:
+        !(response.schema.properties.keySet() ==~ ["done", "cancelled"])
+
+        where:
+        response << getResponses().findAll {
+            it.schema != null && it.schema.properties != null
+        }
+    }
+
+    def getResponses() {
+        parsedApiDocs.paths.collectMany { path ->
+            path.value.entrySet().collectMany { endpoint ->
+                endpoint.value.responses.collect { response ->
+                    def rawSchema = response.value.content?.entrySet()?.first()?.value?.schema
+                    [
+                        path: path.key,
+                        method: endpoint.key,
+                        responseCode: response.key,
+                        schema: rawSchema?.$ref?.split("/")?.last()?.with { getSchema(it) } ?: rawSchema
+                    ]
+                }
+            }
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {
