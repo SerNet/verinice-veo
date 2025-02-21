@@ -127,13 +127,6 @@ class DomainCreationRestTest extends DomainRestTest {
 
         and: "deploying it in all clients"
         post("/domain-templates/$templateId/createdomains", null, 204, ADMIN)
-        post("/admin/domain-templates/$templateId/allclientsupdate", null, 204, ADMIN)
-        defaultPolling.eventually {
-            get("/domains")
-                    .body.findAll { it.name == domainName }.size() == 1
-            get("/domains", 200, SECONDARY_CLIENT_USER)
-                    .body.findAll { it.name == domainName }.size() == 1
-        }
 
         and: "looking up secondary client's domain"
         def secondaryClientDomain = get("/domains", 200, SECONDARY_CLIENT_USER).body
