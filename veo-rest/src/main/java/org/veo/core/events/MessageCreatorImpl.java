@@ -32,6 +32,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
@@ -62,6 +63,7 @@ public class MessageCreatorImpl implements MessageCreator {
   public static final String EVENT_TYPE_ENTITY_REVISION = "entity_revision";
   public static final String EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE =
       "element_type_definition_update";
+  public static final String EVENT_TYPE_DOMAIN_TEMPLATE_CREATION = "domain_template_creation";
 
   @Value("${veo.message.routing-key-prefix}")
   private String routingKeyPrefix;
@@ -115,6 +117,18 @@ public class MessageCreatorImpl implements MessageCreator {
         null, // no resource -> no uri
         null); // no version -> no change number
     // no circus -> no monkeys
+  }
+
+  @Override
+  public void createDomainTemplateCreationEvent(Domain sourceDomain) {
+    DomainTemplate dt = sourceDomain.getDomainTemplate();
+    var json = objectMapper.createObjectNode();
+    json.put("name", sourceDomain.getName());
+    json.put("sourceDomainId", sourceDomain.getIdAsString());
+    json.put("sourceClientId", sourceDomain.getOwner().getIdAsString());
+    json.put("domainTemplateId", dt.getIdAsString());
+    json.put("version", dt.getTemplateVersion());
+    storeMessage(EVENT_TYPE_DOMAIN_TEMPLATE_CREATION, json, null, null);
   }
 
   private void storeMessage(String eventType, ObjectNode content, String uri, Long changeNumber) {

@@ -34,4 +34,6 @@ public interface MessageCreator {
   void createDomainCreationMessage(Domain domain);
 
   void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType);
+
+  void createDomainTemplateCreationEvent(Domain sourceDomain);
 }

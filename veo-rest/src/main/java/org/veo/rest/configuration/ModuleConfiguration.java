@@ -796,9 +796,14 @@ public class ModuleConfiguration {
       DomainTemplateService domainTemplateService,
       DomainRepository domainRepository,
       DomainTemplateRepository domainTemplateRepository,
-      DomainChangeService domainChangeService) {
+      DomainChangeService domainChangeService,
+      MessageCreator messageCreator) {
     return new CreateDomainTemplateFromDomainUseCase(
-        domainTemplateService, domainRepository, domainTemplateRepository, domainChangeService);
+        domainTemplateService,
+        domainRepository,
+        domainTemplateRepository,
+        domainChangeService,
+        messageCreator);
   }
 
   @Bean

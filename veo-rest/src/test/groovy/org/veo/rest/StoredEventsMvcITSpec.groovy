@@ -32,6 +32,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import spock.lang.Issue
 
@@ -435,6 +436,43 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             uri == "/processes/$processId/risks/$scenarioId"
             author =="user@domain.example"
             content.mitigation.targetUri == "/controls/$controlId"
+        }
+    }
+
+    @WithUserDetails("content-creator")
+    def "domain template creation events are generated"() {
+        given:
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: "DT creation event test domain",
+            authority: "SerNet",
+        ])).resourceId
+
+        when:
+        def templateId_1_0_0 = parseJson(post("/content-creation/domains/$domainId/template", [
+            version: "1.0.0"
+        ])).id
+
+        then:
+        with(getLatestStoredEventContent("domain_template_creation")) {
+            name == "DT creation event test domain"
+            sourceDomainId == domainId
+            sourceClientId == WebMvcSecurityConfiguration.TESTCLIENT_UUID
+            domainTemplateId == templateId_1_0_0
+            version == "1.0.0"
+        }
+
+        when:
+        def templateId_2_0_0 = parseJson(post("/content-creation/domains/$domainId/template", [
+            version: "2.0.0"
+        ])).id
+
+        then:
+        with(getLatestStoredEventContent("domain_template_creation")) {
+            name == "DT creation event test domain"
+            sourceDomainId == domainId
+            sourceClientId == WebMvcSecurityConfiguration.TESTCLIENT_UUID
+            domainTemplateId == templateId_2_0_0
+            version == "2.0.0"
         }
     }
 
