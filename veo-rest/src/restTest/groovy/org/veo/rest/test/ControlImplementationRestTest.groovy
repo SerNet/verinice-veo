@@ -554,7 +554,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
 
         then: "a CI has been added"
-        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name == [
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations").body.items*.control*.name ==~ [
             "root control 1",
             "root control 2"
         ]

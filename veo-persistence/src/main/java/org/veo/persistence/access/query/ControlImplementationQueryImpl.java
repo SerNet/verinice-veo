@@ -95,8 +95,6 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   private Specification<ControlImplementationData> createSpecification(
       Client client, UUID domainId) {
     return (root, query, criteriaBuilder) -> {
-      query.distinct(true);
-
       if (!currentQueryIsCountRecords(query)) {
         root.fetch("control");
         root.fetch("owner");
