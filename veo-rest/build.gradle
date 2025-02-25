@@ -143,7 +143,6 @@ testing {
             }
         }
         restTest(JvmTestSuite) {
-            testType = TestSuiteType.INTEGRATION_TEST
             dependencies {
                 implementation project()
 
