@@ -478,6 +478,13 @@ class SwaggerSpec extends VeoSpringSpec {
         endPointInfo.post.summary == 'Creates domains from a domain template'
 
         and: 'it contains information about the query parameters'
+        with(endPointInfo.post.parameters[0]) {
+            name == 'restrictToClientsWithExistingDomain'
+            it.in == 'query'
+            required == false
+            schema.type == 'boolean'
+            schema.default == true
+        }
         with(endPointInfo.post.parameters[1]) {
             name == 'clientids'
             it.in == 'query'
@@ -485,6 +492,15 @@ class SwaggerSpec extends VeoSpringSpec {
             with(schema) {
                 type == 'array'
                 items == ['type': 'string', 'format': 'uuid']
+            }
+        }
+        with(endPointInfo.post.parameters[2]) {
+            name == 'id'
+            it.in == 'path'
+            required == true
+            with(schema) {
+                type == 'string'
+                format == 'uuid'
             }
         }
     }

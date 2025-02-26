@@ -92,6 +92,17 @@ public class ClientRepositoryImpl
   }
 
   @Override
+  public Set<Client> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
+      UUID domainTemplateId, String name) {
+    return clientDataRepository
+        .findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
+            domainTemplateId, name)
+        .stream()
+        .map(Client.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
   public void delete(Client client) {
     userConfigurationDataRepository.deleteAll(
         userConfigurationDataRepository.findUserConfigurationsByClient(client.getId()));

@@ -24,9 +24,11 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.AccountProvider;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -42,12 +44,25 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
 
   private final AccountProvider accountProvider;
   private final ClientRepository clientRepository;
+  private final DomainTemplateRepository domainTemplatetRepository;
 
   @Override
   public OutputData execute(InputData input) {
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }
+    if (input.restrictToClientsWithExistingDomain) {
+      DomainTemplate domainTemplate =
+          domainTemplatetRepository.findById(input.domainTemplateId).orElseThrow();
+      return new OutputData(
+          clientRepository
+              .findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
+                  input.domainTemplateId, domainTemplate.getName())
+              .stream()
+              .map(Identifiable::getId)
+              .collect(Collectors.toSet()));
+    }
+
     return new OutputData(
         clientRepository.findAllActiveWhereDomainTemplateNotApplied(input.domainTemplateId).stream()
             .map(Identifiable::getId)
@@ -55,7 +70,8 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
   }
 
   @Valid
-  public record InputData(UUID domainTemplateId) implements UseCase.InputData {}
+  public record InputData(UUID domainTemplateId, boolean restrictToClientsWithExistingDomain)
+      implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid Set<UUID> clientIds) implements UseCase.OutputData {}

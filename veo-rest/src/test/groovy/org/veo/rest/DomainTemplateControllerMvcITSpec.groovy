@@ -63,7 +63,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     }
 
     def "create DSGVO domain for a single client"() {
-        given: "a client with some units and a document"
+        given: "two clients"
         def client1 = clientRepo.save(newClient {})
         def client2 = clientRepo.save(newClient {})
 
@@ -84,7 +84,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     }
 
     def "create DSGVO domain for multiple clients"() {
-        given: "a client with some units and a document"
+        given: "three clients"
         def client1 = clientRepo.save(newClient {})
         def client2 = clientRepo.save(newClient {})
         def client3 = clientRepo.save(newClient {})
@@ -112,13 +112,13 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     }
 
     def "create DSGVO domain for all clients"() {
-        given: "a client with some units and a document"
+        given: "three clients"
         def client1 = clientRepo.save(newClient {})
         def client2 = clientRepo.save(newClient {})
         def client3 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?restrictToClientsWithExistingDomain=false", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         client2 = loadClientAndInitializeDomains(client2.id)
         client3 = loadClientAndInitializeDomains(client3.id)
@@ -127,6 +127,36 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         client1.domains.size() == 1
         client2.domains.size() == 1
         client3.domains.size() == 1
+    }
+
+    def "create DSGVO domain for all clients with previous domaintemplate"() {
+        given: "three clients"
+        def client1 = clientRepo.save(newClient {})
+        def client2 = clientRepo.save(newClient {})
+        def client3 = clientRepo.save(newClient {})
+
+        when: "creating the DSGVO domain for two clients"
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id},${client2.id}", [:], HttpStatus.SC_NO_CONTENT)
+        client1 = loadClientAndInitializeDomains(client1.id)
+        client2 = loadClientAndInitializeDomains(client2.id)
+        client3 = loadClientAndInitializeDomains(client3.id)
+
+        then: "the clients get the new domain"
+        client1.domains.size() == 1
+        client2.domains.size() == 1
+        client3.domains.size() == 0
+
+        when: "creating the DSGVO_V2 domain for all clients with previous DSGVO"
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_V2_UUID/createdomains?restrictToClientsWithExistingDomain=true", [:], HttpStatus.SC_NO_CONTENT)
+        client1 = loadClientAndInitializeDomains(client1.id)
+        client2 = loadClientAndInitializeDomains(client2.id)
+        client3 = loadClientAndInitializeDomains(client3.id)
+
+        then: "the clients get the new domain except for the client without previous version"
+        client1.domains.size() == 2
+        client2.domains.size() == 2
+        client3.domains.size() == 0
     }
 
     Client loadClientAndInitializeDomains(clientId) {

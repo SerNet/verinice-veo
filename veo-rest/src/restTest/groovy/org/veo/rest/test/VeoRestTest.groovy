@@ -355,7 +355,7 @@ class VeoRestTest extends Specification {
         // TODO #2386 use domain import instead of importing as a template
         domain.name = "copy of $domain.name $domain.templateVersion ${randomUUID().toString().subSequence(0, 5)}"
         def templateId = post("/content-creation/domain-templates", domain, 201, CONTENT_CREATOR).body.resourceId
-        post("/domain-templates/$templateId/createdomains", null, 204, ADMIN)
+        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
         return get("/domains").body.find { it.name == domain.name }.id
     }
 

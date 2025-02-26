@@ -1049,8 +1049,11 @@ public class ModuleConfiguration {
   @Bean
   public GetClientIdsWhereDomainTemplateNotAppliedUseCase
       getClientIdsWhereDomainTemplateNotAppliedUseCase(
-          AccountProvider accountProvider, ClientRepository clientRepository) {
-    return new GetClientIdsWhereDomainTemplateNotAppliedUseCase(accountProvider, clientRepository);
+          AccountProvider accountProvider,
+          ClientRepository clientRepository,
+          DomainTemplateRepository domainTemplateRepository) {
+    return new GetClientIdsWhereDomainTemplateNotAppliedUseCase(
+        accountProvider, clientRepository, domainTemplateRepository);
   }
 
   @Bean

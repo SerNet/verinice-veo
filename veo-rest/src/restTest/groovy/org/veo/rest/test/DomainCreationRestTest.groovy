@@ -126,7 +126,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ]).body.id
 
         and: "deploying it in all clients"
-        post("/domain-templates/$templateId/createdomains", null, 204, ADMIN)
+        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
 
         and: "looking up secondary client's domain"
         def secondaryClientDomain = get("/domains", 200, SECONDARY_CLIENT_USER).body

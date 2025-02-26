@@ -46,6 +46,7 @@ import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseC
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -99,17 +100,36 @@ public class DomainTemplateController extends AbstractEntityController {
   }
 
   @PostMapping(value = "/{id}/createdomains")
-  @Operation(summary = "Creates domains from a domain template")
+  @Operation(
+      summary = "Creates domains from a domain template",
+      description =
+          "Creates domains from a domain template in all, or a set of clients, with a domain connected to a previous domain template of that kind.",
+      parameters = {
+        @Parameter(
+            name = "restrictToClientsWithExistingDomain",
+            description =
+                "When set to false, a domain will be created for all clients, regardless of their domains."),
+        @Parameter(
+            name = "clientids",
+            description = "A set of client ids to create the domain template for"),
+        @Parameter(name = "id", description = "The id of the domain template")
+      })
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Domain(s) created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
       Authentication auth,
       @PathVariable UUID id,
+      @RequestParam(
+              value = "restrictToClientsWithExistingDomain",
+              required = false,
+              defaultValue = "true")
+          boolean restrictToClientsWithExistingDomain,
       @RequestParam(value = "clientids", required = false) List<UUID> inputClientIds) {
     return (inputClientIds != null
             ? CompletableFuture.completedFuture(new HashSet<>(inputClientIds))
             : useCaseInteractor.execute(
                 getClientIdsWhereDomainTemplateNotAppliedUseCase,
-                new GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData(id),
+                new GetClientIdsWhereDomainTemplateNotAppliedUseCase.InputData(
+                    id, restrictToClientsWithExistingDomain),
                 GetClientIdsWhereDomainTemplateNotAppliedUseCase.OutputData::clientIds))
         .thenCompose(clientIds -> createDomains(id, clientIds))
         .thenApply(v -> ResponseEntity.noContent().build());
