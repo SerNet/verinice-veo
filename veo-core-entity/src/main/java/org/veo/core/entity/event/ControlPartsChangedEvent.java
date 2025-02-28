@@ -49,7 +49,7 @@ public class ControlPartsChangedEvent implements ElementEvent {
   @Override
   @SuppressWarnings("unchecked")
   public Class<? extends Element> getEntityType() {
-    return (Class<? extends Element>) entity.getModelInterface();
+    return entity.getModelInterface();
   }
 
   @Override

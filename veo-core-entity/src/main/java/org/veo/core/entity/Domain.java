@@ -55,7 +55,7 @@ public interface Domain extends DomainBase, ClientOwned {
 
   @Override
   default Class<Domain> getModelInterface() {
-    return (Class) Domain.class;
+    return Domain.class;
   }
 
   @Override
