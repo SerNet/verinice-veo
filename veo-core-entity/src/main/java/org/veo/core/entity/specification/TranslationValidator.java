@@ -129,7 +129,7 @@ public class TranslationValidator {
                       validationContext + " risk method: ");
                 })
             .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .toList());
 
     violations.addAll(
         riskDefinition.getProbability().getTranslations().entrySet().stream()
@@ -138,7 +138,7 @@ public class TranslationValidator {
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " probability: "))
             .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .toList());
 
     violations.addAll(
         riskDefinition.getImplementationStateDefinition().getTranslations().entrySet().stream()
@@ -147,7 +147,7 @@ public class TranslationValidator {
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " implementation state: "))
             .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .toList());
 
     violations.addAll(
         riskDefinition.getCategories().stream()
@@ -159,7 +159,7 @@ public class TranslationValidator {
                         t.getValue(),
                         validationContext + " category " + t.getKey() + ": "))
             .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .toList());
 
     violations.addAll(
         riskDefinition.getRiskValues().stream()
@@ -169,7 +169,7 @@ public class TranslationValidator {
                     validateNameableTranslations(
                         t.getKey(), t.getValue(), validationContext + " risk-values: "))
             .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .toList());
 
     if (violations.size() > 0) {
       throw new TranslationException(violations);
@@ -260,7 +260,7 @@ public class TranslationValidator {
       @NonNull String type, Map<String, SubTypeDefinition> subTypes) {
     return subTypes.entrySet().stream()
         .flatMap(e -> toStatusKeys(type, e.getKey(), e.getValue()))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private static Stream<String> toStatusKeys(
@@ -281,7 +281,7 @@ public class TranslationValidator {
         .flatMap(
             attrPair ->
                 attributeSchemaTranslationKeys(attrPair.getKey(), attrPair.getValue()).stream())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @SuppressWarnings("unchecked")
