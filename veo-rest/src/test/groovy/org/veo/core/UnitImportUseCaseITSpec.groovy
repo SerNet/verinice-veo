@@ -61,10 +61,6 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         }
         def controlId = UUID.randomUUID()
         def scopeId = UUID.randomUUID()
-        def control = new FullControlDto().tap {
-            id = controlId
-            name = 'My control'
-        }
         def elements = [
             new FullControlDto().tap {
                 id = controlId
@@ -74,7 +70,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 id = scopeId
                 name = 'My scope'
                 requirementImplementations.add(new RequirementImplementationDto().tap {
-                    it.control = IdRef.fromUri("/controls/${control.id}", referenceAssembler)
+                    it.control = IdRef.fromUri("/controls/${controlId}", referenceAssembler)
                     it.status = ImplementationStatus.YES
                 })
             }

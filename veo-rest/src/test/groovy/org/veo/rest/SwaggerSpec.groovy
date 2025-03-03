@@ -159,21 +159,6 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         def scenarioSchema = schemas.FullScenarioDto
         scenarioSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ScenarioDomainAssociationDto"
-
-        def scenarioDomainAssociationSchema = schemas.ScenarioDomainAssociationDto
-        scenarioDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ScenarioRiskValuesDto"
-
-        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
-        //  'links' must also be present
-        scenarioDomainAssociationSchema.properties.keySet() ==~ [
-            'subType',
-            'status',
-            'decisionResults',
-            'riskValues',
-        ]
-
-        def scenarioRiskValuesSchema = schemas.ScenarioRiskValuesDto
-        scenarioRiskValuesSchema.properties.potentialProbability.type == "number"
     }
 
     def "scope risk values are mapped correctly"() {
@@ -183,19 +168,6 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         def scopeSchema = schemas.FullScopeDto
         scopeSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ScopeDomainAssociationDto"
-
-        def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
-        scopeDomainAssociationSchema.properties.riskDefinition.type == "string"
-
-        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
-        //  'links' must also be present
-        scopeDomainAssociationSchema.properties.keySet() ==~ [
-            'subType',
-            'status',
-            'decisionResults',
-            'riskDefinition',
-            'riskValues',
-        ]
     }
 
     def "process risk values are mapped correctly"() {
@@ -205,75 +177,6 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         def processSchema = schemas.FullProcessDto
         processSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ProcessDomainAssociationDto"
-
-        def processDomainAssociationSchema = schemas.ProcessDomainAssociationDto
-        processDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-        processDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
-
-        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
-        //  'links' must also be present
-        processDomainAssociationSchema.properties.keySet() ==~ [
-            'subType',
-            'status',
-            'decisionResults',
-            'riskValues',
-        ]
-
-        def processImpactValuesSchema = schemas.ImpactValuesDto
-        processImpactValuesSchema.description == '''Key is risk definition ID, value contains impact values in the context of that risk definition.'''
-        def potentialImpactsSchema = processImpactValuesSchema.properties.potentialImpacts
-        potentialImpactsSchema.type == "object"
-        potentialImpactsSchema.description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
-        potentialImpactsSchema.example == [C:2, I:3]
-    }
-
-    def "asset risk values are mapped correctly"() {
-        given:
-        def schemas = parsedApiDocs.components.schemas
-
-        expect:
-        def assetSchema = schemas.FullAssetDto
-        assetSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/AssetDomainAssociationDto"
-
-        def assetDomainAssociationSchema = schemas.AssetDomainAssociationDto
-        assetDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-        assetDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
-
-        // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
-        //  'links' must also be present
-        assetDomainAssociationSchema.properties.keySet() ==~ [
-            'subType',
-            'status',
-            'decisionResults',
-            'riskValues',
-        ]
-
-        with(schemas.ImpactValuesDto) {
-            description == "Key is risk definition ID, value contains impact values in the context of that risk definition."
-            with(properties) {
-                with(potentialImpacts) {
-                    type == "object"
-                    description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
-                    example == [C:2, I:3]
-                }
-                with(potentialImpactsCalculated) {
-                    type == "object"
-                    description == "Potential impacts for a set of risk categories. These are calculated values based on the high water mark."
-                }
-                with(potentialImpactsEffective) {
-                    type == "object"
-                    description == "Potential impacts for a set of risk categories. These are either the specific or the calculated values."
-                }
-                with(potentialImpactReasons) {
-                    type == "object"
-                    description == "The reason for the chosen user-defined potential impact in each category."
-                }
-                with(potentialImpactExplanations) {
-                    type == "object"
-                    description == "An optional explanation for the user-entered specific potential impact."
-                }
-            }
-        }
     }
 
     def "decision rule ref values are mapped correctly"() {
@@ -1140,6 +1043,119 @@ class SwaggerSpec extends VeoSpringSpec {
                 'pageCount'
             ]
             it.properties.items == [type:'array', items:[$ref:'#/components/schemas/FullScopeDto']]
+        }
+    }
+
+    def "FullAssetDto is mapped correctly"() {
+        expect:
+        with(getSchema('FullAssetDto')) {
+            it.properties.domains.additionalProperties.'$ref' == "#/components/schemas/AssetDomainAssociationDto"
+        }
+    }
+
+    def "AssetDomainAssociationDto is well-documented"() {
+        expect:
+        with(getSchema('AssetDomainAssociationDto')) {
+            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+
+            // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+            //  'links' must also be present
+            it.properties.keySet() ==~ [
+                'subType',
+                'status',
+                'decisionResults',
+                'riskValues',
+            ]
+        }
+    }
+
+    def "ProcessDomainAssociationDto is well-documented"() {
+        expect:
+        with(getSchema('ProcessDomainAssociationDto')) {
+            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+
+            // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+            //  'links' must also be present
+            it.properties.keySet() ==~ [
+                'subType',
+                'status',
+                'decisionResults',
+                'riskValues',
+            ]
+        }
+    }
+
+    def "ScopeDomainAssociationDto is well-documented"() {
+        expect:
+        with(getSchema('ScopeDomainAssociationDto')) {
+            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+
+            // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+            //  'links' must also be present
+            it.properties.keySet() ==~ [
+                'subType',
+                'status',
+                'decisionResults',
+                'riskDefinition',
+                'riskValues',
+            ]
+        }
+    }
+
+    def "ImpactValuesDto is well-documented"() {
+        expect:
+        with(getSchema('ImpactValuesDto')) {
+
+            description == "Key is risk definition ID, value contains impact values in the context of that risk definition."
+            with(properties) {
+                with(potentialImpacts) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
+                    example == [C:2, I:3]
+                }
+                with(potentialImpactsCalculated) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are calculated values based on the high water mark."
+                }
+                with(potentialImpactsEffective) {
+                    type == "object"
+                    description == "Potential impacts for a set of risk categories. These are either the specific or the calculated values."
+                }
+                with(potentialImpactReasons) {
+                    type == "object"
+                    description == "The reason for the chosen user-defined potential impact in each category."
+                }
+                with(potentialImpactExplanations) {
+                    type == "object"
+                    description == "An optional explanation for the user-entered specific potential impact."
+                }
+            }
+        }
+    }
+
+    def "ScenarioDomainAssociationDto is well-documented"() {
+        expect:
+        with(getSchema('ScenarioDomainAssociationDto')) {
+            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ScenarioRiskValuesDto"
+
+            // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
+            //  'links' must also be present
+            it.properties.keySet() ==~ [
+                'subType',
+                'status',
+                'decisionResults',
+                'riskValues',
+            ]
+        }
+    }
+
+    def "ScenarioRiskValuesDto is well-documented"() {
+        expect:
+        with(getSchema('ScenarioRiskValuesDto')) {
+            it.properties.potentialProbability.type == "number"
         }
     }
 
