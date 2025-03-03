@@ -46,6 +46,12 @@ public class ScenarioDomainAssociationDto extends DomainAssociationDto {
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
     return new ScenarioDomainAssociationStateImpl(
-        domain, subType, status, riskValues, customAspectStates, customLinkStates);
+        domain,
+        subType,
+        status,
+        riskValues,
+        customAspectStates,
+        customLinkStates,
+        appliedCatalogItem);
   }
 }

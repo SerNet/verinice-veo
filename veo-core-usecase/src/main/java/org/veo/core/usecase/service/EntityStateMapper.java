@@ -433,6 +433,12 @@ public class EntityStateMapper {
                   () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
           applyLinks(association, target, idRefResolver, domain);
           applyCustomAspects(association, target, domain);
+
+          target.setAppliedCatalogItem(
+              domain,
+              Optional.ofNullable(association.getAppliedCatalogItem())
+                  .map(idRefResolver::resolve)
+                  .orElse(null));
           customMapper.accept(domain, association);
         });
   }

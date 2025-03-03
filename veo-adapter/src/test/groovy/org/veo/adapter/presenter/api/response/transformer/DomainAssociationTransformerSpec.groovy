@@ -21,10 +21,13 @@ import static java.util.UUID.randomUUID
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto
+import org.veo.adapter.presenter.api.dto.AbstractControlDto
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Control
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
@@ -37,7 +40,10 @@ import spock.lang.Specification
 
 class DomainAssociationTransformerSpec extends Specification {
 
-    Domain domain0 = Mock(Domain) { it.id >> randomUUID() }
+    Domain domain0 = Mock(Domain) {
+        it.id >> randomUUID()
+        modelInterface >> Domain
+    }
     Domain domain1 = Mock(Domain) { it.id >> randomUUID() }
     ReferenceAssembler referenceAssembler = Mock()
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer(referenceAssembler)
@@ -95,6 +101,7 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getSubType(domain1) >> "bar"
         entity.getStatus(domain1) >> "NEW_BAR"
         entity.getDecisionResults(domain1) >> decisionResults1
+        entity.findAppliedCatalogItem(_) >> Optional.empty()
 
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToDto(entity, dto, true)
@@ -146,6 +153,7 @@ class DomainAssociationTransformerSpec extends Specification {
         entity.getStatus(domain1) >> "NEW_BAR"
         entity.getCustomAspects(_) >> []
         entity.getLinks(_) >> []
+        entity.findAppliedCatalogItem(_) >> Optional.empty()
 
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToDto(entity, dto, true)
@@ -160,6 +168,47 @@ class DomainAssociationTransformerSpec extends Specification {
         with(capturedDomainMap[domain1.id]) {
             subType == "bar"
             status == "NEW_BAR"
+        }
+    }
+
+    def "maps applied catalog item from entity to DTO asset"() {
+        given:
+        AbstractControlDto dto = Mock()
+        Control entity = Mock()
+        def catalogItemId = UUID.randomUUID()
+        def catalogItem = Stub(CatalogItem) {
+            symbolicId >> catalogItemId
+            modelInterface >> Control
+            namespace >> domain0
+        }
+        Map<String, AssetDomainAssociationDto> capturedDomainMap
+        entity.domains >> [domain0]
+        entity.domainAssociations >> [
+            Mock(ElementDomainAssociation) {
+                domain >> domain0
+                subType >> "foo"
+                status >> "NEW_FOO"
+            }
+        ]
+
+        entity.getSubType(domain0) >> "foo"
+        entity.getStatus(domain0) >> "NEW_FOO"
+        entity.getCustomAspects(_) >> []
+        entity.getLinks(_) >> []
+        entity.findAppliedCatalogItem(domain0) >> Optional.of(catalogItem)
+
+        when: "the sub types are mapped"
+        domainAssociationTransformer.mapDomainsToDto(entity, dto, true)
+
+        then: "a map of domain associations is set on the DTO"
+        1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
+        capturedDomainMap.size() == 1
+        with(capturedDomainMap[domain0.id]) {
+            subType == "foo"
+            status == "NEW_FOO"
+            with(appliedCatalogItem) {
+                it.entity == catalogItem
+            }
         }
     }
 }

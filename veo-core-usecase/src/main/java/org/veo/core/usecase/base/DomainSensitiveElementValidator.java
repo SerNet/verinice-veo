@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
@@ -67,6 +68,11 @@ public class DomainSensitiveElementValidator {
       throw new IllegalArgumentException(
           "Element cannot contain custom aspects or links for domains it is not associated with");
     }
+
+    // TODO #3274: review this wrt. #3622
+    if (element.getAppliedCatalogItems().size() > 1) {
+      throw new IllegalArgumentException("Element has multiple catalog references");
+    }
     element
         .getDomains()
         .forEach(
@@ -90,6 +96,18 @@ public class DomainSensitiveElementValidator {
             });
 
     SubTypeValidator.validate(element, domain);
+
+    element
+        .findAppliedCatalogItem(domain)
+        .ifPresent(
+            catalogItem -> {
+              DomainBase ciDomain = catalogItem.getDomainBase();
+              if (!ciDomain.equals(domain)) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Invalid catalog item reference from domain '%s'.", ciDomain.getName()));
+              }
+            });
 
     var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
     if (element instanceof RiskAffected<?, ?> riskAffected) {

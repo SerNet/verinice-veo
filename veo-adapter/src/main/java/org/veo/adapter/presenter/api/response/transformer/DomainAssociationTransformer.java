@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
@@ -214,6 +215,11 @@ public class DomainAssociationTransformer {
                     association.setCustomAspects(CustomAspectMapDto.from(source, domain));
                     association.setLinks(LinkMapDto.from(source, domain, referenceAssembler));
                   }
+                  association.setAppliedCatalogItem(
+                      source
+                          .findAppliedCatalogItem(domain)
+                          .map(ci -> SymIdRef.from(ci, referenceAssembler))
+                          .orElse(null));
                   return association;
                 }));
   }

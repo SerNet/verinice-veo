@@ -20,8 +20,11 @@ package org.veo.core.entity.state;
 import java.util.Map;
 import java.util.Set;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 
 import lombok.EqualsAndHashCode;
@@ -44,8 +47,9 @@ public interface ScenarioDomainAssociationState extends DomainAssociationState {
         String status,
         Map<String, ? extends ScenarioRiskValues> riskValues,
         Set<CustomAspectState> customAspects,
-        Set<CustomLinkState> customLinks) {
-      super(domain, subType, status, customAspects, customLinks);
+        Set<CustomLinkState> customLinks,
+        ITypedSymbolicId<CatalogItem, DomainBase> appliedCatalogItem) {
+      super(domain, subType, status, customAspects, customLinks, appliedCatalogItem);
       this.riskValues = riskValues;
     }
   }

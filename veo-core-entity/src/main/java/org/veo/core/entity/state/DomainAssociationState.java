@@ -19,8 +19,11 @@ package org.veo.core.entity.state;
 
 import java.util.Set;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -36,6 +39,8 @@ public interface DomainAssociationState {
 
   Set<CustomLinkState> getCustomLinkStates();
 
+  ITypedSymbolicId<CatalogItem, DomainBase> getAppliedCatalogItem();
+
   @Value
   @NonFinal
   class DomainAssociationStateImpl implements DomainAssociationState {
@@ -44,5 +49,6 @@ public interface DomainAssociationState {
     String status;
     Set<CustomAspectState> customAspectStates;
     Set<CustomLinkState> customLinkStates;
+    ITypedSymbolicId<CatalogItem, DomainBase> appliedCatalogItem;
   }
 }

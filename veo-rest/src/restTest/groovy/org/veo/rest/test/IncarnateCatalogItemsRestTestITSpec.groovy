@@ -49,11 +49,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomainId] == [
-                subType: "TOM",
-                status: "NEW",
-                decisionResults: [:],
-            ]
+            with(domains[owner.testDomainId]) {
+                subType== "TOM"
+                status== "NEW"
+                decisionResults== [:]
+                with(appliedCatalogItem) {
+                    name == 'Control-cc-1'
+                }
+            }
             // Mind the difference between Closure#owner and Element#owner
             it.owner.displayName == owner.UNIT_NAME
             links.size() == 1
@@ -135,11 +138,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
             it.owner.displayName == owner.UNIT_NAME
-            domains[owner.testDomainId] == [
-                subType: "TOM",
-                status: "NEW",
-                decisionResults: [:],
-            ]
+            with(domains[owner.testDomainId]) {
+                subType== "TOM"
+                status== "NEW"
+                decisionResults== [:]
+                with(appliedCatalogItem) {
+                    name == 'Control-cc-2'
+                }
+            }
             links.size() == 1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -196,11 +202,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             items[0].abbreviation == "c-2"
             items[0].description.startsWith("Lorem ipsum")
             items[0].owner.displayName == owner.UNIT_NAME
-            items[0].domains[owner.testDomainId] == [
-                subType: "TOM",
-                status: "NEW",
-                decisionResults: [:],
-            ]
+            with(items[0].domains[owner.testDomainId]) {
+                subType == "TOM"
+                status == "NEW"
+                decisionResults== [:]
+                with(appliedCatalogItem) {
+                    name == 'Control-2'
+                }
+            }
         }
     }
 
@@ -219,11 +228,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomainId] == [
-                subType: "TOM",
-                status: "NEW",
-                decisionResults: [:],
-            ]
+            with(domains[owner.testDomainId]) {
+                subType== "TOM"
+                status== "NEW"
+                decisionResults== [:]
+                with(appliedCatalogItem) {
+                    name == 'Control-cc-1'
+                }
+            }
             it.owner.displayName == owner.UNIT_NAME
             links.size() == 1
             links["Control_details_Control"].domains.size() == 1
@@ -235,11 +247,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-2"
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomainId] == [
-                subType: "TOM",
-                status: "NEW",
-                decisionResults: [:],
-            ]
+            with(domains[owner.testDomainId]) {
+                subType== "TOM"
+                status== "NEW"
+                decisionResults== [:]
+                with(appliedCatalogItem) {
+                    name == 'Control-cc-2'
+                }
+            }
             it.owner.displayName == owner.UNIT_NAME
             links.size() == 1
             links["Control_details_Control"].domains.size() == 1

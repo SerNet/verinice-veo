@@ -22,7 +22,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.common.SymIdRef
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto
+import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
@@ -146,6 +148,50 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 'My control',
                 'My control part'
             ]
+        }
+    }
+
+    def "Import a control with a catalog item reference"() {
+        given:
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'My unit'
+            domains = [
+                IdRef.fromUri("/domains/${testDomain.id}", referenceAssembler)
+            ]
+        }
+        def controlId = UUID.randomUUID()
+        def elements = [
+            new FullControlDto().tap {
+                id = controlId
+                name = 'TOM zur Verschlüsselung'
+                domains = [(testDomain.id):new DomainAssociationDto().tap {
+                        subType = 'CTL_TOM'
+                        status = 'NEW'
+                        appliedCatalogItem = SymIdRef.fromUri("/domains/${testDomain.id}/catalog-items/7a60f2cc-fb20-4669-9eda-d76863a29602", referenceAssembler)
+                    }]
+            }
+        ]
+        def risks = []
+
+        when:
+        def result = executeInTransaction{
+            useCase.execute(new UnitImportUseCase.InputData(client, unitDto, elements as Set, risks as Set))
+        }
+        def unit = result.unit
+        def controls = executeInTransaction{
+            controlDataRepository.findAll().tap{
+                it*.domainAssociations*.appliedCatalogItem*.name
+            }
+        }
+
+        then:
+        controls.size() == 1
+        with(controls.first()) {
+            domainAssociations.size() == 1
+            with(domainAssociations.first()) {
+                it.appliedCatalogItem.name == 'TOM zur Verschlüsselung'
+            }
         }
     }
 }

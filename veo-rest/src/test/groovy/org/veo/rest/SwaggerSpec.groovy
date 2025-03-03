@@ -140,7 +140,8 @@ class SwaggerSpec extends VeoSpringSpec {
         domainAssociationSchema.properties.keySet() ==~ [
             'subType',
             'status',
-            'decisionResults'
+            'decisionResults',
+            'appliedCatalogItem'
         ]
     }
 
@@ -518,9 +519,11 @@ class SwaggerSpec extends VeoSpringSpec {
             method,
             status,
             statusInfo
-        ] << parsedApiDocs.paths.collectMany {path, pathData->
-            pathData.collectMany {method, methodData ->
-                methodData.responses.findAll {HttpStatus.resolve(it.key as int).is4xxClientError()}.collect{ status, statusInfo->
+        ] << parsedApiDocs.paths.collectMany { path, pathData->
+            pathData.collectMany { method, methodData ->
+                methodData.responses.findAll {
+                    HttpStatus.resolve(it.key as int).is4xxClientError()
+                }.collect{ status, statusInfo->
                     return [
                         path:path, method:method, status:status, statusInfo:statusInfo
                     ]
@@ -674,7 +677,9 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties == null
             it.allOf.size() == 2
             with(it.allOf) {
-                with(it.find{it.type == 'object'}) {
+                with(it.find{
+                    it.type == 'object'
+                }) {
                     with(it.properties) {
                         it.keySet() ==~ ['partSubType']
                         with(it.partSubType) {
@@ -682,7 +687,9 @@ class SwaggerSpec extends VeoSpringSpec {
                         }
                     }
                 }
-                it.find{it.type != 'object'} == [$ref:'#/components/schemas/Suggestion']
+                it.find{
+                    it.type != 'object'
+                } == [$ref:'#/components/schemas/Suggestion']
             }
         }
     }
@@ -780,7 +787,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 'migrationExpression'
             ]
             it.allOf.contains( [$ref:'#/components/schemas/MigrationTransformDefinition'])
-            with(it.allOf.find{it.type == 'object'}) {
+            with(it.allOf.find{
+                it.type == 'object'
+            }) {
                 it.properties.keySet() ==~ [
                     'elementType',
                     'customAspect',
@@ -1065,8 +1074,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 'subType',
                 'status',
                 'decisionResults',
-                'riskValues',
+                'appliedCatalogItem',
+                'riskValues'
             ]
+            it.properties.appliedCatalogItem == [$ref:'#/components/schemas/SymIdRefCatalogItemDomainBase']
         }
     }
 
@@ -1081,6 +1092,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.keySet() ==~ [
                 'subType',
                 'status',
+                'appliedCatalogItem',
                 'decisionResults',
                 'riskValues',
             ]
@@ -1098,6 +1110,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.keySet() ==~ [
                 'subType',
                 'status',
+                'appliedCatalogItem',
                 'decisionResults',
                 'riskDefinition',
                 'riskValues',
@@ -1146,6 +1159,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.keySet() ==~ [
                 'subType',
                 'status',
+                'appliedCatalogItem',
                 'decisionResults',
                 'riskValues',
             ]
@@ -1156,6 +1170,49 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('ScenarioRiskValuesDto')) {
             it.properties.potentialProbability.type == "number"
+        }
+    }
+
+    def "FullControlInDomainDto is well-documented"() {
+        expect:
+        with(getSchema('FullControlInDomainDto')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'name',
+                'abbreviation',
+                'description',
+                'designator',
+                'subType',
+                'status',
+                'type',
+                'owner',
+                'appliedCatalogItem',
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'customAspects',
+                'links',
+                'parts',
+                'decisionResults',
+                '_self'
+            ]
+            it.properties.appliedCatalogItem == [$ref:'#/components/schemas/SymIdRefCatalogItemDomainBase']
+        }
+    }
+
+    def "SymIdRefCatalogItemDomainBase is well-documented"() {
+        expect:
+        with(getSchema('SymIdRefCatalogItemDomainBase')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'name',
+                'displayName',
+                'abbreviation',
+                'type',
+                'namespaceId',
+                'targetUri'
+            ]
         }
     }
 
@@ -1178,7 +1235,9 @@ class SwaggerSpec extends VeoSpringSpec {
                         path: path.key,
                         method: endpoint.key,
                         responseCode: response.key,
-                        schema: rawSchema?.$ref?.split("/")?.last()?.with { getSchema(it) } ?: rawSchema
+                        schema: rawSchema?.$ref?.split("/")?.last()?.with {
+                            getSchema(it)
+                        } ?: rawSchema
                     ]
                 }
             }

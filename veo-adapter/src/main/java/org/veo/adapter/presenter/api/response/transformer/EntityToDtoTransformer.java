@@ -763,6 +763,11 @@ public final class EntityToDtoTransformer {
     target.setLinks(LinkMapDto.from(source, domain, referenceAssembler));
     target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
     target.setDecisionResults(source.getDecisionResults(domain));
+    target.setAppliedCatalogItem(
+        source
+            .findAppliedCatalogItem(domain)
+            .map(ci -> SymIdRef.from(ci, referenceAssembler))
+            .orElse(null));
   }
 
   public List<ShortInspectionDto> transformInspections2ShortDtos(

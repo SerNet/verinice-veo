@@ -26,6 +26,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.persistence.access.DomainRepositoryImpl
 
 @WithUserDetails("user@domain.example")
 class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -33,15 +34,21 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private UnitRepository unitRepository
     @Autowired
     private ScenarioRepository scenarioRepository
+    @Autowired
+    private DomainRepositoryImpl domainRepository
 
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
+    private String dsgvoDomainId
+    private String dsgvo2DomainId
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
         dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoDomainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).idAsString
+        dsgvo2DomainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID).idAsString
         client = clientRepository.getById(client.id)
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
@@ -210,8 +217,11 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             totalItemCount == 15
             page == 0
             pageCount == 2
-            items*.name == (1..10).collect { "scenario $it" }
+            items*.name == (1..10).collect {
+                "scenario $it"
+            }
             items*.subType =~ ["Attack"]
+            items*.appliedCatalogItem =~ [null]
         }
 
         and: "page 2 to be available"
@@ -219,7 +229,9 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             totalItemCount == 15
             page == 1
             pageCount == 2
-            items*.name == (11..15).collect { "scenario $it" }
+            items*.name == (11..15).collect {
+                "scenario $it"
+            }
             items*.subType =~ ["Attack"]
         }
     }
@@ -240,7 +252,7 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "updating risk values"
-        get("/domains/$testDomainId/scenarios/$scenarioId").with{getResults ->
+        get("/domains/$testDomainId/scenarios/$scenarioId").with{ getResults ->
             def scenario = parseJson(getResults)
             scenario.riskValues.riskyDef.potentialProbability = 1
             scenario.riskValues.riskyDef.potentialProbabilityExplanation = "Most likely"
@@ -335,7 +347,9 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                     status: "NEW",
                 ]
             ],
-            parts: partIds.collect { [ targetUri:"/scenarios/$it" ] },
+            parts: partIds.collect {
+                [ targetUri:"/scenarios/$it" ]
+            },
         ])).resourceId
 
         expect: 'the parts that belong to the domain are being returned by the respective endpoint'
@@ -343,7 +357,107 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             totalItemCount == 15
             page == 0
             pageCount == 2
-            items*.name == (1..10).collect { "scenario $it" }
+            items*.name == (1..10).collect {
+                "scenario $it"
+            }
         }
+    }
+
+    def "retrieve element with applied catalog item"() {
+        given:
+        def scenario = executeInTransaction {
+            def unit = unitRepository.getById(UUID.fromString(unitId))
+            def testDomain = domainRepository.getById(UUID.fromString(testDomainId))
+            def dsgvo2Domain = domainRepository.getById(UUID.fromString(dsgvo2DomainId))
+            scenarioRepository.save(newScenario(unit) {
+                name = 'DANGER!!'
+                associateWithDomain(testDomain, "Attack", "NEW")
+                associateWithDomain(dsgvo2Domain, "SCN_Scenario", "NEW")
+                setAppliedCatalogItem(dsgvo2Domain, dsgvo2Domain.catalogItems.find {it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'})
+            })
+        }
+
+        expect:
+        with(parseJson(get("/domains/$testDomainId/scenarios/${scenario.id}"))) {
+            appliedCatalogItem == null
+        }
+        with(parseJson(get("/domains/$dsgvo2DomainId/scenarios/${scenario.id}"))) {
+            appliedCatalogItem.name == 'Unberechtigte Kenntnisnahme'
+            appliedCatalogItem.id == '22c3f334-9875-450c-81e0-b27366b2a144'
+        }
+    }
+
+    def "Cannot reference catalog item from another domain"() {
+        given:
+        def scenario = executeInTransaction {
+            def unit = unitRepository.getById(UUID.fromString(unitId))
+            def testDomain = domainRepository.getById(UUID.fromString(testDomainId))
+            scenarioRepository.save(newScenario(unit) {
+                name = 'DANGER!!'
+                associateWithDomain(testDomain, "Attack", "NEW")
+            })
+        }
+
+        def catalogItem = executeInTransaction {
+            def dsgvo2Domain = domainRepository.getById(UUID.fromString(dsgvo2DomainId))
+            dsgvo2Domain.catalogItems.find {it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'}
+        }
+        def json = parseJson(get("/domains/$testDomainId/scenarios/$scenario.id"))
+
+        when:
+        json.appliedCatalogItem = [targetUri: "/domains/$dsgvo2DomainId/catalog-items/${catalogItem.symbolicIdAsString}"]
+        put("/domains/$testDomainId/scenarios/$scenario.id", json, [
+            'If-Match': getETag(get("/domains/$testDomainId/scenarios/$scenario.id"))
+        ], 400)
+
+        then:
+        IllegalArgumentException e = thrown()
+        e.message == 'Element cannot contain custom aspects or links for domains it is not associated with'
+
+        when:
+        executeInTransaction {
+            scenario = scenarioRepository.findById(scenario.id).get()
+            def dsgvo2Domain = domainRepository.getById(UUID.fromString(dsgvo2DomainId))
+            scenario.associateWithDomain(dsgvo2Domain, "SCN_Scenario", "NEW")
+        }
+        put("/domains/$testDomainId/scenarios/$scenario.id", json, [
+            'If-Match': getETag(get("/domains/$testDomainId/scenarios/$scenario.id"))
+        ], 400)
+
+        then:
+        IllegalArgumentException e2 = thrown()
+        e2.message == "Invalid catalog item reference from domain 'DS-GVO'."
+    }
+
+    // TODO #3274: review this wrt. #3622
+    def "Element cannot have multiple applied catalog items"() {
+        given:
+        def scenario = executeInTransaction {
+            def unit = unitRepository.getById(UUID.fromString(unitId))
+            def dsgvoDomain = domainRepository.getById(UUID.fromString(dsgvoDomainId))
+            def dsgvo2Domain = domainRepository.getById(UUID.fromString(dsgvo2DomainId))
+            scenarioRepository.save(newScenario(unit) {
+                name = 'DANGER!!'
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
+                associateWithDomain(dsgvo2Domain, "SCN_Scenario", "NEW")
+            })
+        }
+
+        when:
+        def jsonDSGVO = parseJson(get("/domains/$dsgvoDomainId/scenarios/$scenario.id"))
+        jsonDSGVO.appliedCatalogItem = [targetUri: "/domains/$dsgvoDomainId/catalog-items/22c3f334-9875-450c-81e0-b27366b2a144"]
+        put("/domains/$dsgvoDomainId/scenarios/$scenario.id", jsonDSGVO, [
+            'If-Match': getETag(get("/domains/$dsgvoDomainId/scenarios/$scenario.id"))
+        ])
+
+        def jsonDSGVO2 = parseJson(get("/domains/$dsgvo2DomainId/scenarios/$scenario.id"))
+        jsonDSGVO2.appliedCatalogItem = [targetUri: "/domains/$dsgvo2DomainId/catalog-items/22c3f334-9875-450c-81e0-b27366b2a144"]
+        put("/domains/$dsgvo2DomainId/scenarios/$scenario.id", jsonDSGVO2, [
+            'If-Match': getETag(get("/domains/$dsgvo2DomainId/scenarios/$scenario.id"))
+        ], 400)
+
+        then:
+        IllegalArgumentException e = thrown()
+        e.message == 'Element has multiple catalog references'
     }
 }

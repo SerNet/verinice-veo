@@ -24,7 +24,10 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.adapter.presenter.api.common.SymIdRef;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
@@ -67,6 +70,8 @@ public class DomainAssociationDto {
   @Schema(hidden = true)
   LinkMapDto links;
 
+  SymIdRef<CatalogItem, DomainBase> appliedCatalogItem;
+
   public DomainAssociationState getDomainAssociationState(
       ITypedId<Domain> domain,
       // TODO #2543 remove
@@ -75,6 +80,6 @@ public class DomainAssociationDto {
       Set<CustomLinkState> customLinkStates) {
     // TODO #2542 use new customAspects & links fields if they are set
     return new DomainAssociationStateImpl(
-        domain, subType, status, customAspectStates, customLinkStates);
+        domain, subType, status, customAspectStates, customLinkStates, appliedCatalogItem);
   }
 }

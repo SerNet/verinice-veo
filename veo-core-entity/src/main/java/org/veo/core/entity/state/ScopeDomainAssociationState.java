@@ -20,8 +20,11 @@ package org.veo.core.entity.state;
 import java.util.Map;
 import java.util.Set;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.ref.ITypedSymbolicId;
 import org.veo.core.entity.risk.PotentialImpactValues;
 
 import lombok.EqualsAndHashCode;
@@ -51,8 +54,9 @@ public interface ScopeDomainAssociationState extends PotentialImpactDomainAssoci
         Set<CustomAspectState> customAspects,
         Set<CustomLinkState> customLinks,
         String riskDefinition,
-        Map<String, ? extends PotentialImpactValues> riskValues) {
-      super(domain, subType, status, customAspects, customLinks);
+        Map<String, ? extends PotentialImpactValues> riskValues,
+        ITypedSymbolicId<CatalogItem, DomainBase> appliedCatalogItem) {
+      super(domain, subType, status, customAspects, customLinks, appliedCatalogItem);
       this.riskDefinition = riskDefinition;
       this.riskValues = riskValues;
     }

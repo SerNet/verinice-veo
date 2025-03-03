@@ -38,6 +38,12 @@ public class AssetDomainAssociationDto extends ImpactDomainAssociationDto {
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
     return new PotentialImpactDomainAssociationStateImpl(
-        domain, subType, status, riskValues, customAspectStates, customLinkStates);
+        domain,
+        subType,
+        status,
+        riskValues,
+        customAspectStates,
+        customLinkStates,
+        appliedCatalogItem);
   }
 }

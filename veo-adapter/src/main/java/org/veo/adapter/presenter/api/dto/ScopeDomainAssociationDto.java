@@ -48,6 +48,13 @@ public class ScopeDomainAssociationDto extends ImpactDomainAssociationDto {
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
     return new ScopeDomainAssociationStateImpl(
-        domain, subType, status, customAspectStates, customLinkStates, riskDefinition, riskValues);
+        domain,
+        subType,
+        status,
+        customAspectStates,
+        customLinkStates,
+        riskDefinition,
+        riskValues,
+        appliedCatalogItem);
   }
 }

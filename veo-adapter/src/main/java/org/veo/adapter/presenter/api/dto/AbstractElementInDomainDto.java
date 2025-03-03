@@ -40,8 +40,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Unit;
@@ -142,6 +145,11 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
       accessMode = Schema.AccessMode.READ_ONLY)
   @JsonProperty(access = READ_ONLY)
   private Map<DecisionRef, DecisionResult> decisionResults;
+
+  @Schema(
+      description =
+          "A reference to the catalog item that this element was created from, if applicable")
+  private SymIdRef<CatalogItem, DomainBase> appliedCatalogItem;
 
   @Schema(description = "Element type identifier", accessMode = Schema.AccessMode.READ_ONLY)
   @JsonProperty(access = READ_ONLY)
