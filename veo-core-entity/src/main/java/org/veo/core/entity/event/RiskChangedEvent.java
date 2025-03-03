@@ -23,7 +23,7 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_DELETED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class RiskChangedEvent implements RiskEvent {
 
   UUID clientId;
 
-  Set<RiskEvent.ChangedValues> changes = new HashSet<>();
+  Set<RiskEvent.ChangedValues> changes = EnumSet.noneOf(RiskEvent.ChangedValues.class);
 
   public void addChange(ChangedValues change) {
     changes.add(change);

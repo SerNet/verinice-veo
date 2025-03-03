@@ -21,6 +21,7 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CH
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -70,7 +71,7 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
 
   Object source;
 
-  Set<ChangedValues> changes = new HashSet<>();
+  Set<ChangedValues> changes = EnumSet.noneOf(ChangedValues.class);
 
   Set<RiskChangedEvent> changedRisks = new HashSet<>();
 
@@ -85,7 +86,7 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
   }
 
   public boolean hasChangedRisks() {
-    return changedRisks.size() > 0;
+    return !changedRisks.isEmpty();
   }
 
   @Override

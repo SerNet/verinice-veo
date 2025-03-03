@@ -19,7 +19,7 @@ package org.veo.core.entity.event;
 
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,7 +42,7 @@ public class RiskAffectedLinkDeletedEvent implements DomainEvent, RiskEvent {
   UUID clientId;
   Object source;
   String linkType;
-  Set<ChangedValues> changes = new HashSet<>();
+  Set<ChangedValues> changes = EnumSet.noneOf(ChangedValues.class);
 
   public RiskAffectedLinkDeletedEvent(
       Element entity, Domain domain, String linkType, Object source) {

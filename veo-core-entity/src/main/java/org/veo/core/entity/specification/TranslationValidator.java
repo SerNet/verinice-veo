@@ -109,7 +109,7 @@ public class TranslationValidator {
             .flatMap(l -> validateLanguage(l, translations.get(l), allEntityKeys))
             .toList();
 
-    if (violations.size() > 0) {
+    if (!violations.isEmpty()) {
       throw new TranslationException(violations);
     }
   }
@@ -171,7 +171,7 @@ public class TranslationValidator {
             .flatMap(List::stream)
             .toList());
 
-    if (violations.size() > 0) {
+    if (!violations.isEmpty()) {
       throw new TranslationException(violations);
     }
   }

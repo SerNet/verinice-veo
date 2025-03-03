@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import jakarta.validation.Valid;
@@ -48,7 +48,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
   private String residualRiskExplanation;
 
   /** A collection of selected risk treatment options. */
-  private Set<RiskTreatmentOption> riskTreatments = new HashSet<>();
+  private Set<RiskTreatmentOption> riskTreatments = EnumSet.noneOf(RiskTreatmentOption.class);
 
   @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
   private String riskTreatmentExplanation;
