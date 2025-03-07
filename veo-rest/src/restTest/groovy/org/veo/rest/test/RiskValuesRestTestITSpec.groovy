@@ -1072,6 +1072,51 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.I == 2
             potentialImpactsCalculated.A == 2
         }
+
+        when: "we create a risk for the leaf asset"
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
+            name: "asset risk test scenario",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: [
+                DSRA: [
+                    potentialProbability: 2,
+                ]
+            ]
+        ]).body.resourceId
+
+        post("/assets/$asset3Id/risks", [
+            domains: [
+                (dsgvoDomainId): [
+                    reference: [targetUri: "$baseUrl/domains/$dsgvoDomainId"],
+                    riskDefinitions: [
+                        DSRA: [:]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ])
+
+        and: "and the root asset"
+        post("/assets/$assetWithImpactId/risks", [
+            domains: [
+                (dsgvoDomainId): [
+                    reference: [targetUri: "$baseUrl/domains/$dsgvoDomainId"],
+                    riskDefinitions: [
+                        DSRA: [:]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ])
+
+        def rootAssetRisk = get("/assets/$assetWithImpactId/risks/$scenarioId").body
+        def leafAssetRIsk = get("/assets/$asset3Id/risks/$scenarioId").body
+
+        then: "the leat and root assets' risks have identical values"
+        rootAssetRisk.domains.(dsgvoDomainId).riskDefinitions.DSRA ==
+                leafAssetRIsk.domains.(dsgvoDomainId).riskDefinitions.DSRA
     }
 
     def "calculate impact when deleting element in circle"() {
