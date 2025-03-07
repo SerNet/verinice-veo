@@ -282,7 +282,7 @@ public class RiskService {
     ImpactRef newImpact =
         process
             .getImpactValues(domain, riskDefinitionRef)
-            .map(ImpactValues::potentialImpacts)
+            .map(ImpactValues::getPotentialImpactsEffective)
             .map(it -> it.get(categoryRef))
             .orElse(null);
     if (!Objects.equals(newImpact, riskValueImpact.getPotentialImpact(categoryRef))) {
