@@ -78,10 +78,7 @@ public interface AssetRiskResource {
     @ApiResponse(
         responseCode = "200",
         description = "Risk retrieved",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = AssetRiskDto.class))),
+        content = @Content(schema = @Schema(implementation = AssetRiskDto.class))),
     @ApiResponse(responseCode = "404", description = "Risk not found")
   })
   @Valid

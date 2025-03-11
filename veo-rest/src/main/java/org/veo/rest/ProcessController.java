@@ -17,8 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
@@ -83,6 +82,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -377,11 +378,11 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
   protected String buildSearchUri(String id) {
-    return linkTo(
-            methodOn(ProcessController.class)
+    return MvcUriComponentsBuilder.fromMethodCall(
+            UriComponentsBuilder.fromPath("/"),
+            on(ProcessController.class)
                 .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING, ANY_BOOLEAN))
-        .withSelfRel()
-        .getHref();
+        .toUriString();
   }
 
   @GetMapping(value = "/searches/{searchId}")

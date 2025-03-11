@@ -17,8 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
@@ -63,6 +62,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -434,7 +435,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @Override
   @SuppressFBWarnings // ignore warning on call to method proxy factory
   protected String buildSearchUri(String id) {
-    return linkTo(methodOn(DomainController.class).runSearch(ANY_AUTH, id)).withSelfRel().getHref();
+    return MvcUriComponentsBuilder.fromMethodCall(
+            UriComponentsBuilder.fromPath("/"), on(DomainController.class).runSearch(ANY_AUTH, id))
+        .toUriString();
   }
 
   @GetMapping(value = "/searches/{searchId}")

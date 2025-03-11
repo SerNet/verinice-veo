@@ -54,8 +54,7 @@ public abstract class AbstractEntityController extends AbstractVeoController {
 
   protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
     try {
-      // Build search URI and remove optional request param placeholders.
-      var searchUri = buildSearchUri(search.getSearchId()).replaceFirst("\\{[^}]*}", "");
+      var searchUri = buildSearchUri(search.getSearchId());
       return ResponseEntity.created(new URI(searchUri)).body(new SearchResponse(searchUri));
     } catch (IOException | URISyntaxException e) {
       log.error("Could not create search.", e);

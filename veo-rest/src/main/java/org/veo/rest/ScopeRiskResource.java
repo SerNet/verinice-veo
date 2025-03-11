@@ -78,10 +78,7 @@ public interface ScopeRiskResource {
     @ApiResponse(
         responseCode = "200",
         description = "Risk retrieved",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ScopeRiskDto.class))),
+        content = @Content(schema = @Schema(implementation = ScopeRiskDto.class))),
     @ApiResponse(responseCode = "404", description = "Risk not found")
   })
   @Valid

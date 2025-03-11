@@ -120,6 +120,8 @@ spring:
 springdoc:
   api-docs:
     version: OPENAPI_3_0
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
   swagger-ui:
     disable-swagger-default-url: true
 

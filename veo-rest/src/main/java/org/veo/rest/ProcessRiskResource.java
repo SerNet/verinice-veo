@@ -68,9 +68,7 @@ public interface ProcessRiskResource {
         responseCode = "200",
         description = "Risks returned",
         content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
+            @Content(array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
   })
   @Valid
   Future<List<ProcessRiskDto>> getRisks(
@@ -82,10 +80,7 @@ public interface ProcessRiskResource {
     @ApiResponse(
         responseCode = "200",
         description = "Risk retrieved",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProcessRiskDto.class))),
+        content = @Content(schema = @Schema(implementation = ProcessRiskDto.class))),
     @ApiResponse(responseCode = "404", description = "Risk not found")
   })
   @Valid

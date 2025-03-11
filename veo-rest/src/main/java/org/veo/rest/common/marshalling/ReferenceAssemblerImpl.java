@@ -18,8 +18,7 @@
 package org.veo.rest.common.marshalling;
 
 import static java.lang.String.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
@@ -33,12 +32,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -81,14 +79,12 @@ import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
-import org.veo.rest.AssetRiskResource;
 import org.veo.rest.ContentCreationController;
 import org.veo.rest.ControlController;
 import org.veo.rest.ControlInDomainController;
 import org.veo.rest.DocumentController;
 import org.veo.rest.DocumentInDomainController;
 import org.veo.rest.DomainController;
-import org.veo.rest.DomainTemplateController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.IncidentInDomainController;
 import org.veo.rest.MessageController;
@@ -96,13 +92,11 @@ import org.veo.rest.PersonController;
 import org.veo.rest.PersonInDomainController;
 import org.veo.rest.ProcessController;
 import org.veo.rest.ProcessInDomainController;
-import org.veo.rest.ProcessRiskResource;
 import org.veo.rest.RiskAffectedResource;
 import org.veo.rest.ScenarioController;
 import org.veo.rest.ScenarioInDomainController;
 import org.veo.rest.ScopeController;
 import org.veo.rest.ScopeInDomainController;
-import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
 import org.veo.rest.UserConfigurationController;
 
@@ -118,193 +112,118 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   private static final UriComponents GET_ASSET =
       createTemplate(
-          linkTo(
-                  methodOn(AssetController.class)
-                      .getAsset(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
-              .withRel(AssetController.URL_BASE_PATH));
+          on(AssetController.class).getAsset(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_CONTROL =
-      createTemplate(
-          linkTo(methodOn(ControlController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ControlController.URL_BASE_PATH));
+      createTemplate(on(ControlController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_DOCUMENT =
-      createTemplate(
-          linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DocumentController.URL_BASE_PATH));
+      createTemplate(on(DocumentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_DOMAIN =
-      createTemplate(
-          linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DomainController.URL_BASE_PATH));
+      createTemplate(on(DomainController.class).getDomain(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_DOMAIN_TEMPLATE =
-      createTemplate(
-          linkTo(methodOn(ContentCreationController.class).getDomainTemplate(ANY_AUTH, DUMMY_UUID))
-              .withRel(DomainTemplateController.URL_BASE_PATH));
+      createTemplate(on(ContentCreationController.class).getDomainTemplate(ANY_AUTH, DUMMY_UUID));
 
   private static final UriComponents GET_INCIDENT =
-      createTemplate(
-          linkTo(methodOn(IncidentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(IncidentController.URL_BASE_PATH));
+      createTemplate(on(IncidentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROFILE =
       createTemplate(
-          linkTo(
-                  methodOn(DomainController.class)
-                      .getProfile(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DomainController.URL_BASE_PATH));
+          on(DomainController.class).getProfile(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PERSON =
-      createTemplate(
-          linkTo(methodOn(PersonController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(PersonController.URL_BASE_PATH));
+      createTemplate(on(PersonController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROCESS =
       createTemplate(
-          linkTo(
-                  methodOn(ProcessController.class)
-                      .getProcess(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
-              .withRel(ProcessController.URL_BASE_PATH));
+          on(ProcessController.class).getProcess(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_SCENARIO =
-      createTemplate(
-          linkTo(methodOn(ScenarioController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ScenarioController.URL_BASE_PATH));
+      createTemplate(on(ScenarioController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_SCOPE =
       createTemplate(
-          linkTo(
-                  methodOn(ScopeController.class)
-                      .getScope(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST))
-              .withRel(ScopeController.URL_BASE_PATH));
+          on(ScopeController.class).getScope(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_UNIT =
-      createTemplate(
-          linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID, ANY_REQUEST))
-              .withRel(UnitController.URL_BASE_PATH));
+      createTemplate(on(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(AssetInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(AssetInDomainController.URL_BASE_PATH));
+          on(AssetInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_CONTROL_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(ControlInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ControlInDomainController.URL_BASE_PATH));
+          on(ControlInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_DOCUMENT_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(DocumentInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DocumentInDomainController.URL_BASE_PATH));
+          on(DocumentInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_INCIDENT_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(IncidentInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(IncidentInDomainController.URL_BASE_PATH));
+          on(IncidentInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_PERSON_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(PersonInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(PersonInDomainController.URL_BASE_PATH));
+          on(PersonInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_PROCESS_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(ProcessInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ProcessInDomainController.URL_BASE_PATH));
+          on(ProcessInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_SCENARIO_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(ScenarioInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ScenarioInDomainController.URL_BASE_PATH));
+          on(ScenarioInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_SCOPE_IN_DOMAIN =
       createTemplate(
-          linkTo(
-                  methodOn(ScopeInDomainController.class)
-                      .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(ScopeInDomainController.URL_BASE_PATH));
+          on(ScopeInDomainController.class)
+              .getElement(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_RI =
-      createTemplate(
-          linkToRequirementImplementation(AssetController.class)
-              .withRel(AssetController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementation(AssetController.class));
   private static final UriComponents GET_PROCESS_RI =
-      createTemplate(
-          linkToRequirementImplementation(ProcessController.class)
-              .withRel(ProcessController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementation(ProcessController.class));
   private static final UriComponents GET_SCOPE_RI =
-      createTemplate(
-          linkToRequirementImplementation(ScopeController.class)
-              .withRel(ScopeController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementation(ScopeController.class));
 
   private static final UriComponents GET_ASSET_RIS =
-      createTemplate(
-          linkToRequirementImplementations(AssetController.class)
-              .withRel(AssetController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementations(AssetController.class));
   private static final UriComponents GET_PROCESS_RIS =
-      createTemplate(
-          linkToRequirementImplementations(ProcessController.class)
-              .withRel(ProcessController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementations(ProcessController.class));
   private static final UriComponents GET_SCOPE_RIS =
-      createTemplate(
-          linkToRequirementImplementations(ScopeController.class)
-              .withRel(ScopeController.URL_BASE_PATH));
+      createTemplate(linkToRequirementImplementations(ScopeController.class));
 
   private static final UriComponents GET_INSPECTION =
       createTemplate(
-          linkTo(
-                  methodOn(DomainController.class)
-                      .getInspection(ANY_AUTH, DUMMY_UUID, DUMMY_UUID_STRING))
-              .withRel(DomainController.URL_BASE_PATH));
+          on(DomainController.class).getInspection(ANY_AUTH, DUMMY_UUID, DUMMY_UUID_STRING));
 
   private static final UriComponents GET_CATALOG_ITEM =
       createTemplate(
-          linkTo(
-                  methodOn(DomainController.class)
-                      .getCatalogItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DomainController.URL_BASE_PATH));
+          on(DomainController.class).getCatalogItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROFILE_ITEM =
       createTemplate(
-          linkTo(
-                  methodOn(DomainController.class)
-                      .getProfileItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST))
-              .withRel(DomainController.URL_BASE_PATH));
+          on(DomainController.class)
+              .getProfileItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_RISK =
-      createTemplate(
-          linkTo(methodOn(AssetController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
-              .withRel(AssetController.URL_BASE_PATH + AssetRiskResource.RELPATH));
+      createTemplate(on(AssetController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_PROCESS_RISK =
-      createTemplate(
-          linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
-              .withRel(ProcessController.URL_BASE_PATH + ProcessRiskResource.RELPATH));
+      createTemplate(on(ProcessController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_SCOPE_RISK =
-      createTemplate(
-          linkTo(methodOn(ScopeController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID))
-              .withRel(ScopeController.URL_BASE_PATH + ScopeRiskResource.RELPATH));
+      createTemplate(on(ScopeController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_USER_CONFIGURATION =
       createTemplate(
-          linkTo(
-                  methodOn(UserConfigurationController.class)
-                      .getUserConfiguration(ANY_USER, ANY_STRING))
-              .withRel(UserConfigurationController.URL_BASE_PATH));
+          on(UserConfigurationController.class).getUserConfiguration(ANY_USER, ANY_STRING));
 
   private static final UriComponents GET_SYSTEM_MESSAGE =
-      createTemplate(
-          linkTo(methodOn(MessageController.class).getSystemMessage(ANY_LONG))
-              .withRel(UserConfigurationController.URL_BASE_PATH));
+      createTemplate(on(MessageController.class).getSystemMessage(ANY_LONG));
 
   @Override
   public String targetReferenceOf(Identifiable identifiable) {
@@ -449,31 +368,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     return buildUri(GET_SYSTEM_MESSAGE, systemMessage.getId());
   }
 
-  private static WebMvcLinkBuilder linkToRequirementImplementation(
+  private static Object linkToRequirementImplementation(
       Class<? extends RiskAffectedResource> controller) {
-    return linkTo(
-        methodOn(controller).getRequirementImplementation(ANY_AUTH, DUMMY_UUID, DUMMY_UUID));
+    return on(controller).getRequirementImplementation(ANY_AUTH, DUMMY_UUID, DUMMY_UUID);
   }
 
-  private static WebMvcLinkBuilder linkToRequirementImplementations(
+  private static Object linkToRequirementImplementations(
       Class<? extends RiskAffectedResource> controller) {
-    return linkTo(
-        methodOn(controller)
-            .getRequirementImplementations(
-                ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING));
-  }
-
-  /**
-   * HATEOAS links may contain a list of optional variables that are invalid as a URI if they are
-   * not expanded with values (i.e. "{@code {?embedRisks=false}}"). This method removes those
-   * because we have many places that do not expect optional variables in the reference URI and trip
-   * over them.
-   */
-  // TODO VEO-1352 remove this method when users can handle the URI template
-  // format
-  private static String trimVariables(String href) {
-    if (href.contains("{")) return href.split("\\{")[0];
-    return href;
+    return on(controller)
+        .getRequirementImplementations(
+            ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING);
   }
 
   @Override
@@ -569,9 +473,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     return new UnprocessableDataException("Invalid entity reference: %s".formatted(uri));
   }
 
-  private static UriComponents createTemplate(Link dummyLink) {
+  private static UriComponents createTemplate(Object info) {
     return UriComponentsBuilder.fromUriString(
-            trimVariables(dummyLink.getHref()).replace(DUMMY_UUID_STRING, "{id}"))
+            MvcUriComponentsBuilder.fromMethodCall(UriComponentsBuilder.fromPath("/"), info)
+                .toUriString()
+                .replace(DUMMY_UUID_STRING, "{id}"))
         .build();
   }
 
