@@ -194,15 +194,9 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     this.updateRequirementImplementationUseCase = updateRequirementImplementationUseCase;
   }
 
-  @GetMapping
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Loads all scopes")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Members loaded",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class))))
+  @ApiResponse(responseCode = "200", description = "Scopes loaded")
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<PageDto<FullScopeDto>> getScopes(
       @Parameter(hidden = true) Authentication auth,

@@ -626,6 +626,17 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /scopes"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/scopes"].get
+
+        expect: "that the correct schema is used"
+        with(endPointInfo.responses['200']) {
+            it.description == 'Scopes loaded'
+            it.content['application/json'].schema == [$ref:'#/components/schemas/PageDtoFullScopeDto']
+        }
+    }
+
     def "endpoint documentation is correct for GET /scopes/{uuid}/members"() {
         given: "the endpoint docs"
         def endPointInfo = parsedApiDocs.paths["/scopes/{uuid}/members"].get
@@ -1115,6 +1126,20 @@ class SwaggerSpec extends VeoSpringSpec {
                 [$ref:'#/components/schemas/FullScenarioInDomainDto'],
                 [$ref:'#/components/schemas/FullScopeInDomainDto']
             ]
+        }
+    }
+
+    def "PageDtoFullScopeDto is well-documented"() {
+        expect:
+        with(getSchema('PageDtoFullScopeDto')) {
+
+            it.properties.keySet() ==~ [
+                'items',
+                'page',
+                'totalItemCount',
+                'pageCount'
+            ]
+            it.properties.items == [type:'array', items:[$ref:'#/components/schemas/FullScopeDto']]
         }
     }
 
