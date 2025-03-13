@@ -211,6 +211,11 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     existingDefinition.setTranslations(definition.getTranslations());
   }
 
+  public void setControlImplementationConfiguration(
+      @NotNull ControlImplementationConfiguration conf) {
+    this.controlImplementationConfiguration = conf;
+  }
+
   @Override
   public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
     return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));

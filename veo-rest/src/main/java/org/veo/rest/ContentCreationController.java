@@ -261,7 +261,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @RequestBody ControlImplementationConfiguration controlImplementationConfiguration) {
+      @RequestBody @Valid ControlImplementationConfiguration controlImplementationConfiguration) {
     return useCaseInteractor.execute(
         saveControlImplementationConfigurationUseCase,
         new SaveControlImplementationConfigurationUseCase.InputData(

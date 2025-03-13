@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.test.VeoSpec
 
 class DomainSpec extends VeoSpec {
 
+    def client = newClient()
+
     def "Create a new Domain"() {
-        given: "a client & a domain name"
-        def client = newClient()
+        given: "a domain name"
         String name = 'Test domain'
 
         when : "Domain is created and added to the client"
@@ -39,8 +41,7 @@ class DomainSpec extends VeoSpec {
     }
 
     def "Create a new Domain linked with domain template"() {
-        given: "a client & a domain name"
-        def client = newClient()
+        given: "a domain name"
         String name = 'Test domain'
 
         when : "Domain is created and added to the client"
@@ -65,5 +66,49 @@ class DomainSpec extends VeoSpec {
         client.getDomains().size() == 1
         client.getDomains().first() == domain
         client.getDomains().first().riskDefinitions != null
+    }
+
+    def "ControlImplementationConfiguration with complianceControlSubType but no complianceOwnerElementTypes does not pass validation"() {
+        when:
+        Domain domain = newDomain(client) {
+            controlImplementationConfiguration = new ControlImplementationConfiguration('FOO', null, null)
+        }
+
+        then:
+        UnprocessableDataException e = thrown()
+        e.message == 'complianceOwnerElementTypes must not be empty if complianceControlSubType is set.'
+    }
+
+    def "ControlImplementationConfiguration with complianceControlSubType but empty complianceOwnerElementTypes does not pass validation"() {
+        when:
+        Domain domain = newDomain(client) {
+            controlImplementationConfiguration = new ControlImplementationConfiguration('FOO', null, [] as Set)
+        }
+
+        then:
+        UnprocessableDataException e = thrown()
+        e.message == 'complianceOwnerElementTypes must not be empty if complianceControlSubType is set.'
+    }
+
+    def "ControlImplementationConfiguration without complianceControlSubType but with complianceOwnerElementTypes does not pass validation"() {
+        when:
+        Domain domain = newDomain(client) {
+            controlImplementationConfiguration = new ControlImplementationConfiguration(null, null, [ElementType.SCOPE] as Set)
+        }
+
+        then:
+        UnprocessableDataException e = thrown()
+        e.message == 'complianceOwnerElementTypes must be empty if complianceControlSubType is not set.'
+    }
+
+    def "ControlImplementationConfiguration with invalid complianceOwnerElementType does not pass validation"() {
+        when:
+        Domain domain = newDomain(client) {
+            controlImplementationConfiguration = new ControlImplementationConfiguration('FOO', null, [ElementType.SCENARIO] as Set)
+        }
+
+        then:
+        UnprocessableDataException e = thrown()
+        e.message == 'complianceOwnerElementTypes contains invalid types.'
     }
 }

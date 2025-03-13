@@ -1219,6 +1219,26 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "ControlImplementationConfiguration is well-documented"() {
+        expect:
+        with(getSchema('ControlImplementationConfiguration')) {
+            it.properties.keySet() ==~ [
+                'complianceControlSubType',
+                'mitigationControlSubType',
+                'complianceOwnerElementTypes'
+            ]
+            it.required == null
+            it.properties.complianceOwnerElementTypes == [
+                description: 'The element types for which CIs can be created, must be set if and only if complianceControlSubType is non-null',
+                type:'array',
+                items:[
+                    type:'string',
+                    enum:['asset', 'process', 'scope']
+                ]
+            ]
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])
