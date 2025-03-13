@@ -85,7 +85,7 @@ public class CreateCatalogFromUnitUseCase
 
     deleteObsoleteCatalogItems(domain, client, elements);
     Map<Element, CatalogItem> elementsToCatalogItems =
-        getElements(unit, domain).stream()
+        elements.stream()
             .collect(Collectors.toMap(Function.identity(), e -> e.toCatalogItem(domain)));
     createTailorreferences(elementsToCatalogItems, domain);
 
