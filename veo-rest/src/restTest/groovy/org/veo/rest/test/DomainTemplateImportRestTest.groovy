@@ -136,7 +136,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message == "Validation error in decision 'negativeDecision': Sub type sillySub is not defined"
+        response.message == "Validation error in decision 'negativeDecision': Sub type sillySub is not defined, availabe sub types: [AST_Application]"
     }
 
     def "cannot import template with invalid expression in inspection"() {

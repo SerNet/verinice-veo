@@ -52,6 +52,9 @@ public interface ElementTypeDefinition extends ElementTypeDefinitionState {
   default SubTypeDefinition getSubTypeDefinition(String subType) {
     return Optional.ofNullable(getSubTypes().get(subType))
         .orElseThrow(
-            () -> new IllegalArgumentException("Sub type %s is not defined".formatted(subType)));
+            () ->
+                new IllegalArgumentException(
+                    "Sub type %s is not defined, availabe sub types: %s"
+                        .formatted(subType, getSubTypes().keySet())));
   }
 }

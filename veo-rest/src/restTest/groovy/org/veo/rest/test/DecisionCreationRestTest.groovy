@@ -126,7 +126,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR)
 
         then: "there is an error"
-        response.body.message == "Validation error in decision 'toDo': Sub type ToDoList is not defined"
+        response.body.message == "Validation error in decision 'toDo': Sub type ToDoList is not defined, availabe sub types: [Article]"
     }
 
     def "missing custom aspect is detected"() {
