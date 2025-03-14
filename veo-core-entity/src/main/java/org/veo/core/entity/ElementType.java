@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -31,7 +34,18 @@ public enum ElementType {
   SCOPE(EntityType.SCOPE);
   private final EntityType entityType;
 
+  @JsonValue
   public String getSingularTerm() {
     return entityType.getSingularTerm();
+  }
+
+  @JsonCreator
+  public static ElementType fromString(String value) {
+    for (ElementType type : ElementType.values()) {
+      if (type.name().equalsIgnoreCase(value)) {
+        return type;
+      }
+    }
+    throw new IllegalArgumentException("Invalid ElementType: " + value);
   }
 }

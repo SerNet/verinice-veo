@@ -499,14 +499,14 @@ class SwaggerSpec extends VeoSpringSpec {
             it.schema ==  [
                 type:'string',
                 enum:[
-                    'ASSET',
-                    'CONTROL',
-                    'DOCUMENT',
-                    'INCIDENT',
-                    'PERSON',
-                    'PROCESS',
-                    'SCENARIO',
-                    'SCOPE'
+                    'asset',
+                    'control',
+                    'document',
+                    'incident',
+                    'person',
+                    'process',
+                    'scenario',
+                    'scope'
                 ]
             ]
         }
