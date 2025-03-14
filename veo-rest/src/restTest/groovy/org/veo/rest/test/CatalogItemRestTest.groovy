@@ -22,6 +22,8 @@ import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
+import spock.lang.Issue
+
 class CatalogItemRestTest extends VeoRestTest {
     def "fetch catalog items"() {
         expect: "items are fetched"
@@ -92,6 +94,27 @@ class CatalogItemRestTest extends VeoRestTest {
             items*.name ==~ ["Control-2", "Control-cc-2"]
             items*.abbreviation ==~ ["c-2", "cc-2"]
         }
+    }
+
+    @Issue("verinice-veo#3688")
+    def "remove catalog item after no-op catalog update (with multiple incarnations)"() {
+        given: "a unit with incarnated items"
+        def copyOfTestDomainId = copyDomain(testDomainId)
+        def unitId = postNewUnit("U1", [copyOfTestDomainId]).resourceId
+        def itemIds = get("/domains/$copyOfTestDomainId/catalog-items?size=9000").body.items*.id.join(",")
+        def desc = get("/units/$unitId/domains/$copyOfTestDomainId/incarnation-descriptions?itemIds=$itemIds").body
+        def response = post("/units/$unitId/incarnations", desc, 201).body
+
+        and: "another unit with incarnated items"
+        def unitId2 = postNewUnit("U2", [copyOfTestDomainId]).resourceId
+        post("/units/$unitId2/incarnations", desc, 201).body
+
+        when: "updating the catalog once (no-op)"
+        put("/content-creation/domains/$copyOfTestDomainId/catalog-items?unit=$unitId", [:], "", 204)
+
+        then: "the catalog can be updated again with a deleted element"
+        delete(response.find{ it.name=="Control-3" }.targetUri)
+        put("/content-creation/domains/$copyOfTestDomainId/catalog-items?unit=$unitId", [:], "", 204)
     }
 
     def "catalog item IDs are symbolic"() {
