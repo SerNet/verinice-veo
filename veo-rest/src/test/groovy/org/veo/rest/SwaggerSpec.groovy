@@ -628,6 +628,7 @@ class SwaggerSpec extends VeoSpringSpec {
         '/assets/{id}' | 'PUT'
         '/controls' | 'POST'
         '/scopes' | 'POST'
+        '/types' | 'GET'
     }
 
     def "Inspection schema is complete"() {

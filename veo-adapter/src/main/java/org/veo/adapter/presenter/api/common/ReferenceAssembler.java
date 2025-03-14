@@ -91,6 +91,8 @@ public interface ReferenceAssembler {
    * @return the URI of the resource collection for searches or {@code null} if the resource does
    *     not support searches.
    */
+  @Deprecated
+  // TODO #3698: remove
   String searchesReferenceOf(Class<? extends Identifiable> type);
 
   /**
@@ -100,6 +102,8 @@ public interface ReferenceAssembler {
    * @return the URI of the resource collection or {@code null} if no resource collection for the
    *     type is exposed.
    */
+  @Deprecated
+  // TODO #3698: remove
   String resourcesReferenceOf(Class<? extends Identifiable> type);
 
   TypedId<?> parseIdentifiableRef(String url);
@@ -112,6 +116,8 @@ public interface ReferenceAssembler {
   /** Transforms the given adapter layer references to entity keys. */
   Set<UUID> toKeys(Set<? extends ITypedId<?>> references);
 
+  @Deprecated
+  // TODO #3698: remove
   String schemaReferenceOf(String typeSingularTerm);
 
   String targetReferenceOf(RequirementImplementation requirementImplementation);

@@ -29,6 +29,8 @@ import org.veo.core.usecase.UseCase;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Deprecated
+// TODO #3698: remove
 public class TypeDefinitionProvider {
   private final ReferenceAssembler referenceAssembler;
 

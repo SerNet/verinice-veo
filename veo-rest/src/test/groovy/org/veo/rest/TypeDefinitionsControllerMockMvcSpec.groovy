@@ -24,6 +24,8 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.EntityType
 
 @WithUserDetails("user@domain.example")
+@Deprecated
+// TODO #3698: remove
 class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
     def setup() {
         createTestClient()

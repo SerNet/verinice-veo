@@ -37,6 +37,8 @@ import lombok.AllArgsConstructor;
 @RequestMapping(URL_BASE_PATH)
 @AllArgsConstructor
 @Schema(description = "Provides entity type meta information.")
+@Deprecated
+// TODO #3698: remove
 public class TypeDefinitionsController {
   public static final String URL_BASE_PATH = "/types";
 
