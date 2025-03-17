@@ -26,7 +26,6 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
@@ -130,35 +129,6 @@ class ReferenceAssemblerImplSpec extends Specification {
 
         expect:
         referenceAssembler.targetReferenceOf(catalogItem) == "/domains/${domainId}/catalog-items/${itemId}"
-    }
-
-    def "resources reference for #type is #reference"() {
-        expect:
-        referenceAssembler.resourcesReferenceOf(type) == reference
-
-        where:
-        type           | reference
-        Asset          | '/assets{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
-        Control        | '/controls{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
-        Scenario       | '/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
-        Incident       | '/incidents{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder}'
-        Scope          | '/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,abbreviation,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
-        Domain         | '/domains'
-        DomainTemplate | '/domain-templates'
-    }
-
-    def "searches reference for #type is #reference"() {
-        expect:
-        referenceAssembler.searchesReferenceOf(type) == reference
-
-        where:
-        type     | reference
-        Asset    | '/assets/searches'
-        Control  | '/controls/searches'
-        Scenario | '/scenarios/searches'
-        Incident | '/incidents/searches'
-        Scope    | '/scopes/searches'
-        Domain   | '/domains/searches'
     }
 
     def "target reference for #type is #reference"() {
@@ -310,18 +280,6 @@ class ReferenceAssemblerImplSpec extends Specification {
 
         where:
         type << EntityType.TYPES.findAll { SymIdentifiable.isAssignableFrom(it) }
-    }
-
-    def "generates collection and search refs for #type"() {
-        when: "generating collection & search URLs"
-        referenceAssembler.resourcesReferenceOf(type)
-        referenceAssembler.searchesReferenceOf(type)
-
-        then:
-        notThrown(Exception)
-
-        where:
-        type << EntityType.TYPES
     }
 
     def "parsed sym ID ref for #url is #type #id in #namespaceType #namespaceId"() {

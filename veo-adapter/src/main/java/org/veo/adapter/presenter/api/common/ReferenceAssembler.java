@@ -83,29 +83,6 @@ public interface ReferenceAssembler {
 
   String targetReferenceOf(SystemMessage systemMessage);
 
-  /**
-   * Returns a reference to a collection of searches for the target type. Searches are a ressource
-   * so they can be created, requested and deleted (think: "named search").
-   *
-   * @param type the {@link Identifiable} type
-   * @return the URI of the resource collection for searches or {@code null} if the resource does
-   *     not support searches.
-   */
-  @Deprecated
-  // TODO #3698: remove
-  String searchesReferenceOf(Class<? extends Identifiable> type);
-
-  /**
-   * Returns a reference to the resource collection of the target type.
-   *
-   * @param type the {@link Identifiable}
-   * @return the URI of the resource collection or {@code null} if no resource collection for the
-   *     type is exposed.
-   */
-  @Deprecated
-  // TODO #3698: remove
-  String resourcesReferenceOf(Class<? extends Identifiable> type);
-
   TypedId<?> parseIdentifiableRef(String url);
 
   TypedId<? extends Element> parseElementRef(String url);
@@ -115,10 +92,6 @@ public interface ReferenceAssembler {
 
   /** Transforms the given adapter layer references to entity keys. */
   Set<UUID> toKeys(Set<? extends ITypedId<?>> references);
-
-  @Deprecated
-  // TODO #3698: remove
-  String schemaReferenceOf(String typeSingularTerm);
 
   String targetReferenceOf(RequirementImplementation requirementImplementation);
 

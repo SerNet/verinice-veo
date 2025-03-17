@@ -25,11 +25,8 @@ import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_LONG;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
-import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_USER;
-import static org.veo.rest.ControllerConstants.ANY_UUID;
-import static org.veo.rest.ControllerConstants.ANY_UUID_LIST;
 
 import java.util.Set;
 import java.util.UUID;
@@ -47,7 +44,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -109,7 +105,6 @@ import org.veo.rest.ScopeInDomainController;
 import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
 import org.veo.rest.UserConfigurationController;
-import org.veo.rest.schemas.controller.EntitySchemaController;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -499,298 +494,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   }
 
   @Override
-  public String searchesReferenceOf(Class<? extends Identifiable> type) {
-    if (Scope.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(ScopeController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(ScopeController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Asset.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(AssetController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(AssetController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Document.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(DocumentController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(AssetController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Unit.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(UnitController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(UnitController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Process.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(ProcessController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(ProcessController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Person.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(PersonController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(PersonController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Control.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(ControlController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(ControlController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Scenario.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(ScenarioController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(ScenarioController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Incident.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(IncidentController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(IncidentController.URL_BASE_PATH)
-          .getHref();
-    }
-    if (Domain.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(DomainController.class).createSearch(ANY_AUTH, ANY_SEARCH))
-          .withRel(DomainController.URL_BASE_PATH)
-          .getHref();
-    }
-    // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type)
-        || CatalogItem.class.isAssignableFrom(type)
-        || DomainTemplate.class.isAssignableFrom(type)
-        || Profile.class.isAssignableFrom(type)
-        || ProfileItem.class.isAssignableFrom(type)
-        || AbstractRisk.class.isAssignableFrom(type)
-        || UserConfiguration.class.isAssignableFrom(type)) {
-      return null;
-    }
-    throw new NotImplementedException("Unsupported search reference type " + type.getSimpleName());
-  }
-
-  @Override
-  public String resourcesReferenceOf(Class<? extends Identifiable> type) {
-    if (Scope.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(ScopeController.class)
-                  .getScopes(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_BOOLEAN))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Asset.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(AssetController.class)
-                  .getAssets(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_BOOLEAN))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Document.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(DocumentController.class)
-                  .getDocuments(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Unit.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(UnitController.class).getUnits(ANY_AUTH, ANY_UUID, ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Process.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(ProcessController.class)
-                  .getProcesses(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_BOOLEAN))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Person.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(PersonController.class)
-                  .getPersons(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Control.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(ControlController.class)
-                  .getControls(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Scenario.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(ScenarioController.class)
-                  .getScenarios(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Incident.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(IncidentController.class)
-                  .getIncidents(
-                      ANY_AUTH,
-                      ANY_UUID,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_UUID_LIST,
-                      ANY_BOOLEAN,
-                      ANY_BOOLEAN,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_STRING,
-                      ANY_INT,
-                      ANY_INT,
-                      ANY_STRING,
-                      ANY_STRING))
-          .withSelfRel()
-          .getHref();
-    }
-    if (Domain.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(DomainController.class).getDomains(ANY_AUTH)).withSelfRel().getHref();
-    }
-    if (DomainTemplate.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(DomainTemplateController.class).getDomainTemplates())
-          .withSelfRel()
-          .getHref();
-    }
-    if (UserConfiguration.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(UserConfigurationController.class).getUserConfiguration(ANY_USER))
-          .withSelfRel()
-          .expand()
-          .getHref();
-    }
-    // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type)
-        || CatalogItem.class.isAssignableFrom(type)
-        || Profile.class.isAssignableFrom(type)
-        || ProfileItem.class.isAssignableFrom(type)
-        || AbstractRisk.class.isAssignableFrom(type)) {
-      return null;
-    }
-    throw new NotImplementedException("Unsupported collection reference type " + type);
-  }
-
-  @Override
   public TypedId<?> parseIdentifiableRef(String uri) {
     return parseIdentifiableRef(uri, Identifiable.class);
   }
@@ -860,15 +563,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   @Override
   public Set<UUID> toKeys(Set<? extends ITypedId<?>> references) {
     return references.stream().map(this::toKey).collect(Collectors.toSet());
-  }
-
-  @Override
-  public String schemaReferenceOf(String typeSingularTerm) {
-    return linkTo(
-            methodOn(EntitySchemaController.class)
-                .getSchema(ANY_AUTH, typeSingularTerm, ANY_UUID_LIST))
-        .withSelfRel()
-        .getHref();
   }
 
   private UnprocessableDataException invalidReference(String uri) {

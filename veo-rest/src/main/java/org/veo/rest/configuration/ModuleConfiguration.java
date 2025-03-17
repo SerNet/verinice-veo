@@ -47,7 +47,6 @@ import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
-import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
@@ -917,11 +916,6 @@ public class ModuleConfiguration {
   public DomainTemplateServiceImpl domainTemplateService(
       DomainTemplateRepository domainTemplateRepository, DomainStateMapper domainStateMapper) {
     return new DomainTemplateServiceImpl(domainTemplateRepository, domainStateMapper);
-  }
-
-  @Bean
-  public TypeDefinitionProvider getTypeDefinitionProvider(ReferenceAssembler referenceAssembler) {
-    return new TypeDefinitionProvider(referenceAssembler);
   }
 
   @Bean
