@@ -33,5 +33,6 @@ public interface TemplateItemReference<
 
   void setOwner(T owner);
 
+  @Override
   Optional<Client> getOwningClient();
 }

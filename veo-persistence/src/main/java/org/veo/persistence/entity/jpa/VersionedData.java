@@ -54,6 +54,7 @@ public abstract class VersionedData implements Versioned {
   @Setter(AccessLevel.NONE)
   private long changeNumber;
 
+  @Override
   public synchronized long getChangeNumber() {
     return changeNumber;
   }

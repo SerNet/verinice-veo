@@ -99,6 +99,7 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
     return domain != null ? domain : domainTemplate;
   }
 
+  @Override
   public void setDomainBase(DomainBase owner) {
     if (getDomainBase() != null && !getDomainBase().equals(owner)) {
       throw new IllegalArgumentException("Cannot move catalog item between domains");

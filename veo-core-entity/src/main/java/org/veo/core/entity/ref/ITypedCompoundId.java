@@ -31,6 +31,7 @@ public interface ITypedCompoundId<
     extends IEntityRef<T> {
 
   @JsonIgnore
+  @Override
   Class<T> getType();
 
   @JsonIgnore

@@ -45,6 +45,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
    * @return this item's domain if the item belongs to a domain and can be applied
    * @throws UnprocessableDataException if this belongs to a domain template and cannot be applied
    */
+  @Override
   default Domain requireDomainMembership() {
     if (getDomainBase() instanceof Domain domain) {
       return domain;
@@ -110,10 +111,12 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
     return SINGULAR_TERM;
   }
 
+  @Override
   default String getDisplayName() {
     return getAbbreviation() == null ? getName() : getAbbreviation() + " " + getName();
   }
 
+  @Override
   default Optional<Client> getOwningClient() {
     return Optional.ofNullable(getDomainBase())
         .filter(ClientOwned.class::isInstance)

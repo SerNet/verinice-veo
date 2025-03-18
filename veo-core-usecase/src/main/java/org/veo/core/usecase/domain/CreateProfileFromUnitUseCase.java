@@ -64,6 +64,7 @@ public class CreateProfileFromUnitUseCase
     this.profileRepo = profileRepo;
   }
 
+  @Override
   public OutputData execute(InputData input) {
     Domain domain =
         domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());

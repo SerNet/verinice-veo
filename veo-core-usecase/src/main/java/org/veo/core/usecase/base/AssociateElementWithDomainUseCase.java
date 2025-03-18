@@ -44,6 +44,7 @@ public class AssociateElementWithDomainUseCase
     return false;
   }
 
+  @Override
   public OutputData execute(InputData input) {
     var domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
     var element = fetchElement(input);

@@ -17,12 +17,8 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Set;
-import java.util.UUID;
-
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
-import org.veo.core.entity.Scenario;
 
 /**
  * A repository for <code>Process</code> entities.
@@ -31,10 +27,4 @@ import org.veo.core.entity.Scenario;
  * methods - i.e. queries based on particular fields.
  */
 public interface ProcessRepository
-    extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {
-
-  /** Returns risks with initialized risk value aspects. */
-  Set<Process> findRisksWithValue(Scenario scenario);
-
-  Set<Process> findWithRisksAndScenarios(Set<UUID> ids);
-}
+    extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {}

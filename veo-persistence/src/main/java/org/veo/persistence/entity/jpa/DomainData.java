@@ -60,6 +60,7 @@ public class DomainData extends DomainBaseData implements Domain {
   @Valid
   private Set<CatalogItem> catalogItems = new HashSet<>();
 
+  @Override
   public void setProfiles(Set<Profile> profiles) {
     profiles.stream().map(ProfileData.class::cast).forEach(p -> p.setOwner(this));
     this.profiles = profiles;
@@ -87,6 +88,7 @@ public class DomainData extends DomainBaseData implements Domain {
     return active;
   }
 
+  @Override
   public void setCatalogItems(Set<CatalogItem> catalogItems) {
     catalogItems.forEach(ci -> ci.setDomainBase(this));
     this.catalogItems.clear();

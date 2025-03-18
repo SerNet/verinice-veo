@@ -53,6 +53,7 @@ public class ProfileRiskTailoringReferenceData extends ProfileTailoringReference
   @Type(JsonType.class)
   private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions;
 
+  @Override
   public void setRiskDefinitions(
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions) {
     this.riskDefinitions = new HashMap<>(riskDefinitions);

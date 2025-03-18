@@ -571,6 +571,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
+  @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullScopeDto dto,
@@ -660,6 +661,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
                 out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
+  @Override
   protected FullScopeDto entity2Dto(Scope entity) {
     return entityToDtoTransformer.transformScope2Dto(entity, false);
   }

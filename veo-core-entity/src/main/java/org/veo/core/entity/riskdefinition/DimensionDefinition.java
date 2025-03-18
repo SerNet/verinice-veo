@@ -60,6 +60,7 @@ public class DimensionDefinition implements TranslationProvider {
     this.id = id;
   }
 
+  @Override
   public Map<Locale, Map<String, String>> getTranslations() {
     return translations.getTranslations();
   }

@@ -65,6 +65,7 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
     changedRisks.add(riskEvent);
   }
 
+  @Override
   public UUID getEntityId() {
     return entity.getId();
   }

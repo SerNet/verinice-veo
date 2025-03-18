@@ -44,6 +44,7 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
   String SINGULAR_TERM = "unit";
   String PLURAL_TERM = "units";
 
+  @Override
   default Optional<Client> getOwningClient() {
     return Optional.of(getClient());
   }
@@ -83,6 +84,7 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
    * @throws ClientBoundaryViolationException if the passed client is not equal to the client in the
    *     unit
    */
+  @Override
   default void checkSameClient(Client client) {
     if (!(EntitySpecifications.hasSameClient(client).isSatisfiedBy(getClient()))) {
       throw new ClientBoundaryViolationException(this, client);
@@ -94,6 +96,7 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
     return Unit.class;
   }
 
+  @Override
   default String getModelType() {
     return SINGULAR_TERM;
   }

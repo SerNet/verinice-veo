@@ -88,6 +88,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   @Transactional
+  @Override
   public void deleteAll(Set<T> elements) {
     Set<UUID> elementIds = elements.stream().map(Element::getId).collect(Collectors.toSet());
     deleteLinksByTargets(elementIds);

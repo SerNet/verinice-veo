@@ -53,6 +53,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
   @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
   private String riskTreatmentExplanation;
 
+  @Override
   public void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments) {
     this.riskTreatments.clear();
     this.riskTreatments.addAll(riskTreatments);

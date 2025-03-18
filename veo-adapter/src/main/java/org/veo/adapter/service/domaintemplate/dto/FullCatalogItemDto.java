@@ -68,6 +68,7 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto<CatalogItem, Dom
 
   private Set<TailoringReferenceDto<CatalogItem, DomainBase>> tailoringReferences = new HashSet<>();
 
+  @Override
   public void add(
       @NonNull TailoringReference<CatalogItem, DomainBase> source,
       @NonNull ReferenceAssembler referenceAssembler) {

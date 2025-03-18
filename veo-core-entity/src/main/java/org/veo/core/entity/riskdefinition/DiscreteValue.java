@@ -61,6 +61,7 @@ public class DiscreteValue implements TranslationProvider {
   @EqualsAndHashCode.Include @ToString.Exclude @NotNull @Valid
   private TranslationMap translations = new TranslationMap();
 
+  @Override
   public Map<Locale, Map<String, String>> getTranslations() {
     return translations.getTranslations();
   }

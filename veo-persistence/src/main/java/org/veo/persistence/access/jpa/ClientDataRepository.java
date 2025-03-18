@@ -29,6 +29,7 @@ import org.veo.persistence.entity.jpa.ClientData;
 public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
   @Query("select c from #{#entityName} c left join fetch c.domains where c.id = ?1")
+  @Override
   Optional<ClientData> findById(UUID id);
 
   @EntityGraph(attributePaths = {"domains.catalogItems"})

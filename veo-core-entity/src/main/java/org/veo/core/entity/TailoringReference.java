@@ -45,6 +45,7 @@ public interface TailoringReference<
   }
 
   @NotNull
+  @Override
   TailoringReferenceType getReferenceType();
 
   void setReferenceType(TailoringReferenceType aReferenceType);

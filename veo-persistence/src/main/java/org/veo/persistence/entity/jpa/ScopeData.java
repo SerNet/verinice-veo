@@ -149,6 +149,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     aspect.setRiskDefinitionRef(riskDefinition);
   }
 
+  @Override
   public Optional<RiskDefinitionRef> getRiskDefinition(Domain domain) {
     return findAspectByDomain(scopeRiskValuesAspects, domain)
         .map(ScopeRiskValuesAspectData::getRiskDefinitionRef);

@@ -66,6 +66,7 @@ class CompositeElementQueryImpl<
         client);
   }
 
+  @Override
   public void whereCompositesContain(SingleValueQueryCondition<UUID> condition) {
     mySpec =
         mySpec.and(

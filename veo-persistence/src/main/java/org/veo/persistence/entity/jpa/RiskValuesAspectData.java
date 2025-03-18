@@ -155,6 +155,7 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     return riskDefinition.getIdRef();
   }
 
+  @Override
   public List<Impact> getImpactCategories() {
     return impactCategories.stream().map(Impact.class::cast).toList();
   }

@@ -33,6 +33,7 @@ public interface ProfileItem
   String PLURAL_TERM = "profile-items";
 
   /** All the tailoring references for this catalog item. */
+  @Override
   Set<TailoringReference<ProfileItem, Profile>> getTailoringReferences();
 
   @Override
@@ -61,6 +62,7 @@ public interface ProfileItem
     return SINGULAR_TERM;
   }
 
+  @Override
   default Optional<Client> getOwningClient() {
     return Optional.ofNullable(getOwner())
         .filter(ClientOwned.class::isInstance)
@@ -74,6 +76,7 @@ public interface ProfileItem
    * @return this item's domain if the item belongs to a domain and can be applied
    * @throws UnprocessableDataException if this belongs to a domain template and cannot be applied
    */
+  @Override
   default Domain requireDomainMembership() {
     return getOwner().requireDomainMembership();
   }

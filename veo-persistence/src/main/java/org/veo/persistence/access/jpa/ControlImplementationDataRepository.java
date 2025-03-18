@@ -60,6 +60,7 @@ public interface ControlImplementationDataRepository
   Set<ControlImplementation> findByControlIdWithOwner(Set<String> controlIds);
 
   @Nonnull
+  @Override
   Page<ControlImplementationData> findAll(
       Specification<ControlImplementationData> spec, @NonNull Pageable pageable);
 

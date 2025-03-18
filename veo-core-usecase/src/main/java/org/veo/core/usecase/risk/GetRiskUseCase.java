@@ -45,6 +45,7 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
   }
 
   @Transactional
+  @Override
   public OutputData<R> execute(InputData input) {
     var entity =
         repositoryProvider

@@ -42,6 +42,7 @@ public class GetElementUseCase<T extends Element>
   private final ElementRepository<T> repository;
   private final Class<T> type;
 
+  @Override
   public OutputData<T> execute(InputData input) {
     T element =
         repository

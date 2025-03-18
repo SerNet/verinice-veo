@@ -70,6 +70,7 @@ public abstract class TemplateItemData<
 
   @NotNull @ToString.Include private UUID symbolicDbId;
 
+  @Override
   public UUID getSymbolicId() {
     return symbolicDbId;
   }
@@ -116,6 +117,7 @@ public abstract class TemplateItemData<
   @Column(columnDefinition = "jsonb")
   private TemplateItemAspects aspects = new TemplateItemAspects();
 
+  @Override
   public void setElementType(String elementType) {
     TemplateItem.checkValidElementType(elementType);
     this.elementType = elementType;
@@ -218,6 +220,7 @@ public abstract class TemplateItemData<
     return element;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o == null) return false;
 

@@ -73,11 +73,13 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Override
   public UUID getId() {
     return ref.getId();
   }
 
   @JsonIgnore
+  @Override
   public Class<T> getType() {
     return ref.getType();
   }

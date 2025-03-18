@@ -28,5 +28,6 @@ public interface ITypedId<T extends Identifiable> extends IEntityRef<T> {
   UUID getId();
 
   @JsonIgnore
+  @Override
   Class<T> getType();
 }

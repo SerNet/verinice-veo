@@ -38,11 +38,13 @@ public class ProbabilityImpl implements Probability {
 
   private ProbabilityRef potentialProbability;
 
+  @Override
   public void setPotentialProbability(ProbabilityRef potentialProbability) {
     this.potentialProbability = potentialProbability;
     updateEffectiveProbability();
   }
 
+  @Override
   public void setSpecificProbability(ProbabilityRef specificProbability) {
     this.specificProbability = specificProbability;
     updateEffectiveProbability();

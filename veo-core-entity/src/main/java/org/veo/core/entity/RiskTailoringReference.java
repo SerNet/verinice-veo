@@ -50,6 +50,7 @@ public interface RiskTailoringReference<
     return Optional.ofNullable(getRiskOwner()).map(TypedSymbolicId::from).orElse(null);
   }
 
+  @Override
   Map<RiskDefinitionRef, RiskTailoringReferenceValues> getRiskDefinitions();
 
   void setRiskDefinitions(Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions);

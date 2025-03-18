@@ -61,6 +61,7 @@ public class FullProfileItemDto extends AbstractProfileItemDto
 
   private Set<TailoringReferenceDto<ProfileItem, Profile>> tailoringReferences = new HashSet<>();
 
+  @Override
   public void add(
       @NonNull TailoringReference<ProfileItem, Profile> source,
       @NonNull ReferenceAssembler referenceAssembler) {

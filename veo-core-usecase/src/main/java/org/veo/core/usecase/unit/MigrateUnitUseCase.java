@@ -69,6 +69,7 @@ public class MigrateUnitUseCase
   // TODO #2338 remove @Transactional (currently, without this annotation there would be no
   // transaction when calling this from another use case)
   @Transactional(TxType.REQUIRES_NEW)
+  @Override
   public OutputData execute(InputData input) {
     var unit = unitRepository.getById(input.unitId);
     var oldDomain = domainRepository.getById(input.domainIdOld, unit.getClient().getId());

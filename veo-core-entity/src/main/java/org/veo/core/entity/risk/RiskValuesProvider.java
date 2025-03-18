@@ -31,6 +31,7 @@ public interface RiskValuesProvider
 
   List<Impact> getImpactCategories();
 
+  @Override
   List<DeterminedRisk> getCategorizedRisks();
 
   @Override
@@ -68,6 +69,7 @@ public interface RiskValuesProvider
     getProbability().setSpecificProbabilityExplanation(explanation);
   }
 
+  @Override
   default void setSpecificImpact(CategoryRef impactCategory, ImpactRef specific) {
     impactCategoryById(impactCategory).setSpecificImpact(specific);
   }
@@ -133,6 +135,7 @@ public interface RiskValuesProvider
     impactCategoryById(impactCategory).setSpecificImpactExplanation(explanation);
   }
 
+  @Override
   default void setUserDefinedResidualRisk(
       CategoryRef impactCategory, RiskRef userDefinedResidualRisk) {
     riskCategoryById(impactCategory).setUserDefinedResidualRisk(userDefinedResidualRisk);
@@ -176,6 +179,7 @@ public interface RiskValuesProvider
     return getImpactCategories().stream().map(Impact::getCategory).toList();
   }
 
+  @Override
   default List<Impact> getCategorizedImpacts() {
     return getImpactCategories().stream().map(Impact.class::cast).toList();
   }

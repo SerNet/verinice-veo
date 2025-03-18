@@ -152,6 +152,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Valid
   private final Set<DecisionResultsAspectData> decisionResultsAspects = new HashSet<>();
 
+  @Override
   public void setOwner(Unit owner) {
     if (this.owner != null && !owner.equals(this.owner)) {
       throw new UnprocessableDataException("Elements cannot be moved between units");
@@ -318,6 +319,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return removed;
   }
 
+  @Override
   public void setLinks(Set<CustomLink> newLinks) {
     links.clear();
     newLinks.forEach(l -> l.setSource(this));
@@ -359,6 +361,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return this.links.remove(link);
   }
 
+  @Override
   public boolean removeCustomAspect(CustomAspect customAspect) {
     requireAssociationWithDomain(customAspect.getDomain());
     return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()

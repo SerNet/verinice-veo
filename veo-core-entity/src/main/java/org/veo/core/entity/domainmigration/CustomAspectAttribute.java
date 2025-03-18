@@ -65,10 +65,12 @@ public record CustomAspectAttribute(
     return attributeDefinition.getValueType();
   }
 
+  @Override
   public void validate(DomainTemplate domain) {
     getValueType(domain);
   }
 
+  @Override
   public boolean matches(BreakingChange breakingChange) {
     return breakingChange.type().equals("customAspectAttribute")
         && breakingChange.elementType().equals(elementType())

@@ -91,6 +91,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @Valid
   private final Set<Domain> domains = new HashSet<>();
 
+  @Override
   public boolean updateState(ClientChangeType changeType) {
     if (state.isValidChange(changeType)) {
       ClientState nextState = state.nextState(changeType);
@@ -105,6 +106,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
             + changeType.name());
   }
 
+  @Override
   public void setDomains(Set<Domain> newDomains) {
     domains.clear();
     newDomains.forEach(domain -> domain.setOwner(this));
@@ -112,6 +114,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   }
 
   // Only returns active domains
+  @Override
   public Set<Domain> getDomains() {
     return domains;
   }
@@ -121,6 +124,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
    *
    * @return true if added
    */
+  @Override
   public boolean addToDomains(Domain aDomain) {
     aDomain.setOwner(this);
     return this.domains.add(aDomain);
@@ -131,6 +135,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
    *
    * @return true if removed
    */
+  @Override
   public boolean removeFromDomains(Domain aDomain) {
     if (!aDomain.getOwner().equals(this)) throw new ClientBoundaryViolationException(aDomain, this);
     aDomain.setOwner(null);

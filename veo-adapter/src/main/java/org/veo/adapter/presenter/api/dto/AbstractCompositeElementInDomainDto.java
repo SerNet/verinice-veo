@@ -40,6 +40,7 @@ public abstract class AbstractCompositeElementInDomainDto<T extends CompositeEle
   private Set<ElementInDomainIdRef<T>> parts = Collections.emptySet();
 
   @Schema(description = "Elements contained in this composite element")
+  @Override
   public Set<ElementInDomainIdRef<T>> getParts() {
     return parts;
   }

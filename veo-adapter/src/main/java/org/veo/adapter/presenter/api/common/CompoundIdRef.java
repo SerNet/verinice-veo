@@ -48,11 +48,13 @@ public class CompoundIdRef<
   @JsonIgnore private final ITypedCompoundId<T, TFirst, TSecond> ref;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Override
   public UUID getFirstId() {
     return ref.getFirstId();
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Override
   public UUID getSecondId() {
     return ref.getSecondId();
   }

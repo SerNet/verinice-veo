@@ -47,11 +47,13 @@ public class ImpactImpl implements Impact {
   @Size(max = Impact.EXPLANATION_MAX_LENGTH)
   private String specificImpactExplanation;
 
+  @Override
   public void setPotentialImpact(ImpactRef potentialImpact) {
     this.potentialImpact = potentialImpact;
     updateEffectiveImpact();
   }
 
+  @Override
   public void setSpecificImpact(ImpactRef specificImpact) {
     this.specificImpact = specificImpact;
     updateEffectiveImpact();

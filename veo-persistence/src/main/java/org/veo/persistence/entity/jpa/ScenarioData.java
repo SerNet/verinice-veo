@@ -102,6 +102,7 @@ public class ScenarioData extends ElementData implements Scenario {
     setPotentialProbability(newDomain, probability);
   }
 
+  @Override
   public void setPotentialProbability(
       Domain domain, Map<RiskDefinitionRef, PotentialProbability> potentialProbability) {
     if (potentialProbability.isEmpty()) {
@@ -142,6 +143,7 @@ public class ScenarioData extends ElementData implements Scenario {
         .orElse(false);
   }
 
+  @Override
   public Map<RiskDefinitionRef, PotentialProbability> getPotentialProbability(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScenarioRiskValuesAspectData::getPotentialProbability)

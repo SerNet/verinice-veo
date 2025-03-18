@@ -172,6 +172,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
     }
   }
 
+  @Override
   DomainMigrationDefinition getDomainMigrationDefinition();
 
   void setDomainMigrationDefinition(DomainMigrationDefinition domainUpdateDescription);

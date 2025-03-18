@@ -68,6 +68,7 @@ public class CreateCatalogFromUnitUseCase
     this.catalogItemRepository = catalogItemRepository;
   }
 
+  @Override
   public EmptyOutput execute(InputData input) {
     Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
     Set<CatalogItem> previousCatalogItems = Set.copyOf(domain.getCatalogItems());

@@ -53,6 +53,7 @@ public class CustomLinkData extends CustomAttributeContainerData implements Cust
   @JoinColumn(name = "source_id")
   private Element source;
 
+  @Override
   public void setSource(Element aSource) {
     this.source = aSource;
   }

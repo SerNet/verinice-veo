@@ -53,6 +53,7 @@ public interface Nameable extends Displayable {
 
   /** A default implementation to render a user friendly display name. */
   @JsonIgnore
+  @Override
   default String getDisplayName() {
     Stream<String> parts = Stream.of(getName());
     String abbreviation = getAbbreviation();

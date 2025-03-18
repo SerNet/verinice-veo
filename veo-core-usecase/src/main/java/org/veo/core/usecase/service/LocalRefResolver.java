@@ -44,6 +44,7 @@ public class LocalRefResolver implements IdRefResolver {
   private final IdentifiableFactory factory;
   protected final Map<IEntityRef<?>, Entity> cache = new HashMap<>();
 
+  @Override
   public <TEntity extends Entity> TEntity resolve(IEntityRef<TEntity> objectReference)
       throws NotFoundException {
     return resolve(Collections.singleton(objectReference)).iterator().next();

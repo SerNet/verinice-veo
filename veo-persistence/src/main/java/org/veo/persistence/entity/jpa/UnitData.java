@@ -94,15 +94,18 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
     this.units.addAll(units);
   }
 
+  @Override
   public void setDomains(Set<Domain> newDomains) {
     domains.clear();
     domains.addAll(newDomains);
   }
 
+  @Override
   public boolean addToDomains(Domain aDomain) {
     return this.domains.add(aDomain);
   }
 
+  @Override
   public boolean addToDomains(@NotNull @NonNull Set<Domain> domains) {
     return this.domains.addAll(domains);
   }
@@ -112,6 +115,7 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
    *
    * @return true if removed
    */
+  @Override
   public boolean removeFromDomains(Domain aDomain) {
     return this.domains.remove(aDomain);
   }

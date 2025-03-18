@@ -121,6 +121,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     aspect.setValues(riskValues);
   }
 
+  @Override
   public Map<RiskDefinitionRef, ImpactValues> getImpactValues(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ImpactValuesAspectData::getValues)

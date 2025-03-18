@@ -89,6 +89,7 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @Column(length = ProfileState.PRODUCT_ID_MAX_LENGTH)
   private String productId;
 
+  @Override
   public void setItems(Set<ProfileItem> items) {
     items.stream().map(i -> (ProfileItemData) i).forEach(i -> i.setOwner(this));
     this.items = items;

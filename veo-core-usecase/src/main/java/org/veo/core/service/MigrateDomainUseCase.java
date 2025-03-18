@@ -62,6 +62,7 @@ public class MigrateDomainUseCase
   // TODO #2338 remove @Transactional (currently, without this annotation there would be no
   // transaction when calling this from another use case)
   @Transactional
+  @Override
   public EmptyOutput execute(InputData input) {
     var newDomain = domainRepository.getById(input.domainId);
     Client client = newDomain.getOwner();

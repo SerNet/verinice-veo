@@ -127,6 +127,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     return riskDefinitionSet.getRiskDefinitions();
   }
 
+  @Override
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitionSet.setRiskDefinitions(riskDefinitions);
   }
@@ -193,6 +194,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     }
   }
 
+  @Override
   public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
     elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
     this.elementTypeDefinitions.clear();
@@ -211,6 +213,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     existingDefinition.setTranslations(definition.getTranslations());
   }
 
+  @Override
   public void setControlImplementationConfiguration(
       @NotNull ControlImplementationConfiguration conf) {
     this.controlImplementationConfiguration = conf;
