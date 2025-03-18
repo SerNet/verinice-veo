@@ -50,7 +50,6 @@
         <exclude name="UnnecessaryLocalBeforeReturn" />
         <exclude name="UseExplicitTypes" />
         <exclude name="UseUnderscoresInNumericLiterals" />
-        <exclude name="UselessQualifiedThis" />
     </rule>
 
     <rule ref="category/java/design.xml">
