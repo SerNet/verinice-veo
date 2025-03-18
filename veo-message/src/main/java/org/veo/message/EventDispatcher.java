@@ -20,6 +20,7 @@ package org.veo.message;
 import static java.lang.Long.parseLong;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
@@ -39,7 +40,7 @@ public class EventDispatcher {
 
   private final RabbitTemplate rabbitTemplate;
 
-  private final ConcurrentLinkedQueue<Consumer<Long>> ackCallbacks = new ConcurrentLinkedQueue<>();
+  private final Queue<Consumer<Long>> ackCallbacks = new ConcurrentLinkedQueue<>();
 
   @Autowired
   EventDispatcher(RabbitTemplate rabbitTemplate) {

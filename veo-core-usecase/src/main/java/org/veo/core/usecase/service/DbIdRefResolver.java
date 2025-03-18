@@ -65,8 +65,8 @@ public class DbIdRefResolver extends LocalRefResolver {
     if (objectReferences.isEmpty()) {
       return Collections.emptySet();
     }
-    HashSet<TEntity> result = new HashSet<>(objectReferences.size());
-    HashSet<TRef> copyOfReferences = new HashSet<>(objectReferences);
+    Set<TEntity> result = new HashSet<>(objectReferences.size());
+    Set<TRef> copyOfReferences = new HashSet<>(objectReferences);
     Iterator<TRef> it = copyOfReferences.iterator();
     while (it.hasNext()) {
       TRef ref = it.next();

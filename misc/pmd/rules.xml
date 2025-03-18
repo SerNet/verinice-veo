@@ -23,7 +23,6 @@
         <exclude name="AbstractClassWithoutAbstractMethod" />
         <exclude name="GuardLogStatement" />
         <exclude name="LiteralsFirstInComparisons" />
-        <exclude name="LooseCoupling" />
         <exclude name="PreserveStackTrace" />
         <exclude name="UnusedAssignment" />
         <exclude name="UnusedFormalParameter" />

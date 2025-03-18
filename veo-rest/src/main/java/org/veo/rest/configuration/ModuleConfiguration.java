@@ -1456,6 +1456,7 @@ public class ModuleConfiguration {
     Schema schema =
         AnnotationsUtils.resolveSchemaFromType(
             ApiResponseBody.class, null, null, springDocConfigProperties.isOpenapi31());
+    @SuppressWarnings("PMD.LooseCoupling")
     Content content =
         new Content()
             .addMediaType(

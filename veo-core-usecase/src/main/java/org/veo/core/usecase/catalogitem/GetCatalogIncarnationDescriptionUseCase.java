@@ -201,7 +201,7 @@ public class GetCatalogIncarnationDescriptionUseCase
 
   private static Set<CatalogItem> getReferencedItems(
       Map<CatalogItem, Optional<Element>> current,
-      HashMap<CatalogItem, Optional<Element>> encountered,
+      Map<CatalogItem, Optional<Element>> encountered,
       Predicate<? super TailoringReference<?, ?>> referenceFilter,
       boolean followReferencesOfExistingIncarnations) {
     return current.entrySet().stream()

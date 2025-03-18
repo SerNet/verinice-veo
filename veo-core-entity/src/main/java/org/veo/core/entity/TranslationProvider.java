@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public interface TranslationProvider {
 
   Map<Locale, Map<String, String>> getTranslations();
 
-  default void defineTranslations(String languageTag, LinkedHashMap<String, String> translations) {
+  default void defineTranslations(String languageTag, Map<String, String> translations) {
     getTranslations().put(Locale.forLanguageTag(languageTag), translations);
   }
 }

@@ -132,7 +132,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   protected static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(
       AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
-    HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
+    Map<String, RiskDomainAssociationDto> result = new HashMap<>();
     risk.getEntity()
         .getDomains()
         .forEach(
