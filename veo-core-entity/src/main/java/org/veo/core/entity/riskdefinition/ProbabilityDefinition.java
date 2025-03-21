@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotEmpty;
 
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Translated;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,9 @@ import lombok.ToString;
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProbabilityDefinition extends DimensionDefinition {
 
-  public ProbabilityDefinition(TranslationMap translations, List<ProbabilityLevel> levels) {
+  public ProbabilityDefinition(
+      Translated<DiscreteValue.NameAbbreviationAndDescription> translations,
+      List<ProbabilityLevel> levels) {
     super(DIMENSION_PROBABILITY, translations);
     this.levels = levels;
     initLevel(levels);

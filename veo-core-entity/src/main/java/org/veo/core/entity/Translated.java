@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Urs Zeidler
+ * Copyright (C) 2025  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.riskdefinition;
+package org.veo.core.entity;
 
-import org.veo.core.entity.Translated;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import jakarta.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+@Data
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CategoryLevel extends DiscreteValue {
-  public CategoryLevel(String htmlColor) {
-    super(htmlColor);
-  }
+public class Translated<T> {
 
-  public CategoryLevel(
-      int ordinalValue, String htmlColor, Translated<NameAbbreviationAndDescription> translations) {
-    super(ordinalValue, htmlColor, translations);
+  @NotNull @JsonValue private Map<Locale, T> translations = new HashMap<>();
+
+  @JsonCreator
+  public Translated(final Map<Locale, T> themap) {
+    this.translations = themap;
   }
 }

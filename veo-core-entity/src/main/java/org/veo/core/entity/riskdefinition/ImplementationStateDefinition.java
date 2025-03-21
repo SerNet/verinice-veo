@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Translated;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,7 +38,9 @@ public class ImplementationStateDefinition extends DimensionDefinition {
     initLevel(levels);
   }
 
-  public ImplementationStateDefinition(TranslationMap translations, List<CategoryLevel> levels) {
+  public ImplementationStateDefinition(
+      Translated<DiscreteValue.NameAbbreviationAndDescription> translations,
+      List<CategoryLevel> levels) {
     super(DIMENSION_IMPLEMENTATION_STATE, translations);
     this.levels = levels;
     initLevel(levels);

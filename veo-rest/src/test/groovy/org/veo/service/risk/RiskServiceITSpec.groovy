@@ -142,21 +142,21 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
-                confidentiality.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == VERNACHLAESSIGBAR
+                confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
             with (getEffectiveImpact(availabilityRef)) {
                 it.idRef == 2
-                availability.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == BETRAECHTLICH
+                availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == BETRAECHTLICH
             }
         }
         with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == GERING
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == GERING
             }
             with(getInherentRisk(availabilityRef)) {
                 it.idRef == 1
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == MITTEL
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == MITTEL
             }
         }
         oldRiskVersion == 1
@@ -224,21 +224,21 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
-                confidentiality.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == VERNACHLAESSIGBAR
+                confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
             with (getEffectiveImpact(availabilityRef)) {
                 it.idRef == 2
-                availability.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == BETRAECHTLICH
+                availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == BETRAECHTLICH
             }
         }
         with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == GERING
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == GERING
             }
             with(getInherentRisk(availabilityRef)) {
                 it.idRef == 2
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == HOCH
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == HOCH
             }
         }
 
@@ -297,21 +297,21 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
-                confidentiality.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == VERNACHLAESSIGBAR
+                confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
             with (getEffectiveImpact(availabilityRef)) {
                 it.idRef == 3
-                availability.getLevel(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == EXISTENZBEDROHEND
+                availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == EXISTENZBEDROHEND
             }
         }
         with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == GERING
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == GERING
             }
             with(getInherentRisk(availabilityRef)) {
                 it.idRef == 3
-                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().translations.get(Locale.of("DE")).name == SEHR_HOCH
+                riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == SEHR_HOCH
             }
         }
         oldRiskVersion < risk.getVersion()

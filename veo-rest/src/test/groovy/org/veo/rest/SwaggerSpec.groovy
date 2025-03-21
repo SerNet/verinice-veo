@@ -1294,6 +1294,55 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "risk definition translations are well-documented"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect: "nameable translations to be documented"
+        with(schemas.RiskValue) {
+            properties.translations == [
+                type: 'object',
+                additionalProperties: [$ref : '#/components/schemas/NameAbbreviationAndDescription'],
+            ]
+        }
+        with(schemas.ProbabilityDefinition) {
+            properties.translations == [
+                type: 'object',
+                additionalProperties: [$ref : '#/components/schemas/NameAbbreviationAndDescription'],
+            ]
+        }
+        with(schemas.ImplementationStateDefinition) {
+            properties.translations == [
+                type: 'object',
+                additionalProperties: [$ref : '#/components/schemas/NameAbbreviationAndDescription'],
+            ]
+        }
+        with(schemas.CategoryDefinition) {
+            properties.translations == [
+                type: 'object',
+                additionalProperties: [$ref : '#/components/schemas/NameAbbreviationAndDescription'],
+            ]
+        }
+        with(schemas.NameAbbreviationAndDescription) {
+            properties.keySet() ==~ [
+                'name',
+                'abbreviation',
+                'description'
+            ]
+        }
+
+        and: "risk method translations to be documented"
+        with(schemas.RiskMethod) {
+            properties.translations == [
+                type: 'object',
+                additionalProperties: [$ref : '#/components/schemas/ImpactMethodAndDescription'],
+            ]
+        }
+        with(schemas.ImpactMethodAndDescription) {
+            properties.keySet() ==~ ['impactMethod', 'description']
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {

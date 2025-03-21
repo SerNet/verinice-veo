@@ -25,11 +25,9 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.RiskTailoringReferenceValues
-import org.veo.core.entity.RiskTailoringReferenceValues.CategoryValues
-import org.veo.core.entity.Scenario
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.TemplateItemAspects
-import org.veo.core.entity.TranslationMap
+import org.veo.core.entity.Translated
 import org.veo.core.entity.Unit
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
@@ -39,13 +37,7 @@ import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.CategoryLevel
-import org.veo.core.entity.riskdefinition.ProbabilityLevel
-import org.veo.core.entity.riskdefinition.RiskValue
-import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.ProcessRepositoryImpl
-import org.veo.persistence.access.ScenarioRepositoryImpl
-import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
@@ -416,7 +408,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         when: "we add a risk value"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
-            riskValues.add(new RiskValue(4, "#FF1212", "symbolic_risk_5", TranslationMap.of([(DE): ["name": "sehr hoch1", "abbreviation": "4", "description": "die heart , all hope is lost"]])))
+            riskValues.add([ordinalValue: 4, symbolicRisk: "symbolic_risk_5"])
             categories.find{ it.id == "D" }.valueMatrix = [
                 [
                     riskValues[0],
@@ -533,7 +525,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         when: "we add a probability value and change the matrix to conform"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
-            probability.levels.add(new ProbabilityLevel(4, "#004643", TranslationMap.of([(DE): ["name": "sehr häufig", "abbreviation": "5", "description": "Ereignis tritt mehrmals im Monat ein."]])))
+            probability.levels.add([:])
             categories.find{ it.id == "D" }.valueMatrix = [
                 [
                     riskValues[0],
@@ -725,8 +717,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         when: "we add an impact value in category D and need to change the matrix"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
-            categories.find{ it.id == "D" }.potentialImpacts.add(
-            new CategoryLevel(5, "#004643", TranslationMap.of([(DE): ["name": "6", "abbreviation": "6", "description": "Die Schadensauswirkungen sind gering."]])),)
+            categories.find{ it.id == "D" }.potentialImpacts.add([:])
             categories.find{ it.id == "D" }.valueMatrix = [
                 [
                     riskValues[0],
@@ -920,7 +911,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
     }
 
-    private static ImpactRef createImpactRef(c = new CategoryLevel(2, "", new TranslationMap())) {
+    private static ImpactRef createImpactRef(c = new CategoryLevel(2, "", new Translated())) {
         return ImpactRef.from(c)
     }
 

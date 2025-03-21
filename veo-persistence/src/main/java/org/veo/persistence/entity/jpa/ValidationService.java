@@ -29,7 +29,6 @@ import org.veo.core.entity.code.EntityValidationException;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 import org.veo.core.entity.specification.EntityValidator;
-import org.veo.core.entity.specification.TranslationValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,7 +52,6 @@ public class ValidationService {
     if (identifiable instanceof DomainBase domain) {
       domain.getElementTypeDefinitions().forEach(ElementTypeDefinitionValidator::validate);
       domain.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition(domain));
-      domain.getRiskDefinitions().values().forEach(TranslationValidator::validate);
     }
 
     if (identifiable instanceof ElementTypeDefinition entity) {

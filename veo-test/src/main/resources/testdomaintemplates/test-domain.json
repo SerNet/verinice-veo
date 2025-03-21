@@ -416,14 +416,7 @@
           {
             "ordinalValue": 2
           }
-        ],
-        "translations": {
-          "de": {
-            "name": "",
-            "abbreviation": "",
-            "description": ""
-          }
-        }
+        ]
       },
       "implementationStateDefinition": {
         "id": "",
@@ -434,122 +427,45 @@
           {
             "ordinalValue": 1
           }
-        ],
-        "translations": {
-          "de": {
-            "name": "",
-            "abbreviation": "",
-            "description": ""
-          }
-        }
+        ]
       },
       "categories": [
         {
           "id": "C",
           "potentialImpacts": [
             {
-              "ordinalValue": 0,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 0
             },
             {
-              "ordinalValue": 1,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 1
             },
             {
-              "ordinalValue": 2,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 2
             }
-          ],
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          ]
         },
         {
           "id": "I",
           "potentialImpacts": [
             {
-              "ordinalValue": 0,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 0
             },
             {
-              "ordinalValue": 1,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 1
             }
-          ],
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          ]
         },
         {
           "id": "D",
           "potentialImpacts": [
             {
-              "ordinalValue": 0,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 0
             },
             {
-              "ordinalValue": 1,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 1
             },
             {
-              "ordinalValue": 2,
-              "translations": {
-                "de": {
-                  "name": "",
-                  "abbreviation": "",
-                  "description": ""
-                }
-              }
+              "ordinalValue": 2
             }
           ],
           "valueMatrix": [
@@ -595,60 +511,25 @@
                 "symbolicRisk": "symbolic_risk_4"
               }
             ]
-          ],
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          ]
         }
       ],
       "riskValues": [
         {
           "ordinalValue": 0,
-          "symbolicRisk": "symbolic_risk_1",
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          "symbolicRisk": "symbolic_risk_1"
         },
         {
           "ordinalValue": 1,
-          "symbolicRisk": "symbolic_risk_2",
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          "symbolicRisk": "symbolic_risk_2"
         },
         {
           "ordinalValue": 2,
-          "symbolicRisk": "symbolic_risk_3",
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          "symbolicRisk": "symbolic_risk_3"
         },
         {
           "ordinalValue": 3,
-          "symbolicRisk": "symbolic_risk_4",
-          "translations": {
-            "de": {
-              "name": "",
-              "abbreviation": "",
-              "description": ""
-            }
-          }
+          "symbolicRisk": "symbolic_risk_4"
         }
       ],
       "riskMethod": {}

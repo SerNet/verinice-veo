@@ -246,12 +246,12 @@ class RiskMatrixSpec extends Specification {
         pd1 != pd2
 
         when: "when complete constructor is used"
-        pd1 = new ProbabilityDefinition(TranslationMap.of([
+        pd1 = new ProbabilityDefinition(new Translated([
             (Locale.ENGLISH): [
                 name: "p1"
             ]
         ]), [new ProbabilityLevel()])
-        pd2 = new ProbabilityDefinition(TranslationMap.of([
+        pd2 = new ProbabilityDefinition(new Translated([
             (Locale.ENGLISH): [
                 name: "p1"
             ]
@@ -332,15 +332,17 @@ class RiskMatrixSpec extends Specification {
         rd1 == rd2
 
         when: "content differs"
-        rd1.riskMethod = new RiskMethod()
-        rd1.riskMethod.translations.put(Locale.of("DE"), ["impactMethod": "sum"])
+        rd1.riskMethod = new RiskMethod(new Translated([
+            (Locale.of("DE")): ["impactMethod": "sum"]]
+        ))
 
         then: "not equals"
         rd1 != rd2
 
         when: "content is the same"
-        rd2.riskMethod = new RiskMethod()
-        rd2.riskMethod.translations.put(Locale.of("DE"), ["impactMethod": "sum"])
+        rd2.riskMethod = new RiskMethod(new Translated([
+            (Locale.of("DE")): ["impactMethod": "sum"]
+        ]))
 
         then: "both are equals"
         rd1 == rd2
@@ -614,130 +616,6 @@ class RiskMatrixSpec extends Specification {
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "SymbolicRisk not unique."
-    }
-
-    def "test RiskDefinition validation of translations"() {
-        when: "we create a simple RiskDefinition"
-        def rd = createRiskDefinition()
-        rd.id = "my-risk-def"
-
-        then: "it validates nicely"
-        TranslationValidator.validate(rd)
-
-        when: "we add a translation with an additional field"
-        rd.riskMethod.defineTranslations("de",
-                [impactMethod : "my method",
-                    description  : "a description",
-                    unkownfeature: "some unknown"]
-                )
-
-        TranslationValidator.validate(rd)
-
-        then: "illegal Argument exception is thrown"
-        TranslationException ex = thrown()
-        ex.message =~ /SUPERFLUOUS.*unkownfeature/
-
-        when: "we add a translation with missing fields"
-        rd.riskMethod.defineTranslations("de",
-                [:]
-                )
-
-        TranslationValidator.validate(rd)
-
-        then: "illegal Argument exception is thrown"
-        ex = thrown()
-        ex.message =~ /MISSING.*description.*impactMethod/
-
-        when: "we add a translation with all fields"
-        rd.riskMethod.defineTranslations("de",
-                [
-                    impactMethod: "my method",
-                    description : "a description"]
-                )
-
-        then: "it validates nicely"
-        TranslationValidator.validate(rd)
-    }
-
-    def "test translation provider part for RiskDefinition"(TranslationProvider tp) {
-        expect:
-        TranslationValidator.validate(myRisk)
-
-        when:"missing all translations"
-        tp.defineTranslations("de", [:])
-
-        TranslationValidator.validate(myRisk)
-
-        then:"error message is thrown"
-        TranslationException ex = thrown()
-        ex.message =~ /de.*MISSING.*abbreviation.*description.*name/
-
-        when:"missing translations name abbre..."
-        tp.defineTranslations("de",
-                [
-                    description: "a description"]
-                )
-
-        TranslationValidator.validate(myRisk)
-
-        then:"error message is thrown"
-        ex = thrown()
-        ex.message =~ /de.*MISSING.*abbreviation.*name/
-
-        when:"missing translations name"
-        tp.defineTranslations("de",
-                [
-                    abbreviation: "abb",
-                    description : "a description"]
-                )
-
-        TranslationValidator.validate(myRisk)
-
-        then:"error message is thrown"
-        ex = thrown()
-        ex.message =~ /de.*MISSING.*name/
-
-        when:"missing translations description"
-        tp.defineTranslations("de",
-                [
-                    abbreviation: "abb",
-                    name        : "a name"]
-                )
-
-        TranslationValidator.validate(myRisk)
-
-        then:"error message is thrown"
-        ex = thrown()
-        ex.message =~ /de.*MISSING.*description/
-
-        when:"additional translations addition"
-        tp.defineTranslations("de",
-                [
-                    addition    : "unkown field",
-                    name        : "my name",
-                    abbreviation: "abb",
-                    description : "a description"]
-                )
-
-        TranslationValidator.validate(myRisk)
-
-        then:"error message is thrown"
-        ex = thrown()
-        ex.message =~ /de.*SUPERFLUOUS.*addition/
-
-        when:"all is good"
-        tp.defineTranslations("de",
-                [
-                    name        : "my name",
-                    abbreviation: "abb",
-                    description : "a description"]
-                )
-
-        then:"it validates nicely"
-        TranslationValidator.validate(myRisk)
-
-        where:
-        tp <<  myRisk.categories + myRisk.probability + myRisk.implementationStateDefinition + myRisk.riskValues
     }
 
     private RiskDefinition createRiskDefinition() {

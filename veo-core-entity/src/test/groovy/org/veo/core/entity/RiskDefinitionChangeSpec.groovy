@@ -19,6 +19,7 @@ package org.veo.core.entity
 
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.DiscreteValue
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.entity.riskdefinition.RiskDefinitionChange
@@ -43,7 +44,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         when: "change translation and color"
         rdNew.riskValues.first().htmlColor = "#00000"
-        rdNew.riskValues.first().translations.get(DE).name = "a new name"
+        rdNew.riskValues.first().getTranslations(DE).name = "a new name"
 
         changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
@@ -111,7 +112,9 @@ class RiskDefinitionChangeSpec extends Specification{
 
         when: "add risk value"
         rdNew = createRiskDefinition()
-        rdNew.riskValues.add( new RiskValue(2, "#A0CF11", "symbolic_risk_3", TranslationMap.of([(DE): ["name": "gering", "abbreviation": "1", "description": "hh"]])))
+        rdNew.riskValues.add( new RiskValue(2, "#A0CF11", "symbolic_risk_3", new Translated([
+            (DE): new DiscreteValue.NameAbbreviationAndDescription("gering", "1","hh")
+        ])))
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -232,8 +235,12 @@ class RiskDefinitionChangeSpec extends Specification{
         ]
 
         rd.riskValues = [
-            new RiskValue(0, "#A0CF11", "symbolic_risk_1", TranslationMap.of([(DE): ["name": "gering", "abbreviation": "1", "description": "hh"]])),
-            new RiskValue(1, "#FFFF13", "symbolic_risk_2", TranslationMap.of([(DE): ["name": "mittel", "abbreviation": "2", "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus."]])),
+            new RiskValue(0, "#A0CF11", "symbolic_risk_1", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("gering", "1", "hh")
+            ])),
+            new RiskValue(1, "#FFFF13", "symbolic_risk_2", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("mittel", "2", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.")
+            ])),
         ]
 
         def potentialImpacts = [

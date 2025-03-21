@@ -27,10 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /** Defines the basic properties of nameable elements. */
 public interface Nameable extends Displayable {
-  String ABBREVIATION = "abbreviation";
-  String DESCRIPTION = "description";
-  String NAME = "name";
-
   int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;

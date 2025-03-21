@@ -21,16 +21,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public interface TranslationProvider {
+public interface TranslationProvider<T> {
 
   static <T> Map<Locale, T> convertLocales(Map<String, T> description) {
     return description.entrySet().stream()
         .collect(Collectors.toMap(e -> Locale.forLanguageTag(e.getKey()), Map.Entry::getValue));
   }
 
-  Map<Locale, Map<String, String>> getTranslations();
+  Translated<T> getTranslations();
 
-  default void defineTranslations(String languageTag, Map<String, String> translations) {
-    getTranslations().put(Locale.forLanguageTag(languageTag), translations);
+  default T getTranslations(Locale locale) {
+    return getTranslations().getTranslations().get(locale);
   }
 }

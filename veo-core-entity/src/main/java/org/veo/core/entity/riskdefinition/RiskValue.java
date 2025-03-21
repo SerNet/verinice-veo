@@ -23,7 +23,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Nameable;
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Translated;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,7 +61,7 @@ public class RiskValue extends DiscreteValue {
       @NotNull(message = "A symbolic risk value must be present.")
           @Size(max = DEFAULT_CONSTANT_MAX_LENGTH)
           String symbolicRisk,
-      TranslationMap translations) {
+      Translated<NameAbbreviationAndDescription> translations) {
     super(ordinalValue, htmlColor, translations);
     this.symbolicRisk = symbolicRisk;
   }

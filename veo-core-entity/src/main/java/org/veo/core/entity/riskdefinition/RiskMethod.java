@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.Locale;
-import java.util.Map;
+import jakarta.validation.constraints.Size;
 
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Constraints;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
 
 import lombok.AllArgsConstructor;
@@ -35,12 +35,18 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RiskMethod implements TranslationProvider {
+public class RiskMethod implements TranslationProvider<RiskMethod.ImpactMethodAndDescription> {
   @ToString.Include @EqualsAndHashCode.Include
-  private TranslationMap translations = new TranslationMap();
+  private Translated<ImpactMethodAndDescription> translations = new Translated<>();
 
-  @Override
-  public Map<Locale, Map<String, String>> getTranslations() {
-    return translations.getTranslations();
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  static class ImpactMethodAndDescription {
+    @Size(max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
+    private String description;
+
+    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+    private String impactMethod;
   }
 }

@@ -46,8 +46,8 @@ import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.TemplateItem
+import org.veo.core.entity.Translated
 import org.veo.core.entity.TranslatedText
-import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
@@ -66,6 +66,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskValues
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.DiscreteValue
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
@@ -326,10 +327,18 @@ abstract class VeoSpec extends Specification {
         RiskDefinition rd = new RiskDefinition()
         rd.id = id
         rd.riskValues = [
-            new RiskValue(0, "#A0CF11", "symbolic_risk_1", TranslationMap.of([(DE): ["name": "gering", "abbreviation": "1", "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten."]])),
-            new RiskValue(1, "#FFFF13", "symbolic_risk_2", TranslationMap.of([(DE): ["name": "mittel", "abbreviation": "2", "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus."]])),
-            new RiskValue(2, "#FF8E43", "symbolic_risk_3", TranslationMap.of([(DE): ["name": "hoch", "abbreviation": "3", "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung."]])),
-            new RiskValue(3, "#FF1212", "symbolic_risk_4", TranslationMap.of([(DE): ["name": "sehr hoch", "abbreviation": "4", "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert."]]))
+            new RiskValue(0, "#A0CF11", "symbolic_risk_1", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("gering","1", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.")
+            ])),
+            new RiskValue(1, "#FFFF13", "symbolic_risk_2", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("mittel","2", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.")
+            ])),
+            new RiskValue(2, "#FF8E43", "symbolic_risk_3", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("hoch","3", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.")
+            ])),
+            new RiskValue(3, "#FF1212", "symbolic_risk_4", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("sehr hoch", "4", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.")
+            ]))
         ] as List
 
         def riskMatrix = [
@@ -362,44 +371,60 @@ abstract class VeoSpec extends Specification {
         rd.categories = [
             new CategoryDefinition("C",null,
             createDefaultCategoryLevels(),
-            TranslationMap.of([(DE): ["name": "Vertraulichkeit", "abbreviation": "c", "description": ""]])
+            new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Vertraulichkeit", "c", "")])
             ),
             new CategoryDefinition("I",null,
             createDefaultCategoryLevels(),
-            TranslationMap.of([(DE): ["name": "Integrität", "abbreviation": "i", "description": ""]])
+            new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Integrität", "i", "")])
             ),
             new CategoryDefinition("A", null,
             createDefaultCategoryLevels(),
-            TranslationMap.of([(DE): ["name": "Belastbarkeit", "abbreviation": "r", "description": ""]])
+            new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Belastbarkeit", "r", "")])
             ),
             new CategoryDefinition("R", null,
             createDefaultCategoryLevels(),
-            TranslationMap.of([(DE): ["name": "Vertraulichkeit", "abbreviation": "c", "description": ""]])
+            new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Vertraulichkeit", "c", "")])
             ),
             new CategoryDefinition("D", riskMatrix,
             createDefaultCategoryLevels(),
-            TranslationMap.of([(DE): ["name": "Schadenshöhe", "abbreviation": "d", "description": ""]])
+            new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Schadenshöhe", "d", "")])
             )
         ] as List
 
         rd.probability = new ProbabilityDefinition(
-                TranslationMap.of([(DE): ["name": "Wahrscheinlichkit", "abbreviation": "w", "description": ""]]),
+                new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Wahrscheinlichkit","w","")]),
                 [
-                    new ProbabilityLevel(0, "#004643", TranslationMap.of([(DE): ["name": "selten", "abbreviation": "1", "description": "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten."]])),
-                    new ProbabilityLevel(1, "#004643", TranslationMap.of([(DE): ["name": "mittel", "abbreviation": "2", "description": "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein."]])),
-                    new ProbabilityLevel(2, "#004643", TranslationMap.of([(DE): ["name": "häufig", "abbreviation": "3", "description": "Ereignis tritt einmal im Jahr bis einmal pro Monat ein."]])),
-                    new ProbabilityLevel(3, "#004643", TranslationMap.of([(DE): ["name": "sehr häufig", "abbreviation": "4", "description": "Ereignis tritt mehrmals im Monat ein."]]))
+                    new ProbabilityLevel(0, "#004643", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("selten", "1", "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.")
+                    ])),
+                    new ProbabilityLevel(1, "#004643", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("mittel", "2", "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.")
+                    ])),
+                    new ProbabilityLevel(2, "#004643", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("häufig", "3", "Ereignis tritt einmal im Jahr bis einmal pro Monat ein.")
+                    ])),
+                    new ProbabilityLevel(3, "#004643", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("sehr häufig", "4", "Ereignis tritt mehrmals im Monat ein.")
+                    ]))
                 ] as List)
 
         rd.implementationStateDefinition = new ImplementationStateDefinition(
-                TranslationMap.of([(DE): ["name": "Umsetzungsstatus", "abbreviation": "s", "description": ""]]),
+                new Translated([(DE): new DiscreteValue.NameAbbreviationAndDescription("Umsetzungsstatus","s","")]),
                 [
-                    new CategoryLevel(0, "#12AE0F", TranslationMap.of([(DE): ["name": "ja", "abbreviation": "J", "description": "Die Maßnahme ist vollständig umgesetzt."]])),
-                    new CategoryLevel(1, "#AE0D11", TranslationMap.of([(DE): ["name": "nein", "abbreviation": "N", "description": "Die Maßnahme ist nicht umgesetzt."]])),
-                    new CategoryLevel(2, "#EDE92F", TranslationMap.of([(DE): ["name": "teilweise", "abbreviation": "Tw", "description": "Die Maßnahme ist nicht vollständig umgesetzt."]])),
-                    new CategoryLevel(3, "#49A2ED", TranslationMap.of([(DE): ["name": "nicht anwendbar", "abbreviation": "NA", "description": "Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar."]]))
+                    new CategoryLevel(0, "#12AE0F", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("ja", "J", "Die Maßnahme ist vollständig umgesetzt.")
+                    ])),
+                    new CategoryLevel(1, "#AE0D11", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("nein", "N", "Die Maßnahme ist nicht umgesetzt.")
+                    ])),
+                    new CategoryLevel(2, "#EDE92F", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("teilweise", "Tw", "Die Maßnahme ist nicht vollständig umgesetzt.")
+                    ])),
+                    new CategoryLevel(3, "#49A2ED", new Translated([
+                        (DE): new DiscreteValue.NameAbbreviationAndDescription("nicht anwendbar", "NA", "Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.")
+                    ]))
                 ] as List)
-        rd.riskMethod = new RiskMethod(TranslationMap.of([(EN): ["impactMethod": "highwatermark", "description": "description"]]))
+        rd.riskMethod = new RiskMethod(new Translated([(EN): new RiskMethod.ImpactMethodAndDescription("highwatermark", "description")]))
 
         execute(rd, init)
         return rd
@@ -474,10 +499,18 @@ abstract class VeoSpec extends Specification {
 
     private static List<CategoryLevel> createDefaultCategoryLevels() {
         return [
-            new CategoryLevel(0, "#004643", TranslationMap.of([(DE): ["name": "vernachlässigbar", "abbreviation": "1", "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden."]])),
-            new CategoryLevel(1, "#004643", TranslationMap.of([(DE): ["name": "begrenzt", "abbreviation": "2", "description": "Die Schadensauswirkungen sind begrenzt und überschaubar."]])),
-            new CategoryLevel(2, "#004643", TranslationMap.of([(DE): ["name": "beträchtlich", "abbreviation": "3", "description": "Die Schadensauswirkungen können beträchtlich sein."]])),
-            new CategoryLevel(3, "#004643", TranslationMap.of([(DE): ["name": "existenzbedrohend", "abbreviation": "4", "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen."]]))
+            new CategoryLevel(0, "#004643", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("vernachlässigbar", "1", "Die Schadensauswirkungen sind gering und können vernachlässigt werden.")
+            ])),
+            new CategoryLevel(1, "#004643", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("begrenzt", "2", "Die Schadensauswirkungen sind begrenzt und überschaubar.")
+            ])),
+            new CategoryLevel(2, "#004643", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("beträchtlich", "3", "Die Schadensauswirkungen können beträchtlich sein.")
+            ])),
+            new CategoryLevel(3, "#004643", new Translated([
+                (DE): new DiscreteValue.NameAbbreviationAndDescription("existenzbedrohend", "4", "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.")
+            ])),
         ] as List
     }
 

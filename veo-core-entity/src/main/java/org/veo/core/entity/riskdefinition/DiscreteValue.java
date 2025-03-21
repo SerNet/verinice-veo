@@ -17,15 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.Locale;
-import java.util.Map;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
 
 import lombok.AllArgsConstructor;
@@ -44,7 +42,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
-public class DiscreteValue implements TranslationProvider {
+public class DiscreteValue
+    implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
 
   public DiscreteValue(@Size(max = 255) String htmlColor) {
     super();
@@ -59,10 +58,14 @@ public class DiscreteValue implements TranslationProvider {
   private String htmlColor;
 
   @EqualsAndHashCode.Include @ToString.Exclude @NotNull @Valid
-  private TranslationMap translations = new TranslationMap();
+  private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
-  @Override
-  public Map<Locale, Map<String, String>> getTranslations() {
-    return translations.getTranslations();
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class NameAbbreviationAndDescription implements Nameable {
+    private String name;
+    private String abbreviation;
+    private String description;
   }
 }

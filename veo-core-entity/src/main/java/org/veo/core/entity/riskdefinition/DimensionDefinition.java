@@ -18,15 +18,13 @@
 package org.veo.core.entity.riskdefinition;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
-import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
 
 import lombok.AllArgsConstructor;
@@ -44,7 +42,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class DimensionDefinition implements TranslationProvider {
+public class DimensionDefinition
+    implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
   protected static final String DIMENSION_PROBABILITY = "Prob";
   protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
 
@@ -54,15 +53,12 @@ public class DimensionDefinition implements TranslationProvider {
   @ToString.Include
   private String id;
 
-  @NotNull @Valid private TranslationMap translations = new TranslationMap();
+  @NotNull @Valid
+  private Translated<DiscreteValue.NameAbbreviationAndDescription> translations =
+      new Translated<>();
 
   public DimensionDefinition(String id) {
     this.id = id;
-  }
-
-  @Override
-  public Map<Locale, Map<String, String>> getTranslations() {
-    return translations.getTranslations();
   }
 
   /** Initialize the ordinal value of each DiscreteValue in the list. */
