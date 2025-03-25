@@ -17,15 +17,12 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
-import java.util.concurrent.Future;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.properties.SpringDocConfigProperties;
-import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -256,10 +253,6 @@ import io.swagger.v3.oas.models.media.Schema;
  */
 @Configuration
 public class ModuleConfiguration {
-
-  static {
-    SpringDocUtils.getConfig().addResponseWrapperToIgnore(Future.class);
-  }
 
   @Bean
   public SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase(
