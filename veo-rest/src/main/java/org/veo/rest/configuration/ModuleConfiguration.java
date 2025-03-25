@@ -137,6 +137,7 @@ import org.veo.core.usecase.domain.DeleteInspectionUseCase;
 import org.veo.core.usecase.domain.DeleteProfileUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
+import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
@@ -1302,6 +1303,11 @@ public class ModuleConfiguration {
   SaveRiskDefinitionUseCase saveRiskDefinitionUseCase(
       DomainRepository domainRepository, EventPublisher publisher) {
     return new SaveRiskDefinitionUseCase(domainRepository, publisher);
+  }
+
+  @Bean
+  EvaluateRiskDefinitionUseCase evaluateRiskDefinitionUseCase(DomainRepository domainRepository) {
+    return new EvaluateRiskDefinitionUseCase(domainRepository);
   }
 
   @Bean

@@ -28,6 +28,7 @@ import org.veo.core.entity.RiskTailoringReferenceValues
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.TemplateItemAspects
 import org.veo.core.entity.Translated
+import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
@@ -37,6 +38,8 @@ import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.ProbabilityLevel
+import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -908,6 +911,257 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                 inherentRisk == 1
                 residualRisk == 0
             }
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "use evaluation to edit a risk definition"() {
+        given:
+        def ret
+
+        when: "we remove an impact value in category D"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            categories.find{ it.id == "D" }.potentialImpacts.removeLast()
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is updated"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 3
+            valueMatrix*.size() as Set == [4] as Set
+        }
+        with(ret) {
+            changes[0].changeType == "RiskMatrixResize"
+            changes[0].categories == ["D"]
+            changes[1].changeType == "ImpactListResize"
+            changes[1].categories == ["D"]
+            effects[0].description.en == "Risk values for category 'D' are removed from all risks."
+            effects[1].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
+            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+            validationMessages[0].changedCategories == ["D"]
+        }
+
+        when: "we add a probability value"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            probability.levels.add([:])
+            probability.levels.add([:])
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "and the matrix conforms"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 4
+            valueMatrix[0].size() == 6
+            valueMatrix*.size() as Set == [6] as Set
+        }
+        with(ret) {
+            changes[0].changeType == "ProbabilityListResize"
+            changes[0].categories == ["C", "I", "A", "R", "D"]
+            changes[1].changeType == "RiskMatrixDiff"
+            changes[1].categories == ["D"]
+            effects[0].description.en == "Risk values for category 'C' are removed from all risks."
+            effects[1].description.en == "Risk values for category 'I' are removed from all risks."
+            effects[2].description.en == "Risk values for category 'A' are removed from all risks."
+            effects[3].description.en == "Risk values for category 'R' are removed from all risks."
+            effects[4].description.en == "Risk values for category 'D' are removed from all risks."
+            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].changedCategories == ["D"]
+            validationMessages[0].severity == "WARNING"
+        }
+
+        when: "we add a matrix to category C"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            categories.find{ it.id == "C" }.valueMatrix = []
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined"
+        with(ret) {
+            with(riskDefinition.categories.find{ it.id == "C" }) {
+                valueMatrix.size() == 4
+                valueMatrix*.size() as Set == [4] as Set
+                valueMatrix[0]*.ordinalValue as Set ==~ [
+                    ret.riskDefinition.riskValues.last().ordinalValue
+                ]
+                valueMatrix[1]*.ordinalValue as Set ==~ [
+                    ret.riskDefinition.riskValues.last().ordinalValue
+                ]
+                valueMatrix[2]*.ordinalValue as Set ==~ [
+                    ret.riskDefinition.riskValues.last().ordinalValue
+                ]
+                valueMatrix[3]*.ordinalValue as Set ==~ [
+                    ret.riskDefinition.riskValues.last().ordinalValue
+                ]
+            }
+            changes[0].changeType == "RiskMatrixAdd"
+            changes[0].categories == ["C"]
+            effects[0].description.en == "Risk values are recalculated."
+            effects[1].description.en == "Risk values for category 'C' are added to risks."
+        }
+
+        when: "we add a matrix to all categories and clean existing"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            categories.each {  it.valueMatrix = [] }
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined"
+        with(ret.riskDefinition.categories.find{ it.id == "C" }) {
+            valueMatrix.size() == 4
+            valueMatrix*.size() as Set == [4] as Set
+        }
+        ret.changes*.changeType  ==~ [
+            "RiskMatrixDiff",
+            "RiskMatrixAdd",
+            "RiskMatrixAdd",
+            "RiskMatrixAdd",
+            "RiskMatrixAdd"
+        ]
+        with(ret) {
+            effects[0].description.en == "Risk values are recalculated."
+            effects[1].description.en == "Risk values for category 'C' are added to risks."
+            effects[2].description.en == "Risk values for category 'I' are added to risks."
+            effects[3].description.en == "Risk values for category 'R' are added to risks."
+            effects[4].description.en == "Risk values for category 'A' are added to risks."
+            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].changedCategories == ["D"]
+        }
+
+        when: "we remove riskvalues"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            riskValues.removeLast()
+            riskValues.removeLast()
+            riskValues.removeLast()
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined and all values are changed to 0"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 4
+            valueMatrix*.size() as Set ==~ [4]
+            valueMatrix[0]*.ordinalValue as Set ==~ [0]
+            valueMatrix[1]*.ordinalValue as Set ==~ [0]
+            valueMatrix[2]*.ordinalValue as Set ==~ [0]
+            valueMatrix[3]*.ordinalValue as Set ==~ [0]
+        }
+        ret.changes*.changeType as Set == [
+            "RiskValueListResize",
+            "RiskMatrixDiff"
+        ] as Set
+
+        with(ret) {
+            validationMessages.size() == 1
+            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].changedCategories ==~ ["D"]
+        }
+
+        when: "we remove risk- and potentialImpacts and"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            riskValues.removeLast()
+            riskValues.removeLast()
+            categories.find{ it.id == "D" }.potentialImpacts.removeLast()
+            categories.find{ it.id == "D" }.potentialImpacts.removeLast()
+            probability.levels.removeLast()
+            probability.levels.removeLast()
+            categories.removeFirst()
+            categories.removeFirst()
+            categories.removeFirst()
+            categories.removeFirst()
+
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined and all values are changed to 0"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 2
+            valueMatrix*.size() ==~ [2, 2]
+            valueMatrix[0]*.ordinalValue ==~ [0, 0]
+            valueMatrix[1]*.ordinalValue ==~ [0, 0]
+        }
+        ret.changes.size() == 8
+        ret.changes*.changeType ==~ [
+            "RiskValueListResize",
+            "RiskMatrixResize",
+            "ProbabilityListResize",
+            "ImpactListResize",
+            "CategoryListRemove",
+            "CategoryListRemove",
+            "CategoryListRemove",
+            "CategoryListRemove"
+        ]
+        with(ret) {
+            effects.size() == 11
+            effects[0].description.en == "Risk values for category 'C' are removed from all risks."
+            effects[1].description.en == "Risk values for category 'I' are removed from all risks."
+            effects[2].description.en == "Risk values for category 'A' are removed from all risks."
+            effects[3].description.en == "Risk values for category 'R' are removed from all risks."
+            effects[4].description.en == "Risk values for category 'D' are removed from all risks."
+            effects[5].description.en == "Risk values are recalculated."
+            effects[6].description.en == "Impact values for category 'C' are removed from all assets, processes and scopes."
+            effects[7].description.en == "Impact values for category 'A' are removed from all assets, processes and scopes."
+            effects[8].description.en == "Impact values for category 'R' are removed from all assets, processes and scopes."
+            effects[9].description.en == "Impact values for category 'I' are removed from all assets, processes and scopes."
+            effects[10].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
+            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+            validationMessages[0].changedCategories ==~ ["D"]
+        }
+
+        when:"we use an undefined risk value"
+        ret.riskDefinition.categories.first().valueMatrix[1][1] = [ordinalValue:100,
+            htmlColor:"#noColor",
+            translations: (ret.riskDefinition.riskValues[1].translations)
+        ]
+        ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, 200))
+
+        then: "the value is replaced by the current maximum"
+        ret.riskDefinition.categories.first().valueMatrix[1][1].ordinalValue == 1
+
+        when:"we make the riskvalues inconsitent"
+        ret.riskDefinition.categories.first().valueMatrix[0][0] = ret.riskDefinition.riskValues[1]
+        ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, 200))
+
+        then: "a evaluation message is produced"
+        with(ret) {
+            validationMessages.size() == 2
+            effects.size() == 11
+            changes.size() == 8
+            with(validationMessages[0]) {
+                description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
+                severity == "HINT"
+                changedCategories ==~ ["D"]
+                column == 0
+                row == 1
+            }
+            with(validationMessages[1]) {
+                description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+                changedCategories ==~ ["D"]
+            }
+        }
+
+        when:"we use the riskdef as new"
+        ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/new/evaluation", ret.riskDefinition, 200))
+
+        then:"new riskdefinition is the change"
+        with(ret) {
+            changes.size() == 1
+            changes*.changeType as Set ==~ ["NewRiskDefinition"]
+            effects.size() == 0
+            validationMessages.size() == 1
+            with(validationMessages[0]) {
+                description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
+                severity == "HINT"
+                changedCategories ==~ ["D"]
+                column == 0
+                row == 1
+            }
+        }
+
+        when: "we use the riskdef to update the active riskdef"
+        put("/content-customizing/domains/$domainId/risk-definitions/r1d1", ret.riskDefinition, [:],200)
+
+        then:"this riskdefinition is active"
+        parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
+            categories.size() == 1
         }
     }
 

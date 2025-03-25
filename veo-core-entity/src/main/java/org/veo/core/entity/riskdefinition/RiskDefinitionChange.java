@@ -28,6 +28,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.risk.CategoryRef;
 
@@ -47,23 +53,21 @@ public sealed interface RiskDefinitionChange
         RiskDefinitionChange.RiskValueListResize,
         RiskDefinitionChange.TranslationDiff {
 
-  default boolean requiresRiskRecalculation() {
-    return false;
+  @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+  @JsonGetter
+  default String getChangeType() {
+    return getClass().getSimpleName();
   }
 
-  default boolean requiresImpactInheritanceRecalculation() {
-    return false;
-  }
-
-  default List<CategoryRef> addedRiskValueCategories() {
+  default List<CategoryRef> riskMatrixResizeCategories() {
     return Collections.emptyList();
   }
 
-  default List<CategoryRef> removedRiskValueCategories() {
+  default List<RiskDefinitionChangeEffect> getEffects() {
     return Collections.emptyList();
   }
 
-  default List<CategoryRef> removedImpactCategories() {
+  default List<CategoryRef> changedRiskMatrixCategories() {
     return Collections.emptyList();
   }
 
@@ -71,8 +75,8 @@ public sealed interface RiskDefinitionChange
 
   public record ImpactLinks() implements RiskDefinitionChange {
     @Override
-    public boolean requiresImpactInheritanceRecalculation() {
-      return RiskDefinitionChange.super.requiresImpactInheritanceRecalculation();
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(new RiskDefinitionChangeEffect.ImpactInheritanceRecalculation());
     }
   }
 
@@ -80,107 +84,173 @@ public sealed interface RiskDefinitionChange
 
   public record ColorDiff() implements RiskDefinitionChange {}
 
-  public record RiskMatrixDiff(CategoryDefinition cat) implements RiskDefinitionChange {
+  public record RiskMatrixDiff(@JsonIgnore CategoryDefinition cat) implements RiskDefinitionChange {
     @Override
-    public boolean requiresRiskRecalculation() {
-      return true;
-    }
-  }
-
-  public record RiskMatrixAdd(CategoryDefinition cat) implements RiskDefinitionChange {
-    @Override
-    public boolean requiresRiskRecalculation() {
-      return true;
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(new RiskDefinitionChangeEffect.RiskRecalculation());
     }
 
     @Override
-    public List<CategoryRef> addedRiskValueCategories() {
+    public List<CategoryRef> changedRiskMatrixCategories() {
+      return categories();
+    }
+
+    @JsonGetter
+    public List<CategoryRef> categories() {
       return List.of(CategoryRef.from(cat));
     }
   }
 
-  public record RiskMatrixRemove(CategoryDefinition cat) implements RiskDefinitionChange {
+  public record RiskMatrixAdd(@JsonIgnore CategoryDefinition cat) implements RiskDefinitionChange {
     @Override
-    public List<CategoryRef> removedRiskValueCategories() {
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(
+          new RiskDefinitionChangeEffect.RiskRecalculation(),
+          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(CategoryRef.from(cat)));
+    }
+
+    @JsonGetter
+    public List<CategoryRef> categories() {
       return List.of(CategoryRef.from(cat));
     }
   }
 
-  public record RiskMatrixResize() implements RiskDefinitionChange {}
+  public record RiskMatrixRemove(@JsonIgnore CategoryDefinition cat)
+      implements RiskDefinitionChange {
+    @Override
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(
+          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(cat)));
+    }
+
+    @JsonGetter
+    public List<CategoryRef> categories() {
+      return List.of(CategoryRef.from(cat));
+    }
+  }
+
+  public record RiskMatrixResize(@JsonIgnore CategoryDefinition cat)
+      implements RiskDefinitionChange {
+
+    @Override
+    public List<CategoryRef> riskMatrixResizeCategories() {
+      return categories();
+    }
+
+    @JsonGetter
+    public List<CategoryRef> categories() {
+      return List.of(CategoryRef.from(cat));
+    }
+  }
 
   public record ImplementationStateListResize() implements RiskDefinitionChange {}
 
-  public record ImpactListResize(CategoryDefinition cat) implements RiskDefinitionChange {
+  public record ImpactListResize(@JsonIgnore CategoryDefinition cat)
+      implements RiskDefinitionChange {
 
-    @Override
-    public List<CategoryRef> removedImpactCategories() {
+    @JsonGetter
+    public List<CategoryRef> categories() {
       return List.of(CategoryRef.from(cat));
     }
 
+    @JsonIgnore
     @Override
-    public List<CategoryRef> removedRiskValueCategories() {
-      return List.of(CategoryRef.from(cat));
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(
+          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(cat)),
+          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(CategoryRef.from(cat)));
     }
   }
 
-  public record ProbabilityListResize(RiskDefinition oldRd) implements RiskDefinitionChange {
+  public record ProbabilityListResize(@JsonIgnore RiskDefinition oldRd)
+      implements RiskDefinitionChange {
     @Override
-    public List<CategoryRef> removedRiskValueCategories() {
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return oldRd.getCategories().stream()
+          .map(CategoryRef::from)
+          .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval::new)
+          .map(RiskDefinitionChangeEffect.class::cast)
+          .toList();
+    }
+
+    @JsonGetter
+    public List<CategoryRef> categories() {
       return oldRd.getCategories().stream().map(CategoryRef::from).toList();
     }
   }
 
-  public record CategoryListAdd(CategoryDefinition newCat) implements RiskDefinitionChange {
+  public record CategoryListAdd(@JsonIgnore CategoryDefinition newCat)
+      implements RiskDefinitionChange {
     @Override
-    public List<CategoryRef> addedRiskValueCategories() {
-      return List.of(CategoryRef.from(newCat));
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(
+          new RiskDefinitionChangeEffect.RiskRecalculation(),
+          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(CategoryRef.from(newCat)));
     }
 
-    @Override
-    public boolean requiresRiskRecalculation() {
-      return true;
+    @JsonGetter
+    public List<CategoryRef> categories() {
+      return List.of(CategoryRef.from(newCat));
     }
   }
 
-  public record CategoryListRemove(CategoryDefinition oldCat) implements RiskDefinitionChange {
+  public record CategoryListRemove(@JsonIgnore CategoryDefinition oldCat)
+      implements RiskDefinitionChange {
     @Override
-    public boolean requiresRiskRecalculation() {
-      return true;
+    public List<RiskDefinitionChangeEffect> getEffects() {
+      return List.of(
+          new RiskDefinitionChangeEffect.RiskRecalculation(),
+          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(oldCat)),
+          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(CategoryRef.from(oldCat)));
     }
 
-    @Override
-    public List<CategoryRef> removedImpactCategories() {
-      return List.of(CategoryRef.from(oldCat));
-    }
-
-    @Override
-    public List<CategoryRef> removedRiskValueCategories() {
+    @JsonGetter
+    public List<CategoryRef> categories() {
       return List.of(CategoryRef.from(oldCat));
     }
   }
 
   public record RiskValueListResize() implements RiskDefinitionChange {}
 
-  static List<CategoryRef> removedImpactCategories(Set<RiskDefinitionChange> detectedChanges) {
+  static List<CategoryRef> riskMatrtixResizeCategories(Set<RiskDefinitionChange> detectedChanges) {
     return detectedChanges.stream()
-        .map(RiskDefinitionChange::removedImpactCategories)
+        .map(RiskDefinitionChange::riskMatrixResizeCategories)
         .flatMap(Collection::stream)
+        .distinct()
+        .toList();
+  }
+
+  static List<CategoryRef> riskMatrtixChangedCategories(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .map(RiskDefinitionChange::changedRiskMatrixCategories)
+        .flatMap(Collection::stream)
+        .distinct()
+        .toList();
+  }
+
+  static List<CategoryRef> removedImpactCategories(Set<RiskDefinitionChange> detectedChanges) {
+    return getEffects(detectedChanges).stream()
+        .filter(RiskDefinitionChangeEffect.ImpactCategoryRemoval.class::isInstance)
+        .map(RiskDefinitionChangeEffect.ImpactCategoryRemoval.class::cast)
+        .map(RiskDefinitionChangeEffect.ImpactCategoryRemoval::category)
         .distinct()
         .toList();
   }
 
   static List<CategoryRef> addedRiskValueCategories(Set<RiskDefinitionChange> detectedChanges) {
-    return detectedChanges.stream()
-        .map(RiskDefinitionChange::addedRiskValueCategories)
-        .flatMap(Collection::stream)
+    return getEffects(detectedChanges).stream()
+        .filter(RiskDefinitionChangeEffect.RiskValueCategoryAddition.class::isInstance)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryAddition.class::cast)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryAddition::category)
         .distinct()
         .toList();
   }
 
   static List<CategoryRef> removedRiskValueCategories(Set<RiskDefinitionChange> detectedChanges) {
-    return detectedChanges.stream()
-        .map(RiskDefinitionChange::removedRiskValueCategories)
-        .flatMap(Collection::stream)
+    return getEffects(detectedChanges).stream()
+        .filter(RiskDefinitionChangeEffect.RiskValueCategoryRemoval.class::isInstance)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval.class::cast)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval::category)
         .distinct()
         .toList();
   }
@@ -191,7 +261,21 @@ public sealed interface RiskDefinitionChange
   }
 
   static boolean requiresRiskRecalculation(Set<RiskDefinitionChange> detectedChanges) {
-    return detectedChanges.stream().anyMatch(RiskDefinitionChange::requiresRiskRecalculation);
+    return containsEffect(detectedChanges, RiskDefinitionChangeEffect.RiskRecalculation.class);
+  }
+
+  private static boolean containsEffect(
+      Set<RiskDefinitionChange> detectedChanges,
+      Class<? extends RiskDefinitionChangeEffect> effectType) {
+    return getEffects(detectedChanges).stream().anyMatch(effectType::isInstance);
+  }
+
+  static List<RiskDefinitionChangeEffect> getEffects(Set<RiskDefinitionChange> detectedChanges) {
+    return detectedChanges.stream()
+        .map(RiskDefinitionChange::getEffects)
+        .flatMap(Collection::stream)
+        .distinct()
+        .toList();
   }
 
   static boolean requiresMigration(Set<RiskDefinitionChange> detectedChanges) {
@@ -202,8 +286,8 @@ public sealed interface RiskDefinitionChange
   }
 
   static boolean requiresImpactInheritanceRecalculation(Set<RiskDefinitionChange> detectedChanges) {
-    return detectedChanges.stream()
-        .anyMatch(RiskDefinitionChange::requiresImpactInheritanceRecalculation);
+    return containsEffect(
+        detectedChanges, RiskDefinitionChangeEffect.ImpactInheritanceRecalculation.class);
   }
 
   static Set<RiskDefinitionChange> detectChanges(
@@ -280,22 +364,22 @@ public sealed interface RiskDefinitionChange
       List<List<RiskValue>> oldValueMatrix,
       List<List<RiskValue>> newValueMatrix,
       CategoryDefinition dimension) {
-    if (newValueMatrix == null && oldValueMatrix == null) return Collections.emptySet();
-    if (newValueMatrix == null
-        || oldValueMatrix == null
-        || newValueMatrix.size() != oldValueMatrix.size()) {
-      if (newValueMatrix != null) return Set.of(new RiskMatrixAdd(dimension));
-      else return Set.of(new RiskMatrixRemove(dimension));
-    }
-    return IntStream.range(0, newValueMatrix.size())
-        .mapToObj(
-            index ->
-                detectChanges(
-                    () -> new RiskMatrixDiff(dimension),
-                    oldValueMatrix.get(index),
-                    newValueMatrix.get(index)))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
+      if (newValueMatrix == null && oldValueMatrix == null) return Collections.emptySet();
+      if (newValueMatrix == null
+          || oldValueMatrix == null
+          || newValueMatrix.size() != oldValueMatrix.size()) {
+        if (newValueMatrix != null) return Set.of(new RiskMatrixAdd(dimension));
+        else return Set.of(new RiskMatrixRemove(dimension));
+      }
+      return IntStream.range(0, newValueMatrix.size())
+          .mapToObj(
+              index ->
+                  detectChanges(
+                      () -> new RiskMatrixDiff(dimension),
+                      oldValueMatrix.get(index),
+                      newValueMatrix.get(index)))
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
   }
 
   private static Set<RiskDefinitionChange> detectChanges(

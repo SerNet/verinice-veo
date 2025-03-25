@@ -37,6 +37,7 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -82,6 +83,7 @@ import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
@@ -90,6 +92,7 @@ import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCas
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
+import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
@@ -105,6 +108,7 @@ import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -147,6 +151,7 @@ public class DomainController extends AbstractEntityController {
   private final GetInspectionUseCase getInspectionUseCase;
   private final GetInspectionsUseCase getInspectionsUseCase;
   private final GetBreakingChangesUseCase getBreakingChangesUseCase;
+  private final EvaluateRiskDefinitionUseCase evaluateRiskDefinitionUseCase;
 
   private final ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase;
   private final GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase;
@@ -552,6 +557,32 @@ public class DomainController extends AbstractEntityController {
         .thenApply(
             breakingChanges ->
                 ResponseEntity.ok().cacheControl(defaultCacheControl).body(breakingChanges));
+  }
+
+  @GetMapping("/{domainId}/risk-definitions/{riskDefinitionId}")
+  @Operation(summary = "Loads a risk definition from a domain.")
+  @ApiResponse(responseCode = "200", description = "Risk definition evaluated")
+  public CompletableFuture<ResponseEntity<RiskDefinition>> getRiskDefinition(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @Parameter(
+              required = true,
+              example = "DSRA",
+              description = "Risk definition identifier - unique within this domain")
+          @PathVariable
+          String riskDefinitionId) {
+
+    return useCaseInteractor.execute(
+        evaluateRiskDefinitionUseCase,
+        new EvaluateRiskDefinitionUseCase.InputData(
+            UUID.fromString(user.getClientId()),
+            domainId,
+            riskDefinitionId,
+            null,
+            Collections.emptySet()),
+        out -> ResponseEntity.ok(out.riskDefinition()));
   }
 
   @InitBinder
