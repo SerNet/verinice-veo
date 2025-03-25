@@ -6,10 +6,10 @@ dependencies {
     api project(":veo-core-usecase")
 
     implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'com.github.victools:jsonschema-generator:4.37.0'
-    implementation 'com.github.victools:jsonschema-module-jackson:4.37.0'
-    implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.37.0'
-    implementation 'com.github.victools:jsonschema-module-swagger-2:4.37.0'
+    implementation 'com.github.victools:jsonschema-generator:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-jackson:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-swagger-2:4.38.0'
     implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.6'
     implementation 'io.swagger.core.v3:swagger-core-jakarta:2.2.29'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
