@@ -80,7 +80,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(client, unitDto, elements as Set, risks as Set))
+        def result = useCase.execute(new UnitImportUseCase.InputData(client, 2, unitDto, elements as Set, risks as Set))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -131,7 +131,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(client, unitDto, elements as Set, risks as Set))
+        def result = useCase.execute(new UnitImportUseCase.InputData(client, 2, unitDto, elements as Set, risks as Set))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -176,7 +176,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
 
         when:
         def result = executeInTransaction{
-            useCase.execute(new UnitImportUseCase.InputData(client, unitDto, elements as Set, risks as Set))
+            useCase.execute(new UnitImportUseCase.InputData(client, 2, unitDto, elements as Set, risks as Set))
         }
         def unit = result.unit
         def controls = executeInTransaction{

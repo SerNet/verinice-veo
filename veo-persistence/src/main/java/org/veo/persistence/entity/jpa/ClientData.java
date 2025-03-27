@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +40,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.MaxUnitsExceededException;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -141,7 +143,12 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   }
 
   @Override
-  public void incrementTotalUnits() {
+  public void incrementTotalUnits(Integer maxUserUnits) {
+    int effectiveMaxUnits = Optional.ofNullable(maxUserUnits).orElse(DEFAULT_MAX_UNITS);
+    if (getTotalUnits() + 1 > effectiveMaxUnits) {
+      throw new MaxUnitsExceededException(
+          "This account may not create more than " + effectiveMaxUnits + " units");
+    }
     totalUnits++;
   }
 

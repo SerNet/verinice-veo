@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.listeners;
 
-import static org.veo.core.usecase.unit.CreateUnitUseCase.DEFAULT_MAX_UNITS;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +94,7 @@ public class ClientChangedEventListener {
     if (event.getMaxUnits() != null) {
       client.setMaxUnits(event.getMaxUnits());
     } else {
-      client.setMaxUnits(DEFAULT_MAX_UNITS);
+      client.setMaxUnits(Client.DEFAULT_MAX_UNITS);
     }
     client.updateState(ClientChangeType.ACTIVATION);
     addDomains(client, event.getDomainProducts(), false);

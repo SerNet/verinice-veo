@@ -626,6 +626,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "cannot create more than 2 units"() {
         when: "the user tries to create a unit"
         def result = parseJson(post('/units', [name: 'Unit 1']))
+        def unitId = result.resourceId
 
         then: "the request is successful"
         result.success
@@ -644,6 +645,13 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: 'only 2 units have been created'
         parseJson(get("/units")).size() == 2
+
+        when: "we import a unit"
+        def unitBackup = parseJson(get("/units/$unitId/export"))
+        post("/units/import", unitBackup,  HttpStatus.SC_FORBIDDEN)
+
+        then:"the action is not performed"
+        thrown(MaxUnitsExceededException)
     }
 
     @WithUserDetails("manyunitscreator@domain.example")

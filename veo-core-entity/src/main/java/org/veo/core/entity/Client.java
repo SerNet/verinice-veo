@@ -26,7 +26,7 @@ import org.veo.core.entity.event.ClientEvent.ClientChangeType;
  * other large closed organizational entity. The client could be used for high level authorization.
  */
 public interface Client extends Identifiable, Versioned {
-
+  Integer DEFAULT_MAX_UNITS = 2;
   String SINGULAR_TERM = "client";
   String PLURAL_TERM = "clients";
 
@@ -64,7 +64,7 @@ public interface Client extends Identifiable, Versioned {
 
   int getTotalUnits();
 
-  void incrementTotalUnits();
+  void incrementTotalUnits(Integer maxUserUnits);
 
   void decrementTotalUnits();
 

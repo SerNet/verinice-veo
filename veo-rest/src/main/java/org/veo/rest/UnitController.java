@@ -334,6 +334,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         unitImportUseCase,
         new UnitImportUseCase.InputData(
             getClient(user),
+            user.getMaxUnits(),
             dto.getUnit(),
             dto.getElements().stream().map(e -> (ElementState<?>) e).collect(Collectors.toSet()),
             dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),

@@ -30,7 +30,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
-import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
@@ -62,8 +61,6 @@ public class CreateUnitUseCase
     implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData>,
         RetryableUseCase {
 
-  public static final Integer DEFAULT_MAX_UNITS = 2;
-
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
   private final DomainRepository domainRepository;
@@ -83,11 +80,7 @@ public class CreateUnitUseCase
     // name
     // change event
     // which we listen to. This would require messaging middleware.
-
-    int effectiveMaxUnits = Optional.ofNullable(input.maxUnits).orElse(DEFAULT_MAX_UNITS);
-    if (client.getTotalUnits() + 1 > effectiveMaxUnits) {
-      throwTooManyUnits(effectiveMaxUnits);
-    }
+    client.incrementTotalUnits(input.maxUnits);
     Unit newUnit;
     if (input.parentUnitId.isEmpty()) {
       newUnit = entityFactory.createUnit(input.nameableInput.name(), null);
@@ -105,7 +98,6 @@ public class CreateUnitUseCase
     newUnit.setAbbreviation(input.nameableInput.abbreviation());
     newUnit.setDescription(input.nameableInput.description());
     newUnit.setClient(client);
-    client.incrementTotalUnits();
     if (input.domainIds != null) {
       try {
         Set<Domain> domains = domainRepository.getByIds(input.domainIds, client.getId());
@@ -117,11 +109,6 @@ public class CreateUnitUseCase
     Unit save = unitRepository.save(newUnit);
 
     return new OutputData(save);
-  }
-
-  private void throwTooManyUnits(int maxUnits) {
-    throw new MaxUnitsExceededException(
-        "This account may not create more than " + maxUnits + " units");
   }
 
   @Override

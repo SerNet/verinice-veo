@@ -51,6 +51,7 @@ public class UnitImportUseCase
 
   @Override
   public OutputData execute(InputData input) {
+    input.client.incrementTotalUnits(input.maxUnits);
     var resolver = refResolverFactory.db(input.client);
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
     var elements =
@@ -89,7 +90,11 @@ public class UnitImportUseCase
   }
 
   public record InputData(
-      Client client, UnitState unit, Set<ElementState<?>> elements, Set<RiskState<?, ?>> risks)
+      Client client,
+      Integer maxUnits,
+      UnitState unit,
+      Set<ElementState<?>> elements,
+      Set<RiskState<?, ?>> risks)
       implements UseCase.InputData {}
 
   public record OutputData(Unit unit) implements UseCase.OutputData {}
