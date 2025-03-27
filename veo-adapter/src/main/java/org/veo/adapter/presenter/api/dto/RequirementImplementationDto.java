@@ -46,7 +46,7 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   IdRef<Person> responsible;
   ImplementationStatus status;
 
-  @Size(min = 1, max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+  @Size(min = 1, max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
 
   Origination origination;

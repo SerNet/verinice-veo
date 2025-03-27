@@ -1240,6 +1240,32 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "RequirementImplementationDto is well-documented"() {
+        expect:
+        with(getSchema('RequirementImplementationDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'origin',
+                'control',
+                'responsible',
+                'status',
+                'implementationStatement',
+                'origination',
+                'implementationUntil',
+                '_self'
+            ]
+            it.required == null
+            it.properties.implementationStatement == [
+                type:'string',
+                minLength:1,
+                maxLength:65535
+            ]
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])
