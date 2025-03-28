@@ -64,7 +64,6 @@ import lombok.ToString;
           columnNames = {"product_id", "language", "domain_template_db_id"}),
     })
 @Data
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class ProfileData extends IdentifiableVersionedData implements Profile, Displayable {
@@ -142,5 +141,15 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @Override
   public String getDisplayName() {
     return name;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

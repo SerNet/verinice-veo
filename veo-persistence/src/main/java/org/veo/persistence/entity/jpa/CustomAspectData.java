@@ -30,14 +30,12 @@ import org.veo.core.entity.Element;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "custom_aspect")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CustomAspectData extends CustomAttributeContainerData implements CustomAspect {
 
@@ -48,4 +46,14 @@ public class CustomAspectData extends CustomAttributeContainerData implements Cu
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
   private Element owner;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

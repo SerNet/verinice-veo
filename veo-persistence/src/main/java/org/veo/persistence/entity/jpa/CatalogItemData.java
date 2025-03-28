@@ -47,7 +47,6 @@ import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -59,7 +58,6 @@ import lombok.ToString;
           name = "UK_symbolic_id_domain",
           columnNames = {"symbolic_db_id", "domain_db_id", "domain_template_db_id"}),
     })
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
@@ -164,5 +162,15 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
       createRequirementImplementationTailoringReference() {
     throw new UnprocessableDataException(
         "Requirement implementations currently not supported for catalog items");
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

@@ -42,12 +42,10 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "client")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @EntityListeners({VersionedEntityListener.class})
@@ -150,5 +148,15 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @Override
   public void decrementTotalUnits() {
     totalUnits--;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

@@ -69,4 +69,24 @@ public class SystemMessageData implements SystemMessage {
   @Nullable @ToString.Include private Instant effective;
 
   private MessageLevel level;
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
+
+    if (this == o) return true;
+
+    if (!(o instanceof SystemMessageData other)) return false;
+
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    return id != null && id.equals(other.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

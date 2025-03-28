@@ -26,7 +26,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +33,6 @@ import lombok.ToString;
 
 /** Holds risk related info for a scope in a specific domain. */
 @Entity(name = "scope_risk_values_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScopeRiskValuesAspectData extends AspectData {
@@ -47,4 +45,14 @@ public class ScopeRiskValuesAspectData extends AspectData {
   @Setter
   @Column(name = "risk_definition", length = RiskDefinition.MAX_ID_SIZE)
   RiskDefinitionRef riskDefinitionRef;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

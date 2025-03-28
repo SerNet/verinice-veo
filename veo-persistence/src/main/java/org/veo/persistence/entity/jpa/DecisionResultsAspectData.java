@@ -33,13 +33,11 @@ import org.veo.core.entity.decision.DecisionResult;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity(name = "decision_results_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DecisionResultsAspectData extends AspectData {
@@ -57,5 +55,15 @@ public class DecisionResultsAspectData extends AspectData {
 
   void setResults(Map<DecisionRef, DecisionResult> results) {
     this.results = Map.copyOf(results);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

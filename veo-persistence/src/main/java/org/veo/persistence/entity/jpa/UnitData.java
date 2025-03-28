@@ -42,12 +42,10 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 
 @Entity(name = "unit")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class UnitData extends IdentifiableVersionedData implements Unit {
@@ -118,5 +116,15 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
   @Override
   public boolean removeFromDomains(Domain aDomain) {
     return this.domains.remove(aDomain);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

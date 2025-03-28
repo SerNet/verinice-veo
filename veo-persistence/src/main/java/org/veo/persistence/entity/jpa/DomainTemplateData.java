@@ -31,11 +31,9 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "domaintemplate")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 public class DomainTemplateData extends DomainBaseData implements DomainTemplate, Nameable {
@@ -66,5 +64,15 @@ public class DomainTemplateData extends DomainBaseData implements DomainTemplate
     catalogItems.forEach(ci -> ci.setDomainBase(this));
     this.catalogItems.clear();
     this.catalogItems.addAll(catalogItems);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

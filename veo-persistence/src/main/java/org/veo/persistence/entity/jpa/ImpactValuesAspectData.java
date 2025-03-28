@@ -38,14 +38,12 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /** Holds impact related information for an element in a specific domain. */
 @Entity(name = "impact_values_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class ImpactValuesAspectData extends AspectData {
@@ -134,5 +132,15 @@ class ImpactValuesAspectData extends AspectData {
     if (!usedIds.isEmpty()) {
       throw new IllegalArgumentException("Undefined risk definitions: " + usedIds);
     }
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

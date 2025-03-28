@@ -28,12 +28,10 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "customlink")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CustomLinkData extends CustomAttributeContainerData implements CustomLink {
   public CustomLinkData() {
@@ -61,5 +59,15 @@ public class CustomLinkData extends CustomAttributeContainerData implements Cust
   @Override
   public void remove() {
     this.getSource().removeLink(this);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

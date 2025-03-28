@@ -25,11 +25,9 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /** owner is risk-affected, target is control * */
 @Entity(name = "profile_control_implementation_tailoring_reference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileControlImplementationTailoringReferenceData
     extends ProfileTailoringReferenceData
@@ -39,4 +37,14 @@ public class ProfileControlImplementationTailoringReferenceData
   private ProfileItem responsible;
 
   private String description;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

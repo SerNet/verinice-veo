@@ -27,13 +27,11 @@ import org.veo.core.entity.ScopeRisk;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
 @Entity(name = "scoperisk")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -43,5 +41,15 @@ public class ScopeRiskData extends AbstractRiskData<Scope, ScopeRisk> implements
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   ScopeRiskData(@NotNull @NonNull Scope scope, @NotNull Scenario scenario) {
     super(scenario, scope);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

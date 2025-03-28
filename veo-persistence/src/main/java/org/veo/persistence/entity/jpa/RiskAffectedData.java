@@ -50,11 +50,9 @@ import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @Slf4j
@@ -348,5 +346,15 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
                     "%s %s does not implement control %s"
                         .formatted(
                             this.getModelType(), this.getIdAsString(), control.getIdAsString())));
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

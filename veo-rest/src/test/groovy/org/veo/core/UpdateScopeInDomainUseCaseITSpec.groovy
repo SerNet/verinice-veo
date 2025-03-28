@@ -24,6 +24,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client
 import org.veo.core.repository.ControlRepository
+import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase
@@ -45,6 +46,9 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
     @Autowired
     ControlRepository controlRepository
+
+    @Autowired
+    PersonRepository personRepository
 
     @Autowired
     ScopeRepository scopeRepository
@@ -98,6 +102,46 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
         then:
         scope.controlImplementations.size() == 1
+        scope.members.size() == 1
+    }
+
+    def "save a scope with link to one of its members"() {
+        given:
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID, false).tap{
+            client.addToDomains(it)
+        }
+        def scope = executeInTransaction {
+            def unit = unitRepository.save(newUnit(client))
+
+            def person = personRepository.save(
+                    newPerson(unit) {
+                        associateWithDomain(domain, "PER_DataProtectionOfficer", "ARCHIVED") // poor guy
+                    }
+                    )
+            scopeRepository.save(newScope(unit) {
+                associateWithDomain(domain, "SCP_Scope", "NEW")
+                addMember(person)
+                addLink(newCustomLink(person, "scope_dataProtectionOfficer", domain))
+            })
+        }
+
+        when:
+        FullScopeInDomainDto dto = entityToDtoTransformer.transformScope2Dto(scope, domain)
+        dto.description = 'I am very meaningful.'
+
+        def etag = ETag.from(scope)
+        executeInTransaction {
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag, null))
+        }
+
+        scope = executeInTransaction {
+            scopeRepository.getById(scope.id, client.id).tap {
+                it.members.size()
+            }
+        }
+
+        then:
+        scope.description == 'I am very meaningful.'
         scope.members.size() == 1
     }
 }

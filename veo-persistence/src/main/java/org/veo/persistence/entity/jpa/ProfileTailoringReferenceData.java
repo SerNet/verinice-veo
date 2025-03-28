@@ -26,10 +26,8 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity(name = "profile_tailoring_reference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileTailoringReferenceData extends ProfileReferenceData
     implements TailoringReference<ProfileItem, Profile> {
@@ -39,5 +37,15 @@ public class ProfileTailoringReferenceData extends ProfileReferenceData
   @Override
   public void remove() {
     getOwner().getTailoringReferences().remove(this);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

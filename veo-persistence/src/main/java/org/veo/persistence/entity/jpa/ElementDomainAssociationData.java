@@ -28,14 +28,12 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "element_domain_association")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ElementDomainAssociationData extends AspectData implements ElementDomainAssociation {
@@ -53,4 +51,14 @@ public class ElementDomainAssociationData extends AspectData implements ElementD
   @Getter
   @Setter
   private CatalogItem appliedCatalogItem;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

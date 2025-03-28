@@ -31,11 +31,9 @@ import org.veo.core.entity.LinkTailoringReference;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "linktailoringreference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class LinkTailoringReferenceData extends CatalogTailoringReferenceData
     implements LinkTailoringReference<CatalogItem, DomainBase> {
@@ -45,4 +43,14 @@ public class LinkTailoringReferenceData extends CatalogTailoringReferenceData
   @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

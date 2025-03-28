@@ -31,12 +31,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.TemplateItemAspects;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "incident")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class IncidentData extends ElementData implements Incident {
 
@@ -57,5 +55,15 @@ public class IncidentData extends ElementData implements Incident {
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
     // GNDN
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

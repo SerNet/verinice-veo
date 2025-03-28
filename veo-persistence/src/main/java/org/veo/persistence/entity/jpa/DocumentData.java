@@ -32,12 +32,10 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.TemplateItemAspects;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "document")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentData extends ElementData implements Document {
 
@@ -59,5 +57,15 @@ public class DocumentData extends ElementData implements Document {
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
     // GNDN
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

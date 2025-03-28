@@ -32,14 +32,12 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.TemplateItemAspects;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Entity(name = "control")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ControlData extends ElementData implements Control {
 
@@ -60,4 +58,14 @@ public class ControlData extends ElementData implements Control {
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {}
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

@@ -43,7 +43,6 @@ import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
@@ -54,7 +53,6 @@ import lombok.ToString;
           name = "UK_symbolic_id_profile",
           columnNames = {"symbolic_db_id", "owner_db_id"}),
     })
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> implements ProfileItem {
 
@@ -123,5 +121,15 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
   protected RequirementImplementationTailoringReference<ProfileItem, Profile>
       createRequirementImplementationTailoringReference() {
     return new ProfileRequirementImplementationTailoringReferenceData();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

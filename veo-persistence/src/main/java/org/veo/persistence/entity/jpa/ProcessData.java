@@ -32,12 +32,10 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "process")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 
@@ -59,5 +57,15 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
   @Override
   ProcessRisk createRisk(Scenario scenario) {
     return new ProcessRiskData(this, scenario);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

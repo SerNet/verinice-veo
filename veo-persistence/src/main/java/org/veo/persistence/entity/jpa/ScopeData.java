@@ -44,12 +44,10 @@ import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "scope")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Scope {
 
@@ -162,5 +160,15 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
       removeAspectByDomain(scopeRiskValuesAspects, domain);
     }
     return removed;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

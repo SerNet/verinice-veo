@@ -43,12 +43,10 @@ import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "scenario")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScenarioData extends ElementData implements Scenario {
 
@@ -148,5 +146,15 @@ public class ScenarioData extends ElementData implements Scenario {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScenarioRiskValuesAspectData::getPotentialProbability)
         .orElse(Map.of());
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

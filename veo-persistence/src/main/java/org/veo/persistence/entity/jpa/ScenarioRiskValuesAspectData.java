@@ -32,7 +32,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +39,6 @@ import lombok.ToString;
 
 /** Holds references to potential probabilities of a scenario defined in a risk definition. */
 @Entity(name = "scenario_risk_values_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
@@ -55,4 +53,14 @@ class ScenarioRiskValuesAspectData extends AspectData {
   @Column(columnDefinition = "jsonb", name = "probability")
   @Type(JsonType.class)
   Map<RiskDefinitionRef, PotentialProbability> potentialProbability;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

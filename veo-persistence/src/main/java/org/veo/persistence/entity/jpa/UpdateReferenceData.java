@@ -24,13 +24,21 @@ import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.UpdateReference;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity(name = "updatereference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class UpdateReferenceData extends CatalogReferenceData implements UpdateReference {
 
   @Column(name = "update_type", columnDefinition = "int4")
   private ItemUpdateType updateType;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

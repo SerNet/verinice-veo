@@ -75,14 +75,12 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "element")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @EntityListeners({VersionedEntityListener.class})
 @Data
@@ -573,5 +571,15 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    */
   private void forceUpdate() {
     this.setUpdatedAt(Instant.now());
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

@@ -32,14 +32,12 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Scenario;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Entity(name = "asset")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Asset {
 
@@ -62,4 +60,14 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
   @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
   private final Set<Asset> composites = new HashSet<>();
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

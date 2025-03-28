@@ -34,11 +34,9 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /** owner is risk-affected, target is scenario * */
 @Entity(name = "profile_risk_tailoring_reference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileRiskTailoringReferenceData extends ProfileTailoringReferenceData
     implements RiskTailoringReference<ProfileItem, Profile> {
@@ -57,5 +55,15 @@ public class ProfileRiskTailoringReferenceData extends ProfileTailoringReference
   public void setRiskDefinitions(
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions) {
     this.riskDefinitions = new HashMap<>(riskDefinitions);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

@@ -31,11 +31,9 @@ import org.veo.core.entity.ProfileItem;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "profile_link_tailoring_reference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileLinkTailoringReferenceData extends ProfileTailoringReferenceData
     implements LinkTailoringReference<ProfileItem, Profile> {
@@ -45,4 +43,14 @@ public class ProfileLinkTailoringReferenceData extends ProfileTailoringReference
   @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

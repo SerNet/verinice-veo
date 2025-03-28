@@ -35,11 +35,9 @@ import org.veo.core.entity.RequirementImplementationTailoringReference;
 import org.veo.core.entity.compliance.ImplementationStatus;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /** owner is risk-affected, target is control * */
 @Entity(name = "profile_requirement_implementation_tailoring_reference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProfileRequirementImplementationTailoringReferenceData
     extends ProfileTailoringReferenceData
@@ -56,4 +54,14 @@ public class ProfileRequirementImplementationTailoringReferenceData
   String implementationStatement;
 
   private LocalDate implementationUntil;
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }
