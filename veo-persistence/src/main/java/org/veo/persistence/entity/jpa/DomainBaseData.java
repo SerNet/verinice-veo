@@ -214,12 +214,6 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   }
 
   @Override
-  public void setControlImplementationConfiguration(
-      @NotNull ControlImplementationConfiguration conf) {
-    this.controlImplementationConfiguration = conf;
-  }
-
-  @Override
   public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
     return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
   }

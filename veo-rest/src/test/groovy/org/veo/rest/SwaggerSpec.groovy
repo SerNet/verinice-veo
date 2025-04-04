@@ -1213,18 +1213,9 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('ControlImplementationConfiguration')) {
             it.properties.keySet() ==~ [
                 'complianceControlSubType',
-                'mitigationControlSubType',
-                'complianceOwnerElementTypes'
+                'mitigationControlSubType'
             ]
             it.required == null
-            it.properties.complianceOwnerElementTypes == [
-                description: 'The element types for which CIs can be created, must be set if and only if complianceControlSubType is non-null',
-                type:'array',
-                items:[
-                    type:'string',
-                    enum:['asset', 'process', 'scope']
-                ]
-            ]
         }
     }
 

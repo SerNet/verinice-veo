@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -37,11 +33,6 @@ public enum ElementType {
   SCENARIO(EntityType.SCENARIO),
   SCOPE(EntityType.SCOPE);
   private final EntityType entityType;
-
-  public static final Set<ElementType> RISK_AFFECTED_TYPES =
-      Stream.of(values())
-          .filter(type -> RiskAffected.class.isAssignableFrom(type.entityType.getType()))
-          .collect(Collectors.toUnmodifiableSet());
 
   @JsonValue
   public String getSingularTerm() {

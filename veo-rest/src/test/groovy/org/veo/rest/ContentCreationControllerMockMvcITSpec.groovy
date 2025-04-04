@@ -2166,47 +2166,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ex.message == "Migrations must be empty, because the domain is not based on a template."
     }
 
-    @WithUserDetails("content-creator")
-    def "invalid ControlImplementationConfiguration cannot be saved"() {
-        given:
-        testDomain.applyElementTypeDefinition(newElementTypeDefinition("control", testDomain) {
-            subTypes = [
-                CTL_Control: newSubTypeDefinition {
-                    sortKey = 1
-                }
-            ]
-        })
-        client = clientRepository.save(client)
-
-        when:
-        put("/content-creation/domains/${testDomain.idAsString}/control-implementation-configuration", [complianceControlSubType: 'CTL_Control'], 422)
-
-        then:
-        Exception ex = thrown()
-        ex.message =~ /.*complianceOwnerElementTypes must not be empty if complianceControlSubType is set./
-
-        when:
-        put("/content-creation/domains/${testDomain.idAsString}/control-implementation-configuration", [complianceControlSubType: 'CTL_Control', complianceOwnerElementTypes: []], 422)
-
-        then:
-        ex = thrown()
-        ex.message =~ /.*complianceOwnerElementTypes must not be empty if complianceControlSubType is set./
-
-        when:
-        put("/content-creation/domains/${testDomain.idAsString}/control-implementation-configuration", [complianceControlSubType: 'CTL_Control', complianceOwnerElementTypes: ['scenario']], 422)
-
-        then:
-        ex = thrown()
-        ex.message =~ /.*complianceOwnerElementTypes contains invalid types./
-
-        when:
-        put("/content-creation/domains/${testDomain.idAsString}/control-implementation-configuration", [complianceOwnerElementTypes: ['asset']], 422)
-
-        then:
-        ex = thrown()
-        ex.message =~ /.*complianceOwnerElementTypes must be empty if complianceControlSubType is not set./
-    }
-
     private List<Map> migrationDefinitionChangeKey() {
         def m = [
             [description : [en: "a key change"],

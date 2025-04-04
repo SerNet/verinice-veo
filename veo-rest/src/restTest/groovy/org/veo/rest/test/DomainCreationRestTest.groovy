@@ -180,38 +180,19 @@ class DomainCreationRestTest extends DomainRestTest {
 
         and: "we update controlImplementationConfiguration"
         def domainUpdatedBefore = get("/domains/$domainId").body.updatedAt
-        put("/content-creation/domains/$domainId/control-implementation-configuration", [
-            "complianceControlSubType": "c1",
-            "complianceOwnerElementTypes": ['asset', 'process', 'scope'],
-            "mitigationControlSubType": "c1"
-        ], null, 204, CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
+            "mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
 
         then:"the domain is updated"
         with(get("/domains/$domainId").body) {
             updatedAt > domainUpdatedBefore
-            with(controlImplementationConfiguration) {
-                keySet() ==~ [
-                    "complianceControlSubType",
-                    "complianceOwnerElementTypes",
-                    "mitigationControlSubType"
-                ]
-                complianceControlSubType == "c1"
-                complianceOwnerElementTypes ==~ ['asset', 'process', 'scope']
-                mitigationControlSubType == "c1"
-            }
+            controlImplementationConfiguration ==  ["complianceControlSubType": "c1",
+                "mitigationControlSubType": "c1"]
         }
 
         and: "the change is exported"
-        with(exportDomain(domainId).controlImplementationConfiguration) {
-            keySet() ==~ [
-                "complianceControlSubType",
-                "complianceOwnerElementTypes",
-                "mitigationControlSubType"
-            ]
-            complianceControlSubType == "c1"
-            complianceOwnerElementTypes ==~ ['asset', 'process', 'scope']
-            mitigationControlSubType == "c1"
-        }
+        exportDomain(domainId).controlImplementationConfiguration == [ complianceControlSubType: "c1",
+            mitigationControlSubType: "c1"]
 
         when:
         put("/content-creation/domains/$domainId/control-implementation-configuration", ["mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
@@ -223,20 +204,12 @@ class DomainCreationRestTest extends DomainRestTest {
 
         when:
         get("/domains/$domainId").with {
-            put("/content-creation/domains/$domainId/control-implementation-configuration", [
-                "complianceControlSubType": "c1",
-                "complianceOwnerElementTypes": ['asset', 'process', 'scope']
-            ], getETag(), 204, CONTENT_CREATOR)
+            put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1"], getETag(), 204, CONTENT_CREATOR)
         }
 
         then:
-        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
-            keySet() ==~ [
-                "complianceControlSubType",
-                "complianceOwnerElementTypes",
-            ]
-            complianceControlSubType == "c1"
-            complianceOwnerElementTypes ==~ ['asset', 'process', 'scope']
+        with(get("/domains/$domainId").body) {
+            controlImplementationConfiguration ==  ["complianceControlSubType": "c1"]
         }
 
         when: "the controlImplementationConfiguration is cleared"
@@ -250,11 +223,8 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "an undefined subtype cannot be used"
-        put("/content-creation/domains/$domainId/control-implementation-configuration", [
-            "complianceControlSubType": "c1",
-            "complianceOwnerElementTypes": ['asset', 'process', 'scope'],
-            "mitigationControlSubType": "c2"
-        ], null, 400, CONTENT_CREATOR).with {
+        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
+            "mitigationControlSubType": "c2"], null, 400, CONTENT_CREATOR).with {
             body.message == "Sub type c2 is not defined"
         }
     }

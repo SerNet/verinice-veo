@@ -74,7 +74,6 @@ class ControlImplementationRestTest extends VeoRestTest {
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/control-implementation-configuration", [
             complianceControlSubType: "ComplCtl",
-            complianceOwnerElementTypes: ['asset', 'process', 'scope'],
             mitigationControlSubType: "MitiCtl"
         ], null, 204, UserType.CONTENT_CREATOR)
 
