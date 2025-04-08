@@ -52,8 +52,9 @@ import lombok.extern.jackson.Jacksonized;
 @NonFinal
 @SuperBuilder
 @Jacksonized
-@Schema(title = "SearchQueryDto", description = "A search query")
+@Schema(title = "SearchQueryDto", description = "A search query", deprecated = true)
 @Valid
+@Deprecated
 public class SearchQueryDto {
 
   @Schema(description = "The ID of the unit of which the searches elements must be a member.")

@@ -377,6 +377,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"),
@@ -386,7 +387,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds processes for the search.")
+  @Operation(summary = "Finds processes for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<PageDto<FullProcessDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,

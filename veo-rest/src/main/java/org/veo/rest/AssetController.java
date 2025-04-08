@@ -375,6 +375,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"),
@@ -384,7 +385,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds assets for the search.")
+  @Operation(summary = "Finds assets for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<PageDto<FullAssetDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,

@@ -403,6 +403,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   }
 
   @Override
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"), on(UnitController.class).runSearch(ANY_AUTH, id))
@@ -410,7 +411,8 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds units for the search.")
+  @Operation(summary = "Finds units for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<List<FullUnitDto>> runSearch(
       @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
     // TODO VEO-425 Use custom search query DTO & criteria API, apply

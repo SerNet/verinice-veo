@@ -20,9 +20,10 @@ package org.veo.rest.common;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
 
-@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+@Schema(accessMode = Schema.AccessMode.READ_ONLY, deprecated = true)
 @Value
 /** API response when a new search is created for a resource endpoint. */
+@Deprecated
 public class SearchResponse {
   String searchUrl;
 }

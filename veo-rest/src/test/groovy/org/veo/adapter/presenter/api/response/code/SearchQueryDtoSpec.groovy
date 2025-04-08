@@ -22,6 +22,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto
 
 import spock.lang.Specification
 
+@Deprecated
 class SearchQueryDtoSpec extends Specification {
     def LEGACY_SEARCH_ID = "q1Yqzcss8UxRsqpWKkvMKU0tVrKKVjI0tDBMTjM01U1JsTTSNTY2N9NNMjI20k1LMUsysLBMM0kytVSKrdVRSsksLshJrPRLzE1VssorzcmpBQA="
 

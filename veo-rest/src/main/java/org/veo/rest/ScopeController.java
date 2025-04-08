@@ -398,6 +398,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"),
@@ -407,7 +408,8 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds scopes for the search.")
+  @Operation(summary = "Finds scopes for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<PageDto<FullScopeDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,

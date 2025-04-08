@@ -50,8 +50,10 @@ public abstract class AbstractEntityController extends AbstractVeoController {
 
   protected CacheControl defaultCacheControl = CacheControl.noCache();
 
+  @Deprecated
   protected abstract String buildSearchUri(String searchId);
 
+  @Deprecated
   protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
     try {
       var searchUri = buildSearchUri(search.getSearchId());

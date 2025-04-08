@@ -35,10 +35,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 
 @Validated
+@Deprecated
 public abstract class AbstractEntityControllerWithDefaultSearch extends AbstractEntityController {
 
   @PostMapping(value = "/searches")
-  @Operation(summary = "Creates a new search with the given search criteria.")
+  @Operation(summary = "Creates a new search with the given search criteria.", deprecated = true)
   public @Valid Future<ResponseEntity<SearchResponse>> createSearch(
       @Parameter(hidden = true) Authentication auth, @Valid @RequestBody SearchQueryDto search) {
     return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));

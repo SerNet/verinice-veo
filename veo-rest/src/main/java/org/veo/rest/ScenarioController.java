@@ -306,6 +306,7 @@ public class ScenarioController
 
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"),
@@ -315,7 +316,8 @@ public class ScenarioController
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds scenarios for the search.")
+  @Operation(summary = "Finds scenarios for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<PageDto<FullScenarioDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,

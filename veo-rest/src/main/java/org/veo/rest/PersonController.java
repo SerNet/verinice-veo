@@ -307,6 +307,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
 
   @Override
   @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"),
@@ -316,7 +317,8 @@ public class PersonController extends AbstractCompositeElementController<Person,
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds persons for the search.")
+  @Operation(summary = "Finds persons for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<PageDto<FullPersonDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,

@@ -434,6 +434,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @Override
   @SuppressFBWarnings // ignore warning on call to method proxy factory
+  @Deprecated
   protected String buildSearchUri(String id) {
     return MvcUriComponentsBuilder.fromMethodCall(
             UriComponentsBuilder.fromPath("/"), on(DomainController.class).runSearch(ANY_AUTH, id))
@@ -441,7 +442,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   }
 
   @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds domains for the search.")
+  @Operation(summary = "Finds domains for the search.", deprecated = true)
+  @Deprecated
   public @Valid Future<List<FullDomainDto>> runSearch(
       @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
     // TODO: VEO-498 Implement Domain Search
