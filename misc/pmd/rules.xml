@@ -22,6 +22,7 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AbstractClassWithoutAbstractMethod" />
         <exclude name="GuardLogStatement" />
+        <exclude name="ImplicitFunctionalInterface" />
         <exclude name="LiteralsFirstInComparisons" />
         <exclude name="PreserveStackTrace" />
         <exclude name="UnusedAssignment" />
