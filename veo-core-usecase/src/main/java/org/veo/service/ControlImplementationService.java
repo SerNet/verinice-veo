@@ -19,6 +19,7 @@ package org.veo.service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Designated;
@@ -45,10 +46,9 @@ public class ControlImplementationService {
    * Add these controls as requirements if any of their parent controls have existing
    * control-implementations.
    */
-  public void addToControlImplementations(Set<Control> addedControls) {
+  public void addToControlImplementations(Control composite, Set<Control> addedControls) {
     Set<Control> allParents =
-        addedControls.stream()
-            .flatMap(control -> control.getCompositesRecursively().stream())
+        Stream.concat(Stream.of(composite), composite.getCompositesRecursively().stream())
             .collect(Collectors.toSet());
     var parentImplementations = controlImplRepo.findByControls(allParents);
 

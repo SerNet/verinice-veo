@@ -50,14 +50,15 @@ public class ControlChangeListener {
       return;
     }
     handleRemovedParts(event.getOldRecursiveParts(), event.getNewRecursiveParts());
-    handleAddedParts(event.getOldRecursiveParts(), event.getNewRecursiveParts());
+    handleAddedParts(event.getEntity(), event.getOldRecursiveParts(), event.getNewRecursiveParts());
   }
 
-  private void handleAddedParts(Set<Control> oldRecursiveParts, Set<Element> newRecursiveParts) {
+  private void handleAddedParts(
+      Control composite, Set<Control> oldRecursiveParts, Set<Element> newRecursiveParts) {
     var addedParts = new HashSet<>(newRecursiveParts);
     addedParts.removeAll(oldRecursiveParts);
     ciService.addToControlImplementations(
-        addedParts.stream().map(Control.class::cast).collect(Collectors.toSet()));
+        composite, addedParts.stream().map(Control.class::cast).collect(Collectors.toSet()));
   }
 
   private void handleRemovedParts(Set<Control> oldRecursiveParts, Set<Element> newRecursiveParts) {

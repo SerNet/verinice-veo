@@ -1019,6 +1019,78 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
+    def "RIs are synced with control parts"() {
+        given: "a super control for root control 3"
+        def rootControl3SuperId = post("/domains/$domainId/controls", [
+            name: "root control 3 superior",
+            subType: "MitiCtl",
+            status: "NEW",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            parts: [
+                [targetUri: "http://localhost/controls/$rootControl3Id"],
+            ],
+        ]).body.resourceId
+
+        and: "an asset with CIs for all the root controls"
+        def assetId = post("/assets", [
+            name: "elem",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"]
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl2Id"]
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl3Id"]
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl3SuperId"]
+                ],
+            ]
+        ]).body.resourceId
+
+        expect:
+        get("/assets/$assetId/control-implementations/$rootControl1Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 1',
+            'sub control 2'
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl2Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 3']
+        get("/assets/$assetId/control-implementations/$rootControl3Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 4']
+        get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
+            'root control 3',
+            'sub control 4',
+        ]
+
+        when: "adding sub controls to a root control"
+        get("/domains/$domainId/controls/$rootControl3Id").with{
+            body.parts.addAll([
+                [targetUri: "/controls/$subControl2Id"],
+                [targetUri: "/controls/$subControl3Id"],
+            ])
+            put(body._self, body, getETag())
+        }
+
+        then: "the RIs are synced"
+        get("/assets/$assetId/control-implementations/$rootControl1Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 1',
+            'sub control 2'
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl2Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 3']
+        get("/assets/$assetId/control-implementations/$rootControl3Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 2',
+            'sub control 3',
+            'sub control 4'
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
+            'root control 3',
+            'sub control 2',
+            'sub control 3',
+            'sub control 4'
+        ]
+    }
+
     String defineSubTypeAndStatus(EntityType type) {
         put("/content-creation/domains/$domainId/element-type-definitions/${type.singularTerm}", [
             subTypes: [
