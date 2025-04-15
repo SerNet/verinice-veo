@@ -956,13 +956,19 @@ public class ModuleConfiguration {
 
   @Bean
   public UnitImportUseCase unitImportUseCase(
+      ClientRepository clientRepository,
       UnitRepository unitRepository,
       ElementBatchCreator elementBatchCreator,
       EntityStateMapper entityStateMapper,
       RefResolverFactory refResolverFactory,
       EventPublisher eventPublisher) {
     return new UnitImportUseCase(
-        unitRepository, refResolverFactory, entityStateMapper, elementBatchCreator, eventPublisher);
+        clientRepository,
+        unitRepository,
+        refResolverFactory,
+        entityStateMapper,
+        elementBatchCreator,
+        eventPublisher);
   }
 
   @Bean

@@ -631,8 +631,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the request is successful"
         result.success
 
-        when: "the user tries to create another unit"
-        result = parseJson(post('/units', [name: 'Unit 2']))
+        when: "we import a unit"
+        def unitBackup = parseJson(get("/units/$unitId/export"))
+        result = parseJson(post("/units/import", unitBackup))
 
         then: "the request is successful"
         result.success
@@ -646,8 +647,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         and: 'only 2 units have been created'
         parseJson(get("/units")).size() == 2
 
-        when: "we import a unit"
-        def unitBackup = parseJson(get("/units/$unitId/export"))
+        when: "we import another unit"
         post("/units/import", unitBackup,  HttpStatus.SC_FORBIDDEN)
 
         then:"the action is not performed"

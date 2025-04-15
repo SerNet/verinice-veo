@@ -28,6 +28,7 @@ import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.UnitState;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -43,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UnitImportUseCase
     implements TransactionalUseCase<UnitImportUseCase.InputData, UnitImportUseCase.OutputData> {
+  private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
   private final RefResolverFactory refResolverFactory;
   private final EntityStateMapper entityStateMapper;
@@ -51,8 +53,9 @@ public class UnitImportUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    input.client.incrementTotalUnits(input.maxUnits);
-    var resolver = refResolverFactory.db(input.client);
+    var client = clientRepository.getActiveById(input.client.getId());
+    client.incrementTotalUnits(input.maxUnits);
+    var resolver = refResolverFactory.db(client);
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
     var elements =
         input.elements.stream()
@@ -62,7 +65,7 @@ public class UnitImportUseCase
                         resolver.injectNewEntity(TypedId.from(e.getId(), e.getModelInterface())))
             .toList();
 
-    unit.setClient(input.client);
+    unit.setClient(client);
     entityStateMapper.mapState(input.unit, unit, resolver);
     elements.forEach(e -> e.setOwner(unit));
     input.elements.forEach(e -> mapElement(e, resolver));
