@@ -1127,7 +1127,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             changes.size() == 8
             with(validationMessages[0]) {
                 description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
-                severity == "HINT"
+                severity == "WARNING"
                 changedCategories ==~ ["D"]
                 column == 0
                 row == 1
@@ -1149,7 +1149,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             validationMessages.size() == 1
             with(validationMessages[0]) {
                 description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
-                severity == "HINT"
+                severity == "WARNING"
                 changedCategories ==~ ["D"]
                 column == 0
                 row == 1

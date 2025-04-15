@@ -57,6 +57,7 @@ public class EvaluateRiskDefinitionUseCase
         EvaluateRiskDefinitionUseCase.InputData, EvaluateRiskDefinitionUseCase.OutputData> {
 
   private static final String RISK_MATRIX_CHANGE = "RISK_MATRIX_CHANGE";
+  private static final String RISK_MATRIX_VALUE_INCONSITENT = "RiskMatrixValueInconsitent";
   private static final String RISK_MATRIX_RESIZE = "RISK_MATRIX_RESIZE";
 
   private static final List<Locale> ALL_LOCALS = List.of(Locale.ENGLISH, Locale.GERMAN);
@@ -79,6 +80,13 @@ public class EvaluateRiskDefinitionUseCase
               .translation(
                   Locale.GERMAN,
                   "Folgende risikomatrizen sind verändert worden, bitte passen Sie ggf. die Risiko Werte an:")
+              .build(),
+          RISK_MATRIX_VALUE_INCONSITENT,
+          TranslatedText.builder()
+              .translation(Locale.ENGLISH, "The following riskmatrix is inkonsitent take a look:")
+              .translation(
+                  Locale.GERMAN,
+                  "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:")
               .build());
 
   private final DomainRepository repository;
@@ -155,6 +163,42 @@ public class EvaluateRiskDefinitionUseCase
               } catch (Exception e) {
                 addValidationMessage(
                     Severity.ERROR, e.getMessage(), List.of(CategoryRef.from(cat)), messages);
+              }
+            });
+
+    riskDefinition.getCategories().stream()
+        .filter(CategoryDefinition::isRiskValuesSupported)
+        .forEach(
+            cat -> {
+              var vm = cat.getValueMatrix();
+              int rows = vm.size();
+              int columns = vm.getFirst().size();
+              for (int row = 0; row < rows; row++) {
+                for (int column = 1; column < columns; column++) {
+                  RiskValue current = vm.get(row).get(column);
+                  RiskValue previousColumnValue = vm.get(row).get(column - 1);
+                  if (current.getOrdinalValue() < previousColumnValue.getOrdinalValue()) {
+                    messages.add(
+                        new ValidationMessage(
+                            Severity.WARNING,
+                            toTRanslation(RISK_MATRIX_VALUE_INCONSITENT),
+                            List.of(CategoryRef.from(cat)),
+                            row,
+                            column));
+                  }
+                  if (row != 0) {
+                    RiskValue previousRowValue = vm.get(row - 1).get(column);
+                    if (current.getOrdinalValue() < previousRowValue.getOrdinalValue()) {
+                      messages.add(
+                          new ValidationMessage(
+                              Severity.WARNING,
+                              toTRanslation(RISK_MATRIX_VALUE_INCONSITENT),
+                              List.of(CategoryRef.from(cat)),
+                              row,
+                              column));
+                    }
+                  }
+                }
               }
             });
     addValidationMessage(
