@@ -31,6 +31,7 @@ import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
@@ -43,7 +44,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UnitImportUseCase
-    implements TransactionalUseCase<UnitImportUseCase.InputData, UnitImportUseCase.OutputData> {
+    implements TransactionalUseCase<UnitImportUseCase.InputData, UnitImportUseCase.OutputData>,
+        RetryableUseCase {
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
   private final RefResolverFactory refResolverFactory;
@@ -90,6 +92,11 @@ public class UnitImportUseCase
   @Override
   public boolean isReadOnly() {
     return false;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 
   public record InputData(
