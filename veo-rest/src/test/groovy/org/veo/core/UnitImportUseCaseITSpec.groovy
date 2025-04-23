@@ -151,6 +151,58 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
+    def "RIs are created if control comes after target"() {
+        given:
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'Super unit'
+        }
+        def controlId = UUID.randomUUID()
+        def scopeId = UUID.randomUUID()
+        def controlPartId = UUID.randomUUID()
+        def elements = [
+            new FullScopeDto().tap {
+                id = scopeId
+                name = 'My scope'
+                controlImplementations.add(new ControlImplementationDto().tap {
+                    it.control = IdRef.fromUri("/controls/${controlId}", referenceAssembler)
+                })
+            },
+            new FullControlDto().tap {
+                id = controlId
+                name = 'My control'
+                parts = [
+                    IdRef.fromUri("/controls/${controlPartId}", referenceAssembler)
+                ]
+            },
+            new FullControlDto().tap {
+                id = controlPartId
+                name = 'My control part'
+            }
+        ]
+        def risks = []
+
+        when:
+        def result = useCase.execute(new UnitImportUseCase.InputData(client, 2, unitDto, elements as Set, risks as Set))
+        def unit = result.unit
+        def scopes = executeInTransaction{
+            scopeDataRepository.findAll().tap{
+                it*.controlImplementations*.size()
+                it*.requirementImplementations*.control*.name
+            }
+        }
+
+        then:
+        scopes.size() == 1
+        with(scopes.first()) {
+            controlImplementations.size() == 1
+            requirementImplementations*.control*.name ==~ [
+                'My control',
+                'My control part'
+            ]
+        }
+    }
+
     def "Import a control with a catalog item reference"() {
         given:
         UnitState unitDto = new FullUnitDto().tap {
