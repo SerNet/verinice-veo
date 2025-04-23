@@ -17,9 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.Comparator;
 import java.util.Set;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.UnitImpactRecalculatedEvent;
@@ -68,7 +70,9 @@ public class UnitImportUseCase
     unit.setClient(client);
     entityStateMapper.mapState(input.unit, unit, resolver);
     elements.forEach(e -> e.setOwner(unit));
-    input.elements.forEach(e -> mapElement(e, resolver));
+    input.elements.stream()
+        .sorted(Comparator.comparing(e -> !e.getModelInterface().equals(Control.class)))
+        .forEach(e -> mapElement(e, resolver));
     input.risks.forEach(r -> entityStateMapper.mapState(r, resolver));
 
     elementBatchCreator.create(elements, unitRepository.save(unit));
