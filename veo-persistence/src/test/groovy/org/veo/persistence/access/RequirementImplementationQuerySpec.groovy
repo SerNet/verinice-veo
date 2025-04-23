@@ -97,6 +97,58 @@ class RequirementImplementationQuerySpec extends AbstractJpaSpec {
         result.resultPage*.control*.name == ["Control 2", "Control 1"]
     }
 
+    def 'only leaf RIs are returned'() {
+        given:
+        def control3a =
+                controlDataRepository.save(newControl(unit) {
+                    name = "Control 3a"
+                    abbreviation = "c3a"
+                })
+
+        def control3 =
+                controlDataRepository.save(newControl(unit) {
+                    name = "Control 3"
+                    abbreviation = "c3"
+                    parts.add(control3a)
+                })
+
+        def control4aa =
+                controlDataRepository.save(newControl(unit) {
+                    name = "Control 4aa"
+                    abbreviation = "c4aa"
+                })
+        def control4a =
+                controlDataRepository.save(newControl(unit) {
+                    name = "Control 4a"
+                    abbreviation = "c4a"
+                    parts.add(control4aa)
+                })
+        def control4 =
+                controlDataRepository.save(newControl(unit) {
+                    name = "Control 4"
+                    abbreviation = "c4"
+                    parts.add(control4a)
+                })
+
+        asset =
+                assetDataRepository.save(assetDataRepository.findById(asset.id).get().tap {
+                    implementControl(control3)
+                    implementControl(control4)
+                })
+
+        when:
+        def result = query.execute(new PagingConfiguration<>(Integer.MAX_VALUE, 0, "control.abbreviation", SortOrder.DESCENDING))
+
+        then:
+        result.totalResults == 4
+        result.resultPage*.control*.name == [
+            "Control 4aa",
+            "Control 3a",
+            "Control 2",
+            "Control 1"
+        ]
+    }
+
     def 'paginates'() {
         expect:
         with(query.execute(new PagingConfiguration<>(1, 0, "control.name", SortOrder.ASCENDING))) {
