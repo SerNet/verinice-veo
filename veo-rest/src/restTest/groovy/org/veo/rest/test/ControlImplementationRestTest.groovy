@@ -1059,7 +1059,6 @@ class ControlImplementationRestTest extends VeoRestTest {
         get("/assets/$assetId/control-implementations/$rootControl2Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 3']
         get("/assets/$assetId/control-implementations/$rootControl3Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 4']
         get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
-            'root control 3',
             'sub control 4',
         ]
 
@@ -1084,7 +1083,6 @@ class ControlImplementationRestTest extends VeoRestTest {
             'sub control 4'
         ]
         get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
-            'root control 3',
             'sub control 2',
             'sub control 3',
             'sub control 4'
