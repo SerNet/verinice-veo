@@ -12,9 +12,6 @@
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "^com.diffplug.spotless"
-      ],
       "groupName": "Spotless",
       "allowedVersions": "!/6\\.1[789]\\.0/",
       "postUpgradeTasks": {
@@ -24,49 +21,52 @@
         "fileFilters": [
           "**/*"
         ]
-      }
+      },
+      "matchPackageNames": [
+        "/^com.diffplug.spotless/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^com.diffplug.spotless:spotless-lib-extra"
-      ],
-      "allowedVersions": "!/(2\\.3[789]\\.0)/"
+      "allowedVersions": "!/(2\\.3[789]\\.0)/",
+      "matchPackageNames": [
+        "/^com.diffplug.spotless:spotless-lib-extra/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^org.spockframework:"
-      ],
-      "groupName": "Spock"
+      "groupName": "Spock",
+      "matchPackageNames": [
+        "/^org.spockframework:/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^org.springdoc:"
-      ],
-      "groupName": "Springdoc"
+      "groupName": "Springdoc",
+      "matchPackageNames": [
+        "/^org.springdoc:/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^org.testcontainers:"
-      ],
-      "groupName": "Testcontainers"
+      "groupName": "Testcontainers",
+      "matchPackageNames": [
+        "/^org.testcontainers:/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^com.github.victools:jsonschema"
-      ],
-      "groupName": "JSON Schema Generator"
+      "groupName": "JSON Schema Generator",
+      "matchPackageNames": [
+        "/^com.github.victools:jsonschema/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^io.swagger.core.v3:"
-      ],
-      "groupName": "Swagger"
+      "groupName": "Swagger",
+      "matchPackageNames": [
+        "/^io.swagger.core.v3:/"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "^io.jsonwebtoken:"
-      ],
-      "groupName": "JWT"
+      "groupName": "JWT",
+      "matchPackageNames": [
+        "/^io.jsonwebtoken:/"
+      ]
     }
   ]
 }
