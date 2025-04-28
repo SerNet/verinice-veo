@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -58,8 +59,8 @@ public class GetRequirementImplementationsByControlImplementationUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var owner = getEntity(input.owner, input.authenticatedClient);
-    var control = getEntity(input.control, input.authenticatedClient);
+    var owner = getEntity(input.owner, input.user);
+    var control = getEntity(input.control, input.user);
     var implementation = owner.getImplementationFor(control);
     var riIds =
         implementation.getRequirementImplementations().stream()
@@ -67,7 +68,7 @@ public class GetRequirementImplementationsByControlImplementationUseCase
             .collect(Collectors.toSet());
 
     var query = requirementImplementationRepository.query(input.authenticatedClient);
-    var domain = input.domain == null ? null : getEntity(input.domain, input.authenticatedClient);
+    var domain = input.domain == null ? null : getEntity(input.domain, input.user);
     if (domain != null) {
       if (!domain.isActive()) {
         throw new NotFoundException("Domain is inactive.");
@@ -88,6 +89,7 @@ public class GetRequirementImplementationsByControlImplementationUseCase
 
   @Valid
   public record InputData(
+      UserAccessRights user,
       @NotNull Client authenticatedClient,
       @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
       @NotNull ITypedId<Control> control,
@@ -96,11 +98,12 @@ public class GetRequirementImplementationsByControlImplementationUseCase
       implements UseCase.InputData {
 
     public InputData(
+        UserAccessRights user,
         @NotNull Client authenticatedClient,
         @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
         @NotNull ITypedId<Control> control,
         @NotNull PagingConfiguration<String> pagingConfiguration) {
-      this(authenticatedClient, owner, control, null, pagingConfiguration);
+      this(user, authenticatedClient, owner, control, null, pagingConfiguration);
     }
   }
 

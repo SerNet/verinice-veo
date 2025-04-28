@@ -35,9 +35,8 @@ public class GetScopeUseCase extends GetElementUseCase<Scope> {
   public GetElementUseCase.OutputData<Scope> execute(InputData input) {
     var scope =
         scopeRepository
-            .findById(input.elementId(), input.embedRisks())
+            .findById(input.elementId(), input.embedRisks(), input.userRights())
             .orElseThrow(() -> new NotFoundException(input.elementId(), Scope.class));
-    scope.checkSameClient(input.authenticatedClient());
     return new GetElementUseCase.OutputData<>(scope, getDomain(scope, input).orElse(null));
   }
 }

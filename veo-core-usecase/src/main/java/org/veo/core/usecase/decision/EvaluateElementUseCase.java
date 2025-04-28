@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
@@ -63,23 +64,29 @@ public class EvaluateElementUseCase
     var domain =
         domainRepository.getByIdWithDecisionsAndInspections(
             input.domainId, input.authenticatedClient.getId());
-    var element = fetchOrCreateElement(input.element, input.authenticatedClient);
+    var element = fetchOrCreateElement(input.element, input.userRights, input.authenticatedClient);
     element.setDecisionResults(decider.decide(element, domain), domain);
     var findings = inspector.inspect(element, domain);
     return new OutputData(element.getDecisionResults(domain), findings);
   }
 
-  private <T extends Element> T fetchOrCreateElement(ElementState<T> source, Client client) {
+  private <T extends Element> T fetchOrCreateElement(
+      ElementState<T> source, UserAccessRights user, Client client) {
+    Optional<UUID> sourceId = Optional.ofNullable(source.getId());
     var element =
-        Optional.ofNullable(source.getId())
-            .map(id -> elementRepository.getById(id, source.getModelInterface(), client))
+        sourceId
+            .map(id -> elementRepository.getById(id, source.getModelInterface(), user))
             .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
     entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
     return element;
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, UUID domainId, ElementState<?> element)
+  public record InputData(
+      Client authenticatedClient,
+      UUID domainId,
+      ElementState<?> element,
+      UserAccessRights userRights)
       implements UseCase.InputData {}
 
   @Valid

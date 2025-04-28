@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Person;
@@ -82,24 +83,22 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
   }
 
   @Override
-  public Optional<Scope> findByIdWithRiskValues(UUID processId) {
-    var processes = scopeDataRepository.findByIdsWithRiskValues(singleton(processId));
-    return processes.stream().findFirst().map(Scope.class::cast);
-  }
-
-  @Override
   public Set<Scope> findRisksWithValue(Scenario scenario) {
     return new HashSet<>(
         scopeDataRepository.findRisksWithValue(singleton(((ScenarioData) scenario))));
   }
 
   @Override
-  public Optional<Scope> findById(UUID id, boolean shouldEmbedRisks) {
-    if (shouldEmbedRisks) {
-      return this.findByIdWithRiskValues(id);
-    } else {
-      return this.findById(id);
-    }
+  public Optional<Scope> findByIdWithRiskValues(UUID id, UserAccessRights rights) {
+    return scopeDataRepository
+        .findByIdsWithRiskValues(
+            Set.of(id),
+            rights.clientId(),
+            rights.isUnitAccessResticted(),
+            rights.getReadableUnitIds())
+        .stream()
+        .findFirst()
+        .map(Scope.class::cast);
   }
 
   @Override

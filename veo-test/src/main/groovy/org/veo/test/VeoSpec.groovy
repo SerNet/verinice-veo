@@ -498,6 +498,20 @@ abstract class VeoSpec extends Specification {
         }
     }
 
+    Element newElement(ElementType type, Unit owner, @DelegatesTo(value = Element.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Element") Closure init = {}) {
+        switch (type) {
+            case ElementType.ASSET: return newAsset(owner, init)
+            case ElementType.CONTROL: return newControl(owner, init)
+            case ElementType.DOCUMENT: return newDocument(owner, init)
+            case ElementType.INCIDENT: return newIncident(owner, init)
+            case ElementType.PERSON: return newPerson(owner, init)
+            case ElementType.PROCESS: return newProcess(owner, init)
+            case ElementType.SCENARIO: return newScenario(owner, init)
+            case ElementType.SCOPE: return newScope(owner, init)
+        }
+    }
+
     private static List<CategoryLevel> createDefaultCategoryLevels() {
         return [
             new CategoryLevel(0, "#004643", new Translated([

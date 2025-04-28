@@ -145,7 +145,7 @@ public class AssetInDomainController
       description = "Asset or domain not found or asset not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullAssetInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -154,7 +154,7 @@ public class AssetInDomainController
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        auth,
+        user,
         domainId,
         uuid,
         request,
@@ -166,7 +166,7 @@ public class AssetInDomainController
   @GetMapping
   @Operation(summary = "Loads all assets in a domain")
   public @Valid Future<PageDto<FullAssetInDomainDto>> getAssets(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -207,8 +207,9 @@ public class AssetInDomainController
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(auth),
+            clientLookup.getClient(user),
             unitUuid,
+            user,
             domainId,
             displayName,
             subType,
@@ -239,7 +240,7 @@ public class AssetInDomainController
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullAssetInDomainDto>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -269,13 +270,14 @@ public class AssetInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
-    var client = clientLookup.getClient(auth);
-    elementService.ensureElementExists(client, domainId, uuid, getAssetUseCase);
+    var client = clientLookup.getClient(user);
+    elementService.ensureElementExists(domainId, uuid, getAssetUseCase, user);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
             client,
             null,
+            user,
             domainId,
             null,
             null,
@@ -320,7 +322,7 @@ public class AssetInDomainController
   @ApiResponse(responseCode = "404", description = "Asset or domain not found")
   @ApiResponse(responseCode = "409", description = "Asset already associated with domain")
   public CompletableFuture<ResponseEntity<FullAssetInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -329,7 +331,7 @@ public class AssetInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        auth, domainId, uuid, dto, Asset.class, entityToDtoTransformer::transformAsset2Dto);
+        user, domainId, uuid, dto, Asset.class, entityToDtoTransformer::transformAsset2Dto);
   }
 
   @Operation(summary = "Updates an asset from the viewpoint of a domain")
@@ -337,7 +339,7 @@ public class AssetInDomainController
   @ApiResponse(responseCode = "200", description = "Asset updated")
   @ApiResponse(responseCode = "404", description = "Asset not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullAssetInDomainDto>> updateElement(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -348,7 +350,7 @@ public class AssetInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody FullAssetInDomainDto dto) {
     return elementService.update(
-        auth, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformAsset2Dto);
+        user, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformAsset2Dto);
   }
 
   @Operation(summary = "Retrieve inbound and outbound links for an asset in a domain")
@@ -358,7 +360,7 @@ public class AssetInDomainController
       responseCode = "404",
       description = "Asset or domain not found or asset not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -385,7 +387,7 @@ public class AssetInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        auth, domainId, uuid, Asset.class, pageSize, pageNumber, sortColumn, sortOrder);
+        user, domainId, uuid, Asset.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing asset")
@@ -397,7 +399,7 @@ public class AssetInDomainController
       description = "Asset or domain not found or asset not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -405,7 +407,7 @@ public class AssetInDomainController
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(auth, domainId, uuid, links, Asset.class);
+    return elementService.addLinks(user, domainId, uuid, links, Asset.class);
   }
 
   @Operation(
@@ -421,12 +423,12 @@ public class AssetInDomainController
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullAssetInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId);
+    return elementService.evaluate(user, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific asset JSON schema")
@@ -452,7 +454,7 @@ public class AssetInDomainController
   @Operation(summary = "Performs a domain-specific action on an asset")
   @PostMapping(UUID_PARAM_SPEC + "/actions/{actionId}/execution")
   public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -460,7 +462,7 @@ public class AssetInDomainController
           @PathVariable
           UUID uuid,
       @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
-    return elementService.performAction(domainId, uuid, Asset.class, actionId, auth);
+    return elementService.performAction(domainId, uuid, Asset.class, actionId, user);
   }
 
   @Operation(summary = "Loads control implementations for an asset")
@@ -471,7 +473,7 @@ public class AssetInDomainController
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "Asset or domain not found")
   public Future<PageDto<ControlImplementationDto>> getControlImplementations(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -505,7 +507,8 @@ public class AssetInDomainController
     return elementService.getControlImplementations(
         domainId,
         new GetControlImplementationsUseCase.InputData(
-            clientLookup.getClient(auth),
+            user,
+            clientLookup.getClient(user),
             null,
             domainId,
             TypedId.from(uuid, Asset.class),
@@ -515,7 +518,7 @@ public class AssetInDomainController
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      Authentication auth,
+      ApplicationUser user,
       UUID domainId,
       UUID riskAffectedId,
       UUID controlId,
@@ -526,7 +529,8 @@ public class AssetInDomainController
       String sortOrder) {
     return elementService.getRequirementImplementations(
         new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-            clientLookup.getClient(auth),
+            user,
+            clientLookup.getClient(user),
             TypedId.from(riskAffectedId, Asset.class),
             TypedId.from(controlId, Control.class),
             TypedId.from(domainId, Domain.class),

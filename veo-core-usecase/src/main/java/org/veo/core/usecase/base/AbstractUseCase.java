@@ -21,9 +21,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
@@ -63,13 +65,23 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
       throw new ClientBoundaryViolationException(entity, authenticatedClient);
   }
 
-  protected <M extends Identifiable & ClientOwned> M getEntity(ITypedId<M> ref, Client client) {
+  protected <M extends Identifiable & ClientOwned> M getEntity(
+      ITypedId<M> ref, UserAccessRights user) {
+    if (Element.class.isAssignableFrom(
+        ref.getType())) { // TODO: this is ugly and will be 'fixed' with verinice-veo#3950
+      return (M)
+          repositoryProvider
+              .getElementRepositoryFor((Class<? extends Element>) ref.getType())
+              .findById(ref.getId(), user)
+              .orElseThrow(() -> new NotFoundException(ref.getId(), ref.getType()));
+    }
+
     var e =
         repositoryProvider
             .getRepositoryFor(ref.getType())
             .findById(ref.getId())
             .orElseThrow(() -> new NotFoundException(ref.getId(), ref.getType()));
-    checkSameClient(client, e);
+    user.checkClient(e);
     return e;
   }
 
@@ -77,7 +89,17 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
     return repositoryProvider.getRepositoryFor(clazz).findById(id);
   }
 
+  protected <M extends Element> Optional<M> findElement(
+      Class<M> clazz, UUID id, UserAccessRights user) {
+    return repositoryProvider.getElementRepositoryFor(clazz).findById(id, user);
+  }
+
   protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<UUID> ids) {
     return repositoryProvider.getRepositoryFor(clazz).findByIds(ids);
+  }
+
+  protected <M extends Element> Set<M> findElements(
+      Class<M> clazz, Set<UUID> ids, UserAccessRights user) {
+    return repositoryProvider.getElementRepositoryFor(clazz).findByIds(ids, user);
   }
 }

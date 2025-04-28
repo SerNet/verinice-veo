@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -100,13 +101,24 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   @Override
-  public Optional<T> findById(UUID id, UUID clientId) {
-    return dataRepository.findById(id, clientId).map(e -> (T) e);
+  public Optional<T> findById(UUID id, UserAccessRights user) {
+    return dataRepository
+        .findById(id, user.clientId(), user.isUnitAccessResticted(), user.getReadableUnitIds())
+        .map(e -> (T) e);
   }
 
   @Override
-  public T getById(UUID id, UUID clientId) {
-    return findById(id, clientId).orElseThrow(() -> new NotFoundException(id, elementType));
+  public T getById(UUID id, UserAccessRights user) {
+    return findById(id, user).orElseThrow(() -> new NotFoundException(id, elementType));
+  }
+
+  @Override
+  public Set<T> findByIds(Set<UUID> ids, UserAccessRights user) {
+    return dataRepository
+        .findByIds(ids, user.clientId(), user.isUnitAccessResticted(), user.getReadableUnitIds())
+        .stream()
+        .map(e -> (T) e)
+        .collect(Collectors.toSet());
   }
 
   @Override

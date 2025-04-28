@@ -28,6 +28,7 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -77,8 +78,7 @@ public class GetControlImplementationsUseCase
     Optional.ofNullable(input.control)
         .ifPresent(
             id -> {
-              Control control =
-                  genericElementRepository.getById(id, Control.class, input.authenticatedClient);
+              Control control = genericElementRepository.getById(id, Control.class, input.user);
               if (!control.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
                     control, input.domainId.toString());
@@ -89,8 +89,7 @@ public class GetControlImplementationsUseCase
         .ifPresent(
             id -> {
               RiskAffected<?, ?> ra =
-                  genericElementRepository.getById(
-                      id.getId(), id.getType(), input.authenticatedClient);
+                  genericElementRepository.getById(id.getId(), id.getType(), input.user);
               if (!ra.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
                     ra, input.domainId.toString());
@@ -124,6 +123,7 @@ public class GetControlImplementationsUseCase
 
   @Valid
   public record InputData(
+      @NotNull UserAccessRights user,
       @NotNull Client authenticatedClient,
       UUID control,
       @NotNull UUID domainId,

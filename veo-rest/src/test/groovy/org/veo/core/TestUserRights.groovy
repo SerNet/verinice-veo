@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2025  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.Unit;
-
-public interface ElementRepository<T extends Element>
-    extends IdentifiableVersionedRepository<T>, ElementQueryProvider<T> {
-
-  Set<T> findByUnit(Unit owner);
-
-  Set<T> findByDomain(Domain domain);
-
-  void deleteAll(Set<T> entities);
-
-  Optional<T> findById(UUID elementId, UserAccessRights userRights);
-
-  Set<T> findByIds(Set<UUID> ids, UserAccessRights userRights);
-
-  T getById(UUID id, UserAccessRights user);
+record TestUserRights(boolean restrictUnitAccess, boolean accessAllUnits = false, boolean testUnitReadable = false, boolean testUnitWritable = false) {
 }

@@ -132,7 +132,7 @@ public class PersonInDomainController implements ElementInDomainResource {
       description = "Person or domain not found or person not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullPersonInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -153,7 +153,7 @@ public class PersonInDomainController implements ElementInDomainResource {
   @GetMapping
   @Operation(summary = "Loads all persons in a domain")
   public @Valid Future<PageDto<FullPersonInDomainDto>> getPersons(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -194,8 +194,9 @@ public class PersonInDomainController implements ElementInDomainResource {
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(auth),
+            clientLookup.getClient(user),
             unitUuid,
+            user,
             domainId,
             displayName,
             subType,
@@ -226,7 +227,7 @@ public class PersonInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullPersonInDomainDto>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -256,13 +257,14 @@ public class PersonInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
-    var client = clientLookup.getClient(auth);
-    elementService.ensureElementExists(client, domainId, uuid, getPersonUseCase);
+    var client = clientLookup.getClient(user);
+    elementService.ensureElementExists(domainId, uuid, getPersonUseCase, user);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
             client,
             null,
+            user,
             domainId,
             null,
             null,
@@ -308,7 +310,7 @@ public class PersonInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Person or domain not found or person already associated with domain")
   public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -317,7 +319,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        auth, domainId, uuid, dto, Person.class, entityToDtoTransformer::transformPerson2Dto);
+        user, domainId, uuid, dto, Person.class, entityToDtoTransformer::transformPerson2Dto);
   }
 
   @Operation(summary = "Updates a person from the viewpoint of a domain")
@@ -327,7 +329,7 @@ public class PersonInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Person not found or person not associated with domain")
   public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> updateElement(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -338,7 +340,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody FullPersonInDomainDto dto) {
     return elementService.update(
-        auth,
+        user,
         domainId,
         eTag,
         uuid,
@@ -354,7 +356,7 @@ public class PersonInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Person or domain not found or person not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -381,7 +383,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        auth, domainId, uuid, Person.class, pageSize, pageNumber, sortColumn, sortOrder);
+        user, domainId, uuid, Person.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing person")
@@ -393,7 +395,7 @@ public class PersonInDomainController implements ElementInDomainResource {
       description = "Person or domain not found or person not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -401,7 +403,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(auth, domainId, uuid, links, Person.class);
+    return elementService.addLinks(user, domainId, uuid, links, Person.class);
   }
 
   @Operation(
@@ -417,12 +419,12 @@ public class PersonInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullPersonInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId);
+    return elementService.evaluate(user, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific person JSON schema")

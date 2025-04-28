@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.PagingConfiguration;
@@ -43,6 +44,7 @@ public class QueryInputMapper {
   public static GetElementsUseCase.InputData map(
       Client client,
       UUID unitUuid,
+      UserAccessRights userRights,
       UUID domainId,
       String displayName,
       String subType,
@@ -59,7 +61,6 @@ public class QueryInputMapper {
       String updatedBy,
       PagingConfiguration<String> pagingConfiguration) {
     return GetElementsUseCase.InputData.builder()
-        .authenticatedClient(client)
         .abbreviation(whereIn(abbreviation))
         .childElementIds(whereUuidIn(childElementIds))
         .compositeId(whereEquals(compositeId))
@@ -76,6 +77,7 @@ public class QueryInputMapper {
         .subType(whereEqualsOrNull(subType))
         .unitUuid(whereUuidIn(unitUuid))
         .updatedBy(whereIn(updatedBy))
+        .userRights(userRights)
         .build();
   }
 
@@ -84,13 +86,14 @@ public class QueryInputMapper {
       UUID domainId,
       UUID scopeId,
       Set<ElementType> elementTypes,
+      UserAccessRights userRights,
       PagingConfiguration<String> config) {
     return GetElementsUseCase.InputData.builder()
-        .authenticatedClient(client)
         .elementTypes(whereIn(elementTypes))
         .domainId(whereEquals(domainId))
         .pagingConfiguration(config)
         .scopeId(whereEquals(scopeId))
+        .userRights(userRights)
         .build();
   }
 

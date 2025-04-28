@@ -23,6 +23,7 @@ import java.util.UUID;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
@@ -60,7 +61,9 @@ public class CreateElementUseCase<TEntity extends Element>
   @Transactional(Transactional.TxType.REQUIRED)
   public CreateElementUseCase.OutputData<TEntity> execute(
       CreateElementUseCase.InputData<TEntity> input) {
+
     var state = input.newEntity;
+    input.user.checkCreateElementWriteAccess(state);
     Class<TEntity> entityType = state.getModelInterface();
     var entity = identifiableFactory.create(entityType);
     entityStateMapper.mapState(
@@ -112,7 +115,10 @@ public class CreateElementUseCase<TEntity extends Element>
 
   @Valid
   public record InputData<TEntity extends Element>(
-      ElementState<TEntity> newEntity, Client authenticatedClient, Set<UUID> scopeIds)
+      ElementState<TEntity> newEntity,
+      Client authenticatedClient,
+      Set<UUID> scopeIds,
+      UserAccessRights user)
       implements UseCase.InputData {}
 
   @Valid

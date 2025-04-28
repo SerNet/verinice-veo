@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Person
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PersonRepository
@@ -27,6 +28,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
     DomainRepository domainRepository = Mock()
+    UserAccessRights user = Mock()
 
     GetPersonUseCase usecase = new GetPersonUseCase(personRepository, domainRepository)
 
@@ -39,10 +41,10 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(id,  existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(id,  user))
 
         then:
-        1 * personRepository.findById(id) >> Optional.of(person)
+        1 * personRepository.getById(id, user) >> person
         output.element != null
         output.element.id == id
     }

@@ -32,6 +32,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -103,6 +104,18 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     return dataRepository
         .findById(elementId, clientId)
         .filter(e -> e.getModelInterface() == elementType)
+        .map(e -> (T) e);
+  }
+
+  @Override
+  public <T extends Element> Optional<T> findById(
+      UUID elementId, Class<? extends Element> elementType, UserAccessRights userRights) {
+    return dataRepository
+        .findById(
+            elementId,
+            userRights.clientId(),
+            userRights.isUnitAccessResticted(),
+            userRights.getReadableUnitIds())
         .map(e -> (T) e);
   }
 

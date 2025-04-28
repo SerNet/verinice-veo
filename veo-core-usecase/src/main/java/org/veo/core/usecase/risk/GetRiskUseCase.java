@@ -22,6 +22,7 @@ import java.util.UUID;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.RiskAffected;
@@ -49,17 +50,12 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
   public OutputData<R> execute(InputData input) {
     var entity =
         repositoryProvider
-            .getRepositoryFor(entityClass)
-            .findById(input.riskAffectedId)
-            .orElseThrow(() -> new NotFoundException(input.riskAffectedId, entityClass));
+            .getElementRepositoryFor(entityClass)
+            .getById(input.riskAffectedId, input.user);
     var scenario =
         repositoryProvider
-            .getRepositoryFor(Scenario.class)
-            .findById(input.scenarioId)
-            .orElseThrow(() -> new NotFoundException(input.scenarioId, Scenario.class));
-
-    entity.checkSameClient(input.authenticatedClient);
-    scenario.checkSameClient(input.authenticatedClient);
+            .getElementRepositoryFor(Scenario.class)
+            .getById(input.scenarioId, input.user);
 
     return new OutputData<>(
         entity
@@ -72,7 +68,8 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, UUID riskAffectedId, UUID scenarioId)
+  public record InputData(
+      Client authenticatedClient, UUID riskAffectedId, UUID scenarioId, UserAccessRights user)
       implements UseCase.InputData {}
 
   @Valid

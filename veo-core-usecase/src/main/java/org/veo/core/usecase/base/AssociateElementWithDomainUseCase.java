@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Client;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.repository.DomainRepository;
@@ -46,9 +46,9 @@ public class AssociateElementWithDomainUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
+    var domain = domainRepository.getById(input.domainId, input.userRights.clientId());
     var element = fetchElement(input);
-    element.checkSameClient(input.authenticatedClient); // client boundary safety net
+    input.userRights.checkElementWriteAccess(element);
     element.associateWithDomain(domain, input.subType, input.status);
     element.setUpdatedAt(Instant.now());
     DomainSensitiveElementValidator.validate(element);
@@ -58,17 +58,17 @@ public class AssociateElementWithDomainUseCase
   }
 
   private Element fetchElement(InputData input) {
-    return elementRepository.getById(input.elementId, input.elementType, input.authenticatedClient);
+    return elementRepository.getById(input.elementId, input.elementType, input.userRights);
   }
 
   @Valid
   public record InputData(
-      Client authenticatedClient,
       Class<? extends Element> elementType,
       UUID elementId,
       UUID domainId,
       String subType,
-      String status)
+      String status,
+      UserAccessRights userRights)
       implements UseCase.InputData {}
 
   @Valid

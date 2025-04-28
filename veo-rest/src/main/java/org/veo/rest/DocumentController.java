@@ -122,7 +122,7 @@ public class DocumentController
   @GetMapping
   @Operation(summary = "Loads all documents")
   public @Valid Future<PageDto<FullDocumentDto>> getDocuments(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -157,12 +157,13 @@ public class DocumentController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    Client client = getAuthenticatedClient(auth);
+    Client client = getClient(user);
 
     return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
+            user,
             null,
             displayName,
             subType,
@@ -212,12 +213,12 @@ public class DocumentController
   @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(auth, uuid, request);
+    return super.getElementParts(user, uuid, request);
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
@@ -225,15 +226,13 @@ public class DocumentController
   @ApiResponse(responseCode = "204", description = "Document deleted")
   @ApiResponse(responseCode = "404", description = "Document not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-    Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Document.class, uuid, client),
+        new DeleteElementUseCase.InputData(Document.class, uuid, user),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -250,10 +249,10 @@ public class DocumentController
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Valid @RequestBody FullDocumentDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(auth, element, domainId);
+    return super.evaluate(user, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted document")
@@ -267,12 +266,12 @@ public class DocumentController
   @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(auth, uuid, domainId, Document.class);
+    return inspect(user, uuid, domainId, Document.class);
   }
 
   @Override

@@ -22,6 +22,7 @@ import java.util.UUID;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
@@ -29,6 +30,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.entity.event.RiskEvent;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -50,11 +52,10 @@ public class DeleteRiskUseCase
   public EmptyOutput execute(InputData input) {
     var riskAffected =
         repositoryProvider
-            .getRepositoryFor(input.entityClass)
-            .findById(input.riskAffectedRef)
-            .orElseThrow();
-
-    riskAffected.checkSameClient(input.authenticatedClient);
+            .getElementRepositoryFor(input.entityClass)
+            .findById(input.riskAffectedRef, input.user)
+            .orElseThrow(() -> new NotFoundException(input.scenarioRef(), input.entityClass));
+    input.user.checkElementWriteAccess(riskAffected);
     var risk = riskAffected.getRisk(input.scenarioRef).orElseThrow();
     risk.remove();
     publishEvents(riskAffected, risk);
@@ -74,6 +75,7 @@ public class DeleteRiskUseCase
 
   @Valid
   public record InputData(
+      UserAccessRights user,
       Class<? extends RiskAffected<?, ?>> entityClass,
       Client authenticatedClient,
       UUID riskAffectedRef,

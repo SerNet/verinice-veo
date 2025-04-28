@@ -33,7 +33,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
@@ -72,14 +71,13 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   public @Valid Future<ResponseEntity<E>> getElement(
       Authentication auth, UUID uuid, WebRequest request) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-    Client client = getClient(user.getClientId());
     if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<E> entityFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(uuid, client),
+            new GetElementUseCase.InputData(uuid, user),
             output -> entity2Dto(output.element()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -98,20 +96,18 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      Authentication auth, @Valid E dto, String domainId) {
+      ApplicationUser user, @Valid E dto, String domainId) {
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(
-            getAuthenticatedClient(auth), UUID.fromString(domainId), dto),
+        new EvaluateElementUseCase.InputData(getClient(user), UUID.fromString(domainId), dto, user),
         output -> ResponseEntity.ok().body(output));
   }
 
   public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      Authentication auth, UUID elementId, UUID domainId, Class<T> elementType) {
-    var client = getAuthenticatedClient(auth);
+      ApplicationUser user, UUID elementId, UUID domainId, Class<T> elementType) {
     return useCaseInteractor.execute(
         inspectElementUseCase,
-        new InspectElementUseCase.InputData(client, elementType, elementId, domainId),
+        new InspectElementUseCase.InputData(elementType, elementId, domainId, user),
         output -> ResponseEntity.ok().body(output.findings()));
   }
 

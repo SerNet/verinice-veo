@@ -19,6 +19,7 @@ package org.veo.core.usecase.compliance;
 
 import java.time.Instant;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
@@ -55,18 +56,20 @@ public class UpdateRequirementImplementationUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var origin = getEntity(input.origin, input.authenticatedClient);
-    var control = getEntity(input.control, input.authenticatedClient);
+    var origin = getEntity(input.origin, input.user);
+    var control = getEntity(input.control, input.user);
     var requirementImplementation = origin.getRequirementImplementation(control);
+    input.user.checkElementWriteAccess(origin);
     ETag.validate(input.eTag, origin);
     var idRefResolver = refResolverFactory.db(input.authenticatedClient);
     entityStateMapper.mapState(input.state, requirementImplementation, idRefResolver);
     origin.setUpdatedAt(Instant.now());
     DomainSensitiveElementValidator.validate(origin);
-    return new OutputData(ETag.from(getEntity(input.origin, input.authenticatedClient)));
+    return new OutputData(ETag.from(getEntity(input.origin, input.user)));
   }
 
   public record InputData(
+      UserAccessRights user,
       Client authenticatedClient,
       TypedId<? extends RiskAffected<?, ?>> origin,
       TypedId<Control> control,

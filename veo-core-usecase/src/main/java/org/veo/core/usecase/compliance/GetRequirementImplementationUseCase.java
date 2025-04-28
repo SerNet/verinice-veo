@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.compliance;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
@@ -37,12 +38,13 @@ public class GetRequirementImplementationUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var origin = getEntity(input.origin, input.authenticatedClient);
-    var control = getEntity(input.control, input.authenticatedClient);
+    var origin = getEntity(input.origin, input.user);
+    var control = getEntity(input.control, input.user);
     return new OutputData(origin.getRequirementImplementation(control), ETag.from(origin));
   }
 
   public record InputData(
+      UserAccessRights user,
       Client authenticatedClient,
       TypedId<? extends RiskAffected<?, ?>> origin,
       TypedId<Control> control)

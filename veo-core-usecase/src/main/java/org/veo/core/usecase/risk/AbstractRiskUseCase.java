@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -51,8 +52,8 @@ public abstract class AbstractRiskUseCase<
     if (input.getControlRef().isPresent()) {
       var control =
           repositoryProvider
-              .getRepositoryFor(Control.class)
-              .findById(input.getControlRef().get())
+              .getElementRepositoryFor(Control.class)
+              .findById(input.getControlRef().get(), input.user)
               .orElseThrow();
       control.checkSameClient(input.authenticatedClient());
       risk.mitigate(control);
@@ -61,8 +62,8 @@ public abstract class AbstractRiskUseCase<
     if (input.getRiskOwnerRef().isPresent()) {
       var riskOwner =
           repositoryProvider
-              .getRepositoryFor(Person.class)
-              .findById(input.getRiskOwnerRef().get())
+              .getElementRepositoryFor(Person.class)
+              .findById(input.getRiskOwnerRef().get(), input.user)
               .orElseThrow();
       riskOwner.checkSameClient(input.authenticatedClient());
       risk.appoint(riskOwner);
@@ -73,6 +74,7 @@ public abstract class AbstractRiskUseCase<
 
   @Valid
   public record InputData(
+      @NotNull UserAccessRights user,
       @NotNull Client authenticatedClient,
       @NotNull UUID riskAffectedRef,
       @NotNull UUID scenarioRef,
@@ -92,6 +94,7 @@ public abstract class AbstractRiskUseCase<
     }
 
     public InputData(
+        UserAccessRights user,
         Client authenticatedClient,
         UUID riskAffectedRef,
         UUID scenarioRef,
@@ -100,6 +103,7 @@ public abstract class AbstractRiskUseCase<
         UUID riskOwnerRef,
         Set<RiskValues> riskValues) {
       this(
+          user,
           authenticatedClient,
           riskAffectedRef,
           scenarioRef,

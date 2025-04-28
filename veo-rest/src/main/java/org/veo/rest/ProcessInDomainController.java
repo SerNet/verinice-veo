@@ -144,7 +144,7 @@ public class ProcessInDomainController
       description = "Process or domain not found or process not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullProcessInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -165,7 +165,7 @@ public class ProcessInDomainController
   @GetMapping
   @Operation(summary = "Loads all processes in a domain")
   public @Valid Future<PageDto<FullProcessInDomainDto>> getProcesses(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -206,8 +206,9 @@ public class ProcessInDomainController
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(auth),
+            clientLookup.getClient(user),
             unitUuid,
+            user,
             domainId,
             displayName,
             subType,
@@ -239,7 +240,7 @@ public class ProcessInDomainController
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullProcessInDomainDto>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -269,13 +270,14 @@ public class ProcessInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
-    var client = clientLookup.getClient(auth);
-    elementService.ensureElementExists(client, domainId, uuid, getProcessUseCase);
+    var client = clientLookup.getClient(user);
+    elementService.ensureElementExists(domainId, uuid, getProcessUseCase, user);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
             client,
             null,
+            user,
             domainId,
             null,
             null,
@@ -320,7 +322,7 @@ public class ProcessInDomainController
   @ApiResponse(responseCode = "404", description = "Process or domain not found")
   @ApiResponse(responseCode = "409", description = "Process already associated with domain")
   public CompletableFuture<ResponseEntity<FullProcessInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -329,7 +331,7 @@ public class ProcessInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        auth, domainId, uuid, dto, Process.class, entityToDtoTransformer::transformProcess2Dto);
+        user, domainId, uuid, dto, Process.class, entityToDtoTransformer::transformProcess2Dto);
   }
 
   @Operation(summary = "Updates a process from the viewpoint of a domain")
@@ -339,7 +341,7 @@ public class ProcessInDomainController
       responseCode = "404",
       description = "Process not found or process not associated with domain")
   public CompletableFuture<ResponseEntity<FullProcessInDomainDto>> updateElement(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -350,7 +352,7 @@ public class ProcessInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody FullProcessInDomainDto dto) {
     return elementService.update(
-        auth,
+        user,
         domainId,
         eTag,
         uuid,
@@ -366,7 +368,7 @@ public class ProcessInDomainController
       responseCode = "404",
       description = "Process or domain not found or process not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -393,7 +395,7 @@ public class ProcessInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        auth, domainId, uuid, Process.class, pageSize, pageNumber, sortColumn, sortOrder);
+        user, domainId, uuid, Process.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing process")
@@ -405,7 +407,7 @@ public class ProcessInDomainController
       description = "Process or domain not found or process not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -413,7 +415,7 @@ public class ProcessInDomainController
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(auth, domainId, uuid, links, Process.class);
+    return elementService.addLinks(user, domainId, uuid, links, Process.class);
   }
 
   @Operation(
@@ -429,12 +431,12 @@ public class ProcessInDomainController
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullProcessInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId);
+    return elementService.evaluate(user, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific process JSON schema")
@@ -460,7 +462,7 @@ public class ProcessInDomainController
   @Operation(summary = "Performs a domain-specific action on a process")
   @PostMapping(UUID_PARAM_SPEC + "/actions/{actionId}/execution")
   public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -468,7 +470,7 @@ public class ProcessInDomainController
           @PathVariable
           UUID uuid,
       @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
-    return elementService.performAction(domainId, uuid, Process.class, actionId, auth);
+    return elementService.performAction(domainId, uuid, Process.class, actionId, user);
   }
 
   @Operation(summary = "Loads control implementations for a process")
@@ -479,7 +481,7 @@ public class ProcessInDomainController
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "Process or domain not found")
   public Future<PageDto<ControlImplementationDto>> getControlImplementations(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -513,7 +515,8 @@ public class ProcessInDomainController
     return elementService.getControlImplementations(
         domainId,
         new GetControlImplementationsUseCase.InputData(
-            clientLookup.getClient(auth),
+            user,
+            clientLookup.getClient(user),
             null,
             domainId,
             TypedId.from(uuid, Process.class),
@@ -523,7 +526,7 @@ public class ProcessInDomainController
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      Authentication auth,
+      ApplicationUser user,
       UUID domainId,
       UUID riskAffectedId,
       UUID controlId,
@@ -534,7 +537,8 @@ public class ProcessInDomainController
       String sortOrder) {
     return elementService.getRequirementImplementations(
         new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-            clientLookup.getClient(auth),
+            user,
+            clientLookup.getClient(user),
             TypedId.from(riskAffectedId, Process.class),
             TypedId.from(controlId, Control.class),
             TypedId.from(domainId, Domain.class),

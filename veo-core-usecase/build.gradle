@@ -23,6 +23,7 @@ testing {
             dependencies {
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'commons-codec:commons-codec'
+                implementation project(":veo-test")
             }
         }
     }

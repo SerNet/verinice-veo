@@ -51,6 +51,16 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
   Set<ScopeData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
+      "select distinct e from #{#entityName} e "
+          + "left join fetch e.owner unit "
+          + "left join fetch e.risks risks "
+          + "left join fetch risks.riskAspects ra "
+          + "left join fetch ra.domain "
+          + "where e.id IN ?1 and unit.client.id = ?2  and (?3 = false or unit.id in ?4)")
+  Set<ScopeData> findByIdsWithRiskValues(
+      Set<UUID> ids, UUID clientId, boolean restrictUnitAccess, Set<UUID> allowedUnits);
+
+  @Query(
       """
                    select distinct e from #{#entityName} e
                    inner join fetch e.riskValuesAspects

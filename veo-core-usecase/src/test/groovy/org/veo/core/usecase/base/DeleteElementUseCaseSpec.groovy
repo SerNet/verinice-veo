@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.base
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.Document
@@ -43,6 +44,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
     ProcessRepository processRepository = Mock()
     ScopeRepository scopeRepository = Mock()
     EventPublisher eventPublisher = Mock()
+    UserAccessRights user = Mock()
 
     def usecase = new DeleteElementUseCase(repositoryProvider, eventPublisher)
 
@@ -67,10 +69,10 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Process,id, existingClient))
+        usecase.execute(new InputData(Process,id, user))
 
         then:
-        1 * processRepository.findById(id) >> Optional.of(process)
+        1 * processRepository.getById(id, user) >> process
         1 * processRepository.deleteById(id)
         1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
@@ -86,10 +88,10 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Person,id, existingClient))
+        usecase.execute(new InputData(Person,id, user))
 
         then:
-        1 * personRepository.findById(id) >> Optional.of(person)
+        1 * personRepository.getById(id, user) >> person
         1 * personRepository.deleteById(id)
     }
 
@@ -106,10 +108,10 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Scope, scopeId, existingClient))
+        usecase.execute(new InputData(Scope, scopeId, user))
 
         then:
-        1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
+        1 * scopeRepository.getById(scopeId, user) >> scope
         1 * scopeRepository.deleteById(scopeId)
         1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Scope

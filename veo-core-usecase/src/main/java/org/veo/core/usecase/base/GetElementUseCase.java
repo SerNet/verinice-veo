@@ -23,7 +23,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.Client;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.exception.NotFoundException;
@@ -44,17 +44,13 @@ public class GetElementUseCase<T extends Element>
 
   @Override
   public OutputData<T> execute(InputData input) {
-    T element =
-        repository
-            .findById(input.elementId)
-            .orElseThrow(() -> new NotFoundException(input.elementId, type));
-    element.checkSameClient(input.authenticatedClient);
+    T element = repository.getById(input.elementId, input.userRights);
     return new OutputData<>(element, getDomain(element, input).orElse(null));
   }
 
   protected Optional<Domain> getDomain(T element, InputData input) {
     return Optional.ofNullable(input.domainId)
-        .map(id -> domainRepository.getById(id, input.authenticatedClient.getId()))
+        .map(id -> domainRepository.getById(id, input.userRights.clientId()))
         .map(
             domain -> {
               if (!element.isAssociatedWithDomain(domain)) {
@@ -67,21 +63,10 @@ public class GetElementUseCase<T extends Element>
 
   @Valid
   public record InputData(
-      @NotNull UUID elementId,
-      @NotNull Client authenticatedClient,
-      UUID domainId,
-      boolean embedRisks)
+      @NotNull UUID elementId, UUID domainId, boolean embedRisks, UserAccessRights userRights)
       implements UseCase.InputData {
-    public InputData(UUID id, Client authenticatedClient, boolean embedRisks) {
-      this(id, authenticatedClient, null, embedRisks);
-    }
-
-    public InputData(UUID id, Client client) {
-      this(id, client, false);
-    }
-
-    public InputData(UUID id, Client client, UUID domainId) {
-      this(id, client, domainId, false);
+    public InputData(UUID id, UserAccessRights userRights) {
+      this(id, null, false, userRights);
     }
   }
 

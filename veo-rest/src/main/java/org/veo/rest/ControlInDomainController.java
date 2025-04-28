@@ -137,7 +137,7 @@ public class ControlInDomainController implements ElementInDomainResource {
       description = "Control or domain not found or control not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullControlInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -158,7 +158,7 @@ public class ControlInDomainController implements ElementInDomainResource {
   @GetMapping
   @Operation(summary = "Loads all controls in a domain")
   public @Valid Future<PageDto<FullControlInDomainDto>> getControls(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -199,8 +199,9 @@ public class ControlInDomainController implements ElementInDomainResource {
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(auth),
+            clientLookup.getClient(user),
             unitUuid,
+            user,
             domainId,
             displayName,
             subType,
@@ -233,7 +234,7 @@ public class ControlInDomainController implements ElementInDomainResource {
       description = "Control or domain not found or control not associated with domain")
   @GetMapping(value = "/{" + UUID_PARAM + "}/control-implementations")
   public @Valid Future<PageDto<ControlImplementationDto>> getControlImplementations(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
@@ -270,10 +271,11 @@ public class ControlInDomainController implements ElementInDomainResource {
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    var client = clientLookup.getClient(auth);
+    var client = clientLookup.getClient(user);
     return useCaseInteractor.execute(
         getControlImplementationsUseCase,
         new GetControlImplementationsUseCase.InputData(
+            user,
             client,
             uuid,
             domainId,
@@ -304,7 +306,7 @@ public class ControlInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullControlInDomainDto>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -334,13 +336,14 @@ public class ControlInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
-    var client = clientLookup.getClient(auth);
-    elementService.ensureElementExists(client, domainId, uuid, getControlUseCase);
+    var client = clientLookup.getClient(user);
+    elementService.ensureElementExists(domainId, uuid, getControlUseCase, user);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
             client,
             null,
+            user,
             domainId,
             null,
             null,
@@ -385,7 +388,7 @@ public class ControlInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Control or domain not found")
   @ApiResponse(responseCode = "409", description = "Control already associated with domain")
   public CompletableFuture<ResponseEntity<FullControlInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -394,7 +397,7 @@ public class ControlInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        auth, domainId, uuid, dto, Control.class, entityToDtoTransformer::transformControl2Dto);
+        user, domainId, uuid, dto, Control.class, entityToDtoTransformer::transformControl2Dto);
   }
 
   @Operation(summary = "Updates a control from the viewpoint of a domain")
@@ -404,7 +407,7 @@ public class ControlInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Control not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullControlInDomainDto>> updateElement(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -415,7 +418,7 @@ public class ControlInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody FullControlInDomainDto controlDto) {
     return elementService.update(
-        auth,
+        user,
         domainId,
         eTag,
         uuid,
@@ -431,7 +434,7 @@ public class ControlInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Control or domain not found or control not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -458,7 +461,7 @@ public class ControlInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        auth, domainId, uuid, Control.class, pageSize, pageNumber, sortColumn, sortOrder);
+        user, domainId, uuid, Control.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing control")
@@ -470,7 +473,7 @@ public class ControlInDomainController implements ElementInDomainResource {
       description = "Control or domain not found or control not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -478,7 +481,7 @@ public class ControlInDomainController implements ElementInDomainResource {
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(auth, domainId, uuid, links, Control.class);
+    return elementService.addLinks(user, domainId, uuid, links, Control.class);
   }
 
   @Operation(
@@ -494,12 +497,12 @@ public class ControlInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullControlInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId);
+    return elementService.evaluate(user, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific control JSON schema")

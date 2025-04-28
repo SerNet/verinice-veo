@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2025  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.io.mapper;
+package org.veo.rest.security;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.state.ElementState;
-import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.entity.ClientOwned;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateElementInputMapper {
-  /** Creates input data for element creation. */
-  public static <T extends Element> CreateElementUseCase.InputData<T> map(
-      ElementState<T> state, Client client, List<UUID> scopeIds, UserAccessRights user) {
-    return new CreateElementUseCase.InputData<>(state, client, mapIds(scopeIds), user);
+@AllArgsConstructor
+public final class NoRestrictionAccesRight implements UserAccessRights {
+  private final String clientId;
+
+  @Override
+  public void checkClient(ClientOwned id) {}
+
+  @Override
+  public boolean isUnitAccessResticted() {
+    return false;
   }
 
-  private static Set<UUID> mapIds(List<UUID> ids) {
-    if (ids == null) {
-      return Set.of();
-    }
-    return new HashSet<>(ids);
+  @Override
+  public Set<UUID> getReadableUnitIds() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public Set<UUID> getWritableUnitIds() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public List<String> getRoles() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public String getClientId() {
+    return clientId;
+  }
+
+  public static NoRestrictionAccesRight from(String clientId) {
+    return new NoRestrictionAccesRight(clientId);
+  }
+
+  @Override
+  public String getUsername() {
+    return "System";
   }
 }

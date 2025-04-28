@@ -392,9 +392,10 @@ public class ModuleConfiguration {
       ClientRepository clientRepository,
       GenericElementRepository elementRepository,
       RepositoryProvider repositoryProvider,
-      UnitHierarchyProvider unitHierarchyProvider) {
+      UnitHierarchyProvider unitHierarchyProvider,
+      UnitRepository unitrepo) {
     return new GetElementsUseCase(
-        clientRepository, elementRepository, repositoryProvider, unitHierarchyProvider);
+        clientRepository, elementRepository, repositoryProvider, unitHierarchyProvider, unitrepo);
   }
 
   @Bean
@@ -461,7 +462,7 @@ public class ModuleConfiguration {
   @Bean
   public GetProcessRisksUseCase getProcessRisksUseCase(
       RepositoryProvider repositoryProvider, ProcessRepository processRepository) {
-    return new GetProcessRisksUseCase(repositoryProvider, processRepository);
+    return new GetProcessRisksUseCase(repositoryProvider);
   }
 
   @Bean
@@ -1142,7 +1143,7 @@ public class ModuleConfiguration {
   @Bean
   InspectElementUseCase inspectElementUseCase(
       DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
+      GenericElementRepository repositoryProvider,
       Inspector inspector) {
     return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
   }

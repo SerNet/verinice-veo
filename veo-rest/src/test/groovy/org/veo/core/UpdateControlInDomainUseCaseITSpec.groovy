@@ -32,6 +32,7 @@ import org.veo.core.usecase.base.UpdateElementInDomainUseCase
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
+import org.veo.rest.security.NoRestrictionAccesRight
 
 @WithUserDetails("content-creator")
 class UpdateControlInDomainUseCaseITSpec extends VeoSpringSpec{
@@ -101,11 +102,11 @@ class UpdateControlInDomainUseCaseITSpec extends VeoSpringSpec{
         dto.parts.clear()
         def etag = ETag.from(composite)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(composite.id, dto, domain.id, client, etag, null))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(composite.id, dto, domain.id, client, etag, null, NoRestrictionAccesRight.from(client.idAsString)))
         }
 
         scope = executeInTransaction {
-            scopeRepository.getById(scope.id, client.id).tap {
+            scopeRepository.getById(scope.id, NoRestrictionAccesRight.from(client.idAsString)).tap {
                 it.controlImplementations.size()
                 it.requirementImplementations.size()
             }

@@ -106,7 +106,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def 'finds entity composites by owners'() {
         given: "three asset composites from different owners"
-        assetRepository.save(newAsset(owner0) {
+        def a1 =assetRepository.save(newAsset(owner0) {
             name = "composite 0"
         })
         assetRepository.save(newAsset(owner1) {
@@ -127,6 +127,21 @@ class ElementJpaSpec extends AbstractJpaSpec {
             it[0].name == "composite 0"
             it[1].name == "composite 1"
         }
+
+        and: "the element is found by client and unit"
+        assetRepository.findById(a1.id, client.id, true, [owner0.id] as Set).present
+
+        and: "the element is found by client with unrestricted unit access"
+        assetRepository.findById(a1.id, client.id, false, [] as Set).present
+
+        and: "is not found for other client"
+        !assetRepository.findById(a1.id, UUID.randomUUID(), true, [owner0.id] as Set).present
+
+        and: "the element is not found for other client with unrestricted unit access"
+        !assetRepository.findById(a1.id, UUID.randomUUID(), false, [] as Set).present
+
+        and: "is not found for other unit rights"
+        !assetRepository.findById(a1.id, client.id, true, [UUID.randomUUID()] as Set).present
     }
 
     def 'increment version id'() {

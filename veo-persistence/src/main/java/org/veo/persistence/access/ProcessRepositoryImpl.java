@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -73,13 +74,6 @@ public class ProcessRepositoryImpl
   }
 
   @Override
-  public Optional<Process> findByIdWithRiskValues(UUID processId) {
-    var processes =
-        ((ProcessDataRepository) dataRepository).findByIdsWithRiskValues(singleton(processId));
-    return processes.stream().findFirst().map(Process.class::cast);
-  }
-
-  @Override
   @Transactional(readOnly = true)
   public Set<Process> findWithRisksAndScenarios(Set<UUID> ids) {
     var elements = processDataRepository.findWithRisksAndScenariosByIdIn(ids);
@@ -92,11 +86,10 @@ public class ProcessRepositoryImpl
   }
 
   @Override
-  public Optional<Process> findById(UUID id, boolean shouldEmbedRisks) {
-    if (shouldEmbedRisks) {
-      return this.findByIdWithRiskValues(id);
-    } else {
-      return this.findById(id);
-    }
+  public Optional<Process> findByIdWithRiskValues(UUID id, UserAccessRights rights) {
+    return processDataRepository
+        .findById(
+            id, rights.clientId(), rights.isUnitAccessResticted(), rights.getReadableUnitIds())
+        .map(Process.class::cast);
   }
 }

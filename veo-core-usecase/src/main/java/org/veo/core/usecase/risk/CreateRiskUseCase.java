@@ -28,6 +28,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.entity.exception.CrossUnitReferenceException;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.RiskOnlyReferencesItsOwnersUnitSpecification;
 import org.veo.core.repository.RepositoryProvider;
@@ -56,9 +57,13 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   @Override
   public OutputData<R> execute(InputData input) {
     // Retrieve the necessary entities for the requested operation:
-    var riskAffected = findEntity(entityClass, input.riskAffectedRef()).orElseThrow();
+    var riskAffected =
+        findElement(entityClass, input.riskAffectedRef(), input.user())
+            .orElseThrow(() -> new NotFoundException(input.riskAffectedRef(), entityClass));
 
-    var scenario = findEntity(Scenario.class, input.scenarioRef()).orElseThrow();
+    var scenario =
+        findElement(Scenario.class, input.scenarioRef(), input.user())
+            .orElseThrow(() -> new NotFoundException(input.scenarioRef(), entityClass));
 
     var domains = findEntities(Domain.class, input.domainRefs());
     if (domains.size() != input.domainRefs().size()) {
@@ -66,8 +71,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     }
 
     // Validate security constraints:
-    riskAffected.checkSameClient(input.authenticatedClient());
-    scenario.checkSameClient(input.authenticatedClient());
+    input.user().checkElementWriteAccess(riskAffected);
 
     // Apply requested operation:
     var risk = riskAffected.obtainRisk(scenario);

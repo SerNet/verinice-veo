@@ -38,9 +38,11 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Element
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.GenericElementRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
@@ -61,6 +63,9 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.rest.security.CustomUserDetailsManager
 import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
+
+import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.SimpleType
 
 /**
  * Base class for veo specifications that use Spring
@@ -93,6 +98,9 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     UnitDataRepository unitDataRepository
+
+    @Autowired
+    GenericElementRepository elementRepository
 
     @Autowired
     AssetDataRepository assetDataRepository
@@ -223,5 +231,37 @@ abstract class VeoSpringSpec extends VeoSpec {
                     // schema is used to to validate outgoing data from an API
                     writeOnly = true
                 })
+    }
+
+    Element saveNewElement(ElementType type, Unit owner, Domain domain, @DelegatesTo(value = Element.class, strategy = Closure.DELEGATE_FIRST) @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Element") Closure init = {}) {
+        def subType = domain.findElementTypeDefinition(type).get().getSubTypes().keySet().first()
+
+        return elementRepository.saveAll(List.of(newElement(type, owner) {
+            associateWithDomain(domain, subType, "NEW")
+            init.delegate = it
+            init.resolveStrategy = Closure.DELEGATE_FIRST
+            init.call(it)
+        })).first()
+    }
+
+    protected void updateUser(String username, TestUserRights rights, UUID testUnitId) {
+        userDetailsManager.loadUserByUsername(username).with {
+            roles.clear()
+            roles.add("veo-user")
+            if (rights.restrictUnitAccess) {
+                roles.add(UserAccessRights.UNIT_ACCESS_RESTRICTION)
+            }
+            if (rights.accessAllUnits) {
+                roles.add(UserAccessRights.READ_WRITE_ALL_UNITS)
+            }
+            readableUnitIds.clear()
+            if (rights.testUnitReadable) {
+                readableUnitIds.add(testUnitId)
+            }
+            writableUnitIds.clear()
+            if (rights.testUnitWritable) {
+                writableUnitIds.add(testUnitId)
+            }
+        }
     }
 }

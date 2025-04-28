@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Client;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.CustomLinkState;
@@ -53,26 +53,30 @@ public class AddLinksUseCase
   @Override
   public OutputData execute(InputData input) {
     return new OutputData(
-        execute(
-            input.elementId, input.type, input.links, input.domainId, input.authenticatedClient));
+        execute(input.elementId, input.type, input.links, input.domainId, input.userRights));
   }
 
   private <T extends Element> T execute(
-      UUID elementId, Class<T> type, Set<CustomLinkState> links, UUID domainId, Client client) {
-    var domain = domainRepository.getById(domainId, client.getId());
-    var element = elementRepo.getById(elementId, type, client);
+      UUID elementId,
+      Class<T> type,
+      Set<CustomLinkState> links,
+      UUID domainId,
+      UserAccessRights userRights) {
+    var domain = domainRepository.getById(domainId, userRights.clientId());
+    var element = elementRepo.getById(elementId, type, userRights);
+    userRights.checkElementWriteAccess(element);
     if (!element.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
           "%s %s is not associated with domain %s"
               .formatted(element.getModelType(), element.getIdAsString(), domain.getIdAsString()));
     }
-    var resolver = refResolverFactory.db(client);
+    var resolver = refResolverFactory.db(element.getOwner().getClient());
     links.stream()
         .map(linkState -> entityStateMapper.mapLink(linkState, element, domain, resolver))
         .forEach(element::addLink);
     DomainSensitiveElementValidator.validate(element);
     element.setUpdatedAt(now());
-    return elementRepo.getById(elementId, type, client);
+    return elementRepo.getById(elementId, type, userRights);
   }
 
   @Valid
@@ -81,7 +85,7 @@ public class AddLinksUseCase
       Class<? extends Element> type,
       UUID domainId,
       Set<CustomLinkState> links,
-      Client authenticatedClient)
+      UserAccessRights userRights)
       implements UseCase.InputData {}
 
   @Valid

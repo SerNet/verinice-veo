@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Person;
@@ -46,9 +47,14 @@ public interface RiskAffectedRepository<T extends RiskAffected<T, R>, R extends 
 
   Set<T> findWithRisksAndScenarios(Set<UUID> ids);
 
-  Optional<T> findByIdWithRiskValues(UUID processId);
+  Optional<T> findByIdWithRiskValues(UUID id, UserAccessRights rights);
 
-  Optional<T> findById(UUID id, boolean shouldEmbedRisks);
+  default Optional<T> findById(UUID id, boolean shouldEmbedRisks, UserAccessRights rights) {
+    if (shouldEmbedRisks) {
+      return findByIdWithRiskValues(id, rights);
+    }
+    return findById(id, rights);
+  }
 
   Set<T> findRisksWithValue(Scenario scenario);
 }

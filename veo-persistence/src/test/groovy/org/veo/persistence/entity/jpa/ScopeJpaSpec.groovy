@@ -106,6 +106,21 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         savedScope.present
         savedScope.get().members.size() == 4
 
+        and: "the element is found by client and unit"
+        scopeDataRepository.findById(scope.id, client.id, true, [unit.id] as Set).present
+
+        and: "the element is found by client with unrestricted unit access"
+        scopeDataRepository.findById(scope.id, client.id, false, [] as Set).present
+
+        and: "is not found for other client"
+        !scopeDataRepository.findById(scope.id, UUID.randomUUID(), true, [unit.id] as Set).present
+
+        and: "is not found for other client with unrestricted unit access"
+        !scopeDataRepository.findById(scope.id, UUID.randomUUID(), false, [] as Set).present
+
+        and: "is not found for other unit rights"
+        !scopeDataRepository.findById(scope.id, client.id, true, [UUID.randomUUID()] as Set).present
+
         when: "the scope is removed"
         txTemplate.execute{
             scope.remove()

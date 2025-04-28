@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 
 /**
@@ -81,4 +82,8 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
    */
   @Valid
   record IdAndClient(UUID id, Client authenticatedClient) implements UseCase.InputData {}
+
+  @Valid
+  record IdAndClientAndRights(UUID id, Client authenticatedClient, UserAccessRights userRights)
+      implements UseCase.InputData {}
 }

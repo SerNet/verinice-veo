@@ -29,6 +29,7 @@ import org.veo.core.entity.ElementType
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -231,7 +232,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -245,7 +246,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -259,7 +260,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -273,7 +274,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -287,7 +288,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -301,7 +302,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -315,7 +316,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -329,7 +330,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.idAsString, 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

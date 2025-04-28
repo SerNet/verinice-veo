@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -38,6 +39,7 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.SingleValueQueryCondition;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
@@ -55,6 +57,7 @@ public class GetElementsUseCase
   private final GenericElementRepository genericRepository;
   private final RepositoryProvider repositoryProvider;
   private final UnitHierarchyProvider unitHierarchyProvider;
+  private final UnitRepository unitRepository;
 
   /**
    * Find persisted control objects and reinstantiate them. Throws a domain exception if the
@@ -62,11 +65,10 @@ public class GetElementsUseCase
    */
   @Override
   public OutputData execute(InputData input) {
-    Client client =
-        UseCaseTools.checkClientExists(input.authenticatedClient.getId(), clientRepository);
+    Client client = UseCaseTools.checkClientExists(input.userRights.clientId(), clientRepository);
 
     var query = getRepo(input.elementTypes).query(client);
-    applyDefaultQueryParameters(input, query);
+    applyDefaultQueryParameters(input, query, client);
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
@@ -81,9 +83,16 @@ public class GetElementsUseCase
     return genericRepository;
   }
 
-  protected void applyDefaultQueryParameters(InputData input, ElementQuery<?> query) {
+  protected void applyDefaultQueryParameters(
+      InputData input, ElementQuery<?> query, Client client) {
 
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
+    // TODO: verinice-veo#3950
+    if (input.userRights.isUnitAccessResticted()) {
+      Optional.ofNullable(new QueryCondition<>(input.userRights.getReadableUnitIds()))
+          .map(c -> unitRepository.findByIds(c.getValues()))
+          .ifPresent(query::whereUnitIn);
+    }
     Optional.ofNullable(input.unitUuid)
         .map(
             condition ->
@@ -97,7 +106,7 @@ public class GetElementsUseCase
     Optional.ofNullable(input.domainId)
         .map(
             condition ->
-                input.authenticatedClient.getDomains().stream()
+                client.getDomains().stream()
                     .filter(d -> d.getId().equals(condition.getValue()))
                     .findFirst()
                     .orElseThrow(
@@ -147,9 +156,9 @@ public class GetElementsUseCase
   @Builder
   @With
   public record InputData(
-      Client authenticatedClient,
       QueryCondition<ElementType> elementTypes,
       QueryCondition<UUID> unitUuid,
+      UserAccessRights userRights,
       SingleValueQueryCondition<UUID> domainId,
       QueryCondition<String> displayName,
       QueryCondition<String> subType,

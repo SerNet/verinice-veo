@@ -47,6 +47,15 @@ public interface AssetDataRepository extends CompositeRiskAffectedDataRepository
   Set<AssetData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
+      "select distinct a from #{#entityName} a "
+          + "left join fetch a.risks risks "
+          + "left join fetch risks.riskAspects ra "
+          + "left join fetch ra.domain "
+          + "where a.id IN ?1 and a.owner.client.id = ?2  and (?3 = false or a.owner.id in ?4)")
+  Set<AssetData> findByIdsWithRiskValues(
+      Set<UUID> ids, UUID clientId, boolean restrictUnitAccess, Set<UUID> allowedUnits);
+
+  @Query(
       """
                select distinct e from #{#entityName} e
                inner join fetch e.owner o

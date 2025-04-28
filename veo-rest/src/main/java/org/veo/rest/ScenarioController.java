@@ -122,7 +122,7 @@ public class ScenarioController
   @GetMapping
   @Operation(summary = "Loads all scenarios")
   public @Valid Future<PageDto<FullScenarioDto>> getScenarios(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -157,12 +157,13 @@ public class ScenarioController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    Client client = getAuthenticatedClient(auth);
+    Client client = getClient(user);
 
     return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
+            user,
             null,
             displayName,
             subType,
@@ -212,12 +213,12 @@ public class ScenarioController
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(auth, uuid, request);
+    return super.getElementParts(user, uuid, request);
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
@@ -225,15 +226,13 @@ public class ScenarioController
   @ApiResponse(responseCode = "204", description = "Scenario deleted")
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-    Client client = getClient(user.getClientId());
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scenario.class, uuid, client),
+        new DeleteElementUseCase.InputData(Scenario.class, uuid, user),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -250,10 +249,10 @@ public class ScenarioController
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Valid @RequestBody FullScenarioDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(auth, element, domainId);
+    return super.evaluate(user, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted scenario")
@@ -267,12 +266,12 @@ public class ScenarioController
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(auth, uuid, domainId, Scenario.class);
+    return inspect(user, uuid, domainId, Scenario.class);
   }
 
   @Override

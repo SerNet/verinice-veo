@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Action;
 import org.veo.core.entity.ActionResult;
 import org.veo.core.entity.ActionStep;
@@ -79,8 +80,9 @@ public class PerformActionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var client = clientRepository.getActiveById(input.clientId);
-    var domain = domainRepository.getActiveById(input.domainId, input.clientId);
+    var domain = domainRepository.getActiveById(input.domainId, input.user.clientId());
+    var element = genericElementRepository.getById(input.elementId, input.elementType, input.user);
+    input.user.checkElementWriteAccess(element);
     var action =
         domain
             .findAction(input.actionId)
@@ -89,7 +91,6 @@ public class PerformActionUseCase
                     new NotFoundException(
                         "Action %s not found in domain %s"
                             .formatted(input.actionId, domain.getIdAsString())));
-    var element = genericElementRepository.getById(input.elementId, input.elementType, client);
     return new OutputData(perform(action, element, domain));
   }
 
@@ -221,7 +222,7 @@ public class PerformActionUseCase
       @NotNull UUID elementId,
       @NotNull Class<? extends Element> elementType,
       @NotNull String actionId,
-      @NotNull UUID clientId)
+      @NotNull UserAccessRights user)
       implements UseCase.InputData {}
 
   public record OutputData(@NotNull ActionResult result) implements UseCase.OutputData {}

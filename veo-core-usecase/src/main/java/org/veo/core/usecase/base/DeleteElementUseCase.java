@@ -20,8 +20,8 @@ package org.veo.core.usecase.base;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Process;
@@ -29,7 +29,6 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
@@ -59,12 +58,8 @@ public class DeleteElementUseCase
   public EmptyOutput execute(InputData input) {
     ElementRepository<? extends Element> repository =
         repositoryProvider.getElementRepositoryFor(input.entityClass);
-    Element entity =
-        repository
-            .findById(input.id)
-            .orElseThrow(() -> new NotFoundException(input.id, input.entityClass));
-    entity.checkSameClient(input.authenticatedClient);
-
+    Element entity = repository.getById(input.id, input.userRights);
+    input.userRights.checkElementWriteAccess(entity);
     entity.remove();
     repository.deleteById(entity.getId());
     if (RELEVANT_CLASSES_FOR_RISK.contains(input.entityClass)) {
@@ -88,6 +83,7 @@ public class DeleteElementUseCase
     return false;
   }
 
-  public record InputData(Class<? extends Element> entityClass, UUID id, Client authenticatedClient)
+  public record InputData(
+      Class<? extends Element> entityClass, UUID id, UserAccessRights userRights)
       implements UseCase.InputData {}
 }

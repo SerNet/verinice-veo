@@ -24,17 +24,16 @@ import java.util.concurrent.CompletableFuture;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.ElementType;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
+import org.veo.rest.security.ApplicationUser;
 
 public abstract class AbstractCompositeElementController<
         T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
@@ -55,14 +54,13 @@ public abstract class AbstractCompositeElementController<
   }
 
   public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
-      Authentication auth, UUID uuid, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
+      ApplicationUser user, UUID uuid, WebRequest request) {
     if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(uuid, client),
+        new GetElementUseCase.InputData(uuid, user),
         output -> {
           T element = output.element();
           return ResponseEntity.ok()

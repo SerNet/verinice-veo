@@ -134,7 +134,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Incident or domain not found or incident not associated with domain")
   public @Valid Future<ResponseEntity<FullIncidentInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -143,7 +143,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        auth,
+        user,
         domainId,
         uuid,
         request,
@@ -155,7 +155,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @GetMapping
   @Operation(summary = "Loads all incidents in a domain")
   public @Valid Future<PageDto<FullIncidentInDomainDto>> getIncidents(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -196,8 +196,9 @@ public class IncidentInDomainController implements ElementInDomainResource {
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(auth),
+            clientLookup.getClient(user),
             unitUuid,
+            user,
             domainId,
             displayName,
             subType,
@@ -229,7 +230,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullIncidentInDomainDto>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -259,13 +260,14 @@ public class IncidentInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
-    var client = clientLookup.getClient(auth);
-    elementService.ensureElementExists(client, domainId, uuid, getIncidentUseCase);
+    var client = clientLookup.getClient(user);
+    elementService.ensureElementExists(domainId, uuid, getIncidentUseCase, user);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
             client,
             null,
+            user,
             domainId,
             null,
             null,
@@ -311,7 +313,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Incident or domain not found or incident already associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -320,7 +322,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        auth, domainId, uuid, dto, Incident.class, entityToDtoTransformer::transformIncident2Dto);
+        user, domainId, uuid, dto, Incident.class, entityToDtoTransformer::transformIncident2Dto);
   }
 
   @Operation(summary = "Updates a incident from the viewpoint of a domain")
@@ -330,7 +332,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Incident not found or incident not associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> updateElement(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -341,7 +343,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody FullIncidentInDomainDto dto) {
     return elementService.update(
-        auth,
+        user,
         domainId,
         eTag,
         uuid,
@@ -357,7 +359,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Incident or domain not found or incident not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -384,7 +386,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        auth, domainId, uuid, Incident.class, pageSize, pageNumber, sortColumn, sortOrder);
+        user, domainId, uuid, Incident.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing incident")
@@ -396,7 +398,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
       description = "Incident or domain not found or incident not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -404,7 +406,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(auth, domainId, uuid, links, Incident.class);
+    return elementService.addLinks(user, domainId, uuid, links, Incident.class);
   }
 
   @Operation(
@@ -420,12 +422,12 @@ public class IncidentInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullIncidentInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId);
+    return elementService.evaluate(user, dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific incident JSON schema")

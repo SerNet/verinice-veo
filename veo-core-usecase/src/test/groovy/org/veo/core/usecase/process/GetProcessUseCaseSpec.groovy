@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Process
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ProcessRepository
@@ -27,6 +28,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
     DomainRepository domainRepository = Mock()
+    UserAccessRights user = Mock()
 
     GetProcessUseCase usecase = new GetProcessUseCase(processRepository, domainRepository)
 
@@ -38,10 +40,10 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(id,  existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(id,  user))
 
         then:
-        1 * processRepository.findById(*_) >> Optional.of(process)
+        1 * processRepository.findById(id, _, user) >> Optional.of(process)
         output.element != null
         output.element.id == id
     }

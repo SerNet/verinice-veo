@@ -62,6 +62,33 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch e.domainAssociations da "
           + "left join fetch da.domain "
           + "left join fetch e.links "
+          + "where e.id = ?1 and e.owner.client.id = ?2 and  (?3 = false or e.owner.id in ?4)")
+  @Nonnull
+  Optional<T> findById(
+      @Nonnull UUID id, @Nonnull UUID clientId, boolean restrictUnitAccess, Set<UUID> allowedUnits);
+
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.domainAssociations da "
+          + "left join fetch da.domain "
+          + "left join fetch e.links "
+          + "where e.id in ?1 and e.owner.client.id = ?2 and  (?3 = false or e.owner.id in ?4)")
+  @Nonnull
+  Set<T> findByIds(
+      @Nonnull Set<UUID> ids,
+      @Nonnull UUID clientId,
+      boolean restrictUnitAccess,
+      Set<UUID> allowedUnits);
+
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.domainAssociations da "
+          + "left join fetch da.domain "
+          + "left join fetch e.links "
           + "where e.id = ?1 and e.owner.client.id = ?2")
   @Nonnull
   Optional<T> findById(@Nonnull UUID id, @Nonnull UUID clientId);

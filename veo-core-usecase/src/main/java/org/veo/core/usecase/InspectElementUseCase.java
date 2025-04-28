@@ -20,13 +20,12 @@ package org.veo.core.usecase;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Client;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Finding;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.inspection.Inspector;
 
 import lombok.RequiredArgsConstructor;
@@ -36,36 +35,34 @@ public class InspectElementUseCase
     implements TransactionalUseCase<
         InspectElementUseCase.InputData, InspectElementUseCase.OutputData> {
   private final DomainRepository domainRepository;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository elementRepository;
   private final Inspector inspector;
 
   @Override
   public OutputData execute(InputData input) {
-    var client = input.client;
     var domain =
         domainRepository
             .findById(input.domainId)
             .orElseThrow(
                 () ->
                     new NotFoundException("Domain with ID %s not found".formatted(input.domainId)));
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
+    input.userRights.checkClient(domain);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
 
     var element =
-        repositoryProvider
-            .getRepositoryFor(input.elementType)
-            .findById(input.elementId)
+        elementRepository
+            .findById(input.elementId, input.elementType, input.userRights)
             .orElseThrow(() -> new NotFoundException(input.elementId, input.elementType));
-    element.checkSameClient(client);
     return new OutputData(inspector.inspect(element, domain));
   }
 
   public record InputData(
-      Client client, Class<? extends Element> elementType, UUID elementId, UUID domainId)
+      Class<? extends Element> elementType,
+      UUID elementId,
+      UUID domainId,
+      UserAccessRights userRights)
       implements UseCase.InputData {}
 
   public record OutputData(Set<Finding> findings) implements UseCase.OutputData {}

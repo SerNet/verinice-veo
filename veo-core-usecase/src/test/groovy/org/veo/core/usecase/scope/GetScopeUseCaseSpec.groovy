@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Scope
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ScopeRepository
@@ -27,6 +28,7 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
 
     DomainRepository domainRepository = Mock()
     ScopeRepository scopeRepository = Mock()
+    UserAccessRights user = Mock()
 
     GetScopeUseCase usecase = new GetScopeUseCase(domainRepository, scopeRepository)
 
@@ -39,10 +41,10 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(scopeId, existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(scopeId, user))
 
         then:
-        1 * scopeRepository.findById(scopeId, false) >> Optional.of(scope)
+        1 * scopeRepository.findById(scopeId, false, user) >> Optional.of(scope)
         output.element != null
         output.element.id == scopeId
     }

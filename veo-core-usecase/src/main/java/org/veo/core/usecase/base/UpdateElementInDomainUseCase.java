@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -53,8 +54,8 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
     var domain = idRefResolver.resolve(input.domainId, Domain.class);
     var inputElement = input.element;
-    var storedElement = repo.getById(input.id, input.authenticatedClient.getId());
-    storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net
+    var storedElement = repo.getById(input.id, input.userRights);
+    input.userRights.checkElementWriteAccess(storedElement);
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
           "%s %s is not associated with domain %s",
@@ -69,7 +70,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     DomainSensitiveElementValidator.validate(storedElement);
     repo.save(storedElement);
     // re-fetch element to make sure it is returned with updated versioning information
-    return new OutputData<>(repo.getById(storedElement.getId(), input.authenticatedClient.getId()));
+    return new OutputData<>(repo.getById(storedElement.getId(), input.userRights));
   }
 
   @Override
@@ -84,7 +85,8 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
       UUID domainId,
       Client authenticatedClient,
       String eTag,
-      String username)
+      String username,
+      UserAccessRights userRights)
       implements UseCase.InputData {}
 
   @Valid

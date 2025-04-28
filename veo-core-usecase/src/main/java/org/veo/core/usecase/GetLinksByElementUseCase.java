@@ -20,7 +20,7 @@ package org.veo.core.usecase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.Client;
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.InOrOutboundLink;
@@ -44,11 +44,10 @@ public class GetLinksByElementUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    var domain =
-        domainRepository.getById(input.domainRef.getId(), input.authenticatedClient.getId());
+    var domain = domainRepository.getById(input.domainRef.getId(), input.userRights.clientId());
     var element =
         elementRepository.getById(
-            input.elementRef().getId(), input.elementRef.getType(), input.authenticatedClient);
+            input.elementRef().getId(), input.elementRef.getType(), input.userRights);
     if (!element.isAssociatedWithDomain(domain)) {
       throw NotFoundException.elementNotAssociatedWithDomain(element, domain.getIdAsString());
     }
@@ -58,9 +57,9 @@ public class GetLinksByElementUseCase
 
   @Valid
   public record InputData(
-      @NotNull Client authenticatedClient,
       @NotNull TypedId<? extends Element> elementRef,
       @NotNull TypedId<Domain> domainRef,
+      @NotNull UserAccessRights userRights,
       @NotNull PagingConfiguration<LinkQuery.SortCriterion> pagingConfiguration)
       implements UseCase.InputData {}
 

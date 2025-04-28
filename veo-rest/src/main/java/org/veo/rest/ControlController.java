@@ -84,6 +84,7 @@ import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -121,7 +122,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @GetMapping
   @Operation(summary = "Loads all controls")
   public @Valid Future<PageDto<FullControlDto>> getControls(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -156,12 +157,13 @@ public class ControlController extends AbstractCompositeElementController<Contro
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    Client client = getAuthenticatedClient(auth);
+    Client client = getClient(user);
 
     return getElements(
         QueryInputMapper.map(
             client,
             unitUuid,
+            user,
             null,
             displayName,
             subType,
@@ -211,12 +213,12 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(auth, uuid, request);
+    return super.getElementParts(user, uuid, request);
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
@@ -224,14 +226,13 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @ApiResponse(responseCode = "204", description = "Control deleted")
   @ApiResponse(responseCode = "404", description = "Control not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Control.class, uuid, client),
+        new DeleteElementUseCase.InputData(Control.class, uuid, user),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -248,10 +249,10 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Valid @RequestBody FullControlDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(auth, element, domainId);
+    return super.evaluate(user, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted control")
@@ -265,12 +266,12 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(auth, uuid, domainId, Control.class);
+    return inspect(user, uuid, domainId, Control.class);
   }
 
   @Override
