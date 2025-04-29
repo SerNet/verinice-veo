@@ -30,7 +30,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
