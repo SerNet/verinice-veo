@@ -535,7 +535,7 @@ class BasicCrudRestTest extends VeoRestTest {
 
     def "error messages are returned"() {
         when:
-        def responseBody = post("/assets", [:], 400).body
+        def responseBody = post("/domains/$testDomainId/assets", [:], 400).body
 
         then:
         responseBody.name == "A name must be present."

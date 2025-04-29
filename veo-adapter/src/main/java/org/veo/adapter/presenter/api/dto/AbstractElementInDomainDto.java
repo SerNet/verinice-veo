@@ -95,7 +95,6 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @JsonIgnore private TypedId<Domain> domain;
 
   @Size(max = NAME_MAX_LENGTH)
-  @NotNull
   @JsonProperty(required = true)
   private String name;
 
