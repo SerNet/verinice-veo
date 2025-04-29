@@ -31,15 +31,11 @@ import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -64,7 +60,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -75,9 +70,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,11 +84,9 @@ import org.veo.adapter.presenter.api.dto.FullElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
-import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
@@ -105,7 +96,6 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
-import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -120,7 +110,6 @@ import org.veo.core.usecase.scope.GetScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
-import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -133,7 +122,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage scopes. */
@@ -145,8 +133,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
-  private final CreateElementUseCase<Scope> createScopeUseCase;
-  private final UpdateScopeUseCase updateScopeUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final GetScopeRiskUseCase getScopeRiskUseCase;
   private final CreateScopeRiskUseCase createScopeRiskUseCase;
@@ -162,9 +148,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       GetScopeUseCase getElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase,
-      CreateElementUseCase<Scope> createScopeUseCase,
       GetElementsUseCase getElementsUseCase,
-      UpdateScopeUseCase updateScopeUseCase,
       DeleteElementUseCase deleteElementUseCase,
       GetScopeRiskUseCase getScopeRiskUseCase,
       CreateScopeRiskUseCase createScopeRiskUseCase,
@@ -181,8 +165,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         evaluateElementUseCase,
         inspectElementUseCase,
         getElementsUseCase);
-    this.createScopeUseCase = createScopeUseCase;
-    this.updateScopeUseCase = updateScopeUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
     this.getScopeRiskUseCase = getScopeRiskUseCase;
     this.createScopeRiskUseCase = createScopeRiskUseCase;
@@ -328,54 +310,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
                   scope.getMembers().stream()
                       .map(member -> entityToDtoTransformer.transform2Dto(member, false))
                       .toList());
-        });
-  }
-
-  @PostMapping()
-  @Operation(summary = "Creates a scope")
-  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scope created")})
-  @Deprecated
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody CreateScopeDto createScopeDto,
-      @Parameter(description = SCOPE_IDS_DESCRIPTION)
-          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<UUID> scopeIds) {
-    return useCaseInteractor.execute(
-        createScopeUseCase,
-        CreateElementInputMapper.map(createScopeDto, getClient(user), scopeIds),
-        output -> {
-          Scope scope = output.entity();
-          ApiResponseBody apiResponseBody =
-              new ApiResponseBody(
-                  true, Optional.of(scope.getIdAsString()), "Scope created successfully.");
-          return RestApiResponse.created(URL_BASE_PATH, apiResponseBody);
-        });
-  }
-
-  @PutMapping(UUID_PARAM_SPEC)
-  @Operation(summary = "Updates a scope")
-  @ApiResponse(responseCode = "200", description = "Scope updated")
-  @ApiResponse(responseCode = "404", description = "Scope not found")
-  @Deprecated
-  public CompletableFuture<ResponseEntity<FullScopeDto>> updateScope(
-      @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
-          String eTag,
-      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
-          @PathVariable
-          UUID uuid,
-      @Valid @NotNull @RequestBody FullScopeDto scopeDto) {
-    scopeDto.applyResourceId(uuid);
-    return useCaseInteractor.execute(
-        updateScopeUseCase,
-        new UpdateScopeUseCase.InputData<>(
-            uuid, scopeDto, getClient(user), eTag, user.getUsername()),
-        output -> {
-          var scope = output.entity();
-          return ResponseEntity.ok()
-              .eTag(ETag.from(uuid.toString(), scope.getVersion()))
-              .body(entityToDtoTransformer.transformScope2Dto(scope, false));
         });
   }
 

@@ -29,15 +29,11 @@ import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -61,8 +57,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -72,9 +66,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,25 +77,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.dto.create.CreateScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
-import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
-import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
@@ -114,7 +99,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage scenarios. */
@@ -127,8 +111,6 @@ public class ScenarioController
   public ScenarioController(
       GetScenarioUseCase getScenarioUseCase,
       GetElementsUseCase getElementsUseCase,
-      CreateElementUseCase<Scenario> createScenarioUseCase,
-      UpdateScenarioUseCase updateScenarioUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
@@ -138,15 +120,11 @@ public class ScenarioController
         evaluateElementUseCase,
         inspectElementUseCase,
         getElementsUseCase);
-    this.createScenarioUseCase = createScenarioUseCase;
-    this.updateScenarioUseCase = updateScenarioUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
   }
 
   public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
 
-  private final CreateElementUseCase<Scenario> createScenarioUseCase;
-  private final UpdateScenarioUseCase updateScenarioUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   @GetMapping
@@ -248,43 +226,6 @@ public class ScenarioController
           UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
-  }
-
-  @PostMapping()
-  @Operation(summary = "Creates a scenario")
-  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scenario created")})
-  @Deprecated
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createScenario(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody CreateScenarioDto dto,
-      @Parameter(description = SCOPE_IDS_DESCRIPTION)
-          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<UUID> scopeIds) {
-    return useCaseInteractor.execute(
-        createScenarioUseCase,
-        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
-        output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.entity());
-          return RestApiResponse.created(URL_BASE_PATH, body);
-        });
-  }
-
-  @PutMapping(value = "/{id}")
-  @Operation(summary = "Updates a scenario")
-  @ApiResponse(responseCode = "200", description = "Scenario updated")
-  @ApiResponse(responseCode = "404", description = "Scenario not found")
-  @Deprecated
-  public CompletableFuture<ResponseEntity<FullScenarioDto>> updateScenario(
-      @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
-          String eTag,
-      @PathVariable UUID id,
-      @Valid @NotNull @RequestBody FullScenarioDto scenarioDto) {
-    scenarioDto.applyResourceId(id);
-    return useCaseInteractor.execute(
-        updateScenarioUseCase,
-        new InputData<>(id, scenarioDto, getClient(user), eTag, user.getUsername()),
-        output -> toResponseEntity(output.entity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

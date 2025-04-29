@@ -31,15 +31,11 @@ import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
-import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
-import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -64,7 +60,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -75,9 +70,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,12 +82,9 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
-import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
-import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
@@ -104,10 +94,8 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
-import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
@@ -118,7 +106,6 @@ import org.veo.core.usecase.process.GetProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
-import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -132,7 +119,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -149,8 +135,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
   public static final String EMBED_RISKS_PARAM = "embedRisks";
 
-  private final CreateElementUseCase<Process> createProcessUseCase;
-  private final UpdateProcessUseCase updateProcessUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final GetProcessRiskUseCase getProcessRiskUseCase;
   private final CreateProcessRiskUseCase createProcessRiskUseCase;
@@ -164,9 +148,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   private final UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase;
 
   public ProcessController(
-      CreateElementUseCase<Process> createProcessUseCase,
       GetProcessUseCase getProcessUseCase,
-      UpdateProcessUseCase putProcessUseCase,
       DeleteElementUseCase deleteElementUseCase,
       GetElementsUseCase getElementsUseCase,
       CreateProcessRiskUseCase createProcessRiskUseCase,
@@ -186,8 +168,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
         evaluateElementUseCase,
         inspectElementUseCase,
         getElementsUseCase);
-    this.createProcessUseCase = createProcessUseCase;
-    this.updateProcessUseCase = putProcessUseCase;
     this.deleteElementUseCase = deleteElementUseCase;
     this.createProcessRiskUseCase = createProcessRiskUseCase;
     this.getProcessRiskUseCase = getProcessRiskUseCase;
@@ -253,44 +233,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
           UUID uuid,
       WebRequest request) {
     return super.getElementParts(auth, uuid, request);
-  }
-
-  @PostMapping()
-  @Operation(summary = "Creates a process")
-  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Process created")})
-  @Deprecated
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody CreateProcessDto dto,
-      @Parameter(description = SCOPE_IDS_DESCRIPTION)
-          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
-          List<UUID> scopeIds) {
-
-    return useCaseInteractor.execute(
-        createProcessUseCase,
-        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
-        output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.entity());
-          return RestApiResponse.created(URL_BASE_PATH, body);
-        });
-  }
-
-  @PutMapping(value = "/{id}")
-  @Operation(summary = "Updates a process")
-  @ApiResponse(responseCode = "200", description = "Process updated")
-  @ApiResponse(responseCode = "404", description = "Process not found")
-  @Deprecated
-  public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> updateProcess(
-      @Parameter(hidden = true) ApplicationUser user,
-      @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
-          String eTag,
-      @PathVariable UUID id,
-      @Valid @RequestBody FullProcessDto processDto) {
-    processDto.applyResourceId(id);
-    return useCaseInteractor.execute(
-        updateProcessUseCase,
-        new InputData<>(id, processDto, getClient(user), eTag, user.getUsername()),
-        output -> toResponseEntity(output.entity()));
   }
 
   @DeleteMapping(value = "/{" + UUID_PARAM + "}")

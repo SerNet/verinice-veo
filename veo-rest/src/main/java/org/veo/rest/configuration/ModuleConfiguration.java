@@ -96,7 +96,6 @@ import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
-import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -125,11 +124,9 @@ import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
-import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
-import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
@@ -164,20 +161,17 @@ import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
-import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.core.usecase.inspection.Inspector;
 import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.GetAllSystemMessageUseCase;
 import org.veo.core.usecase.message.GetSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
-import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
-import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.profile.GetIncarnationConfigurationUseCase;
 import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
@@ -186,13 +180,11 @@ import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
-import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
@@ -419,37 +411,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UpdateAssetUseCase updateAssetUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateAssetUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
-  }
-
-  @Bean
   public GetControlUseCase getControlUseCase(
       ControlRepositoryImpl controlRepository, DomainRepository domainRepository) {
     return new GetControlUseCase(controlRepository, domainRepository);
-  }
-
-  @Bean
-  public UpdateControlUseCase updateControlUseCase(
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      Decider decider,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateControlUseCase(
-        repositoryProvider,
-        eventPublisher,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        refResolverFactory);
   }
 
   @Bean
@@ -459,49 +423,15 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UpdateDocumentUseCase updateDocumentUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateDocumentUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
   public GetScenarioUseCase getScenarioUseCase(
       ScenarioRepositoryImpl scenarioRepository, DomainRepository domainRepository) {
     return new GetScenarioUseCase(scenarioRepository, domainRepository);
   }
 
   @Bean
-  public UpdateScenarioUseCase updateScenarioUseCase(
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      Decider decider,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateScenarioUseCase(
-        repositoryProvider,
-        eventPublisher,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        refResolverFactory);
-  }
-
-  @Bean
   public GetIncidentUseCase getIncidentUseCase(
       IncidentRepositoryImpl incidentRepository, DomainRepository domainRepository) {
     return new GetIncidentUseCase(incidentRepository, domainRepository);
-  }
-
-  @Bean
-  public UpdateIncidentUseCase updateIncidentUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateIncidentUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
   }
 
   @Bean
@@ -533,20 +463,6 @@ public class ModuleConfiguration {
   public UpdateProcessRiskUseCase updateProcessRiskUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
     return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
-  public UpdateProcessUseCase putProcessUseCase(
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      Decider decider,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateProcessUseCase(
-        repositoryProvider,
-        eventPublisher,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        refResolverFactory);
   }
 
   @Bean
@@ -603,33 +519,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UpdatePersonUseCase updatePersonUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdatePersonUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
   public GetScopeUseCase getScopeUseCase(
       DomainRepository domainRepository, ScopeRepositoryImpl scopeRepository) {
     return new GetScopeUseCase(domainRepository, scopeRepository);
-  }
-
-  @Bean
-  public UpdateScopeUseCase updateScopeUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateScopeUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
   }
 
   @Bean
