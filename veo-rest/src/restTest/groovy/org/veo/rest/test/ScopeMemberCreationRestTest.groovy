@@ -21,59 +21,84 @@ class ScopeMemberCreationRestTest extends VeoRestTest {
     String unitUri
 
     def setup() {
-        unitUri = "$baseUrl/units/" + post("/units", [name: "decision rest test unit"]).body.resourceId
+        unitUri = "$baseUrl/units/" + post("/units", [
+            name: "decision rest test unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).body.resourceId
     }
 
     def "create elements as scope members"() {
         given: "two scopes"
-        def scope1Id = post("/scopes", [
+        def scope1Id = post("/domains/$testDomainId/scopes", [
             name: "scope 1",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
         def scope1CreationTime = get("/scopes/$scope1Id").body.createdAt
 
-        def scope2Id = post("/scopes", [
+        def scope2Id = post("/domains/$testDomainId/scopes", [
             name: "scope 2",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
         def scope2CreationTime = get("/scopes/$scope2Id").body.createdAt
 
         when: "creating various elements as members of both scopes"
-        def assetId = post("/assets?scopes=$scope1Id,$scope2Id", [
+        def assetId = post("/domains/$testDomainId/assets?scopes=$scope1Id,$scope2Id", [
             name: "asset in two scopes",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def controlId = post("/controls?scopes=$scope1Id,$scope2Id", [
+        def controlId = post("/domains/$testDomainId/controls?scopes=$scope1Id,$scope2Id", [
             name: "control in two scopes",
+            subType: 'TOM',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def documentId = post("/documents?scopes=$scope1Id,$scope2Id", [
+        def documentId = post("/domains/$testDomainId/documents?scopes=$scope1Id,$scope2Id", [
             name: "document in two scopes",
+            subType: 'Manual',
+            status: 'OUTDATED',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def incidentId = post("/incidents?scopes=$scope1Id,$scope2Id", [
+        def incidentId = post("/domains/$testDomainId/incidents?scopes=$scope1Id,$scope2Id", [
             name: "incident in two scopes",
+            subType: 'DISASTER',
+            status: 'DETECTED',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def personId = post("/persons?scopes=$scope1Id,$scope2Id", [
+        def personId = post("/domains/$testDomainId/persons?scopes=$scope1Id,$scope2Id", [
             name: "person in two scopes",
+            subType: 'Programmer',
+            status: 'REVIEWING',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def processId = post("/processes?scopes=$scope1Id,$scope2Id", [
+        def processId = post("/domains/$testDomainId/processes?scopes=$scope1Id,$scope2Id", [
             name: "process in two scopes",
+            subType: 'BusinessProcess',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def scenarioId = post("/scenarios?scopes=$scope1Id,$scope2Id", [
+        def scenarioId = post("/domains/$testDomainId/scenarios?scopes=$scope1Id,$scope2Id", [
             name: "scenario in two scopes",
+            subType: 'Attack',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
-        def subScopeId = post("/scopes?scopes=$scope1Id,$scope2Id", [
+        def subScopeId = post("/domains/$testDomainId/scopes?scopes=$scope1Id,$scope2Id", [
             name: "scope in two scopes",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
 
         then: "the scopes contain all members"
-        with(get("/scopes/$scope1Id").body) {
+        with(get("/domains/$testDomainId/scopes/$scope1Id").body) {
             updatedAt > scope1CreationTime
             members*.targetUri =~ [
                 "$owner.baseUrl/assets/$assetId",
@@ -86,7 +111,7 @@ class ScopeMemberCreationRestTest extends VeoRestTest {
                 "$owner.baseUrl/scopes/$subScopeId",
             ]
         }
-        with(get("/scopes/$scope2Id").body) {
+        with(get("/domains/$testDomainId/scopes/$scope2Id").body) {
             updatedAt > scope2CreationTime
             members*.targetUri =~ [
                 "$owner.baseUrl/assets/$assetId",

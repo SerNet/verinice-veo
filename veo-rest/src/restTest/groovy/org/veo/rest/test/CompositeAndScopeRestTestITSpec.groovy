@@ -22,25 +22,34 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def setup() {
         unitId = post("/units", [
-            name: "process test unit"
+            name: "process test unit",
+            domains:[
+                [ targetUri: "/domains/$testDomainId" ]
+            ]
         ]).body.resourceId
     }
 
     def "CRUD a composite asset"() {
         given: "two assets"
-        def partAId = post("/assets", [
+        def partAId = post("/domains/$testDomainId/assets", [
             name: "part a",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
-        def partBId = post("/assets", [
+        def partBId = post("/domains/$testDomainId/assets", [
             name: "part b",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
         when: "creating and retrieving a composite asset containing the two existing assets"
-        def compositeId = post("/assets", [
+        def compositeId = post("/domains/$testDomainId/assets", [
             name: "composite",
             owner: [targetUri: "$baseUrl/units/$unitId"],
+            subType: 'Server',
+            status: 'RUNNING',
             parts: [
                 [targetUri: "$baseUrl/assets/$partAId"],
                 [targetUri: "$baseUrl/assets/$partBId"],
@@ -54,8 +63,10 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         compositeResponse.body.parts*.targetUri ==~ [urlA, urlB]
 
         when: "removing a part from the composite"
-        put("/assets/$compositeId", [
+        put("/domains/$testDomainId/assets/$compositeId", [
             name: "composite",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/assets/$partBId"],
@@ -81,12 +92,16 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def "CRUD a scope"() {
         given: "a composite asset"
-        def assetPartId = post("/assets", [
+        def assetPartId = post("/domains/$testDomainId/assets", [
             name: "asset part",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
-        def assetCompositeId = post("/assets", [
+        def assetCompositeId = post("/domains/$testDomainId/assets", [
             name: "asset composite",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/assets/$assetPartId"]
@@ -94,8 +109,10 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
 
         when: "creating & retrieving a scope that contains the composite"
-        def scopeId = post("/scopes", [
+        def scopeId = post("/domains/$testDomainId/scopes", [
             name: "scope of everything",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/assets/$assetCompositeId"]
@@ -110,19 +127,25 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         get("/assets/$assetCompositeId").body.parts.first().targetUri =~ /.*\/assets\/$assetPartId/
 
         when: "adding another composite to the part"
-        def personPartId = post("/persons", [
+        def personPartId = post("/domains/$testDomainId/persons", [
             name: "person part",
+            subType: 'Programmer',
+            status: 'CODING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
-        def personCompositeId = post("/persons", [
+        def personCompositeId = post("/domains/$testDomainId/persons", [
             name: "person composite",
+            subType: 'Programmer',
+            status: 'CODING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$personPartId"]
             ],
         ]).body.resourceId
-        put("/scopes/$scopeId", [
+        put("/domains/$testDomainId/scopes/$scopeId", [
             name: "scope of everything",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/assets/$assetCompositeId"],
@@ -141,8 +164,10 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
         when: "removing the person from the scope"
         def scopeETag = get("/scopes/$scopeId").getETag()
-        put("/scopes/$scopeId", [
+        put("/domains/$testDomainId/scopes/$scopeId", [
             name: "scope of everything",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/assets/$assetCompositeId"]
@@ -173,19 +198,25 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def "updating an element does not detach it from its scopes and composites"() {
         given: "a person in a scope and in a composite"
-        def personId = post("/persons", [
+        def personId = post("/domains/$testDomainId/persons", [
             name: "little person",
+            subType: 'Programmer',
+            status: 'CODING',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def scopeId = post("/scopes", [
+        def scopeId = post("/domains/$testDomainId/scopes", [
             name: "scope with person as member",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/persons/$personId"]
             ]
         ]).body.resourceId
-        def compositePersonId = post("/persons", [
+        def compositePersonId = post("/domains/$testDomainId/persons", [
             name: "person with person as part",
+            subType: 'Programmer',
+            status: 'CODING',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$personId"]
@@ -194,8 +225,10 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
         when: "updating the person"
         def personETag = get("/persons/$personId").getETag()
-        put("/persons/$personId", [
+        put("/domains/$testDomainId/persons/$personId", [
             name: "little person in a scope and in a composite",
+            subType: 'Programmer',
+            status: 'CODING',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ], personETag)
 
@@ -214,11 +247,14 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def "simple circular structure is supported"() {
         given: "an asset that is part of itself"
-        def assetId = post("/assets", [
+        def assetId = post("/domains/$testDomainId/assets", [
             name: "I am so alone",
+            subType: 'Server',
+            status: 'RUNNING',
+
             owner: [targetUri: "/units/$unitId"],
         ]).body.resourceId
-        get("/assets/$assetId").with{
+        get("/domains/$testDomainId/assets/$assetId").with{
             body.parts = [
                 [targetUri: "/assets/$assetId"]
             ]
@@ -226,13 +262,13 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         }
 
         expect: "that it can be updated"
-        get("/assets/$assetId").with{
+        get("/domains/$testDomainId/assets/$assetId").with{
             body.name = "I am my own best friend"
             put(body._self, body, getETag())
         }
 
         and: "and retrieved"
-        with(get("/assets/$assetId").body) {
+        with(get("/domains/$testDomainId/assets/$assetId").body) {
             name == "I am my own best friend"
             parts.size() == 1
             parts[0].targetUri.endsWith"/assets/$assetId"
@@ -242,18 +278,22 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def "adding a part from another unit is forbidden"() {
         given: "assets in two different units"
-        def mainUnitAssetId = post("/assets", [
+        def mainUnitAssetId = post("/domains/$testDomainId/assets", [
             name: "asset in main unit",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "/units/$unitId"]
         ]).body.resourceId
         def otherUnitId = postNewUnit().resourceId
-        def otherUnitAssetId = post("/assets", [
+        def otherUnitAssetId = post("/domains/$testDomainId/assets", [
             name: "asset in other unit",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [targetUri: "/units/$otherUnitId"],
         ]).body.resourceId
 
         expect: "that the units cannot be part of the same hierarchy"
-        get("/assets/$mainUnitAssetId").with{
+        get("/domains/$testDomainId/assets/$mainUnitAssetId").with{
             body.parts = [
                 [targetUri: "/assets/$otherUnitAssetId"]
             ]
@@ -263,18 +303,22 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
     def "adding a member from another unit is forbidden"() {
         given: "scopes in two different units"
-        def mainUnitScopeId = post("/scopes", [
+        def mainUnitScopeId = post("/domains/$testDomainId/scopes", [
             name: "scope in main unit",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "/units/$unitId"]
         ]).body.resourceId
         def otherUnitId = postNewUnit().resourceId
-        def otherUnitScopeId = post("/scopes", [
+        def otherUnitScopeId = post("/domains/$testDomainId/scopes", [
             name: "scope in other unit",
+            subType: 'Company',
+            status: 'NEW',
             owner: [targetUri: "/units/$otherUnitId"],
         ]).body.resourceId
 
         expect: "that the units cannot be part of the same hierarchy"
-        get("/scopes/$mainUnitScopeId").with{
+        get("/domains/$testDomainId/scopes/$mainUnitScopeId").with{
             body.members = [
                 [targetUri: "/scopes/$otherUnitScopeId"]
             ]

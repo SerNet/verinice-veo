@@ -64,15 +64,11 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can create a scenario without potential probability"() {
         when: "creating a scenario without probability"
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                ]
-            ]
+            subType: "RiskyScenario",
+            status: "NEW",
         ])).resourceId
 
         and: "retrieving it"
@@ -84,21 +80,17 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can create and update scenario potential probability"() {
         when: "creating a scenario with probabilities for different risk definitions"
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition : [
-                            potentialProbability: 0
-                        ],
-                        mySecondRiskDefinition : [
-                            potentialProbability: 1
-                        ]
-                    ]
+            subType: "RiskyScenario",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition : [
+                    potentialProbability: 0
+                ],
+                mySecondRiskDefinition : [
+                    potentialProbability: 1
                 ]
             ]
         ])).resourceId
@@ -113,21 +105,17 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         retrievedScenario.domains[domainId].riskValues.mySecondRiskDefinition.potentialProbability == 1
 
         when: "updating the probabilities on the scenario"
-        put("/scenarios/$scenarioId", [
+        put("/domains/$domainId/scenarios/$scenarioId", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition : [
-                            potentialProbability: 2
-                        ],
-                        myThirdRiskDefinition : [
-                            potentialProbability: 3
-                        ]
-                    ]
+            subType: "RiskyScenario",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition : [
+                    potentialProbability: 2
+                ],
+                myThirdRiskDefinition : [
+                    potentialProbability: 3
                 ]
             ]
         ], ['If-Match': scenarioETag])
@@ -143,18 +131,14 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "missing potential probability is handled"() {
         when: "creating a scenario without potential probability values for risk definitions"
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition : [:],
-                        myThirdRiskDefinition : [:]
-                    ]
-                ]
+            subType: "RiskyScenario",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition : [:],
+                myThirdRiskDefinition : [:]
             ]
         ])).resourceId
 
@@ -167,18 +151,14 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can not create a scenario with an undefined value"() {
         when: "creating a scenario with an undefined probability"
-        post("/scenarios", [
+        post("/domains/$domainId/scenarios", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition : [
-                            potentialProbability: 12345
-                        ]
-                    ]
+            subType: "RiskyScenario",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition : [
+                    potentialProbability: 12345
                 ]
             ]
         ], 422)
@@ -189,18 +169,14 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
 
         when: "creating a scenario with an undefined risk definition"
         def undefinedName = "undefinedRiskDefinition"
-        post("/scenarios", [
+        post("/domains/$domainId/scenarios", [
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScenario",
-                    status: "NEW",
-                    riskValues: [
-                        (undefinedName) : [
-                            potentialProbability: 1
-                        ]
-                    ]
+            subType: "RiskyScenario",
+            status: "NEW",
+            riskValues: [
+                (undefinedName) : [
+                    potentialProbability: 1
                 ]
             ]
         ], 422)

@@ -109,15 +109,11 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         then: "an element can be created in the domain"
-        post("/assets", [
+        post("/domains/$domainId/assets", [
             name: "main server",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "server",
-                    status: "on"
-                ]
-            ]
+            subType: "server",
+            status: "on"
         ])
 
         when: "creating a template from the domain"
@@ -155,15 +151,11 @@ class DomainCreationRestTest extends DomainRestTest {
                 [targetUri: secondaryClientDomain._self]
             ]
         ], 201, SECONDARY_CLIENT_USER).body.resourceId
-        post("/assets", [
+        post("/domains/$secondaryClientDomain.id/assets", [
             name: "gain server",
             owner: [targetUri: "http://localhost/units/$secondaryClientUnitId"],
-            domains: [
-                (secondaryClientDomain.id): [
-                    subType: "server",
-                    status: "off"
-                ]
-            ]
+            subType: "server",
+            status: "off"
         ], 201, SECONDARY_CLIENT_USER)
     }
 

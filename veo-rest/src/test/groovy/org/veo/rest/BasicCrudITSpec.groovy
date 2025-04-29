@@ -55,14 +55,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "Basic CRUD example"() {
         when:
-        def result = parseJson(post('/assets', [
+        def result = parseJson(post("/domains/$domainId/assets", [
             name : 'My CRUD asset',
-            domains: [
-                (domainId): [
-                    subType: "AST_Datatype",
-                    status: "NEW"
-                ]
-            ],
+            subType: "AST_Datatype",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ]
@@ -73,17 +69,13 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
         when:
         def assetId = result.resourceId
-        result = parseJson(post('/processes', [
+        result = parseJson(post("/domains/$domainId/processes", [
             name : 'My CRUD process',
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links: [
                 'process_dataType':[
                     [
@@ -120,19 +112,23 @@ class BasicCrudITSpec extends VeoMvcSpec {
         links.first().target.idAsString == assetId
 
         when:
-        def memberScopeId = parseJson(post('/scopes', [
+        def memberScopeId = parseJson(post("/domains/$domainId/scopes", [
             name : 'My CRUD memeber scope',
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            subType: 'SCP_Scope',
+            status: 'NEW',
             members: []
         ])).resourceId
 
-        result = parseJson(post('/scopes', [
+        result = parseJson(post("/domains/$domainId/scopes", [
             name : 'My CRUD scope',
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            subType: 'SCP_Scope',
+            status: 'NEW',
             members: [
                 [
                     targetUri: "http://localhost/assets/$assetId"

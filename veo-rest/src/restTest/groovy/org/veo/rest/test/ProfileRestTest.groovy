@@ -216,10 +216,6 @@ class ProfileRestTest extends VeoRestTest {
             ]
             put(body._self, body, getETag())
         }
-        def unassociatedScenarioId = post("/scenarios", [
-            name: "unassociated scenario",
-            owner: [targetUri: "/units/$unitId"],
-        ]).body.resourceId
         def newDomainScenarioId = post("/domains/$newDomainId/scenarios", [
             name: "new domain scenario",
             owner: [targetUri: "/units/$unitId"],
@@ -265,13 +261,6 @@ class ProfileRestTest extends VeoRestTest {
                 put(uri, body, getETag())
             }
         }
-        post("/assets/$multiDomainAssetId/risks", [
-            scenario: [targetUri: "/scenarios/$unassociatedScenarioId"],
-            domains: [
-                (newDomainId): [reference: [targetUri: "/domains/$newDomainId"]],
-                (testDomainId): [reference: [targetUri: "/domains/$testDomainId"]],
-            ]
-        ])
         post("/assets/$multiDomainAssetId/risks", [
             scenario: [targetUri: "/scenarios/$newDomainScenarioId"],
             domains: [

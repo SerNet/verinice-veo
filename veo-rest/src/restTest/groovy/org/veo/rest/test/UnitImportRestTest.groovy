@@ -164,10 +164,15 @@ class UnitImportRestTest extends VeoRestTest {
     def "existing resources are not modified"() {
         given: "a unit with a document"
         def oldUnitUri = post("/units", [
-            name: "old unit name"
+            name: "old unit name",
+            domains:[
+                [targetUri: "/domains/$testDomainId"]
+            ]
         ]).location
-        def oldDocumentUri = post("/documents", [
+        def oldDocumentUri = post("/domains/$testDomainId/documents", [
             name: "old document name",
+            subType: 'Manual',
+            status: 'CURRENT',
             owner: [targetUri: oldUnitUri],
         ]).location
 

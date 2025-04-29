@@ -64,18 +64,21 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "deactivate the client"() {
         given:
-        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
-        createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
         def client = createTestClient()
-        executeInTransaction {
-            defaultDomainCreator.addDomain(client, "ISO", false)
-            clientRepository.save(client)
-        }
+        def domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID, false )
 
         when: "posting unit and asset as a new client"
-        def unitId = parseJson(post("/units", ["name": "nova"])).resourceId
-        post("/assets", [
+        def unitId = parseJson(post("/units", [
+            "name": "nova",
+            domains: [
+                [ targetUri: "http://localhost/domains/$domain.idAsString" ]
+            ]
+
+        ])).resourceId
+        post("/domains/$domain.idAsString/assets", [
             name: "New Asset",
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [
                 displayName: "test2",
                 targetUri: "http://localhost/units/$unitId"

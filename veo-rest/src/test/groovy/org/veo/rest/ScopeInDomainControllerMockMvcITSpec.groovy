@@ -181,23 +181,15 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all scopes in a domain"() {
-        given: "15 scopes in the domain & one unassociated scope"
+        given: "15 scopes in the domain"
         (1..15).forEach {
-            post("/scopes", [
+            post("/domains/$testDomainId/scopes", [
                 name: "scope $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "Company",
-                        status: "NEW",
-                    ]
-                ]
+                subType: "Company",
+                status: "NEW",
             ])
         }
-        post("/scopes", [
-            name: "unassociated scope",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/scopes?size=10&sortBy=designator"))) {
@@ -389,15 +381,11 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "a scope in a domain"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
             name: "Some scope",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Company",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Company",
+            status: "NEW"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -407,21 +395,6 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
-    }
-
-    def "unassociated scope is handled"() {
-        given: "a scope without any domains"
-        def scopeId = parseJson(post("/scopes", [
-            name: "Unassociated scope",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/scopes/$scopeId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Scope $scopeId is not associated with domain $testDomainId"
     }
 
     def "risk values can be updated"() {

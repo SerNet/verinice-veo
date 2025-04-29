@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.AssetRepository
@@ -30,6 +31,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.common.ETag
 
 @WithUserDetails("user@domain.example")
 class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -190,7 +192,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all assets in a domain"() {
-        given: "15 assets in the domain & one unassociated asset"
+        given: "15 assets in the domain"
         (1..15).forEach {
             post("/domains/$testDomainId/assets", [
                 name: "asset $it",
@@ -199,10 +201,6 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 status: "RUNNING",
             ])
         }
-        post("/assets", [
-            name: "unassociated asset",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/assets?size=10&sortBy=designator"))) {
@@ -251,21 +249,6 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
-    }
-
-    def "unassociated asset is handled"() {
-        given: "an asset without any domains"
-        def assetId = parseJson(post("/assets", [
-            name: "Unassociated asset",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/assets/$assetId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Asset $assetId is not associated with domain $testDomainId"
     }
 
     def "retrieving parts for missing asset returns 404"() {
@@ -437,5 +420,56 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         HttpMessageNotReadableException e = thrown()
         e.message == 'JSON parse error: scopes cannot be parts of assets.'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't put an asset with another asset's ID"() {
+        given: "two assets"
+        def asset1 = txTemplate.execute({
+            assetRepository.save(newAsset(unitRepository.getById(UUID.fromString(unitId)), {
+                name = "old name 1"
+            }))
+        })
+        def asset2 = txTemplate.execute({
+            assetRepository.save(newAsset(unitRepository.getById(UUID.fromString(unitId)), {
+                name = "old name 2"
+            }))
+        })
+
+        when: "a put request tries to update asset 1 using the ID of asset 2"
+        Map headers = [
+            'If-Match': ETag.from(asset1.idAsString, 1)
+        ]
+        put("/domains/$testDomainId/assets/${asset2.idAsString}", [
+            id: asset1.idAsString,
+            name: "new name 1",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            subType: "Information",
+            status: "OUTDATED"
+        ], headers, 400)
+
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "Invalid date values for versioned properties are ignored"() {
+        given: "a request body"
+        Map request = [
+            name: 'New Asset',
+            owner: [
+                displayName: 'test2',
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            subType: "Server",
+            status: "DOWN",
+            createdAt: 'Hello World'
+        ]
+
+        when: "a request is made to the server"
+        def result = parseJson(post("/domains/$testDomainId/assets", request))
+
+        then: "the request is performed"
+        result.success == true
     }
 }

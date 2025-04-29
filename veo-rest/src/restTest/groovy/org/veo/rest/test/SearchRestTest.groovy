@@ -22,42 +22,57 @@ class SearchRestTest extends VeoRestTest{
 
     def setup() {
         unitId = post("/units", [
-            name: "search test unit"
+            name: "search test unit",
+            domains:[
+                [targetUri: "/domains/$dsgvoDomainId"]
+            ]
         ]).body.resourceId
     }
 
     def "can filter elements in scope & composite hierarchies"() {
         given: "a hierarchy of persons"
-        def developerId = post("/persons", [
+        def developerId = post("/domains/$dsgvoDomainId/persons", [
             name: "developer",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def designingDeveloperId = post("/persons", [
+        def designingDeveloperId = post("/domains/$dsgvoDomainId/persons", [
             name: "developer who is also a designer",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def salesPersonId = post("/persons", [
+        def salesPersonId = post("/domains/$dsgvoDomainId/persons", [
             name: "sales person",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        post("/persons", [
+        post("/domains/$dsgvoDomainId/persons", [
             name: "development team",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$developerId"],
                 [targetUri: "$baseUrl/persons/$designingDeveloperId"],
             ]
         ])
-        def designTeamId = post("/persons", [
+        def designTeamId = post("/domains/$dsgvoDomainId/persons", [
             name: "design team",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$designingDeveloperId"],
             ]
         ]).body.resourceId
-        def salesTeamId = post("/persons", [
+        def salesTeamId = post("/domains/$dsgvoDomainId/persons", [
             name: "sales team",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
                 [targetUri: "$baseUrl/persons/$salesPersonId"],
@@ -65,28 +80,36 @@ class SearchRestTest extends VeoRestTest{
         ]).body.resourceId
 
         and: "a related hierarchy of scopes"
-        def salesScopeId = post("/scopes", [
+        def salesScopeId = post("/domains/$dsgvoDomainId/scopes", [
             name: "sales scope",
+            subType: 'SCP_Scope',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/persons/$salesTeamId"],
             ]
         ]).body.resourceId
-        def emptyScopeId = post("/scopes", [
+        def emptyScopeId = post("/domains/$dsgvoDomainId/scopes", [
             name: "empty scope",
+            subType: 'SCP_Scope',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: []
         ]).body.resourceId
-        post("/scopes", [
+        post("/domains/$dsgvoDomainId/scopes", [
             name: "super scope",
+            subType: 'SCP_Scope',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/scopes/$salesScopeId"],
                 [targetUri: "$baseUrl/scopes/$emptyScopeId"],
             ]
         ])
-        post("/scopes", [
+        post("/domains/$dsgvoDomainId/scopes", [
             name: "scope containing empty scope & design team",
+            subType: 'SCP_Scope',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
                 [targetUri: "$baseUrl/scopes/$emptyScopeId"],

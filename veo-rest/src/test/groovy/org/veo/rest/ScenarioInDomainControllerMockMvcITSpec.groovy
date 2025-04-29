@@ -194,23 +194,15 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all scenarios in a domain"() {
-        given: "15 scenarios in the domain & one unassociated scenario"
+        given: "15 scenarios in the domain"
         (1..15).forEach {
-            post("/scenarios", [
+            post("/domains/$testDomainId/scenarios", [
                 name: "scenario $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "Attack",
-                        status: "NEW",
-                    ]
-                ]
+                subType: "Attack",
+                status: "NEW",
             ])
         }
-        post("/scenarios", [
-            name: "unassociated scenario",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/scenarios?size=10&sortBy=designator"))) {
@@ -280,15 +272,11 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "a scenario in a domain"
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$testDomainId/scenarios", [
             name: "Some scenario",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Attack",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Attack",
+            status: "NEW"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -300,53 +288,24 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         nfEx.message == "domain $randomDomainId not found"
     }
 
-    def "unassociated scenario is handled"() {
-        given: "a scenario without any domains"
-        def scenarioId = parseJson(post("/scenarios", [
-            name: "Unassociated scenario",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/scenarios/$scenarioId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Scenario $scenarioId is not associated with domain $testDomainId"
-    }
-
     @WithUserDetails("user@domain.example")
     def "retrieve a composite scenario's parts"() {
         given: '15 scenarios that belong to the domain'
         def partIds = (1..15).collect { n->
-            parseJson(post("/scenarios", [
+            parseJson(post("/domains/$testDomainId/scenarios", [
                 name: "scenario $n",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "Attack",
-                        status: "NEW",
-                    ]
-                ]
+                subType: "Attack",
+                status: "NEW",
             ])).resourceId
         }
 
-        and: '1 scenario that does not belong to the domain'
-        partIds <<  parseJson(post("/scenarios", [
-            name: "unassociated scenario",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        and: 'a composite scenario with all of the above as its parts'
-        def compositeScenarioId = parseJson(post("/scenarios", [
+        and: 'a composite scenario with the above as its parts'
+        def compositeScenarioId = parseJson(post("/domains/$testDomainId/scenarios", [
             name: "master scenario",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Attack",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Attack",
+            status: "NEW",
             parts: partIds.collect {
                 [ targetUri:"/scenarios/$it" ]
             },
@@ -459,5 +418,38 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         IllegalArgumentException e = thrown()
         e.message == 'Element has multiple catalog references'
+    }
+
+    def "delete a scenario that is used by a risk"() {
+        given: "a scenario that is used by a risk"
+        def scenarioId = parseJson(post("/domains/$testDomainId/scenarios", [
+            name: "scenery-oh",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Attack",
+            status: 'NEW'
+        ])).resourceId
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
+            name: "possessive process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW"
+        ])).resourceId
+        post("/processes/$processId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains: [
+                (testDomainId): [
+                    reference: [targetUri: "/domains/$testDomainId"]
+                ]
+            ]
+        ])
+
+        when: "the scenario is deleted"
+        delete("/scenarios/$scenarioId")
+
+        and: "trying to retrieve the risk"
+        get("/processes/$processId/risks/$scenarioId", 404)
+
+        then:
+        thrown(NotFoundException)
     }
 }

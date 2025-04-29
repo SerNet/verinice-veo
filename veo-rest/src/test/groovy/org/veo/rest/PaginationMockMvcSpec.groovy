@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Element
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
@@ -38,23 +39,38 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
 
     private Unit unit
 
+    private String domainId
+
     def setup() {
         def client= createTestClient()
+        def domain =domainDataRepository.save(newDomain(client) {d->
+            ElementType.values().each {
+                applyElementTypeDefinition(newElementTypeDefinition(it.singularTerm, d) {
+                    subTypes = [
+                        MyType: newSubTypeDefinition()
+                    ]
+                })
+            }
+        })
+        domainId = domain.idAsString
 
         unit = unitRepository.save(newUnit(client) {
             name = "Test unit"
+            addToDomains(domain)
         })
     }
 
     def "paginates through all #type sorted by abbreviation"() {
         given:
         for(i in 1..5) {
-            post("/$type", [
+            post("/domains/$domainId/$type", [
                 name: "a good entity",
                 abbreviation: "$i",
                 owner: [
                     targetUri: "http://localhost/units/${unit.idAsString}"
-                ]
+                ],
+                subType: 'MyType',
+                status: 'NEW'
             ])
         }
 

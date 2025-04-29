@@ -39,25 +39,17 @@ class DomainUpdateRestTest extends VeoRestTest {
 
     def "updates client to new domain template version and migrates elements"() {
         given: "a scope and a process linked to it in the old domain"
-        def scopeId = post("/scopes", [
+        def scopeId = post("/domains/$oldDomainId/scopes", [
             name: "target scope",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (oldDomainId): [
-                    subType: "SCP_ResponsibleBody",
-                    status: "NEW"
-                ]
-            ]
+            subType: "SCP_ResponsibleBody",
+            status: "NEW"
         ]).body.resourceId
-        def processId = post("/processes", [
+        def processId = post("/domains/$oldDomainId/processes", [
             name: "old process",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (oldDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW"
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links: [
                 processToScopeLink: [
                     [
@@ -68,14 +60,14 @@ class DomainUpdateRestTest extends VeoRestTest {
         ]).body.resourceId
 
         and: "a link back from the scope to the process"
-        def scopeResponse = get("/scopes/$scopeId")
+        def scopeResponse = get("/domains/$oldDomainId/scopes/$scopeId")
         def scope = scopeResponse.body
         scope.links.scopeToProcessLink = [
             [
                 target: [targetUri: "$baseUrl/processes/$processId"]
             ]
         ]
-        put("/scopes/$scopeId", scope, scopeResponse.getETag())
+        put("/domains/$oldDomainId/scopes/$scopeId", scope, scopeResponse.getETag())
 
         and: "an incarnated catalog item"
         def c1SymId = get("/domains/$oldDomainId/catalog-items").body.items.first().id
@@ -124,15 +116,11 @@ class DomainUpdateRestTest extends VeoRestTest {
         c1IncarnationDescriptions.parameters.empty
 
         when: "adding a link from a new process to an old scope"
-        post("/processes", [
+        post("/domains/$newDomainId/processes", [
             name: "new process",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (newDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links: [
                 processToScopeLink: [
                     [

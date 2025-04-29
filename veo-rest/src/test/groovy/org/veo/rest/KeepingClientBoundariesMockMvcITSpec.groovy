@@ -25,7 +25,6 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -70,6 +69,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     private Client client
     private Client otherClient
     private String domainId
+    private String otherClientsDomainId
     private Unit unit
     private Unit otherClientsUnit
 
@@ -83,6 +83,8 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             })
 
             otherClient = clientRepository.save(newClient())
+            otherClientsDomainId = createTestDomain(otherClient, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+
             otherClientsUnit = unitRepository.save(newUnit(otherClient))
         }
     }
@@ -90,7 +92,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create an asset in another client"() {
         when: "a post request tries to create an asset in another client"
-        postEntityInAnotherUnit("/" + Asset.PLURAL_TERM,)
+        postEntityInAnotherUnit("/domains/$otherClientsDomainId/" + Asset.PLURAL_TERM,)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -99,7 +101,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a control in another client"() {
         when: "a post request tries to create a control in another client"
-        postEntityInAnotherUnit("/" + Control.PLURAL_TERM,)
+        postEntityInAnotherUnit("/domains/$otherClientsDomainId/" + Control.PLURAL_TERM,)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -108,7 +110,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a person in another client"() {
         when: "a post request tries to create a person in another client"
-        postEntityInAnotherUnit("/" + Person.PLURAL_TERM,)
+        postEntityInAnotherUnit("/domains/$otherClientsDomainId/" + Person.PLURAL_TERM,)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -117,7 +119,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a process in another client"() {
         when: "a post request tries to create a process in another client"
-        postEntityInAnotherUnit("/" + Process.PLURAL_TERM,)
+        postEntityInAnotherUnit("/domains/$otherClientsDomainId/" + Process.PLURAL_TERM,)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -155,7 +157,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the asset to the user's unit"
-        putEntityToAnotherUnit("/" + Asset.PLURAL_TERM, otherClientsAsset.idAsString)
+        putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Asset.PLURAL_TERM, otherClientsAsset.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -169,7 +171,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the control to the user's unit"
-        putEntityToAnotherUnit("/" + Control.PLURAL_TERM, otherClientsControl.idAsString)
+        putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Control.PLURAL_TERM, otherClientsControl.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -183,7 +185,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the person to the user's unit"
-        putEntityToAnotherUnit("/" + Person.PLURAL_TERM, otherClientsPerson.idAsString)
+        putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Person.PLURAL_TERM, otherClientsPerson.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -197,7 +199,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a put request tries to move the process to the user's unit"
-        putEntityToAnotherUnit("/" + Process.PLURAL_TERM, otherClientsProcess.idAsString)
+        putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Process.PLURAL_TERM, otherClientsProcess.idAsString)
 
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
@@ -353,17 +355,13 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a post request tries to link a process to the asset of the other client"
-        post('/processes', [
+        post("/domains/$domainId/processes", [
             name : 'My process',
             owner: [
                 targetUri: 'http://localhost/units/'+unit.idAsString
             ],
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataTransfer",
-                    status: "NEW"
-                ]
-            ],
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             links: [
                 'process_dataType': [
                     [
@@ -393,15 +391,11 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         }).idAsString
 
         when: "trying to assign a new document to the other client's domain"
-        post("/documents", [
+        post("/domains/$otherClientsDomainId/documents", [
             name: "bad document",
             owner: [targetUri: "http://localhost/units/$unit.idAsString"],
-            domains: [
-                (otherClientsDomainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ]
+            subType: "CTL_TOM",
+            status: "NEW",
         ], 404)
 
         then:
@@ -412,7 +406,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         post(url, [
             name: 'entity-in-another client',
             owner: [displayName: '' + otherClientsUnit.name,
-                targetUri: 'http://localhost/units/' + otherClientsUnit.id]
+                targetUri: 'http://localhost/units/' + otherClientsUnit.id],
+            subType: 'Something',
+            status: 'NEW'
+
         ],404)
     }
 
@@ -424,7 +421,9 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             id: entityUuid,
             name: 'hijacked-entity',
             owner: [displayName: 'Test unit',
-                targetUri: 'http://localhost/units/' + unit.id]
+                targetUri: 'http://localhost/units/' + unit.id],
+            subType: 'Something',
+            status: 'ELSE'
         ], headers, 404)
     }
 }

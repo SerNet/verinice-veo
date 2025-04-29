@@ -118,15 +118,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "Create elements with reversed links from catalog"() {
         when: "a control is created"
-        def sourceControlId = post("/controls", [
+        def sourceControlId = post("/domains/$testDomainId/controls", [
             name : "Link Target Control",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "TOM",
-                    status: "NEW",
-                ]
-            ]
+            subType: "TOM",
+            status: "NEW"
         ]).body.resourceId
 
         and: "C-4 is instantiated"
@@ -157,8 +153,10 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "Create elements with reversed links from catalog to wrong element"() {
         when: "a control is created"
-        def sourceControlId = post("/controls", [
+        def sourceControlId = post("/domains/$dsgvoDomainId/controls", [
             name : "Link Target Control",
+            subType: 'CTL_TOM',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
@@ -184,14 +182,10 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "Create linked elements from the dsgvo catalog"() {
         when:"we create a process"
-        def sourceProcessId = post("/processes", [
+        def sourceProcessId = post("/domains/$dsgvoDomainId/processes", [
             name: "process",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW"
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 

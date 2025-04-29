@@ -55,20 +55,14 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created asset with custom aspect conforms to schema"() {
         given: "the asset schema and a newly created asset"
         def schema = getSchema(client, "asset")
-        def assetId = (String)parseJson(post("/assets", [
+        def assetId = (String)parseJson(post("/domains/$domainId/assets", [
             customAspects: [
                 asset_details: [
-                    attributes: [
-                        asset_details_operatingStage: "asset_details_operatingStage_operation"
-                    ]
+                    asset_details_operatingStage: "asset_details_operatingStage_operation"
                 ]
             ],
-            domains: [
-                (domainId): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                ]
-            ],
+            subType: "AST_Application",
+            status: "NEW",
             name: "asset",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
@@ -82,31 +76,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    def "can't create an asset when custom aspect not conforms to schema"() {
-        given: "asset with custom aspect that does not conform to schema"
-        def asset = [
-            customAspects: [
-                asset_foo: [
-                    attributes: [
-                        asset_details_operatingStage: "asset_details_operatingStage_operation"
-                    ]
-                ]
-            ],
-            name: "asset",
-            owner: [
-                targetUri: "http://localhost/units/"+unitId,
-            ]]
-
-        when: "posting the asset"
-        post("/assets", asset, 400)
-
-        then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
-
-        and: "the reason is given"
-        ex.message == "Element cannot contain custom aspects or links without being associated with a domain"
-    }
-
     def "can't create a scope when link not conforms to schema"() {
         given: "scope with link that does not conform to schema"
         def scope = [
@@ -114,12 +83,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "SCP_Controller",
-                    status: "NEW"
-                ]
-            ],
+            subType: "SCP_Controller",
+            status: "NEW",
             links: [
                 scope_bar: [
                     [
@@ -132,7 +97,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ]
 
         when: "posting the scope"
-        post("/scopes", scope, 422)
+        post("/domains/$domainId/scopes", scope, 422)
 
         then: "an exception is thrown"
         ReferenceTargetNotFoundException ex = thrown()
@@ -148,16 +113,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "CTL_Foo",
-                    status: "NEW"
-                ]
-            ]
+            subType: "CTL_Foo",
+            status: "NEW"
         ]
 
         when: "posting the scope"
-        post("/controls", control, 400)
+        post("/domains/$domainId/controls", control, 400)
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
@@ -168,35 +129,27 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "status is validated"() {
         when: "posting a control with a sub type but null status"
-        post("/controls", [
+        post("/domains/$domainId/controls", [
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: null
-                ]
-            ]
+            subType: "CTL_TOM",
+            status: null
         ], 400)
 
         then: "an exception is thrown"
         def ex = thrown(MethodArgumentNotValidException)
-        ex.message ==~ /.*domains\[$domainId\]\.status.*must not be null.*/
+        ex.message.contains('A status must be present')
 
         when: "posting a control with an invalid status"
-        post("/controls", [
+        post("/domains/$domainId/controls", [
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "CRAZY"
-                ]
-            ]
+            subType: "CTL_TOM",
+            status: "CRAZY"
         ], 400)
 
         then: "an exception is thrown"
@@ -204,17 +157,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ex.message == "Status 'CRAZY' is not allowed for sub type 'CTL_TOM'"
 
         when: "posting a control with a valid status"
-        post("/controls", [
+        post("/domains/$domainId/controls", [
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW"
-                ]
-            ]
+            subType: "CTL_TOM",
+            status: "NEW"
         ])
 
         then: "no exception is thrown"
@@ -224,27 +173,19 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "control with custom aspect conforms to schema"() {
         given: "the control schema and a newly created control in a scope"
         def schema = getSchema(client, "control")
-        def controlId = (String)parseJson(post("/controls", [
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+        def controlId = (String)parseJson(post("/domains/$domainId/controls", [
+            subType: "CTL_TOM",
+            status: "NEW",
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ]])).resourceId
 
-        post("/scopes", [
+        post("/domains/$domainId/scopes", [
             name: "schema test scope",
-            domains: [
-                (domainId): [
-                    subType: "SCP_Scope",
-                    status: "NEW",
-                    riskDefinition: "DSRA"
-                ]
-            ],
+            subType: "SCP_Scope",
+            status: "NEW",
+            riskDefinition: "DSRA",
             members: [
                 [targetUri: "http://localhost/controls/$controlId"]
             ],
@@ -252,21 +193,15 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 targetUri: "http://localhost/units/"+unitId,
             ]
         ])
-        def controlETag = getETag(get("/controls/$controlId"))
-        put("/controls/$controlId", [
+        def controlETag = getETag(get("/domains/$domainId/controls/$controlId"))
+        put("/domains/$domainId/controls/$controlId", [
             customAspects: [
                 control_generalInformation: [
-                    attributes: [
-                        control_generalInformation_document: "https://example.org/controls/this_one"
-                    ]
+                    control_generalInformation_document: "https://example.org/controls/this_one"
                 ]
             ],
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+            subType: "CTL_TOM",
+            status: "NEW",
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
@@ -284,22 +219,16 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created document with custom aspect conforms to schema"() {
         given: "the document schema and a newly created document"
         def documentSchema = getSchema(client, "document")
-        def documentId = (String)parseJson(post("/documents", [
+        def documentId = (String)parseJson(post("/domains/$domainId/documents", [
             name: "doc",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
-            domains: [
-                (domainId): [
-                    subType: "DOC_Document",
-                    status: "NEW",
-                ]
-            ],
+            subType: "DOC_Document",
+            status: "NEW",
             customAspects: [
                 document_details: [
-                    attributes: [
-                        document_details_approvalDate: "2020-01-01"
-                    ]
+                    document_details_approvalDate: "2020-01-01"
                 ]
             ]
         ])).resourceId
@@ -316,17 +245,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         given: "the incident schema and a newly created incident"
         def incidentSchema = getSchema(client, "incident")
         // TODO VEO-320 add custom aspect & link.
-        def incidentId = (String)parseJson(post("/incidents", [
+        def incidentId = (String)parseJson(post("/domains/$domainId/incidents", [
             name: "incident",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
-            domains: [
-                (domainId): [
-                    subType: "INC_Incident",
-                    status: "NEW",
-                ]
-            ],
+            subType: "INC_Incident",
+            status: "NEW"
         ])).resourceId
         def createdIncidentJson = parseNode(get("/incidents/$incidentId"))
 
@@ -340,22 +265,16 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created person with custom aspect conforms to schema"() {
         given: "the person schema and a newly created person"
         def personSchema = getSchema(client, "person")
-        def personId = (String)parseJson(post("/persons", [
+        def personId = (String)parseJson(post("/domains/$domainId/persons", [
             name: "person",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
-            domains: [
-                (domainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PER_Person",
+            status: "NEW",
             customAspects: [
                 person_address: [
-                    attributes: [
-                        person_address_city: "Goettingen"
-                    ]
+                    person_address_city: "Goettingen"
                 ]
             ]
         ])).resourceId
@@ -371,29 +290,21 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created process with custom aspect & links conforms to schema"() {
         given: "the process schema and a newly created process"
         def processSchema = getSchema(client, "process")
-        def scopeId = (String)parseJson(post("/scopes", [
-            domains: [
-                (domainId): [
-                    subType: "SCP_Controller",
-                    status: "NEW"
-                ]
-            ],
+        def scopeId = (String)parseJson(post("/domains/$domainId/scopes", [
+            subType: "SCP_Controller",
+            status: "NEW",
             name: "scope",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ]
         ])).resourceId
-        def processId = (String)parseJson(post("/processes", [
+        def processId = (String)parseJson(post("/domains/$domainId/processes", [
             name: "process",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links: [
                 process_controller: [
                     [
@@ -408,9 +319,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             customAspects: [
                 process_accessAuthorization: [
-                    attributes: [
-                        process_accessAuthorization_concept: true
-                    ]
+                    process_accessAuthorization_concept: true
                 ]
             ]
         ])).resourceId
@@ -426,22 +335,16 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created scenario with custom aspect conforms to schema"() {
         given: "the scenario schema and a newly created scenario"
         def scenarioSchema = getSchema(client, "scenario")
-        def scenarioId = (String)parseJson(post("/scenarios", [
+        def scenarioId = (String)parseJson(post("/domains/$domainId/scenarios", [
             name: "scenario",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
-            domains: [
-                (domainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                ]
-            ],
+            subType: "SCN_Scenario",
+            status: "NEW",
             customAspects: [
                 scenario_threat: [
-                    attributes: [
-                        scenario_threat_type: 'scenario_threat_type_malware'
-                    ]
+                    scenario_threat_type: 'scenario_threat_type_malware'
                 ]
             ]
         ])).resourceId
@@ -457,38 +360,32 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created scope with custom aspect, link & member conforms to schema"() {
         given: "the scope schema and a scope with one member"
         def schema = getSchema(client, "scope")
-        def memberAssetId = parseJson(post("/assets", [
+        def memberAssetId = parseJson(post("/domains/$domainId/assets", [
             name: "member",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
-            ]])).resourceId
-        def targetPersonId = parseJson(post("/persons", [
+            ],
+            subType: "AST_Application",
+            status: "NEW"
+        ])).resourceId
+        def targetPersonId = parseJson(post("/domains/$domainId/persons", [
             name: "target",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "PER_DataProtectionOfficer",
-                    status: "NEW"
-                ]
-            ]])).resourceId
-        def scopeId = parseJson(post("/scopes", [
+            subType: "PER_DataProtectionOfficer",
+            status: "NEW"
+        ])).resourceId
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "scope",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ],
-            domains: [
-                (domainId): [
-                    subType: "SCP_Controller",
-                    status: "NEW"
-                ]
-            ],
+            subType: "SCP_Controller",
+            status: "NEW",
             customAspects: [
                 scope_address: [
-                    attributes: [
-                        scope_address_city: "Goettingen"
-                    ]
+                    scope_address_city: "Goettingen"
                 ]
             ],
             links: [

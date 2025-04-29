@@ -25,6 +25,7 @@ import spock.lang.Issue
 
 class ControlImplementationRestTest extends VeoRestTest {
     private String domainId
+    private String domain2Id
     private String unitId
     private String rootControl1Id
     private String rootControl2Id
@@ -41,7 +42,24 @@ class ControlImplementationRestTest extends VeoRestTest {
             name: "CI/RI test domain ${UUID.randomUUID()}",
             authority: "JJ",
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
+        domain2Id = post("/content-creation/domains", [
+            name: "CI/RI test domain ${UUID.randomUUID()}",
+            authority: "JJ",
+        ], 201, UserType.CONTENT_CREATOR).body.resourceId
         put("/content-creation/domains/$domainId/element-type-definitions/control", [
+            subTypes: [
+                ComplCtl: [statuses: ["NEW"]],
+                MitiCtl: [statuses: ["NEW"]],
+            ],
+            customAspects: [
+                oneCa: [
+                    attributeDefinitions: [
+                        someAttr: [type: "integer"]
+                    ]
+                ]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domain2Id/element-type-definitions/control", [
             subTypes: [
                 ComplCtl: [statuses: ["NEW"]],
                 MitiCtl: [statuses: ["NEW"]],
@@ -75,7 +93,21 @@ class ControlImplementationRestTest extends VeoRestTest {
                 A: [statuses: ["NEW"]]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
-        unitId = postNewUnit("U1", [domainId, testDomainId]).resourceId
+        put("/content-creation/domains/$domainId/element-type-definitions/person", [
+            subTypes: [
+                A: [statuses: ["NEW"]]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/element-type-definitions/scenario", [
+            subTypes: [
+                A: [statuses: ["NEW"]]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        unitId = postNewUnit("U1", [
+            domainId,
+            domain2Id,
+            testDomainId
+        ]).resourceId
 
         subControl1Id = post("/domains/$domainId/controls", [
             name: "sub control 1",
@@ -84,8 +116,10 @@ class ControlImplementationRestTest extends VeoRestTest {
             subType: "MitiCtl",
             status: "NEW",
         ]).body.resourceId
-        subControl2Id = post("/controls", [
+        subControl2Id = post("/domains/$domain2Id/controls", [
             name: "sub control 2",
+            subType: "MitiCtl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
         rootControl1Id = post("/domains/$domainId/controls", [
@@ -98,8 +132,10 @@ class ControlImplementationRestTest extends VeoRestTest {
                 [targetUri: "http://localhost/controls/$subControl2Id"],
             ],
         ]).body.resourceId
-        subControl3Id = post("/controls", [
+        subControl3Id = post("/domains/$domain2Id/controls", [
             name: "sub control 3",
+            subType: "ComplCtl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         rootControl2Id = post("/domains/$domainId/controls", [
@@ -111,8 +147,10 @@ class ControlImplementationRestTest extends VeoRestTest {
                 [targetUri: "http://localhost/controls/$subControl3Id"]
             ],
         ]).body.resourceId
-        subControl4Id = post("/controls", [
+        subControl4Id = post("/domains/$domainId/controls", [
             name: "sub control 4",
+            subType: "ComplCtl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         rootControl3Id = post("/domains/$domainId/controls", [
@@ -125,50 +163,27 @@ class ControlImplementationRestTest extends VeoRestTest {
             ],
         ]).body.resourceId
 
-        person1Id = post("/persons", [
+        person1Id = post("/domains/$domainId/persons", [
             name: "person 1",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
-        person2Id = post("/persons", [
+        person2Id = post("/domains/$domainId/persons", [
             name: "person 2",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
-    }
-
-    def "CIs & RIs in domain for unassociated #elementType.singularTerm"() {
-        when: "creating an element with two CIs"
-        def elementId = post("/$elementType.pluralTerm", [
-            name: "lame",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            controlImplementations: [
-                [
-                    control: [targetUri: "/controls/$rootControl1Id"],
-                    description: "I have my reasons",
-                ],
-                [
-                    control: [targetUri: "/controls/$rootControl2Id"],
-                    responsible: [targetUri: "/persons/$person1Id"],
-                ],
-            ]
-        ]).body.resourceId
-
-        then: "risk affeced need associated with the domain"
-        get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations", 404)
-
-        where:
-        elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
     def "CRUD CIs & RIs in domain for #elementType.singularTerm"() {
         when: "creating an element with two CIs"
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "lame",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "A",
-                    status: "NEW",
-                ]],
+            subType: "A",
+            status: "NEW",
             controlImplementations: [
                 [
                     control: [targetUri: "/controls/$rootControl1Id"],
@@ -209,8 +224,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "CRUD CIs & RIs for #elementType.singularTerm"() {
         when: "creating and fetching an element with two CIs"
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "lame",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -290,7 +307,7 @@ class ControlImplementationRestTest extends VeoRestTest {
                 .implementationStatus == "PARTIAL"
 
         when: "removing one CI"
-        get("/$elementType.pluralTerm/$elementId").with {
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {
             body.controlImplementations.removeIf { it.control.targetUri.endsWith(rootControl1Id) }
             owner.put(body._self, body, getETag())
         }
@@ -445,12 +462,16 @@ class ControlImplementationRestTest extends VeoRestTest {
                 [control: [targetUri: "/controls/$rootControl1Id"]]
             ]
         ]).body.resourceId
-        def scenario1Id = post("/scenarios", [
+        def scenario1Id = post("/domains/$domainId/scenarios", [
             name: "scn",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
-        def scenario2Id = post("/scenarios", [
+        def scenario2Id = post("/domains/$domainId/scenarios", [
             name: "scn 2",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
 
@@ -577,13 +598,17 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "elements used by #elementType.singularTerm CIs & RIs can be deleted"() {
         when: "creating and fetching an element with one CIs and a responsible person"
-        def personId = post("/persons", [
+        def personId = post("/domains/$domainId/persons", [
             name: "person will be removed",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "lame",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -656,13 +681,17 @@ class ControlImplementationRestTest extends VeoRestTest {
             status: "WATCHING_DISASTER_MOVIES",
         ], 200)
 
-        def controlInf11Id = post("/controls", [
+        def controlInf11Id = post("/domains/$testDomainId/controls", [
             name: "INF.11",
+            subType: 'TOM',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 
-        def controlSys44Id = post("/controls", [
+        def controlSys44Id = post("/domains/$testDomainId/controls", [
             name: "SYS.4.4",
+            subType: 'TOM',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 
@@ -732,8 +761,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "concurrent requirement implementation changes on #elementType.singularTerm are detected"() {
         given:
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk aficionado",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -767,8 +798,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "origin of a requirement implementation on #elementType.singularTerm cannot be changed"() {
         given:
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "protagonist",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -776,8 +809,10 @@ class ControlImplementationRestTest extends VeoRestTest {
                 ]
             ]
         ]).body.resourceId
-        def otherElementId = post("/assets", [
+        def otherElementId = post("/domains/$domainId/assets", [
             name: "antagonist",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
 
@@ -797,8 +832,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "control of a requirement implementation on #elementType.singularTerm cannot be changed"() {
         given:
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk aficionado",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -826,8 +863,10 @@ class ControlImplementationRestTest extends VeoRestTest {
         def otherUnitId = postNewUnit().resourceId
 
         expect: "that a control implementation cannot be created there referencing a control in the main unit"
-        post("/$elementType.pluralTerm", [
+        post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk influencer",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$otherUnitId"],
             controlImplementations: [
                 [
@@ -842,15 +881,19 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "cannot assign person from another unit as responsible for control implementation"() {
         given: "a person in another unit"
-        def otherUnitId = postNewUnit().resourceId
-        def personId = post("/persons", [
+        def otherUnitId = postNewUnit('Other unit', [domainId]).resourceId
+        def personId = post("/domains/$domainId/persons", [
             name: "person in other unit",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "/units/$otherUnitId"]
         ]).body.resourceId
 
         expect: "that it cannot be assigned as a responsible person in this unit"
-        post("/$elementType.pluralTerm", [
+        post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk influencer",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -866,8 +909,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "cannot assign person from another unit as responsible for requirement implementation"() {
         given: "a control implementation"
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk influencer",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -877,9 +922,11 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
 
         and: "a person in another unit"
-        def otherUnitId = postNewUnit().resourceId
-        def personId = post("/persons", [
+        def otherUnitId = postNewUnit('Other unit', [domainId]).resourceId
+        def personId = post("/domains/$domainId/persons", [
             name: "person in other unit",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "/units/$otherUnitId"]
         ]).body.resourceId
 
@@ -946,8 +993,10 @@ class ControlImplementationRestTest extends VeoRestTest {
     def "missing resources are handled for #elementType.pluralTerm"() {
         given:
         var randomUuid = UUID.randomUUID().toString()
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "risk affe",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -992,8 +1041,10 @@ class ControlImplementationRestTest extends VeoRestTest {
 
     def "CIs and RIs for #elementType.pluralTerm can be fetched in compact representation"() {
         given:
-        def elementId = post("/$elementType.pluralTerm", [
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
             name: "affectionate",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [
@@ -1032,8 +1083,10 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
 
         and: "an asset with CIs for all the root controls"
-        def assetId = post("/assets", [
+        def assetId = post("/domains/$domainId/assets", [
             name: "elem",
+            subType: 'A',
+            status: 'NEW',
             owner: [targetUri: "http://localhost/units/$unitId"],
             controlImplementations: [
                 [

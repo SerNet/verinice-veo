@@ -21,8 +21,6 @@ import static java.util.UUID.randomUUID
 
 import org.veo.core.entity.EntityType
 
-import jakarta.servlet.ServletException
-
 class MultiDomainElementRestTest extends VeoRestTest {
 
     private String domainIdA
@@ -53,20 +51,16 @@ class MultiDomainElementRestTest extends VeoRestTest {
     def "custom aspects for #type.pluralTerm are domain-specific"() {
         given:
         putElementTypeDefinitions(type)
-        def elementId = post("/$type.pluralTerm", [
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", [
             name: "my little element",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (domainIdA): [
-                    subType: "STA",
-                    status: "NEW"
-                ],
-                (domainIdB): [
-                    subType: "STB",
-                    status: "ON"
-                ]
-            ]
+            subType: "STA",
+            status: "NEW"
         ]).body.resourceId
+        post("/domains/$domainIdB/$type.pluralTerm/$elementId", [
+            subType: "STB",
+            status: "ON"
+        ], 200)
 
         when: "using CA in domain A"
         get("/domains/$domainIdA/$type.pluralTerm/$elementId").with {
@@ -125,20 +119,16 @@ class MultiDomainElementRestTest extends VeoRestTest {
     def "identically defined custom aspects for #type.pluralTerm are synced across domains"() {
         given: "an element associated with both domains"
         putElementTypeDefinitions(type)
-        def elementId = post("/$type.pluralTerm", [
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", [
             name: "my little element",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (domainIdA): [
-                    subType: "STA",
-                    status: "NEW"
-                ],
-                (domainIdB): [
-                    subType: "STB",
-                    status: "ON"
-                ]
-            ]
+            subType: "STA",
+            status: "NEW"
         ]).body.resourceId
+        post("/domains/$domainIdB/$type.pluralTerm/$elementId", [
+            subType: "STB",
+            status: "ON"
+        ], 200)
 
         when: "adding CAs in domain A"
         get("/domains/$domainIdA/$type.pluralTerm/$elementId").with {
@@ -257,10 +247,12 @@ class MultiDomainElementRestTest extends VeoRestTest {
 
     // TODO VEO-1874 expect element to be versioned independently in different domain contexts
     def "#type.singularTerm ETags are handled correctly across domains"() {
-        given: "an unassociated element"
+        given: "an element associated with one domain"
         putElementTypeDefinitions(type)
-        def elementId = post("/$type.pluralTerm", [
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", [
             name: "my little element",
+            subType: "STA",
+            status: "NEW",
             owner: [targetUri: "/units/$unitId"],
         ]).body.resourceId
 
@@ -270,11 +262,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         then: "it's set"
         initialETag =~ /".+"/
 
-        when: "assigning the element to both domains"
-        post("/domains/$domainIdA/$type.pluralTerm/$elementId", [
-            subType: "STA",
-            status: "NEW"
-        ], 200)
+        when: "assigning the element to the other domain"
         post("/domains/$domainIdB/$type.pluralTerm/$elementId", [
             subType: "STB",
             status: "ON",
@@ -377,14 +365,12 @@ class MultiDomainElementRestTest extends VeoRestTest {
     def "cannot re-associate #type.singularTerm with domain"() {
         given: "an element associated with domain A"
         putElementTypeDefinitions(type)
-        def elementId = post("/$type.pluralTerm", [
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", [
             name: "some element",
-            owner: [targetUri: "/units/$unitId"]
-        ]).body.resourceId
-        post("/domains/$domainIdA/$type.pluralTerm/$elementId", [
             subType: "STA",
             status: "NEW",
-        ], 200)
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
 
         expect: "re-assigning the element with domain A to fail"
         post("/domains/$domainIdA/$type.pluralTerm/$elementId", [

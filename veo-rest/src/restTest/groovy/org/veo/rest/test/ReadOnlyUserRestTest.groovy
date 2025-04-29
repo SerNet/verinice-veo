@@ -31,14 +31,10 @@ class ReadOnlyUserRestTest extends VeoRestTest {
         unitId = postNewUnit().resourceId
         unitUri = "$baseUrl/units/$unitId"
 
-        processId = post("/processes", [
+        processId = post("/domains/$dsgvoDomainId/processes", [
             name: "data processing",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW"
-                ],
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             owner: [targetUri: unitUri]
         ]).body.resourceId
         eTag = get("/processes/$processId").getETag()
@@ -51,28 +47,20 @@ class ReadOnlyUserRestTest extends VeoRestTest {
 
     def "user without write access may not POST a process"() {
         expect:
-        post("/processes", [
+        post("/domains/$dsgvoDomainId/processes", [
             name   : "can't create this",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status : "NEW"
-                ],
-            ],
+            subType: "PRO_DataProcessing",
+            status : "NEW",
             owner  : [targetUri: unitUri]
         ], 403, UserType.READ_ONLY)
     }
 
     def "user without write access may not PUT a process"() {
         expect:
-        put("/processes/$processId", [
+        put("/domains/$dsgvoDomainId/processes/$processId", [
             name   : "can't touch this",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status : "NEW"
-                ],
-            ],
+            subType: "PRO_DataProcessing",
+            status : "NEW",
             owner  : [targetUri: unitUri]
         ], eTag, 403, UserType.READ_ONLY)
     }

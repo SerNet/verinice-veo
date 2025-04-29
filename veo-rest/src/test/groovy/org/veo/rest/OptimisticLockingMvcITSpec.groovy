@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETagMismatchException
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -43,13 +44,15 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     private Unit unit
+    private Domain domain
 
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-
+            domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID, false)
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
+                addToDomains(domain)
             })
         }
     }
@@ -59,12 +62,13 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
         given: "an asset"
         Map request = [
             name: 'E-Mail-Server',
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [
-                displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
-        def postResult = post('/assets', request)
+        def postResult = post("/domains/$domain.idAsString/assets", request)
         def postResultJson = new JsonSlurper().parseText(postResult.andReturn().response.contentAsString)
 
         and: "get the asset"
@@ -75,10 +79,11 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': eTag
         ]
-        put("/assets/${postResultJson.resourceId}", [
+        put("/domains/$domain.idAsString/assets/${postResultJson.resourceId}", [
             name: 'E-Mail-Server Berlin',
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [
-                displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ], headers)
@@ -87,10 +92,11 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "putting the asset again with the same ETag"
-        put("/assets/${postResultJson.resourceId}", [
+        put("/domains/$domain.idAsString/assets/${postResultJson.resourceId}", [
             name: 'E-Mail-Server Hamburg',
+            subType: 'Server',
+            status: 'RUNNING',
             owner: [
-                displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ], headers, 412)

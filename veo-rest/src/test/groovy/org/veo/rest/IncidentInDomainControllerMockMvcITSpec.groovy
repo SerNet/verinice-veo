@@ -179,23 +179,15 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all incidents in a domain"() {
-        given: "15 incidents in the domain & one unassociated incident"
+        given: "15 incidents in the domain"
         (1..15).forEach {
-            post("/incidents", [
+            post("/domains/$testDomainId/incidents", [
                 name: "incident $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "DISASTER",
-                        status: "DETECTED",
-                    ]
-                ]
+                subType: "DISASTER",
+                status: "DETECTED",
             ])
         }
-        post("/incidents", [
-            name: "unassociated incident",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/incidents?size=10&sortBy=designator"))) {
@@ -230,15 +222,11 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "an incident in a domain"
-        def incidentId = parseJson(post("/incidents", [
+        def incidentId = parseJson(post("/domains/$testDomainId/incidents", [
             name: "Some incident",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "DISASTER",
-                    status: "INVESTIGATED"
-                ]
-            ]
+            subType: "DISASTER",
+            status: "INVESTIGATED"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -248,20 +236,5 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
-    }
-
-    def "unassociated incident is handled"() {
-        given: "an incident without any domains"
-        def incidentId = parseJson(post("/incidents", [
-            name: "Unassociated incident",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/incidents/$incidentId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Incident $incidentId is not associated with domain $testDomainId"
     }
 }

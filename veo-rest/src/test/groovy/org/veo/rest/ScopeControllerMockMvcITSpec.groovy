@@ -21,13 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ScenarioRepository
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -88,67 +86,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "create a scope"() {
-        given: "a request body"
-        Map request = [
-            name: 'My Scope',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
-        ]
-
-        when: "the request is sent"
-        def result = parseJson(post('/scopes', request))
-
-        then: "the location of the new scope is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Scope created successfully.'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a scope with members"() {
-        given: "an exsting asset and a request body"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = 'Test asset'
-                designator = 'AST-1'
-            })
-        }
-        Map request = [
-            name: 'My Assets',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ],
-            members: [
-                [targetUri : "http://localhost/assets/${asset.idAsString}"]
-            ]
-        ]
-
-        when: "the request is sent"
-        def result = parseJson(post('/scopes', request))
-
-        then: "the location of the new scope is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Scope created successfully.'
-
-        when: "the server is queried for the scope"
-        result = parseJson(get("/scopes/${resourceId}"))
-
-        then: "the expected name is present"
-        result.name == 'My Assets'
-
-        and: "the scope contains the asset"
-        result.members.size() == 1
-        result.members.first().displayName == 'AST-1 Test asset'
-    }
-
-    @WithUserDetails("user@domain.example")
     def "retrieve a scope with members"() {
         given: "a saved scope with a composite with two parts"
         Person p1 = newPerson(unit) {
@@ -182,65 +119,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         and: "is has the correct members"
         result.members.size() == 1
         result.members.first().displayName == 'PER-1 Composite person'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "query and modify a scope's members"() {
-        given: "a saved scope and two composites"
-        def (asset, scenario,scope ) = txTemplate.execute {
-
-            def asset = assetRepository.save(newAsset(unit) {
-                name = 'Test asset'
-            })
-            def scenario = scenarioRepository.save(newScenario(unit) {
-                name = 'Test scenario'
-            })
-            def scope = scopeRepository.save(newScope(unit) {
-                name = 'Test scope'
-            })
-            [
-                asset,
-                scenario,
-                scope
-            ]
-        }
-
-        when: "the server is queried for the scope"
-        def result = parseJson(get("/scopes/${scope.idAsString}"))
-
-        then: "the scope is found"
-        result.name == 'Test scope'
-        result.members.empty
-
-        when: "the server is queried for the scope's members"
-        def membersResult = parseJson(get("/scopes/${scope.idAsString}/members"))
-
-        then:
-        membersResult.empty
-
-        when: "Updating the scope's members"
-        result.members = [
-            [targetUri : "http://localhost/assets/${asset.idAsString}"],
-            [targetUri : "http://localhost/scenarios/${scenario.idAsString}"]
-        ]
-        put("/scopes/${scope.idAsString}", result, [
-            "If-Match": getETag(get("/scopes/${scope.idAsString}"))
-        ])
-
-        then:
-        txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
-
-        when: "querying the members again"
-        def members = parseJson(get("/scopes/${scope.idAsString}/members"))
-
-        then:
-        with(members.sort{it.name}) {
-            it.size() == 2
-            it[0].name == "Test asset"
-            it[0].type == "asset"
-            it[1].name == "Test scenario"
-            it[1].type == "scenario"
-        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -294,146 +172,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the respective scope is returned"
         result.items*.name == ['Test scope 2']
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "put a scope with a custom aspect"() {
-        given: "a saved scope"
-        def scope = txTemplate.execute {
-            scopeRepository.save(newScope(unit) {
-                associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
-                applyCustomAspect(newCustomAspect("scope_generalInformation", dsgvoDomain))
-            })
-        }
-
-        Map request = [
-            name: 'New scope 2',
-            abbreviation: 's-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: "http://localhost/units/${unit.idAsString}",
-                displayName: 'test unit'
-            ], domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "SCP_Scope",
-                    status: "NEW",
-                ]
-            ], customAspects:
-            [
-                'scope_address' :
-                [
-                    domains: [],
-                    attributes:  [
-                        scope_address_postcode: '1',
-                        scope_address_country: 'Germany'
-                    ]
-                ]
-            ]
-        ]
-
-        when: "the new scope data is sent to the server"
-        Map headers = [
-            'If-Match': ETag.from(scope.idAsString, scope.version)
-        ]
-        def result = parseJson(put("/scopes/${scope.idAsString}",request, headers))
-
-        then: "the scope is found"
-        result.name == 'New scope 2'
-        result.abbreviation == 's-2'
-        result.domains[dsgvoDomain.idAsString] == [
-            subType: "SCP_Scope",
-            status: "NEW",
-            decisionResults: [:],
-            riskValues:[:]
-        ]
-        result.owner.targetUri == "http://localhost/units/${unit.idAsString}"
-
-        when:
-        def entity = txTemplate.execute {
-            scopeRepository.findById(scope.id).get().tap() {
-                // resolve proxy:
-                customAspects.first()
-            }
-        }
-
-        then:
-        entity.name == 'New scope 2'
-        entity.abbreviation == 's-2'
-        with(entity.customAspects.first()) {
-            type == 'scope_address'
-            attributes["scope_address_postcode"] == '1'
-            attributes["scope_address_country"] == 'Germany'
-        }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put a scope with another scope ID"() {
-        given: "two scopes"
-        def scope1 = txTemplate.execute({
-            scopeRepository.save(newScope(unit))
-        })
-        def scope2 = txTemplate.execute({
-            scopeRepository.save(newScope(unit))
-        })
-
-        when: "a put request tries to update scope 1 using the ID of scope 2"
-        Map headers = [
-            'If-Match': ETag.from(scope2.idAsString, 1)
-        ]
-        put("/scopes/${scope2.idAsString}", [
-            id: scope1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back scope"() {
-        given: "a new scope"
-        def id = parseJson(post("/scopes", [
-            name: 'My Scope',
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/scopes/$id")
-
-        when: "putting the retrieved scope back to be successful"
-        def resultActions = put("/scopes/$id", parseJson(getResult), [
-            "If-Match": ETag.from(id, 0)
-        ])
-
-        then: 'the ETag is returned'
-        getETag(resultActions) == ETag.from(id, 1)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back scope with members"() {
-        given: "a saved asset and scope"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = 'Test asset'
-            })
-        }
-        Map request = [
-            name: 'My Assets',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ],
-            members: [
-                [targetUri : "http://localhost/assets/${asset.idAsString}"]
-            ]
-        ]
-
-        def id = parseJson(post("/scopes", request)).resourceId
-        def getResult = get("/scopes/$id")
-
-        expect: "putting the retrieved scope back to be successful"
-        put("/scopes/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
     }
 
     @WithUserDetails("user@domain.example")

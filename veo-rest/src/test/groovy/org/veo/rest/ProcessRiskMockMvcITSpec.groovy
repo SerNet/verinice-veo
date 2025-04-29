@@ -71,33 +71,29 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can update process impact"() {
         when: "creating a process with impact values for different risk definitions"
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domains/$domainId/processes", [
             name: "Super PRO",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ],
-                            potentialImpactReasons: [
-                                "C": ImpactReason.MANUAL.translationKey,
-                                "I": ImpactReason.CUMULATIVE.translationKey
-                            ],
-                            potentialImpactExplanations: [
-                                "C": EVERYTHING_WRONG,
-                                "I": TOO_MUCH
-                            ]
-                        ],
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1
-                            ]
-                        ]
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
+                    ],
+                    potentialImpactReasons: [
+                        "C": ImpactReason.MANUAL.translationKey,
+                        "I": ImpactReason.CUMULATIVE.translationKey
+                    ],
+                    potentialImpactExplanations: [
+                        "C": EVERYTHING_WRONG,
+                        "I": TOO_MUCH
+                    ]
+                ],
+                mySecondRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 1
                     ]
                 ]
             ]
@@ -148,24 +144,20 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "updating the risk values on the process"
-        put("/processes/$processId", [
+        put("/domains/$domainId/processes/$processId", [
             name: "Super PRO1",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition: [
-                            potentialImpacts: [ "C": 1,
-                                "I": 2
-                            ]
-                        ],
-                        myThirdRiskDefinition: [
-                            potentialImpacts: [ "C": 2,
-                                "I": 0
-                            ]
-                        ]
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [ "C": 1,
+                        "I": 2
+                    ]
+                ],
+                myThirdRiskDefinition: [
+                    potentialImpacts: [ "C": 2,
+                        "I": 0
                     ]
                 ]
             ]
@@ -204,25 +196,21 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can't create process with wrong riskdefinition id"() {
         when: "creating a process that uses a different risk definition"
-        post("/processes", [
+        post("/domains/$domainId/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstWrongDefinition: [
-                            potentialImpacts: [
-                                "E": 0,
-                                "GGG": 1
-                            ]
-                        ],
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1
-                            ]
-                        ]
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstWrongDefinition: [
+                    potentialImpacts: [
+                        "E": 0,
+                        "GGG": 1
+                    ]
+                ],
+                mySecondRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 1
                     ]
                 ]
             ]
@@ -235,25 +223,21 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can't create process with wrong impact"() {
         when: "creating a process with risk values for different risk definitions"
-        post("/processes", [
+        post("/domains/$domainId/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition: [
-                            potentialImpacts: [
-                                "E": 0,
-                                "GGG": 1
-                            ]
-                        ],
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1
-                            ]
-                        ]
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "E": 0,
+                        "GGG": 1
+                    ]
+                ],
+                mySecondRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 1
                     ]
                 ]
             ]
@@ -266,19 +250,15 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can't create process with wrong impact value"() {
         when: "creating the process with risk values for different risk definitions"
-        post("/processes", [
+        post("/domains/$domainId/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 10
-                            ]
-                        ]
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                mySecondRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 10
                     ]
                 ]
             ]

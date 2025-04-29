@@ -312,8 +312,10 @@ class EvaluationRestTest extends VeoRestTest {
                 [targetUri: "http://localhost/processes/$processId"]
             ],
         ])
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "danger",
+            subType: 'SCN_Scenario',
+            status: 'NEW',
             owner: [targetUri: unitUri],
         ]).body.resourceId
         post("/processes/$processId/risks", [

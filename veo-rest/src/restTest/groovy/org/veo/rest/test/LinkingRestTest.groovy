@@ -187,19 +187,6 @@ class LinkingRestTest extends VeoRestTest {
             ],
         ], 409).body.message ==~ /Link with type 'linkTypeA' and target ID .+ already exists/
 
-        and: "adding links to an unassociated element to fail"
-        def unassociatedElementId = post("/$type.pluralTerm", [
-            name: "unassociated element",
-            owner: [targetUri: "/units/$unitId"],
-        ]).body.resourceId
-        post("/domains/$domainId/$type.pluralTerm/$unassociatedElementId/links", [
-            linkTypeA: [
-                [
-                    target: [targetInDomainUri: targetAUri]
-                ]
-            ]
-        ], 404).body.message == "$type.singularTerm $unassociatedElementId is not associated with domain $domainId"
-
         where:
         type << EntityType.ELEMENT_TYPES
     }

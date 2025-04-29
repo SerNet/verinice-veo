@@ -21,13 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -87,28 +84,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
             unitRepository.save(unit)
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a scenario"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Scenario',
-            owner: [
-                displayName: 'scenarioDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/scenarios', request))
-
-        then: "the location of the new scenario is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Scenario created successfully.'
     }
 
     @WithUserDetails("user@domain.example")
@@ -183,49 +158,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put a scenario"() {
-        given: "a saved scenario"
-        def scenario = txTemplate.execute {
-            scenarioDataRepository.save(newScenario(unit) {
-                associateWithDomain(domain, "WorstCase", "NEW")
-            })
-        }
-
-        Map request = [
-            name: 'New scenario-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],  domains: [
-                (domain.idAsString): [
-                    subType: "WorstCase",
-                    status: "NEW",
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(scenario.idAsString, scenario.version)
-        ]
-        def result = parseJson(put("/scenarios/${scenario.idAsString}", request, headers))
-
-        then: "the scenario is found"
-        result.name == 'New scenario-2'
-        result.abbreviation == 'u-2'
-        result.domains[domain.idAsString] == [
-            subType: "WorstCase",
-            status: "NEW",
-            decisionResults: [:],
-            riskValues: [:],
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
     def "delete a scenario"() {
         given: "an existing scenario"
         def scenario = txTemplate.execute {
@@ -237,85 +169,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the scenario is deleted"
         scenarioRepository.findById(scenario.id).empty
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "delete a scenario that is used by a risk"() {
-        given: "a scenario that is used by a risk"
-        def scenarioId = parseJson(post("/scenarios", [
-            name: "scenery-oh",
-            owner: [targetUri: "/units/$unit.idAsString"]
-        ])).resourceId
-        def processId = parseJson(post("/processes", [
-            name: "possessive process",
-            owner: [targetUri: "/units/$unit.idAsString"],
-            domains: [
-                (domain.idAsString): [
-                    subType: "SomeProcess",
-                    status: "NEW"
-                ]
-            ]
-        ])).resourceId
-        post("/processes/$processId/risks", [
-            scenario: [targetUri: "/scenarios/$scenarioId"],
-            domains: [
-                (domain.idAsString): [
-                    reference: [targetUri: "/domains/$domain.idAsString"]
-                ]
-            ]
-        ])
-
-        when: "the scenario is deleted"
-        delete("/scenarios/$scenarioId")
-
-        and: "trying to retrieve the risk"
-        get("/processes/$processId/risks/$scenarioId", 404)
-
-        then:
-        thrown(NotFoundException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put a scenario with another scenario's ID"() {
-        given: "two scenarios"
-        def scenario1 = txTemplate.execute({
-            scenarioDataRepository.save(newScenario(unit, {
-                name = "old name 1"
-            }))
-        })
-        def scenario2 = txTemplate.execute({
-            scenarioDataRepository.save(newScenario(unit, {
-                name = "old name 2"
-            }))
-        })
-
-        when: "a put request tries to update scenario 1 using the ID of scenario 2"
-        Map headers = [
-            'If-Match': ETag.from(scenario1.idAsString, 1)
-        ]
-        put("/scenarios/${scenario2.idAsString}", [
-            id: scenario1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back scenario"() {
-        given: "a new scenario"
-        def id = parseJson(post("/scenarios", [
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/scenarios/$id")
-
-        expect: "putting the retrieved scenario back to be successful"
-        put("/scenarios/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
     }
 
     @WithUserDetails("user@domain.example")

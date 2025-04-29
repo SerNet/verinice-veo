@@ -36,18 +36,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update process risk values"() {
         given: "a composite process and a scenario"
-        def processId = post("/processes", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataTransfer",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+        def processId = post("/domains/$dsgvoDomainId/processes", [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
@@ -55,19 +51,15 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialProbability           : 2,
-                            potentialProbabilityExplanation: "$IT_HAPPENED"
-                        ]
-                    ]
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialProbability           : 2,
+                    potentialProbabilityExplanation: "$IT_HAPPENED"
                 ]
             ]
         ]).body.resourceId
@@ -232,18 +224,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update process risk values with mitigations"(String type, String subType) {
         given: "a composite process and a scenario"
-        def processId = post("/$type", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "$subType",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+        def processId = post("/domains/$dsgvoDomainId/$type", [
+            subType: "$subType",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
@@ -251,31 +239,23 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "$type risk test scenario",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialProbability: 2
                 ]
             ]
         ]).body.resourceId
 
-        def controlId = post("/controls", [
+        def controlId = post("/domains/$dsgvoDomainId/controls", [
             name: "$type risk test control",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ]
+            subType: "CTL_TOM",
+            status: "NEW"
         ]).body.resourceId
 
         when: "creating the risk with only partial risk values"
@@ -423,18 +403,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update asset risk values"() {
         given: "a composite asset and a scenario"
-        def assetId = post("/assets", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "AST_Datatype",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+        def assetId = post("/domains/$dsgvoDomainId/assets", [
+            subType: "AST_Datatype",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
@@ -442,19 +418,15 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialProbability           : 2,
-                            potentialProbabilityExplanation: "$IT_HAPPENED"
-                        ]
-                    ]
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialProbability           : 2,
+                    potentialProbabilityExplanation: "$IT_HAPPENED"
                 ]
             ]
         ]).body.resourceId
@@ -626,18 +598,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update scope risk values"() {
         given: "a composite scope and a scenario"
-        def scopeId = post("/scopes", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCP_Controller",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+        def scopeId = post("/domains/$dsgvoDomainId/scopes", [
+            subType: "SCP_Controller",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
@@ -645,19 +613,15 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialProbability           : 2,
-                            potentialProbabilityExplanation: "$IT_HAPPENED"
-                        ]
-                    ]
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialProbability           : 2,
+                    potentialProbabilityExplanation: "$IT_HAPPENED"
                 ]
             ]
         ]).body.resourceId

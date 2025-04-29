@@ -18,17 +18,12 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.bind.MethodArgumentNotValidException
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Nameable
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -81,45 +76,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             }
             unitRepository.save(unit)
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a document"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Document',
-            owner: [
-                displayName: 'documentDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/documents', request))
-
-        then: "the location of the new document is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Document created successfully.'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "invalid target URI returns HTTP 422"() {
-        given:
-        Map request = [
-            name: 'New Document',
-            owner: [
-                targetUri: 'http://localhost/units/foobar'
-            ]
-        ]
-
-        when:
-        post('/documents', request, 422)
-
-        then:
-        thrown(HttpMessageNotReadableException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -190,48 +146,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put a document"() {
-        given: "a saved document"
-        def document = txTemplate.execute {
-            documentRepository.save(newDocument(unit) {
-                associateWithDomain(domain, "Manual", "NEW")
-            })
-        }
-
-        Map request = [
-            name: 'New document-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],  domains: [
-                (domain.idAsString): [
-                    subType: "Manual",
-                    status: "NEW",
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(document.idAsString, document.version)
-        ]
-        def result = parseJson(put("/documents/${document.idAsString}", request, headers))
-
-        then: "the document is found"
-        result.name == 'New document-2'
-        result.abbreviation == 'u-2'
-        result.domains[domain.idAsString] == [
-            subType: "Manual",
-            status: "NEW",
-            decisionResults: [:]
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
     def "delete a document"() {
         given: "an existing document"
         def document = txTemplate.execute {
@@ -243,65 +157,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the document is deleted"
         documentRepository.findById(document.id).empty
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put a document with another document's ID"() {
-        given: "two documents"
-        def document1 = txTemplate.execute({
-            documentRepository.save(newDocument(unit, {
-                name = "old name 1"
-            }))
-        })
-        def document2 = txTemplate.execute({
-            documentRepository.save(newDocument(unit, {
-                name = "old name 2"
-            }))
-        })
-
-        when: "a put request tries to update document 1 using the ID of document 2"
-        Map headers = [
-            'If-Match': ETag.from(document1.idAsString, 1)
-        ]
-        put("/documents/${document2.idAsString}", [
-            id: document1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back document"() {
-        given: "a new document"
-        def id = parseJson(post("/documents", [
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/documents/$id")
-
-        expect: "putting the retrieved document back to be successful"
-        put("/documents/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't post excessively long document description"() {
-        when:
-        post("/documents", [
-            description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ], 400)
-
-        then:
-        def ex = thrown(MethodArgumentNotValidException)
-        with(ex.message) {
-            contains("size must be between 0 and 65535")
-        }
     }
 
     @WithUserDetails("user@domain.example")

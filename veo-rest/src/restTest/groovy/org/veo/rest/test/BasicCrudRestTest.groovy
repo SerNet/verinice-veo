@@ -69,10 +69,14 @@ class BasicCrudRestTest extends VeoRestTest {
         when: 'given an asset'
         def assetName = 'CRUD test asset'
         def targetUri = "$baseUrl/units/$unitId"
-        def asset = [name: assetName, owner: [displayName: unitName, targetUri: targetUri]]
+        def asset = [name: assetName,
+            subType: 'AST_Application',
+            status: 'NEW',
+            owner: [ targetUri: targetUri]
+        ]
 
         and: 'creating an asset inside the unit'
-        def postResponse = post("$baseUrl/assets", asset, 201, UserType.DEFAULT)
+        def postResponse = post("$baseUrl/domains/$dsgvoDomainId/assets", asset, 201, UserType.DEFAULT)
 
         then: 'Resource ID is a string'
         def assetId = postResponse.body.resourceId
@@ -102,10 +106,22 @@ class BasicCrudRestTest extends VeoRestTest {
         assetName = "New name of Asset"
 
         and: 'Status Code is correct when updating the asset'
-        put("$baseUrl/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName, targetUri: targetUri]], assetEtag, 200, UserType.DEFAULT)
+        put("$baseUrl/domains/$dsgvoDomainId/assets/$assetId", [
+            id: assetId,
+            name: assetName,
+            subType: 'AST_Application',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]
+        ], assetEtag, 200, UserType.DEFAULT)
 
         and: 'Server denies updating the asset concurrently'
-        put("$baseUrl/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName, targetUri: targetUri]], assetEtag, 412, UserType.DEFAULT)
+        put("$baseUrl/domains/$dsgvoDomainId/assets/$assetId", [
+            id: assetId,
+            name: assetName,
+            subType: 'AST_Application',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]
+        ], assetEtag, 412, UserType.DEFAULT)
 
         and: 'Deleting the asset'
         delete("$baseUrl/assets/$assetId", 204, UserType.DEFAULT)
@@ -115,31 +131,24 @@ class BasicCrudRestTest extends VeoRestTest {
         def propertiesAssetBody = [
             name: propertiesAssetName,
             owner: [displayName: unitName, targetUri: targetUri],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+            subType: "AST_Application",
+            status: "NEW",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
             customAspects: [
                 asset_details: [
-                    domains: [],
-                    attributes: [
-                        asset_details_number: 1,
-                        asset_details_operatingStage: "asset_details_operatingStage_planning"
-                    ]
+                    asset_details_number: 1,
+                    asset_details_operatingStage: "asset_details_operatingStage_planning"
                 ]
             ]
         ]
-        def postPropertiesAssetResponse = post("$baseUrl/assets", propertiesAssetBody, 201, UserType.DEFAULT)
+        def postPropertiesAssetResponse = post("$baseUrl/domains/$dsgvoDomainId/assets", propertiesAssetBody, 201, UserType.DEFAULT)
         def propertiesAssetId = postPropertiesAssetResponse.body.resourceId
         UUID.fromString(propertiesAssetId)
 
@@ -207,7 +216,12 @@ class BasicCrudRestTest extends VeoRestTest {
         def targetUri = "$baseUrl/units/$unitId"
 
         then:
-        def postResponsePerson = post("$baseUrl/persons", [name: personName, owner: [displayName: unitName, targetUri: targetUri]], 201, UserType.DEFAULT)
+        def postResponsePerson = post("$baseUrl/domains/$dsgvoDomainId/persons", [
+            name: personName,
+            subType: 'PER_Person',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]
+        ], 201, UserType.DEFAULT)
 
         then: 'Resource ID is a string and matches'
         def personId = postResponsePerson.body.resourceId
@@ -234,12 +248,16 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Changing the name of the person'
         def newPersonName = 'Person with Mohammed Api'
-        def putBody = [id: personId, name: newPersonName, owner: [displayName: unitName, targetUri: targetUri]]
-        put("$baseUrl/persons/$personId", putBody, personEtag, 200, UserType.DEFAULT)
+        def putBody = [id: personId,
+            name: newPersonName,
+            subType: 'PER_Person',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]]
+        put("$baseUrl/domains/$dsgvoDomainId/persons/$personId", putBody, personEtag, 200, UserType.DEFAULT)
         get("$baseUrl/persons/$personId").body.name == newPersonName
 
         and: 'Updating person concurrently'
-        put("$baseUrl/persons/$personId", putBody, personEtag, 412, UserType.DEFAULT)
+        put("$baseUrl/domains/$dsgvoDomainId/persons/$personId", putBody, personEtag, 412, UserType.DEFAULT)
 
         and: 'Deleting the person'
         delete("$baseUrl/persons/$personId", 204, UserType.DEFAULT)
@@ -248,25 +266,18 @@ class BasicCrudRestTest extends VeoRestTest {
         def propertiesPersonName = 'CRUD test person'
         def postPropertiesPersonBody = [
             name: propertiesPersonName,
+            subType: "PER_Person",
+            status: "NEW",
             owner: [
                 displayName: unitName,
                 targetUri: targetUri],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
             customAspects: [
                 person_generalInformation: [
-                    domains: [],
-                    attributes: [
-                        person_generalInformation_salutation: "Herr",
-                        person_generalInformation_familyName: "Schmidt"]
-                ]
+                    person_generalInformation_salutation: "Herr",
+                    person_generalInformation_familyName: "Schmidt"]
             ]
         ]
-        def postPropertiesPersonResponse = post("$baseUrl/persons", postPropertiesPersonBody, 201, UserType.DEFAULT)
+        def postPropertiesPersonResponse = post("$baseUrl/domains/$dsgvoDomainId/persons", postPropertiesPersonBody, 201, UserType.DEFAULT)
         def propertiesPersonId = postPropertiesPersonResponse.body.resourceId
         UUID.fromString(propertiesPersonId)
 
@@ -287,8 +298,11 @@ class BasicCrudRestTest extends VeoRestTest {
         def targetUri = "$baseUrl/units/$unitId"
         def initialControlCount = get("$baseUrl//controls?unit=$unitId", 200, UserType.DEFAULT).body.items.size()
         def controlName = 'CRUD test control'
-        def controlBody = [name: controlName, owner: [displayName: unitName, targetUri: targetUri]]
-        def postControlResponse = post("$baseUrl//controls", controlBody, 201, UserType.DEFAULT)
+        def controlBody = [name: controlName,
+            subType: 'CTL_TOM',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]]
+        def postControlResponse = post("$baseUrl/domains/$dsgvoDomainId/controls", controlBody, 201, UserType.DEFAULT)
         def controlId = postControlResponse.body.resourceId
         UUID.fromString(controlId)
 
@@ -310,11 +324,16 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Updating the control'
         def newControlName = 'Control of Conrad'
-        def putControlBody = [id: controlId, name: newControlName, owner: [displayName: unitName, targetUri: targetUri]]
-        put("$baseUrl//controls/$controlId", controlBody, controlEtag, 200, UserType.DEFAULT)
+        def putControlBody = [
+            id: controlId,
+            name: newControlName,
+            subType: 'CTL_TOM',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUri]]
+        put("$baseUrl/domains/$dsgvoDomainId/controls/$controlId", controlBody, controlEtag, 200, UserType.DEFAULT)
 
         and: 'Updating the control concurrently'
-        put("$baseUrl/controls/$controlId", putControlBody, controlEtag, 412, UserType.DEFAULT)
+        put("$baseUrl/domains/$dsgvoDomainId/controls/$controlId", putControlBody, controlEtag, 412, UserType.DEFAULT)
 
         and: 'Deleting the control'
         delete("$baseUrl/controls/$controlId", 204, UserType.DEFAULT)
@@ -327,24 +346,17 @@ class BasicCrudRestTest extends VeoRestTest {
                 displayName: unitName,
                 targetUri: targetUri
             ],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+            subType: "CTL_TOM",
+            status: "NEW",
             customAspects: [
                 control_dataProtection: [
-                    domains: [],
-                    attributes: [
-                        control_dataProtection_objectives: [
-                            "control_dataProtection_objectives_pseudonymization"
-                        ]
+                    control_dataProtection_objectives: [
+                        "control_dataProtection_objectives_pseudonymization"
                     ]
                 ]
             ]
         ]
-        def postPropertiesControlResponse = post("$baseUrl/controls", postPropertiesControlBody, 201, UserType.DEFAULT)
+        def postPropertiesControlResponse = post("$baseUrl/domains/$dsgvoDomainId/controls", postPropertiesControlBody, 201, UserType.DEFAULT)
         def propertiesControlId = postPropertiesControlResponse.body.resourceId
         UUID.fromString(propertiesControlId)
 
@@ -362,7 +374,9 @@ class BasicCrudRestTest extends VeoRestTest {
     def "Filter elements"() {
         when: 'Creating a unit'
         def unitName = 'CRUD test unit'
-        def unitBody = [name: unitName]
+        def unitBody = [name: unitName, domains:[
+                [targetUri: "/domains/$dsgvoDomainId"]
+            ]]
         def postUnitResponse = post("$baseUrl/units", unitBody, 201, UserType.DEFAULT)
 
         then: 'Resource ID is a string'
@@ -372,76 +386,141 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Creating a sub-unit'
         def subUnitName = 'CRUD test sub-unit'
-        def subUnitBody = [name: subUnitName, parent: [displayName: unitName, targetUri: targetUriUnit]]
+        def subUnitBody = [
+            name: subUnitName,
+            domains:[
+                [targetUri: "/domains/$dsgvoDomainId"]
+            ],
+            parent: [displayName: unitName, targetUri: targetUriUnit]
+        ]
         def postSubUnitResponse = post("$baseUrl/units", subUnitBody, 201, UserType.DEFAULT)
         def subUnitId = postSubUnitResponse.body.resourceId
         UUID.fromString(subUnitId)
         def targetUriSubUnit = "$baseUrl/units/$subUnitId"
 
         and: 'Creating an asset inside the unit'
-        def assetBody = [name: 'an asset inside the unit', owner: [displayName: unitName, targetUri: targetUriUnit]]
-        post("$baseUrl/assets", assetBody, 201, UserType.DEFAULT)
+        def assetBody = [
+            name: 'an asset inside the unit',
+            subType: 'AST_Application',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        post("$baseUrl/domains/$dsgvoDomainId/assets", assetBody, 201, UserType.DEFAULT)
 
         and: 'Creating an asset inside the sub-unit'
         def subUnitAssetName = 'filter test asset'
-        def subUnitAssetBody = [name: subUnitAssetName, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postSubUnitAssetResponse = post("$baseUrl/assets", subUnitAssetBody, 201, UserType.DEFAULT)
+        def subUnitAssetBody = [
+            name: subUnitAssetName,
+            subType: 'AST_Application',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
+        def postSubUnitAssetResponse = post("$baseUrl/domains/$dsgvoDomainId/assets", subUnitAssetBody, 201, UserType.DEFAULT)
         def subUnitAssetId = postSubUnitAssetResponse.body.resourceId
         UUID.fromString(subUnitAssetId)
 
         and: 'Creating 2 processes inside the unit'
-        def processBody = [name: 'a process inside the unit', owner: [displayName: unitName, targetUri: targetUriUnit]]
-        post("$baseUrl/processes", processBody, 201, UserType.DEFAULT)
-        def processBody2 = [name: 'another process inside the unit', owner: [displayName: unitName, targetUri: targetUriUnit]]
-        post("$baseUrl/processes", processBody2, 201, UserType.DEFAULT)
+        def processBody = [
+            name: 'a process inside the unit',
+            subType: 'PRO_DataProcessing',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        post("$baseUrl/domains/$dsgvoDomainId/processes", processBody, 201, UserType.DEFAULT)
+        def processBody2 = [
+            name: 'another process inside the unit',
+            subType: 'PRO_DataProcessing',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        post("$baseUrl/domains/$dsgvoDomainId/processes", processBody2, 201, UserType.DEFAULT)
 
         and: 'Creating a process inside the sub-unit'
         def subUnitProcessName = 'filter test process'
-        def subUnitProcessBody = [name: subUnitProcessName, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
+        def subUnitProcessBody = [
+            name: subUnitProcessName,
+            subType: 'PRO_DataProcessing',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
+        ]
         def postSubUnitProcessResponse =
-                post("$baseUrl/processes", subUnitProcessBody, 201, UserType.DEFAULT)
+                post("$baseUrl/domains/$dsgvoDomainId/processes", subUnitProcessBody, 201, UserType.DEFAULT)
         def subUnitProcessId = postSubUnitProcessResponse.body.resourceId
         UUID.fromString(subUnitProcessId)
 
         and: 'Creating a person inside the unit'
-        def personBody = [name: 'a person inside the unit', owner: [displayName: unitName, targetUri: targetUriUnit]]
-        post("$baseUrl/persons", personBody, 201, UserType.DEFAULT)
+        def personBody = [
+            name: 'a person inside the unit',
+            subType: 'PER_Person',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        post("$baseUrl/domains/$dsgvoDomainId/persons", personBody, 201, UserType.DEFAULT)
 
         and: 'Creating 2 persons inside the sub-unit'
         def subUnitPersonName1 = 'filter test person 1'
-        def subUnitPersonBody = [name: subUnitPersonName1, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postSubUnitPersonResponse = post("$baseUrl/persons", subUnitPersonBody, 201, UserType.DEFAULT)
+        def subUnitPersonBody = [
+            name: subUnitPersonName1,
+            subType: 'PER_Person',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
+        ]
+        def postSubUnitPersonResponse = post("$baseUrl/domains/$dsgvoDomainId/persons", subUnitPersonBody, 201, UserType.DEFAULT)
         def subUnitPersonId1 = postSubUnitPersonResponse.body.resourceId
         UUID.fromString(subUnitPersonId1)
 
         def subUnitPersonName2 = 'filter test person 2'
-        def subUnitPersonBody2 = [name: subUnitPersonName2, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postSubUnitPersonResponse2 = post("$baseUrl/persons", subUnitPersonBody2, 201, UserType.DEFAULT)
+        def subUnitPersonBody2 = [
+            name: subUnitPersonName2,
+            subType: 'PER_Person',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
+        ]
+        def postSubUnitPersonResponse2 = post("$baseUrl/domains/$dsgvoDomainId/persons", subUnitPersonBody2, 201, UserType.DEFAULT)
         def subUnitPersonId2 = postSubUnitPersonResponse2.body.resourceId
         UUID.fromString(subUnitPersonId2)
 
         and: 'Creating a control inside the unit'
-        def controlBody = [name: 'a control inside the unit', owner: [displayName: unitName, targetUri: targetUriUnit]]
-        post("$baseUrl/controls", controlBody, 201, UserType.DEFAULT)
+        def controlBody = [
+            name: 'a control inside the unit',
+            subType: 'CTL_TOM',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        post("$baseUrl/domains/$dsgvoDomainId/controls", controlBody, 201, UserType.DEFAULT)
 
         and: 'Creating a control inside the sub-unit'
         def subUnitControlName = 'filter test control'
-        def subUnitControlBody = [name: subUnitControlName, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postSubUnitControlResponse = post("$baseUrl/controls", subUnitControlBody, 201, UserType.DEFAULT)
+        def subUnitControlBody = [
+            name: subUnitControlName,
+            subType: 'CTL_TOM',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
+        ]
+        def postSubUnitControlResponse = post("$baseUrl/domains/$dsgvoDomainId/controls", subUnitControlBody, 201, UserType.DEFAULT)
         def subUnitControlId = postSubUnitControlResponse.body.resourceId
         UUID.fromString(subUnitControlId)
 
         and: 'Creating a scenario inside the sub unit'
         def unitScenarioName1 = 'filter test scenario'
-        def unitScenarioBody1 = [name: unitScenarioName1, owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postUnitScenarioResponse1 = post("$baseUrl/scenarios", unitScenarioBody1, 201, UserType.DEFAULT)
+        def unitScenarioBody1 = [
+            name: unitScenarioName1,
+            subType: 'SCN_Scenario',
+            status: 'NEW',
+            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
+        ]
+        def postUnitScenarioResponse1 = post("$baseUrl/domains/$dsgvoDomainId/scenarios", unitScenarioBody1, 201, UserType.DEFAULT)
         def unitScenarioId1 = postUnitScenarioResponse1.body.resourceId
         UUID.fromString(unitScenarioId1)
 
         and: 'Creating a scenario inside the unit'
         def unitScenarioName2 = 'filter test scenario'
-        def unitScenarioBody2 = [name: unitScenarioName2, owner: [displayName: unitName, targetUri: targetUriUnit]]
-        def postUnitScenarioResponse2 = post("$baseUrl/scenarios", unitScenarioBody2, 201, UserType.DEFAULT)
+        def unitScenarioBody2 = [
+            name: unitScenarioName2,
+            subType: 'SCN_Scenario',
+            status: 'NEW',
+            owner: [displayName: unitName, targetUri: targetUriUnit]
+        ]
+        def postUnitScenarioResponse2 = post("$baseUrl/domains/$dsgvoDomainId/scenarios", unitScenarioBody2, 201, UserType.DEFAULT)
         def unitScenarioId2 = postUnitScenarioResponse2.body.resourceId
         UUID.fromString(unitScenarioId2)
 
@@ -499,7 +578,9 @@ class BasicCrudRestTest extends VeoRestTest {
     def "Search elements"() {
         when: 'Creating a unit'
         def unitName = 'Search functions test unit'
-        def unitBody = [name: unitName]
+        def unitBody = [name: unitName, domains:[
+                [targetUri: "/domains/$testDomainId"]
+            ]]
         def postUnitResponse = post("$baseUrl/units", unitBody, 201, UserType.DEFAULT)
 
         then: 'Resource ID is a UUID'
@@ -509,8 +590,12 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Creating an asset inside the unit'
         def unitAssetName = 'filter test asset'
-        def unitAssetBody = [name: unitAssetName, owner: [displayName: unitName, targetUri: targetUriUnit]]
-        def postUnitAssetResponse = post("$baseUrl/assets", unitAssetBody, 201, UserType.DEFAULT)
+        def unitAssetBody = [
+            name: unitAssetName,
+            subType: 'Information',
+            status: 'CURRENT',
+            owner: [displayName: unitName, targetUri: targetUriUnit]]
+        def postUnitAssetResponse = post("$baseUrl/domains/$testDomainId/assets", unitAssetBody, 201, UserType.DEFAULT)
         def unitAssetId = postUnitAssetResponse.body.resourceId
         UUID.fromString(unitAssetId)
 
@@ -563,14 +648,16 @@ class BasicCrudRestTest extends VeoRestTest {
 
     def "moving an element between units is forbidden"() {
         given: "an asset in main unit"
-        def assetId = post("/assets", [
+        def assetId = post("/domains/$testDomainId/assets", [
             name: "sneaky asset",
+            subType: 'Information',
+            status: 'CURRENT',
             owner: [targetUri: "/units/$unitId"]
         ]).body.resourceId
         def otherUnitId = postNewUnit().resourceId
 
         expect: "that the elements cannot be moved to the other unit"
-        get("/assets/$assetId").with {
+        get("/domains/$testDomainId/assets/$assetId").with {
             body.owner = [targetUri: "/units/$otherUnitId"]
             put(body._self, body, getETag(), 422)
         }.body.message == "Elements cannot be moved between units"

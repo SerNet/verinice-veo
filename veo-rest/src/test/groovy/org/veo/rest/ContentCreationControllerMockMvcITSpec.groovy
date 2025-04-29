@@ -49,6 +49,7 @@ import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.ProcessRiskData
 
 import groovy.json.JsonSlurper
+
 /**
  * Integration test for the content creation controller. Uses mocked spring MVC environment.
  * Uses JPA repositories with in-memory database.
@@ -1020,25 +1021,17 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ], 204)
 
         and: "we create a simple circle in the profile by linking two controls"
-        def c1 = parseJson(post("/controls", [
+        def c1 = parseJson(post("/domains/$domainId/controls", [
             name   : "control-1",
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+            subType: "CTL_TOM",
+            status: "NEW",
             owner  : [targetUri: "/units/$unitId"]
         ])).resourceId
 
-        def c2 = parseJson(post("/controls", [
+        def c2 = parseJson(post("/domains/$domainId/controls", [
             name   : "control-2",
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+            subType: "CTL_TOM",
+            status: "NEW",
             owner  : [targetUri: "/units/$unitId"]
         ])).resourceId
 
@@ -1819,12 +1812,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when:
-        def getProcessResponse = get("/processes/$processId")
+        def getProcessResponse = get("/domains/$domainId/processes/$processId")
         def processETag = getETag(getProcessResponse)
         def retrievedProcess = parseJson(getProcessResponse)
 
-        def processDomainRiskValues = retrievedProcess.domains.get(domainId as String)
-        def processDsraRiskValues = processDomainRiskValues.riskValues.DSRA
+        def processDsraRiskValues = retrievedProcess.riskValues.DSRA
 
         then:
         processDsraRiskValues.potentialImpacts.keySet() ==~ ['C', 'I']
@@ -1846,7 +1838,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             'If-Match': processETag
         ]
 
-        put("/processes/$processId",retrievedProcess, headers)
+        put("/domains/$domainId/processes/$processId",retrievedProcess, headers)
         def process = processDataRepository.findWithRisksAndScenariosByIdIn([processId]).first()
 
         ImpactValues impactValues = process.getImpactValues(domain, rdRef).get()
@@ -1855,12 +1847,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         impactValues.potentialImpactsEffective[c2Ref].idRef == 1
 
         when:
-        getProcessResponse = get("/processes/$processId")
+        getProcessResponse = get("/domains/$domainId/processes/$processId")
         processETag = getETag(getProcessResponse)
         retrievedProcess = parseJson(getProcessResponse)
 
-        processDomainRiskValues = retrievedProcess.domains.get(domainId as String)
-        processDsraRiskValues = processDomainRiskValues.riskValues.DSRA
+        processDsraRiskValues = retrievedProcess.riskValues.DSRA
 
         then:
         processDsraRiskValues.potentialImpacts.keySet() ==~ ['C', 'I', 'C2']

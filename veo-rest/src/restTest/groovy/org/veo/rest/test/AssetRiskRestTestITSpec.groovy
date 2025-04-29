@@ -27,22 +27,20 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
 
     def "create and update an asset risk"() {
         given: "a composite asset and a scenario"
-        def subAssetId = post("/assets", [
+        def subAssetId = post("/domains/$dsgvoDomainId/assets", [
             name: "sub asset",
+            subType: "AST_Datatype",
+            status: "IN_PROGRESS",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def assetId = post("/assets", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "AST_Datatype",
-                    status: "IN_PROGRESS",
-                    riskValues: [
-                        DSRA : [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
+        def assetId = post("/domains/$dsgvoDomainId/assets", [
+            subType: "AST_Datatype",
+            status: "IN_PROGRESS",
+            riskValues: [
+                DSRA : [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
                     ]
                 ]
             ],
@@ -53,8 +51,10 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
             name: "risk test asset",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "asset risk test scenario",
+            subType: "SCN_Scenario",
+            status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
@@ -74,8 +74,10 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         risk.scenario.targetUri ==~ /.*\/scenarios\/$scenarioId/
 
         when: "assigning a risk owner"
-        def ownerPersonId = post("/persons", [
+        def ownerPersonId = post("/domains/$dsgvoDomainId/persons", [
             name: "asset risk owner",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]

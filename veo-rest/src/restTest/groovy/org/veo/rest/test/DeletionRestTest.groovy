@@ -26,24 +26,16 @@ class DeletionRestTest extends VeoRestTest {
 
     def "link is removed when target element is deleted"() {
         given:
-        def assetId = post("/assets", [
+        def assetId = post("/domains/$dsgvoDomainId/assets", [
             name: "data type",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "AST_Datatype",
-                    status: "NEW",
-                ]
-            ],
+            subType: "AST_Datatype",
+            status: "NEW",
             owner: [targetUri: unitUri]
         ]).body.resourceId
-        def processId = post("/processes", [
+        def processId = post("/domains/$dsgvoDomainId/processes", [
             name: "source process",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links: [
                 process_dataType: [
                     [
@@ -68,18 +60,16 @@ class DeletionRestTest extends VeoRestTest {
 
     def "elements are removed when a unit is deleted"() {
         given: "a document and scenario in the unit"
-        def documentId = post("/documents", [
+        def documentId = post("/domains/$dsgvoDomainId/documents", [
             name: "document that must be deleted",
+            subType: 'DOC_Document',
+            status: 'NEW',
             owner: [targetUri: unitUri]
         ]).body.resourceId
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "scenario that must be deleted",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW"
-                ]
-            ],
+            subType: "SCN_Scenario",
+            status: "NEW",
             owner: [targetUri: unitUri]
         ]).body.resourceId
 

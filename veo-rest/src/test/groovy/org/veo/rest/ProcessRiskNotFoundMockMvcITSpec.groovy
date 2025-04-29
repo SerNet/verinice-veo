@@ -74,26 +74,18 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
 
     def "Get on nonexistent risk returns error code 404"() {
         given: "a process and scenario are created but no risk"
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [
-                    subType: "RiskyProcess",
-                    status: "NEW",
-                ]
-            ],
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            subType: "RiskyProcess",
+            status: "NEW",
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
 
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "BestCase",
-                    status: "NEW",
-                ]
-            ]
+            subType: "BestCase",
+            status: "NEW",
         ])).resourceId
 
         when: "trying to get nonexistent risk returns 404"
@@ -105,15 +97,11 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
 
     def "Getting risk on nonexistent process returns 404"() {
         given: "a scenario is created but no process"
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "BestCase",
-                    status: "NEW",
-                ]
-            ]
+            subType: "BestCase",
+            status: "NEW",
         ])).resourceId
         def randomUuid = UUID.randomUUID()
 
@@ -126,13 +114,9 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
 
     def "Getting risk on nonexistent scenario returns 404"() {
         given: "a process is created"
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [
-                    subType: "RiskyProcess",
-                    status: "NEW",
-                ]
-            ],
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            subType: "RiskyProcess",
+            status: "NEW",
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId

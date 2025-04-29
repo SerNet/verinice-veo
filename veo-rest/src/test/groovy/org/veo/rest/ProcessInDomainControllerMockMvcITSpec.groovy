@@ -21,11 +21,16 @@ import static java.util.UUID.randomUUID
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Process
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.common.ETag
+
+import groovy.json.JsonSlurper
 
 @WithUserDetails("user@domain.example")
 class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -187,23 +192,15 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all processes in a domain"() {
-        given: "15 processes in the domain & one unassociated asset"
+        given: "15 processes in the domain"
         (1..15).forEach {
-            post("/processes", [
+            post("/domains/$testDomainId/processes", [
                 name: "process $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "BusinessProcess",
-                        status: "NEW",
-                    ]
-                ]
+                subType: "BusinessProcess",
+                status: "NEW",
             ])
         }
-        post("/processes", [
-            name: "unassociated process",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/processes?size=10&sortBy=designator"))) {
@@ -267,15 +264,11 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "a process in a domain"
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
             name: "Some process",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "BusinessProcess",
-                    status: "NEW"
-                ]
-            ]
+            subType: "BusinessProcess",
+            status: "NEW"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -287,18 +280,177 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         nfEx.message == "domain $randomDomainId not found"
     }
 
-    def "unassociated process is handled"() {
-        given: "a process without any domains"
-        def processId = parseJson(post("/processes", [
-            name: "Unassociated process",
-            owner: [targetUri: "/units/$unitId"]
+    def "try to create a process without owner"() {
+        given: "a request body without an owner"
+        Map request = [
+            name: 'New process'
+        ]
+
+        when: "a request is made to the server"
+        post("/domains/$testDomainId/processes", request, 400)
+
+        then: "the process is not created"
+        MethodArgumentNotValidException ex = thrown()
+
+        and: "the reason is given"
+        ex.message ==~ /.*An owner must be present.*/
+    }
+
+    def "try to put a process without a name"() {
+        given: "a saved process"
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
+            name: "Some process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW"
         ])).resourceId
 
+        Map request = [
+            // note that currently the name must not be null but it can be empty ("")
+            abbreviation: 'u-2',
+            description: 'desc',
+            owner:
+            [
+                targetUri: "http://localhost/units/$unitId",
+            ]
+        ]
+
+        when: "a request is made to the server"
+        Map headers = [
+            'If-Match': ETag.from(processId, 1)
+        ]
+        put("/domains/$testDomainId/processes/$processId", request, headers, 400)
+
+        then: "the process is not updated"
+        MethodArgumentNotValidException ex = thrown()
+
+        and: "the reason is given"
+        ex.message ==~ /.*A name must be present.*/
+    }
+
+    def "overwrite a custom aspect attribute"() {
+        given: "a saved process"
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
+            name: "Some process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW",
+            customAspects:
+            [
+                'general' :
+                [
+                    complexity: 'low'
+                ]
+            ]
+        ])).resourceId
+
+        when: "a request is made to the server"
+        Map request = [
+            name: 'Some process',
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW",
+            customAspects:
+            [
+                'general' :
+                [
+                    complexity: 'high'
+                ]
+            ]
+        ]
+        Map headers = [
+            'If-Match': ETag.from(processId, 0)
+        ]
+        def result = parseJson(put("/domains/$testDomainId/processes/$processId", request, headers))
+
+        then: "the process is found"
+        with(result) {
+            name == 'Some process'
+            subType == "BusinessProcess"
+            status == "NEW"
+            decisionResults == [:]
+            riskValues == [:]
+        }
+
         when:
-        get("/domains/$testDomainId/processes/$processId", 404)
+        def entity = txTemplate.execute {
+            processRepository.findById(UUID.fromString(processId)).get().tap {
+                // make sure that the proxy is resolved
+                customAspects.first()
+            }
+        }
 
         then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Process $processId is not associated with domain $testDomainId"
+        entity.name == 'Some process'
+        with(entity.customAspects.first()) {
+            type == 'general'
+            attributes["complexity"] == 'high'
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "put a process with link"() {
+        given: "a created asset and process"
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
+            name: 'New Asset',
+            subType: "Information",
+            status: "CURRENT",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ]
+        ])).resourceId
+
+        Map createProcessRequest = [
+            name: 'New process',
+            subType: 'BusinessProcess',
+            status: 'NEW',
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ]
+        ]
+
+        def createProcessResponse = post("/domains/$testDomainId/processes", createProcessRequest)
+        def createProcessResult = new JsonSlurper().parseText(createProcessResponse.andReturn().response.contentAsString)
+
+        Map putProcessRequest = [
+            name: 'New Process-2',
+            owner:
+            [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            subType: "BusinessProcess",
+            status: "NEW",
+            links:
+            [
+                'necessaryData' : [
+                    [
+                        attributes: [
+                            essential: true
+                        ],
+                        target:
+                        [
+                            targetUri: "http://localhost/assets/$assetId"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        when: "a request is made to the server"
+        Map headers = [
+            'If-Match': ETag.from(createProcessResult.resourceId, 0)
+        ]
+        def result = parseJson(put("/domains/$testDomainId/processes/${createProcessResult.resourceId}", putProcessRequest, headers))
+
+        then: "the process is found"
+        result.name == 'New Process-2'
+
+        and: 'there is one type of links'
+        def links = result.links
+        links.size() == 1
+
+        and: 'there is one link of the expected type'
+        def linksOfExpectedType = links.'necessaryData'
+        linksOfExpectedType.size() == 1
     }
 }

@@ -499,14 +499,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a unit with linked asset and process"
         def unit = createTestClientUnit()
 
-        def assetId = parseJson(post('/assets', [
+        def assetId = parseJson(post("/domains/$domain.idAsString/assets", [
             name: 'New Asset',
-            domains: [
-                (domain.idAsString): [
-                    subType: "AST_Datatype",
-                    status: "NEW"
-                ]
-            ],
+            subType: "AST_Datatype",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ]
@@ -514,12 +510,14 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map createProcessRequest = [
             name: 'New process',
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             owner: [
                 displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.idAsString
             ]
         ]
-        def createProcessResponse = post('/processes', createProcessRequest)
+        def createProcessResponse = post("/domains/$domain.idAsString/processes", createProcessRequest)
         def createProcessResult = new JsonSlurper().parseText(createProcessResponse.andReturn().response.contentAsString)
 
         Map putProcessRequest = [
@@ -531,17 +529,12 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.idAsString,
                 displayName: 'test unit'
             ],
-            domains: [
-                (domain.idAsString): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
             links:
             [
                 'process_dataType' : [
                     [
-                        domains: [],
                         attributes: [
                             process_dataType_comment: 'ok',
                             process_dataType_dataOrigin: 'process_dataType_dataOrigin_direct'
@@ -559,7 +552,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(createProcessResult.resourceId, 0)
         ]
-        put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
+        put("/domains/$domain.idAsString/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
 
         when: "the unit is loaded"
         def loadedUnit = txTemplate.execute {

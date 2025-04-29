@@ -88,39 +88,27 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
     def "save multiple links"() {
         given: "three persons"
-        def person1 = parseJson(post("/persons", [
+        def person1 = parseJson(post("/domains/$domainId/persons", [
             name: "person 1",
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Nice",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
-        def person2 = parseJson(post("/persons", [
+        def person2 = parseJson(post("/domains/$domainId/persons", [
             name: "person 2",
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Nice",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
-        def person3 = parseJson(post("/persons", [
+        def person3 = parseJson(post("/domains/$domainId/persons", [
             name: "person 3",
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Nice",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
 
         when: "creating a scope with different links to all persons"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             links: [
                 linkToNicePersonA: [
                     [
@@ -141,12 +129,8 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             ],
             name : "scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
         ])).resourceId
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
@@ -230,49 +214,33 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
     def "link target type is validated"() {
         given:
-        def normalPersonId = parseJson(post("/persons", [
+        def normalPersonId = parseJson(post("/domains/$domainId/persons", [
             name: "John",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Normal",
+            status: "NEW"
         ])).resourceId
-        def anotherNormalPersonId = parseJson(post("/persons", [
+        def anotherNormalPersonId = parseJson(post("/domains/$domainId/persons", [
             name: "Mia",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Normal",
+            status: "NEW"
         ])).resourceId
-        def normalScopeId = parseJson(post("/scopes", [
+        def normalScopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Just a normal scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Normal",
+            status: "NEW"
         ])).resourceId
 
         when: "posting a scope with a correct link"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNormalPerson: [
                     [
@@ -289,17 +257,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the scope with a valid link"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNormalPerson: [
                     [
@@ -316,17 +280,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the scope with an invalid link"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNormalPerson: [
                     [
@@ -343,17 +303,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
 
         when: "posting a scope with an invalid link"
-        post("/scopes", [
+        post("/domains/$domainId/scopes", [
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNormalPerson: [
                     [
@@ -372,49 +328,33 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
     def "link target sub type is validated"() {
         given:
-        def normalPersonId = parseJson(post("/persons", [
+        def normalPersonId = parseJson(post("/domains/$domainId/persons", [
             name: "John",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Normal",
+            status: "NEW"
         ])).resourceId
-        def nicePersonId = parseJson(post("/persons", [
+        def nicePersonId = parseJson(post("/domains/$domainId/persons", [
             name: "Jane",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Nice",
+            status: "NEW"
         ])).resourceId
-        def anotherNicePersonId = parseJson(post("/persons", [
+        def anotherNicePersonId = parseJson(post("/domains/$domainId/persons", [
             name: "Junior",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Nice",
+            status: "NEW"
         ])).resourceId
 
         when: "posting a scope with a correct link"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNicePersonA: [
                     [
@@ -431,17 +371,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the scope with a valid link"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNicePersonA: [
                     [
@@ -458,17 +394,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the scope with an invalid link"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNicePersonA: [
                     [
@@ -485,17 +417,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
 
         when: "posting a scope with an invalid link"
-        post("/scopes", [
+        post("/domains/$domainId/scopes", [
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "Normal",
-                    status: "NEW",
-                ]
-            ],
+            subType: "Normal",
+            status: "NEW",
             links: [
                 linkToNicePersonA: [
                     [

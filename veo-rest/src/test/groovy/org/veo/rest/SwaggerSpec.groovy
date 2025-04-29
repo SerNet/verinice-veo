@@ -247,20 +247,6 @@ class SwaggerSpec extends VeoSpringSpec {
         allowedTypes.sort() == schemaTypes
     }
 
-    def "endpoint documentation is correct for CreateAssetUseCase"() {
-        when: "retrieving the endpoint docs"
-        def endPointInfo = parsedApiDocs.paths["/assets"].post
-
-        then: "it contains a summary and a parameter schema"
-        endPointInfo != null
-        endPointInfo.summary == "Creates an asset"
-        with(endPointInfo.parameters[0]) {
-            name == "scopes"
-            schema.type == "array"
-            schema.items.type == "string"
-        }
-    }
-
     def "endpoint documentation is correct for GetIncarnationDescriptionUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/units/{unitId}/domains/{domainId}/incarnation-descriptions"]
@@ -614,9 +600,6 @@ class SwaggerSpec extends VeoSpringSpec {
 
         where:
         type << [
-            'CreateAssetDto',
-            'CreateControlDto',
-            'CreateScopeDto',
             'SearchQueryDto',
             'SearchResponse'
         ]
@@ -628,9 +611,6 @@ class SwaggerSpec extends VeoSpringSpec {
 
         where:
         endpoint                         | method
-        '/assets/{id}'                   | 'PUT'
-        '/controls'                      | 'POST'
-        '/scopes'                        | 'POST'
         '/assets/searches'               | 'POST'
         '/scopes/searches'               | 'POST'
         '/units/searches'                | 'POST'

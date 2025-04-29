@@ -248,23 +248,15 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all controls in a domain"() {
-        given: "15 controls in the domain & one unassociated control"
+        given: "15 controls in the domain"
         (1..15).forEach {
-            post("/controls", [
+            post("/domains/$testDomainId/controls", [
                 name: "control $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "TOM",
-                        status: "NEW",
-                    ]
-                ]
+                subType: "TOM",
+                status: "NEW"
             ])
         }
-        post("/controls", [
-            name: "unassociated control",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/controls?size=10&sortBy=designator"))) {
@@ -299,15 +291,11 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "a control in a domain"
-        def controlId = parseJson(post("/controls", [
+        def controlId = parseJson(post("/domains/$testDomainId/controls", [
             name: "Some control",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "TOM",
-                    status: "OLD"
-                ]
-            ]
+            subType: "TOM",
+            status: "OLD"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -317,20 +305,5 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
-    }
-
-    def "unassociated control is handled"() {
-        given: "a control without any domains"
-        def controlId = parseJson(post("/controls", [
-            name: "Unassociated control",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/controls/$controlId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Control $controlId is not associated with domain $testDomainId"
     }
 }

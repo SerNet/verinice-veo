@@ -26,26 +26,20 @@ class ProcessRestTestITSpec extends VeoRestTest{
 
     def "Create, retrieve, update & delete process"() {
         given: "a target asset"
-        def assetId = post("/assets", [
+        def assetId = post("/domains/$dsgvoDomainId/assets", [
             name: "target asset for process",
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "AST_Datatype",
-                    status: "NEW"
-                ]
-            ],
+            subType: "AST_Datatype",
+            status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
         when: "creating a process"
-        def processId = post("/processes", [
+        def processId = post("/domains/$dsgvoDomainId/processes", [
             customAspects: [
                 process_dataProcessing: [
-                    attributes: [
-                        process_dataProcessing_legalBasis: [
-                            "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
-                            "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
-                        ]
+                    process_dataProcessing_legalBasis: [
+                        "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+                        "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
                     ]
                 ]
             ],
@@ -60,18 +54,14 @@ class ProcessRestTestITSpec extends VeoRestTest{
             ],
             name: "process",
             owner: [targetUri: "$baseUrl/units/$unitId"],
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
         ]).body.resourceId
 
         then: "it can be retrieved"
-        def retrievalResponse = get("/processes/$processId")
+        def retrievalResponse = get("/domains/$dsgvoDomainId/processes/$processId")
         with(retrievalResponse.body) {
-            customAspects.process_dataProcessing.attributes.process_dataProcessing_legalBasis == [
+            customAspects.process_dataProcessing.process_dataProcessing_legalBasis == [
                 "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
                 "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
             ]
@@ -81,21 +71,21 @@ class ProcessRestTestITSpec extends VeoRestTest{
         }
 
         and: "it is retrieved when requesting all processes in the unit"
-        get("/processes?unit=$unitId&size=2147483647").body.items*.id.contains(processId)
+        get("/domains/$dsgvoDomainId/processes?unit=$unitId&size=2147483647").body.items*.id.contains(processId)
 
         when: "updating and retrieving the process"
         def updatedProcess = retrievalResponse.body
         updatedProcess.name = "new name"
-        put("/processes/$processId", updatedProcess, retrievalResponse.getETag())
+        put("/domains/$dsgvoDomainId/processes/$processId", updatedProcess, retrievalResponse.getETag())
 
         then: "the updated process can be retrieved"
-        def newRetrievalResponse = get("/processes/$processId")
+        def newRetrievalResponse = get("/domains/$dsgvoDomainId/processes/$processId")
         with(newRetrievalResponse.body) {
             name == "new name"
         }
 
         expect: "update to fail with outdated ETag"
-        put("/processes/$processId", updatedProcess, retrievalResponse.getETag(), 412)
+        put("/domains/$dsgvoDomainId/processes/$processId", updatedProcess, retrievalResponse.getETag(), 412)
 
         when: "deleting the process"
         delete("/processes/$processId")

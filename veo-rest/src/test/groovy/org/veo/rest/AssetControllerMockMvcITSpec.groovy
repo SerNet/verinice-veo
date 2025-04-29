@@ -27,14 +27,12 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -93,87 +91,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "Unit2"
             })
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create an asset"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Asset',
-            owner: [
-                displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/assets', request))
-
-        then: "the location of the new asset is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Asset created successfully.'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "Invalid date values for versioned properties are ignored"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Asset',
-            owner: [
-                displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ],
-            createdAt: 'Hello World'
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/assets', request))
-
-        then: "the request is performed"
-        result.success == true
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a composite asset with parts"() {
-        given: "an exsting asset and a request body"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = 'Test asset'
-                designator = 'AST-1'
-            })
-        }
-        Map request = [
-            name: 'My Assets',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ],
-            parts: [
-                [targetUri : "http://localhost/assets/${asset.idAsString}"]
-            ]
-        ]
-
-        when: "the request is sent"
-        def result = parseJson(post('/assets', request))
-
-        then: "the location of the new composite asset is returned"
-        result.success
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Asset created successfully.'
-
-        when: "the server is queried for the asset"
-        result = parseJson(get("/assets/${resourceId}"))
-
-        then: "the expected name is present"
-        result.name == 'My Assets'
-
-        and: "the composite asset contains the other asset"
-        result.parts.size() == 1
-        result.parts.first().displayName == 'AST-1 Test asset'
     }
 
     @WithUserDetails("user@domain.example")
@@ -432,128 +349,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put an asset"() {
-        given: "a saved asset"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = 'New asset-2'
-                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
-            })
-        }
-
-        Map request = [
-            name: 'New asset-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],
-            domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "AST_Datatype",
-                    status: "NEW",
-                    riskValues: [:]
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(asset.idAsString, 0)
-        ]
-        def resultActions = put("/assets/${asset.idAsString}", request, headers)
-        def result = parseJson(resultActions)
-
-        then: "the asset is found"
-        result.name == 'New asset-2'
-        result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.idAsString] == [
-            subType: "AST_Datatype",
-            status: "NEW",
-            decisionResults: [:],
-            riskValues: [:]
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-        getETag(resultActions) == ETag.from(asset.idAsString, 1)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "put an asset with a custom aspect"() {
-        given: "a saved asset"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = "Test asset-1"
-                associateWithDomain(dsgvoDomain, "AST_Application", "NEW")
-                applyCustomAspect(newCustomAspect("asset_details", dsgvoDomain))
-            })
-        }
-
-        Map request = [
-            name: 'New asset-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],
-            domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                ]
-            ],
-            customAspects:
-            [
-                'asset_details' :
-                [
-                    domains: [],
-                    attributes:  [
-                        asset_details_number: 1,
-                        asset_details_operatingStage: 'asset_details_operatingStage_planning'
-                    ]
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(asset.idAsString, asset.version)
-        ]
-        def result = parseJson(put("/assets/${asset.idAsString}",request, headers))
-
-        then: "the asset is found"
-        result.name == 'New asset-2'
-        result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.idAsString] == [
-            subType: "AST_Application",
-            status: "NEW",
-            decisionResults: [:],
-            riskValues: [:]
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-
-        when:
-        def entity = txTemplate.execute {
-            assetRepository.findById(asset.id).get().tap {
-                // make sure that the proxy is resolved
-                customAspects.first()
-            }
-        }
-
-        then:
-        entity.name == 'New asset-2'
-        entity.abbreviation == 'u-2'
-        with(entity.customAspects.first()) {
-            type == 'asset_details'
-            attributes["asset_details_number"] == 1
-            attributes['asset_details_operatingStage'] == 'asset_details_operatingStage_planning'
-        }
-    }
-
-    @WithUserDetails("user@domain.example")
     def "delete an asset"() {
         given: "an existing asset"
         def asset = txTemplate.execute {
@@ -613,76 +408,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "the asset is not deleted"
         !assetRepository.findById(asset.id).empty
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put an asset with another asset's ID"() {
-        given: "two assets"
-        def asset1 = txTemplate.execute({
-            assetRepository.save(newAsset(unit, {
-                name = "old name 1"
-            }))
-        })
-        def asset2 = txTemplate.execute({
-            assetRepository.save(newAsset(unit, {
-                name = "old name 2"
-            }))
-        })
-
-        when: "a put request tries to update asset 1 using the ID of asset 2"
-        Map headers = [
-            'If-Match': ETag.from(asset1.idAsString, 1)
-        ]
-        put("/assets/${asset2.idAsString}", [
-            id: asset1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back asset"() {
-        given: "a new asset"
-        def id = parseJson(post("/assets", [
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/assets/$id")
-
-        expect: "putting the retrieved asset back to be successful"
-        put("/assets/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back asset with parts"() {
-        given: "a saved asset and a composite"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
-                name = 'Test asset'
-            })
-        }
-        Map request = [
-            name: 'Composite asset',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ],
-            parts: [
-                [targetUri : "http://localhost/assets/${asset.idAsString}"]
-            ]
-        ]
-
-        def id = parseJson(post("/assets", request)).resourceId
-        def getResult = get("/assets/$id")
-
-        expect: "putting the retrieved asset back to be successful"
-        put("/assets/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
     }
 
     @WithUserDetails("user@domain.example")

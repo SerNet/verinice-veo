@@ -926,21 +926,17 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     }
 
     private String createRiskAffected(EntityType type) {
-        return parseJson(post("/${type.pluralTerm}", [
-            domains: [
-                (domainId): [
-                    subType: "${type.singularTerm}",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialImpacts: [
-                                "D": 2,
-                                "I": 1,
-                                "C": 2,
-                                "A": 1,
-                                "R": 2
-                            ]
-                        ]
+        return parseJson(post("/domains/$domainId/${type.pluralTerm}", [
+            subType: "${type.singularTerm}",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialImpacts: [
+                        "D": 2,
+                        "I": 1,
+                        "C": 2,
+                        "A": 1,
+                        "R": 2
                     ]
                 ]
             ],
@@ -950,18 +946,14 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     }
 
     private String createScenario() {
-        return parseJson(post("/scenarios", [
+        return parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "scenario",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "scenario",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialProbability: 2
                 ]
             ]
         ])).resourceId

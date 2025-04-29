@@ -116,26 +116,18 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("content-creator")
     def 'data is migrated when element type definition is changed'() {
         given: "an asset that conforms to the element type definition"
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [
-                    subType: "NormalAsset",
-                    status: "NEW",
-                ]
-            ],
+        def assetId = parseJson(post("/domains/$domainId/assets", [
             name: "my little asset",
+            subType: "NormalAsset",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
             customAspects: [
                 aspectOne: [
-                    attributes: [
-                        attrOne: "valueOne",
-                        attrTwo: "valueTwo"
-                    ]
+                    attrOne: "valueOne",
+                    attrTwo: "valueTwo"
                 ],
                 aspectTwo: [
-                    attributes: [
-                        attrOne: "valueOne"
-                    ]
+                    attrOne: "valueOne"
                 ]
             ]
         ])).resourceId

@@ -625,13 +625,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating a risk with potential values calculates risk value"() {
         given: "a process"
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                ]
-            ],
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            subType: "DifficultProcess",
+            status: "NEW",
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
@@ -640,17 +636,13 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': processETag
         ]
-        put("/processes/$processId", [
-            domains: [
-                (domainId): [
-                    subType: "DifficultProcess",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialImpacts: [
-                                "D": 2,
-                            ]
-                        ]
+        put("/domains/$domainId/processes/$processId", [
+            subType: "DifficultProcess",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialImpacts: [
+                        "D": 2,
                     ]
                 ]
             ],
@@ -658,18 +650,14 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"]
         ], headers)
 
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "BestCase",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "BestCase",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialProbability: 2
                 ]
             ]
         ])).resourceId
@@ -728,18 +716,14 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
         given: "a process in a domain with only a single risk definition"
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (r1d1DomainId): [
-                    subType: "RiskyProcess",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialImpacts: [
-                                "D": 2,
-                                "I": 1
-                            ]
-                        ]
+        def processId = parseJson(post("/domains/$r1d1DomainId/processes", [
+            subType: "RiskyProcess",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialImpacts: [
+                        "D": 2,
+                        "I": 1
                     ]
                 ]
             ],
@@ -747,18 +731,14 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
 
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$r1d1DomainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (r1d1DomainId): [
-                    subType: "HypotheticalScenario",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "HypotheticalScenario",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialProbability: 2
                 ]
             ]
         ])).resourceId

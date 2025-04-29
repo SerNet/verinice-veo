@@ -74,6 +74,11 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                         EventfulAsset: newSubTypeDefinition()
                     ]
                 })
+                applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+                    subTypes = [
+                        EventfulControl: newSubTypeDefinition()
+                    ]
+                })
                 applyElementTypeDefinition(newElementTypeDefinition("document", it) {
                     subTypes = [
                         EventfulDocument: newSubTypeDefinition()
@@ -176,11 +181,13 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         when: "updating the document"
         def eTag = getETag(get("/documents/$documentId"))
-        put("/documents/$documentId", [
+        put("/domains/$domainId/documents/$documentId", [
             name: "super doc",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: "EventfulDocument",
+            status: "NEW"
         ], ["If-Match": eTag])
 
         then: "exactly one additional MODIFICATION event is stored"
@@ -302,26 +309,18 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         given: "an asset risk"
 
         when: "creating an asset risk"
-        String assetId = parseJson(post("/assets", [
+        String assetId = parseJson(post("/domains/$domain.idAsString/assets", [
             name: "acid",
-            domains: [
-                (domain.idAsString): [
-                    subType: "EventfulAsset",
-                    status: "NEW",
-                ]
-            ],
+            subType: "EventfulAsset",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ]
         ])).resourceId
-        String scenarioId = parseJson(post("/scenarios", [
+        String scenarioId = parseJson(post("/domains/$domain.idAsString/scenarios", [
             name: "scenario",
-            domains: [
-                (domain.idAsString): [
-                    subType: "EventfulScenario",
-                    status: "NEW",
-                ]
-            ],
+            subType: "EventfulScenario",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ]
@@ -344,8 +343,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when:
-        String controlId = parseJson(post("/controls", [
+        String controlId = parseJson(post("/domains/$domain.idAsString/controls", [
             name: "Im in control",
+            subType: "EventfulControl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/${unit.idAsString}"]
         ])).resourceId
         String riskETag = getETag(get("/assets/$assetId/risks/$scenarioId"))
@@ -373,26 +374,18 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         given: "a process risk"
 
         when: "creating a process risk"
-        String processId = parseJson(post("/processes", [
+        String processId = parseJson(post("/domains/$domain.idAsString/processes", [
             name: "pro",
-            domains: [
-                (domain.idAsString): [
-                    subType: "EventfulProcess",
-                    status: "NEW",
-                ]
-            ],
+            subType: "EventfulProcess",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ]
         ])).resourceId
-        String scenarioId = parseJson(post("/scenarios", [
+        String scenarioId = parseJson(post("/domains/$domain.idAsString/scenarios", [
             name: "scenario",
-            domains: [
-                (domain.idAsString): [
-                    subType: "EventfulScenario",
-                    status: "NEW",
-                ]
-            ],
+            subType: "EventfulScenario",
+            status: "NEW",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ]
@@ -415,8 +408,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when:
-        String controlId = parseJson(post("/controls", [
+        String controlId = parseJson(post("/domains/$domain.idAsString/controls", [
             name: "Im in control",
+            subType: "EventfulControl",
+            status: "NEW",
             owner: [targetUri: "http://localhost/units/${unit.idAsString}"]
         ])).resourceId
         String riskETag = getETag(get("/processes/$processId/risks/$scenarioId"))

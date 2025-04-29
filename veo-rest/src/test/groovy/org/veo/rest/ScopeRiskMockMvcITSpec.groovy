@@ -84,16 +84,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can create a scope with a risk definition reference"() {
         when: "creating a scope with reference to a risk definition"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskDefinition: "risk-definition-for-projects"
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskDefinition: "risk-definition-for-projects"
         ])).resourceId
 
         and: "retrieving it"
@@ -106,29 +102,21 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can change risk definition reference"() {
         when: "creating a scope without a risk definition"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
         ])).resourceId
         def scopeETag = getETag(get("/scopes/$scopeId"))
 
         and: "adding a risk definition reference"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskDefinition: "risk-definition-for-projects"
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskDefinition: "risk-definition-for-projects"
         ], ['If-Match': scopeETag])
 
         and: "retrieving the scope"
@@ -140,16 +128,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         retrievedScope.domains[domainId].riskDefinition == "risk-definition-for-projects"
 
         when: "making a change not related to the risk definition"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskDefinition: "risk-definition-for-projects"
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskDefinition: "risk-definition-for-projects"
         ], ['If-Match': scopeETag])
         retrieveScopeResponse = get("/scopes/$scopeId")
 
@@ -157,16 +141,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == "risk-definition-for-projects"
 
         when: "changing the risk definition"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskDefinition: "default-risk-definition"
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskDefinition: "default-risk-definition"
         ], ['If-Match': getETag(get("/scopes/$scopeId"))])
         retrieveScopeResponse = get("/scopes/$scopeId")
         scopeETag = getETag(retrieveScopeResponse)
@@ -175,15 +155,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == "default-risk-definition"
 
         when: "removing the risk definition reference"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
         ], ['If-Match': scopeETag])
         retrieveScopeResponse = get("/scopes/$scopeId")
 
@@ -193,16 +169,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "invalid risk definition reference is rejected"() {
         when: "creating a scope with reference to a missing risk definition"
-        post("/scopes", [
+        post("/domains/$domainId/scopes", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskDefinition: "fantasy-definition"
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskDefinition: "fantasy-definition"
         ], 422)
 
         then:
@@ -213,15 +185,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "A risk can be created for a scope"() {
         given: "saved elements"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                ]
-            ]
+            subType: "RiskyScope",
+            status: "NEW",
         ])).resourceId
 
         def scenario = txTemplate.execute {
@@ -257,25 +225,21 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
     def "can update scope impact"() {
         when: "creating a scope with impact values for different risk definitions"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
             name: "Super SCO",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ],
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1
-                            ]
-                        ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
+                    ]
+                ],
+                mySecondRiskDefinition: [
+                    potentialImpacts: [
+                        "C": 1
                     ]
                 ]
             ]
@@ -293,24 +257,20 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.potentialImpacts.C == 1
 
         when: "updating the risk values on the asset"
-        put("/scopes/$scopeId", [
+        put("/domains/$domainId/scopes/$scopeId", [
             name: "Super PRO1",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "RiskyScope",
-                    status: "NEW",
-                    riskValues: [
-                        myFirstRiskDefinition: [
-                            potentialImpacts: [ "C": 1,
-                                "I": 2
-                            ]
-                        ],
-                        myThirdRiskDefinition: [
-                            potentialImpacts: [ "C": 1,
-                                "I": 2
-                            ]
-                        ]
+            subType: "RiskyScope",
+            status: "NEW",
+            riskValues: [
+                myFirstRiskDefinition: [
+                    potentialImpacts: [ "C": 1,
+                        "I": 2
+                    ]
+                ],
+                myThirdRiskDefinition: [
+                    potentialImpacts: [ "C": 1,
+                        "I": 2
                     ]
                 ]
             ]

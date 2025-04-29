@@ -57,6 +57,16 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
                         WorstCase: newSubTypeDefinition()
                     ]
                 })
+                applyElementTypeDefinition(newElementTypeDefinition("incident", it) {
+                    subTypes = [
+                        Failure: newSubTypeDefinition()
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                    subTypes = [
+                        Manual: newSubTypeDefinition()
+                    ]
+                })
             }
             client = clientRepository.save(client)
             domain = client.domains.first()
@@ -69,11 +79,14 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
     def "designators are generated"() {
         when: "creating an incident"
-        String incidentId = parseJson(post("/incidents", [
+        String incidentId = parseJson(post("/domains/$domain.idAsString/incidents", [
             name: "incident",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Failure',
+            status: 'NEW'
+
         ])).resourceId
         def incident = parseJson(get("/incidents/$incidentId"))
 
@@ -81,11 +94,13 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         incident.designator == "INC-1"
 
         when: "creating another incident"
-        String newIncidentId = parseJson(post("/incidents", [
+        String newIncidentId = parseJson(post("/domains/$domain.idAsString/incidents", [
             name: "new incident",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Failure',
+            status: 'NEW'
         ])).resourceId
         def newIncident = parseJson(get("/incidents/$newIncidentId"))
 
@@ -93,11 +108,13 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         newIncident.designator == "INC-2"
 
         when: "creating a process"
-        String processId = parseJson(post("/processes", [
+        String processId = parseJson(post("/domains/$domain.idAsString/processes", [
             name: "process",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Development',
+            status: 'NEW'
         ])).resourceId
         def process = parseJson(get("/processes/$processId"))
 
@@ -107,27 +124,19 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
     def "different risks share the same numbering"() {
         given:
-        String scenarioId = parseJson(post("/scenarios", [
+        String scenarioId = parseJson(post("/domains/$domain.idAsString/scenarios", [
             name: "scenario",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
             ],
-            domains: [
-                (domain.idAsString): [
-                    subType: "WorstCase",
-                    status: "NEW",
-                ]
-            ],
+            subType: "WorstCase",
+            status: "NEW",
         ])).resourceId
 
         when: "creating an asset risk"
-        String assetId = parseJson(post("/assets", [
-            domains: [
-                (domain.idAsString): [
-                    subType: "Server",
-                    status: "NEW",
-                ]
-            ],
+        String assetId = parseJson(post("/domains/$domain.idAsString/assets", [
+            subType: "Server",
+            status: "NEW",
             name: "asset",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
@@ -147,13 +156,9 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         assetRisk.designator == "RSK-1"
 
         when: "creating an process risk"
-        String processId = parseJson(post("/processes", [
-            domains: [
-                (domain.idAsString): [
-                    subType: "Development",
-                    status: "NEW"
-                ]
-            ],
+        String processId = parseJson(post("/domains/$domain.idAsString/processes", [
+            subType: "Development",
+            status: "NEW",
             name: "process",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
@@ -175,21 +180,25 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
     def "designator can't be changed"() {
         given: "an incident"
-        String incidentId = parseJson(post("/incidents", [
+        String incidentId = parseJson(post("/domains/$domain.idAsString/incidents", [
             name: "incident",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Failure',
+            status: 'NEW'
         ])).resourceId
         def eTag = getETag(get("/incidents/$incidentId"))
 
         when: "trying to update the designator"
-        put("/incidents/$incidentId", [
+        put("/domains/$domain.idAsString/incidents/$incidentId", [
             name: "updated incident",
             designator: "INC-666",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Failure',
+            status: 'NEW'
         ], ["If-Match": eTag])
         def updatedIncident = parseJson(get("/incidents/$incidentId"))
 
@@ -200,11 +209,13 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
     def "numbers of deleted objects are not recycled"() {
         when: "creating a document"
-        String documentId = parseJson(post("/documents", [
+        String documentId = parseJson(post("/domains/$domain.idAsString/documents", [
             name: "doc",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Manual',
+            status: 'NEW'
         ])).resourceId
         def document = parseJson(get("/documents/$documentId"))
 
@@ -213,11 +224,14 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
         when: "deleting number one and creating a new document"
         delete("/documents/$documentId")
-        String newDocumentId = parseJson(post("/documents", [
+        String newDocumentId = parseJson(post("/domains/$domain.idAsString/documents", [
             name: "new doc",
             owner: [
                 targetUri: "http://localhost/units/${unit.idAsString}"
-            ]
+            ],
+            subType: 'Manual',
+            status: 'NEW'
+
         ])).resourceId
         def newDocument = parseJson(get("/documents/$newDocumentId"))
 

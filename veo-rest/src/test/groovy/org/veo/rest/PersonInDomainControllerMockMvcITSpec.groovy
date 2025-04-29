@@ -49,36 +49,36 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     def "CRUD person in domain contexts"() {
         given: "a person with linked scope and a part"
         def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
-            name: "Hack Inc.",
-            owner: [targetUri: "/units/$unitId"],
+            name   : "Hack Inc.",
+            owner  : [targetUri: "/units/$unitId"],
             subType: "Company",
-            status: "NEW",
+            status : "NEW",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/persons", [
-            name: "Harry's rubber duck",
-            owner: [targetUri: "/units/$unitId"],
+            name   : "Harry's rubber duck",
+            owner  : [targetUri: "/units/$unitId"],
             subType: "Programmer",
-            status: "REVIEWING",
+            status : "REVIEWING",
         ])).resourceId
         def personId = parseJson(post("/domains/$testDomainId/persons", [
-            name: "Harry Larry",
-            abbreviation: "HL",
-            description: "Typing swiftly, thinking slowly",
-            owner: [targetUri: "/units/$unitId"],
-            subType: "Programmer",
-            status: "CODING",
+            name         : "Harry Larry",
+            abbreviation : "HL",
+            description  : "Typing swiftly, thinking slowly",
+            owner        : [targetUri: "/units/$unitId"],
+            subType      : "Programmer",
+            status       : "CODING",
             customAspects: [
                 general: [
                     dateOfBirth: "1999-12-31"
                 ]
             ],
-            parts: [
-                [ targetUri:"/persons/$partId" ]
+            parts        : [
+                [targetUri: "/persons/$partId"]
             ],
-            links: [
+            links        : [
                 employer: [
                     [
-                        target: [targetUri: "/scopes/$scopeId"],
+                        target    : [targetUri: "/scopes/$scopeId"],
                         attributes: [
                             employedSince: "2022-08-01"
                         ]
@@ -126,7 +126,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         when: "associating person with a second domain"
         post("/domains/$dsgvoTestDomainId/persons/$personId", [
             subType: "PER_Person",
-            status: "IN_PROGRESS"
+            status : "IN_PROGRESS"
         ], 200)
 
         and: "fetching person in second domain"
@@ -192,15 +192,11 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "a person in a domain"
-        def personId = parseJson(post("/persons", [
-            name: "Some person",
-            owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Programmer",
-                    status: "CODING"
-                ]
-            ]
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
+            name   : "Some person",
+            owner  : [targetUri: "/units/$unitId"],
+            subType: "Programmer",
+            status : "CODING"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -210,20 +206,5 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
-    }
-
-    def "unassociated person is handled"() {
-        given: "a person without any domains"
-        def personId = parseJson(post("/persons", [
-            name: "Unassociated person",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
-
-        when:
-        get("/domains/$testDomainId/persons/$personId", 404)
-
-        then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Person $personId is not associated with domain $testDomainId"
     }
 }

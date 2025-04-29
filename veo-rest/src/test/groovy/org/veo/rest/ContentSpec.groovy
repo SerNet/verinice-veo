@@ -32,106 +32,74 @@ class ContentSpec extends VeoMvcSpec {
         ])).resourceId
         def owner = [targetUri: "http://localhost/units/$unitId"]
 
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                    riskValues: addRiskValues ? [
-                        DSRA: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 0
-                            ]
-                        ]
-                    ] : [:]
+        def assetId = parseJson(post("/domains/$domainId/assets", [
+            subType: "AST_Application",
+            status: "NEW",
+            riskValues: addRiskValues ? [
+                DSRA: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 0
+                    ]
                 ]
-            ],
+            ] : [:],
             name   : "asset",
             owner  : owner
         ])).resourceId
-        post("/controls", [
+        post("/domains/$domainId/controls", [
             name   : "control",
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
+            subType: "CTL_TOM",
+            status: "NEW",
             owner  : owner
         ])
-        post("/documents", [
+        post("/domains/$domainId/documents", [
             name   : "document",
-            domains: [
-                (domainId): [
-                    subType: "DOC_Document",
-                    status: "NEW",
-                ]
-            ],
+            subType: "DOC_Document",
+            status: "NEW",
             owner  : owner
         ])
-        post("/incidents", [
+        post("/domains/$domainId/incidents", [
             name   : "incident",
-            domains: [
-                (domainId): [
-                    subType: "INC_Incident",
-                    status: "NEW",
-                ]
-            ],
+            subType: "INC_Incident",
+            status: "NEW",
             owner  : owner
         ])
-        post("/persons", [
+        post("/domains/$domainId/persons", [
             name   : "person",
-            domains: [
-                (domainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PER_Person",
+            status: "NEW",
             owner  : owner
         ])
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                    riskValues: addRiskValues ? [
-                        DSRA: [
-                            potentialImpacts: [
-                                "C": 0,
-                                "I": 1
-                            ]
-                        ]
-                    ] : [:]
+        def processId = parseJson(post("/domains/$domainId/processes", [
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            riskValues: addRiskValues ? [
+                DSRA: [
+                    potentialImpacts: [
+                        "C": 0,
+                        "I": 1
+                    ]
                 ]
-            ],
+            ] : [:],
             name   : "process",
             owner  : owner
         ])).resourceId
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name   : "scenario",
-            domains: [
-                (domainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                    riskValues: addRiskValues ? [
-                        DSRA: [
-                            potentialProbability: 2
-                        ]
-                    ] : [:]
+            subType: "SCN_Scenario",
+            status: "NEW",
+            riskValues: addRiskValues ? [
+                DSRA: [
+                    potentialProbability: 2
                 ]
-            ],
+            ] : [:],
             owner  : owner
         ])).resourceId
-        post("/scopes", [
+        post("/domains/$domainId/scopes", [
             name   : "scope",
-            domains: [
-                (domainId): [
-                    subType: "SCP_Scope",
-                    status: "NEW",
-                    riskDefinition: addRiskValues ? "DSRA": null,
-                ]
-            ],
+            subType: "SCP_Scope",
+            status: "NEW",
+            riskDefinition: addRiskValues ? "DSRA": null,
             owner  : owner
         ])
 

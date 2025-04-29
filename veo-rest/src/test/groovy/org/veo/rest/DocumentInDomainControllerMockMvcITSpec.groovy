@@ -20,9 +20,12 @@ package org.veo.rest
 import static java.util.UUID.randomUUID
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Nameable
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
@@ -179,23 +182,15 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "get all documents in a domain"() {
-        given: "15 documents in the domain & one unassociated document"
+        given: "15 documents in the domain"
         (1..15).forEach {
-            post("/documents", [
+            post("/domains/$testDomainId/documents", [
                 name: "document $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "Manual",
-                        status: "CURRENT",
-                    ]
-                ]
+                subType: "Manual",
+                status: "CURRENT"
             ])
         }
-        post("/documents", [
-            name: "unassociated document",
-            owner: [targetUri: "/units/$unitId"]
-        ])
 
         expect: "page 1 to be available"
         with(parseJson(get("/domains/$testDomainId/documents?size=10&sortBy=designator"))) {
@@ -230,15 +225,11 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "an document in a domain"
-        def documentId = parseJson(post("/documents", [
+        def documentId = parseJson(post("/domains/$testDomainId/documents", [
             name: "Some document",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Manual",
-                    status: "OUTDATED"
-                ]
-            ]
+            subType: "Manual",
+            status: "OUTDATED"
         ])).resourceId
         def randomDomainId = randomUUID()
 
@@ -250,18 +241,36 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         nfEx.message == "domain $randomDomainId not found"
     }
 
-    def "unassociated document is handled"() {
-        given: "an document without any domains"
-        def documentId = parseJson(post("/documents", [
-            name: "Unassociated document",
-            owner: [targetUri: "/units/$unitId"]
-        ])).resourceId
+    @WithUserDetails("user@domain.example")
+    def "invalid target URI returns HTTP 422"() {
+        given:
+        Map request = [
+            name: 'New Document',
+            owner: [
+                targetUri: 'http://localhost/units/foobar'
+            ]
+        ]
 
         when:
-        get("/domains/$testDomainId/documents/$documentId", 404)
+        post("/domains/$testDomainId/documents", request, 422)
 
         then:
-        def nfEx = thrown(NotFoundException)
-        nfEx.message == "Document $documentId is not associated with domain $testDomainId"
+        thrown(HttpMessageNotReadableException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't post excessively long document description"() {
+        when:
+        post("/domains/$testDomainId/documents", [
+            description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
+            name: "new name",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ], 400)
+
+        then:
+        def ex = thrown(MethodArgumentNotValidException)
+        with(ex.message) {
+            contains("size must be between 0 and 65535")
+        }
     }
 }

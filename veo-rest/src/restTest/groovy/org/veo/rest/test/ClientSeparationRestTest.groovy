@@ -46,15 +46,11 @@ class ClientSeparationRestTest extends VeoRestTest {
 
     def "secondary client's element cannot be accessed"() {
         given: "a control in secondary client's unit"
-        def secondaryClientControlId = post("/controls", [
+        def secondaryClientControlId = post("/domains/$secondaryClientDomainId/controls", [
             name: "secondary client's control",
             owner: [targetUri: secondaryClientUnitUrl],
-            domains: [
-                (secondaryClientDomainId): [
-                    "subType": "TOM",
-                    "status": "NEW",
-                ]
-            ],
+            "subType": "TOM",
+            "status": "NEW"
         ], 201, UserType.SECONDARY_CLIENT_USER).body.resourceId
 
         expect: "the secondary client to be able to retrieve the control"
@@ -80,22 +76,18 @@ class ClientSeparationRestTest extends VeoRestTest {
         def body = [
             name: "secondary client's control",
             owner: [targetUri: defaultClientUnitUrl],
-            domains: [
-                (defaultClientDomainId): [
-                    "subType": "TOM",
-                    "status": "NEW",
-                ]
-            ],
+            "subType": "TOM",
+            "status": "NEW",
         ]
-        def illegalPutResponse = put("/controls/$secondaryClientControlId", body, eTag, 404, UserType.DEFAULT)
+        def illegalPutResponse = put("/domains/$defaultClientUnitUrl/controls/$secondaryClientControlId", body, eTag, 404, UserType.DEFAULT)
 
         then: "the existence of secondary client's control is concealed"
-        illegalPutResponse.body.message == "control $secondaryClientControlId not found"
+        illegalPutResponse.body.error == "Not Found"
 
         and: "response is indistinguishable from a non-existing control response"
         with(randomUUID().toString()) {nonExistingId ->
-            def nonExistingControlPutResponse = put("/controls/$nonExistingId", body, eTag, 404)
-            illegalPutResponse.body.message == nonExistingControlPutResponse.body.message.replace(nonExistingId, secondaryClientControlId)
+            def nonExistingControlPutResponse = put("/domains/$defaultClientUnitUrl/controls/$nonExistingId", body, eTag, 404)
+            illegalPutResponse.body.error == nonExistingControlPutResponse.body.error
         }
 
         when: "default client tries to delete the control"

@@ -21,11 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.IncidentRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -80,28 +78,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
             unitRepository.save(unit)
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create an incident"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Incident',
-            owner: [
-                displayName: 'incidentDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/incidents', request))
-
-        then: "the location of the new incident is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Incident created successfully.'
     }
 
     @WithUserDetails("user@domain.example")
@@ -195,49 +171,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put an incident"() {
-        given: "a saved incident"
-        def incident = txTemplate.execute {
-            incidentRepository.save(newIncident(unit) {
-                associateWithDomain(domain, "NormalIncident", "NEW")
-            })
-        }
-
-        Map request = [
-            name: 'New incident-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],
-            domains: [
-                (domain.idAsString): [
-                    subType: "NormalIncident",
-                    status: "NEW",
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(incident.idAsString, incident.version)
-        ]
-        def result = parseJson(put("/incidents/${incident.idAsString}", request, headers))
-
-        then: "the incident is found"
-        result.name == 'New incident-2'
-        result.abbreviation == 'u-2'
-        result.domains[domain.idAsString] == [
-            subType: "NormalIncident",
-            status: "NEW",
-            decisionResults: [:]
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
     def "delete an incident"() {
         given: "an existing incident"
         def incident = txTemplate.execute {
@@ -249,76 +182,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the incident is deleted"
         incidentRepository.findById(incident.id).empty
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put an incident with another incident's ID"() {
-        given: "two incidents"
-        def incident1 = txTemplate.execute({
-            incidentRepository.save(newIncident(unit, {
-                name = "old name 1"
-            }))
-        })
-        def incident2 = txTemplate.execute({
-            incidentRepository.save(newIncident(unit, {
-                name = "old name 2"
-            }))
-        })
-
-        when: "a put request tries to update incident 1 using the ID of incident 2"
-        Map headers = [
-            'If-Match': ETag.from(incident1.idAsString, 1)
-        ]
-        put("/incidents/${incident2.idAsString}", [
-            id: incident1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back incident"() {
-        given: "a new incident"
-        def id = parseJson(post("/incidents", [
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/incidents/$id")
-
-        expect: "putting the retrieved incident back to be successful"
-        put("/incidents/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back incident with parts"() {
-        given: "a saved incident and a composite"
-        def incident = txTemplate.execute {
-            incidentRepository.save(newIncident(unit) {
-                name = 'Test incident'
-            })
-        }
-        Map request = [
-            name: 'Composite incident',
-            owner: [
-                targetUri: "http://localhost/units/${unit.idAsString}"
-            ],
-            parts: [
-                [targetUri : "http://localhost/incidents/${incident.idAsString}"]
-            ]
-        ]
-
-        def id = parseJson(post("/incidents", request)).resourceId
-        def getResult = get("/incidents/$id")
-
-        expect: "putting the retrieved incident back to be successful"
-        put("/incidents/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
     }
 
     @WithUserDetails("user@domain.example")

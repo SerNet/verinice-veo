@@ -91,25 +91,17 @@ class SearchMvcITSpec extends VeoMvcSpec {
     def 'find #type by status'() {
         given: "two #type with different status"
         String subType = subTypes.get(type)
-        post("/$type", [
+        post("/domains/$domainId/$type", [
             name: "one",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: subType,
-                    status: "NEW"
-                ]
-            ]
+            subType: subType,
+            status: "NEW"
         ])
-        post("/$type", [
+        post("/domains/$domainId/$type", [
             name: "two",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: subType,
-                    status: "IN_PROGRESS"
-                ]
-            ]
+            subType: subType,
+            status: "IN_PROGRESS"
         ])
 
         when: "searching for the status of the second item one the collection endpoint"
@@ -135,15 +127,11 @@ class SearchMvcITSpec extends VeoMvcSpec {
 
     def 'find by displayname'() {
         given: "a scenario with German characters in the name"
-        post("/scenarios", [
+        post("/domains/$domainId/scenarios", [
             name: "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: 'SCN_Scenario',
-                    status: "NEW"
-                ]
-            ]
+            subType: 'SCN_Scenario',
+            status: "NEW"
         ])
 
         when: "searching for the scenario"

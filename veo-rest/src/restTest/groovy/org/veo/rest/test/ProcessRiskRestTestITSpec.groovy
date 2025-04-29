@@ -29,18 +29,16 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     def "create and update a process risk"() {
         given: "a process and a scenario"
-        def processId = post("/processes", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataTransfer",
-                    status: "NEW",
-                ]
-            ],
+        def processId = post("/domains/$dsgvoDomainId/processes", [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             name: "risk test process",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario",
+            subType: 'SCN_Scenario',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
@@ -60,8 +58,10 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         risk.scenario.targetUri ==~ /.*\/scenarios\/$scenarioId/
 
         when: "assigning a risk owner"
-        def ownerPersonId = post("/persons", [
+        def ownerPersonId = post("/domains/$dsgvoDomainId/persons", [
             name: "process risk owner",
+            subType: 'PER_Person',
+            status: 'NEW',
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
@@ -85,18 +85,16 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     def "create a process risk with an invalid domain reference"() {
         given: "a process and a scenario"
-        def processId = post("/processes", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataTransfer",
-                    status: "NEW",
-                ]
-            ],
+        def processId = post("/domains/$dsgvoDomainId/processes", [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             name: "risk test process-1",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario-1",
+            subType: "SCN_Scenario",
+            status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def invalidDomainId = UUID.randomUUID().toString()
@@ -117,18 +115,16 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     def "create and update a process without domain ref"() {
         given: "a process and a scenario"
-        def processId = post("/processes", [
-            domains: [
-                (dsgvoDomainId): [
-                    subType: "PRO_DataTransfer",
-                    status: "NEW",
-                ]
-            ],
+        def processId = post("/domains/$dsgvoDomainId/processes", [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             name: "risk test process-1",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        def scenarioId = post("/scenarios", [
+        def scenarioId = post("/domains/$dsgvoDomainId/scenarios", [
             name: "process risk test scenario-1",
+            subType: "SCN_Scenario",
+            status: "NEW",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 

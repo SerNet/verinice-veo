@@ -52,17 +52,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
 
     def 'write and retrieve an entity with a sub type'() {
         when: "saving a process with the sub type VT"
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domains/$domainId/processes", [
             name: "Verarbeitungstaetigkeit",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    "subType": "PRO_DataProcessing",
-                    "status": "NEW"
-                ]
-            ]
+            "subType": "PRO_DataProcessing",
+            "status": "NEW"
         ])).resourceId
 
         then: "it is saved"
@@ -78,17 +74,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
 
     def 'sub type cannot be changed'() {
         when: "saving a process with no sub type"
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domains/$domainId/processes", [
             name: "Verarbeitungstaetigkeit",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ]
+            subType: "PRO_DataProcessing",
+            status: "NEW"
         ])).resourceId
         def processETag = getETag(get("/processes/$processId"))
 
@@ -96,17 +88,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the process with a sub type"
-        put("/processes/$processId", [
+        put("/domains/$domainId/processes/$processId", [
             name: "Verarbeitungstaetigkeit",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    "subType": "PRO_DataProcessing",
-                    "status": "NEW"
-                ]
-            ]
+            "subType": "PRO_DataProcessing",
+            "status": "NEW"
         ], ['If-Match': processETag])
         processETag = getETag(get("/processes/$processId"))
 
@@ -114,17 +102,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the process with the same sub type"
-        put("/processes/$processId", [
+        put("/domains/$domainId/processes/$processId", [
             name: "Verarbeitungstaetigkeit with a new name",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    "subType": "PRO_DataProcessing",
-                    "status": "NEW"
-                ]
-            ]
+            "subType": "PRO_DataProcessing",
+            "status": "NEW"
         ], ['If-Match': processETag])
         processETag = getETag(get("/processes/$processId"))
 
@@ -132,17 +116,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         noExceptionThrown()
 
         when: "updating the process with a different sub type"
-        put("/processes/$processId", [
+        put("/domains/$domainId/processes/$processId", [
             name: "Verarbeitungstaetigkeit with a new name",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
-            domains: [
-                (domainId): [
-                    "subType": "PRO_DataTransfer",
-                    "status": "NEW"
-                ]
-            ]
+            "subType": "PRO_DataTransfer",
+            "status": "NEW"
         ], ['If-Match': processETag], 400)
 
         then:
@@ -150,18 +130,15 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         ex.message == "Cannot change a sub type on an existing element"
 
         when: "updating the process with no sub type"
-        put("/processes/$processId", [
+        put("/domains/$domainId/processes/$processId", [
             name: "Verarbeitungstaetigkeit with a new name",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
-            ],
-            domains: [
-                (domainId): [:]
             ]
         ], ['If-Match': processETag], 400)
 
         then:
         MethodArgumentNotValidException manvEx = thrown()
-        manvEx.message ==~ /.*subType.*must not be null.*/
+        manvEx.message.contains('A sub type must be present')
     }
 }

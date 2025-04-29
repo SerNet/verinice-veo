@@ -629,18 +629,14 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         given: "a scope & scenario"
         def scopeId = scope.idAsString
 
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "BestCase",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "BestCase",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialProbability: 2
                 ]
             ]
         ])).resourceId
@@ -704,18 +700,14 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         given: "a scope in a domain with only a single risk definition"
         domain.riskDefinitions.remove("r2d2")
         def scopeId = scope.idAsString
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domains/$domainId/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "BestCase",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
+            subType: "BestCase",
+            status: "NEW",
+            riskValues: [
+                r1d1 : [
+                    potentialProbability: 2
                 ]
             ]
         ])).resourceId

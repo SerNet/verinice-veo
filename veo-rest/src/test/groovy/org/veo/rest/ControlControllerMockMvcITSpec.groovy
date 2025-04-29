@@ -21,12 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -65,77 +63,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "Test unit"
             })
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a control"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Control',
-            owner: [
-                displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/controls', request))
-
-        then: "the location of the new control is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Control created successfully.'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "create a control with a custom aspect"() {
-        given: "a request body"
-        Map request = [
-            name: 'New Control',
-            owner: [
-                displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: 'http://localhost/units/' + unit.idAsString
-            ],
-            domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
-            customAspects: [
-                'control_dataProtection': [
-                    domains: [],
-                    attributes: [
-                        control_dataProtection_objectives: [
-                            'control_dataProtection_objectives_pseudonymization'
-                        ]
-                    ]
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def result = parseJson(post('/controls', request))
-
-        then: "the location of the new control is returned"
-        result.success == true
-        def resourceId = result.resourceId
-        resourceId != null
-        resourceId != ''
-        result.message == 'Control created successfully.'
-
-        when:
-        Control savedControl = txTemplate.execute {
-            controlRepository.findById(UUID.fromString(resourceId)).get().tap() {
-                // resolve proxy:
-                customAspects.first()
-            }
-        }
-
-        then: 'the custom aspect is saved'
-        savedControl.customAspects.first().type == 'control_dataProtection'
     }
 
     @WithUserDetails("user@domain.example")
@@ -238,103 +165,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put a control"() {
-        given: "a saved control"
-        def control = txTemplate.execute {
-            controlRepository.save(newControl(unit) {
-                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
-            })
-        }
-
-        Map request = [
-            name: 'New control-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ],
-            domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(control.idAsString, control.version)
-        ]
-        def result = parseJson(put("/controls/${control.idAsString}", request, headers))
-
-        then: "the control is found"
-        result.name == 'New control-2'
-        result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.idAsString] == [
-            subType: "CTL_TOM",
-            status: "NEW",
-            decisionResults: [:],
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "put a control with a custom aspect"() {
-        given: "a saved control"
-        def control = txTemplate.execute {
-            controlRepository.save(newControl(unit) {
-                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
-                applyCustomAspect(newCustomAspect("control_dataProtection", dsgvoDomain))
-            })
-        }
-        Map request = [
-            designator: ''+control.getDesignator(),
-            name: 'New control-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: 'http://localhost/units/'+unit.idAsString,
-                displayName: 'test unit'
-            ], domains: [
-                (dsgvoDomain.idAsString): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ], customAspects:
-            [
-                'control_dataProtection' :
-                [
-                    domains: [],
-                    attributes:  [
-                        control_dataProtection_objectives:[
-                            'control_dataProtection_objectives_pseudonymization'
-                        ]
-                    ]
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(control.idAsString, control.version)
-        ]
-        def result = parseJson(put("/controls/${control.idAsString}", request, headers))
-
-        then: "the control is found"
-        result.name == 'New control-2'
-        result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.idAsString] == [
-            decisionResults: [:],
-            subType: "CTL_TOM",
-            status: "NEW",
-        ]
-        result.owner.targetUri == "http://localhost/units/"+unit.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
     def "delete a control"() {
         given: "an existing control"
         def control = txTemplate.execute {
@@ -346,48 +176,5 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the control is deleted"
         controlRepository.findById(control.id).empty
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can't put a control with another control's ID"() {
-        given: "two controls"
-        def control1 = txTemplate.execute({
-            controlRepository.save(newControl(unit, {
-                name = "old name 1"
-            }))
-        })
-        def control2 = txTemplate.execute({
-            controlRepository.save(newControl(unit, {
-                name = "old name 2"
-            }))
-        })
-
-        when: "a put request tries to update control 1 using the ID of control 2"
-        Map headers = [
-            'If-Match': ETag.from(control1.idAsString, 1)
-        ]
-        put("/controls/${control2.idAsString}", [
-            id: control1.idAsString,
-            name: "new name 1",
-            owner: [targetUri: 'http://localhost/units/' + unit.idAsString]
-        ], headers, 400)
-
-        then: "an exception is thrown"
-        thrown(DeviatingIdException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "can put back control"() {
-        given: "a new control"
-        def id = parseJson(post("/controls", [
-            name: "new name",
-            owner: [targetUri: "http://localhost/units/"+unit.idAsString]
-        ])).resourceId
-        def getResult = get("/controls/$id")
-
-        expect: "putting the retrieved control back to be successful"
-        put("/controls/$id", parseJson(getResult), [
-            "If-Match": getETag(getResult)
-        ])
     }
 }

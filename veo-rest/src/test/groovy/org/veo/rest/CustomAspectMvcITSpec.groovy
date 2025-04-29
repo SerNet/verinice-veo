@@ -50,30 +50,20 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
 
     def "save multiple links"() {
         when: "creating a person with different aspects"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$domainId/persons", [
             customAspects: [
                 person_generalInformation: [
-                    attributes: [
-                        person_generalInformation_salutation: "Mr.",
-                        person_generalInformation_familyName: "Mick"
-                    ],
-                    domains: [],
+                    person_generalInformation_salutation: "Mr.",
+                    person_generalInformation_familyName: "Mick"
                 ],
                 person_dataProtectionOfficer: [
-                    attributes: [
-                        person_dataProtectionOfficer_expertise: true
-                    ],
-                    domains: [],
+                    person_dataProtectionOfficer_expertise: true
                 ]
             ],
             name : "person",
             owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
+            subType: "PER_Person",
+            status: "NEW"
         ])).resourceId
         def retrievedPerson = parseJson(get("/persons/$personId"))
 
