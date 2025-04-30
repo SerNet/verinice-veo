@@ -437,62 +437,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "Searching for processes with embedded risks"() {
-        given: "a list of processes with risks"
-        def processId = process.getIdAsString()
-        def scenarioId = scenario.getIdAsString()
-        def scenario2 = newScenario(unit) {
-            associateWithDomain(domain, "NormalScenario", "NEW")
-        }
-        scenarioRepository.save(scenario2)
-        def scenario2Id = scenario2.getIdAsString()
-        postRisk1(processId, scenarioId)
-        postRisk2(processId, scenario2Id)
-
-        def process2 = newProcess(unit) {
-            associateWithDomain(domain, "NormalProcess", "NEW")
-        }
-        processRepository.save(process2)
-        postRisk1(process2.idAsString, scenarioId)
-        postRisk2(process2.idAsString, scenario2Id)
-
-        when: "all processes are searched for"
-        def searchUrl = parseJson(post("/processes/searches", [
-            unitId: [
-                values: [
-                    unit.idAsString
-                ]
-            ]
-        ])).searchUrl
-        def result = parseJson(get(new URI(searchUrl)))
-
-        then: "the risks are not embedded"
-        result.items != null
-        result.items.size() == 2
-        result.items.each {assert it.risks == null}
-
-        when: "all processes are searched for with risks"
-        result = parseJson(get(new URI(searchUrl + "?embedRisks=true")))
-
-        then: "the risks are embedded"
-        result.items != null
-        result.items.size() == 2
-        result.items.each {assert it.risks != null}
-
-        result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
-        result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
-
-        def process1Risks = result.items.find { it.id == process.idAsString }.risks
-        process1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
-        process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="D"}.effectiveImpact != null
-
-        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="D"}) {
-            inherentRisk != null
-            residualRisk != null
-        }
-    }
-
     def "Creating the same risk twice does not fail"() {
         when: "a POST request is issued to the risk ressource"
         def processId = process.getIdAsString()

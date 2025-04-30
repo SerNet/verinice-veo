@@ -33,6 +33,7 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
+import spock.lang.Ignore
 import spock.lang.Shared
 
 @AutoConfigureMockMvc
@@ -591,6 +592,7 @@ class SwaggerSpec extends VeoSpringSpec {
         ]
     }
 
+    @Ignore("No deprecated types at the moment")
     def "#type schema is deprecated"() {
         given:
         def componentSchemas = parsedApiDocs.components.schemas
@@ -599,10 +601,7 @@ class SwaggerSpec extends VeoSpringSpec {
         componentSchemas[type].deprecated
 
         where:
-        type << [
-            'SearchQueryDto',
-            'SearchResponse'
-        ]
+        type << []
     }
 
     def "#method on #endpoint is deprecated"() {
@@ -611,12 +610,6 @@ class SwaggerSpec extends VeoSpringSpec {
 
         where:
         endpoint                                                                       | method
-        '/assets/searches'                                                             | 'POST'
-        '/scopes/searches'                                                             | 'POST'
-        '/units/searches'                                                              | 'POST'
-        '/incidents/searches/{searchId}'                                               | 'GET'
-        '/scopes/searches/{searchId}'                                                  | 'GET'
-        '/units/searches/{searchId}'                                                   | 'GET'
         '/content-creation/domains/{id}/element-type-definitions/{type}/object-schema' | 'POST'
         '/schemas/{type}'                                                              | 'GET'
     }

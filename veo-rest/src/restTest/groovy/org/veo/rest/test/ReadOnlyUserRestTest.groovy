@@ -78,15 +78,6 @@ class ReadOnlyUserRestTest extends VeoRestTest {
                 403, UserType.READ_ONLY)
     }
 
-    def "user without write access may POST searches"() {
-        expect:
-        post("/processes/searches", [
-            status: [
-                values: ["NEW"]
-            ]
-        ], 201, UserType.READ_ONLY)
-    }
-
     def "user without write access may POST evaluations"() {
         expect:
         // TODO VEO-1987 remove legacy endpoint call

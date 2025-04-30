@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
-import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
@@ -26,7 +24,6 @@ import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,12 +52,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
@@ -116,7 +110,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(UnitController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @Slf4j
-public class UnitController extends AbstractEntityControllerWithDefaultSearch {
+public class UnitController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
 
@@ -400,35 +394,5 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         deleteUnitUseCase,
         new DeleteUnitUseCase.InputData(uuid, getAuthenticatedClient(auth)),
         output -> RestApiResponse.noContent());
-  }
-
-  @Override
-  @Deprecated
-  protected String buildSearchUri(String id) {
-    return MvcUriComponentsBuilder.fromMethodCall(
-            UriComponentsBuilder.fromPath("/"), on(UnitController.class).runSearch(ANY_AUTH, id))
-        .toUriString();
-  }
-
-  @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds units for the search.", deprecated = true)
-  @Deprecated
-  public @Valid Future<List<FullUnitDto>> runSearch(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
-    // TODO VEO-425 Use custom search query DTO & criteria API, apply
-    // display name
-    // filter and allow recursive parent unit filter.
-    try {
-      var dto = SearchQueryDto.decodeFromSearchId(searchId);
-      // TODO VEO-425 Apply all unit id values (as IN condition).
-      if (dto.getUnitId() != null && !dto.getUnitId().getValues().isEmpty()) {
-        return getUnits(auth, dto.getUnitId().getValues().iterator().next(), null);
-      }
-      return getUnits(auth, null, null);
-
-    } catch (IOException e) {
-      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-      throw new IllegalArgumentException("Could not decode search URL.");
-    }
   }
 }

@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.veo.rest.test
-
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-
 /**
  * This class contains tests of the basic operations create, read, update, and delete (CRUD).
  */
@@ -570,49 +566,6 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Deleting the sub unit'
         delete("$baseUrl/units/$subUnitId", 204, UserType.DEFAULT)
-
-        and: 'Deleting the unit'
-        delete("$baseUrl/units/$unitId", 204, UserType.DEFAULT)
-    }
-
-    def "Search elements"() {
-        when: 'Creating a unit'
-        def unitName = 'Search functions test unit'
-        def unitBody = [name: unitName, domains:[
-                [targetUri: "/domains/$testDomainId"]
-            ]]
-        def postUnitResponse = post("$baseUrl/units", unitBody, 201, UserType.DEFAULT)
-
-        then: 'Resource ID is a UUID'
-        def unitId = postUnitResponse.body.resourceId
-        UUID.fromString(unitId)
-        def targetUriUnit = "$baseUrl/units/$unitId"
-
-        and: 'Creating an asset inside the unit'
-        def unitAssetName = 'filter test asset'
-        def unitAssetBody = [
-            name: unitAssetName,
-            subType: 'Information',
-            status: 'CURRENT',
-            owner: [displayName: unitName, targetUri: targetUriUnit]]
-        def postUnitAssetResponse = post("$baseUrl/domains/$testDomainId/assets", unitAssetBody, 201, UserType.DEFAULT)
-        def unitAssetId = postUnitAssetResponse.body.resourceId
-        UUID.fromString(unitAssetId)
-
-        and: 'Creating a search'
-        def assetsSearchBody = [unitId: [values: [unitId]]]
-        def postSearchResponse = post("$baseUrl/assets/searches", assetsSearchBody, 201, UserType.DEFAULT)
-        def assetSearchUrl = postSearchResponse.body.searchUrl
-        assetSearchUrl instanceof String
-
-        and: 'Run the search'
-        // Prevent normalization of percent in search URL, call exchange with URI
-        URI searchUri = new URI(baseUrl + assetSearchUrl)
-        def response = exchange(searchUri, HttpMethod.GET, new HttpHeaders(),null, UserType.DEFAULT)
-        def body = jsonSlurper.parseText(response.body)
-        body.totalItemCount == 1
-        body.items[0].id == unitAssetId
-        body.items[0].name == unitAssetName
 
         and: 'Deleting the unit'
         delete("$baseUrl/units/$unitId", 204, UserType.DEFAULT)

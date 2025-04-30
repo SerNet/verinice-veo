@@ -17,10 +17,8 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 import static org.veo.core.entity.DomainBase.INSPECTION_ID_MAX_LENGTH;
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
-import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.CUSTOM_ASPECTS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.ELEMENT_TYPE_PARAM;
@@ -39,7 +37,6 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -62,12 +59,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
@@ -112,7 +106,6 @@ import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -135,7 +128,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(DomainController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @Slf4j
-public class DomainController extends AbstractEntityControllerWithDefaultSearch {
+public class DomainController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
 
@@ -430,30 +423,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         out ->
             RestApiResponse.okOrNotModified(
                 out.catalogItem(), entityToDtoTransformer::transformShortCatalogItem2Dto, request));
-  }
-
-  @Override
-  @SuppressFBWarnings // ignore warning on call to method proxy factory
-  @Deprecated
-  protected String buildSearchUri(String id) {
-    return MvcUriComponentsBuilder.fromMethodCall(
-            UriComponentsBuilder.fromPath("/"), on(DomainController.class).runSearch(ANY_AUTH, id))
-        .toUriString();
-  }
-
-  @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds domains for the search.", deprecated = true)
-  @Deprecated
-  public @Valid Future<List<FullDomainDto>> runSearch(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
-    // TODO: VEO-498 Implement Domain Search
-    try {
-      SearchQueryDto.decodeFromSearchId(searchId);
-      return getDomains(auth);
-    } catch (IOException e) {
-      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-      throw new IllegalArgumentException("Could not decode search URL.");
-    }
   }
 
   @GetMapping(value = "/{id}/element-status-count")

@@ -17,27 +17,23 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
-import org.veo.rest.common.SearchResponse;
 import org.veo.service.EtagService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Validated
 public abstract class AbstractEntityController extends AbstractVeoController {
 
   @Autowired EntityToDtoTransformer entityToDtoTransformer;
@@ -49,20 +45,6 @@ public abstract class AbstractEntityController extends AbstractVeoController {
   protected AbstractEntityController() {}
 
   protected CacheControl defaultCacheControl = CacheControl.noCache();
-
-  @Deprecated
-  protected abstract String buildSearchUri(String searchId);
-
-  @Deprecated
-  protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
-    try {
-      var searchUri = buildSearchUri(search.getSearchId());
-      return ResponseEntity.created(new URI(searchUri)).body(new SearchResponse(searchUri));
-    } catch (IOException | URISyntaxException e) {
-      log.error("Could not create search.", e);
-      throw new IllegalArgumentException(String.format("Could not create search %s", search));
-    }
-  }
 
   protected <T extends Identifiable & Versioned> Optional<String> getEtag(
       Class<T> entityClass, UUID id) {

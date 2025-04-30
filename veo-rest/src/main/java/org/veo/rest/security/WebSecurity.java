@@ -112,9 +112,8 @@ public class WebSecurity {
   private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
 
   // Paths that never change state on the server:
-  // Searches and inspections are transient and may be POSTed by regular
-  // users.
-  private static final String[] TRANSIENT_PATHS = {"/**/searches/**", "/**/evaluation/**"};
+  // Inspections are transient and may be POSTed by regular users.
+  private static final String[] TRANSIENT_PATHS = {"/**/evaluation/**"};
 
   // Paths to monitoring and metrics information:
   private static final String ACTUATOR_PATHS = "/actuator/**";

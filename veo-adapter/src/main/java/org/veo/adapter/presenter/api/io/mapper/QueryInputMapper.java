@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityType;
@@ -78,25 +77,6 @@ public class QueryInputMapper {
         .subType(whereEqualsOrNull(subType))
         .unitUuid(whereUuidIn(unitUuid))
         .updatedBy(whereIn(updatedBy))
-        .build();
-  }
-
-  public static GetElementsUseCase.InputData map(
-      Client client, SearchQueryDto searchQuery, PagingConfiguration<String> pagingConfiguration) {
-    return GetElementsUseCase.InputData.builder()
-        .authenticatedClient(client)
-        .childElementIds(transformUuidCondition(searchQuery.getChildElementIds()))
-        .description(transformCondition(searchQuery.getDescription()))
-        .designator(transformCondition(searchQuery.getDesignator()))
-        .displayName(transformCondition(searchQuery.getDisplayName()))
-        .hasChildElements(transformCondition(searchQuery.getHasChildElements()))
-        .hasParentElements(transformCondition(searchQuery.getHasParentElements()))
-        .name(transformCondition(searchQuery.getName()))
-        .pagingConfiguration(pagingConfiguration)
-        .status(transformCondition(searchQuery.getStatus()))
-        .subType(transformCondition(searchQuery.getSubType()))
-        .unitUuid(transformUuidCondition(searchQuery.getUnitId()))
-        .updatedBy(transformCondition(searchQuery.getUpdatedBy()))
         .build();
   }
 

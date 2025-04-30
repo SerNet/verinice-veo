@@ -25,7 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.rest.security.ApplicationUser;
 
 /** This class contains constants for the REST controllers. */
@@ -37,7 +36,6 @@ public final class ControllerConstants {
   public static final ApplicationUser ANY_USER = null;
   public static final Integer ANY_INT = null;
   public static final Long ANY_LONG = null;
-  public static final SearchQueryDto ANY_SEARCH = null;
   public static final String ANY_STRING = null;
   public static final UUID ANY_UUID = null;
   public static final List<String> ANY_STRING_LIST = null;

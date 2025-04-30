@@ -17,12 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
-import static org.veo.rest.ControllerConstants.ANY_AUTH;
-import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
-import static org.veo.rest.ControllerConstants.ANY_INT;
-import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
@@ -50,7 +45,6 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,13 +69,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
@@ -112,7 +103,6 @@ import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -313,64 +303,6 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
         deleteElementUseCase,
         new DeleteElementUseCase.InputData(Asset.class, uuid, client),
         output -> ResponseEntity.noContent().build());
-  }
-
-  @Override
-  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-  @Deprecated
-  protected String buildSearchUri(String id) {
-    return MvcUriComponentsBuilder.fromMethodCall(
-            UriComponentsBuilder.fromPath("/"),
-            on(AssetController.class)
-                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING, ANY_BOOLEAN))
-        .toUriString();
-  }
-
-  @GetMapping(value = "/searches/{searchId}")
-  @Operation(summary = "Finds assets for the search.", deprecated = true)
-  @Deprecated
-  public @Valid Future<PageDto<FullAssetDto>> runSearch(
-      @Parameter(hidden = true) Authentication auth,
-      @PathVariable String searchId,
-      @RequestParam(
-              value = PAGE_SIZE_PARAM,
-              required = false,
-              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
-          @Min(1)
-          Integer pageSize,
-      @RequestParam(
-              value = PAGE_NUMBER_PARAM,
-              required = false,
-              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
-          Integer pageNumber,
-      @RequestParam(
-              value = SORT_COLUMN_PARAM,
-              required = false,
-              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
-          String sortColumn,
-      @RequestParam(
-              value = SORT_ORDER_PARAM,
-              required = false,
-              defaultValue = SORT_ORDER_DEFAULT_VALUE)
-          @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder,
-      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
-          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
-          Boolean embedRisksParam) {
-    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
-
-    try {
-      return getElements(
-          QueryInputMapper.map(
-                  getAuthenticatedClient(auth),
-                  SearchQueryDto.decodeFromSearchId(searchId),
-                  PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
-              .withEmbedRisks(embedRisks),
-          e -> entity2Dto(e, embedRisks));
-    } catch (IOException e) {
-      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-      return null;
-    }
   }
 
   @Operation(

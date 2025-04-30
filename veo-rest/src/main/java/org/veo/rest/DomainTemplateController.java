@@ -159,10 +159,4 @@ public class DomainTemplateController extends AbstractEntityController {
     }
     return future;
   }
-
-  @Override
-  protected String buildSearchUri(String searchId) {
-    // TODO: VEO-499 Implement DomainTemplate Search
-    return null;
-  }
 }

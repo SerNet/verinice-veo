@@ -151,32 +151,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "search an asset"() {
-        given: "a search request body"
-        Map search = [
-            unitId: [
-                values: [
-                    unit.idAsString
-                ]
-            ],
-        ]
-
-        and: "a saved asset"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit))
-        }
-
-        when: "a search request is made to the server"
-        def postSearchResponse = parseJson(post('http://localhost/assets/searches', search))
-
-        and: "the search is run"
-        def searchResult = parseJson(get(new URI(postSearchResponse.searchUrl)))
-
-        then: "the response contains the expected data"
-        searchResult.items*.id == [asset.idAsString]
-    }
-
-    @WithUserDetails("user@domain.example")
     def "retrieve an asset with a link"() {
         given: "a saved asset"
         def targetAsset = txTemplate.execute {

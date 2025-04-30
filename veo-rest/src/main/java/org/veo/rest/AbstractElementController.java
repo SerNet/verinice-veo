@@ -49,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class AbstractElementController<T extends Element, E extends AbstractElementDto<T>>
-    extends AbstractEntityControllerWithDefaultSearch {
+    extends AbstractEntityController {
 
   protected final Class<T> modelType;
 

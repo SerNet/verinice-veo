@@ -110,17 +110,6 @@ class SearchMvcITSpec extends VeoMvcSpec {
         then: "the second item is returned"
         results.items*.name == ["two"]
 
-        when: "running the same search on the search endpoint"
-        def searchUrl = parseJson(post("/$type/searches", [
-            status: [
-                values: ["IN_PROGRESS"]
-            ]
-        ])).searchUrl
-        results = parseJson(get(new URI(searchUrl)))
-
-        then: "the result is the same"
-        results.items*.name == ["two"]
-
         where:
         type << EntityType.ELEMENT_TYPES*.pluralTerm
     }
@@ -138,19 +127,6 @@ class SearchMvcITSpec extends VeoMvcSpec {
         def results = parseJson(get("/scenarios?displayName=unrechtmäßige"))
 
         then: "the item is returned"
-        results.items*.name == [
-            "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten"
-        ]
-
-        when: "running the same search on the search endpoint"
-        def searchUrl = parseJson(post("/scenarios/searches", [
-            displayName: [
-                values: ["unrechtmäßige"]
-            ]
-        ])).searchUrl
-        results = parseJson(get(new URI(searchUrl)))
-
-        then: "the result is the same"
         results.items*.name == [
             "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten"
         ]
