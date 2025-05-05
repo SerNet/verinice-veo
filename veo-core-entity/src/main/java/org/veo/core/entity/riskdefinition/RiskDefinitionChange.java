@@ -364,13 +364,15 @@ public sealed interface RiskDefinitionChange
       List<List<RiskValue>> oldValueMatrix,
       List<List<RiskValue>> newValueMatrix,
       CategoryDefinition dimension) {
-      if (newValueMatrix == null && oldValueMatrix == null) return Collections.emptySet();
-      if (newValueMatrix == null
-          || oldValueMatrix == null
-          || newValueMatrix.size() != oldValueMatrix.size()) {
-        if (newValueMatrix != null) return Set.of(new RiskMatrixAdd(dimension));
-        else return Set.of(new RiskMatrixRemove(dimension));
-      }
+    if (newValueMatrix == null && oldValueMatrix == null) {
+      return Collections.emptySet();
+    } else if (newValueMatrix == null) {
+      return Set.of(new RiskMatrixRemove(dimension));
+    } else if (oldValueMatrix == null) {
+      return Set.of(new RiskMatrixAdd(dimension));
+    } else if (newValueMatrix.size() != oldValueMatrix.size()) {
+      return Set.of(new RiskMatrixResize(dimension));
+    } else
       return IntStream.range(0, newValueMatrix.size())
           .mapToObj(
               index ->

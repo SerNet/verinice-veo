@@ -758,16 +758,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         then: "the value for D is cleared"
         with(parseJson(get("/$type.pluralTerm/$raId/risks/$scenarioId")).domains.(domainId).riskDefinitions.r1d1) {
-            riskValues.size() == 2
+            riskValues.size() == 1
             with(riskValues[0]) {
                 category == 'R'
                 inherentRisk == 2
                 residualRisk == 2
-            }
-            with(riskValues[1]) {
-                category == 'D'
-                inherentRisk == null
-                residualRisk == null
             }
         }
 
