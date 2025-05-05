@@ -141,11 +141,6 @@ public class ControlImplementationData implements ControlImplementation {
   }
 
   @Override
-  public void disassociateFromOwner() {
-    owner.disassociateControl(control);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;

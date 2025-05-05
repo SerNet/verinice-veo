@@ -67,7 +67,6 @@ public class ControlChangeListener {
     var removedControls =
         removedParts.stream().map(Control.class::cast).collect(Collectors.toSet());
 
-    ciService.removeControlImplementations(removedControls);
     ciService.removeRequirementsFromControlImplementations(removedControls);
   }
 }

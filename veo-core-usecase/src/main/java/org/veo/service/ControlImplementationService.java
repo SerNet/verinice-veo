@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Designated;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -72,23 +71,6 @@ public class ControlImplementationService {
                 }
               });
         });
-  }
-
-  /** If there is a controlImplementation specifically for this control, remove it. */
-  public void removeControlImplementations(Set<Control> removedControls) {
-    var controlImplementations = controlImplRepo.findByControls(removedControls);
-
-    log.atDebug()
-        .setMessage("Removing {} implementations for controls {} ")
-        .addArgument(controlImplementations::size)
-        .addArgument(
-            () ->
-                removedControls.stream()
-                    .map(Designated::getDesignator)
-                    .collect(Collectors.joining(", ")))
-        .log();
-
-    controlImplementations.forEach(ControlImplementation::disassociateFromOwner);
   }
 
   /**

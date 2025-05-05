@@ -50,8 +50,6 @@ public interface ControlImplementation {
 
   UUID getId();
 
-  void disassociateFromOwner();
-
   void remove(RequirementImplementation ri);
 
   void addRequirement(Control control);
