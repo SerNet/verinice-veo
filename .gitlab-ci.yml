@@ -169,6 +169,6 @@ trigger_deployment:
   stage: deployment
   only:
     - develop
-    - main
+    - tags
   trigger:
     project: veo/verinice-veo-deployment
