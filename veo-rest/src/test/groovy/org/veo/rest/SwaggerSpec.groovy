@@ -610,13 +610,15 @@ class SwaggerSpec extends VeoSpringSpec {
         parsedApiDocs.paths[endpoint][method.toLowerCase()].deprecated
 
         where:
-        endpoint                         | method
-        '/assets/searches'               | 'POST'
-        '/scopes/searches'               | 'POST'
-        '/units/searches'                | 'POST'
-        '/incidents/searches/{searchId}' | 'GET'
-        '/scopes/searches/{searchId}'    | 'GET'
-        '/units/searches/{searchId}'     | 'GET'
+        endpoint                                                                       | method
+        '/assets/searches'                                                             | 'POST'
+        '/scopes/searches'                                                             | 'POST'
+        '/units/searches'                                                              | 'POST'
+        '/incidents/searches/{searchId}'                                               | 'GET'
+        '/scopes/searches/{searchId}'                                                  | 'GET'
+        '/units/searches/{searchId}'                                                   | 'GET'
+        '/content-creation/domains/{id}/element-type-definitions/{type}/object-schema' | 'POST'
+        '/schemas/{type}'                                                              | 'GET'
     }
 
     def "Inspection schema is complete"() {
