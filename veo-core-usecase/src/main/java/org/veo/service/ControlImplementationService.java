@@ -97,7 +97,15 @@ public class ControlImplementationService {
     requirementImplementations.forEach(
         ri -> {
           var implementationsUsingRequirement = controlImplRepo.findByRequirement(ri);
-          implementationsUsingRequirement.forEach(ci -> ci.remove(ri));
+          var riControl = ri.getControl();
+          implementationsUsingRequirement.forEach(
+              ci -> {
+                var ciControl = ci.getControl();
+                if (!riControl.equals(ciControl)
+                    && !ciControl.getPartsRecursively().contains(riControl)) {
+                  ci.remove(ri);
+                }
+              });
         });
   }
 }
