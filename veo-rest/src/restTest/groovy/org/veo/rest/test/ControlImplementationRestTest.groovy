@@ -1139,6 +1139,49 @@ class ControlImplementationRestTest extends VeoRestTest {
             'sub control 3',
             'sub control 4'
         ]
+
+        when: "removing sub controls from a root control"
+        get("/domains/$domainId/controls/$rootControl3Id").with{
+            body.parts.removeIf{it.id == subControl2Id}
+            body.parts.removeIf{it.id == subControl4Id}
+            put(body._self, body, getETag())
+        }
+
+        then: "the RIs are synced"
+        get("/assets/$assetId/control-implementations/$rootControl1Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 1',
+            'sub control 2'
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl2Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 3']
+        get("/assets/$assetId/control-implementations/$rootControl3Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 3',
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 3',
+        ]
+
+        when: "removing more parts"
+        get("/domains/$domainId/controls/$rootControl3SuperId").with{
+            body.parts = []
+            put(body._self, body, getETag())
+        }
+        get("/domains/$domainId/controls/$rootControl3Id").with{
+            body.parts = []
+            put(body._self, body, getETag())
+        }
+
+        then: "the RIs are synced"
+        get("/assets/$assetId/control-implementations/$rootControl1Id/requirement-implementations").body.items*.control*.name ==~ [
+            'sub control 1',
+            'sub control 2'
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl2Id/requirement-implementations").body.items*.control*.name ==~ ['sub control 3']
+        get("/assets/$assetId/control-implementations/$rootControl3Id/requirement-implementations").body.items*.control*.name ==~ [
+            'root control 3',
+        ]
+        get("/assets/$assetId/control-implementations/$rootControl3SuperId/requirement-implementations").body.items*.control*.name ==~ [
+            'root control 3 superior',
+        ]
     }
 
     String defineSubTypeAndStatus(EntityType type) {
