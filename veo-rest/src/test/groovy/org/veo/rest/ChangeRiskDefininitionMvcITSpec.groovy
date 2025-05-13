@@ -932,7 +932,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             changes[1].categories == ["D"]
             effects[0].description.en == "Risk values for category 'D' are removed from all risks."
             effects[1].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
-            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
             validationMessages[0].changedCategories == ["D"]
         }
 
@@ -959,7 +959,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects[2].description.en == "Risk values for category 'A' are removed from all risks."
             effects[3].description.en == "Risk values for category 'R' are removed from all risks."
             effects[4].description.en == "Risk values for category 'D' are removed from all risks."
-            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
             validationMessages[0].changedCategories == ["D"]
             validationMessages[0].severity == "WARNING"
         }
@@ -1018,7 +1018,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects[2].description.en == "Risk values for category 'I' are added to risks."
             effects[3].description.en == "Risk values for category 'R' are added to risks."
             effects[4].description.en == "Risk values for category 'A' are added to risks."
-            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
             validationMessages[0].changedCategories == ["D"]
         }
 
@@ -1046,11 +1046,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         with(ret) {
             validationMessages.size() == 1
-            validationMessages[0].description.en == "The following risk matrices have been changed, please adjust the risk values if necessary:"
+            validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
             validationMessages[0].changedCategories ==~ ["D"]
         }
 
-        when: "we remove risk- and potentialImpacts and"
+        when: "we remove risk values, potential impacts, probabilities and categories"
         parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
             riskValues.removeLast()
             riskValues.removeLast()
@@ -1097,7 +1097,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects[8].description.en == "Impact values for category 'R' are removed from all assets, processes and scopes."
             effects[9].description.en == "Impact values for category 'I' are removed from all assets, processes and scopes."
             effects[10].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
-            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+            validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
             validationMessages[0].changedCategories ==~ ["D"]
         }
 
@@ -1115,20 +1115,20 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         ret.riskDefinition.categories.first().valueMatrix[0][0] = ret.riskDefinition.riskValues[1]
         ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, 200))
 
-        then: "a evaluation message is produced"
+        then: "an evaluation message is produced"
         with(ret) {
             validationMessages.size() == 2
             effects.size() == 11
             changes.size() == 8
             with(validationMessages[0]) {
-                description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
+                description.de == "Die Risikomatrizen für die folgenden Kriterien sind inkonsistent: [D]"
                 severity == "WARNING"
                 changedCategories ==~ ["D"]
                 column == 0
                 row == 1
             }
             with(validationMessages[1]) {
-                description.en == "The following risk matrices have been resized, please adjust the risk values if necessary:"
+                description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
                 changedCategories ==~ ["D"]
             }
         }
@@ -1143,7 +1143,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects.size() == 0
             validationMessages.size() == 1
             with(validationMessages[0]) {
-                description.de == "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:"
+                description.de == "Die Risikomatrizen für die folgenden Kriterien sind inkonsistent: [D]"
                 severity == "WARNING"
                 changedCategories ==~ ["D"]
                 column == 0

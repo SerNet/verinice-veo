@@ -25,15 +25,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
 import org.veo.core.entity.TranslatedText;
-import org.veo.core.entity.TranslatedText.TranslatedTextBuilder;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.risk.CategoryRef;
@@ -56,47 +56,38 @@ public class EvaluateRiskDefinitionUseCase
     implements TransactionalUseCase<
         EvaluateRiskDefinitionUseCase.InputData, EvaluateRiskDefinitionUseCase.OutputData> {
 
-  private static final String RISK_MATRIX_CHANGE = "RISK_MATRIX_CHANGE";
-  private static final String RISK_MATRIX_VALUE_INCONSITENT = "RiskMatrixValueInconsitent";
-  private static final String RISK_MATRIX_RESIZE = "RISK_MATRIX_RESIZE";
+  private final TranslatedText riskMatrixResizeText =
+      TranslatedText.builder()
+          .translation(
+              Locale.ENGLISH,
+              "The following risk matrices have been resized, please adjust the risk values if necessary: %s")
+          .translation(
+              Locale.GERMAN,
+              "Die folgenden Risikomatrizen wurden in ihrer Größe angepasst, bitte passen Sie die Risikowerte gegebenenfalls an: %s")
+          .build();
+  private final TranslatedText riskMatrixChangeText =
+      TranslatedText.builder()
+          .translation(
+              Locale.ENGLISH,
+              "Risk matrices have been changed. Please adjust the risk values for the following criteria: %s")
+          .translation(
+              Locale.GERMAN,
+              "Folgende risikomatrizen sind verändert worden, bitte passen Sie ggf. die Risiko Werte an: %s")
+          .build();
 
-  private static final List<Locale> ALL_LOCALS = List.of(Locale.ENGLISH, Locale.GERMAN);
-  private static final Map<String, TranslatedText> MESSAGES =
-      Map.of(
-          RISK_MATRIX_RESIZE,
-          TranslatedText.builder()
-              .translation(
-                  Locale.ENGLISH,
-                  "The following risk matrices have been resized, please adjust the risk values if necessary:")
-              .translation(
-                  Locale.GERMAN,
-                  "Die folgenden Risikomatrizen wurden in ihrer Größe angepasst, bitte passen Sie die Risikowerte gegebenenfalls an:")
-              .build(),
-          RISK_MATRIX_CHANGE,
-          TranslatedText.builder()
-              .translation(
-                  Locale.ENGLISH,
-                  "The following risk matrices have been changed, please adjust the risk values if necessary:")
-              .translation(
-                  Locale.GERMAN,
-                  "Folgende risikomatrizen sind verändert worden, bitte passen Sie ggf. die Risiko Werte an:")
-              .build(),
-          RISK_MATRIX_VALUE_INCONSITENT,
-          TranslatedText.builder()
-              .translation(Locale.ENGLISH, "The following riskmatrix is inkonsitent take a look:")
-              .translation(
-                  Locale.GERMAN,
-                  "Folgende risikomatrizen sind inkonsitent bitte passen Sie sie an:")
-              .build());
+  private TranslatedText riskMatrixValueInconsistencyText =
+      TranslatedText.builder()
+          .translation(
+              Locale.ENGLISH, "The risk matrices for the following criteria are inconsistent: %s")
+          .translation(
+              Locale.GERMAN, "Die Risikomatrizen für die folgenden Kriterien sind inkonsistent: %s")
+          .build();
 
   private final DomainRepository repository;
 
   @Override
   public OutputData execute(InputData input) {
-    var domain = repository.getById(input.domainId, input.authenticatedClientId);
-    if (!domain.isActive()) {
-      throw new NotFoundException("Domain is inactive.");
-    }
+    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
 
     if (input.riskDefinition == null) {
       RiskDefinition riskDefinition =
@@ -135,19 +126,21 @@ public class EvaluateRiskDefinitionUseCase
 
   private void addValidationMessage(
       Severity serverty,
-      String effectConstant,
+      TranslatedText translated,
       List<CategoryRef> categories,
       List<ValidationMessage> effects) {
     if (!categories.isEmpty()) {
       effects.add(
-          new ValidationMessage(serverty, toTRanslation(effectConstant), categories, null, null));
+          new ValidationMessage(
+              serverty, toTRanslation(translated, categories), categories, null, null));
     }
   }
 
-  private TranslatedText toTRanslation(String effectConstant) {
-    TranslatedTextBuilder builder = TranslatedText.builder();
-    ALL_LOCALS.forEach(l -> builder.translation(l, effectConstant));
-    return MESSAGES.getOrDefault(effectConstant, builder.build());
+  private TranslatedText toTRanslation(TranslatedText translated, List<CategoryRef> categories) {
+    Map<Locale, String> formatedText =
+        translated.getTranslations().entrySet().stream()
+            .collect(Collectors.toMap(Entry::getKey, v -> v.getValue().formatted(categories)));
+    return new TranslatedText(formatedText);
   }
 
   private List<ValidationMessage> validationMessages(
@@ -160,9 +153,16 @@ public class EvaluateRiskDefinitionUseCase
               try {
                 cat.validateRiskCategory(
                     riskDefinition.getRiskValues(), riskDefinition.getProbability());
-              } catch (Exception e) {
+              } catch (IllegalArgumentException e) {
                 addValidationMessage(
-                    Severity.ERROR, e.getMessage(), List.of(CategoryRef.from(cat)), messages);
+                    Severity.ERROR,
+                    // TODO translate error messages
+                    TranslatedText.builder()
+                        .translation(Locale.ENGLISH, e.getMessage())
+                        .translation(Locale.GERMAN, e.getMessage())
+                        .build(),
+                    List.of(CategoryRef.from(cat)),
+                    messages);
               }
             });
 
@@ -170,6 +170,7 @@ public class EvaluateRiskDefinitionUseCase
         .filter(CategoryDefinition::isRiskValuesSupported)
         .forEach(
             cat -> {
+              List<CategoryRef> categories = List.of(CategoryRef.from(cat));
               var vm = cat.getValueMatrix();
               int rows = vm.size();
               int columns = vm.getFirst().size();
@@ -181,8 +182,8 @@ public class EvaluateRiskDefinitionUseCase
                     messages.add(
                         new ValidationMessage(
                             Severity.WARNING,
-                            toTRanslation(RISK_MATRIX_VALUE_INCONSITENT),
-                            List.of(CategoryRef.from(cat)),
+                            toTRanslation(riskMatrixValueInconsistencyText, categories),
+                            categories,
                             row,
                             column));
                   }
@@ -192,8 +193,8 @@ public class EvaluateRiskDefinitionUseCase
                       messages.add(
                           new ValidationMessage(
                               Severity.WARNING,
-                              toTRanslation(RISK_MATRIX_VALUE_INCONSITENT),
-                              List.of(CategoryRef.from(cat)),
+                              toTRanslation(riskMatrixValueInconsistencyText, categories),
+                              categories,
                               row,
                               column));
                     }
@@ -203,15 +204,14 @@ public class EvaluateRiskDefinitionUseCase
             });
     addValidationMessage(
         Severity.WARNING,
-        RISK_MATRIX_RESIZE,
+        riskMatrixResizeText,
         RiskDefinitionChange.riskMatrtixResizeCategories(detectedChanges),
         messages);
     addValidationMessage(
         Severity.WARNING,
-        RISK_MATRIX_CHANGE,
+        riskMatrixChangeText,
         RiskDefinitionChange.riskMatrtixChangedCategories(detectedChanges),
         messages);
-
     return messages;
   }
 
