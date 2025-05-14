@@ -990,6 +990,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
             changes[0].changeType == "RiskMatrixAdd"
             changes[0].categories == ["C"]
+            changes[0].effects == null
             effects[0].description.en == "Risk values are recalculated."
             effects[1].description.en == "Risk values for category 'C' are added to risks."
         }

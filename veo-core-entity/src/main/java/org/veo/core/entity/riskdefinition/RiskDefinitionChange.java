@@ -63,6 +63,7 @@ public sealed interface RiskDefinitionChange
     return Collections.emptyList();
   }
 
+  @JsonIgnore
   default List<RiskDefinitionChangeEffect> getEffects() {
     return Collections.emptyList();
   }
