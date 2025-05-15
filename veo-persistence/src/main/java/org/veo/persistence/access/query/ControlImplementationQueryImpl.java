@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.query;
 
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -72,7 +73,7 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   }
 
   @Override
-  public void whereControlhasSubType(String subtype, UUID domainId) {
+  public void whereControlSubTypeIn(Set<String> subtypes, UUID domainId) {
     spec =
         spec.and(
             (root, query, criteriaBuilder) -> {
@@ -80,7 +81,7 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
                   root.join("control", JoinType.INNER).join("domainAssociations", JoinType.LEFT);
               return criteriaBuilder.and(
                   criteriaBuilder.equal(join.get("domain").get("id"), domainId),
-                  criteriaBuilder.in(join.get("subType")).value(subtype));
+                  join.get("subType").in(subtypes));
             });
   }
 

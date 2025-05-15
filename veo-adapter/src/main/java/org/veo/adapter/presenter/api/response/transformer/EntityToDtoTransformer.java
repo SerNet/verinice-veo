@@ -105,6 +105,7 @@ import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
@@ -393,8 +394,10 @@ public final class EntityToDtoTransformer {
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
-
-    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
+    // TODO #3860 revert to getControlImplementationConfiguration /
+    // setControlImplementationConfiguration
+    target.setControlImplementationConfigurationDto(
+        source.getControlImplementationConfigurationDto());
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
@@ -434,7 +437,9 @@ public final class EntityToDtoTransformer {
     target.setDecisions(Map.copyOf(source.getDecisions()));
     target.setInspections(Map.copyOf(source.getInspections()));
     target.setIncarnationConfiguration(source.getIncarnationConfiguration());
-    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
+    // TODO #3860 revert to direct mapping
+    target.setControlImplementationConfigurationDto(
+        new ControlImplementationConfigurationDto(source.getControlImplementationConfiguration()));
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
   }

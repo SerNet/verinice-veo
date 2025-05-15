@@ -49,6 +49,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         put("/content-creation/domains/$domainId/element-type-definitions/control", [
             subTypes: [
                 ComplCtl: [statuses: ["NEW"]],
+                OtherComplCtl: [statuses: ["NEW"]],
                 MitiCtl: [statuses: ["NEW"]],
             ],
             customAspects: [
@@ -73,7 +74,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/control-implementation-configuration", [
-            complianceControlSubType: "ComplCtl",
+            complianceControlSubTypes: ["ComplCtl", "OtherComplCtl"],
             mitigationControlSubType: "MitiCtl"
         ], null, 204, UserType.CONTENT_CREATOR)
 
@@ -148,13 +149,13 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
         subControl4Id = post("/domains/$domainId/controls", [
             name: "sub control 4",
-            subType: "ComplCtl",
+            subType: "OtherComplCtl",
             status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         rootControl3Id = post("/domains/$domainId/controls", [
             name: "root control 3",
-            subType: "ComplCtl",
+            subType: "OtherComplCtl",
             status: "NEW",
             owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
@@ -372,12 +373,16 @@ class ControlImplementationRestTest extends VeoRestTest {
                     control: [targetUri: "/controls/$rootControl2Id"],
                     responsible: [targetUri: "/persons/$person1Id"],
                 ],
+                [
+                    control: [targetUri: "/controls/$rootControl3Id"],
+                    description: "I say so."
+                ],
             ]
         ]).body.resourceId
         def retrievedElement = get("/domains/$domainId/$elementType.pluralTerm/$elementId").body
 
         then: "CIs for both controls are present"
-        retrievedElement.controlImplementations.size() == 2
+        retrievedElement.controlImplementations.size() == 3
         with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
             implementationStatus == "UNKNOWN"
             description == "I have my reasons"
@@ -387,6 +392,11 @@ class ControlImplementationRestTest extends VeoRestTest {
             implementationStatus == "UNKNOWN"
             responsible.displayName.endsWith("person 1")
             control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl2Id")
+        }
+        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 3") }) {
+            implementationStatus == "UNKNOWN"
+            control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl3Id")
+            description == "I say so."
         }
 
         and: "the RIs are not part of the domain-specific element representation"
@@ -400,14 +410,18 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         and:
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=COMPLIANCE", 200).body) {
-            items.size() == 1
-            items[0].control.subType == "ComplCtl"
+            items.size() == 2
+            items.control*.subType ==~ ["ComplCtl", "OtherComplCtl"]
         }
 
         and:
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations", 200).body) {
-            items.size() == 2
-            items.control*.subType ==~ ["ComplCtl", "MitiCtl"]
+            items.size() == 3
+            items.control*.subType ==~ [
+                "ComplCtl",
+                "MitiCtl",
+                "OtherComplCtl"
+            ]
         }
 
         when: "the configuration is deleted"
@@ -415,18 +429,22 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         then: "filter for mitigation is not allowed"
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=MITIGATION", 422).body) {
-            message == "No mitigation control sub type configured in domain."
+            message == "No mitigation control sub type(s) configured in domain."
         }
 
         and: "filter for compliance is not allowed"
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations?purpose=COMPLIANCE", 422).body) {
-            message == "No compliance control sub type configured in domain."
+            message == "No compliance control sub type(s) configured in domain."
         }
 
         and:
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId/control-implementations", 200).body) {
-            items.size() == 2
-            items.control*.subType ==~ ["ComplCtl", "MitiCtl"]
+            items.size() == 3
+            items.control*.subType ==~ [
+                "MitiCtl",
+                "ComplCtl",
+                "OtherComplCtl"
+            ]
         }
 
         when: "modifying CIs"
@@ -440,9 +458,11 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         then: "changes have been applied"
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId").body.controlImplementations) {
-            size() == 1
-            get(0).control.targetUri.endsWith(owner.rootControl2Id)
-            get(0).description == "I've made changes"
+            size() == 2
+            it*.description ==~ [
+                "I say so.",
+                "I've made changes"
+            ]
         }
 
         where:

@@ -79,6 +79,15 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void setIncarnationConfiguration(IncarnationConfiguration incarnationConfiguration);
 
+  // TODO #3860 remove again, rely on DomainBaseState method
+  ControlImplementationConfiguration getControlImplementationConfiguration();
+
+  // TODO #3860 remove again
+  @Override
+  default ControlImplementationConfigurationDto getControlImplementationConfigurationDto() {
+    return new ControlImplementationConfigurationDto(getControlImplementationConfiguration());
+  }
+
   void setControlImplementationConfiguration(
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration);
 

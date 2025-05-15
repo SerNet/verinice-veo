@@ -47,7 +47,9 @@ class DomainCreationRestTest extends DomainRestTest {
             authority == "JJ"
             templateVersion == "0.1.0"
             domainTemplate == null
-            controlImplementationConfiguration == [:]
+            controlImplementationConfiguration == [
+                complianceControlSubTypes: []
+            ]
         }
 
         when: "defining an element type, risk def, decision, inspection & incarnation config in the domain"
@@ -174,42 +176,62 @@ class DomainCreationRestTest extends DomainRestTest {
                 c1:[
                     statuses:['c0', 'c1'],
                     sortKey : 1
+                ],
+                c10: [
+                    statuses: ['good', 'bad']
+                ],
+                c100: [
+                    statuses: ['night', 'day']
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
 
         and: "we update controlImplementationConfiguration"
         def domainUpdatedBefore = get("/domains/$domainId").body.updatedAt
-        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
-            "mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            "complianceControlSubTypes": ["c1", "c10"],
+            "mitigationControlSubType": "c1",
+        ], null, 204, CONTENT_CREATOR)
 
         then:"the domain is updated"
         with(get("/domains/$domainId").body) {
             updatedAt > domainUpdatedBefore
-            controlImplementationConfiguration ==  ["complianceControlSubType": "c1",
-                "mitigationControlSubType": "c1"]
+            with(controlImplementationConfiguration) {
+                complianceControlSubTypes ==~ ["c1", "c10"]
+                complianceControlSubType == "c1" // TODO #3860 remove legacy property assertion
+                mitigationControlSubType == "c1"
+            }
         }
 
         and: "the change is exported"
-        exportDomain(domainId).controlImplementationConfiguration == [ complianceControlSubType: "c1",
-            mitigationControlSubType: "c1"]
+        with(exportDomain(domainId).controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c1", "c10"]
+            complianceControlSubType == "c1" // TODO #3860 remove legacy property assertion
+            mitigationControlSubType == "c1"
+        }
 
         when:
         put("/content-creation/domains/$domainId/control-implementation-configuration", ["mitigationControlSubType": "c1"], null, 204, CONTENT_CREATOR)
 
         then:
         with(get("/domains/$domainId").body) {
-            controlImplementationConfiguration ==  ["mitigationControlSubType": "c1"]
+            controlImplementationConfiguration ==  [
+                "complianceControlSubTypes": [],
+                "mitigationControlSubType": "c1"
+            ]
         }
 
         when:
         get("/domains/$domainId").with {
-            put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1"], getETag(), 204, CONTENT_CREATOR)
+            put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubTypes": ["c1"]], getETag(), 204, CONTENT_CREATOR)
         }
 
         then:
         with(get("/domains/$domainId").body) {
-            controlImplementationConfiguration ==  ["complianceControlSubType": "c1"]
+            controlImplementationConfiguration ==  [
+                "complianceControlSubTypes": ["c1"],
+                "complianceControlSubType": "c1", // TODO #3860 remove legacy property assertion
+            ]
         }
 
         when: "the controlImplementationConfiguration is cleared"
@@ -219,13 +241,121 @@ class DomainCreationRestTest extends DomainRestTest {
         then:
         with(get("/domains/$domainId")) {
             etag != getETag()
-            body.controlImplementationConfiguration ==  [:]
+            body.controlImplementationConfiguration ==  [
+                complianceControlSubTypes: [],
+            ]
         }
 
         and: "an undefined subtype cannot be used"
-        put("/content-creation/domains/$domainId/control-implementation-configuration", ["complianceControlSubType": "c1",
-            "mitigationControlSubType": "c2"], null, 400, CONTENT_CREATOR).with {
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            "complianceControlSubTypes": ["c1"],
+            "mitigationControlSubType": "c2",
+        ], null, 400, CONTENT_CREATOR).with {
             body.message == "Sub type c2 is not defined"
+        }
+
+        // TODO #3860 remove all the legacy property tests below
+
+        when: "an old-school API client tries to change the legacy property"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            "complianceControlSubType": "c100",
+            "mitigationControlSubType": "c10",
+        ], null, 204, CONTENT_CREATOR)
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubType == "c100"
+            complianceControlSubTypes ==~ ["c100"]
+            mitigationControlSubType == "c10"
+        }
+
+        when: "an old-school API client tries to remove all compliance sub types"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            "mitigationControlSubType": "c10",
+        ], null, 204, CONTENT_CREATOR)
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubType == null
+            complianceControlSubTypes ==~ []
+            mitigationControlSubType == "c10"
+        }
+
+        when: "a modern API client tries to add compliance sub types again"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            "complianceControlSubTypes": ["c1", "c10"],
+        ], null, 204, CONTENT_CREATOR)
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c1", "c10"]
+            complianceControlSubType == "c1"
+            mitigationControlSubType == null
+        }
+
+        when: "a modern API client tries to change the mitigation control sub type"
+        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+            complianceControlSubTypes: ["c1", "c10"],
+            mitigationControlSubType: "c100"
+        ], null, 204, CONTENT_CREATOR)
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c1", "c10"]
+            complianceControlSubType == "c1"
+            mitigationControlSubType == "c100"
+        }
+
+        when: "the mitigation control is changed via GET-PUT round rtip"
+        get("/domains/$domainId").body.controlImplementationConfiguration.with {
+            mitigationControlSubType = "c10"
+            put("/content-creation/domains/$domainId/control-implementation-configuration", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c1", "c10"]
+            complianceControlSubType == "c1"
+            mitigationControlSubType == "c10"
+        }
+
+        when: "an old-school API client tries to change the compliance conrtol sub types via GET-PUT round rtip"
+        get("/domains/$domainId").body.controlImplementationConfiguration.with {
+            complianceControlSubType = "c100"
+            put("/content-creation/domains/$domainId/control-implementation-configuration", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c100"]
+            complianceControlSubType == "c100"
+            mitigationControlSubType == "c10"
+        }
+
+        when: "a modern API client tries to change the compliance conrtol sub types via GET-PUT round rtip"
+        get("/domains/$domainId").body.controlImplementationConfiguration.with {
+            complianceControlSubTypes = ["c1", "c100"]
+            put("/content-creation/domains/$domainId/control-implementation-configuration", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ ["c1", "c100"]
+            complianceControlSubType == "c1"
+            mitigationControlSubType == "c10"
+        }
+
+        when: "a modern API client tries to remove all compliance conrtol sub types via GET-PUT round rtip"
+        get("/domains/$domainId").body.controlImplementationConfiguration.with {
+            complianceControlSubTypes = []
+            put("/content-creation/domains/$domainId/control-implementation-configuration", it, null, 204, CONTENT_CREATOR)
+        }
+
+        then: "the change has been applied"
+        with(get("/domains/$domainId").body.controlImplementationConfiguration) {
+            complianceControlSubTypes ==~ []
+            complianceControlSubType == null
+            mitigationControlSubType == "c10"
         }
     }
 

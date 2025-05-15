@@ -24,7 +24,7 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.ControlImplementationConfiguration;
+import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
@@ -54,7 +54,9 @@ public interface DomainBaseState extends EntityState {
    */
   IncarnationConfiguration getIncarnationConfiguration();
 
-  ControlImplementationConfiguration getControlImplementationConfiguration();
+  // TODO #3860 use ControlImplementationConfiguration type again, rename back to
+  // getControlImplementationConfiguration
+  ControlImplementationConfigurationDto getControlImplementationConfigurationDto();
 
   DomainMigrationDefinition getDomainMigrationDefinition();
 

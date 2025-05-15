@@ -27,6 +27,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ControlImplementationConfiguration;
+import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -44,10 +45,11 @@ public class SaveControlImplementationConfigurationUseCase
   @Override
   public EmptyOutput execute(InputData input) {
     var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
-    validate(
-        domain.getElementTypeDefinition(Control.SINGULAR_TERM),
-        input.controlImplementationConfiguration);
-    domain.setControlImplementationConfiguration(input.controlImplementationConfiguration);
+    var config =
+        input.controlImplementationConfiguration.toConfig(
+            domain.getControlImplementationConfiguration());
+    validate(domain.getElementTypeDefinition(Control.SINGULAR_TERM), config);
+    domain.setControlImplementationConfiguration(config);
     domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }
@@ -55,8 +57,9 @@ public class SaveControlImplementationConfigurationUseCase
   private void validate(
       ElementTypeDefinition elementTypeDefinition,
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration) {
-    Optional.ofNullable(controlImplementationConfiguration.complianceControlSubType())
-        .ifPresent(elementTypeDefinition::getSubTypeDefinition);
+    controlImplementationConfiguration
+        .complianceControlSubTypes()
+        .forEach(elementTypeDefinition::getSubTypeDefinition);
     Optional.ofNullable(controlImplementationConfiguration.mitigationControlSubType())
         .ifPresent(elementTypeDefinition::getSubTypeDefinition);
   }
@@ -70,6 +73,7 @@ public class SaveControlImplementationConfigurationUseCase
   public record InputData(
       @NotNull Client authenticatedClient,
       @NotNull UUID domainId,
-      @NotNull ControlImplementationConfiguration controlImplementationConfiguration)
+      // TODO #3860 use ControlImplementationConfiguration type again
+      @NotNull ControlImplementationConfigurationDto controlImplementationConfiguration)
       implements UseCase.InputData {}
 }

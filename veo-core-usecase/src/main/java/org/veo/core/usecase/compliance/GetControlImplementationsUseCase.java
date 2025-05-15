@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.compliance;
 
+import java.util.Collections;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -98,30 +101,24 @@ public class GetControlImplementationsUseCase
     Optional.ofNullable(input.purpose)
         .ifPresent(
             cf -> {
-              switch (cf) {
-                case ControlImplementationPurpose.COMPLIANCE ->
-                    Optional.ofNullable(
-                            domain
-                                .getControlImplementationConfiguration()
-                                .complianceControlSubType())
-                        .ifPresentOrElse(
-                            subType -> query.whereControlhasSubType(subType, input.domainId),
-                            () -> {
-                              throw new UnprocessableDataException(
-                                  "No compliance control sub type configured in domain.");
-                            });
-                case ControlImplementationPurpose.MITIGATION ->
-                    Optional.ofNullable(
-                            domain
-                                .getControlImplementationConfiguration()
-                                .mitigationControlSubType())
-                        .ifPresentOrElse(
-                            subType -> query.whereControlhasSubType(subType, input.domainId),
-                            () -> {
-                              throw new UnprocessableDataException(
-                                  "No mitigation control sub type configured in domain.");
-                            });
+              var subTypes =
+                  switch (cf) {
+                    case ControlImplementationPurpose.COMPLIANCE ->
+                        domain.getControlImplementationConfiguration().complianceControlSubTypes();
+                    case ControlImplementationPurpose.MITIGATION ->
+                        Optional.ofNullable(
+                                domain
+                                    .getControlImplementationConfiguration()
+                                    .mitigationControlSubType())
+                            .map(Set::of)
+                            .orElse(Collections.emptySet());
+                  };
+              if (subTypes.isEmpty()) {
+                throw new UnprocessableDataException(
+                    "No %s control sub type(s) configured in domain."
+                        .formatted(cf.toString().toLowerCase(Locale.ENGLISH)));
               }
+              query.whereControlSubTypeIn(subTypes, input.domainId);
             });
   }
 

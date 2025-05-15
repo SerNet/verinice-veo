@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Collections;
+import java.util.Set;
+
 import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
@@ -24,11 +27,10 @@ import javax.annotation.Nullable;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 public record ControlImplementationConfiguration(
-    @Nullable @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
-        String complianceControlSubType,
+    Set<@Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH) String> complianceControlSubTypes,
     @Nullable @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
         String mitigationControlSubType) {
   public ControlImplementationConfiguration() {
-    this(null, null);
+    this(Collections.emptySet(), null);
   }
 }

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -26,5 +27,5 @@ public interface ControlImplementationQuery extends Query<ControlImplementation,
 
   void whereRiskAffectedIs(UUID riskAffectedId);
 
-  void whereControlhasSubType(String subType, UUID domainId);
+  void whereControlSubTypeIn(Set<String> subTypes, UUID domainId);
 }
