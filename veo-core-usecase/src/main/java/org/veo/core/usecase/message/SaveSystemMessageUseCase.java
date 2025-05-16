@@ -59,7 +59,7 @@ public class SaveSystemMessageUseCase
         .getPublication()
         .isBefore(message.getCreatedAt() == null ? Instant.now() : message.getCreatedAt()))
       throw new UnprocessableDataException("Publication time is before creation time.");
-    if (message.getEffective().isBefore(message.getPublication()))
+    if (message.getEffective() != null && message.getEffective().isBefore(message.getPublication()))
       throw new UnprocessableDataException("Effective time is before publication time.");
   }
 

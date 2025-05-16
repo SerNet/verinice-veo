@@ -186,6 +186,12 @@ class AdminRestTest extends VeoRestTest{
             level: "INFO"
         ],null,422, UserType.ADMIN).body.message == "Publication time is before creation time."
 
+        and: "effective can be null"
+        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+            publication: "$effDate",
+            level: "INFO"
+        ],null,200, UserType.ADMIN).body.message == "SystemMessage updated."
+
         when: "the admin deletes the message"
         delete("/admin/messages/$messageId",204, UserType.ADMIN)
 
