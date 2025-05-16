@@ -18,6 +18,7 @@
 package org.veo.core.usecase.message;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.validation.Valid;
 
@@ -49,6 +50,9 @@ public class SaveSystemMessageUseCase
             : systemMessageRepository.getById(input.id());
 
     entityStateMapper.mapSystemMessage(input.message(), message);
+    if (message.getPublication() == null) {
+      message.setPublication(Instant.now().plus(1, ChronoUnit.SECONDS));
+    }
     validate(message);
     message = systemMessageRepository.save(message);
     return new OutputData(message.getId(), input.id() == null);

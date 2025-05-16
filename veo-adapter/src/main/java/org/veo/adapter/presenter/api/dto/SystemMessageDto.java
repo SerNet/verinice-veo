@@ -52,8 +52,9 @@ public class SystemMessageDto implements SystemMessageState {
   @JsonProperty(access = Access.READ_ONLY)
   private Instant createdAt;
 
-  @Schema(description = "The time at which the message should be visible to the user.")
-  @NotNull
+  @Schema(
+      description =
+          "The time at which the message should be visible to the user. A null value indicates the immediate publishing of the message.")
   private Instant publication;
 
   @Schema(description = "The time at which the change described by the message will take effect.")

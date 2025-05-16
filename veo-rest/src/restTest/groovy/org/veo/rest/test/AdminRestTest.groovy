@@ -209,5 +209,21 @@ class AdminRestTest extends VeoRestTest{
             effective: "$effDate",
             level: "INFO"
         ],null,404, UserType.ADMIN)
+
+        when: "publication can also be null"
+        ret = post("/admin/messages",[message:[DE: "test message1"],
+            level: "INFO"
+        ],201, UserType.ADMIN)
+        messageId = ret.body.resourceId
+
+        then: "the publication is set"
+        with(get("/messages/"+messageId, 200, UserType.DEFAULT).body) {
+            id == 2
+            level == "INFO"
+            message == ["de": "test message1"]
+            effective == null
+            publication > createdAt
+            put("/admin/messages/$messageId",it,null,200, UserType.ADMIN)
+        }
     }
 }
