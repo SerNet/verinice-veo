@@ -94,7 +94,7 @@ class ControlImplementationQuerySpec extends AbstractJpaSpec {
 
         scopeDataRepository.save(newScope(unit).tap {
             implementControl(control1).tap {
-                responsible = person1
+                responsible = person2
             }
             abbreviation = "ABB3"
             associateWithDomain(domain, "scope", "NEW")
