@@ -48,5 +48,3 @@ Fill out all fields. Mark as `?` if unknown.
 /label ~"2.IssueType::2.Bug"
 
 /label ~"3.Status::1.Specification"
-
-/label ~"4.Priority::5.Undefined"

@@ -19,5 +19,3 @@ _Any information regarding the implementation._
 /label ~"2.IssueType::1.Story"
 
 /label ~"3.Status::1.Specification"
-
-/label ~"4.Priority::5.Undefined"

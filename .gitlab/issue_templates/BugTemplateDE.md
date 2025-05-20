@@ -23,5 +23,3 @@ _Welches tatsächliche/fehlerhafte Verhalten wurde beobachtet?_
 /label ~"2.IssueType::2.Bug"
 
 /label ~"3.Status::1.Specification"
-
-/label ~"4.Priority::5.Undefined"

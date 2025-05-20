@@ -21,5 +21,3 @@ Code review replaces AT.
 /label ~"2.IssueType::3.Refactoring"
 
 /label ~"3.Status::1.Specification"
-
-/label ~"4.Priority::5.Undefined"
