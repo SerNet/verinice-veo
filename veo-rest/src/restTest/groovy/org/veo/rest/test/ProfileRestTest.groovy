@@ -347,6 +347,49 @@ class ProfileRestTest extends VeoRestTest {
                 .body.message == "profile $randomId not found"
     }
 
+    def "apply orphaned RI"() {
+        given: "a profile with an RI but no CI"
+        def sourceUnitId = postNewUnit("source", [newDomainId]).resourceId
+        def sourceControlId = post("/domains/$newDomainId/controls", [
+            name: "some control",
+            owner: [targetUri: "/units/$sourceUnitId"],
+            subType: "superControl",
+            status: "on",
+        ]).body.resourceId
+        def sourceAssetId = post("/domains/$newDomainId/assets", [
+            name: "some asset",
+            owner: [targetUri: "/units/$sourceUnitId"],
+            subType: "server",
+            status: "on",
+            controlImplementations: [
+                [control: [targetUri: "/controls/$sourceControlId"]]
+            ]
+        ]).body.resourceId
+        get("/assets/$sourceAssetId/requirement-implementations/$sourceControlId").with{
+            body.status = "YES"
+            put(body._self, body, getETag(), 204)
+        }
+        get("/domains/$newDomainId/assets/$sourceAssetId").with{
+            body.controlImplementations = []
+            put(body._self, body, getETag())
+        }
+        def profileId = post("/content-creation/domains/$newDomainId/profiles?unit=$sourceUnitId", [
+            name: "profile with orphaned RI"
+        ], 201, UserType.CONTENT_CREATOR).body.id
+
+        when:
+        def targetUnitId = postNewUnit("target", [newDomainId]).resourceId
+        post("/domains/$newDomainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204)
+        def asset = get("/domains/$newDomainId/assets?unit=$targetUnitId").body.items[0]
+        def control = get("/domains/$newDomainId/controls?unit=$targetUnitId").body.items[0]
+
+        then:
+        asset.controlImplementations == []
+        with(get("/assets/${asset.id}/requirement-implementations/${control.id}").body) {
+            status == "YES"
+        }
+    }
+
     def putElementTypeDefinitions(String domainId) {
         put("/content-creation/domains/$domainId/element-type-definitions/asset",
                 [
@@ -362,6 +405,14 @@ class ProfileRestTest extends VeoRestTest {
                                     type: "integer"
                                 ]
                             ]
+                        ]
+                    ],
+                ], null, 204, CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/element-type-definitions/control",
+                [
+                    subTypes: [
+                        superControl: [
+                            statuses: ["on", "off"]
                         ]
                     ],
                 ], null, 204, CONTENT_CREATOR)

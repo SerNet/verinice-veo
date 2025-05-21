@@ -44,7 +44,6 @@ import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
@@ -189,12 +188,6 @@ public class IncarnationDescriptionApplier {
           Map<String, Element> elementsByItemId,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     parameters.stream()
-        // RIs must be applied after CIs
-        .sorted(
-            Comparator.comparing(
-                p ->
-                    tailoringReferencesById.get(p.getId()).getReferenceType()
-                        == TailoringReferenceType.REQUIREMENT_IMPLEMENTATION))
         .forEach(
             parameter -> {
               var tailoringReference = tailoringReferencesById.get(parameter.getId());
@@ -303,7 +296,7 @@ public class IncarnationDescriptionApplier {
         && target instanceof Control control
         && tailoringReference
             instanceof RequirementImplementationTailoringReference<T, TNamespace> tr) {
-      var ri = ra.getRequirementImplementation(control);
+      var ri = ra.addRequirementImplementation(control);
       ri.setStatus(tr.getStatus());
       ri.setImplementationStatement(tr.getImplementationStatement());
       ri.setImplementationUntil(tr.getImplementationUntil());
