@@ -91,8 +91,8 @@ public abstract class AbstractCreateItemsFromUnitUseCase<
     }
 
     if (element instanceof RiskAffected<?, ?> risky) {
-      risky
-          .getControlImplementations()
+      risky.getControlImplementations().stream()
+          .filter(ci -> ci.getControl().isAssociatedWithDomain(domain))
           .forEach(
               ci ->
                   item.addControlImplementationReference(
@@ -102,6 +102,7 @@ public abstract class AbstractCreateItemsFromUnitUseCase<
                           .orElse(null),
                       ci.getDescription()));
       risky.getRequirementImplementations().stream()
+          .filter(ri -> ri.getControl().isAssociatedWithDomain(domain))
           .filter(ri -> !ri.isUnedited())
           .forEach(
               ri ->

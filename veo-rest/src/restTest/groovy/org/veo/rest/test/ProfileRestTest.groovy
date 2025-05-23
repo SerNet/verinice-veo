@@ -390,6 +390,42 @@ class ProfileRestTest extends VeoRestTest {
         }
     }
 
+    def "unassociated CI/RI control is omitted"() {
+        given: "a CI/RI where the control is only associated with a different domain"
+        def sourceUnitId = postNewUnit("source", [newDomainId, dsgvoDomainId]).resourceId
+        def sourceControlId = post("/domains/$dsgvoDomainId/controls", [
+            name: "some control",
+            owner: [targetUri: "/units/$sourceUnitId"],
+            subType: "CTL_TOM",
+            status: "NEW",
+        ]).body.resourceId
+        def sourceAssetId = post("/domains/$newDomainId/assets", [
+            name: "some asset",
+            owner: [targetUri: "/units/$sourceUnitId"],
+            subType: "server",
+            status: "on",
+            controlImplementations: [
+                [control: [targetUri: "/controls/$sourceControlId"]]
+            ]
+        ]).body.resourceId
+        get("/assets/$sourceAssetId/requirement-implementations/$sourceControlId").with{
+            body.status = "YES"
+            put(body._self, body, getETag(), 204)
+        }
+
+        when: "creating the profile"
+        def profileId = post("/content-creation/domains/$newDomainId/profiles?unit=$sourceUnitId", [
+            name: "yet another profile"
+        ], 201, UserType.CONTENT_CREATOR).body.id
+
+        then: "the CI, RI and control are omitted"
+        with(get("/domains/$newDomainId/profiles/$profileId/export").body) {
+            items.size() == 1
+            items[0].elementType == "asset"
+            items[0].tailoringReferences.empty
+        }
+    }
+
     def putElementTypeDefinitions(String domainId) {
         put("/content-creation/domains/$domainId/element-type-definitions/asset",
                 [
