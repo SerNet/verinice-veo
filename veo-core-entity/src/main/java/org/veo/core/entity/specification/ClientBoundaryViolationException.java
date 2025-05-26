@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Identifiable;
@@ -33,11 +35,19 @@ public class ClientBoundaryViolationException extends DomainException {
     this(TypedId.from(entity), unauthorizedClient);
   }
 
+  public ClientBoundaryViolationException(Identifiable entity, UUID unauthorizedClientId) {
+    this(TypedId.from(entity), unauthorizedClientId);
+  }
+
   public ClientBoundaryViolationException(IEntityRef<?> ref, Client unauthorizedClient) {
+    this(ref, unauthorizedClient.getId());
+  }
+
+  public ClientBoundaryViolationException(IEntityRef<?> ref, UUID unauthorizedClientId) {
     super(
         String.format(
             "The client boundary would be violated by the attempted operation on %s by client: %s",
-            ref, unauthorizedClient.getId()));
+            ref, unauthorizedClientId));
     this.ref = ref;
   }
 }

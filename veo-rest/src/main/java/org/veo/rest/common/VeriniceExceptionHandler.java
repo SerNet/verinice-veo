@@ -50,6 +50,7 @@ import org.veo.core.entity.specification.ContentTooLongException;
 import org.veo.core.entity.specification.ExceedLimitException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
+import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domain.DomainInUseException;
 
@@ -113,6 +114,11 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler(ETagMismatchException.class)
   protected ResponseEntity<ApiResponseBody> handle(ETagMismatchException exception) {
     return handle(exception, HttpStatus.PRECONDITION_FAILED);
+  }
+
+  @ExceptionHandler({NotAllowedException.class})
+  protected ResponseEntity<ApiResponseBody> handle(NotAllowedException exception) {
+    return handle(exception, HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler({MissingAdminPrivilegesException.class})

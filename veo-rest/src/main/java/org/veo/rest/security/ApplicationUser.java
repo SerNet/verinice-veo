@@ -22,10 +22,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
+
+import org.veo.core.UserAccessRights;
 
 import lombok.Data;
 import lombok.Getter;
@@ -35,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Data
 @RequiredArgsConstructor
-public class ApplicationUser implements UserDetails {
+public class ApplicationUser implements UserDetails, UserAccessRights {
   private static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
 
   private String password = null; // unused but required by UserDetails
@@ -49,6 +54,8 @@ public class ApplicationUser implements UserDetails {
   private final List<String> groups;
   private final List<String> roles;
   private final Integer maxUnits;
+  private final Set<UUID> readableUnitIds;
+  private final Set<UUID> writableUnitIds;
 
   private Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
   private boolean accountNonExpired = !false;
@@ -68,7 +75,18 @@ public class ApplicationUser implements UserDetails {
         jwt.getClaimAsString("family_name"),
         jwt.getClaimAsStringList("groups"),
         jwt.getClaimAsStringList("roles"),
-        Optional.ofNullable(jwt.getClaimAsString("max_units")).map(Integer::parseInt).orElse(null));
+        Optional.ofNullable(jwt.getClaimAsString("max_units")).map(Integer::parseInt).orElse(null),
+        Optional.ofNullable(jwt.getClaimAsStringList("unit_read_access"))
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(UUID::fromString)
+            .collect(Collectors.toSet()),
+        Optional.ofNullable(jwt.getClaimAsStringList("unit_write_access"))
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(UUID::fromString)
+            .collect(Collectors.toSet()));
+
     this.claims = jwt.getClaims();
   }
 
@@ -96,7 +114,41 @@ public class ApplicationUser implements UserDetails {
   public static ApplicationUser authenticatedUser(
       String username, String clientId, String scopes, List<String> roles, Integer maxUnits) {
     return new ApplicationUser(
-        username, clientId, scopes, "", "", "", "", Collections.emptyList(), roles, maxUnits);
+        username,
+        clientId,
+        scopes,
+        "",
+        "",
+        "",
+        "",
+        Collections.emptyList(),
+        roles,
+        maxUnits,
+        Collections.emptySet(),
+        Collections.emptySet());
+  }
+
+  public static ApplicationUser authenticatedUser(
+      String username,
+      String clientId,
+      String scopes,
+      List<String> roles,
+      Integer maxUnits,
+      Set<UUID> unitReads,
+      Set<UUID> unitWrite) {
+    return new ApplicationUser(
+        username,
+        clientId,
+        scopes,
+        "",
+        "",
+        "",
+        "",
+        Collections.emptyList(),
+        roles,
+        maxUnits,
+        unitReads,
+        unitWrite);
   }
 
   public boolean isAdmin() {
