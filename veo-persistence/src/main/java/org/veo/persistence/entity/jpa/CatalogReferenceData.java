@@ -39,7 +39,6 @@ import lombok.ToString;
 
 @MappedSuperclass
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class CatalogReferenceData
     implements Identifiable, TemplateItemReference<CatalogItem, DomainBase> {
   @Id

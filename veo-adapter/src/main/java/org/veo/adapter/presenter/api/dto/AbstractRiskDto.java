@@ -66,7 +66,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 @Accessors(makeFinal = true)
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
     implements RiskState, ModelDto {

@@ -40,7 +40,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 @Accessors(makeFinal = true)
 public abstract class AbstractVersionedSelfReferencingDto extends AbstractVersionedDto {
   @JsonIgnore

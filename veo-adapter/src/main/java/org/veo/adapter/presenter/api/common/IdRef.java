@@ -38,7 +38,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Data
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonFilter(VeoConstants.JSON_FILTER_IDREF)
 public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {

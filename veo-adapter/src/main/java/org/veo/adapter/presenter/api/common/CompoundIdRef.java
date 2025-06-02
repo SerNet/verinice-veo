@@ -37,7 +37,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Data
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompoundIdRef<
         T extends CompoundIdentifiable<TFirst, TSecond>,

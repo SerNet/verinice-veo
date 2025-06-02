@@ -50,7 +50,6 @@ import lombok.ToString;
 /** Base transfer object for Elements. Contains common data for all Element DTOs. */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractElementDto<T extends Element>
     extends AbstractVersionedSelfReferencingDto implements NameableDto, ElementState<T> {
 

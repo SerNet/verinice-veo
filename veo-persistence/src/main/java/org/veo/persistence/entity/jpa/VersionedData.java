@@ -45,7 +45,6 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 @EntityListeners({AuditingEntityListener.class})
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod") // PMD does not see Lombok's methods
 public abstract class VersionedData implements Versioned {
 
   @ToString.Include @Version private long version;

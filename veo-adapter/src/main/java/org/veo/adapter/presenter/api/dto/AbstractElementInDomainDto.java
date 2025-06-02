@@ -69,7 +69,6 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractElementInDomainDto<TElement extends Element>
     extends AbstractVersionedDto
     implements NameableDto, ElementState<TElement>, DomainAssociationState {

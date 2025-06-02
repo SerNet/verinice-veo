@@ -35,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Data
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ApplicationUser implements UserDetails {
   private static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
 

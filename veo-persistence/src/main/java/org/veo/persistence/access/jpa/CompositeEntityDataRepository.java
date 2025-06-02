@@ -32,7 +32,6 @@ import org.veo.persistence.entity.jpa.ElementData;
 public interface CompositeEntityDataRepository<T extends ElementData>
     extends ElementDataRepository<T> {
   @Query("select distinct e from #{#entityName} as e inner join e.parts p where p.id IN ?1")
-  @SuppressWarnings("PMD.MethodNamingConventions")
   List<T> findAllByParts(Set<UUID> partIds);
 
   @Transactional(readOnly = true)

@@ -37,7 +37,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Data
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SymIdRef<T extends SymIdentifiable<T, TNamespace>, TNamespace extends Identifiable>
     implements IIdRef, ITypedSymbolicId<T, TNamespace> {

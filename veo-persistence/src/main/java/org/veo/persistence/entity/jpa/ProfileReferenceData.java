@@ -40,7 +40,6 @@ import lombok.ToString;
 
 @MappedSuperclass
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ProfileReferenceData
     implements Identifiable, TemplateItemReference<ProfileItem, Profile> {
   @Id

@@ -39,7 +39,6 @@ import lombok.ToString;
 @MappedSuperclass
 @ToString(onlyExplicitlyIncluded = true)
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
 
   public AspectData(Domain domain, Element owner) {
