@@ -39,7 +39,7 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
 
   @Query(
       """
-         select tr from profile_tailoring_reference tr
+         from profile_tailoring_reference tr
            left join fetch tr.target
            where tr.id in ?1 and tr.owner.owner.domain.owner = ?2
          """)

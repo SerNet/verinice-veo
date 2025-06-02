@@ -82,7 +82,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
 
   @Query(
       """
-         select tr from catalog_tailoring_reference tr
+         from catalog_tailoring_reference tr
            left join fetch tr.owner
            left join fetch tr.target
            where tr.id in ?1 and tr.owner.domain.owner = ?2
