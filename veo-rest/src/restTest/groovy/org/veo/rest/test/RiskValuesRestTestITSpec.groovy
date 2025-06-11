@@ -800,7 +800,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
-        def asset1Id = post("/domains/$dsgvoDomainId/assets", [
+        def asset1Response = post("/domains/$dsgvoDomainId/assets", [
             name: "asset-1",
             subType: "AST_Datatype",
             status: "NEW",
@@ -812,8 +812,15 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
                     ]
                 ]
             ]
-        ]).body.resourceId
+        ])
 
+        def asset1Id = asset1Response.body.resourceId
+        def asset1Etag = get("/domains/$dsgvoDomainId/assets/$asset1Id").getETag()
+
+        then:
+        asset1Etag != null
+
+        when:
         def assetWithImpactId = post("/domains/$dsgvoDomainId/assets", [
             name: "asset-0",
             subType: "AST_Datatype",
@@ -843,11 +850,14 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             potentialImpactsCalculated.C == 1
             potentialImpactsCalculated.I == 2
         }
-        with(get("/domains/$dsgvoDomainId/assets/$asset1Id").body.riskValues.DSRA) {
-            potentialImpactsEffective.C == 1
-            potentialImpactsEffective.I == 2
-            potentialImpactsCalculated.C == 1
-            potentialImpactsCalculated.I == 2
+        with(get("/domains/$dsgvoDomainId/assets/$asset1Id")) {
+            with(it.body.riskValues.DSRA) {
+                potentialImpactsEffective.C == 1
+                potentialImpactsEffective.I == 2
+                potentialImpactsCalculated.C == 1
+                potentialImpactsCalculated.I == 2
+            }
+            it.ETag != asset1Etag
         }
         with(get("/domains/$dsgvoDomainId/assets/$assetWithImpactId").body.riskValues.DSRA) {
             potentialImpactsEffective.C == 1

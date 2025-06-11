@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.service.risk;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -49,7 +50,7 @@ public interface ImpactInheritanceCalculator {
         .filter(hasInheritingLinks())
         .forEach(
             rd -> {
-              calculateImpactInheritance(owner, domain, rd.getId(), element);
+              calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
             });
   }
 
@@ -61,7 +62,7 @@ public interface ImpactInheritanceCalculator {
         .filter(isInheritingLinkType(linkType))
         .forEach(
             rd -> {
-              calculateImpactInheritance(owner, domain, rd.getId(), element);
+              calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
             });
   }
 
@@ -76,8 +77,17 @@ public interface ImpactInheritanceCalculator {
                   .filter(hasInheritingLinks())
                   .forEach(
                       rd -> {
-                        calculateImpactInheritance(owner, domain, rd.getId(), element);
+                        calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
                       });
+            });
+  }
+
+  private void calculateImpactInheritanceAndUpdateVersions(
+      Unit unit, Domain domain, RiskDefinition rd, RiskAffected<?, ?> element) {
+    calculateImpactInheritance(unit, domain, rd.getId(), element)
+        .forEach(
+            updatedElement -> {
+              updatedElement.setUpdatedAt(Instant.now());
             });
   }
 
