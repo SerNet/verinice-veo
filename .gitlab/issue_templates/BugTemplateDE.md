@@ -2,6 +2,10 @@
 
 _Kurze Beschreibung des Fehlers (ggfs. mit Screenshots/Videos)._
 
+## Umgebung
+
+_In welcher Umgebung kann das Problem reproduziert werden / wurde es festgestellt? (Stage, Dev, Sandbox...)_
+
 # Reproduktion
 
 1. _Schritt zur Reproduktion._
