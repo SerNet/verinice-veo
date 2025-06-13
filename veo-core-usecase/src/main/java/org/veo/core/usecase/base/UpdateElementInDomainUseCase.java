@@ -64,8 +64,6 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     }
     ETag.validate(input.eTag, storedElement);
     entityStateMapper.mapState(inputElement, storedElement, false, idRefResolver);
-    // TODO VEO-1874: Only mark root element as updated when basic properties change, version domain
-    // associations independently.
     storedElement.setUpdatedAt(Instant.now());
     storedElement.setDecisionResults(decider.decide(storedElement, domain), domain);
     DomainSensitiveElementValidator.validate(storedElement);

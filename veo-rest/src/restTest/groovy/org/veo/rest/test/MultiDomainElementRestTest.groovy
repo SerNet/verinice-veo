@@ -245,7 +245,6 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
-    // TODO VEO-1874 expect element to be versioned independently in different domain contexts
     def "#type.singularTerm ETags are handled correctly across domains"() {
         given: "an element associated with one domain"
         putElementTypeDefinitions(type)
