@@ -160,7 +160,7 @@ subprojects {
         runtimeOnly 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
         runtimeOnly 'ch.qos.logback.contrib:logback-jackson:0.1.5'
         spotbugsPlugins "jp.skypencil.findbugs.slf4j:bug-pattern:1.5.0@jar"
-        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
+        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     }
 
     tasks.withType(JavaCompile) {
