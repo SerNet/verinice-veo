@@ -23,6 +23,8 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.Translated;
 
 import lombok.Data;
@@ -33,6 +35,9 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
+// TODO #3935: when all domains are migrated to the new structure this ignoreProperties can be
+// removed
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class ProbabilityDefinition extends DimensionDefinition {
 
   public ProbabilityDefinition(

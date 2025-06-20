@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.Translated;
 
 import lombok.Data;
@@ -28,6 +30,9 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+// TODO #3935: when all domains are migrated to the new structure this ignoreProperties can be
+// removed
+@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class ProbabilityLevel extends DiscreteValue {
   public ProbabilityLevel(
       int ordinalValue, String htmlColor, Translated<NameAbbreviationAndDescription> translations) {
