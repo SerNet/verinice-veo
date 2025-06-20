@@ -19,6 +19,8 @@ package org.veo.core.entity.riskdefinition;
 
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
@@ -35,6 +37,9 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// TODO #3935: when all domains are migrated to the new structure this ignoreProperties can be
+// removed
+@JsonIgnoreProperties({"description", "impactMethod"})
 public class RiskMethod implements TranslationProvider<RiskMethod.ImpactMethodAndDescription> {
   @ToString.Include @EqualsAndHashCode.Include
   private Translated<ImpactMethodAndDescription> translations = new Translated<>();
