@@ -17,10 +17,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,33 +27,40 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@AllArgsConstructor
 @Slf4j
 public class GetProfileIncarnationDescriptionUseCase
     extends AbstractGetIncarnationDescriptionUseCase<ProfileItem, Profile>
     implements TransactionalUseCase<
         GetProfileIncarnationDescriptionUseCase.InputData,
         GetProfileIncarnationDescriptionUseCase.OutputData> {
+
   private final UnitRepository unitRepository;
   private final ProfileRepository profileRepository;
+
+  public GetProfileIncarnationDescriptionUseCase(
+      GenericElementRepository genericElementRepository,
+      UnitRepository unitRepository,
+      ProfileRepository profileRepository) {
+    super(ProfileItem.class, genericElementRepository);
+    this.unitRepository = unitRepository;
+    this.profileRepository = profileRepository;
+  }
 
   @Override
   public OutputData execute(InputData input) {
@@ -64,76 +70,39 @@ public class GetProfileIncarnationDescriptionUseCase
     unit.checkSameClient(input.authenticatedClient);
 
     validateInput(input);
+    Profile profile =
+        profileRepository
+            .findById(input.authenticatedClient.getId(), input.profileId)
+            .orElseThrow(() -> new NotFoundException(input.profileId, Profile.class));
 
-    var distinctTailoringRefKeys = new HashSet<String>();
-    var incarnationDescriptions =
-        Optional.ofNullable(input.profileId)
-            .map(
-                id ->
-                    profileRepository.findItemsByProfileIdFetchDomainAndTailoringReferences(
-                        id, input.authenticatedClient))
-            .orElseGet(
-                () ->
-                    profileRepository.findItemsByIdsFetchDomainAndTailoringReferences(
-                        Set.copyOf(input.profileItemIds), input.authenticatedClient))
-            .stream()
-            .map(
-                catalogItem ->
-                    new TemplateItemIncarnationDescription<>(
-                        catalogItem,
-                        toParameters(
-                            input.mergeBidirectionalReferences
-                                ? catalogItem.getTailoringReferences().stream()
-                                    .filter(tr -> distinctTailoringRefKeys.add(toKey(tr)))
-                                    .toList()
-                                : catalogItem.getTailoringReferences(),
-                            Collections.emptyMap())))
-            .toList();
+    Domain domain = profile.requireDomainMembership();
+    List<UUID> profileItemIds;
+    Collection<ProfileItem> profileItems;
+    if (input.profileItemIds != null) {
+      profileItems =
+          profileRepository.findItemsByIdsFetchDomainAndTailoringReferences(
+              Set.copyOf(input.profileItemIds), input.authenticatedClient);
+      profileItemIds = input.profileItemIds;
+    } else {
+      profileItems =
+          profileRepository.findItemsByProfileIdFetchDomainAndTailoringReferences(
+              input.profileId, input.authenticatedClient);
+      profileItemIds = profileItems.stream().map(TemplateItem::getSymbolicId).toList();
+    }
 
-    log.debug("IncarnationDescriptions: {}", incarnationDescriptions);
-    return new OutputData(incarnationDescriptions, unit);
-  }
-
-  private String toKey(TailoringReference<?, ?> tailoringReference) {
-    String origin = tailoringReference.getOwner().getSymbolicIdAsString();
-    String target = tailoringReference.getTargetRef().getSymbolicId().toString();
-    return switch (tailoringReference.getReferenceType()) {
-      case LINK ->
-          toKey(
-              TailoringReferenceType.LINK,
-              origin,
-              target,
-              ((LinkTailoringReference<?, ?>) tailoringReference).getLinkType());
-      case LINK_EXTERNAL ->
-          toKey(
-              TailoringReferenceType.LINK,
-              target,
-              origin,
-              ((LinkTailoringReference<?, ?>) tailoringReference).getLinkType());
-      case PART -> toKey(TailoringReferenceType.PART, origin, target, "");
-      case COMPOSITE -> toKey(TailoringReferenceType.PART, target, origin, "");
-      case SCOPE -> toKey(TailoringReferenceType.SCOPE, origin, target, "");
-      case MEMBER -> toKey(TailoringReferenceType.SCOPE, target, origin, "");
-      case RISK -> toKey(TailoringReferenceType.RISK, origin, target, "");
-      case CONTROL_IMPLEMENTATION ->
-          toKey(TailoringReferenceType.CONTROL_IMPLEMENTATION, origin, target, "");
-      case REQUIREMENT_IMPLEMENTATION ->
-          toKey(TailoringReferenceType.REQUIREMENT_IMPLEMENTATION, origin, target, "");
-      default ->
-          throw new IllegalArgumentException(
-              "Unexpected tailoring reference type %s"
-                  .formatted(tailoringReference.getReferenceType()));
-    };
-  }
-
-  private String toKey(
-      TailoringReferenceType type, String sourceId, String targetId, String linkType) {
-    return new StringBuffer()
-        .append(type.name())
-        .append(sourceId)
-        .append(targetId)
-        .append(linkType)
-        .toString();
+    return new OutputData(
+        getIncarnationDescriptions(
+            profileItemIds,
+            profileItems,
+            profile,
+            domain,
+            unit,
+            null,
+            null,
+            null,
+            null,
+            input.mergeBidirectionalReferences),
+        unit);
   }
 
   private void validateInput(InputData input) {

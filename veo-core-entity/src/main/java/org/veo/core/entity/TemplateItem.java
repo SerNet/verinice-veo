@@ -18,9 +18,14 @@
 package org.veo.core.entity;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -147,4 +152,16 @@ public interface TemplateItem<
       @Nullable String implementationStatement,
       @Nullable LocalDate implementationUntil,
       @Nullable T responsible);
+
+  default boolean isAppliedTo(Element element) {
+    return findCatalogItem()
+        .flatMap(
+            item ->
+                element
+                    .findAppliedCatalogItem(requireDomainMembership())
+                    .map(elementItem -> elementItem.equals(item)))
+        .orElse(false);
+  }
+
+  Optional<CatalogItem> findCatalogItem();
 }

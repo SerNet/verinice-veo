@@ -56,6 +56,8 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.AccountProvider;
+import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -110,6 +112,7 @@ import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
+import org.veo.core.usecase.catalogitem.AbstractGetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
@@ -812,19 +815,23 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
-      UnitRepository unitRepository,
-      CatalogItemRepository catalogItemRepository,
-      DomainRepository domainRepository,
-      GenericElementRepository genericElementRepository) {
+  public AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
+      getIncarnationDescriptionUseCase(
+          UnitRepository unitRepository,
+          CatalogItemRepository catalogItemRepository,
+          DomainRepository domainRepository,
+          GenericElementRepository genericElementRepository) {
     return new GetCatalogIncarnationDescriptionUseCase(
         domainRepository, unitRepository, catalogItemRepository, genericElementRepository);
   }
 
   @Bean
   public GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase(
-      UnitRepository unitRepository, ProfileRepository profileRepository) {
-    return new GetProfileIncarnationDescriptionUseCase(unitRepository, profileRepository);
+      UnitRepository unitRepository,
+      ProfileRepository profileRepository,
+      GenericElementRepository genericRepository) {
+    return new GetProfileIncarnationDescriptionUseCase(
+        genericRepository, unitRepository, profileRepository);
   }
 
   @Bean
@@ -1280,7 +1287,8 @@ public class ModuleConfiguration {
       ClientRepository clientRepository,
       DomainRepository domainRepository,
       GenericElementRepository elementRepository,
-      GetCatalogIncarnationDescriptionUseCase getCatalogIncarnationDescriptionUseCase,
+      AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
+          getCatalogIncarnationDescriptionUseCase,
       ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase,
       DesignatorService designatorService,
       EntityFactory factory) {

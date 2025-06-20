@@ -47,6 +47,9 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
         "Catalog item is part of a domain template and cannot be applied");
   }
 
+  @Override
+  default Optional<CatalogItem> findCatalogItem() {
+    return Optional.of(this);
   }
 
   default void setTailoringReferences(

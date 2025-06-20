@@ -49,7 +49,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
     def "getProfileIncarnationDescriptionUseCase not compact"() {
         given: 'a unit with example elements'
         def client = createTestClient()
-        var domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         client = clientRepository.getById(client.id)
         def unit = unitRepository.save(newUnit(client))
 

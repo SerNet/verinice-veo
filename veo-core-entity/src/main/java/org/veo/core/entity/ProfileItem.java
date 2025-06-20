@@ -41,6 +41,11 @@ public interface ProfileItem
     return getOwner().getOwner();
   }
 
+  @Override
+  default Optional<CatalogItem> findCatalogItem() {
+    return Optional.ofNullable(getAppliedCatalogItem());
+  }
+
   default void setTailoringReferences(
       Set<TailoringReference<ProfileItem, Profile>> tailoringReferences) {
     clearTailoringReferences();

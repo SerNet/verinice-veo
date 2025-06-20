@@ -1557,6 +1557,75 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "reapply a profile with useExistingIncarnations ALWAYS"() {
+        given: "a domain, a profile with catalog items and a incarnation-configuration"
+        Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        def domainId = domain.idAsString
+
+        def sourceUnitId = parseJson(post('/units', [
+            name: 'My profile unit',
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ]
+        ])).resourceId
+
+        def catalogItemIds = parseJson(get("/domains/$domainId/catalog-items?size=9000&sortBy=abbreviation")).items*.id
+        parseJson(get("/units/${sourceUnitId}/domains/$domainId/incarnation-descriptions?itemIds=${catalogItemIds.join(',')}")).with {
+            post("/units/${sourceUnitId}/incarnations", it)
+        }
+
+        put("/content-creation/domains/$domainId/incarnation-configuration",["mode": "DEFAULT",
+            "useExistingIncarnations": "ALWAYS"], 204)
+
+        def profileId = parseJson(post("/content-creation/domains/$domainId/profiles?unit=$sourceUnitId", [
+            name: 'Example elements',
+            description: 'All the good stuff',
+            language: 'de_DE',
+            productId: 'EXAMPLE_ELEMENTS',
+        ])).id
+
+        and:
+        def targetUnitId = parseJson(post('/units', [
+            name: 'My target unit',
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ]
+        ])).resourceId
+
+        parseJson(get("/units/$targetUnitId/domains/$domainId/incarnation-descriptions?itemIds=${catalogItemIds[0]}")).with {
+            post("/units/$targetUnitId/incarnations", it)
+        }
+
+        expect:
+        parseJson(get("/domains/$domainId/element-status-count?unit=$targetUnitId")).control.CTL_TOM.NEW == 1
+
+        when: "applying the profile"
+        post("/domains/$domainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204)
+        def ret = parseJson(get("/domains/$domainId/element-status-count?unit=$targetUnitId"))
+
+        then: "there are 5 TOMs"
+        ret.control.CTL_TOM.NEW == 5
+
+        when:"we apply the profile again"
+        post("/domains/$domainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204)
+        ret = parseJson(get("/domains/$domainId/element-status-count?unit=$targetUnitId"))
+
+        then: "there are still 5 TOMs"
+        ret.control.CTL_TOM.NEW == 5
+
+        when: "we change to incarnation config to tolerate duplicates"
+        put("/content-creation/domains/$domainId/incarnation-configuration",["mode": "DEFAULT",
+            "useExistingIncarnations": "NEVER"], 204)
+
+        and: "we apply the profile again"
+        post("/domains/$domainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204)
+        ret = parseJson(get("/domains/$domainId/element-status-count?unit=$targetUnitId"))
+
+        then: "there are now 10 TOMs"
+        ret.control.CTL_TOM.NEW == 10
+    }
+
+    @WithUserDetails("content-creator")
     def "create a domain template with a profile"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def unitId = createUnitWithElements(domain.id, true).first()

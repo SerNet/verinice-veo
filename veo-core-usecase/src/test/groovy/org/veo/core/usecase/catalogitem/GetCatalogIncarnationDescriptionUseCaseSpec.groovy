@@ -122,7 +122,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item2.elementInterface >> Control.class
 
         def trId = UUID.randomUUID()
-        LinkTailoringReference tr = Mock()
+        LinkTailoringReference tr = Spy()
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         tr.isParameterRef() >> true

@@ -51,8 +51,8 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.usecase.catalogitem.AbstractGetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.RequiredArgsConstructor;
@@ -66,7 +66,8 @@ public class PerformActionUseCase
   private final ClientRepository clientRepository;
   private final DomainRepository domainRepository;
   private final GenericElementRepository genericElementRepository;
-  private final GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
+  private final AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
+      getIncarnationDescriptionUseCase;
   private final ApplyCatalogIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
   private final DesignatorService designatorService;
   private final EntityFactory factory;
