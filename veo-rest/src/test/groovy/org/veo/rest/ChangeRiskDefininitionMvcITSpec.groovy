@@ -1051,6 +1051,18 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             validationMessages[0].changedCategories ==~ ["D"]
         }
 
+        when: "we provide an empty matrix and no Impact"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            categories.find{ it.id == "D" }.valueMatrix = []
+            categories.find{ it.id == "D" }.potentialImpacts = []
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix for D is cleared"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix == null
+        }
+
         when: "we remove risk values, potential impacts, probabilities and categories"
         parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
             riskValues.removeLast()

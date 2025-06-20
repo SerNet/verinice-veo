@@ -168,6 +168,7 @@ public class EvaluateRiskDefinitionUseCase
 
     riskDefinition.getCategories().stream()
         .filter(CategoryDefinition::isRiskValuesSupported)
+        .filter(cat -> !cat.getValueMatrix().isEmpty())
         .forEach(
             cat -> {
               List<CategoryRef> categories = List.of(CategoryRef.from(cat));
@@ -217,18 +218,22 @@ public class EvaluateRiskDefinitionUseCase
 
   private void syncRiskMatrix(
       ProbabilityDefinition probability, CategoryDefinition category, RiskValue last) {
-    List<List<RiskValue>> valueMatrix = category.getValueMatrix();
-    int columns = category.getPotentialImpacts().size();
-    int rows = probability.getLevels().size();
-    List<List<RiskValue>> rMatrix = new ArrayList<>(columns);
-    for (int column = 0; column < columns; column++) {
-      List<RiskValue> newRow = new ArrayList<>(rows);
-      for (int row = 0; row < rows; row++) {
-        newRow.add(riskValueOrDefault(valueMatrix, column, row, last));
+    if (!category.getPotentialImpacts().isEmpty()) {
+      List<List<RiskValue>> valueMatrix = category.getValueMatrix();
+      int columns = category.getPotentialImpacts().size();
+      int rows = probability.getLevels().size();
+      List<List<RiskValue>> rMatrix = new ArrayList<>(columns);
+      for (int column = 0; column < columns; column++) {
+        List<RiskValue> newRow = new ArrayList<>(rows);
+        for (int row = 0; row < rows; row++) {
+          newRow.add(riskValueOrDefault(valueMatrix, column, row, last));
+        }
+        rMatrix.add(newRow);
       }
-      rMatrix.add(newRow);
+      category.setValueMatrix(rMatrix);
+    } else {
+      category.setValueMatrix(null);
     }
-    category.setValueMatrix(rMatrix);
   }
 
   private RiskValue riskValueOrDefault(
