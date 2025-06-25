@@ -25,7 +25,6 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,8 +33,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ElementType;
@@ -61,7 +62,8 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   @Column(name = "db_id")
   private UUID id;
 
-  @Enumerated(EnumType.STRING)
+  @Enumerated
+  @JdbcType(PostgreSQLEnumJdbcType.class)
   @NotNull
   private ElementType elementType;
 
