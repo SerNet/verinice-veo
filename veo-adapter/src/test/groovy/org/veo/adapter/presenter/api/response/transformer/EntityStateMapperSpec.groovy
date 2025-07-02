@@ -141,6 +141,9 @@ class EntityStateMapperSpec extends Specification {
     def "Transform element DTO with links to entity"() {
         given: "an asset composite element DTO with two parts"
         def asset1Ref = Mock(IdRef)
+        def domain0Ref = Stub(IdRef) {
+            getId() >> domain0.id
+        }
 
         def asset1 = Mock(Asset)
         def entity = Mock(Document)
@@ -157,7 +160,7 @@ class EntityStateMapperSpec extends Specification {
                 new CustomLinkDto().tap {
                     target = asset1Ref
                     attributes = ['path': '/srv/contract.txt']
-                    domains = [domain0]
+                    domains = [domain0Ref]
                 }
             ])
         }
