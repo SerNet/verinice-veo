@@ -36,7 +36,6 @@ import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
@@ -105,8 +104,12 @@ public abstract class AbstractElementDto<T extends Element>
 
   public abstract void transferToDomain(UUID sourceDomainId, UUID targetDomainId);
 
-  private Set<CustomAspectState> getCustomAspectStates() {
+  private Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
     return customAspects.entrySet().stream()
+        .filter(
+            e ->
+                e.getValue().getDomains().isEmpty()
+                    || e.getValue().getDomains().stream().anyMatch(d -> d.getId().equals(domainId)))
         .map(
             e ->
                 new CustomAspectState.CustomAspectStateImpl(
@@ -114,11 +117,16 @@ public abstract class AbstractElementDto<T extends Element>
         .collect(Collectors.toSet());
   }
 
-  private Set<CustomLinkState> getCustomLinkStates() {
+  private Set<CustomLinkState> getCustomLinkStates(UUID domainId) {
     return links.entrySet().stream()
         .flatMap(
             e ->
                 e.getValue().stream()
+                    .filter(
+                        l ->
+                            l.getDomains().isEmpty()
+                                || l.getDomains().stream()
+                                    .anyMatch(d -> d.getId().equals(domainId)))
                     .map(
                         l ->
                             new CustomLinkState.CustomLinkStateImpl(
@@ -136,9 +144,6 @@ public abstract class AbstractElementDto<T extends Element>
       if (domainIds.isEmpty()) {
         throw new IllegalArgumentException(
             "Element cannot contain custom aspects or links without being associated with a domain");
-      } else if (domainIds.size() > 1) {
-        throw new UnprocessableDataException(
-            "Using custom aspects or links in a multi-domain element is not supported by this API");
       }
     }
     return getDomains().entrySet().stream()
@@ -148,8 +153,8 @@ public abstract class AbstractElementDto<T extends Element>
                     .getValue()
                     .getDomainAssociationState(
                         TypedId.from(entry.getKey(), Domain.class),
-                        getCustomAspectStates(),
-                        getCustomLinkStates()))
+                        getCustomAspectStates(entry.getKey()),
+                        getCustomLinkStates(entry.getKey())))
         .collect(Collectors.toSet());
   }
 }

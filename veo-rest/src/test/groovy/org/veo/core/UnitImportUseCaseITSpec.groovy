@@ -24,9 +24,13 @@ import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto
+import org.veo.adapter.presenter.api.dto.CustomAspectDto
+import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
+import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Client
@@ -41,7 +45,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
     Client client
     Unit unit
     Domain testDomain
-    Domain dsgvoDomain
+    Domain testDomain2
 
     @Autowired
     ReferenceAssembler referenceAssembler
@@ -52,6 +56,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
     def setup() {
         client = createTestClient()
         testDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
+        testDomain2 = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
         client = clientRepository.save(client)
     }
 
@@ -243,6 +248,159 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
             domainAssociations.size() == 1
             with(domainAssociations.first()) {
                 it.appliedCatalogItem.name == 'TOM zur Verschlüsselung'
+            }
+        }
+    }
+
+    def "Import a multi-domain unit"() {
+        given:
+        def domain1Ref = IdRef.fromUri("/domains/${testDomain.id}", referenceAssembler)
+        def domain2Ref = IdRef.fromUri("/domains/${testDomain2.id}", referenceAssembler)
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'My unit'
+            domains = [
+                domain1Ref,
+                domain2Ref
+            ]
+        }
+        def controlId = UUID.randomUUID()
+        def processDomain1Id = UUID.randomUUID()
+        def processDomain2Id = UUID.randomUUID()
+
+        def control = new FullControlDto().tap {
+            id = controlId
+            name = 'My control'
+            domains = [
+                (testDomain.id) : new DomainAssociationDto().tap {
+                    subType = 'CTL_TOM'
+                    status = 'NEW'
+                },
+                (testDomain2.id): new DomainAssociationDto().tap {
+                    subType = 'CTL_TOM'
+                    status = 'NEW'
+                }
+            ]
+            customAspects = [
+                control_revision: new CustomAspectDto().tap {
+                    domains = [domain1Ref, domain2Ref]
+                    attributes = [control_revision_comment: 'All is well.']
+                }
+            ]
+        }
+
+        def processDomain1 = new FullProcessDto().tap {
+            id = processDomain1Id
+            name = 'Process 1'
+            domains = [
+                (testDomain.id): new ProcessDomainAssociationDto().tap {
+                    subType = 'PRO_DataProcessing'
+                    status = 'NEW'
+                }
+            ]
+            links = [process_tom: [
+                    new CustomLinkDto().tap {
+                        domains = [domain1Ref]
+                        target = IdRef.fromUri("/domains/${testDomain2.id}/controls/${controlId}", referenceAssembler)
+                    }
+                ]]
+            customAspects = [
+                process_intendedPurpose: new CustomAspectDto().tap {
+                    domains = [domain1Ref]
+                    attributes = [process_intendedPurpose_intendedPurpose: 'Earn some money']
+                }
+            ]
+        }
+        def processDomain2 = new FullProcessDto().tap {
+            name = 'Process 2'
+            id = processDomain2Id
+            domains = [
+                (testDomain2.id): new ProcessDomainAssociationDto().tap {
+                    subType = 'PRO_DataProcessing'
+                    status = 'NEW'
+                }
+            ]
+            links = [process_tom: [
+                    new CustomLinkDto().tap {
+                        domains = [domain2Ref]
+                        target = IdRef.fromUri("/domains/${testDomain2.id}/controls/${controlId}", referenceAssembler)
+                    }
+                ]]
+            customAspects = [
+                process_accessAuthorization: new CustomAspectDto().tap {
+                    domains = [domain2Ref]
+                    attributes = [process_accessAuthorization_description: 'Help yourself']
+                }
+            ]
+        }
+
+        def elements = [
+            control,
+            processDomain1,
+            processDomain2
+        ]
+        def risks = []
+
+        when:
+        def result = executeInTransaction { useCase.execute(new UnitImportUseCase.InputData(client, 2, unitDto, elements as Set, risks as Set)) }
+        def unit = result.unit
+        def processes = executeInTransaction {
+            processDataRepository.findAll().tap {
+                it.domainAssociations*.domain*.name
+                it.links*.target*.name
+                it.customAspects*.type
+            }
+        }
+        def controls = executeInTransaction {
+            controlDataRepository.findAll().tap {
+                it.domainAssociations*.domain*.name
+                it.customAspects*.type
+            }
+        }
+
+        then:
+        processes.size() == 2
+        controls.size() == 1
+        with(controls.first()) {
+            it.domains*.id ==~ [testDomain.id, testDomain2.id]
+            it.customAspects.size() == 2
+            with(it.customAspects.find {it.domain.id == testDomain.id }) {
+                it.type == 'control_revision'
+                it.attributes == [control_revision_comment: 'All is well.']
+            }
+            with(it.customAspects.find {it.domain.id == testDomain2.id }) {
+                it.type == 'control_revision'
+                it.attributes == [control_revision_comment: 'All is well.']
+            }
+        }
+        with(processes.find {it.name == 'Process 1'}) {
+            it.domains*.id ==~ [testDomain.id]
+            it.links.size() == 1
+            with(it.links.first()) {
+                it.domain.id == testDomain.id
+                it.type == 'process_tom'
+                it.target.name == control.name
+            }
+            it.customAspects.size() == 1
+            with(it.customAspects.first()) {
+                it.domain.id == testDomain.id
+                it.type == 'process_intendedPurpose'
+                it.attributes == [process_intendedPurpose_intendedPurpose: 'Earn some money']
+            }
+        }
+        with(processes.find {it.name == 'Process 2'}) {
+            it.domains*.id ==~ [testDomain2.id]
+            it.links.size() == 1
+            with(it.links.first()) {
+                it.domain.id == testDomain2.id
+                it.type == 'process_tom'
+                it.target.name == control.name
+            }
+            it.customAspects.size() == 1
+            with(it.customAspects.first()) {
+                it.domain.id == testDomain2.id
+                it.type == 'process_accessAuthorization'
+                it.attributes == [process_accessAuthorization_description: 'Help yourself']
             }
         }
     }
