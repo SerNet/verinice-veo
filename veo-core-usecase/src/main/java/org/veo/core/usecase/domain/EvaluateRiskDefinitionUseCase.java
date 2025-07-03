@@ -98,12 +98,15 @@ public class EvaluateRiskDefinitionUseCase
           validationMessages(riskDefinition, Set.of()),
           Collections.emptyList());
     }
-    RiskValue last = input.riskDefinition.getRiskValues().getLast();
 
-    input.riskDefinition.getCategories().stream()
-        .filter(CategoryDefinition::isRiskValuesSupported)
-        .forEach(cd -> syncRiskMatrix(input.riskDefinition.getProbability(), cd, last));
-
+    if (input.riskDefinition.getRiskValues().isEmpty()) {
+      input.riskDefinition.getCategories().stream().forEach(c -> c.setValueMatrix(null));
+    } else {
+      RiskValue last = input.riskDefinition.getRiskValues().getLast();
+      input.riskDefinition.getCategories().stream()
+          .filter(CategoryDefinition::isRiskValuesSupported)
+          .forEach(cd -> syncRiskMatrix(input.riskDefinition.getProbability(), cd, last));
+    }
     Set<RiskDefinitionChange> detectedChanges = new HashSet<>();
     domain
         .getRiskDefinition(input.riskDefinitionRef)
