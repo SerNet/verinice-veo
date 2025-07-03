@@ -307,15 +307,16 @@ public sealed interface RiskDefinitionChange
     changes.addAll(
         detectChanges(
             ImplementationStateListResize::new,
-            oldRiskDef.getImplementationStateDefinition().getLevels(),
-            newRiskDef.getImplementationStateDefinition().getLevels()));
+            oldRiskDef.getImplementationStateDefinition(),
+            newRiskDef.getImplementationStateDefinition()));
     changes.addAll(
         detectTranslationChanges(oldRiskDef.getProbability(), newRiskDef.getProbability()));
     changes.addAll(
         detectChanges(
             () -> new ProbabilityListResize(oldRiskDef),
-            oldRiskDef.getProbability().getLevels(),
-            newRiskDef.getProbability().getLevels()));
+            oldRiskDef.getProbability(),
+            newRiskDef.getProbability()));
+
     changes.addAll(
         detectChanges(
             RiskValueListResize::new, oldRiskDef.getRiskValues(), newRiskDef.getRiskValues()));
@@ -338,15 +339,13 @@ public sealed interface RiskDefinitionChange
                   .filter(c -> c.getId().equals(oldCat.getId()))
                   .findAny()
                   .ifPresentOrElse(
-                      c -> {
+                      newCat -> {
                         changes.addAll(
-                            detectMatrixChanges(oldCat.getValueMatrix(), c.getValueMatrix(), c));
-                        changes.addAll(detectTranslationChanges(oldCat, c));
+                            detectMatrixChanges(
+                                oldCat.getValueMatrix(), newCat.getValueMatrix(), newCat));
+                        changes.addAll(detectTranslationChanges(oldCat, newCat));
                         changes.addAll(
-                            detectChanges(
-                                () -> new ImpactListResize(c),
-                                oldCat.getPotentialImpacts(),
-                                c.getPotentialImpacts()));
+                            detectChanges(() -> new ImpactListResize(newCat), oldCat, newCat));
                       },
                       () -> changes.add(new CategoryListRemove(oldCat)));
             });
@@ -354,8 +353,12 @@ public sealed interface RiskDefinitionChange
   }
 
   private static Set<RiskDefinitionChange> detectTranslationChanges(
-      TranslationProvider oldTP, TranslationProvider newTP) {
-    if (oldTP.getTranslations().equals(newTP.getTranslations())) {
+      TranslationProvider<?> oldTP, TranslationProvider<?> newTP) {
+    if (oldTP == null && newTP == null) {
+      return Collections.emptySet();
+    } else if (oldTP == null || newTP == null) {
+      return Set.of(new TranslationDiff());
+    } else if (oldTP.getTranslations().equals(newTP.getTranslations())) {
       return Collections.emptySet();
     }
     return Set.of(new TranslationDiff());
@@ -398,6 +401,20 @@ public sealed interface RiskDefinitionChange
                 detectChanges(structureChangeSupplier, oldLevels.get(index), newLevels.get(index)))
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
+  }
+
+  private static Set<RiskDefinitionChange> detectChanges(
+      Supplier<RiskDefinitionChange> structureChangeSupplier,
+      DimensionDefinition<? extends DiscreteValue> oldDimension,
+      DimensionDefinition<? extends DiscreteValue> newDimension) {
+    if (oldDimension == null && newDimension == null) {
+      return Collections.emptySet();
+    } else if (oldDimension == null || newDimension == null) {
+      return Set.of(structureChangeSupplier.get());
+    }
+
+    return detectChanges(
+        structureChangeSupplier, newDimension.getLevels(), oldDimension.getLevels());
   }
 
   private static Set<RiskDefinitionChange> detectChanges(

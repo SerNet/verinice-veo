@@ -406,13 +406,11 @@ class RiskMatrixSpec extends Specification {
 
         then: "there are constraint violations"
         with(getJakartaViolations(rd)) { violations ->
-            violations.size() == 2
+            violations.size() == 1
             violations*.propertyPath*.toString() ==~ [
-                "probability",
                 "implementationStateDefinition"
             ]
             violations*.message ==~ [
-                "must not be null",
                 "must not be null"
             ]
         }

@@ -99,7 +99,8 @@ public class EvaluateRiskDefinitionUseCase
           Collections.emptyList());
     }
 
-    if (input.riskDefinition.getRiskValues().isEmpty()) {
+    if (input.riskDefinition.getRiskValues().isEmpty()
+        || input.riskDefinition.getProbability() == null) {
       input.riskDefinition.getCategories().stream().forEach(c -> c.setValueMatrix(null));
     } else {
       RiskValue last = input.riskDefinition.getRiskValues().getLast();

@@ -31,7 +31,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-public class ImplementationStateDefinition extends DimensionDefinition {
+public class ImplementationStateDefinition extends DimensionDefinition<CategoryLevel> {
   public ImplementationStateDefinition(List<CategoryLevel> levels) {
     super(DIMENSION_IMPLEMENTATION_STATE);
     this.levels = levels;

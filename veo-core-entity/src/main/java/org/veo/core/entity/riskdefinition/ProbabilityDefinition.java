@@ -33,7 +33,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-public class ProbabilityDefinition extends DimensionDefinition {
+public class ProbabilityDefinition extends DimensionDefinition<ProbabilityLevel> {
 
   public ProbabilityDefinition(
       Translated<DiscreteValue.NameAbbreviationAndDescription> translations,

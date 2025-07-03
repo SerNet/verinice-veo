@@ -42,7 +42,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class DimensionDefinition
+public abstract class DimensionDefinition<T extends DiscreteValue>
     implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
   protected static final String DIMENSION_PROBABILITY = "Prob";
   protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
@@ -66,4 +66,6 @@ public class DimensionDefinition
       discretValues.get(i).setOrdinalValue(i);
     }
   }
+
+  public abstract List<T> getLevels();
 }

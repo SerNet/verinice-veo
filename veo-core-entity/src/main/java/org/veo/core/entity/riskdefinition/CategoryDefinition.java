@@ -49,7 +49,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-public class CategoryDefinition extends DimensionDefinition {
+public class CategoryDefinition extends DimensionDefinition<CategoryLevel> {
   public CategoryDefinition(
       String id,
       @NotNull List<List<RiskValue>> valueMatrix,
@@ -129,10 +129,11 @@ public class CategoryDefinition extends DimensionDefinition {
       throw new IllegalArgumentException(
           "Value matrix for category " + getId() + " does not conform to impacts.");
     }
+    int size = probability == null ? 0 : probability.getLevels().size();
     valueMatrix.stream()
         .forEach(
             l -> {
-              if (l.size() != probability.getLevels().size()) {
+              if (l.size() != size) {
                 throw new IllegalArgumentException(
                     "Value matrix for category " + getId() + " does not conform to probability.");
               }
@@ -154,5 +155,11 @@ public class CategoryDefinition extends DimensionDefinition {
     return potentialImpacts.stream()
         .filter(level -> level.getOrdinalValue() == ordinalValue)
         .findFirst();
+  }
+
+  @Override
+  @JsonIgnore
+  public List<CategoryLevel> getLevels() {
+    return potentialImpacts;
   }
 }

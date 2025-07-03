@@ -61,7 +61,7 @@ public class RiskDefinition {
   @ToString.Include
   private String id;
 
-  @Valid @NotNull private ProbabilityDefinition probability = new ProbabilityDefinition();
+  @Valid private ProbabilityDefinition probability = new ProbabilityDefinition();
 
   @Valid @NotNull
   private ImplementationStateDefinition implementationStateDefinition =

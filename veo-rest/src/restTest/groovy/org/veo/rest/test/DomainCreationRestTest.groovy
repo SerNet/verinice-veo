@@ -514,11 +514,11 @@ class DomainCreationRestTest extends DomainRestTest {
             }
         }
 
-        and: "no probability definition to be illegal"
+        and: "no probability definition to be illegal without matrix cleanup"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
             definition.probability = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body["probability"] == "must not be null"
+                body["message"] == "Value matrix for category D does not conform to probability."
             }
         }
 
