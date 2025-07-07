@@ -77,6 +77,39 @@ public interface TemplateItem<
   DomainBase getDomainBase();
 
   /**
+   * Includes itself together with {@link this.getElementsToCreate()}. This list is ordered. The
+   * item itself is at the first position.
+   */
+  default List<T> getAllItemsToIncarnate() {
+    return Stream.concat(
+            Stream.of((T) this),
+            getElementsToCreate().stream()
+                .sorted(Comparator.comparing(SymIdentifiable::getSymbolicIdAsString))
+                .distinct())
+        .toList();
+  }
+
+  /**
+   * Return the set additional elements to create. These elements are defined by {@link
+   * TailoringReference} of type {@link TailoringReferenceType#COPY} or {@link
+   * TailoringReferenceType#COPY_ALWAYS}.
+   */
+  default Set<T> getElementsToCreate() {
+    Set<T> elementsToCreate = new HashSet<>();
+    this.getTailoringReferences().stream()
+        .filter(TailoringReference::isCopyRef)
+        .forEach(r -> addElementsToCopy(r, elementsToCreate));
+    return elementsToCreate;
+  }
+
+  default void addElementsToCopy(TailoringReference<T, TNamespace> reference, Set<T> itemList) {
+    itemList.add(reference.getTarget());
+    reference.getTarget().getTailoringReferences().stream()
+        .filter(TailoringReference::isCopyRef)
+        .forEach(rr -> addElementsToCopy(rr, itemList));
+  }
+
+  /**
    * Adds a new {@link TailoringReference} to this item. Use this method for reference types that
    * don't require additional data. For other types see {@link
    * TemplateItem#addLinkTailoringReference} & {@link TemplateItem#addRiskTailoringReference}

@@ -17,12 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 
@@ -38,9 +34,6 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   String SINGULAR_TERM = "catalog-item";
   String PLURAL_TERM = "catalog-items";
 
-  Comparator<? super CatalogItem> BY_CATALOGITEMS =
-      Comparator.comparing(SymIdentifiable::getSymbolicIdAsString);
-
   /**
    * @return this item's domain if the item belongs to a domain and can be applied
    * @throws UnprocessableDataException if this belongs to a domain template and cannot be applied
@@ -54,35 +47,6 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
         "Catalog item is part of a domain template and cannot be applied");
   }
 
-  /**
-   * Includes itself together with {@link this.getElementsToCreate()}. This list is ordered. The
-   * item itself is at the first position.
-   */
-  default List<CatalogItem> getAllItemsToIncarnate() {
-    return Stream.concat(
-            Stream.of(this), getElementsToCreate().stream().sorted(BY_CATALOGITEMS).distinct())
-        .toList();
-  }
-
-  /**
-   * Return the set additional elements to create. These elements are defined by {@link
-   * TailoringReference} of type {@link TailoringReferenceType#COPY} or {@link
-   * TailoringReferenceType#COPY_ALWAYS}.
-   */
-  default Set<CatalogItem> getElementsToCreate() {
-    Set<CatalogItem> elementsToCreate = new HashSet<>();
-    this.getTailoringReferences().stream()
-        .filter(TailoringReference::isCopyRef)
-        .forEach(r -> addElementsToCopy(r, elementsToCreate));
-    return elementsToCreate;
-  }
-
-  default void addElementsToCopy(
-      TailoringReference<CatalogItem, DomainBase> reference, Set<CatalogItem> itemList) {
-    itemList.add(reference.getTarget());
-    reference.getTarget().getTailoringReferences().stream()
-        .filter(TailoringReference::isCopyRef)
-        .forEach(rr -> addElementsToCopy(rr, itemList));
   }
 
   default void setTailoringReferences(
