@@ -800,4 +800,29 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         MethodArgumentNotValidException e = thrown()
         e.message.contains('Domain references must be present')
     }
+
+    @WithUserDetails("user@domain.example")
+    def "Null values in risks array are not accepted"() {
+        given:
+        def domain = parseJson(get("/domains/${domain.idAsString}"))
+
+        Map request = [
+            unit    : [
+                name: 'New unit',
+                id: UUID.randomUUID().toString()
+            ],
+            domains : [
+                domain
+            ],
+            elements: [],
+            risks   : [null]
+        ]
+
+        when:
+        post('/units/import', request, 400)
+
+        then:
+        MethodArgumentNotValidException e = thrown()
+        e.message.contains('Field error in object \'unitDumpDto\' on field \'risks[]\': rejected value [null]')
+    }
 }

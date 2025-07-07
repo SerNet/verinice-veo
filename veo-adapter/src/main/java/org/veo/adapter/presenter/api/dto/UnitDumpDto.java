@@ -87,5 +87,5 @@ public class UnitDumpDto {
     @Type(value = ScopeRiskDto.class),
   })
   @NotNull(message = "Risks must be present.")
-  private Set<@Valid AbstractRiskDto> risks;
+  private Set<@Valid @NotNull AbstractRiskDto> risks;
 }
