@@ -91,7 +91,7 @@ public sealed interface RiskDefinitionChangeEffect {
                   .formatted(category))
           .translation(
               Locale.GERMAN,
-              "Auswirkungswerte für die Kategorie '%s' werden von allen Assest, Prozessen und Scopes entfernt."
+              "Auswirkungswerte für die Kategorie '%s' werden von allen Assets, Prozessen und Scopes entfernt."
                   .formatted(category))
           .build();
     }
