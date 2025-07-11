@@ -1,4 +1,4 @@
-# Content-Development-Relase-and-Deployment
+# Content-Development-Release-and-Deployment
 
 Deploy VEO content as described below.
 
@@ -20,9 +20,9 @@ Mark individual items as DONE during implementation.
 
 
 ## __Source environment:__ `STAGE`
-1. __Client-ID in source:__ _Content-Creator Client_ (or specify alternate UUID here:) `...`
-1. [ ] CC: Update all profiles in source domain as necessary
-1. [ ] CC: Update all catalog-items in source domain as necessary
+1. __Client-ID in source:__ _Content-Creator Client_ (or specify alternate UUID here: `...`)
+1. [ ] CC: Update all profiles in source domain if necessary
+1. [ ] CC: Update all catalog-items in source domain if necessary
 1. [ ] CC: Ensure no translation conflicts are present in source domain
 1. [ ] DEV/CC: Call the endpoint `breaking-changes/` and check for entries
 1. [ ] DEV: If _breaking-changes_ are present, write migration instructions
@@ -33,50 +33,68 @@ Mark individual items as DONE during implementation.
 	1. [ ] DEV: Download DT and store in content-repository
 	1. [ ] DEV: Download FTB and store in content-repository
 
-## __CC: Specify Internal Target environment(s):__
+## __Specify Internal Target environment(s):__
 
-- [X] `STAGE`
-- [X] `DEVELOP`
+__CC__: __Remove__ any internal environments from the list that should **not** be targeted.
+
+__DEV__: After successful AT on develop/stage, __check__ these items as done.
+
+
+- __Application dependency:__ Deploy only if verinice-veo in the environment is at at least version: `veriniceXY`
+- [ ] `STAGE` was deployed successfully
+- [ ] `DEVELOP` was deployed successfully
 
 ## __CC: Specify External Target environment(s):__
 
-CC: Remove any external environments from the list that should **not** be targeted.
-DEV: After successful AT on develop/stage, give this list of environments to the Ops-Team via ticket and then mark these items here as DONE.
+__CC__: __Remove__ any external environments from the list that should **not** be targeted.
 
-- [ ] `GCP`
-- [ ] `PROD`
-- [ ] `SANDBOX`
-- [ ] `TALOS-SERNET`
-- [ ] `TALOS-ONPREM-REFERENCE`
+__DEV__: After successful AT on develop/stage, give this list of environments to the Ops-Team via ticket and then __check__ these items here as DONE.
+
+- __Application dependency:__ Deploy only if verinice-veo in the environment is at at least version: `veriniceXY`
+- [ ] `GCP` deployment was handed over to Ops-Team
+- [ ] `PROD` deployment was handed over to Ops-Team
+- [ ] `SANDBOX` deployment was handed over to Ops-Team
+- [ ] `TALOS-SERNET` deployment was handed over to Ops-Team
+- [ ] `TALOS-ONPREM-REFERENCE` deployment was handed over to Ops-Team
 - [ ] `...`
 
 
 ## __DEV: Create domains from domain template in develop/staging environments:__
+
 1. __Limit to these clients:__ `ALL WITH PREVIOUS DOMAIN FROM SAME TEMPLATE` (default)
 1. [ ] DEV: Upload DT into specified environments
 1. [ ] DEV: Upload FTB into specified environments
 1. [ ] DEV: Create domains in specified environments
 1. [ ] DEV: Migrate clients in specified environments
 
-# Created Artifacts after sucessful creation
+# Created Artifacts after successful creation
 
 - Domain template: `URL-TO-GIT-RESOURCE`
 - Form template bundle: `URL-TO-GIT-RESOURCE`
 
 # Acceptance criteria
 
-Mark items as DONE during acceptance test. Acceptance test must be prformed in a different domain from the source domain from above.
+Mark items as DONE during acceptance test. Acceptance test must be performed in a different domain from the source domain from above.
 
+
+## DEV
 - [ ] DT was successfully deployed to  environments
 	- [ ] STAGE
 	- [ ] DEV
 - [ ] Form template bundle successfully deployed
 	- [ ] STAGE
 	- [ ] DEV
-- [ ] Domains were created in __all__ relevant clients as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
-- [ ] __All__ clients' data was migrated to new domain as expected (sample at least one client in each env.)
+- [ ] Domains were created in __all__ clients specified above - check log files for proof or errors
+- [ ] __All__ clients' data was migrated to new domain as expected - check log files for proof or errors
 - [ ] All relevant artifacts (domain template, form template bundle, ...) are committed to GIT repository
+
+## CC
+- [ ] Domains were created in the relevant clients as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
+- [ ] The clients' data was migrated to new domain as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
+
+## DEV
 - [ ] Ticket for `SANDBOX-/PROD-/TALOS-/...` deployments as specified above was created for Ops-Team (when all previous checks have passed)
+
 
 ---
 
