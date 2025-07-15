@@ -18,8 +18,6 @@
 package org.veo.core.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -29,15 +27,14 @@ import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.MigrationFailedException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.MigrateUnitUseCase;
+import org.veo.core.usecase.unit.TransferDomainCustomizationUseCase;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,12 +50,8 @@ public class MigrateDomainUseCase
     implements TransactionalUseCase<MigrateDomainUseCase.InputData, UseCase.EmptyOutput> {
   private final DomainRepository domainRepository;
   private final UnitRepository unitRepository;
+  private final TransferDomainCustomizationUseCase transferDomainCustomizationUseCase;
   private final MigrateUnitUseCase migrateUnitUseCase;
-
-  @Override
-  public boolean isReadOnly() {
-    return false;
-  }
 
   // TODO #2338 remove @Transactional (currently, without this annotation there would be no
   // transaction when calling this from another use case)
@@ -85,7 +78,9 @@ public class MigrateDomainUseCase
             .filter(Predicate.not(newDomain::equals))
             .findAny()
             .orElseThrow();
-    applyCustomization(domainToUpdate, newDomain);
+    transferDomainCustomizationUseCase.execute(
+        new TransferDomainCustomizationUseCase.InputData(
+            domainToUpdate.getId(), newDomain.getId(), newDomain.getOwner().getId()));
     migrateUnits(client, domainToUpdate, newDomain);
     domainToUpdate.setActive(false);
     return EmptyOutput.INSTANCE;
@@ -112,57 +107,6 @@ public class MigrateDomainUseCase
     if (failureCount != 0) {
       throw MigrationFailedException.forDomain(unitsToUpdate.size(), failureCount);
     }
-  }
-
-  private void applyCustomization(Domain oldDomain, Domain newDomain) {
-    // Copy all customized risk definitions to the new domain. This may overwrite risk definition
-    // changes from the new domain template version.
-    oldDomain
-        .getRiskDefinitions()
-        .forEach(
-            (id, riskDef) -> {
-              var originalRiskDefinition =
-                  Optional.ofNullable(oldDomain.getDomainTemplate())
-                      .flatMap(dt -> dt.getRiskDefinition(id))
-                      .orElse(null);
-              if (!riskDef.equals(originalRiskDefinition)) {
-                log.debug(
-                    "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
-                    id,
-                    oldDomain.getName(),
-                    oldDomain.getTemplateVersion(),
-                    oldDomain.getIdAsString(),
-                    newDomain.getTemplateVersion(),
-                    newDomain.getIdAsString());
-                newDomain.applyRiskDefinition(id, migrate(riskDef, newDomain));
-              }
-            });
-  }
-
-  private RiskDefinition migrate(RiskDefinition riskDef, Domain newDomain) {
-    return riskDef.withImpactInheritingLinks(
-        migrate(riskDef.getImpactInheritingLinks(), newDomain));
-  }
-
-  private Map<ElementType, List<String>> migrate(
-      Map<ElementType, List<String>> impactInheritingLinks, Domain newDomain) {
-    return impactInheritingLinks.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                e ->
-                    e.getValue().stream()
-                        .filter(
-                            link ->
-                                newDomain
-                                    .getElementTypeDefinition(e.getKey())
-                                    .findLink(link)
-                                    .isPresent())
-                        .toList()))
-        .entrySet()
-        .stream()
-        .filter(e -> !e.getValue().isEmpty())
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   public record InputData(UUID domainId) implements UseCase.InputData {}

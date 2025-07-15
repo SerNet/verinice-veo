@@ -551,15 +551,32 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "customized risk definition is not overwritten"() {
-        given: "a customized domain with an added translation"
+        given: "a customized domain with a customized RD"
         get("/domains/$oldDomainId").body.riskDefinitions.definitelyRisky.with { riskDef ->
             riskDef.riskValues[0].translations = [
                 en: [
                     name: "customized risk"
                 ]
             ]
+            riskDef.categories[0].potentialImpacts.add([:])
+            riskDef.categories[0].valueMatrix = null
             put("/content-customizing/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
         }
+
+        and: "an element using the custom impact level"
+        def processId = post("/domains/$oldDomainId/processes", [
+            name: "custom order",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            riskValues: [
+                definitelyRisky: [
+                    potentialImpacts: [
+                        nyanCat: 1
+                    ]
+                ]
+            ]
+        ]).body.resourceId
 
         when: "migrating to a new template version with an added risk value"
         def newDomainId = createNewTemplateAndMigrate {
@@ -571,6 +588,13 @@ class DomainUpdateRestTest extends VeoRestTest {
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
             riskValues*.symbolicRisk ==~ ["one"]
             riskValues[0].translations.en.name == "customized risk"
+            categories[0].potentialImpacts.size() == 2
+            categories[0].valueMatrix == null
+        }
+
+        and: "the element still has its custom impact value"
+        with(get("/domains/$newDomainId/processes/$processId").body) {
+            riskValues.definitelyRisky.potentialImpacts.nyanCat == 1
         }
     }
 
