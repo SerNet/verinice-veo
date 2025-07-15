@@ -23,7 +23,6 @@ import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedImp
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedRiskValueCategories;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
@@ -132,16 +133,26 @@ public class TemplateItemMigrationService {
               impactCategoriesToUnset.forEach(impactValues.potentialImpactReasons()::remove);
               impactCategoriesToUnset.forEach(impactValues.potentialImpactExplanations()::remove);
             });
-    Map<RiskDefinitionRef, PotentialProbability> scenarioValues = Collections.emptyMap();
-    if (aspects.scenarioRiskValues() != null) {
-      scenarioValues = new HashMap<>(aspects.scenarioRiskValues());
-      if (isPropablilityChanged(detectedChanges)) {
-        scenarioValues.put(rd.toRef(), new PotentialProbability(null, null));
-      }
-    }
+
     item.setAspects(
         new TemplateItemAspects(
-            aspects.impactValues(), scenarioValues, aspects.scopeRiskDefinition()));
+            aspects.impactValues(),
+            aspects.scenarioRiskValues() == null
+                ? null
+                : migrateScenarioValues(rd, detectedChanges, aspects.scenarioRiskValues()),
+            aspects.scopeRiskDefinition()));
+  }
+
+  private Map<RiskDefinitionRef, PotentialProbability> migrateScenarioValues(
+      RiskDefinition rd,
+      Set<RiskDefinitionChange> detectedChanges,
+      @NotNull Map<RiskDefinitionRef, PotentialProbability> scenarioRiskValues) {
+
+    var scenarioValues = new HashMap<>(scenarioRiskValues);
+    if (isPropablilityChanged(detectedChanges)) {
+      scenarioValues.put(rd.toRef(), new PotentialProbability(null, null));
+    }
+    return scenarioValues;
   }
 
   private void migrateAllRiskTailoringReference(
