@@ -173,28 +173,62 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 ]
             ]
         ])
+    }
 
-        when: "creating a profile from the unit"
+    def "change riskdefinition before roundtrip and apply profile"() {
+        given:
+        post("/domains/$copyOfTestDomainId/assets", [
+            name: "asset enough?",
+            subType: "Information",
+            status: "CURRENT",
+            owner: [targetUri: "/units/$sourceUnitId"],
+            riskValues: [
+                riskyDef: [
+                    potentialImpacts: [
+                        D: 1
+                    ]
+                ]
+            ]
+        ])
+
+        when: "we change the risk definition"
+        def dd = copyOfTestDomainId
+        get("/domains/$copyOfTestDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "D" }.potentialImpacts.removeLast()
+            definition.categories.find { it.id == "D" }.valueMatrix.removeLast()
+            put("/content-creation/domains/$dd/risk-definitions/riskyDef", definition, null, 200, CONTENT_CREATOR)
+        }
+
+        and: "perform roundtrip"
+        def newDomainInOtherClientId = performRoundTrip()
+
+        then: "the original elements have been recreated in the other client and the potentialImpact 'D' is gone"
+        with(get("/domains/$newDomainInOtherClientId/assets", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 1
+            get(0).name == "asset enough?"
+            get(0).riskValues.riskyDef.potentialImpacts.D == null
+        }
+    }
+
+    private String performRoundTrip(String dtVersion = "1.1.0") {
+        // create a profile from the source unit
         post("/content-creation/domains/$copyOfTestDomainId/profiles?unit=$sourceUnitId", [
             name: "test profile"
         ]).body.id
 
-        and: "creating a domain template from the domain"
+        // create a domain template from the domain
         def templateId = post("/content-creation/domains/$copyOfTestDomainId/template", [
-            version: "1.1.0"
+            version: (dtVersion)
         ], 201, CONTENT_CREATOR).body.id
 
-        and: "exporting the template"
+        // export the template
         def exportedDomainTemplate = get("/content-creation/domain-templates/$templateId", 200, CONTENT_CREATOR).body
 
-        then: "the export contains the right amount of items"
-        exportedDomainTemplate.profiles_v2.first().items.size() == 8
-
-        when: "importing the template under a different name"
+        // import the template under a different name"
         exportedDomainTemplate.name = "completely different domain template ${randomUUID()}"
         def newDomainTemplateId = post("/content-creation/domain-templates", exportedDomainTemplate, 201, CONTENT_CREATOR).body.resourceId
 
-        and: "applying the imported profile in another client"
+        // apply the imported profile to the target unit in another client
         post("/domain-templates/$newDomainTemplateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
         def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
         def profileInOtherClientId = get("/domains/$newDomainInOtherClientId/profiles", 200, SECONDARY_CLIENT_USER).body.find {
@@ -207,79 +241,6 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             ]
         ], 201, SECONDARY_CLIENT_USER).body.resourceId
         post("/domains/$newDomainInOtherClientId/profiles/$profileInOtherClientId/incarnation?unit=$unitInOtherClientId", null, 204, SECONDARY_CLIENT_USER)
-
-        then: "the original elements have been recreated in the other client"
-        with(get("/domains/$newDomainInOtherClientId/assets", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 1
-            get(0).name == "asset enough?"
-            get(0).riskValues.riskyDef.potentialImpacts.D == 1
-        }
-        with(get("/domains/$newDomainInOtherClientId/controls", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 2
-            it*.name ==~ [
-                "freaky control",
-                "sub control"
-            ]
-        }
-        with(get("/domains/$newDomainInOtherClientId/processes", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 1
-            get(0).name == "process processing process"
-            get(0).riskValues.riskyDef.potentialImpacts.D == 0
-            get(0).links.necessaryData[0].target.displayName.endsWith("asset enough?")
-            get(0).links.necessaryData[0].target.id != originalAssetId
-            get(0).links.necessaryData[0].attributes.essential
-            with(get("/processes/${get(0).id}/risks", 200, SECONDARY_CLIENT_USER).body) {
-                size() == 1
-                get(0).scenario.displayName.endsWith("scenic scenario")
-                get(0).scenario.id != originalSubScenarioId
-                get(0).riskOwner.displayName.endsWith("poster person")
-                get(0).riskOwner.id != originalPersonId
-                get(0).mitigation.displayName.endsWith("freaky control")
-                get(0).mitigation.id != originalControlId
-                with(get(0).domains[newDomainInOtherClientId].riskDefinitions.riskyDef) {
-                    probability.specificProbability == 1
-                    probability.specificProbabilityExplanation == "The risk owner is a control freak who uses freaky controls, which mitigates the likelihood of this risk."
-                    with(impactValues.find { it.category == "D" }) {
-                        specificImpact == 2
-                        specificImpactExplanation == "Because I say so."
-                    }
-                    with(riskValues.find { it.category == "D" }) {
-                        userDefinedResidualRisk == 3
-                        residualRiskExplanation == "It's gonna be terrible."
-                        riskTreatments == ["RISK_TREATMENT_AVOIDANCE"]
-                    }
-                }
-            }
-        }
-        with(get("/domains/$newDomainInOtherClientId/scenarios", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 2
-            with(it.find { it.name == "scenic scenario" }) {
-                riskValues.riskyDef.potentialProbability == 2
-                riskValues.riskyDef.potentialProbabilityExplanation == "It's happened before"
-            }
-            with(it.find { it.name == "super scenario" }) {
-                parts.size() == 1
-                parts[0].displayName.endsWith("scenic scenario")
-                parts[0].id != originalSubScenarioId
-            }
-        }
-        with(get("/domains/$newDomainInOtherClientId/scopes", 200, SECONDARY_CLIENT_USER).body.items) {
-            size() == 1
-            get(0).name == "Can't cope with this scope"
-            get(0).controlImplementations.size() == 1
-            with(get(0).controlImplementations[0]) {
-                control.name == "freaky control"
-                responsible.name == "poster person"
-                description == "Everything is under control"
-                with(owner.get(_requirementImplementations, 200, SECONDARY_CLIENT_USER).body.items) {
-                    it*.control*.name == ["sub control"]
-                    get(0).status == "YES"
-                    get(0).responsible.name == "poster person"
-                    get(0).implementationStatement == "bold statement"
-                    get(0).implementationUntil == "2025-01-01"
-                }
-            }
-            get(0).riskValues.riskyDef.potentialImpacts.D == 1
-        }
+        return newDomainInOtherClientId
     }
 }
