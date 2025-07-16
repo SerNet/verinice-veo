@@ -71,9 +71,9 @@
 - [ ] Die Daten-History wird zum Download angeboten?
 - [ ] Die Daten-History kann in einzelnen Dateien als .zip heruntergeladen werden?
 
-### Sicherheistrichtlinie
+### Sicherheitsrichtlinie
 
-- [ ] Sicherheitrichtlinie wird korrektz angezegt?
+- [ ] Sicherheitsrichtlinie wird korrekt angezeigt?
 
 ### Über verinice
 
