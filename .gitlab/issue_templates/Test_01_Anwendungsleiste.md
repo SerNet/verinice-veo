@@ -2,7 +2,7 @@
 
 ## Umgebung(en)
 
-- [ ] DEV 
+- [ ] DEV
 - [ ] STAGE
 - [ ] SANDBOX
 - [ ] PROD
