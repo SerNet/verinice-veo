@@ -1,5 +1,7 @@
 # Testbedingungen
 
+<details><summary>Bearbeiten / Ansehen</summary>
+
 ## Umgebung(en)
 
 - [ ] DEV
@@ -20,7 +22,11 @@
 - [ ] Leseberechtigung
 - [ ] Schreibberechtigung
 
+</details>
+
 # Testplan
+
+<details><summary>Bearbeiten / Ansehen</summary>
 
 ## Breadcrumb
 
@@ -85,10 +91,16 @@
 ### Abmelden
 - [ ] Nach dem Logout wird auf die Anmeldeseite weitergeleitet?
 
+</details>
+
 # Findings
+
+<details><summary>Bearbeiten / Ansehen</summary>
 
 - [ ] Keine Findings
 
 - _Erstes Finding_
 - _Zweites Finding_
 - _Drittes Finding_
+
+</details>
