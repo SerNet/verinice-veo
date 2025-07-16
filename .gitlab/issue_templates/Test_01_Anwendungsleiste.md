@@ -78,7 +78,7 @@
 ### Über verinice
 
 - [ ] Dialog Produktinformation öffnet sich?
-- [ ] Zu allen Komponeneten werden Build, Commit und Build-Datum angezeigt?
+- [ ] Zu allen Komponenten werden Build, Commit und Build-Datum angezeigt?
 - [ ] Copyright, Impressum und Datenschutzerklärung werden angezeigt?
 - [ ] Die Links verweisen auf die korrekten Quellen?
 
