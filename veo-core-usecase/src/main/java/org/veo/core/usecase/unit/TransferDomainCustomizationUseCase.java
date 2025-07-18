@@ -28,8 +28,11 @@ import jakarta.transaction.Transactional.TxType;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -49,6 +52,7 @@ public class TransferDomainCustomizationUseCase
     implements TransactionalUseCase<
         TransferDomainCustomizationUseCase.InputData, UseCase.EmptyOutput> {
   private final DomainRepository domainRepository;
+  private final EventPublisher eventPublisher;
 
   @Override
   public boolean isReadOnly() {
@@ -81,7 +85,17 @@ public class TransferDomainCustomizationUseCase
                     sourceDomain.getIdAsString(),
                     targetDomain.getTemplateVersion(),
                     targetDomain.getIdAsString());
-                targetDomain.applyRiskDefinition(id, migrate(riskDef, targetDomain));
+                var oldRiskDefFromTargetDomain = targetDomain.findRiskDefinition(riskDef.getId());
+                var newRiskDef = migrate(riskDef, targetDomain);
+                targetDomain.applyRiskDefinition(id, newRiskDef);
+                oldRiskDefFromTargetDomain.ifPresent(
+                    ogRiskDef ->
+                        eventPublisher.publish(
+                            RiskDefinitionChangedEvent.from(
+                                targetDomain,
+                                newRiskDef,
+                                RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef),
+                                this)));
               }
             });
     domainRepository.save(targetDomain);

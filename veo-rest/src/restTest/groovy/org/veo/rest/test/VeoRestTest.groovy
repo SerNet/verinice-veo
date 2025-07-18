@@ -280,6 +280,18 @@ class VeoRestTest extends Specification {
         ]).body
     }
 
+    /**
+     * @param catalogItemIds defaults to the entire catalog
+     * @return list of element refs
+     */
+    List<Map<String, Object>> incarnateCatalogItems(
+            String unitId,
+            String domainId,
+            Collection<String> catalogItemIds = get("/domains/$domainId/catalog-items?size=${Integer.MAX_VALUE}").body.items*.id) {
+        def incDescs = get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=${catalogItemIds.join(',')}").body
+        return post("/units/$unitId/incarnations", incDescs).body
+    }
+
     def getDomains() {
         get("/domains").body
     }

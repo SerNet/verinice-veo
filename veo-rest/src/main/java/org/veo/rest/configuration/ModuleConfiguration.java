@@ -1014,8 +1014,8 @@ public class ModuleConfiguration {
 
   @Bean
   public TransferDomainCustomizationUseCase transferDomainCustomizationUseCase(
-      DomainRepository domainRepository) {
-    return new TransferDomainCustomizationUseCase(domainRepository);
+      DomainRepository domainRepository, EventPublisher eventPublisher) {
+    return new TransferDomainCustomizationUseCase(domainRepository, eventPublisher);
   }
 
   @Bean
