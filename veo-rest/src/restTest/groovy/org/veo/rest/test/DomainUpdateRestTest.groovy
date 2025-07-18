@@ -619,6 +619,95 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
     }
 
+    def "customized RD with structural change causes template item migration on domain update"() {
+        given: "a customized domain where more impacts levels exist"
+        get("/domains/$oldDomainId/risk-definitions/definitelyRisky").body.with { riskDef ->
+            riskDef.categories[0].potentialImpacts.add([:])
+            riskDef.categories[0].valueMatrix = null
+            put("/content-creation/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
+        }
+
+        when: "migrating to new template version with a potential impact for a catalog item"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.catalogItems[0].name = "new cat content"
+            it.catalogItems[0].aspects = [
+                impactValues: [
+                    definitelyRisky: [
+                        potentialImpacts: [
+                            nyanCat: 0,
+                        ],
+                        potentialImpactReasons: [
+                            nyanCat: "impact_reason_manual",
+                        ],
+                    ]
+                ]
+            ]
+            it.templateVersion = "1.1.0"
+        }
+
+        and: "incarnating the migrated catalog"
+        def incarnatedElementRefs = incarnateCatalogItems(unitId, newDomainId)
+
+        then: "the new item content is used, but with migrated impact values"
+        incarnatedElementRefs.size() == 1
+        with(get(incarnatedElementRefs[0].targetInDomainUri).body) {
+            it.name == "new cat content"
+            it.riskValues.definitelyRisky.potentialImpacts.nyanCat == null
+            it.riskValues.definitelyRisky.potentialImpactReasons.nyanCat == null
+        }
+    }
+
+    def "customized RD and extended RD in new template version cause template item migration on domain update"() {
+        given: "a superficially customized risk definition"
+        get("/domains/$oldDomainId/risk-definitions/definitelyRisky").body.with { riskDef ->
+            riskDef.riskValues[0].translations.en = [name: "Customized impact"]
+            put("/content-creation/domains/$owner.oldDomainId/risk-definitions/definitelyRisky", riskDef, null)
+        }
+
+        when: "migrating to a new template version with an extended risk definition used in the catalog"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.riskDefinitions.definitelyRisky.categories.add([
+                id: "newOfficialCat",
+                potentialImpacts: [[:], [:], [:]],
+            ])
+            it.catalogItems[0].name = "new cat content"
+            it.catalogItems[0].aspects = [
+                impactValues: [
+                    definitelyRisky: [
+                        potentialImpacts: [
+                            nyanCat: 0,
+                            newOfficialCat: 1,
+                        ],
+                        potentialImpactReasons: [
+                            nyanCat: "impact_reason_distributive",
+                            newOfficialCat: "impact_reason_cumulative",
+                        ],
+                    ]
+                ]
+            ]
+            it.templateVersion = "1.1.0"
+        }
+
+        then: "the customized version has won"
+        with(get("/domains/$newDomainId/risk-definitions/definitelyRisky").body) {
+            it.categories.size() == 1
+            it.riskValues[0].translations.en.name == "Customized impact"
+        }
+
+        when: "incarnating the migrated catalog"
+        def incarnatedElementRefs = incarnateCatalogItems(unitId, newDomainId)
+
+        then: "the new item content is used, but with migrated impact values"
+        incarnatedElementRefs.size() == 1
+        with(get(incarnatedElementRefs[0].targetInDomainUri).body) {
+            it.name == "new cat content"
+            it.riskValues.definitelyRisky.potentialImpacts.nyanCat == 0
+            it.riskValues.definitelyRisky.potentialImpacts.newOfficialCat == null
+            it.riskValues.definitelyRisky.potentialImpactReasons.nyanCat == "impact_reason_distributive"
+            it.riskValues.definitelyRisky.potentialImpactReasons.newOfficialCat == null
+        }
+    }
+
     private LinkedHashMap<String, Serializable> getTemplate() {
         [
             id: UUID.randomUUID(),
