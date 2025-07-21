@@ -110,7 +110,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
     return getProfiles().stream().map(p -> (ProfileState) p).collect(Collectors.toSet());
   }
 
-  Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
+  Optional<RiskDefinition> findRiskDefinition(String riskDefinitionId);
 
   Set<Profile> getProfiles();
 

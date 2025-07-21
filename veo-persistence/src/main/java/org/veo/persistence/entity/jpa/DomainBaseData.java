@@ -214,7 +214,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   }
 
   @Override
-  public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
+  public Optional<RiskDefinition> findRiskDefinition(String riskDefinitionId) {
     return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
   }
 

@@ -384,7 +384,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+        domain.findRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
             getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
@@ -451,7 +451,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+        domain.findRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
             getImpactProvider(riskDefinitionRef, domain) >> Mock(CategorizedImpactValueProvider) {
@@ -517,7 +517,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+        domain.findRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
             getRiskDefinitions(domain) >> [
@@ -581,7 +581,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+        domain.findRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
             getRiskDefinitions(domain) >> [
@@ -643,7 +643,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        domain.getRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
+        domain.findRiskDefinition(riskDefinition.id) >> Optional.of(riskDefinition)
 
         def risk = Mock(AssetRisk) {
             getRiskDefinitions(domain) >> []

@@ -103,7 +103,7 @@ public class ElementMigrationService {
         .forEach(
             rdRef ->
                 domain
-                    .getRiskDefinition(rdRef.getIdRef())
+                    .findRiskDefinition(rdRef.getIdRef())
                     .ifPresentOrElse(
                         rd -> {
                           if (riskRelated instanceof RiskAffected<?, ?> ra) {

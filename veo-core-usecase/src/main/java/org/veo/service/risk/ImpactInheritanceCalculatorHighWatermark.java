@@ -419,7 +419,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
       return fd;
     }
-    Optional<RiskDefinition> ro = domain.getRiskDefinition(riskDefinitionId);
+    Optional<RiskDefinition> ro = domain.findRiskDefinition(riskDefinitionId);
     if (ro.isEmpty()) {
       log.debug(
           "No risk definition for id: {} in domain '{}'",
