@@ -73,7 +73,7 @@ public class RiskValuesAspectData implements RiskValuesAspect {
 
     var domainRiskDefinition =
         domain
-            .getRiskDefinition(riskDefinition.getIdRef())
+            .findRiskDefinition(riskDefinition.getIdRef())
             .orElseThrow(
                 () ->
                     new ReferenceTargetNotFoundException(
@@ -194,7 +194,7 @@ public class RiskValuesAspectData implements RiskValuesAspect {
 
   public void copyAspectData(RiskValuesAspectData oldAspect) {
     domain
-        .getRiskDefinition(oldAspect.riskDefinition.getIdRef())
+        .findRiskDefinition(oldAspect.riskDefinition.getIdRef())
         .ifPresent(
             rd -> {
               List<CategoryRef> newCats =

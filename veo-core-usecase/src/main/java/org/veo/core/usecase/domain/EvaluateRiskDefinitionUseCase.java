@@ -91,7 +91,7 @@ public class EvaluateRiskDefinitionUseCase
 
     if (input.riskDefinition == null) {
       RiskDefinition riskDefinition =
-          domain.getRiskDefinition(input.riskDefinitionRef).orElseThrow();
+          domain.findRiskDefinition(input.riskDefinitionRef).orElseThrow();
       return new OutputData(
           riskDefinition,
           Collections.emptyList(),
@@ -109,7 +109,7 @@ public class EvaluateRiskDefinitionUseCase
     }
     Set<RiskDefinitionChange> detectedChanges = new HashSet<>();
     domain
-        .getRiskDefinition(input.riskDefinitionRef)
+        .findRiskDefinition(input.riskDefinitionRef)
         .ifPresentOrElse(
             rd -> detectedChanges.addAll(detectChanges(rd, input.riskDefinition)),
             () -> detectedChanges.add(new RiskDefinitionChange.NewRiskDefinition()));

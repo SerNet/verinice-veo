@@ -40,7 +40,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   @Override
   public RiskRef getRiskRef(String riskDefinitionId, BigDecimal ordinalValue) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getRiskValue(ordinalValue.intValue())
         .map(RiskRef::from)
@@ -55,7 +55,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   @Override
   public ProbabilityRef getProbabilityRef(String riskDefinitionId, BigDecimal probabilityId) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getProbability()
         .getLevel(probabilityId.intValue())
@@ -71,7 +71,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   @Override
   public ImpactRef getImpactRef(String riskDefinitionId, String category, BigDecimal impactId) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getCategory(category)
         .orElseThrow()
@@ -88,7 +88,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   @Override
   public CategoryRef getCategoryRef(String riskDefinitionId, String categoryId) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getCategory(categoryId)
         .map(CategoryRef::from)
@@ -104,7 +104,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   public ImplementationStatusRef getImplementationStatus(
       String riskDefinitionId, int ordinalValue) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .flatMap(rd -> rd.getImplementationStateDefinition().getLevel(ordinalValue))
         .map(ImplementationStatusRef::from)
         .orElseThrow(
@@ -118,7 +118,7 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   @Override
   public RiskDefinitionRef getRiskDefinitionRef(String riskDefinitionId) {
     return domain
-        .getRiskDefinition(riskDefinitionId)
+        .findRiskDefinition(riskDefinitionId)
         .map(RiskDefinitionRef::from)
         .orElseThrow(
             () ->

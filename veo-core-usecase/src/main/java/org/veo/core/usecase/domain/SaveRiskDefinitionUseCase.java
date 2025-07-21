@@ -53,7 +53,7 @@ public class SaveRiskDefinitionUseCase
     }
     Set<RiskDefinitionChange> detectedChanges = new HashSet<>();
     domain
-        .getRiskDefinition(input.riskDefinitionRef)
+        .findRiskDefinition(input.riskDefinitionRef)
         .ifPresentOrElse(
             rd -> detectedChanges.addAll(detectChanges(rd, input.riskDefinition)),
             () -> detectedChanges.add(new RiskDefinitionChange.NewRiskDefinition()));

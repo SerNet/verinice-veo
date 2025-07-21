@@ -313,7 +313,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
                                   + "'"));
           var riskDefinition =
               domain
-                  .getRiskDefinition(newValues.getRiskDefinitionId())
+                  .findRiskDefinition(newValues.getRiskDefinitionId())
                   .orElseThrow(
                       () ->
                           new ReferenceTargetNotFoundException(

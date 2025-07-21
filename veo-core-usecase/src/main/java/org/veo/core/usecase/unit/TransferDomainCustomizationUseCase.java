@@ -70,7 +70,7 @@ public class TransferDomainCustomizationUseCase
             (id, riskDef) -> {
               var originalRiskDefinition =
                   Optional.ofNullable(sourceDomain.getDomainTemplate())
-                      .flatMap(dt -> dt.getRiskDefinition(id))
+                      .flatMap(dt -> dt.findRiskDefinition(id))
                       .orElse(null);
               if (!riskDef.equals(originalRiskDefinition)) {
                 log.debug(
