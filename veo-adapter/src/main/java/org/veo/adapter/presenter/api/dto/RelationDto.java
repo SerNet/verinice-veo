@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jochen Kemnade.
+ * Copyright (C) 2025  Alina Tsikunova
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,33 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.adapter.presenter.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-/** Used to limit the results from a repository to a number of items */
+@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 @Data
-public class PagingConfiguration<TSortCriterion> {
+@Setter(AccessLevel.NONE)
+@RequiredArgsConstructor
+public class RelationDto {
+  private final RelationType type;
+  private final String source;
+  private final String target;
+  private final String label;
 
-  public static final PagingConfiguration<String> UNPAGED =
-      new PagingConfiguration<>(Integer.MAX_VALUE, 0, "name", SortOrder.ASCENDING);
-
-  public static <T> PagingConfiguration<T> unpaged(T sortCriterion) {
-    return new PagingConfiguration<>(Integer.MAX_VALUE, 0, sortCriterion, SortOrder.ASCENDING);
-  }
-
-  private final int pageSize;
-  private final int pageNumber;
-  private final TSortCriterion sortColumn;
-  private final SortOrder sortOrder;
-
-  @Getter
-  @RequiredArgsConstructor
-  public enum SortOrder {
-    ASCENDING("asc"),
-    DESCENDING("desc");
-    private final String sqlKeyword;
+  public enum RelationType {
+    CUSTOM_LINK,
+    PART_OR_MEMBER
   }
 }

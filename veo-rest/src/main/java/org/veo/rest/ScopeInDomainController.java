@@ -50,6 +50,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -74,11 +75,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.FullElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
@@ -132,6 +135,7 @@ public class ScopeInDomainController
   private final UpdateScopeInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final EntityToDtoTransformer entityToDtoTransformer;
+  private final RelationGraphService relationGraphService;
 
   @Operation(summary = "Loads a scope from the viewpoint of a domain")
   @ApiResponse(
@@ -498,5 +502,14 @@ public class ScopeInDomainController
             TypedId.from(domainId, Domain.class),
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         controlCustomAspectKeys);
+  }
+
+  @GetMapping("/{scopeId}/relations")
+  @Operation(
+      summary =
+          "EXPERIMENTAL API - Returns the direct relations of a scope for graph visualization")
+  public GraphResultDto getScopeGraph(
+      @PathVariable UUID domainId, @PathVariable UUID scopeId, Locale locale) {
+    return relationGraphService.getGraph(scopeId, domainId, ElementType.SCOPE, locale);
   }
 }

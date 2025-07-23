@@ -48,6 +48,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -71,7 +72,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
@@ -113,6 +116,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   private final UpdateScenarioInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final EntityToDtoTransformer entityToDtoTransformer;
+  private final RelationGraphService relationGraphService;
 
   @Operation(summary = "Loads a scenario from the viewpoint of a domain")
   @ApiResponse(
@@ -404,5 +408,14 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
     return elementService.getJsonSchema(domainId, ElementType.SCENARIO);
+  }
+
+  @GetMapping("/{scenarioId}/relations")
+  @Operation(
+      summary =
+          "EXPERIMENTAL API - Returns the direct relations of a scenario for graph visualization")
+  public GraphResultDto getScenarioGraph(
+      @PathVariable UUID domainId, @PathVariable UUID scenarioId, Locale locale) {
+    return relationGraphService.getGraph(scenarioId, domainId, ElementType.SCENARIO, locale);
   }
 }

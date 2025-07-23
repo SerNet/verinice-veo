@@ -48,6 +48,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -71,8 +72,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlInDomainDto;
@@ -119,6 +122,7 @@ public class ControlInDomainController implements ElementInDomainResource {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UseCaseInteractor useCaseInteractor;
   private final GetControlImplementationsUseCase getControlImplementationsUseCase;
+  private final RelationGraphService relationGraphService;
 
   @Operation(summary = "Loads a control from the viewpoint of a domain")
   @ApiResponse(
@@ -484,5 +488,14 @@ public class ControlInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
     return elementService.getJsonSchema(domainId, ElementType.CONTROL);
+  }
+
+  @GetMapping("/{controlId}/relations")
+  @Operation(
+      summary =
+          "EXPERIMENTAL API - Returns the direct relations of a control for graph visualization")
+  public GraphResultDto getControlGraph(
+      @PathVariable UUID domainId, @PathVariable UUID controlId, Locale locale) {
+    return relationGraphService.getGraph(controlId, domainId, ElementType.CONTROL, locale);
   }
 }

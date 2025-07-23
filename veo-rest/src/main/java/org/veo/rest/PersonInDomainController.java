@@ -48,6 +48,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -71,7 +72,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
@@ -114,6 +117,7 @@ public class PersonInDomainController implements ElementInDomainResource {
   private final UpdatePersonInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final EntityToDtoTransformer entityToDtoTransformer;
+  private final RelationGraphService relationGraphService;
 
   @Operation(summary = "Loads a person from the viewpoint of a domain")
   @ApiResponse(
@@ -405,5 +409,14 @@ public class PersonInDomainController implements ElementInDomainResource {
   @Override
   public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
     return elementService.getJsonSchema(domainId, ElementType.PERSON);
+  }
+
+  @GetMapping("/{personId}/relations")
+  @Operation(
+      summary =
+          "EXPERIMENTAL API - Returns the direct relations of a person for graph visualization")
+  public GraphResultDto getPersonGraph(
+      @PathVariable UUID domainId, @PathVariable UUID personId, Locale locale) {
+    return relationGraphService.getGraph(personId, domainId, ElementType.PERSON, locale);
   }
 }

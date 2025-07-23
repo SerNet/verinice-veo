@@ -49,6 +49,7 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -73,9 +74,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
@@ -125,6 +128,7 @@ public class AssetInDomainController
   private final CreateElementUseCase<Asset> createUseCase;
   private final UpdateAssetInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
+  private final RelationGraphService relationGraphService;
 
   private final EntityToDtoTransformer entityToDtoTransformer;
 
@@ -504,5 +508,14 @@ public class AssetInDomainController
             TypedId.from(domainId, Domain.class),
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         controlCustomAspectKeys);
+  }
+
+  @GetMapping("/{assetId}/relations")
+  @Operation(
+      summary =
+          "EXPERIMENTAL API - Returns the direct relations of an asset for graph visualization")
+  public GraphResultDto getAssetGraph(
+      @PathVariable UUID domainId, @PathVariable UUID assetId, Locale locale) {
+    return relationGraphService.getGraph(assetId, domainId, ElementType.ASSET, locale);
   }
 }

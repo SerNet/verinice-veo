@@ -340,6 +340,30 @@
             }
           }
         }
+      },
+      "translations": {
+        "de": {
+          "necessaryData": "notwendige Daten",
+          "complexity": "Komplexität",
+          "essential": "wesentlich",
+          "high": "hoch",
+          "low": "niedrig",
+          "medium": "mittel",
+          "process_BusinessProcess_plural": "Geschäftsprozesse",
+          "process_BusinessProcess_singular": "Geschäftsprozess",
+          "process_BusinessProcess_status_NEW": "neu"
+        },
+        "en": {
+          "necessaryData": "necessary data",
+          "complexity": "complexity",
+          "essential": "essential",
+          "high": "high",
+          "low": "low",
+          "medium": "medium",
+          "process_BusinessProcess_plural": "business processes",
+          "process_BusinessProcess_singular": "business process",
+          "process_BusinessProcess_status_NEW": "new"
+        }
       }
     },
     "scenario": {

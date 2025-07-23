@@ -89,6 +89,10 @@ public enum ElementType {
     return (Class<? extends Element>) entityType.getType();
   }
 
+  public Class<Element> getTypeStrict() {
+    return (Class<Element>) entityType.getType();
+  }
+
   public static ElementType fromModelInterface(Class<? extends Entity> modelInterface) {
     return Optional.ofNullable(TYPE_BY_MODEL_INTERFACE.get(modelInterface))
         .orElseThrow(
