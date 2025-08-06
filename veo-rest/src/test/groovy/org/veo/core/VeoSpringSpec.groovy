@@ -58,6 +58,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+import org.veo.rest.security.CustomUserDetailsManager
 import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
 
@@ -138,6 +139,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     EntitySchemaService entitySchemaService
 
+    @Autowired
+    CustomUserDetailsManager userDetailsManager
+
     def deleteUnitRecursively(Unit unit) {
         // Query the repository since the persistence context was cleared
         unitDataRepository.findByParentId(unit.id).each {
@@ -160,6 +164,10 @@ abstract class VeoSpringSpec extends VeoSpec {
             domainTemplateDataRepository.deleteAll()
             eventStoreDataRepository.deleteAll()
         }
+    }
+
+    def cleanup() {
+        userDetailsManager.restoreDefaultUsers()
     }
 
     def createTestDomainTemplate(UUID templateId) {
