@@ -30,7 +30,7 @@
 
 ## Logo
 
-- [ ] Mausklick öffnet Unitauswahl?System?
+- [ ] Mausklick öffnet Unitauswahl?
 
 ## Domänenauswahl
 
@@ -64,11 +64,6 @@
 
 - [ ] Es wird mindestens eine Risikodefinition angezeigt?
 - [ ] Es werden alle verfügbaren Risikodefinitionen angezeigt?
-
-## Demo-Unit
-
-- [ ] Die Demo-Unit kann aufgerufen werden?
-- [ ] Es kann zurück zur eigenen Unit gewechselt werden?
 
 ## Menü verstecken
 
