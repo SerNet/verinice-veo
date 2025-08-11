@@ -25,10 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.inspection.Finding;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /** Runs all applicable inspections on an element (in the context of a domain). */
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class Inspector {
   public Set<Finding> inspect(Element element, Domain domain) {
     return domain.getInspections().values().stream()

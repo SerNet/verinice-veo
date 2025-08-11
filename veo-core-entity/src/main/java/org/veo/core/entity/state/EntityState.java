@@ -19,7 +19,4 @@ package org.veo.core.entity.state;
 
 import org.veo.core.entity.Nameable;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface EntityState extends Nameable {}

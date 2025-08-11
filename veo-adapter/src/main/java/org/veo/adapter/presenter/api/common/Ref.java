@@ -21,10 +21,7 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /** References a veo resource using a URI. */
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Ref {
   /** Returns a URI of the target object which may be a URL. */
   @Size(min = 1, max = Constraints.DEFAULT_STRING_MAX_LENGTH)

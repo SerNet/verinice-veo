@@ -24,7 +24,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,8 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> implements ProcessRisk {
 
-  // see https://github.com/rzwitserloot/lombok/issues/1134
-  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   ProcessRiskData(@NotNull @NonNull Process process, @NotNull Scenario scenario) {
     super(scenario, process);
   }

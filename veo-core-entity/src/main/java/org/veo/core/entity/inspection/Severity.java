@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public enum Severity {
   HINT,
   WARNING,

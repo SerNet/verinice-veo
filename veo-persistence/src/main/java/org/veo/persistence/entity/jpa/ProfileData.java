@@ -45,7 +45,6 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.ProfileState;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -65,7 +64,6 @@ import lombok.ToString;
     })
 @Data
 @ToString(onlyExplicitlyIncluded = true)
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class ProfileData extends IdentifiableVersionedData implements Profile, Displayable {
   @Id
   @ToString.Include

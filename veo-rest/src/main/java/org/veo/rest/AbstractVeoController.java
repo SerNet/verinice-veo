@@ -40,7 +40,6 @@ import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.security.ApplicationUser;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -54,9 +53,6 @@ public abstract class AbstractVeoController {
 
   protected AbstractVeoController() {}
 
-  @SuppressFBWarnings(
-      value = "DM_DEFAULT_ENCODING",
-      justification = "Charset UTF 8 is used when decoding the byte array")
   protected <T> T parse(MultipartFile file, Class<T> type) {
     try {
       String content = new String(file.getBytes(), StandardCharsets.UTF_8);

@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.EntityType;
 import org.veo.core.repository.DesignatorSequenceRepository;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 
 @Repository
@@ -46,7 +45,6 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
     EntityType.TYPE_DESIGNATORS.forEach(
         new Consumer<>() {
           @Override
-          @SuppressFBWarnings("SQL_INJECTION_JPA")
           public void accept(String typeDesignator) {
             em.createNativeQuery(
                     "CREATE SEQUENCE IF NOT EXISTS "
@@ -66,7 +64,6 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
   }
 
   @Override
-  @SuppressFBWarnings("SQL_INJECTION_JPA")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public List<Long> getNext(UUID clientId, String typeDesignator, int count) {
     return em.createNativeQuery(
@@ -86,7 +83,6 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
     EntityType.TYPE_DESIGNATORS.forEach(
         new Consumer<>() {
           @Override
-          @SuppressFBWarnings("SQL_INJECTION_JPA")
           public void accept(String typeDesignator) {
             em.createNativeQuery(
                     "DROP SEQUENCE IF EXISTS "

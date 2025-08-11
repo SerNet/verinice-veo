@@ -23,13 +23,10 @@ import java.util.Set;
 
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * A group of {@link Element} objects that form a logical unit. An object may belong to zero, one or
  * multiple scopes. Scopes can contain scopes.
  */
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Scope extends RiskAffected<Scope, ScopeRisk> {
 
   String SINGULAR_TERM = "scope";

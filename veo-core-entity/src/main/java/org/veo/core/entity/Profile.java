@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.ProfileItemState;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Profile extends Versioned, Identifiable, ClientOwned, ProfileState {
   String SINGULAR_TERM = "profile";
   String PLURAL_TERM = "profiles";

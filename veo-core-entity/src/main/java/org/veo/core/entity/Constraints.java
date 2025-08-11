@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public class Constraints {
   public static final int DEFAULT_STRING_MAX_LENGTH = 255;
   public static final int DEFAULT_CONSTANT_MAX_LENGTH = 120;

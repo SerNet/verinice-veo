@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /** A Document is a specification, a contract or a reference. */
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 public interface Document extends CompositeElement<Document> {
 
   String SINGULAR_TERM = "document";

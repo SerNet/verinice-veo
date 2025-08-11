@@ -20,7 +20,6 @@ package org.veo.core.entity.inspection;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -29,7 +28,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonSubTypes({
   @JsonSubTypes.Type(value = AddPartSuggestion.class, name = AddPartSuggestion.NAME),
 })
-@SuppressFBWarnings("PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES")
 @Schema(
     description = "Suggests an action to the user that would fix an inspection finding",
     discriminatorProperty = "type",
