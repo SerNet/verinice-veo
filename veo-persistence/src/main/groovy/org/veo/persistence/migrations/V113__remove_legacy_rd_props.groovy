@@ -53,7 +53,8 @@ set risk_definitions = (select jsonb_object_agg(key, value || jsonb_build_object
                 'levels', (select array_agg(value - 'name' - 'description' - 'abbreviation')
                            from jsonb_array_elements(value -> 'implementationStateDefinition' -> 'levels'))
                                                                                                 )))
-                        from jsonb_each(risk_definitions));
+                        from jsonb_each(risk_definitions))
+where risk_definitions <> '{}'::jsonb;
         """)
         }
     }
