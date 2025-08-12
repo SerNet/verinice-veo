@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import org.veo.core.entity.Translated;
 
 import lombok.NoArgsConstructor;
@@ -26,9 +24,6 @@ import lombok.ToString;
 
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-// TODO #3935: when all domains are migrated to the new structure this ignoreProperties can be
-// removed
-@JsonIgnoreProperties({"name", "abbreviation", "description"})
 public class CategoryLevel extends DiscreteValue {
   public CategoryLevel(String htmlColor) {
     super(htmlColor);
