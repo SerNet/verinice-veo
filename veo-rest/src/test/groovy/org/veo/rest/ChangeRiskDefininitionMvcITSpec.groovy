@@ -909,12 +909,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "use evaluation to edit a risk definition"() {
         given:
-        def ret
 
         when: "we remove an impact value in category D"
-        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+        def ret = parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
             categories.find{ it.id == "D" }.potentialImpacts.removeLast()
-            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+            parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
         }
 
         then: "the risk matrix is updated"
@@ -934,10 +933,10 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
 
         when: "we add a probability value"
-        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+        ret = parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
             probability.levels.add([:])
             probability.levels.add([:])
-            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+            parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
         }
 
         then: "and the matrix conforms"
@@ -947,15 +946,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             valueMatrix*.size() as Set == [6] as Set
         }
         with(ret) {
-            changes[0].changeType == "ProbabilityListResize"
-            changes[0].categories == ["C", "I", "A", "R", "D"]
-            changes[1].changeType == "RiskMatrixDiff"
-            changes[1].categories == ["D"]
-            effects[0].description.en == "Risk values for category 'C' are removed from all risks."
-            effects[1].description.en == "Risk values for category 'I' are removed from all risks."
-            effects[2].description.en == "Risk values for category 'A' are removed from all risks."
-            effects[3].description.en == "Risk values for category 'R' are removed from all risks."
-            effects[4].description.en == "Risk values for category 'D' are removed from all risks."
+            changes.size() == 2
+            with(changes.toSorted{it.changeType}) {
+                it[0].changeType == "ProbabilityListResize"
+                it[0].categories == ["C", "I", "A", "R", "D"]
+                it[1].changeType == "RiskMatrixDiff"
+                it[1].categories == ["D"]
+            }
+            effects.size() == 6
+            effects.toSorted{it.category}*.description*.en ==
+            [
+                "Risk values are recalculated.",
+                "Risk values for category 'A' are removed from all risks.",
+                "Risk values for category 'C' are removed from all risks.",
+                "Risk values for category 'D' are removed from all risks.",
+                "Risk values for category 'I' are removed from all risks.",
+                "Risk values for category 'R' are removed from all risks."
+            ]
+
+            validationMessages.size() == 1
             validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
             validationMessages[0].changedCategories == ["D"]
             validationMessages[0].severity == "WARNING"
@@ -985,9 +994,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                     ret.riskDefinition.riskValues.last().ordinalValue
                 ]
             }
+            changes.size() == 1
             changes[0].changeType == "RiskMatrixAdd"
             changes[0].categories == ["C"]
             changes[0].effects == null
+            effects.size() == 2
             effects[0].description.en == "Risk values are recalculated."
             effects[1].description.en == "Risk values for category 'C' are added to risks."
         }
@@ -1003,7 +1014,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             valueMatrix.size() == 4
             valueMatrix*.size() as Set == [4] as Set
         }
-        ret.changes*.changeType  ==~ [
+        ret.changes*.changeType.toSorted()  ==~ [
             "RiskMatrixDiff",
             "RiskMatrixAdd",
             "RiskMatrixAdd",
@@ -1011,11 +1022,16 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             "RiskMatrixAdd"
         ]
         with(ret) {
-            effects[0].description.en == "Risk values are recalculated."
-            effects[1].description.en == "Risk values for category 'C' are added to risks."
-            effects[2].description.en == "Risk values for category 'I' are added to risks."
-            effects[3].description.en == "Risk values for category 'R' are added to risks."
-            effects[4].description.en == "Risk values for category 'A' are added to risks."
+            effects.size() == 5
+            effects.toSorted{it.category}*.description*.en == [
+                "Risk values are recalculated.",
+                "Risk values for category 'A' are added to risks.",
+                "Risk values for category 'C' are added to risks.",
+                "Risk values for category 'I' are added to risks.",
+                "Risk values for category 'R' are added to risks."
+            ]
+            validationMessages.size() == 1
+
             validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
             validationMessages[0].changedCategories == ["D"]
         }
@@ -1106,7 +1122,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             valueMatrix[1]*.ordinalValue ==~ [0, 0]
         }
         ret.changes.size() == 8
-        ret.changes*.changeType ==~ [
+        ret.changes*.changeType.toSorted() ==~ [
             "RiskValueListResize",
             "RiskMatrixResize",
             "ProbabilityListResize",
@@ -1118,17 +1134,20 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         ]
         with(ret) {
             effects.size() == 11
-            effects[0].description.en == "Risk values for category 'C' are removed from all risks."
-            effects[1].description.en == "Risk values for category 'I' are removed from all risks."
-            effects[2].description.en == "Risk values for category 'A' are removed from all risks."
-            effects[3].description.en == "Risk values for category 'R' are removed from all risks."
-            effects[4].description.en == "Risk values for category 'D' are removed from all risks."
-            effects[5].description.en == "Risk values are recalculated."
-            effects[6].description.en == "Impact values for category 'C' are removed from all assets, processes and scopes."
-            effects[7].description.en == "Impact values for category 'A' are removed from all assets, processes and scopes."
-            effects[8].description.en == "Impact values for category 'R' are removed from all assets, processes and scopes."
-            effects[9].description.en == "Impact values for category 'I' are removed from all assets, processes and scopes."
-            effects[10].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
+            effects*.description*.en .toSorted() == [
+                "Impact values for category 'A' are removed from all assets, processes and scopes.",
+                "Impact values for category 'C' are removed from all assets, processes and scopes.",
+                "Impact values for category 'D' are removed from all assets, processes and scopes.",
+                "Impact values for category 'I' are removed from all assets, processes and scopes.",
+                "Impact values for category 'R' are removed from all assets, processes and scopes.",
+                "Risk values are recalculated.",
+                "Risk values for category 'A' are removed from all risks.",
+                "Risk values for category 'C' are removed from all risks.",
+                "Risk values for category 'D' are removed from all risks.",
+                "Risk values for category 'I' are removed from all risks.",
+                "Risk values for category 'R' are removed from all risks."
+            ]
+            validationMessages.size() == 1
             validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
             validationMessages[0].changedCategories ==~ ["D"]
         }
