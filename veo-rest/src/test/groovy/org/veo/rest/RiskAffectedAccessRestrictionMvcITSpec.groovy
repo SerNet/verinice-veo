@@ -240,6 +240,15 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
         then:
         thrown(NotAllowedException)
 
+        when: "trying to update a risk"
+        get("/$elementType/$elementId/risks/${scenario1.idAsString}").with{
+            def  risk = parseJson(it)
+            put(risk._self, risk, ['If-Match': getETag(it)], 403)
+        }
+
+        then:
+        thrown(NotAllowedException)
+
         when: "trying to update an RI"
         get("/$elementType/${element.idAsString}/requirement-implementations/${control.idAsString}").with{
             def  ri = parseJson(it)

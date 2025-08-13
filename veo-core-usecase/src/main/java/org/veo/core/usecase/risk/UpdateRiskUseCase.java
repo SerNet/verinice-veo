@@ -28,6 +28,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.entity.exception.CrossUnitReferenceException;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.specification.RiskOnlyReferencesItsOwnersUnitSpecification;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
@@ -51,21 +52,19 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
   @Override
   public OutputData<R> execute(InputData input) {
     // Retrieve required elements for operation:
-    var riskAffected = findEntity(entityClass, input.riskAffectedRef()).orElseThrow();
-
-    var scenario = findEntity(Scenario.class, input.scenarioRef()).orElseThrow();
-
+    var riskAffected = getEntity(TypedId.from(input.riskAffectedRef(), entityClass), input.user());
+    var scenario = getEntity(TypedId.from(input.scenarioRef(), Scenario.class), input.user());
     var domains = findEntities(Domain.class, input.domainRefs());
-
-    var mitigation = input.getControlRef().flatMap(id -> findEntity(Control.class, id));
-
-    var riskOwner = input.getRiskOwnerRef().flatMap(id -> findEntity(Person.class, id));
-
+    var mitigation =
+        input.getControlRef().map(id -> getEntity(TypedId.from(id, Control.class), input.user()));
+    var riskOwner =
+        input.getRiskOwnerRef().map(id -> getEntity(TypedId.from(id, Person.class), input.user()));
     var risk = riskAffected.getRisk(input.scenarioRef()).orElseThrow();
 
     // Validate input:
     checkETag(risk, input);
-    riskAffected.checkSameClient(input.authenticatedClient());
+    // Validate security constraints:
+    input.user().checkElementWriteAccess(riskAffected);
     scenario.checkSameClient(input.authenticatedClient());
     checkDomainOwnership(input.authenticatedClient(), domains);
     mitigation.ifPresent(control -> control.checkSameClient(input.authenticatedClient()));
