@@ -81,9 +81,12 @@ class SwaggerSpec extends VeoSpringSpec {
         assetDtoSchema.properties.links.description == 'The links for the asset.'
     }
 
-    def "operation documentation is complete"() {
-        given:
-        def ops = parsedApiDocs
+    def "operation documentation is complete for #op.method #op.path"(op) {
+        expect:
+        op.documentation.summary != null
+
+        where:
+        op << parsedApiDocs
                 .paths
                 .entrySet()
                 .collectMany{ path ->
@@ -95,11 +98,6 @@ class SwaggerSpec extends VeoSpringSpec {
                         ]
                     }
                 }
-
-        expect:
-        ops.forEach{
-            assert it.documentation.summary != null
-        }
     }
 
     def "createdAt and updatedAt are read-only"() {
