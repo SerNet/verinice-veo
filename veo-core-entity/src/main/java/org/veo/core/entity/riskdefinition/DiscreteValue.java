@@ -40,7 +40,7 @@ import lombok.ToString;
  */
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 @AllArgsConstructor
 public class DiscreteValue
     implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
@@ -50,14 +50,13 @@ public class DiscreteValue
     this.htmlColor = htmlColor;
   }
 
-  @EqualsAndHashCode.Include @ToString.Include private int ordinalValue;
+  private int ordinalValue;
 
   @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
   @ToString.Include
-  @EqualsAndHashCode.Include
   private String htmlColor;
 
-  @EqualsAndHashCode.Include @ToString.Exclude @NotNull @Valid
+  @ToString.Exclude @NotNull @Valid
   private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
   @Data

@@ -38,7 +38,7 @@ import lombok.ToString;
  * with {@link DiscreteValue} as level.
  */
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
@@ -49,7 +49,6 @@ public class DimensionDefinition
 
   @NotNull(message = "An id must be present.")
   @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  @EqualsAndHashCode.Include
   @ToString.Include
   private String id;
 

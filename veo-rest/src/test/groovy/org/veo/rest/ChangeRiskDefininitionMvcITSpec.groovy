@@ -1211,6 +1211,20 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         }
     }
 
+    @WithUserDetails("user@domain.example")
+    def "change a category translation"() {
+        when:
+        parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
+            categories.find{ it.id == "D" }.translations.en = [name: 'Extent of damage', abbreviation: 'd']
+            put("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1", it, [:],200)
+        }
+
+        then:
+        with(parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1) {
+            categories.find{ it.id == "D" }.translations.en.name == 'Extent of damage'
+        }
+    }
+
     private static ImpactRef createImpactRef(c = new CategoryLevel(2, "", new Translated())) {
         return ImpactRef.from(c)
     }

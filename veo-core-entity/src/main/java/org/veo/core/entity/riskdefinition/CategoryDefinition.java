@@ -71,8 +71,8 @@ public class CategoryDefinition extends DimensionDefinition {
     initLevel(potentialImpacts);
   }
 
-  @EqualsAndHashCode.Include private List<List<RiskValue>> valueMatrix;
-  @EqualsAndHashCode.Include private List<CategoryLevel> potentialImpacts = new ArrayList<>();
+  private List<List<RiskValue>> valueMatrix;
+  private List<CategoryLevel> potentialImpacts = new ArrayList<>();
 
   public RiskValue getRiskValue(ProbabilityRef effectiveProbability, ImpactRef effectiveImpact) {
     ensureRiskValuesSupported();

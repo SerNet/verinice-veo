@@ -31,7 +31,7 @@ import lombok.ToString;
 
 /** A special dimension defining the probability levels. */
 @Data
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProbabilityDefinition extends DimensionDefinition {
 
@@ -58,7 +58,7 @@ public class ProbabilityDefinition extends DimensionDefinition {
     initLevel(levels);
   }
 
-  @NotEmpty @EqualsAndHashCode.Include private List<ProbabilityLevel> levels = new ArrayList<>();
+  @NotEmpty private List<ProbabilityLevel> levels = new ArrayList<>();
 
   public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
     return levels.stream().filter(l -> l.getOrdinalValue() == ordinalValue).findFirst();
