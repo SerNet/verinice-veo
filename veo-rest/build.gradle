@@ -27,8 +27,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.9'
 
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.7'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
