@@ -51,7 +51,7 @@ public interface UserAccessRights {
   default void checkUnitCreateAllowed() {
     if (isUnitAccessResticted()) {
       if (!getRoles().contains("unit:create")) {
-        throw new NotAllowedException("Missing unit:create allowance.");
+        throw new NotAllowedException("Missing unit:create permission.");
       }
     }
   }
@@ -59,7 +59,7 @@ public interface UserAccessRights {
   default void checkUnitDeleteAllowed() {
     if (isUnitAccessResticted()) {
       if (!getRoles().contains("unit:delete")) {
-        throw new NotAllowedException("Missing unit:delete allowance.");
+        throw new NotAllowedException("Missing unit:delete permission.");
       }
     }
   }
@@ -67,7 +67,7 @@ public interface UserAccessRights {
   default void checkUnitUpdateAllowed() {
     if (isUnitAccessResticted()) {
       if (!getRoles().contains("unit:update")) {
-        throw new NotAllowedException("Missing unit:update allowance.");
+        throw new NotAllowedException("Missing unit:update permission.");
       }
     }
   }
@@ -76,7 +76,7 @@ public interface UserAccessRights {
     if (isUnitAccessResticted()) {
       if (!getWritableUnitIds().contains(element.getOwner().getId())) {
         throw new NotAllowedException(
-            "Missing unit '%s' write allowance.".formatted(element.getOwner().getId().toString()));
+            "Missing unit '%s' write permission.".formatted(element.getOwner().getId().toString()));
       }
     }
   }
@@ -90,7 +90,7 @@ public interface UserAccessRights {
     if (isUnitAccessResticted()) {
       if (!getWritableUnitIds().contains(unit.getId())) {
         throw new NotAllowedException(
-            "Missing unit '%s' write allowance.".formatted(unit.getName()));
+            "Missing unit '%s' write permission.".formatted(unit.getName()));
       }
     }
   }
