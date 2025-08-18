@@ -806,8 +806,7 @@ class SwaggerSpec extends VeoSpringSpec {
                     it.description == 'The attribute in the custom aspect'
                 }
                 with(it.properties.migrationExpression) {
-                    // TODO check description once swagger-core is able to generate it
-                    // it.description == 'An expression to transform the value from the old domain'
+                    it.description == 'An expression to transform the value from the old domain'
                     it.$ref == '#/components/schemas/VeoExpression'
                 }
             }
@@ -854,7 +853,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'impactValues',
                 'riskValues'
             ]
-            it.properties.probability == [$ref:'#/components/schemas/Probability']
+            it.properties.probability == [$ref:'#/components/schemas/Probability', description: 'Values describing the probability of this risk occurring']
             it.properties.impactValues == [type:'array', items:[$ref:'#/components/schemas/Impact'], description:'Values describing the impacts of this risk in different risk categories']
             it.properties.riskValues == [type:'array', items:[$ref:'#/components/schemas/DeterminedRisk'], description: 'Values describing the evaluated risk in different categories']
         }
@@ -990,7 +989,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 'item',
                 'references'
             ]
-            it.properties.item == [$ref: '#/components/schemas/IdRefTemplateItem']
+            it.properties.item == [
+                $ref: '#/components/schemas/IdRefTemplateItem',
+                title: 'Reference the template item to be incarnated.'
+            ]
             with(it.properties.references) {
                 it.type == 'array'
                 it.title == 'A list of references this element needs to set.'
@@ -1008,7 +1010,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'elements',
                 'risks'
             ]
-            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/FullElementDto']]
+            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/FullElementDto'], uniqueItems:true]
         }
     }
 
@@ -1072,7 +1074,6 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'object',
                 additionalProperties:[
                     type:'array',
-                    description: 'The links for the asset.',
                     items: [$ref:'#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the asset.']
@@ -1091,7 +1092,6 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'object',
                 additionalProperties:[
                     type:'array',
-                    description: 'The links for the process.',
                     items: [$ref:'#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the process.']
@@ -1110,8 +1110,6 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'object',
                 additionalProperties:[
                     type:'array',
-                    description: 'Custom relations which do not affect the behavior.',
-                    title: 'CustomLink',
                     items: [$ref:'#/components/schemas/CustomLinkDto']
                 ],
                 description: 'Custom relations which do not affect the behavior.',
@@ -1150,14 +1148,14 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'object',
                 additionalProperties:[
                     type:'array',
-                    description: 'The links for the scenario.',
                     items: [$ref:'#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the scenario.'
             ]
             it.properties.parts == [
                 type:'array',
-                items: [ $ref: '#/components/schemas/PartReference']
+                items: [ $ref: '#/components/schemas/PartReference'],
+                uniqueItems: true
             ]
         }
     }
@@ -1165,7 +1163,6 @@ class SwaggerSpec extends VeoSpringSpec {
     def "AssetDomainAssociationDto is well-documented"() {
         expect:
         with(getSchema('AssetDomainAssociationDto')) {
-            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             it.properties.riskValues == [
                 type: 'object',
                 additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
@@ -1188,7 +1185,6 @@ class SwaggerSpec extends VeoSpringSpec {
     def "ProcessDomainAssociationDto is well-documented"() {
         expect:
         with(getSchema('ProcessDomainAssociationDto')) {
-            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             it.properties.riskValues == [
                 type: 'object',
                 additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
@@ -1210,7 +1206,6 @@ class SwaggerSpec extends VeoSpringSpec {
     def "ScopeDomainAssociationDto is well-documented"() {
         expect:
         with(getSchema('ScopeDomainAssociationDto')) {
-            it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             it.properties.riskValues == [
                 type: 'object',
                 additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
@@ -1242,9 +1237,8 @@ class SwaggerSpec extends VeoSpringSpec {
 
             it.properties.decisiveRule == [
                 type: 'integer',
-                description: '''Index of a rule in a decision's rules list''',
-                format: 'int32',
-                nullable: true
+                description: '''Decision rule that matched first and therefore determined the result value. Can be null if none of the rules matched.''',
+                format: 'int32'
             ]
             it.properties.agreeingRules == [
                 type: 'array',
@@ -1262,7 +1256,6 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('ImpactValuesDto')) {
 
-            description == "Key is risk definition ID, value contains impact values in the context of that risk definition."
             with(properties) {
                 with(potentialImpacts) {
                     type == "object"
@@ -1337,7 +1330,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 'decisionResults',
                 '_self'
             ]
-            it.properties.appliedCatalogItem == [$ref:'#/components/schemas/SymIdRefCatalogItemDomainBase']
+            it.properties.appliedCatalogItem == [
+                $ref:'#/components/schemas/SymIdRefCatalogItemDomainBase',
+                description:'A reference to the catalog item that this element was created from, if applicable'
+            ]
         }
     }
 
