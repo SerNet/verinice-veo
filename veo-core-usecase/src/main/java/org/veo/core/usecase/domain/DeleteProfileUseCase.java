@@ -20,7 +20,6 @@ package org.veo.core.usecase.domain;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -34,7 +33,7 @@ public class DeleteProfileUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.client.getId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     domain.removeProfile(input.profileId);
     return EmptyOutput.INSTANCE;
   }
@@ -44,6 +43,5 @@ public class DeleteProfileUseCase
     return false;
   }
 
-  public record InputData(UUID domainId, UUID profileId, Client client)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, UUID profileId) implements UseCase.InputData {}
 }

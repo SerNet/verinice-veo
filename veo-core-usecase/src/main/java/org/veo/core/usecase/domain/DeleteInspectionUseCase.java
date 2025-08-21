@@ -37,7 +37,7 @@ public class DeleteInspectionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
     domain.removeInspection(input.inspectionId);
     domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
@@ -49,6 +49,5 @@ public class DeleteInspectionUseCase
   }
 
   @Valid
-  public record InputData(UUID authenticatedClientId, UUID domainId, String inspectionId)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, String inspectionId) implements UseCase.InputData {}
 }

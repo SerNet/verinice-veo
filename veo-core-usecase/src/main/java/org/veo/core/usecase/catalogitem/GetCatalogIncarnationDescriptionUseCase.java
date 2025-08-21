@@ -27,7 +27,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationLookup;
 import org.veo.core.entity.IncarnationRequestModeType;
@@ -72,10 +71,9 @@ public class GetCatalogIncarnationDescriptionUseCase
         input.catalogItemIds,
         input.domainId,
         input.unitId);
-    Unit unit = unitRepository.getByIdFetchClient(input.unitId);
-    unit.checkSameClient(input.authenticatedClient);
+    Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
     validateInput(input);
-    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     var items =
         catalogItemRepository.findAllByIdsFetchTailoringReferences(input.catalogItemIds(), domain);
     var incarnationDescriptions =
@@ -102,7 +100,6 @@ public class GetCatalogIncarnationDescriptionUseCase
 
   @Valid
   public record InputData(
-      Client authenticatedClient,
       @NotNull UUID unitId,
       @NotNull UUID domainId,
       @NotNull List<UUID> catalogItemIds,

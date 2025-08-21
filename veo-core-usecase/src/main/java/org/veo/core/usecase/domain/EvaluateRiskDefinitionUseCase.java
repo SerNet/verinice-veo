@@ -88,7 +88,7 @@ public class EvaluateRiskDefinitionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
 
     if (input.riskDefinition == null) {
       RiskDefinition riskDefinition =
@@ -264,7 +264,6 @@ public class EvaluateRiskDefinitionUseCase
 
   @Valid
   public record InputData(
-      UUID authenticatedClientId,
       UUID domainId,
       String riskDefinitionRef,
       RiskDefinition riskDefinition,

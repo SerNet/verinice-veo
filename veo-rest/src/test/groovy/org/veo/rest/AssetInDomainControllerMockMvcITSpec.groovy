@@ -24,7 +24,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.presenter.api.DeviatingIdException
+import org.veo.core.UserAccessRights
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
@@ -32,6 +34,7 @@ import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.common.ETag
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("user@domain.example")
 class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -51,8 +54,10 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String testDomainId
     private String dsgvoTestDomainId
 
+    Client client
+
     def setup() {
-        def client = createTestClient()
+        client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
         dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         client = clientRepository.getById(client.id)
@@ -265,7 +270,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "retrieve control implementations for an asset"() {
         given:
-        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId))
+        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId), NoRestrictionAccessRight.from(client.idAsString))
         def testDomain = domainRepository.getById(UUID.fromString(testDomainId))
         def targetAsset = txTemplate.execute {
             def person1 = personRepository.save(newPerson(unit) {
@@ -349,7 +354,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "retrieving control implementations for an asset without the domain associated returns 404"() {
         given:
-        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId))
+        def unit = unitRepository.getByIdFetchClient(UUID.fromString(unitId), NoRestrictionAccessRight.from(client.idAsString))
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit))
         }

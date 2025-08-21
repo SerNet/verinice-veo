@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
@@ -44,11 +45,12 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     Control newControl = Mock()
     ElementQuery emptyQuery = Mock()
     PagedResult emptyQueryResult = Mock()
+    UserAccessRights user = Mock()
 
     def setup() {
         // state the obvious
-        unitRepo.getByIdFetchClient(existingUnit.id) >> existingUnit
-        unitRepo.getByIdFetchClient(_) >> { throw new NotFoundException("") }
+        unitRepo.getByIdFetchClient(existingUnit.id, user) >> existingUnit
+        unitRepo.getByIdFetchClient(_, user) >> { throw new NotFoundException("") }
         unitRepo.getById(_) >> { throw new NotFoundException("") }
 
         newControl.getModelInterface() >> Control.class

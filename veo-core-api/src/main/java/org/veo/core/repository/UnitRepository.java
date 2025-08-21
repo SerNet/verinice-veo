@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -37,17 +38,26 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
   List<Unit> findByParent(Unit parent);
 
-  Optional<Unit> findByIdFetchClient(UUID id);
+  Optional<Unit> findByIdFetchClient(UUID id, UserAccessRights user);
 
   default Unit getById(UUID unitId) {
     return findById(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
   }
 
-  default Unit getByIdFetchClient(UUID unitId) {
-    return findByIdFetchClient(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
+  default Unit getById(UUID unitId, UserAccessRights user) {
+    return findById(unitId, user).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
+  }
+
+  Optional<Unit> findById(UUID unitId, UserAccessRights user);
+
+  default Unit getByIdFetchClient(UUID unitId, UserAccessRights user) {
+    return findByIdFetchClient(unitId, user)
+        .orElseThrow(() -> new NotFoundException(unitId, Unit.class));
   }
 
   List<Unit> findByDomain(UUID domainId);
+
+  List<Unit> findByUser(UserAccessRights user);
 
   Long count();
 }

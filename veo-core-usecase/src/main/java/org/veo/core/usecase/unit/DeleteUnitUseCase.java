@@ -44,14 +44,13 @@ public class DeleteUnitUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    Client client = clientRepository.getById(input.authenticatedClient.getId());
-    Unit unit = unitRepository.getById(input.unitId);
-    unit.checkSameClient(client);
+    Unit unit = unitRepository.getById(input.unitId, userAccessRights);
+    userAccessRights.checkUnitDeleteAllowed();
 
     genericElementRepository.deleteByUnit(unit);
     unitRepository.delete(unit);
     // Reload the client since the persistence context was cleared
-    client = clientRepository.getById(input.authenticatedClient.getId());
+    Client client = clientRepository.getById(userAccessRights.clientId());
     client.decrementTotalUnits();
     return EmptyOutput.INSTANCE;
   }
@@ -72,5 +71,5 @@ public class DeleteUnitUseCase
   }
 
   @Valid
-  public record InputData(UUID unitId, Client authenticatedClient) implements UseCase.InputData {}
+  public record InputData(UUID unitId) implements UseCase.InputData {}
 }

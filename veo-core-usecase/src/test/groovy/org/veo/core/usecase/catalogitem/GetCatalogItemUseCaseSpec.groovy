@@ -27,9 +27,6 @@ import org.veo.rest.security.NoRestrictionAccessRight
 
 class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     CatalogItem catalogItem = Mock()
-    Client existingClient = Mock {
-        id >> UUID.randomUUID()
-    }
     def existingDomainId = UUID.randomUUID()
     def catalogItemId = UUID.randomUUID()
 
@@ -47,7 +44,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a catalog item"() {
         when:
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, existingClient), noRestrictionExistingClient)
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId), noRestrictionExistingClient)
 
         then:
         output.catalogItem == catalogItem
@@ -55,7 +52,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "delegates item not found exception"() {
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(UUID.randomUUID(), existingDomainId, existingClient), noRestrictionExistingClient)
+        usecase.execute(new GetCatalogItemUseCase.InputData(UUID.randomUUID(), existingDomainId), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -63,7 +60,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def "delegates domain not found exception"() {
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, UUID.randomUUID(), existingClient), noRestrictionExistingClient)
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, UUID.randomUUID()), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -75,7 +72,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         def otherClient = Mock(Client) { id >> otherClientId }
 
         when:
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId, otherClient), NoRestrictionAccessRight.from(otherClientId.toString()))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, existingDomainId), NoRestrictionAccessRight.from(otherClientId.toString()))
 
         then:
         thrown(NotFoundException)

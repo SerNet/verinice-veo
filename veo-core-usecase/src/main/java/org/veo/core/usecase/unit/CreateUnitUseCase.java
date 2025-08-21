@@ -69,10 +69,11 @@ public class CreateUnitUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+    userAccessRights.checkUnitCreateAllowed();
     Client client =
         clientRepository
-            .findById(input.clientId)
-            .orElseThrow(() -> new NotFoundException(input.clientId, Client.class));
+            .findById(userAccessRights.clientId())
+            .orElseThrow(() -> new NotFoundException(userAccessRights.clientId(), Client.class));
 
     // Note: the new client will get the name of the new unit by default.
     // If we want to get a client name we would have to do a REST call to
@@ -130,7 +131,6 @@ public class CreateUnitUseCase
   @Valid
   public record InputData(
       NameableInputData nameableInput,
-      UUID clientId,
       Optional<UUID> parentUnitId,
       Integer maxUnits,
       Set<UUID> domainIds)

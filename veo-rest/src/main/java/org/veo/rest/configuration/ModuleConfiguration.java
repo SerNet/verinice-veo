@@ -290,9 +290,14 @@ public class ModuleConfiguration {
       UserConfigurationRepository userConfigurationRepository,
       EntityFactory entityFactor,
       @Value("${veo.default.user-configurations-max:10}") int maxConfigurations,
-      @Value("${veo.default.user-configuration-bytes-max:4000}") int maxBytesPerConfiguration) {
+      @Value("${veo.default.user-configuration-bytes-max:4000}") int maxBytesPerConfiguration,
+      ClientRepository clientRepository) {
     return new SaveUserConfigurationUseCase(
-        userConfigurationRepository, entityFactor, maxConfigurations, maxBytesPerConfiguration);
+        userConfigurationRepository,
+        entityFactor,
+        maxConfigurations,
+        maxBytesPerConfiguration,
+        clientRepository);
   }
 
   @Bean
@@ -495,8 +500,10 @@ public class ModuleConfiguration {
       UnitRepositoryImpl repository,
       UnitValidator unitValidator,
       EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateUnitUseCase(repository, unitValidator, entityStateMapper, refResolverFactory);
+      RefResolverFactory refResolverFactory,
+      ClientRepository clientRepo) {
+    return new UpdateUnitUseCase(
+        repository, unitValidator, entityStateMapper, refResolverFactory, clientRepo);
   }
 
   @Bean
@@ -834,9 +841,10 @@ public class ModuleConfiguration {
   public GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
       ProfileRepository profileRepository,
-      GenericElementRepository genericRepository) {
+      GenericElementRepository genericRepository,
+      ClientRepository clientRepository) {
     return new GetProfileIncarnationDescriptionUseCase(
-        genericRepository, unitRepository, profileRepository);
+        genericRepository, unitRepository, profileRepository, clientRepository);
   }
 
   @Bean
@@ -895,17 +903,24 @@ public class ModuleConfiguration {
   public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
       CatalogItemRepository catalogItemRepository,
       IncarnationDescriptionApplier incarnationDescriptionApplier,
-      DomainRepository domainRepository) {
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      ClientRepository clientRepository) {
     return new ApplyCatalogIncarnationDescriptionUseCase(
-        catalogItemRepository, incarnationDescriptionApplier, domainRepository);
+        catalogItemRepository,
+        incarnationDescriptionApplier,
+        domainRepository,
+        unitRepository,
+        clientRepository);
   }
 
   @Bean
   public ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase(
       ProfileItemRepository profileItemRepository,
-      IncarnationDescriptionApplier incarnationDescriptionApplier) {
+      IncarnationDescriptionApplier incarnationDescriptionApplier,
+      UnitRepository unitRepository) {
     return new ApplyProfileIncarnationDescriptionUseCase(
-        profileItemRepository, incarnationDescriptionApplier);
+        profileItemRepository, incarnationDescriptionApplier, unitRepository);
   }
 
   @Bean

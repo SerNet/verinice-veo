@@ -100,11 +100,7 @@ public class ContentCustomizingController extends AbstractVeoController {
     return useCaseInteractor.execute(
         evaluateRiskDefinitionUseCase,
         new EvaluateRiskDefinitionUseCase.InputData(
-            UUID.fromString(user.getClientId()),
-            domainId,
-            riskDefinitionId,
-            riskDefinition,
-            ALLOWED_CHANGES),
+            domainId, riskDefinitionId, riskDefinition, ALLOWED_CHANGES),
         out ->
             ResponseEntity.ok(
                 new RiskDefinitionEvaluationDto(

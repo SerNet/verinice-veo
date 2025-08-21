@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Client
+import org.veo.core.entity.EntityType
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.state.UnitState
 import org.veo.core.usecase.common.ETag
@@ -30,8 +33,9 @@ import org.veo.rest.security.NoRestrictionAccessRight
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     static final String USER_NAME = "john"
     UnitValidator unitValidator = Mock()
+    UserAccessRights user = Mock()
     EntityStateMapper entityStateMapper = new EntityStateMapper()
-    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator, entityStateMapper, refResolverFactory)
+    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator, entityStateMapper, refResolverFactory, clientRepository)
 
     def "Update an existing unit" () {
         given: "starting values for a unit"
@@ -43,20 +47,17 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def eTagNewUnit = ETag.from(this.existingUnit.idAsString, 0)
-        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, this.existingClient, eTagNewUnit, USER_NAME), noRestrictionExistingClient)
+        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, eTagNewUnit), noRestrictionExistingClient)
 
         then: "the existing unit was retrieved"
-        1 * unitRepository.getById(existingUnit.id) >> this.existingUnit
-
-        and: "client boundaries were validated"
-        1 * this.existingUnit.checkSameClient(existingClient)
+        1 * unitRepository.getById(existingUnit.id, noRestrictionExistingClient) >> this.existingUnit
 
         and: "the unit was updated with the changed values"
         1 * existingUnit.setName("Name changed")
 
         and: "the client was then saved with the new unit"
         1 * unitRepository.save(existingUnit) >> existingUnit
-        1 * unitRepository.getById(existingUnit.id) >> existingUnit
+        1 * unitRepository.getById(existingUnit.id, noRestrictionExistingClient) >> existingUnit
 
         and: "validation has been run"
         1 * unitValidator.validateUpdate(newUnit, existingUnit)
@@ -81,13 +82,12 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
         def eTag = ETag.from(existingUnit.idAsString, existingUnit.getVersion())
-        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, maliciousClient, eTag, USER_NAME), NoRestrictionAccessRight.from(maliciousClient.id.toString()) )
+        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, eTag), NoRestrictionAccessRight.from(maliciousClient.id.toString()) )
 
-        then: "a unit was retrieved"
-        unitRepository.getById(_) >> this.existingUnit
-        existingUnit.checkSameClient(_) >> { throw new ClientBoundaryViolationException(existingUnit, maliciousClient) }
+        then: "the unit was not found"
+        unitRepository.getById(existingUnit.id, _) >>{ throw new NotFoundException(existingUnit.id, EntityType.UNIT.type) }
 
-        and: "the security violation was prevented"
-        thrown ClientBoundaryViolationException
+        and: "the security violation was prevented and no information leaked"
+        thrown NotFoundException
     }
 }

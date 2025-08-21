@@ -56,7 +56,6 @@ public final class CreateUnitInputMapper {
 
     return new InputData(
         new NameableInputData(dto.getName(), dto.getAbbreviation(), dto.getDescription()),
-        UUID.fromString(clientId),
         parentId,
         maxUnits,
         dto.getDomains().stream().map(IdRef::getId).collect(Collectors.toSet()));

@@ -147,8 +147,8 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost//units/' + unit.id]
         ], headers, 404)
 
-        then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        then: "the unit is not found (no information leaked)"
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -217,8 +217,8 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         when: "a delete request tries to delete the unit"
         delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString, 404)
 
-        then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        then: "the unit is not found (no information leaked)"
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -345,8 +345,8 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         when: "a get request tries to get the unit"
         get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString, 404)
 
-        then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        then: "the unit is not found (no information leaked)"
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

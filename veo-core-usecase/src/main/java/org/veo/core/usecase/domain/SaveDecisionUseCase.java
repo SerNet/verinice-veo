@@ -39,7 +39,7 @@ public class SaveDecisionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getById(input.domainId, userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -54,8 +54,7 @@ public class SaveDecisionUseCase
   }
 
   @Valid
-  public record InputData(
-      UUID authenticatedClientId, UUID domainId, String decisionRef, Decision decision)
+  public record InputData(UUID domainId, String decisionRef, Decision decision)
       implements UseCase.InputData {}
 
   @Valid

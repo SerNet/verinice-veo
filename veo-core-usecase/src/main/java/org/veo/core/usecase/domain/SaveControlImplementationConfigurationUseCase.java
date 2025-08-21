@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.ElementType;
@@ -45,7 +44,7 @@ public class SaveControlImplementationConfigurationUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     var config =
         input.controlImplementationConfiguration.toConfig(
             domain.getControlImplementationConfiguration());
@@ -72,7 +71,6 @@ public class SaveControlImplementationConfigurationUseCase
 
   @Valid
   public record InputData(
-      @NotNull Client authenticatedClient,
       @NotNull UUID domainId,
       // TODO #3860 use ControlImplementationConfiguration type again
       @NotNull ControlImplementationConfigurationDto controlImplementationConfiguration)

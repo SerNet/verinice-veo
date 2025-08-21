@@ -25,6 +25,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.UnitState;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -34,8 +35,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Abstract superclass for all operations that change an asset. The <code>update()</code> method
- * must be overwritten to make all necessary changes to the asset.
+ * Abstract superclass for all operations that change an unit. The <code>update()</code> method must
+ * be overwritten to make all necessary changes to the unit.
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -43,6 +44,7 @@ public abstract class ChangeUnitUseCase
     implements TransactionalUseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
   private final UnitRepository unitRepository;
   private final UnitValidator unitValidator;
+  private final ClientRepository clientRepository;
 
   /**
    * Find a persisted unit object and reinstantiate it. Throws a domain exception if the requested
@@ -52,44 +54,31 @@ public abstract class ChangeUnitUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     log.info("Updating unit with id {}", input.id);
 
-    var storedUnit = unitRepository.getById(input.id);
-    checkSameClient(storedUnit, input);
+    userAccessRights.checkUnitUpdateAllowed();
+    var storedUnit = unitRepository.getById(input.id, userAccessRights);
+    var client = clientRepository.getById(userAccessRights.clientId());
+    // check client and read unit access is done by the repository, write access by userAccessRights
     ETag.validate(input.eTag, storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
-    var updatedUnit = update(storedUnit, input);
-    save(updatedUnit, input);
-    return output(unitRepository.getById(input.id));
+    var updatedUnit = update(storedUnit, input.changedUnit, client);
+    save(updatedUnit, client);
+    return output(unitRepository.getById(input.id, userAccessRights));
   }
 
-  protected abstract Unit update(Unit storedUnit, InputData input);
+  protected abstract Unit update(Unit storedUnit, UnitState changedUnit, Client client);
 
-  protected Unit save(Unit unit, InputData input) {
+  protected Unit save(Unit unit, Client client) {
     // Notice: by changing the context here it would be possible to change the view
     // of the entity that is being
     // returned after the save.
     // i.e. to exclude all references and collections:
     // "dataToEntityContext.partialUnit();"
-    unit.setClient(input.authenticatedClient);
+    unit.setClient(client);
     return this.unitRepository.save(unit);
   }
 
   private OutputData output(Unit unit) {
     return new OutputData(unit);
-  }
-
-  /**
-   * Without this check, it would be possible to overwrite objects from other clients with our own
-   * clientID, thereby hijacking these objects!
-   *
-   * @throws ClientBoundaryViolationException, if the client in the input and in the stored unit is
-   *     not the same as in the authentication object
-   */
-  private void checkSameClient(Unit storedUnit, InputData input) {
-    log.info(
-        "Comparing clients {} and {}",
-        input.authenticatedClient.getIdAsString(),
-        storedUnit.getClient().getIdAsString());
-    storedUnit.checkSameClient(input.authenticatedClient);
   }
 
   @Override
@@ -98,8 +87,7 @@ public abstract class ChangeUnitUseCase
   }
 
   @Valid
-  public record InputData(
-      UUID id, UnitState changedUnit, Client authenticatedClient, String eTag, String username)
+  public record InputData(UUID id, UnitState changedUnit, String eTag)
       implements UseCase.InputData {}
 
   @Valid

@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.UnitRepository;
@@ -43,7 +44,18 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
 
   @Override
   public List<Unit> findByClient(Client client) {
-    return dataRepository.findByClientId(client.getId()).stream().map(Unit.class::cast).toList();
+    return dataRepository.findByClientId(client.getId(), false, null).stream()
+        .map(Unit.class::cast)
+        .toList();
+  }
+
+  @Override
+  public List<Unit> findByUser(UserAccessRights user) {
+    return dataRepository
+        .findByClientId(user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+        .stream()
+        .map(Unit.class::cast)
+        .toList();
   }
 
   @Override
@@ -52,13 +64,23 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   }
 
   @Override
-  public Optional<Unit> findByIdFetchClient(UUID id) {
-    return dataRepository.findWithClientById(id).map(Unit.class::cast);
+  public Optional<Unit> findByIdFetchClient(UUID id, UserAccessRights user) {
+    return dataRepository
+        .findWithClientById(
+            id, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+        .map(Unit.class::cast);
   }
 
   @Override
   public List<Unit> findByDomain(UUID domainId) {
     return dataRepository.findByDomainsId(domainId).stream().map(Unit.class::cast).toList();
+  }
+
+  @Override
+  public Optional<Unit> findById(UUID unitId, UserAccessRights user) {
+    return dataRepository
+        .findById(unitId, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+        .map(Unit.class::cast);
   }
 
   @Override

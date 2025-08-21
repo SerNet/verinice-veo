@@ -48,7 +48,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         def result = executeInTransaction {
             def profileId = domain.profiles.first().id
             getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
         }
 
@@ -59,7 +59,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         result = executeInTransaction {
             def profileId = domain.profiles.first().id
             getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, true), NoRestrictionAccessRight.from(client.idAsString)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, true), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
         }
 

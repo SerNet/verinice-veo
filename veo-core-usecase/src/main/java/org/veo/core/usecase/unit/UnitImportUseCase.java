@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.Set;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
@@ -58,7 +57,8 @@ public class UnitImportUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var client = clientRepository.getActiveById(input.client.getId());
+    userAccessRights.checkUnitCreateAllowed();
+    var client = clientRepository.getActiveById(userAccessRights.clientId());
     client.incrementTotalUnits(input.maxUnits);
     var resolver = refResolverFactory.db(client);
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
@@ -105,11 +105,7 @@ public class UnitImportUseCase
   }
 
   public record InputData(
-      Client client,
-      Integer maxUnits,
-      UnitState unit,
-      Set<ElementState<?>> elements,
-      Set<RiskState<?, ?>> risks)
+      Integer maxUnits, UnitState unit, Set<ElementState<?>> elements, Set<RiskState<?, ?>> risks)
       implements UseCase.InputData {}
 
   public record OutputData(Unit unit) implements UseCase.OutputData {}

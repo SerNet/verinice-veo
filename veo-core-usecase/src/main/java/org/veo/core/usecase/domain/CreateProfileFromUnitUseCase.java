@@ -67,8 +67,7 @@ public class CreateProfileFromUnitUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain =
-        domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    Domain domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     Client client = input.authenticatedClient;
     Profile profile =
         input.profileId == null

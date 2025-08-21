@@ -46,6 +46,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.MaxUnitsExceededException
@@ -728,7 +729,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         get("/units/${otherClientsUnit.idAsString}/export", 404)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

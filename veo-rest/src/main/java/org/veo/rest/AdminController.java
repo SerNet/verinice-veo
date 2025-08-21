@@ -144,7 +144,8 @@ public class AdminController {
 
   @GetMapping("/unit-dump/{unitId}")
   @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
-  public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable UUID unitId) {
+  public CompletableFuture<UnitDumpDto> getUnitDump(
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID unitId) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         new GetUnitDumpUseCase.InputData(unitId, null),

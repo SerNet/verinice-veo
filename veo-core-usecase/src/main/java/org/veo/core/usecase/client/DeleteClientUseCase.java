@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.client;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
@@ -28,6 +32,8 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -49,7 +55,8 @@ public class DeleteClientUseCase
         .forEach(
             unit ->
                 deleteUnitUseCase.execute(
-                    new DeleteUnitUseCase.InputData(unit.getId(), client), userAccessRights));
+                    new DeleteUnitUseCase.InputData(unit.getId()),
+                    new NoRestriction(client.getIdAsString())));
     // Reload the client since the persistence context was cleared
     clientRepository.delete(clientRepository.getById(input.clientId));
     return EmptyOutput.INSTANCE;
@@ -61,4 +68,42 @@ public class DeleteClientUseCase
   }
 
   public record InputData(UUID clientId) implements UseCase.InputData {}
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  private final class NoRestriction implements UserAccessRights {
+    private final String clientId;
+
+    @Override
+    public void checkClient(ClientOwned id) {}
+
+    @Override
+    public boolean isUnitAccessRestricted() {
+      return false;
+    }
+
+    @Override
+    public Set<UUID> getReadableUnitIds() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Set<UUID> getWritableUnitIds() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public List<String> getRoles() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public String getClientId() {
+      return clientId;
+    }
+
+    @Override
+    public String getUsername() {
+      return "system";
+    }
+  }
 }

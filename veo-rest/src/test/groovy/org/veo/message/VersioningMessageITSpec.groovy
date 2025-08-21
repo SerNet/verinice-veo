@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 
+import org.veo.core.UserAccessRights
 import org.veo.core.VeoSpringSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagingConfiguration
@@ -69,7 +70,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             def unit = unitDataRepository.save(newUnit(client))
             def profileId = dsgvo.profiles.find { it.name == "Beispielorganisation" }.id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvo.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions),  NoRestrictionAccessRight.from(client.idAsString)

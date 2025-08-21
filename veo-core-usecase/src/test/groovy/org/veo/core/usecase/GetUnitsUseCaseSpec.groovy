@@ -19,6 +19,7 @@ package org.veo.core.usecase
 
 import static java.util.UUID.randomUUID
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
@@ -71,13 +72,12 @@ public class GetUnitsUseCaseSpec extends Specification {
         def unitRepo = Mock(UnitRepository)
 
         when: "a request is made with a parent-ID"
-        def input = new GetUnitsUseCase.InputData(existingClient,
+        def input = new GetUnitsUseCase.InputData(
                 Optional.of(existingUnit.id))
         def sot = new GetUnitsUseCase(clientRepo, unitRepo)
         def output = sot.execute(input, NoRestrictionAccessRight.from(existingClient.id.toString()))
 
         then: "a client was retrieved"
-        1 * clientRepo.findById(_) >> Optional.of(existingClient)
         1 * unitRepo.findById(_) >> Optional.of(existingUnit)
         1 * unitRepo.findByParent(_) >> [subUnit1, subUnit2]
 

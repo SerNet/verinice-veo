@@ -244,8 +244,7 @@ public class ContentCreationController extends AbstractVeoController {
       @RequestBody IncarnationConfiguration incarnationConfiguration) {
     return useCaseInteractor.execute(
         saveIncarnationConfigurationUseCase,
-        new SaveIncarnationConfigurationUseCase.InputData(
-            getClient(user), domainId, incarnationConfiguration),
+        new SaveIncarnationConfigurationUseCase.InputData(domainId, incarnationConfiguration),
         empty -> ResponseEntity.noContent().build());
   }
 
@@ -263,7 +262,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveControlImplementationConfigurationUseCase,
         new SaveControlImplementationConfigurationUseCase.InputData(
-            getClient(user), domainId, controlImplementationConfiguration),
+            domainId, controlImplementationConfiguration),
         empty -> ResponseEntity.noContent().build());
   }
 
@@ -286,8 +285,7 @@ public class ContentCreationController extends AbstractVeoController {
       @RequestBody Decision decision) {
     return useCaseInteractor.execute(
         saveDecisionUseCase,
-        new SaveDecisionUseCase.InputData(
-            UUID.fromString(user.getClientId()), domainId, decisionKey, decision),
+        new SaveDecisionUseCase.InputData(domainId, decisionKey, decision),
         out ->
             out.newDecision()
                 ? RestApiResponse.created(request.getRequest().getRequestURI(), "Decision created")
@@ -311,8 +309,7 @@ public class ContentCreationController extends AbstractVeoController {
           String decisionKey) {
     return useCaseInteractor.execute(
         deleteDecisionUseCase,
-        new DeleteDecisionUseCase.InputData(
-            UUID.fromString(user.getClientId()), domainId, decisionKey),
+        new DeleteDecisionUseCase.InputData(domainId, decisionKey),
         out -> RestApiResponse.noContent());
   }
 
@@ -336,8 +333,7 @@ public class ContentCreationController extends AbstractVeoController {
       @RequestBody Inspection inspection) {
     return useCaseInteractor.execute(
         saveInspectionUseCase,
-        new SaveInspectionUseCase.InputData(
-            UUID.fromString(user.getClientId()), domainId, inspectionId, inspection),
+        new SaveInspectionUseCase.InputData(domainId, inspectionId, inspection),
         out ->
             out.newInspection()
                 ? RestApiResponse.created(
@@ -363,8 +359,7 @@ public class ContentCreationController extends AbstractVeoController {
           String inspectionId) {
     return useCaseInteractor.execute(
         deleteInspectionUseCase,
-        new DeleteInspectionUseCase.InputData(
-            UUID.fromString(user.getClientId()), domainId, inspectionId),
+        new DeleteInspectionUseCase.InputData(domainId, inspectionId),
         out -> RestApiResponse.noContent());
   }
 
@@ -435,8 +430,7 @@ public class ContentCreationController extends AbstractVeoController {
           String riskDefinitionKey) {
     return useCaseInteractor.execute(
         deleteRiskDefinitionUseCase,
-        new DeleteRiskDefinitionUseCase.InputData(
-            UUID.fromString(user.getClientId()), domainId, riskDefinitionKey),
+        new DeleteRiskDefinitionUseCase.InputData(domainId, riskDefinitionKey),
         out -> RestApiResponse.noContent());
   }
 
@@ -520,7 +514,7 @@ public class ContentCreationController extends AbstractVeoController {
       Authentication auth, @PathVariable UUID domainId, @PathVariable @NotNull UUID profileId) {
     return useCaseInteractor.execute(
         deleteProfileUseCase,
-        new DeleteProfileUseCase.InputData(domainId, profileId, getAuthenticatedClient(auth)),
+        new DeleteProfileUseCase.InputData(domainId, profileId),
         out -> RestApiResponse.noContent());
   }
 
@@ -534,7 +528,6 @@ public class ContentCreationController extends AbstractVeoController {
       Authentication auth,
       @PathVariable UUID id,
       @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
-    Client client = getAuthenticatedClient(auth);
     if (createParameter == null) {
       throw new IllegalArgumentException("create parameter cannot be null");
     }
@@ -542,7 +535,7 @@ public class ContentCreationController extends AbstractVeoController {
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
-                id, parseVersion(createParameter.getVersion()), client),
+                id, parseVersion(createParameter.getVersion())),
             out -> IdRef.from(out.newDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -631,8 +624,7 @@ public class ContentCreationController extends AbstractVeoController {
       @RequestBody @Valid @NotNull List<DomainMigrationStep> domainMigrationSteps) {
     return useCaseInteractor.execute(
         saveUpdateDefinitionUseCase,
-        new SaveUpdateDefinitionUseCase.InputData(
-            getAuthenticatedClient(auth), domainId, domainMigrationSteps),
+        new SaveUpdateDefinitionUseCase.InputData(domainId, domainMigrationSteps),
         out -> RestApiResponse.ok("Migrations updated"));
   }
 
@@ -657,7 +649,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor
         .execute(
             getUpdateDefinitionUseCase,
-            new GetUpdateDefinitionUseCase.InputData(getAuthenticatedClient(auth), domainId),
+            new GetUpdateDefinitionUseCase.InputData(domainId),
             GetUpdateDefinitionUseCase.OutputData::migrationSteps)
         .thenApply(
             updateDefinition ->

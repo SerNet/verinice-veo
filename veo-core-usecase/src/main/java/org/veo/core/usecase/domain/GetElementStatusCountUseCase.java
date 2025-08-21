@@ -23,7 +23,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
@@ -53,15 +52,13 @@ public class GetElementStatusCountUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain = domainRepository.getById(input.domainId);
-    Client client = input.authenticatedClient;
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
+    if (!userAccessRights.clientId().equals(domain.getOwner().getId())) {
+      throw new ClientBoundaryViolationException(domain, userAccessRights.clientId());
     }
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    Unit unit = unitRepository.getById(input.unitId);
-    unit.checkSameClient(input.authenticatedClient);
+    Unit unit = unitRepository.getById(input.unitId, userAccessRights);
 
     ElementStatusCounts elementStatusCounts = new ElementStatusCounts(domain);
 
@@ -89,8 +86,7 @@ public class GetElementStatusCountUseCase
   }
 
   @Valid
-  public record InputData(UUID unitId, UUID domainId, Client authenticatedClient)
-      implements UseCase.InputData {}
+  public record InputData(UUID unitId, UUID domainId) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid ElementStatusCounts result) implements UseCase.OutputData {}

@@ -39,7 +39,7 @@ public class SaveInspectionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
     boolean isNew = domain.applyInspection(input.inspectionId, input.inspection);
     domain.setUpdatedAt(Instant.now());
     return new OutputData(isNew);
@@ -51,8 +51,7 @@ public class SaveInspectionUseCase
   }
 
   @Valid
-  public record InputData(
-      UUID authenticatedClientId, UUID domainId, String inspectionId, Inspection inspection)
+  public record InputData(UUID domainId, String inspectionId, Inspection inspection)
       implements UseCase.InputData {}
 
   @Valid

@@ -144,7 +144,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(on(ScopeController.class).getScope(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_UNIT =
-      createTemplate(on(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(UnitController.class).getUnit(ANY_USER, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_IN_DOMAIN =
       createTemplate(

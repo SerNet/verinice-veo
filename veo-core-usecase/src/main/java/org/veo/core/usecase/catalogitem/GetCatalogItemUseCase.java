@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -41,13 +40,12 @@ public class GetCatalogItemUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     return new OutputData(catalogItemRepository.getByIdInDomain(input.itemId, domain));
   }
 
   @Valid
-  public record InputData(
-      @NonNull UUID itemId, @NonNull UUID domainId, @NonNull Client authenticatedClient)
+  public record InputData(@NonNull UUID itemId, @NonNull UUID domainId)
       implements UseCase.InputData {}
 
   @Valid

@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -40,13 +39,12 @@ public class GetUpdateDefinitionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
     return new OutputData(domain.getDomainMigrationDefinition().migrations());
   }
 
   @Valid
-  public record InputData(@NotNull Client authenticatedClient, @NotNull UUID domainId)
-      implements UseCase.InputData {}
+  public record InputData(@NotNull UUID domainId) implements UseCase.InputData {}
 
   public record OutputData(@NotNull List<DomainMigrationStep> migrationSteps)
       implements UseCase.OutputData {}

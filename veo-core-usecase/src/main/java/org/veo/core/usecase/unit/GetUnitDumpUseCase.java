@@ -54,11 +54,11 @@ public class GetUnitDumpUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var unit = unitRepository.getById(input.unitId);
+    var unit =
+        accountProvider.getCurrentUserAccount().isAdmin()
+            ? unitRepository.getById(input.unitId)
+            : unitRepository.getById(input.unitId, userAccessRights);
     var client = accountProvider.getCurrentUserAccount().getClient();
-    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
-      unit.checkSameClient(client);
-    }
     return new OutputData(
         unit,
         getElements(

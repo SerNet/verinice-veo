@@ -48,6 +48,6 @@ class UserSwitcher {
     }
 
     def runAsAdmin(final Closure closure) {
-        runAsUser('admin', true,null, closure)
+        runAsUser('admin', true, null, closure)
     }
 }

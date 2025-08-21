@@ -46,8 +46,8 @@ public class GetProfileUseCase extends AbstractProfileUseCase
     var profile =
         (input.fastLoadDetails
                 ? profileRepo.findProfileByIdFetchTailoringReferences(
-                    input.profile.getId(), input.authenticatedClient.getId())
-                : profileRepo.findById(input.authenticatedClient.getId(), input.profile.getId()))
+                    input.profile.getId(), userAccessRights.clientId())
+                : profileRepo.findById(userAccessRights.clientId(), input.profile.getId()))
             .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
     log.info("profile: {}", profile);
 

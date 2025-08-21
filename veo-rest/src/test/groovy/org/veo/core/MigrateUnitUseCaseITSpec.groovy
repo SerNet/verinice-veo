@@ -323,7 +323,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             unitRepository.save(newUnit(client)).tap{unit ->
                 def profileId = dsgvoDomain.profiles.find { it.name == "Beispielorganisation" }.id
                 var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                        new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
+                        new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvoDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                         ).references
                 applyProfileIncarnationDescriptionUseCase.execute(
                         new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)

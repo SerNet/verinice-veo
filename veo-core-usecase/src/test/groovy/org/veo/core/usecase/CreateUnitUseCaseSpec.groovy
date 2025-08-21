@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
@@ -25,6 +26,7 @@ import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
+import org.veo.rest.security.NoRestrictionAccessRight
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
     DomainRepository domainRepository = Mock()
@@ -39,7 +41,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData("New unit", null, null)
 
         when: "the use case to create a unit is executed"
-        def input = new InputData(namedInput, existingClient.id, Optional.empty(), 1, [] as Set)
+        def input = new InputData(namedInput, Optional.empty(), 1, [] as Set)
         def newUnit = usecase.execute(input, noRestrictionExistingClient).unit
 
         then: "a client was retrieved"
@@ -64,7 +66,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2, [] as Set)
+        def input = new InputData(namedInput, Optional.of(this.existingUnit.getId()), 2, [] as Set)
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input, noRestrictionExistingClient).unit
@@ -91,7 +93,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [existingDomain.id] as Set)
+        def input = new InputData(namedInput, Optional.empty(), 1, [existingDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
         usecase.execute(input,noRestrictionExistingClient)
@@ -119,7 +121,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def randomDomainId = UUID.randomUUID()
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId] as Set)
+        def input = new InputData(namedInput, Optional.empty(), 1, [randomDomainId] as Set)
 
         when: "the use case to create a unit is executed"
         usecase.execute(input,noRestrictionExistingClient)
@@ -147,7 +149,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [anotherDomain.id] as Set)
+        def input = new InputData(namedInput, Optional.empty(), 1, [anotherDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
         usecase.execute(input,noRestrictionExistingClient)

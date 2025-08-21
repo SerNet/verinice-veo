@@ -66,13 +66,13 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     def "delete a unit with example elements"() {
         given: 'a unit with example elements'
         def client = createTestClient()
-        var domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         client = clientRepository.getById(client.id)
         def unit = unitRepository.save(newUnit(client))
         executeInTransaction {
             def profileId = domain.profiles.first().id
-            var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
+            def incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString))
@@ -81,12 +81,12 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
 
         when: 'executing the DeleteUnitUseCase'
-        runUseCase(unit)
+        runUseCase(unit, NoRestrictionAccessRight.from(client.idAsString))
         def queryCounts = QueryCountHolder.grandTotal
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 30
+            queryCounts.select == 29
             queryCounts.insert == 1
             queryCounts.update == 1
             queryCounts.delete == 26
@@ -181,12 +181,12 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
 
         when: 'executing the DeleteUnitUseCase'
-        runUseCase(unit)
+        runUseCase(unit, NoRestrictionAccessRight.from(client.idAsString))
         def queryCounts = QueryCountHolder.grandTotal
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 62
+            queryCounts.select == 61
             queryCounts.insert == 37
             queryCounts.update == 1
             queryCounts.delete == 64
@@ -203,9 +203,9 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         }
     }
 
-    def runUseCase(Unit unit) {
+    def runUseCase(Unit unit, UserAccessRights user) {
         executeInTransaction {
-            deleteUnitUseCase.execute(new InputData(unit.id, unit.client), NoRestrictionAccessRight.from(unit.client.idAsString))
+            deleteUnitUseCase.execute(new InputData(unit.id), NoRestrictionAccessRight.from(unit.client.idAsString))
         }
     }
 

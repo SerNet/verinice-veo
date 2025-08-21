@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
@@ -25,11 +27,10 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
 
 /** Reinstantiate a persisted unit object. */
 public class GetUnitUseCase
-    implements TransactionalUseCase<IdAndClient, GetUnitUseCase.OutputData> {
+    implements TransactionalUseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
 
   private final UnitRepository repository;
 
@@ -42,14 +43,16 @@ public class GetUnitUseCase
    * unit object was not found in the repository.
    */
   @Override
-  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Unit unit =
         repository
-            .findById(input.id())
-            .orElseThrow(() -> new NotFoundException(input.id(), Unit.class));
-    unit.checkSameClient(input.authenticatedClient());
+            .findById(input.unitId(), userAccessRights)
+            .orElseThrow(() -> new NotFoundException(input.unitId(), Unit.class));
     return new OutputData(unit);
   }
+
+  @Valid
+  public record InputData(UUID unitId) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid Unit unit) implements UseCase.OutputData {}

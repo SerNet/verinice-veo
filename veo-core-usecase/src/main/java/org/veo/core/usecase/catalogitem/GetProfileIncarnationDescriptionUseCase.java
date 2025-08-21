@@ -35,6 +35,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.UnitRepository;
@@ -53,27 +54,29 @@ public class GetProfileIncarnationDescriptionUseCase
 
   private final UnitRepository unitRepository;
   private final ProfileRepository profileRepository;
+  private final ClientRepository clientRepository;
 
   public GetProfileIncarnationDescriptionUseCase(
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
-      ProfileRepository profileRepository) {
+      ProfileRepository profileRepository,
+      ClientRepository clientRepository) {
     super(ProfileItem.class, genericElementRepository);
     this.unitRepository = unitRepository;
     this.profileRepository = profileRepository;
+    this.clientRepository = clientRepository;
   }
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+    var client = clientRepository.getById(userAccessRights.clientId());
     log.info(
         "profile: {}, unit: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
-    Unit unit = unitRepository.getByIdFetchClient(input.unitId);
-    unit.checkSameClient(input.authenticatedClient);
-
-    validateInput(input);
+    Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
+    validateInput(input, client);
     Profile profile =
         profileRepository
-            .findById(input.authenticatedClient.getId(), input.profileId)
+            .findById(userAccessRights.clientId(), input.profileId)
             .orElseThrow(() -> new NotFoundException(input.profileId, Profile.class));
 
     Domain domain = profile.requireDomainMembership();
@@ -82,12 +85,12 @@ public class GetProfileIncarnationDescriptionUseCase
     if (input.profileItemIds != null) {
       profileItems =
           profileRepository.findItemsByIdsFetchDomainAndTailoringReferences(
-              Set.copyOf(input.profileItemIds), input.authenticatedClient);
+              Set.copyOf(input.profileItemIds), client);
       profileItemIds = input.profileItemIds;
     } else {
       profileItems =
           profileRepository.findItemsByProfileIdFetchDomainAndTailoringReferences(
-              input.profileId, input.authenticatedClient);
+              input.profileId, client);
       profileItemIds = profileItems.stream().map(TemplateItem::getSymbolicId).toList();
     }
 
@@ -106,8 +109,8 @@ public class GetProfileIncarnationDescriptionUseCase
         unit);
   }
 
-  private void validateInput(InputData input) {
-    input.authenticatedClient.getDomains().stream()
+  private void validateInput(InputData input, Client client) {
+    client.getDomains().stream()
         .filter(d -> d.getId().equals(input.domainId))
         .findAny()
         .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
@@ -120,11 +123,9 @@ public class GetProfileIncarnationDescriptionUseCase
       if (!(EntitySpecifications.hasSameClient(
               profile
                   .getOwningClient()
-                  .orElseThrow(
-                      () ->
-                          new ClientBoundaryViolationException(profile, input.authenticatedClient)))
-          .isSatisfiedBy(input.authenticatedClient))) {
-        throw new ClientBoundaryViolationException(profile, input.authenticatedClient);
+                  .orElseThrow(() -> new ClientBoundaryViolationException(profile, client)))
+          .isSatisfiedBy(client))) {
+        throw new ClientBoundaryViolationException(profile, client);
       }
       return;
     }
@@ -135,7 +136,6 @@ public class GetProfileIncarnationDescriptionUseCase
 
   @Valid
   public record InputData(
-      Client authenticatedClient,
       UUID unitId,
       UUID domainId,
       List<UUID> profileItemIds,

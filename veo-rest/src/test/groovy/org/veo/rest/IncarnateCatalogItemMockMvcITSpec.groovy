@@ -50,15 +50,15 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "trying to retrieve incarnation descriptions for other client's unit"
         get("/units/$unitSecondClient.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$item1.symbolicIdAsString", 404)
 
-        then: "a client boundary violation is detected"
-        thrown(ClientBoundaryViolationException)
+        then: "the unit is not found (no information leaked)"
+        thrown(NotFoundException)
     }
 
     def "retrieve the apply info of another client's catalog item"() {
         when: "trying to retrieve incarnation descriptions for another client's catalog item"
         get("/units/$unit.idAsString/domains/$domain3.idAsString/incarnation-descriptions?itemIds=${otherItem.symbolicIdAsString}", 404)
 
-        then:
+        then: "the unit is not found (no information leaked)"
         thrown(NotFoundException)
     }
 
@@ -293,8 +293,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "posting the incarnation descriptions in other client's unit"
         post("/units/$unitSecondClient.idAsString/incarnations",result, 404)
 
-        then: "a client boundary violation is detected"
-        thrown(ClientBoundaryViolationException)
+        then: "the unit is not found (no information leaked)"
+        thrown(NotFoundException)
     }
 
     def "retrieve the apply info for zz1 und zz2 post in one step"() {

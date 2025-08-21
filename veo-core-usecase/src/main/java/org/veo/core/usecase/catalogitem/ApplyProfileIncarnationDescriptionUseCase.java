@@ -28,8 +28,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.repository.ProfileItemRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
@@ -44,12 +47,18 @@ public class ApplyProfileIncarnationDescriptionUseCase
         ApplyProfileIncarnationDescriptionUseCase.OutputData> {
   private final ProfileItemRepository profileItemRepository;
   private final IncarnationDescriptionApplier applier;
+  private final UnitRepository unitRepository;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+    var unit =
+        unitRepository
+            .findById(input.unitId, userAccessRights)
+            .orElseThrow(() -> new NotFoundException(input.unitId(), Unit.class));
+    userAccessRights.checkElementWriteAccess(unit);
     return new OutputData(
         applier.incarnate(
-            input.unitId, input.descriptions, profileItemRepository, input.authenticatedClient));
+            unit, input.descriptions, profileItemRepository, input.authenticatedClient));
   }
 
   @Override

@@ -422,7 +422,7 @@ public class DomainController extends AbstractEntityController {
       WebRequest request) {
     return useCaseInteractor.execute(
         getCatalogItemUseCase,
-        new GetCatalogItemUseCase.InputData(itemId, domainId, getAuthenticatedClient(auth)),
+        new GetCatalogItemUseCase.InputData(itemId, domainId),
         out ->
             RestApiResponse.okOrNotModified(
                 out.catalogItem(), entityToDtoTransformer::transformShortCatalogItem2Dto, request));
@@ -439,16 +439,14 @@ public class DomainController extends AbstractEntityController {
               schema = @Schema(implementation = ElementStatusCounts.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
-      @Parameter(hidden = true) Authentication auth,
       @PathVariable UUID id,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId,
       WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
 
     return useCaseInteractor
         .execute(
             getElementStatusCountUseCase,
-            new GetElementStatusCountUseCase.InputData(UUID.fromString(unitId), id, client),
+            new GetElementStatusCountUseCase.InputData(UUID.fromString(unitId), id),
             GetElementStatusCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
@@ -514,7 +512,7 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain or unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
-      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, hidden = true) ApplicationUser user,
       @PathVariable UUID id,
       @PathVariable UUID profileId,
       @RequestParam(name = UNIT_PARAM) UUID unitId) {
@@ -522,7 +520,7 @@ public class DomainController extends AbstractEntityController {
         .execute(
             getProfileIncarnationDescriptionUseCase,
             new GetProfileIncarnationDescriptionUseCase.InputData(
-                getAuthenticatedClient(auth), unitId, id, null, profileId, true),
+                unitId, id, null, profileId, true),
             out ->
                 out.references().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)
@@ -532,7 +530,7 @@ public class DomainController extends AbstractEntityController {
                 useCaseInteractor.execute(
                     applyProfileIncarnationDescriptionUseCase,
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                        getAuthenticatedClient(auth), unitId, references),
+                        getClient(user), unitId, references),
                     out -> ResponseEntity.noContent().build()));
   }
 
@@ -575,11 +573,7 @@ public class DomainController extends AbstractEntityController {
     return useCaseInteractor.execute(
         evaluateRiskDefinitionUseCase,
         new EvaluateRiskDefinitionUseCase.InputData(
-            UUID.fromString(user.getClientId()),
-            domainId,
-            riskDefinitionId,
-            null,
-            Collections.emptySet()),
+            domainId, riskDefinitionId, null, Collections.emptySet()),
         out -> ResponseEntity.ok(out.riskDefinition()));
   }
 }

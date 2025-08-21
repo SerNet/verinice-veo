@@ -62,12 +62,15 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+import org.veo.rest.security.ApplicationUser
 import org.veo.rest.security.CustomUserDetailsManager
+import org.veo.rest.security.NoRestrictionAccessRight
 import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
+import groovy.util.logging.Slf4j
 
 /**
  * Base class for veo specifications that use Spring
@@ -160,8 +163,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         unitDataRepository.findByParentId(unit.id).each {
             deleteUnitRecursively(it)
         }
-        deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
-                unit.client), userAccessRightsProvider.accessRights)
+        deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id), NoRestrictionAccessRight.from(unit.client.id.toString()))
     }
 
     def setup() {
@@ -169,7 +171,7 @@ abstract class VeoSpringSpec extends VeoSpec {
             txTemplate.execute {
                 TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
                 clientRepository.findAll().each { client ->
-                    unitDataRepository.findByClientId(client.id).findAll { it.parent == null }.each {
+                    unitDataRepository.findByClientId(client.id, false, null).findAll { it.parent == null }.each {
                         deleteUnitRecursively(it)
                     }
                     // Reload the client since the persistence context was cleared
@@ -251,7 +253,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         })).first()
     }
 
-    protected void updateUser(String username, TestUserRights rights, UUID testUnitId) {
+    protected ApplicationUser updateUser(String username, TestUserRights rights, UUID testUnitId, Collection<String> additionalRoles = Collections.emptyList()) {
         userDetailsManager.loadUserByUsername(username).with {
             roles.clear()
             roles.add("veo-user")
@@ -269,6 +271,11 @@ abstract class VeoSpringSpec extends VeoSpec {
             if (rights.testUnitWritable) {
                 writableUnitIds.add(testUnitId)
             }
+            if(!additionalRoles.isEmpty()) {
+                roles.addAll(additionalRoles)
+            }
+
+            return it
         }
     }
 }

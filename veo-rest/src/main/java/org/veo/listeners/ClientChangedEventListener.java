@@ -169,7 +169,7 @@ public class ClientChangedEventListener {
         .forEach(
             unit ->
                 deleteUnitUseCase.execute(
-                    new DeleteUnitUseCase.InputData(unit.getId(), client), userAccessRights));
+                    new DeleteUnitUseCase.InputData(unit.getId()), userAccessRights));
 
     // Reload the client since the persistence context was cleared
     repository.delete(repository.getById(client.getId()));

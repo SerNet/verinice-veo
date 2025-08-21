@@ -73,13 +73,12 @@ public class IncarnationDescriptionApplier {
 
   public <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
       List<Element> incarnate(
-          UUID unitId,
+          Unit unit,
           List<TemplateItemIncarnationDescriptionState<T, TNamespace>> descriptions,
           AbstractTemplateItemRepository<T, TNamespace> repository,
           Client client) {
     log.info("Incarnating {} template items", descriptions.size());
-    var unit = unitRepository.getByIdFetchClient(unitId);
-    unit.checkSameClient(client);
+
     var referencedElementsById = loadReferencedElements(descriptions, client);
     var itemsById = loadItems(descriptions, repository, client);
     var tailoringReferencesById = loadTailoringReferences(descriptions, repository, client);

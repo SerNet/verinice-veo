@@ -57,7 +57,7 @@ classes = [TestEventSubscriber.class,
 @Slf4j
 class EventDispatcherITSpec extends VeoSpringSpec {
 
-    public static final int NUM_EVENTS = 100
+    public static final int NUM_EVENTS = 109
 
     @Shared
     @AutoCleanup("stop")

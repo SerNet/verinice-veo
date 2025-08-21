@@ -38,7 +38,7 @@ public class DeleteDecisionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getById(input.domainId, userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -53,6 +53,5 @@ public class DeleteDecisionUseCase
   }
 
   @Valid
-  public record InputData(UUID authenticatedClientId, UUID domainId, String decisionKey)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, String decisionKey) implements UseCase.InputData {}
 }

@@ -22,8 +22,8 @@ import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ClientRepository
 import org.veo.core.service.DomainTemplateService
+import org.veo.core.usecase.UseCase.EmptyInput
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase.InputData
 import org.veo.rest.security.NoRestrictionAccessRight
 
 class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
@@ -43,7 +43,7 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
         templateService.getTemplates(existingClient) >> Collections.singletonList(domaintemplate)
 
         when:
-        def output = usecase.execute(new InputData(existingClient), noRestrictionExistingClient)
+        def output = usecase.execute(new EmptyInput(), noRestrictionExistingClient)
 
         then:
         output.objects != null
@@ -65,7 +65,7 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
         templateService.getTemplates(existingClient) >> Collections.singletonList(domaintemplate)
 
         when:
-        usecase.execute(new InputData(client), NoRestrictionAccessRight.from(cid.toString()))
+        usecase.execute(new EmptyInput(), NoRestrictionAccessRight.from(cid.toString()))
 
         then:
         thrown(NotFoundException)

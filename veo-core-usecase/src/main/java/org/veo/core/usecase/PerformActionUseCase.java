@@ -158,7 +158,6 @@ public class PerformActionUseCase
                   applyIncarnationDescriptionUseCase
                       .execute(
                           new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                              domain.getOwningClient().get(),
                               element.getOwner().getId(),
                               scenarios.stream()
                                   .filter(notIncarnated(existingScenarios, domain))

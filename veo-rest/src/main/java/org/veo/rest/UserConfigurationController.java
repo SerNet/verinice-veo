@@ -108,11 +108,9 @@ public class UserConfigurationController extends AbstractVeoController {
       @Parameter(required = true, hidden = true) ApplicationUser applicationUser,
       @Parameter(required = true, description = "Id of the api-client") @PathVariable String appId,
       @Valid @RequestBody Map<String, Object> userConfiguration) {
-    Client authenticatedClient = getClient(applicationUser);
     return useCaseInteractor.execute(
         saveUserConfigurationUseCase,
-        new SaveUserConfigurationUseCase.InputData(
-            authenticatedClient, applicationUser.getUsername(), appId, userConfiguration),
+        new SaveUserConfigurationUseCase.InputData(appId, userConfiguration),
         output ->
             output.created()
                 ? RestApiResponse.created(output.applicationId(), "configuration created")

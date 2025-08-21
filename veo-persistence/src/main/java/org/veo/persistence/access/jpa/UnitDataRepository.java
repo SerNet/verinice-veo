@@ -19,9 +19,9 @@ package org.veo.persistence.access.jpa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.persistence.entity.jpa.UnitData;
@@ -31,11 +31,21 @@ public interface UnitDataRepository extends IdentifiableVersionedDataRepository<
   @Query("select e from #{#entityName} as e where e.parent.id = ?1")
   List<UnitData> findByParentId(UUID parentId);
 
-  @Query("select e from #{#entityName} as e where e.client.id = ?1")
-  List<UnitData> findByClientId(UUID clientId);
+  @Query("select e from #{#entityName} as e where e.client.id = ?1 and (?2 = false or e.id in ?3)")
+  List<UnitData> findByClientId(UUID clientId, boolean restrictUnitAccess, Set<UUID> access);
 
-  @EntityGraph(attributePaths = {"client"})
-  Optional<UnitData> findWithClientById(UUID uuidValue);
+  @Query(
+      "select e from #{#entityName} as e where  e.id = ?1 and e.client.id = ?2 and (?3 = false or e.id in ?4)")
+  Optional<UnitData> findById(UUID id, UUID clientId, boolean restrictUnitAccess, Set<UUID> access);
+
+  @Query(
+      """
+          select e from #{#entityName} as e
+          left join fetch e.client
+          where e.id = ?1 and e.client.id = ?2  and (?3 = false or e.id in ?4)
+          """)
+  Optional<UnitData> findWithClientById(
+      UUID uuidValue, UUID clientId, boolean restrictUnitAccess, Set<UUID> access);
 
   List<UnitData> findByDomainsId(UUID domainId);
 }

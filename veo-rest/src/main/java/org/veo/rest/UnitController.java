@@ -38,7 +38,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,7 +63,6 @@ import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterRef
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.IncarnationLookup;
@@ -74,7 +72,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
-import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -141,7 +138,6 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "404", description = "incarnation description not found")
   public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>>
       getIncarnationDescriptions(
-          @Parameter(hidden = true) Authentication auth,
           @Parameter(description = "The target unit for the catalog items.") @PathVariable
               String unitId,
           @Parameter(description = "Domain containing the catalog items") @PathVariable
@@ -169,15 +165,12 @@ public class UnitController extends AbstractEntityController {
                       "The request mode allows to control the excluded references in the incarnation description.")
               @RequestParam(name = "exclude", required = false)
               Set<TailoringReferenceType> exclude) {
-
-    Client client = getAuthenticatedClient(auth);
     UUID containerId = UUID.fromString(unitId);
     List<UUID> list = itemIds.stream().map(UUID::fromString).toList();
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
             getCatalogIncarnationDescriptionUseCase,
             new GetCatalogIncarnationDescriptionUseCase.InputData(
-                client,
                 containerId,
                 UUID.fromString(domainId),
                 list,
@@ -210,16 +203,14 @@ public class UnitController extends AbstractEntityController {
                                   IdRefTailoringReferenceParameterReferencedElement.class,
                               description = "A reference list of the created elements"))))
   public CompletableFuture<ResponseEntity<List<ElementInDomainIdRef<Element>>>> applyIncarnations(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
       @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             applyCatalogIncarnationDescriptionUseCase,
             new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                client,
                 UUID.fromString(unitId),
                 applyInformation.getParameters().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>) d)
@@ -241,15 +232,13 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
   public @Valid Future<List<FullUnitDto>> getUnits(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) UUID parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
-    Client client = getAuthenticatedClient(auth);
-
     // TODO VEO-425 apply display name filter.
     final GetUnitsUseCase.InputData inputData =
-        new GetUnitsUseCase.InputData(client, Optional.ofNullable(parentUuid));
-
+        new GetUnitsUseCase.InputData(Optional.ofNullable(parentUuid));
+    getClient(user); // TODO: better do #4173
     return useCaseInteractor.execute(
         getUnitsUseCase,
         inputData,
@@ -267,14 +256,14 @@ public class UnitController extends AbstractEntityController {
               schema = @Schema(implementation = FullUnitDto.class)))
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id, WebRequest request) {
     if (getEtag(Unit.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<FullUnitDto> unitFuture =
         useCaseInteractor.execute(
             getUnitUseCase,
-            new UseCase.IdAndClient(id, getAuthenticatedClient(auth)),
+            new org.veo.core.usecase.unit.GetUnitUseCase.InputData(id),
             output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
@@ -297,7 +286,7 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiResponseBody.class)))
   public CompletableFuture<UnitDumpDto> exportUnit(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id) {
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         new GetUnitDumpUseCase.InputData(id, null),
@@ -328,7 +317,6 @@ public class UnitController extends AbstractEntityController {
     return useCaseInteractor.execute(
         unitImportUseCase,
         new UnitImportUseCase.InputData(
-            getClient(user),
             user.getMaxUnits(),
             dto.getUnit(),
             dto.getElements().stream().map(e -> (ElementState<?>) e).collect(Collectors.toSet()),
@@ -376,7 +364,7 @@ public class UnitController extends AbstractEntityController {
     unitDto.applyResourceId(id);
     return useCaseInteractor.execute(
         putUnitUseCase,
-        new UpdateUnitUseCase.InputData(id, unitDto, getClient(user), eTag, user.getUsername()),
+        new UpdateUnitUseCase.InputData(id, unitDto, eTag),
         output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
   }
 
@@ -385,14 +373,14 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "204", description = "Unit deleted")
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
-      @Parameter(hidden = true) Authentication auth,
+      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
 
     return useCaseInteractor.execute(
         deleteUnitUseCase,
-        new DeleteUnitUseCase.InputData(uuid, getAuthenticatedClient(auth)),
+        new DeleteUnitUseCase.InputData(uuid),
         output -> RestApiResponse.noContent());
   }
 }

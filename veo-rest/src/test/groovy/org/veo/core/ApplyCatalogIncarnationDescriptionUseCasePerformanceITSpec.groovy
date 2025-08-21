@@ -43,6 +43,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
@@ -66,7 +67,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
             CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-                    outputMapper, userAccessRightsProvider.accessRights))
+                    outputMapper, NoRestrictionAccessRight.from(client.getId().toString())))
         }
     ] as UseCaseInteractor
 
@@ -97,7 +98,8 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         def dto = executeInTransaction {
             def out = synchronousUseCaseInteractor.execute(
                     getIncarnationDescriptionUseCase,
-                    new GetCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
+                    new GetCatalogIncarnationDescriptionUseCase.InputData(
+                    unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
                     Function.identity()
                     ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)
@@ -114,17 +116,18 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         QueryCountHolder.clear()
         rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
         executeInTransaction {
-            var references = dto.getParameters()
+            def references = dto.getParameters()
             synchronousUseCaseInteractor.execute(
                     applyIncarnationDescriptionUseCase,
-                    new  ApplyCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, references),
+                    new  ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                    unit.id, references),
                     Function.identity()
                     ).get()
         }
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 11
+        queryCounts.select == 12
         queryCounts.insert == 6
         queryCounts.time < 500
         // 30 is the currently observed count of 27 rows plus an acceptable safety margin

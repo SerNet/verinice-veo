@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -40,7 +39,7 @@ public class SaveIncarnationConfigurationUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     domain.setIncarnationConfiguration(input.incarnationConfiguration);
     return EmptyOutput.INSTANCE;
   }
@@ -52,8 +51,6 @@ public class SaveIncarnationConfigurationUseCase
 
   @Valid
   public record InputData(
-      @NotNull Client authenticatedClient,
-      @NotNull UUID domainId,
-      @NotNull IncarnationConfiguration incarnationConfiguration)
+      @NotNull UUID domainId, @NotNull IncarnationConfiguration incarnationConfiguration)
       implements UseCase.InputData {}
 }

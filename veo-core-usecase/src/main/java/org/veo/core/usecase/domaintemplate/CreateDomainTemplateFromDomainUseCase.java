@@ -27,13 +27,11 @@ import jakarta.validation.Valid;
 import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateService;
@@ -59,15 +57,8 @@ public class CreateDomainTemplateFromDomainUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
-            .findByIdWithProfilesAndRiskDefinitions(input.id, input.authenticatedClient.getId())
+            .findByIdWithProfilesAndRiskDefinitions(input.id, userAccessRights.clientId())
             .orElseThrow(() -> new NotFoundException(input.id, Domain.class));
-    Client client = input.authenticatedClient;
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
-    if (!domain.isActive()) {
-      throw new NotFoundException("Domain is inactive.");
-    }
 
     updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
@@ -169,8 +160,7 @@ public class CreateDomainTemplateFromDomainUseCase
   }
 
   @Valid
-  public record InputData(UUID id, Version version, Client authenticatedClient)
-      implements UseCase.InputData {}
+  public record InputData(UUID id, Version version) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid DomainTemplate newDomainTemplate) implements UseCase.OutputData {}

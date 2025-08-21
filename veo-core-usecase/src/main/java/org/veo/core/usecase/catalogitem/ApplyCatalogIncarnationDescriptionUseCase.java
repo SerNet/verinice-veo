@@ -30,10 +30,14 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
@@ -54,17 +58,24 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   private final CatalogItemRepository catalogItemRepository;
   private final IncarnationDescriptionApplier applier;
   private final DomainRepository domainRepository;
+  private final UnitRepository unitRepository;
+  private final ClientRepository clientRepository;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+
+    var client = clientRepository.getById(userAccessRights.clientId());
+    var unit =
+        unitRepository
+            .findById(input.unitId, userAccessRights)
+            .orElseThrow(() -> new NotFoundException(input.unitId(), Unit.class));
+    userAccessRights.checkElementWriteAccess(unit);
     if (input.descriptions.isEmpty()) {
       return new OutputData(Collections.emptyList(), null);
     }
-    var domain = getDomain(input.descriptions, input.authenticatedClient);
+    var domain = getDomain(input.descriptions, client);
     return new OutputData(
-        applier.incarnate(
-            input.unitId, input.descriptions, catalogItemRepository, input.authenticatedClient),
-        domain);
+        applier.incarnate(unit, input.descriptions, catalogItemRepository, client), domain);
   }
 
   private Domain getDomain(
@@ -86,7 +97,6 @@ public class ApplyCatalogIncarnationDescriptionUseCase
 
   @Valid
   public record InputData(
-      Client authenticatedClient,
       @NotNull UUID unitId,
       @NotNull List<TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>> descriptions)
       implements UseCase.InputData {}

@@ -97,7 +97,7 @@ class IncarnationDescriptionApplierITSpec extends VeoSpringSpec {
     def "CI tailoring reference is applied when target is passed first"() {
         when:
         executeInTransaction {
-            incarnationDescriptionApplier.incarnate(unit.id, [
+            incarnationDescriptionApplier.incarnate(unit, [
                 createIncarnationDescription(asset),
                 createIncarnationDescription(superControl),
                 createIncarnationDescription(subControl),

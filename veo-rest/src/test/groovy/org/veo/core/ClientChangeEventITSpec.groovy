@@ -122,7 +122,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         and: "no units are created"
         executeInTransaction {
-            unitDataRepository.findByClientId(cId)
+            unitDataRepository.findByClientId(cId, false, null)
         }.size() == 0
 
         when:"we send a change -> add a domain"

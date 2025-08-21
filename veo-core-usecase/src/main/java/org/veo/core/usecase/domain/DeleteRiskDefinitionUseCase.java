@@ -43,7 +43,7 @@ public class DeleteRiskDefinitionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getById(input.domainId, input.authenticatedClientId);
+    var domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -70,6 +70,5 @@ public class DeleteRiskDefinitionUseCase
   }
 
   @Valid
-  public record InputData(UUID authenticatedClientId, UUID domainId, String riskDefinitionRef)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, String riskDefinitionRef) implements UseCase.InputData {}
 }

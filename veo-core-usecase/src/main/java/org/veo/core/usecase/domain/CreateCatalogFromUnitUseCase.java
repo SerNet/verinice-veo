@@ -71,7 +71,7 @@ public class CreateCatalogFromUnitUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
     Set<CatalogItem> previousCatalogItems = Set.copyOf(domain.getCatalogItems());
 
     Client client = input.authenticatedClient;

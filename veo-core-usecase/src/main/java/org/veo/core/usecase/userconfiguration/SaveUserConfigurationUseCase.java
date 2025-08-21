@@ -23,11 +23,11 @@ import java.util.Map;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.specification.ContentTooLongException;
 import org.veo.core.entity.specification.ExceedLimitException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -42,6 +42,7 @@ public class SaveUserConfigurationUseCase
   final EntityFactory entityFactory;
   private final int maxUserConfigurations;
   private final int maxBytesPerConfiguration;
+  private final ClientRepository clientRepository;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
@@ -50,15 +51,19 @@ public class SaveUserConfigurationUseCase
       throw new ContentTooLongException(
           "Exceeds the configuration size limit. (%d bytes)".formatted(maxBytesPerConfiguration));
     }
+
+    var client = clientRepository.getById(userAccessRights.clientId());
     UserConfiguration userConfiguration =
         userConfigurationRepository
-            .findUserConfiguration(input.client.getId(), input.userName, input.applicationId)
+            .findUserConfiguration(
+                userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId)
             .orElse(
                 entityFactory.createUserConfiguration(
-                    input.client, input.userName, input.applicationId));
+                    client, userAccessRights.getUsername(), input.applicationId));
     boolean created = !userConfiguration.isPersisted();
     if (created
-        && userConfigurationRepository.countUserConfigurations(input.client.getId(), input.userName)
+        && userConfigurationRepository.countUserConfigurations(
+                userAccessRights.clientId(), userAccessRights.getUsername())
             >= maxUserConfigurations) {
       throw new ExceedLimitException(
           "Exceeds the configuration per user limit. (%d allowed)"
@@ -75,8 +80,7 @@ public class SaveUserConfigurationUseCase
   }
 
   @Valid
-  public record InputData(
-      Client client, String userName, String applicationId, Map<String, Object> configuration)
+  public record InputData(String applicationId, Map<String, Object> configuration)
       implements UseCase.InputData {}
 
   @Valid

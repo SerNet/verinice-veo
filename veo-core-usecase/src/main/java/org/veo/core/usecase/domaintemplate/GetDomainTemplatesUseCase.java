@@ -31,8 +31,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
 public class GetDomainTemplatesUseCase
-    implements TransactionalUseCase<
-        GetDomainTemplatesUseCase.InputData, GetDomainTemplatesUseCase.OutputData> {
+    implements TransactionalUseCase<UseCase.EmptyInput, GetDomainTemplatesUseCase.OutputData> {
 
   private final ClientRepository clientRepository;
   private final DomainTemplateService templateService;
@@ -48,15 +47,11 @@ public class GetDomainTemplatesUseCase
    * (optional) requested parent unit was not found in the repository.
    */
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Client client =
-        UseCaseTools.checkClientExists(input.authenticatedClient.getId(), clientRepository);
+  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
+    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
 
     return new OutputData(templateService.getTemplates(client));
   }
-
-  @Valid
-  public record InputData(Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid List<DomainTemplate> objects) implements UseCase.OutputData {}
