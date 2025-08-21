@@ -21,6 +21,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.repository.ClientRepository;
@@ -47,7 +48,7 @@ public class GetDomainTemplatesUseCase
    * (optional) requested parent unit was not found in the repository.
    */
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Client client =
         UseCaseTools.checkClientExists(input.authenticatedClient.getId(), clientRepository);
 

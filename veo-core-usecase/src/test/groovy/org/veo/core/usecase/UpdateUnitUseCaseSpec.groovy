@@ -25,6 +25,7 @@ import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.unit.ChangeUnitUseCase
 import org.veo.core.usecase.unit.UnitValidator
 import org.veo.core.usecase.unit.UpdateUnitUseCase
+import org.veo.rest.security.NoRestrictionAccessRight
 
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     static final String USER_NAME = "john"
@@ -42,7 +43,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def eTagNewUnit = ETag.from(this.existingUnit.idAsString, 0)
-        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, this.existingClient, eTagNewUnit, USER_NAME))
+        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, this.existingClient, eTagNewUnit, USER_NAME), noRestrictionExistingClient)
 
         then: "the existing unit was retrieved"
         1 * unitRepository.getById(existingUnit.id) >> this.existingUnit
@@ -80,7 +81,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
         def eTag = ETag.from(existingUnit.idAsString, existingUnit.getVersion())
-        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, maliciousClient, eTag, USER_NAME))
+        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, maliciousClient, eTag, USER_NAME), NoRestrictionAccessRight.from(maliciousClient.id.toString()) )
 
         then: "a unit was retrieved"
         unitRepository.getById(_) >> this.existingUnit

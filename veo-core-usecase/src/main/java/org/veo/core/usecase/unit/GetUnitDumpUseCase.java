@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Asset;
@@ -52,7 +53,7 @@ public class GetUnitDumpUseCase
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var unit = unitRepository.getById(input.unitId);
     var client = accountProvider.getCurrentUserAccount().getClient();
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {

@@ -49,13 +49,13 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   private final EntityStateMapper entityStateMapper;
 
   @Override
-  public OutputData<T> execute(InputData<T> input) {
+  public OutputData<T> execute(InputData<T> input, UserAccessRights userAccessRights) {
     var idRefResolver = refResolverFactory.db(input.authenticatedClient);
 
     var domain = idRefResolver.resolve(input.domainId, Domain.class);
     var inputElement = input.element;
-    var storedElement = repo.getById(input.id, input.userRights);
-    input.userRights.checkElementWriteAccess(storedElement);
+    var storedElement = repo.getById(input.id, userAccessRights);
+    userAccessRights.checkElementWriteAccess(storedElement);
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
           "%s %s is not associated with domain %s",
@@ -70,7 +70,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     DomainSensitiveElementValidator.validate(storedElement);
     repo.save(storedElement);
     // re-fetch element to make sure it is returned with updated versioning information
-    return new OutputData<>(repo.getById(storedElement.getId(), input.userRights));
+    return new OutputData<>(repo.getById(storedElement.getId(), userAccessRights));
   }
 
   @Override
@@ -84,9 +84,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
       @Valid ElementState<T> element,
       UUID domainId,
       Client authenticatedClient,
-      String eTag,
-      String username,
-      UserAccessRights userRights)
+      String eTag)
       implements UseCase.InputData {}
 
   @Valid

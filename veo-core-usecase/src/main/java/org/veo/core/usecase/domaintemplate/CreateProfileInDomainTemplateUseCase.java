@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Profile;
@@ -47,7 +48,7 @@ public class CreateProfileInDomainTemplateUseCase
   private final DomainStateMapper domainStateMapper;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domainTemplate =
         domainTemplateRepository
             .findById(input.templateId)

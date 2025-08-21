@@ -24,6 +24,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.GetUnitsUseCase
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import spock.lang.Specification
 
@@ -73,7 +74,7 @@ public class GetUnitsUseCaseSpec extends Specification {
         def input = new GetUnitsUseCase.InputData(existingClient,
                 Optional.of(existingUnit.id))
         def sot = new GetUnitsUseCase(clientRepo, unitRepo)
-        def output = sot.execute(input)
+        def output = sot.execute(input, NoRestrictionAccessRight.from(existingClient.id.toString()))
 
         then: "a client was retrieved"
         1 * clientRepo.findById(_) >> Optional.of(existingClient)

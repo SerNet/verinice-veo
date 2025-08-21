@@ -41,7 +41,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(id,  user))
+        def output = usecase.execute(new GetElementUseCase.InputData(id), user)
 
         then:
         1 * personRepository.getById(id, user) >> person

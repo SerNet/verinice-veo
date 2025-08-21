@@ -30,6 +30,7 @@ import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskMethod
 import org.veo.core.repository.DomainTemplateRepository
 import org.veo.core.repository.RepositoryProvider
+import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase
@@ -45,10 +46,13 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
     @Autowired
     private EntityToDtoTransformer entityToDtoTransformer
 
+    @Autowired
+    private UserAccessRightsProvider userAccessRightsProvider
+
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
             CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-                    outputMapper))
+                    outputMapper, userAccessRightsProvider.accessRights))
         }
     ] as UseCaseInteractor
 

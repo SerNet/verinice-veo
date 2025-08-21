@@ -19,6 +19,7 @@ package org.veo.core.usecase.risk;
 
 import jakarta.transaction.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -50,21 +51,26 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
   @Transactional
   @Override
-  public OutputData<R> execute(InputData input) {
+  public OutputData<R> execute(InputData input, UserAccessRights userAccessRights) {
     // Retrieve required elements for operation:
-    var riskAffected = getEntity(TypedId.from(input.riskAffectedRef(), entityClass), input.user());
-    var scenario = getEntity(TypedId.from(input.scenarioRef(), Scenario.class), input.user());
+    var riskAffected =
+        getEntity(TypedId.from(input.riskAffectedRef(), entityClass), userAccessRights);
+    var scenario = getEntity(TypedId.from(input.scenarioRef(), Scenario.class), userAccessRights);
     var domains = findEntities(Domain.class, input.domainRefs());
     var mitigation =
-        input.getControlRef().map(id -> getEntity(TypedId.from(id, Control.class), input.user()));
+        input
+            .getControlRef()
+            .map(id -> getEntity(TypedId.from(id, Control.class), userAccessRights));
     var riskOwner =
-        input.getRiskOwnerRef().map(id -> getEntity(TypedId.from(id, Person.class), input.user()));
+        input
+            .getRiskOwnerRef()
+            .map(id -> getEntity(TypedId.from(id, Person.class), userAccessRights));
     var risk = riskAffected.getRisk(input.scenarioRef()).orElseThrow();
 
     // Validate input:
     checkETag(risk, input);
     // Validate security constraints:
-    input.user().checkElementWriteAccess(riskAffected);
+    userAccessRights.checkElementWriteAccess(riskAffected);
     scenario.checkSameClient(input.authenticatedClient());
     checkDomainOwnership(input.authenticatedClient(), domains);
     mitigation.ifPresent(control -> control.checkSameClient(input.authenticatedClient()));

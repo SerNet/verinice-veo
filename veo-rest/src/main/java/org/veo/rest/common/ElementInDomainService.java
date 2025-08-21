@@ -106,7 +106,6 @@ public class ElementInDomainService {
           TElement extends Element,
           TFullDto extends AbstractElementInDomainDto<TElement> & IdentifiableDto>
       Future<ResponseEntity<TFullDto>> getElement(
-          ApplicationUser user,
           UUID domainId,
           UUID uuid,
           WebRequest request,
@@ -120,7 +119,7 @@ public class ElementInDomainService {
     return useCaseInteractor
         .execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(uuid, domainId, false, user),
+            new GetElementUseCase.InputData(uuid, domainId, false),
             output -> toDtoMapper.apply(output.element(), output.domain()))
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
@@ -133,7 +132,7 @@ public class ElementInDomainService {
     return runner.run(
             () ->
                 getElementUseCase.execute(
-                    new GetElementUseCase.InputData(uuid, domainId, false, user)))
+                    new GetElementUseCase.InputData(uuid, domainId, false), user))
         != null;
   }
 
@@ -213,8 +212,7 @@ public class ElementInDomainService {
     var client = clientLookup.getClient(user);
     return useCaseInteractor.execute(
         updateUseCase,
-        new UpdateElementInDomainUseCase.InputData<>(
-            id, dto, domainId, client, eTag, user.getUsername(), user),
+        new UpdateElementInDomainUseCase.InputData<>(id, dto, domainId, client, eTag),
         output ->
             toResponseEntity(
                 output.entity(),
@@ -231,20 +229,15 @@ public class ElementInDomainService {
     dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(clientLookup.getClient(user), domainId, dto, user),
+        new EvaluateElementUseCase.InputData(clientLookup.getClient(user), domainId, dto),
         output -> ResponseEntity.ok().body(output));
   }
 
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      ApplicationUser user,
-      UUID domainId,
-      UUID elementId,
-      LinkMapDto links,
-      Class<? extends Element> assetClass) {
+      UUID domainId, UUID elementId, LinkMapDto links, Class<? extends Element> assetClass) {
     return useCaseInteractor.execute(
         addLinksUseCase,
-        new AddLinksUseCase.InputData(
-            elementId, assetClass, domainId, links.getCustomLinkStates(), user),
+        new AddLinksUseCase.InputData(elementId, assetClass, domainId, links.getCustomLinkStates()),
         out ->
             ResponseEntity.noContent()
                 .eTag(ETag.from(elementId.toString(), out.entity().getVersion()))

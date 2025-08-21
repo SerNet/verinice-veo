@@ -20,6 +20,7 @@ package org.veo.core.usecase.domain;
 import java.util.Map;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.DomainRepository;
@@ -36,7 +37,7 @@ public class GetInspectionsUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
     return new OutputData(domain.getInspections(), domain);
   }

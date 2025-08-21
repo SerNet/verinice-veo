@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -65,7 +66,7 @@ public class CreateProfileFromUnitUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
     Client client = input.authenticatedClient;

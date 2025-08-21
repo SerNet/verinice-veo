@@ -47,9 +47,11 @@ import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -135,7 +137,7 @@ public class AdminController {
           "Runs as a background task. For each client, elements associated with a previous version of the domain are migrated to the given version and the old domain is deactivated.")
   @SuppressFBWarnings({"CRLF_INJECTION_LOGS"})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
-      @PathVariable UUID id) {
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id) {
     log.info("Submit updateAllClientDomainsUseCase task for domainTemplate: {}", id);
     taskExecutor.execute(
         // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the
@@ -143,7 +145,7 @@ public class AdminController {
         () -> {
           log.info("Start of updateAllClientDomainsUseCase task");
           updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(id), out -> null);
+              new UpdateAllClientDomainsUseCase.InputData(id), out -> null, user);
           log.info("end of updateAllClientDomainsUseCase task");
         });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());

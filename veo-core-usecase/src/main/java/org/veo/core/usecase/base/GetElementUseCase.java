@@ -43,14 +43,15 @@ public class GetElementUseCase<T extends Element>
   private final Class<T> type;
 
   @Override
-  public OutputData<T> execute(InputData input) {
-    T element = repository.getById(input.elementId, input.userRights);
-    return new OutputData<>(element, getDomain(element, input).orElse(null));
+  public OutputData<T> execute(InputData input, UserAccessRights userAccessRights) {
+    T element = repository.getById(input.elementId, userAccessRights);
+    return new OutputData<>(element, getDomain(element, input, userAccessRights).orElse(null));
   }
 
-  protected Optional<Domain> getDomain(T element, InputData input) {
+  protected Optional<Domain> getDomain(
+      T element, InputData input, UserAccessRights userAccessRights) {
     return Optional.ofNullable(input.domainId)
-        .map(id -> domainRepository.getById(id, input.userRights.clientId()))
+        .map(id -> domainRepository.getById(id, userAccessRights.clientId()))
         .map(
             domain -> {
               if (!element.isAssociatedWithDomain(domain)) {
@@ -62,11 +63,10 @@ public class GetElementUseCase<T extends Element>
   }
 
   @Valid
-  public record InputData(
-      @NotNull UUID elementId, UUID domainId, boolean embedRisks, UserAccessRights userRights)
+  public record InputData(@NotNull UUID elementId, UUID domainId, boolean embedRisks)
       implements UseCase.InputData {
-    public InputData(UUID id, UserAccessRights userRights) {
-      this(id, null, false, userRights);
+    public InputData(UUID id) {
+      this(id, null, false);
     }
   }
 

@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.NotFoundException;
@@ -47,15 +46,15 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
 
   @Transactional
   @Override
-  public OutputData<R> execute(InputData input) {
+  public OutputData<R> execute(InputData input, UserAccessRights userAccessRights) {
     var entity =
         repositoryProvider
             .getElementRepositoryFor(entityClass)
-            .getById(input.riskAffectedId, input.user);
+            .getById(input.riskAffectedId, userAccessRights);
     var scenario =
         repositoryProvider
             .getElementRepositoryFor(Scenario.class)
-            .getById(input.scenarioId, input.user);
+            .getById(input.scenarioId, userAccessRights);
 
     return new OutputData<>(
         entity
@@ -68,9 +67,7 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
   }
 
   @Valid
-  public record InputData(
-      Client authenticatedClient, UUID riskAffectedId, UUID scenarioId, UserAccessRights user)
-      implements UseCase.InputData {}
+  public record InputData(UUID riskAffectedId, UUID scenarioId) implements UseCase.InputData {}
 
   @Valid
   @Value

@@ -26,6 +26,7 @@ import jakarta.validation.Valid;
 
 import com.github.zafarkhaja.semver.Version;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -55,7 +56,7 @@ public class CreateDomainTemplateFromDomainUseCase
   private final MessageCreator messageCreator;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
             .findByIdWithProfilesAndRiskDefinitions(input.id, input.authenticatedClient.getId())

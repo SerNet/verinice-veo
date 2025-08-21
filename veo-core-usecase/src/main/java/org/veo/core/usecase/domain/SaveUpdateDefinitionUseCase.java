@@ -24,6 +24,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
@@ -41,7 +42,7 @@ public class SaveUpdateDefinitionUseCase
   private final DomainChangeService domainChangeService;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClient.getId());
 
     var dmd = new DomainMigrationDefinition(input.migrationSteps());

@@ -25,6 +25,7 @@ import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.usecase.domain.CreateDomainUseCase
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("content-creator")
 class CreateDomainUseCaseITSpec extends VeoSpringSpec{
@@ -53,7 +54,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "creating a domain"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it has been persisted"
         def domain = domainRepository
@@ -71,7 +72,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)
@@ -85,7 +86,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)

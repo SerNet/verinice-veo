@@ -132,7 +132,6 @@ public class PersonInDomainController implements ElementInDomainResource {
       description = "Person or domain not found or person not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullPersonInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -141,7 +140,6 @@ public class PersonInDomainController implements ElementInDomainResource {
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        auth,
         domainId,
         uuid,
         request,
@@ -196,7 +194,6 @@ public class PersonInDomainController implements ElementInDomainResource {
         QueryInputMapper.map(
             clientLookup.getClient(user),
             unitUuid,
-            user,
             domainId,
             displayName,
             subType,
@@ -264,7 +261,6 @@ public class PersonInDomainController implements ElementInDomainResource {
         QueryInputMapper.map(
             client,
             null,
-            user,
             domainId,
             null,
             null,
@@ -395,7 +391,6 @@ public class PersonInDomainController implements ElementInDomainResource {
       description = "Person or domain not found or person not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -403,7 +398,7 @@ public class PersonInDomainController implements ElementInDomainResource {
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(user, domainId, uuid, links, Person.class);
+    return elementService.addLinks(domainId, uuid, links, Person.class);
   }
 
   @Operation(

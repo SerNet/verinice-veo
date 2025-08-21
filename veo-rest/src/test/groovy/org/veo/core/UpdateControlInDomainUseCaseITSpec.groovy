@@ -102,7 +102,7 @@ class UpdateControlInDomainUseCaseITSpec extends VeoSpringSpec{
         dto.parts.clear()
         def etag = ETag.from(composite)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(composite.id, dto, domain.id, client, etag, null, NoRestrictionAccessRight.from(client.idAsString)))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(composite.id, dto, domain.id, client, etag), NoRestrictionAccessRight.from(client.idAsString))
         }
 
         scope = executeInTransaction {

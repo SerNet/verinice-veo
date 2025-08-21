@@ -152,7 +152,6 @@ public class ScopeInDomainController
       description = "Scope or domain not found or scope not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullScopeInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -161,7 +160,6 @@ public class ScopeInDomainController
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        auth,
         domainId,
         uuid,
         request,
@@ -216,7 +214,6 @@ public class ScopeInDomainController
         QueryInputMapper.map(
             clientLookup.getClient(user),
             unitUuid,
-            user,
             domainId,
             displayName,
             subType,
@@ -338,7 +335,6 @@ public class ScopeInDomainController
       description = "Scope or domain not found or scope not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -346,7 +342,7 @@ public class ScopeInDomainController
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(user, domainId, uuid, links, Scope.class);
+    return elementService.addLinks(domainId, uuid, links, Scope.class);
   }
 
   @Operation(
@@ -524,7 +520,6 @@ public class ScopeInDomainController
       String sortOrder) {
     return elementService.getRequirementImplementations(
         new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-            user,
             clientLookup.getClient(user),
             TypedId.from(riskAffectedId, Scope.class),
             TypedId.from(controlId, Control.class),

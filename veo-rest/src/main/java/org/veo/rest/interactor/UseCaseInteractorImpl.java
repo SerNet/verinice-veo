@@ -34,6 +34,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
+import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -61,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UseCaseInteractorImpl implements UseCaseInteractor {
 
   private final PlatformTransactionManager transactionManager;
+  private final UserAccessRightsProvider userAccessRightsProvider;
 
   @Override
   @Async
@@ -73,7 +75,10 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
     log.info("Executing {}", useCase);
     log.debug("Input: {}", input);
     return doExecuteWithRetry(
-        useCase, () -> useCase.executeAndTransformResult(input, outputMapper));
+        useCase,
+        () ->
+            useCase.executeAndTransformResult(
+                input, outputMapper, userAccessRightsProvider.getAccessRights()));
   }
 
   private <R, I extends InputData, O extends OutputData> CompletableFuture<R> doExecuteWithRetry(

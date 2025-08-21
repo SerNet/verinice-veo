@@ -30,6 +30,7 @@ import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.rest.security.NoRestrictionAccessRight
 
 class VersioningMessageITSpec extends VeoSpringSpec {
     def setup() {
@@ -68,10 +69,10 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             def unit = unitDataRepository.save(newUnit(client))
             def profileId = dsgvo.profiles.find { it.name == "Beispielorganisation" }.id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId, false)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvo.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions)
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions),  NoRestrictionAccessRight.from(client.idAsString)
                     )
         }
 

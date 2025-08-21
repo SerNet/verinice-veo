@@ -163,7 +163,6 @@ public class IncidentController
         QueryInputMapper.map(
             client,
             unitUuid,
-            user,
             null,
             displayName,
             subType,
@@ -213,12 +212,11 @@ public class IncidentController
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullIncidentDto>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(user, uuid, request);
+    return super.getElementParts(uuid, request);
   }
 
   @DeleteMapping(UUID_PARAM_SPEC)
@@ -226,13 +224,12 @@ public class IncidentController
   @ApiResponse(responseCode = "204", description = "Incident deleted")
   @ApiResponse(responseCode = "404", description = "Incident not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteIncident(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Incident.class, uuid, user),
+        new DeleteElementUseCase.InputData(Incident.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -266,12 +263,11 @@ public class IncidentController
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Incident.class);
+    return inspect(uuid, domainId, Incident.class);
   }
 
   @Override

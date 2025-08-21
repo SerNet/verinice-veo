@@ -163,7 +163,6 @@ public class DocumentController
         QueryInputMapper.map(
             client,
             unitUuid,
-            user,
             null,
             displayName,
             subType,
@@ -213,12 +212,11 @@ public class DocumentController
   @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(user, uuid, request);
+    return super.getElementParts(uuid, request);
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
@@ -226,13 +224,12 @@ public class DocumentController
   @ApiResponse(responseCode = "204", description = "Document deleted")
   @ApiResponse(responseCode = "404", description = "Document not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Document.class, uuid, user),
+        new DeleteElementUseCase.InputData(Document.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -271,7 +268,7 @@ public class DocumentController
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Document.class);
+    return inspect(uuid, domainId, Document.class);
   }
 
   @Override

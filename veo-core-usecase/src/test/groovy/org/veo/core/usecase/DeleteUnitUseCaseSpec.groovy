@@ -33,7 +33,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, genericElementRepository)
-        usecase.execute(input)
+        usecase.execute(input, noRestrictionExistingClient)
 
         then: "the client for the unit is retrieved"
         2 * clientRepository.getById(_) >> existingClient

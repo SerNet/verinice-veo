@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -35,7 +36,7 @@ public class GetCatalogItemsUseCase
         GetCatalogItemsUseCase.InputData, GetCatalogItemsUseCase.OutputData> {
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     return new OutputData(
         input.authenticatedClient.getDomains().stream()
             .filter(EntitySpecifications.isActive())

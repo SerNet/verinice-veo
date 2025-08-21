@@ -70,14 +70,13 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
    */
   public @Valid Future<ResponseEntity<E>> getElement(
       Authentication auth, UUID uuid, WebRequest request) {
-    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<E> entityFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(uuid, user),
+            new GetElementUseCase.InputData(uuid),
             output -> entity2Dto(output.element()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -99,15 +98,15 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
       ApplicationUser user, @Valid E dto, String domainId) {
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(getClient(user), UUID.fromString(domainId), dto, user),
+        new EvaluateElementUseCase.InputData(getClient(user), UUID.fromString(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 
   public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      ApplicationUser user, UUID elementId, UUID domainId, Class<T> elementType) {
+      UUID elementId, UUID domainId, Class<T> elementType) {
     return useCaseInteractor.execute(
         inspectElementUseCase,
-        new InspectElementUseCase.InputData(elementType, elementId, domainId, user),
+        new InspectElementUseCase.InputData(elementType, elementId, domainId),
         output -> ResponseEntity.ok().body(output.findings()));
   }
 

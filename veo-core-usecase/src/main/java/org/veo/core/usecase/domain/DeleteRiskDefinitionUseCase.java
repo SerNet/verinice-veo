@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.repository.DomainRepository;
@@ -41,7 +42,7 @@ public class DeleteRiskDefinitionUseCase
   private final TemplateItemMigrationService templateItemMigrationService;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");

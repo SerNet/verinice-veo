@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -32,11 +33,13 @@ public class GetScopeUseCase extends GetElementUseCase<Scope> {
   }
 
   @Override
-  public GetElementUseCase.OutputData<Scope> execute(InputData input) {
+  public GetElementUseCase.OutputData<Scope> execute(
+      InputData input, UserAccessRights userAccessRights) {
     var scope =
         scopeRepository
-            .findById(input.elementId(), input.embedRisks(), input.userRights())
+            .findById(input.elementId(), input.embedRisks(), userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.elementId(), Scope.class));
-    return new GetElementUseCase.OutputData<>(scope, getDomain(scope, input).orElse(null));
+    return new GetElementUseCase.OutputData<>(
+        scope, getDomain(scope, input, userAccessRights).orElse(null));
   }
 }

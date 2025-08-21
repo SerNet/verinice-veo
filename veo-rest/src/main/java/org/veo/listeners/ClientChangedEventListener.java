@@ -20,6 +20,7 @@ package org.veo.listeners;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -30,7 +31,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.event.ClientChangedEvent;
@@ -42,6 +45,8 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.service.DefaultDomainCreator;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +83,7 @@ public class ClientChangedEventListener {
     switch (event.getType()) {
       case ACTIVATION -> log.info("client {} activated", client.getIdAsString());
       case DEACTIVATION -> log.info("client {} deactivated", client.getIdAsString());
-      case DELETION -> deleteClient(client);
+      case DELETION -> deleteClient(client, new NoRestriction(client.getIdAsString()));
       case MODIFICATION -> modifyClient(client, event);
       default -> throw new NotImplementedException("Unexpected value: " + event.getType());
     }
@@ -157,13 +162,14 @@ public class ClientChangedEventListener {
     }
   }
 
-  private void deleteClient(Client client) {
+  private void deleteClient(Client client, UserAccessRights userAccessRights) {
     log.info("Delete data for client {}", client);
     unitRepository
         .findByClient(client)
         .forEach(
             unit ->
-                deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
+                deleteUnitUseCase.execute(
+                    new DeleteUnitUseCase.InputData(unit.getId(), client), userAccessRights));
 
     // Reload the client since the persistence context was cleared
     repository.delete(repository.getById(client.getId()));
@@ -179,5 +185,43 @@ public class ClientChangedEventListener {
 
   private Predicate<? super Domain> hasDomainTemplate() {
     return d -> d.getDomainTemplate() != null;
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  private static final class NoRestriction implements UserAccessRights {
+    private final String clientId;
+
+    @Override
+    public void checkClient(ClientOwned id) {}
+
+    @Override
+    public boolean isUnitAccessRestricted() {
+      return false;
+    }
+
+    @Override
+    public Set<UUID> getReadableUnitIds() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Set<UUID> getWritableUnitIds() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public List<String> getRoles() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public String getClientId() {
+      return clientId;
+    }
+
+    @Override
+    public String getUsername() {
+      return "system";
+    }
   }
 }

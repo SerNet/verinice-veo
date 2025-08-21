@@ -42,7 +42,7 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
         domainRepository.findActiveDomainsWithProfilesAndRiskDefinitions(existingClient.id) >> [existingDomain, domain]
 
         when:
-        def output = usecase.execute(new InputData(existingClient))
+        def output = usecase.execute(new InputData(existingClient), noRestrictionExistingClient)
 
         then:
         output.objects ==~ [existingDomain, domain]

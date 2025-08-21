@@ -20,6 +20,7 @@ package org.veo.core.usecase.unit;
 import java.util.Comparator;
 import java.util.Set;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
@@ -56,7 +57,7 @@ public class UnitImportUseCase
   private final EventPublisher eventPublisher;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var client = clientRepository.getActiveById(input.client.getId());
     client.incrementTotalUnits(input.maxUnits);
     var resolver = refResolverFactory.db(client);

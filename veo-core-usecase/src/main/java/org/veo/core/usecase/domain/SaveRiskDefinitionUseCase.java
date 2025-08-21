@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -46,7 +47,7 @@ public class SaveRiskDefinitionUseCase
   private final EventPublisher eventPublisher;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");

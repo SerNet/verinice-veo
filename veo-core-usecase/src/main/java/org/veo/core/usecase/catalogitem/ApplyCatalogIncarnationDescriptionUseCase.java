@@ -24,6 +24,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -55,7 +56,7 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     if (input.descriptions.isEmpty()) {
       return new OutputData(Collections.emptyList(), null);
     }

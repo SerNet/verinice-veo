@@ -163,7 +163,6 @@ public class ScenarioController
         QueryInputMapper.map(
             client,
             unitUuid,
-            user,
             null,
             displayName,
             subType,
@@ -213,12 +212,11 @@ public class ScenarioController
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(user, uuid, request);
+    return super.getElementParts(uuid, request);
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
@@ -226,13 +224,12 @@ public class ScenarioController
   @ApiResponse(responseCode = "204", description = "Scenario deleted")
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scenario.class, uuid, user),
+        new DeleteElementUseCase.InputData(Scenario.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -266,12 +263,11 @@ public class ScenarioController
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Scenario.class);
+    return inspect(uuid, domainId, Scenario.class);
   }
 
   @Override

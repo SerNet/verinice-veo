@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
@@ -63,7 +64,7 @@ public class TransferDomainCustomizationUseCase
   // transaction when calling this from another use case)
   @Transactional(TxType.REQUIRES_NEW)
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var sourceDomain = domainRepository.getById(input.sourceDomainId, input.authentiatedClientId);
     var targetDomain = domainRepository.getById(input.targetDomainId, input.authentiatedClientId);
     // Copy all customized risk definitions to the new domain. This may overwrite risk definition

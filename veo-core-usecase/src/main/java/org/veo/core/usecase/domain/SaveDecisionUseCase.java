@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -37,7 +38,7 @@ public class SaveDecisionUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getById(input.domainId, input.authenticatedClientId);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");

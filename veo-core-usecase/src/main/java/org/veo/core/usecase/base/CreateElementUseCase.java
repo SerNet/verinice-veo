@@ -60,7 +60,7 @@ public class CreateElementUseCase<TEntity extends Element>
   @Override
   @Transactional(Transactional.TxType.REQUIRED)
   public CreateElementUseCase.OutputData<TEntity> execute(
-      CreateElementUseCase.InputData<TEntity> input) {
+      InputData<TEntity> input, UserAccessRights userAccessRights) {
 
     var state = input.newEntity;
     input.user.checkCreateElementWriteAccess(state);

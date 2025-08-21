@@ -46,6 +46,7 @@ import org.veo.jobs.UserSwitcher
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup
@@ -196,13 +197,13 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
             def profileId = dsgvoTestDomain.profiles.first().id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoTestDomain.id, null, profileId, false)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoTestDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(new ApplyProfileIncarnationDescriptionUseCase.InputData(
                     client,
                     unit.id,
                     incarnationDescriptions
-                    ))
+                    ), NoRestrictionAccessRight.from(client.idAsString))
         }
 
         and: "the event table has been completely cleared by the deletion job"

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.entity.specification.ContentTooLongException;
@@ -43,7 +44,7 @@ public class SaveUserConfigurationUseCase
   private final int maxBytesPerConfiguration;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     if (input.configuration.toString().getBytes(StandardCharsets.UTF_8).length
         > maxBytesPerConfiguration) {
       throw new ContentTooLongException(

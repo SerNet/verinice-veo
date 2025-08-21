@@ -78,7 +78,6 @@ import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
-import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ElementType;
@@ -183,7 +182,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullProcessDto>> getProcess(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
@@ -198,7 +196,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     CompletableFuture<FullProcessDto> entityFuture =
         useCaseInteractor.execute(
             getProcessUseCase,
-            new GetProcessUseCase.InputData(uuid, null, embedRisks, user),
+            new GetProcessUseCase.InputData(uuid, null, embedRisks),
             output -> entity2Dto(output.element(), embedRisks));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -216,12 +214,11 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(user, uuid, request);
+    return super.getElementParts(uuid, request);
   }
 
   @DeleteMapping(value = "/{" + UUID_PARAM + "}")
@@ -229,13 +226,12 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @ApiResponse(responseCode = "204", description = "Process deleted")
   @ApiResponse(responseCode = "404", description = "Process not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Process.class, uuid, user),
+        new DeleteElementUseCase.InputData(Process.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -287,7 +283,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
         QueryInputMapper.map(
                 client,
                 parentUuid,
-                user,
                 null,
                 displayName,
                 subType,
@@ -327,11 +322,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public Future<List<ProcessRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, UUID processId) {
+  public Future<List<ProcessRiskDto>> getRisks(UUID processId) {
 
-    Client client = getClient(user.getClientId());
-    var input = new GetProcessRisksUseCase.InputData(client, processId, user);
+    var input = new GetProcessRisksUseCase.InputData(processId);
 
     return useCaseInteractor.execute(
         getProcessRisksUseCase,
@@ -343,16 +336,13 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public Future<ResponseEntity<ProcessRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user, UUID processId, UUID scenarioId) {
-
-    Client client = getClient(user.getClientId());
-    return getRisk(client, processId, scenarioId, user);
+  public Future<ResponseEntity<ProcessRiskDto>> getRisk(UUID processId, UUID scenarioId) {
+    return getRiskInternal(processId, scenarioId);
   }
 
-  private CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
-      Client client, UUID processId, UUID scenarioId, UserAccessRights user) {
-    var input = new GetProcessRiskUseCase.InputData(client, processId, scenarioId, user);
+  private CompletableFuture<ResponseEntity<ProcessRiskDto>> getRiskInternal(
+      UUID processId, UUID scenarioId) {
+    var input = new GetProcessRiskUseCase.InputData(processId, scenarioId);
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -376,7 +366,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       ApplicationUser user, @Valid @NotNull ProcessRiskDto dto, UUID processId) {
     var input =
         new CreateProcessRiskUseCase.InputData(
-            user,
             getClient(user.getClientId()),
             processId,
             urlAssembler.toKey(dto.getScenario()),
@@ -423,7 +412,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     var client = getClient(user.getClientId());
     var input =
         new UpdateProcessRiskUseCase.InputData(
-            user,
             client,
             processId,
             urlAssembler.toKey(dto.getScenario()),
@@ -436,7 +424,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateProcessRiskUseCase, input, output -> null)
-        .thenCompose(o -> this.getRisk(client, processId, scenarioId, user));
+        .thenCompose(o -> this.getRiskInternal(processId, scenarioId));
   }
 
   @Operation(summary = "Runs inspections on a persisted process")
@@ -450,24 +438,20 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Process.class);
+    return inspect(uuid, domainId, Process.class);
   }
 
   @Override
   public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      ApplicationUser user, UUID riskAffectedId, UUID controlId) {
+      UUID riskAffectedId, UUID controlId) {
     return useCaseInteractor.execute(
         getRequirementImplementationUseCase,
         new GetRequirementImplementationUseCase.InputData(
-            user,
-            getClient(user),
-            TypedId.from(riskAffectedId, Process.class),
-            TypedId.from(controlId, Control.class)),
+            TypedId.from(riskAffectedId, Process.class), TypedId.from(controlId, Control.class)),
         out ->
             ResponseEntity.ok()
                 .eTag(out.eTag())
@@ -507,7 +491,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         GetRequirementImplementationsByControlImplementationInputMapper.map(
-            user,
             getClient(user),
             Process.class,
             riskAffectedId,

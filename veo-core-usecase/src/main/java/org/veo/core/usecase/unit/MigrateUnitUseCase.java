@@ -30,6 +30,7 @@ import jakarta.transaction.Transactional.TxType;
 
 import com.github.zafarkhaja.semver.Version;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
@@ -71,7 +72,7 @@ public class MigrateUnitUseCase
   // transaction when calling this from another use case)
   @Transactional(TxType.REQUIRES_NEW)
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var unit = unitRepository.getById(input.unitId);
     var oldDomain = domainRepository.getById(input.domainIdOld, unit.getClient().getId());
     var newDomain = domainRepository.getById(input.domainIdNew, unit.getClient().getId());

@@ -40,6 +40,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.rest.security.NoRestrictionAccessRight;
 
 import lombok.RequiredArgsConstructor;
 
@@ -72,7 +73,8 @@ public class SpringSpecDomainTemplateCreator {
         () -> {
           createDomainFromTemplateUseCase.execute(
               new CreateDomainFromTemplateUseCase.InputData(
-                  templateId, client.getId(), copyProfiles));
+                  templateId, client.getId(), copyProfiles),
+              NoRestrictionAccessRight.from(client.getIdAsString()));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()
         .filter(
@@ -94,7 +96,8 @@ public class SpringSpecDomainTemplateCreator {
     var dto = getTestTemplateDto(templateId);
     AsSystemUser.runAsContentCreator(
         () -> {
-          createDomainTemplateUseCase.execute(new CreateDomainTemplateUseCase.InputData(dto));
+          createDomainTemplateUseCase.execute(
+              new CreateDomainTemplateUseCase.InputData(dto), NoRestrictionAccessRight.from(null));
         });
   }
 

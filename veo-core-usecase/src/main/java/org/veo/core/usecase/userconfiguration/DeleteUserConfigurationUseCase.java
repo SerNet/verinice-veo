@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.UserConfiguration;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -35,7 +36,7 @@ public class DeleteUserConfigurationUseCase
   final UserConfigurationRepository userConfigurationRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     UserConfiguration userConfiguration =
         userConfigurationRepository.getUserConfiguration(
             input.clientId, input.userName, input.applicationId);

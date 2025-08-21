@@ -19,6 +19,7 @@ package org.veo.core.usecase.message;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.repository.SystemMessageRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -33,7 +34,7 @@ public class DeleteSystemMessageUseCase
   private final SystemMessageRepository systemMessageRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     systemMessageRepository.delete(systemMessageRepository.getById(input.id));
     return new OutputData();
   }

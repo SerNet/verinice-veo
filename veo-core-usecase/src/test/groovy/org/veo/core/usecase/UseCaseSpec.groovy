@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.UserAccessRights
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.IncarnationConfiguration
@@ -29,6 +30,7 @@ import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.base.UnitHierarchyProvider
 import org.veo.core.usecase.service.RefResolverFactory
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import spock.lang.Specification
 
@@ -38,6 +40,7 @@ import spock.lang.Specification
 abstract class UseCaseSpec extends Specification {
 
     Client existingClient
+    UserAccessRights noRestrictionExistingClient
     Client anotherClient
     Unit existingUnit
     Domain existingDomain
@@ -58,11 +61,13 @@ abstract class UseCaseSpec extends Specification {
         def id1 = UUID.randomUUID()
         Client client = Mock()
         client.getId() >> id1
+        client.getIdAsString() >> id1.toString()
         client.getDomains() >> [existingDomain]
         existingDomain.getOwner() >> client
         client.getName()>> "Existing client"
         existingClient = client
 
+        noRestrictionExistingClient = NoRestrictionAccessRight.from(existingClient.idAsString)
         def id2 = UUID.randomUUID()
         anotherClient = Mock()
         anotherClient.getId() >> id2

@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.NotFoundException;
@@ -37,7 +38,7 @@ public class DeleteProfileInDomainTemplateUseCase
   private final DomainTemplateRepository domainTemplateRepository;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domainTemplate =
         domainTemplateRepository
             .findById(input.domainTemplateId)

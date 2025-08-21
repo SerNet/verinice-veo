@@ -49,7 +49,7 @@ public class DeleteRiskUseCase
 
   @Transactional
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var riskAffected =
         repositoryProvider
             .getElementRepositoryFor(input.entityClass)

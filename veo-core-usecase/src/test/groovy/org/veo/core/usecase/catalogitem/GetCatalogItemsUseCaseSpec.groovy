@@ -43,7 +43,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all catalog items for an unknown domain"() {
         when:
-        usecase.execute(new InputData(UUID.randomUUID(), anotherClient))
+        usecase.execute(new InputData(UUID.randomUUID(), anotherClient), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -51,7 +51,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all catalog items for a domain"() {
         when:
-        def output = usecase.execute(new InputData(existingDomainId, anotherClient))
+        def output = usecase.execute(new InputData(existingDomainId, anotherClient), noRestrictionExistingClient)
 
         then:
         output.catalogItems.size() == 3

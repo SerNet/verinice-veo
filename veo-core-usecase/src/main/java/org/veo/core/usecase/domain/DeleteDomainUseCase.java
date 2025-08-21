@@ -19,6 +19,7 @@ package org.veo.core.usecase.domain;
 
 import java.util.List;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
@@ -44,7 +45,7 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
   }
 
   @Override
-  public EmptyOutput execute(IdAndClient input) {
+  public EmptyOutput execute(IdAndClient input, UserAccessRights userAccessRights) {
     Domain domain = domainRepository.getById(input.id());
     Client client = input.authenticatedClient();
     if (!client.equals(domain.getOwner())) {

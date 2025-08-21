@@ -131,7 +131,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       description = "Scenario or domain not found or scenario not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullScenarioInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -140,7 +139,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        user,
         domainId,
         uuid,
         request,
@@ -195,7 +193,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
         QueryInputMapper.map(
             clientLookup.getClient(user),
             unitUuid,
-            user,
             domainId,
             displayName,
             subType,
@@ -264,7 +261,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
         QueryInputMapper.map(
             client,
             null,
-            user,
             domainId,
             null,
             null,
@@ -394,7 +390,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       description = "Scenario or domain not found or scenario not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -402,7 +397,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(user, domainId, uuid, links, Scenario.class);
+    return elementService.addLinks(domainId, uuid, links, Scenario.class);
   }
 
   @Operation(

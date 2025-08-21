@@ -32,6 +32,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import groovy.json.JsonSlurper
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -71,10 +72,10 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             def profileId = domain.profiles.first().id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions))
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString))
         }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
@@ -204,7 +205,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
     def runUseCase(Unit unit) {
         executeInTransaction {
-            deleteUnitUseCase.execute(new InputData(unit.id, unit.client))
+            deleteUnitUseCase.execute(new InputData(unit.id, unit.client), NoRestrictionAccessRight.from(unit.client.idAsString))
         }
     }
 

@@ -19,6 +19,7 @@ package org.veo.core.usecase.domain;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.NotFoundException;
@@ -36,7 +37,7 @@ public class ExportDomainUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(IdAndClient input) {
+  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
     Domain domain = repository.getById(input.id());
     Client client = input.authenticatedClient();
     if (!client.equals(domain.getOwner())) {

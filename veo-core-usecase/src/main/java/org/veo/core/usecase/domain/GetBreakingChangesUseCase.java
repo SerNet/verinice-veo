@@ -20,6 +20,7 @@ package org.veo.core.usecase.domain;
 import java.util.List;
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -37,7 +38,7 @@ public class GetBreakingChangesUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
     var template = domain.getDomainTemplate();
     if (template == null) {

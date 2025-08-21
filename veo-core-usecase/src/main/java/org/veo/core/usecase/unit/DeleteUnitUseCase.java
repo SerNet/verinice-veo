@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
@@ -42,7 +43,7 @@ public class DeleteUnitUseCase
   private final GenericElementRepository genericElementRepository;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     Client client = clientRepository.getById(input.authenticatedClient.getId());
     Unit unit = unitRepository.getById(input.unitId);
     unit.checkSameClient(client);

@@ -85,6 +85,7 @@ import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.service.MigrateDomainUseCase;
+import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
@@ -226,6 +227,7 @@ import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
+import org.veo.rest.UserAccessRightsProviderImpl;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.ControlImplementationService;
@@ -1352,6 +1354,11 @@ public class ModuleConfiguration {
     try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
       return factory.getValidator();
     }
+  }
+
+  @Bean
+  public UserAccessRightsProvider userAccessRightsProvider() {
+    return new UserAccessRightsProviderImpl();
   }
 
   // by default, the content schema for every response is derived from the

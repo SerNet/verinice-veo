@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
@@ -50,7 +51,7 @@ public class GetElementStatusCountUseCase
   private final GenericElementRepository genericElementRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain = domainRepository.getById(input.domainId);
     Client client = input.authenticatedClient;
     if (!client.equals(domain.getOwner())) {

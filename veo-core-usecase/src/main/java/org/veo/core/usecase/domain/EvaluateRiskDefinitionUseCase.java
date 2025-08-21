@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.inspection.Severity;
@@ -86,7 +87,7 @@ public class EvaluateRiskDefinitionUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
 
     if (input.riskDefinition == null) {

@@ -55,11 +55,11 @@ public class DeleteElementUseCase
   }
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     ElementRepository<? extends Element> repository =
         repositoryProvider.getElementRepositoryFor(input.entityClass);
-    Element entity = repository.getById(input.id, input.userRights);
-    input.userRights.checkElementWriteAccess(entity);
+    Element entity = repository.getById(input.id, userAccessRights);
+    userAccessRights.checkElementWriteAccess(entity);
     entity.remove();
     repository.deleteById(entity.getId());
     if (RELEVANT_CLASSES_FOR_RISK.contains(input.entityClass)) {
@@ -83,7 +83,6 @@ public class DeleteElementUseCase
     return false;
   }
 
-  public record InputData(
-      Class<? extends Element> entityClass, UUID id, UserAccessRights userRights)
+  public record InputData(Class<? extends Element> entityClass, UUID id)
       implements UseCase.InputData {}
 }

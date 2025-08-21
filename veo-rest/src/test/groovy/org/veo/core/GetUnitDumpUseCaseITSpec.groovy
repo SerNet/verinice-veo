@@ -169,7 +169,7 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
 
     private GetUnitDumpUseCase.OutputData dumpUnit(Domain domain) {
         executeInTransaction {
-            getUnitDumpUseCase.execute(new GetUnitDumpUseCase.InputData(unit.id, domain.id))
+            getUnitDumpUseCase.execute(new GetUnitDumpUseCase.InputData(unit.id, domain.id), userAccessRightsProvider.accessRights)
         }
     }
 }

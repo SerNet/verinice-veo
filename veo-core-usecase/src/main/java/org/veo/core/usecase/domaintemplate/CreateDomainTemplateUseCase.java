@@ -21,6 +21,7 @@ import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.valida
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
@@ -42,7 +43,7 @@ public class CreateDomainTemplateUseCase
   private final DomainTemplateRepository domainTemplateRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var state = input.domainTemplate;
     var domainTemplate = mapper.toTemplate(state);
     validateVersion(input.domainTemplate.getTemplateVersion());

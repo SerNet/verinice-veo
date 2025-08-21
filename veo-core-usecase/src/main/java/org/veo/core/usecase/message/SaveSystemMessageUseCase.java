@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.SystemMessageState;
@@ -43,7 +44,7 @@ public class SaveSystemMessageUseCase
   final EntityStateMapper entityStateMapper;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var message =
         input.id() == null
             ? entityFactory.createSystemMessage()

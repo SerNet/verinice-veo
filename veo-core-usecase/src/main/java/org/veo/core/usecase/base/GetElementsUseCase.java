@@ -64,11 +64,11 @@ public class GetElementsUseCase
    * (optional) requested parent unit was not found in the repository.
    */
   @Override
-  public OutputData execute(InputData input) {
-    Client client = UseCaseTools.checkClientExists(input.userRights.clientId(), clientRepository);
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
 
     var query = getRepo(input.elementTypes).query(client);
-    applyDefaultQueryParameters(input, query, client);
+    applyDefaultQueryParameters(input, query, client, userAccessRights);
     return new OutputData(query.execute(input.pagingConfiguration));
   }
 
@@ -84,12 +84,12 @@ public class GetElementsUseCase
   }
 
   protected void applyDefaultQueryParameters(
-      InputData input, ElementQuery<?> query, Client client) {
+      InputData input, ElementQuery<?> query, Client client, UserAccessRights userAccessRights) {
 
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
     // TODO: verinice-veo#3950
-    if (input.userRights.isUnitAccessRestricted()) {
-      Optional.ofNullable(new QueryCondition<>(input.userRights.getReadableUnitIds()))
+    if (userAccessRights.isUnitAccessRestricted()) {
+      Optional.ofNullable(new QueryCondition<>(userAccessRights.getReadableUnitIds()))
           .map(c -> unitRepository.findByIds(c.getValues()))
           .ifPresent(query::whereUnitIn);
     }
@@ -158,7 +158,6 @@ public class GetElementsUseCase
   public record InputData(
       QueryCondition<ElementType> elementTypes,
       QueryCondition<UUID> unitUuid,
-      UserAccessRights userRights,
       SingleValueQueryCondition<UUID> domainId,
       QueryCondition<String> displayName,
       QueryCondition<String> subType,

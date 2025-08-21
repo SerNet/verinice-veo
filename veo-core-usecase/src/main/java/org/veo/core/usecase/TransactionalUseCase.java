@@ -21,6 +21,8 @@ import java.util.function.Function;
 
 import jakarta.transaction.Transactional;
 
+import org.veo.core.UserAccessRights;
+
 /**
  * A base-class for use-cases that require a transaction.
  *
@@ -32,8 +34,9 @@ public interface TransactionalUseCase<I extends UseCase.InputData, O extends Use
 
   @Transactional(Transactional.TxType.REQUIRED)
   @Override
-  default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
-    return resultMapper.apply(execute(input));
+  default <R> R executeAndTransformResult(
+      I input, Function<O, R> resultMapper, UserAccessRights userAccessRights) {
+    return resultMapper.apply(execute(input, userAccessRights));
   }
 
   default Isolation getIsolation() {

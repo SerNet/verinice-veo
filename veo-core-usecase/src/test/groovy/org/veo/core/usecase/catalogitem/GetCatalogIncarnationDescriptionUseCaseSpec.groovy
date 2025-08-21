@@ -44,7 +44,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.tailoringReferences >> []
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         output.references.size() == 1
@@ -71,7 +71,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.tailoringReferences >> [tr]
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         output.references.size() == 2
@@ -101,7 +101,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.elementInterface >> Control.class
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         output.references.size()== 1
@@ -135,7 +135,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.elementInterface >> Control.class
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         output.references.size()== 1
@@ -162,7 +162,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.getElementType() >> "control"
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         thrown(RuntimeModelException)
@@ -177,7 +177,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         anotherUnit.id >> unitId
 
         when:
-        usecase.execute(new InputData(existingClient, anotherUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        usecase.execute(new InputData(existingClient, anotherUnit.id, existingDomain.id, [item1.symbolicId], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -188,7 +188,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         item1.tailoringReferences >> []
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [UUID.randomUUID()], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [UUID.randomUUID()], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -202,7 +202,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         usecase.execute(new InputData(existingClient, existingUnit.id, existingDomain.id, [
             item1.symbolicId,
             item1.symbolicId
-        ], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null))
+        ], IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),noRestrictionExistingClient)
 
         then:
         thrown(IllegalArgumentException)

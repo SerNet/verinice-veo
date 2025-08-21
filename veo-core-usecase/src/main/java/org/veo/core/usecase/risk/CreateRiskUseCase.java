@@ -21,6 +21,7 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
 
 import jakarta.transaction.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
@@ -55,14 +56,14 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
   @Transactional
   @Override
-  public OutputData<R> execute(InputData input) {
+  public OutputData<R> execute(InputData input, UserAccessRights userAccessRights) {
     // Retrieve the necessary entities for the requested operation:
     var riskAffected =
-        findElement(entityClass, input.riskAffectedRef(), input.user())
+        findElement(entityClass, input.riskAffectedRef(), userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.riskAffectedRef(), entityClass));
 
     var scenario =
-        findElement(Scenario.class, input.scenarioRef(), input.user())
+        findElement(Scenario.class, input.scenarioRef(), userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.scenarioRef(), entityClass));
 
     var domains = findEntities(Domain.class, input.domainRefs());
@@ -71,7 +72,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     }
 
     // Validate security constraints:
-    input.user().checkElementWriteAccess(riskAffected);
+    userAccessRights.checkElementWriteAccess(riskAffected);
 
     // Apply requested operation:
     var risk = riskAffected.obtainRisk(scenario);
@@ -82,7 +83,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
       newRiskCreated = true;
     }
 
-    risk = applyOptionalInput(input, risk);
+    risk = applyOptionalInput(input, risk, userAccessRights);
 
     risk.defineRiskValues(input.riskValues());
     publishEvents(riskAffected, risk);

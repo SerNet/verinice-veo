@@ -19,6 +19,7 @@ package org.veo.core.usecase.unit;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
@@ -41,7 +42,7 @@ public class GetUnitUseCase
    * unit object was not found in the repository.
    */
   @Override
-  public OutputData execute(IdAndClient input) {
+  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
     Unit unit =
         repository
             .findById(input.id())

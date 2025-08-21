@@ -22,6 +22,7 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.rest.security.NoRestrictionAccessRight
 
 class GetDomainUseCaseSpec extends UseCaseSpec {
 
@@ -42,7 +43,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve a domain"() {
         when :
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(existingDomainId,  existingClient))
+        def output = usecase.execute(new IdAndClient(existingDomainId, existingClient), noRestrictionExistingClient)
 
         then:
         output.domain != null
@@ -52,7 +53,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve an inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        usecase.execute(new IdAndClient(existingDomainId,  existingClient))
+        usecase.execute(new IdAndClient(existingDomainId, existingClient), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -60,7 +61,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a domain unknown client"() {
         when:
-        usecase.execute(new IdAndClient(existingDomainId,  anotherClient))
+        usecase.execute(new IdAndClient(existingDomainId, anotherClient), NoRestrictionAccessRight.from(anotherClient.id.toString()))
 
         then:
         thrown(ClientBoundaryViolationException)
@@ -68,7 +69,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
 
     def "retrieve an unknown domain"() {
         when:
-        usecase.execute(new IdAndClient(UUID.randomUUID(),  existingClient))
+        usecase.execute(new IdAndClient(UUID.randomUUID(), existingClient), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)

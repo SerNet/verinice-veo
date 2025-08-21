@@ -39,30 +39,26 @@ public class InspectElementUseCase
   private final Inspector inspector;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain =
         domainRepository
             .findById(input.domainId)
             .orElseThrow(
                 () ->
                     new NotFoundException("Domain with ID %s not found".formatted(input.domainId)));
-    input.userRights.checkClient(domain);
+    userAccessRights.checkClient(domain);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
 
     var element =
         elementRepository
-            .findById(input.elementId, input.elementType, input.userRights)
+            .findById(input.elementId, input.elementType, userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.elementId, input.elementType));
     return new OutputData(inspector.inspect(element, domain));
   }
 
-  public record InputData(
-      Class<? extends Element> elementType,
-      UUID elementId,
-      UUID domainId,
-      UserAccessRights userRights)
+  public record InputData(Class<? extends Element> elementType, UUID elementId, UUID domainId)
       implements UseCase.InputData {}
 
   public record OutputData(Set<Finding> findings) implements UseCase.OutputData {}

@@ -216,7 +216,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
         QueryInputMapper.map(
                 client,
                 unitUuid,
-                user,
                 null,
                 displayName,
                 subType,
@@ -247,7 +246,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
               schema = @Schema(implementation = FullScopeDto.class)))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<ResponseEntity<FullScopeDto>> getScope(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
@@ -262,7 +260,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new GetElementUseCase.InputData(uuid, null, embedRisks, user),
+            new GetElementUseCase.InputData(uuid, null, embedRisks),
             output ->
                 entityToDtoTransformer.transformScope2Dto(output.element(), false, embedRisks));
     return scopeFuture.thenApply(
@@ -280,7 +278,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
               array = @ArraySchema(schema = @Schema(implementation = FullElementDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
@@ -290,7 +287,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(uuid, user),
+        new GetElementUseCase.InputData(uuid),
         output -> {
           Scope scope = output.element();
           return ResponseEntity.ok()
@@ -307,22 +304,19 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @ApiResponse(responseCode = "204", description = "Scope deleted")
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Scope.class, uuid, user),
+        new DeleteElementUseCase.InputData(Scope.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
   @Override
-  public Future<List<ScopeRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, UUID scopeId) {
+  public Future<List<ScopeRiskDto>> getRisks(UUID scopeId) {
 
-    Client client = getClient(user.getClientId());
-    var input = new GetScopeRisksUseCase.InputData(client, scopeId, user);
+    var input = new GetScopeRisksUseCase.InputData(scopeId);
 
     return useCaseInteractor.execute(
         getScopeRisksUseCase,
@@ -334,16 +328,13 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   }
 
   @Override
-  public Future<ResponseEntity<ScopeRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user, UUID scopeId, UUID scenarioId) {
-
-    Client client = getClient(user.getClientId());
-    return getRisk(client, scopeId, scenarioId, user);
+  public Future<ResponseEntity<ScopeRiskDto>> getRisk(UUID scopeId, UUID scenarioId) {
+    return getRiskInternal(scopeId, scenarioId);
   }
 
-  private CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
-      Client client, UUID scopeId, UUID scenarioId, ApplicationUser user) {
-    var input = new GetScopeRiskUseCase.InputData(client, scopeId, scenarioId, user);
+  private CompletableFuture<ResponseEntity<ScopeRiskDto>> getRiskInternal(
+      UUID scopeId, UUID scenarioId) {
+    var input = new GetScopeRiskUseCase.InputData(scopeId, scenarioId);
 
     var riskFuture =
         useCaseInteractor.execute(
@@ -368,7 +359,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
     var input =
         new CreateScopeRiskUseCase.InputData(
-            user,
             getClient(user.getClientId()),
             scopeId,
             urlAssembler.toKey(dto.getScenario()),
@@ -420,12 +410,11 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @ApiResponse(responseCode = "404", description = "Scope not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Scope.class);
+    return inspect(uuid, domainId, Scope.class);
   }
 
   @Operation(
@@ -454,7 +443,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     var client = getClient(user.getClientId());
     var input =
         new UpdateScopeRiskUseCase.InputData(
-            user,
             client,
             scopeId,
             urlAssembler.toKey(dto.getScenario()),
@@ -467,19 +455,16 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateScopeRiskUseCase, input, output -> null)
-        .thenCompose(o -> this.getRisk(client, scopeId, scenarioId, user));
+        .thenCompose(o -> this.getRiskInternal(scopeId, scenarioId));
   }
 
   @Override
   public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      ApplicationUser user, UUID riskAffectedId, UUID controlId) {
+      UUID riskAffectedId, UUID controlId) {
     return useCaseInteractor.execute(
         getRequirementImplementationUseCase,
         new GetRequirementImplementationUseCase.InputData(
-            user,
-            getClient(user),
-            TypedId.from(riskAffectedId, Scope.class),
-            TypedId.from(controlId, Control.class)),
+            TypedId.from(riskAffectedId, Scope.class), TypedId.from(controlId, Control.class)),
         out ->
             ResponseEntity.ok()
                 .eTag(out.eTag())
@@ -519,7 +504,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         GetRequirementImplementationsByControlImplementationInputMapper.map(
-            user,
             getClient(user),
             Scope.class,
             riskAffectedId,

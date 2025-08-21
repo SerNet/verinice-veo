@@ -144,7 +144,6 @@ public class ProcessInDomainController
       description = "Process or domain not found or process not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullProcessInDomainDto>> getElement(
-      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -153,7 +152,6 @@ public class ProcessInDomainController
           UUID uuid,
       WebRequest request) {
     return elementService.getElement(
-        auth,
         domainId,
         uuid,
         request,
@@ -208,7 +206,6 @@ public class ProcessInDomainController
         QueryInputMapper.map(
             clientLookup.getClient(user),
             unitUuid,
-            user,
             domainId,
             displayName,
             subType,
@@ -277,7 +274,6 @@ public class ProcessInDomainController
         QueryInputMapper.map(
             client,
             null,
-            user,
             domainId,
             null,
             null,
@@ -407,7 +403,6 @@ public class ProcessInDomainController
       description = "Process or domain not found or process not associated with domain")
   @ApiResponse(responseCode = "409", description = "Link already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -415,7 +410,7 @@ public class ProcessInDomainController
           @PathVariable
           UUID uuid,
       @Valid @NotNull @RequestBody LinkMapDto links) {
-    return elementService.addLinks(user, domainId, uuid, links, Process.class);
+    return elementService.addLinks(domainId, uuid, links, Process.class);
   }
 
   @Operation(
@@ -537,7 +532,6 @@ public class ProcessInDomainController
       String sortOrder) {
     return elementService.getRequirementImplementations(
         new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-            user,
             clientLookup.getClient(user),
             TypedId.from(riskAffectedId, Process.class),
             TypedId.from(controlId, Control.class),

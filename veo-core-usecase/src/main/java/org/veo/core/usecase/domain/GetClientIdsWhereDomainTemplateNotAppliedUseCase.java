@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
@@ -47,7 +48,7 @@ public class GetClientIdsWhereDomainTemplateNotAppliedUseCase
   private final DomainTemplateRepository domainTemplatetRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -36,7 +37,7 @@ public class GetAllUserConfigurationKeysUseCase
   final UserConfigurationRepository userConfigurationRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Set<String> userConfiguration =
         userConfigurationRepository.findAllKeysByUser(input.clientId, input.userName);
     return new OutputData(userConfiguration);

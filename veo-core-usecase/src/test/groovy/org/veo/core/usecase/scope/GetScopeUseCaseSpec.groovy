@@ -41,7 +41,7 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(scopeId, user))
+        def output = usecase.execute(new GetElementUseCase.InputData(scopeId), user)
 
         then:
         1 * scopeRepository.findById(scopeId, false, user) >> Optional.of(scope)

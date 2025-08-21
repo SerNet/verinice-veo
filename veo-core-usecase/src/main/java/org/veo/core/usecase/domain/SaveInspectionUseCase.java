@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -37,7 +38,7 @@ public class SaveInspectionUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
     boolean isNew = domain.applyInspection(input.inspectionId, input.inspection);
     domain.setUpdatedAt(Instant.now());

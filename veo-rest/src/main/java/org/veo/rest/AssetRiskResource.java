@@ -69,8 +69,7 @@ public interface AssetRiskResource {
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   })
   @Valid
-  Future<List<AssetRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID assetId);
+  Future<List<AssetRiskDto>> getRisks(@PathVariable UUID assetId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Retrieves an asset risk")
@@ -83,9 +82,7 @@ public interface AssetRiskResource {
   })
   @Valid
   Future<ResponseEntity<AssetRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable UUID assetId,
-      @PathVariable UUID scenarioId);
+      @PathVariable UUID assetId, @PathVariable UUID scenarioId);
 
   @Operation(summary = "Creates a risk")
   @PostMapping(value = RELPATH)

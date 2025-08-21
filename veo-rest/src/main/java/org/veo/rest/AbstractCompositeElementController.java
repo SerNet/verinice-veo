@@ -33,7 +33,6 @@ import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.rest.security.ApplicationUser;
 
 public abstract class AbstractCompositeElementController<
         T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
@@ -54,13 +53,13 @@ public abstract class AbstractCompositeElementController<
   }
 
   public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
-      ApplicationUser user, UUID uuid, WebRequest request) {
+      UUID uuid, WebRequest request) {
     if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new GetElementUseCase.InputData(uuid, user),
+        new GetElementUseCase.InputData(uuid),
         output -> {
           T element = output.element();
           return ResponseEntity.ok()

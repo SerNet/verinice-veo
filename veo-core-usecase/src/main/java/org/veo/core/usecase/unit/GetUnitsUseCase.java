@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -48,7 +49,7 @@ public class GetUnitsUseCase
    * unit object was not found in the repository.
    */
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Client client =
         repository
             .findById(input.authenticatedClient.getId())

@@ -44,7 +44,6 @@ public class QueryInputMapper {
   public static GetElementsUseCase.InputData map(
       Client client,
       UUID unitUuid,
-      UserAccessRights userRights,
       UUID domainId,
       String displayName,
       String subType,
@@ -77,7 +76,6 @@ public class QueryInputMapper {
         .subType(whereEqualsOrNull(subType))
         .unitUuid(whereUuidIn(unitUuid))
         .updatedBy(whereIn(updatedBy))
-        .userRights(userRights)
         .build();
   }
 
@@ -93,7 +91,6 @@ public class QueryInputMapper {
         .domainId(whereEquals(domainId))
         .pagingConfiguration(config)
         .scopeId(whereEquals(scopeId))
-        .userRights(userRights)
         .build();
   }
 

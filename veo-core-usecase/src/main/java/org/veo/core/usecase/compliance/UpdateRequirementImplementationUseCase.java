@@ -55,7 +55,7 @@ public class UpdateRequirementImplementationUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var origin = getEntity(input.origin, input.user);
     var control = getEntity(input.control, input.user);
     var requirementImplementation = origin.getRequirementImplementation(control);

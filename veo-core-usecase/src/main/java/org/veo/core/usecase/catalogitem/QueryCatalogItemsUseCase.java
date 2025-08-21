@@ -23,6 +23,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.CatalogItemRepository;
@@ -44,7 +45,7 @@ public class QueryCatalogItemsUseCase
   private final CatalogItemRepository catalogItemRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, input.clientId);
     var query = catalogItemRepository.query(domain);
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);

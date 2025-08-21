@@ -79,7 +79,7 @@ public class PerformActionUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, input.user.clientId());
     var element = genericElementRepository.getById(input.elementId, input.elementType, input.user);
     input.user.checkElementWriteAccess(element);
@@ -91,10 +91,11 @@ public class PerformActionUseCase
                     new NotFoundException(
                         "Action %s not found in domain %s"
                             .formatted(input.actionId, domain.getIdAsString())));
-    return new OutputData(perform(action, element, domain));
+    return new OutputData(perform(action, element, domain, userAccessRights));
   }
 
-  private ActionResult perform(Action action, Element element, Domain domain) {
+  private ActionResult perform(
+      Action action, Element element, Domain domain, UserAccessRights userAccessRights) {
     if (!action.elementTypes().contains(element.getType())) {
       throw new UnprocessableDataException(
           "Action cannot be performed on %s - must be one of %s"
@@ -105,7 +106,7 @@ public class PerformActionUseCase
                       action.elementTypes().stream().map(ElementType::getSingularTerm).toList())));
     }
     return action.steps().stream()
-        .map(s -> perform(s, element, domain))
+        .map(s -> perform(s, element, domain, userAccessRights))
         .reduce(
             new ActionResult(Collections.emptySet()),
             (a, b) ->
@@ -114,7 +115,8 @@ public class PerformActionUseCase
                         .collect(Collectors.toSet())));
   }
 
-  private ActionResult perform(ActionStep step, Element element, Domain domain) {
+  private ActionResult perform(
+      ActionStep step, Element element, Domain domain, UserAccessRights userAccessRights) {
     var createdEntities = new HashSet<Entity>();
     switch (step) {
       case AddRisksStep createRisksStep -> {
@@ -166,7 +168,8 @@ public class PerformActionUseCase
                                                   CatalogItem, DomainBase>)
                                               new TemplateItemIncarnationDescription<>(
                                                   item, List.of()))
-                                  .toList()))
+                                  .toList()),
+                          userAccessRights)
                       .newElements();
               createdEntities.addAll(newScenarios);
               Stream.concat(existingScenarios.stream(), newScenarios.stream())

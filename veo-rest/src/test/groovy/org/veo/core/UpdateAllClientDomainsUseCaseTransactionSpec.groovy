@@ -30,6 +30,7 @@ import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("user@domain.example")
 class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
@@ -84,7 +85,7 @@ class UpdateAllClientDomainsUseCaseTransactionSpec extends VeoSpringSpec {
 
         when:
         executeInTransaction {
-            useCase.execute(new InputData(DSGVO_DOMAINTEMPLATE_V2_UUID))
+            useCase.execute(new InputData(DSGVO_DOMAINTEMPLATE_V2_UUID), NoRestrictionAccessRight.from(client.idAsString))
         }
 
         then:

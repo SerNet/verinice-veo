@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -34,11 +35,13 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
   }
 
   @Override
-  public GetElementUseCase.OutputData<Process> execute(InputData input) {
+  public GetElementUseCase.OutputData<Process> execute(
+      InputData input, UserAccessRights userAccessRights) {
     var process =
         processRepository
-            .findById(input.elementId(), input.embedRisks(), input.userRights())
+            .findById(input.elementId(), input.embedRisks(), userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.elementId(), Process.class));
-    return new GetElementUseCase.OutputData<>(process, getDomain(process, input).orElse(null));
+    return new GetElementUseCase.OutputData<>(
+        process, getDomain(process, input, userAccessRights).orElse(null));
   }
 }

@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.unit;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.RiskAffected;
@@ -33,7 +32,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetRequirementImplementationsByControlImplementationInputMapper {
   public static GetRequirementImplementationsByControlImplementationUseCase.InputData map(
-      UserAccessRights user,
       Client authenticatedClient,
       Class<? extends RiskAffected<?, ?>> clazz,
       UUID riskAffectedId,
@@ -43,7 +41,6 @@ public class GetRequirementImplementationsByControlImplementationInputMapper {
       String sortColumn,
       String sortOrder) {
     return new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-        user,
         authenticatedClient,
         TypedId.from(riskAffectedId, clazz),
         TypedId.from(controlId, Control.class),

@@ -19,6 +19,7 @@ package org.veo.core.usecase.client;
 
 import java.util.UUID;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
@@ -38,7 +39,7 @@ public class DeleteClientUseCase
   private final UnitRepository unitRepository;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }
@@ -47,7 +48,8 @@ public class DeleteClientUseCase
         .findByClient(client)
         .forEach(
             unit ->
-                deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
+                deleteUnitUseCase.execute(
+                    new DeleteUnitUseCase.InputData(unit.getId(), client), userAccessRights));
     // Reload the client since the persistence context was cleared
     clientRepository.delete(clientRepository.getById(input.clientId));
     return EmptyOutput.INSTANCE;

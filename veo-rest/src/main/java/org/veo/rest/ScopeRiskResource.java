@@ -69,8 +69,7 @@ public interface ScopeRiskResource {
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   })
   @Valid
-  Future<List<ScopeRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID scopeId);
+  Future<List<ScopeRiskDto>> getRisks(@PathVariable UUID scopeId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Retrieves an scope risk")
@@ -83,9 +82,7 @@ public interface ScopeRiskResource {
   })
   @Valid
   Future<ResponseEntity<ScopeRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable UUID scopeId,
-      @PathVariable UUID scenarioId);
+      @PathVariable UUID scopeId, @PathVariable UUID scenarioId);
 
   @Operation(summary = "Creates a risk")
   @PostMapping(value = RELPATH)

@@ -51,9 +51,9 @@ public class AddLinksUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     return new OutputData(
-        execute(input.elementId, input.type, input.links, input.domainId, input.userRights));
+        execute(input.elementId, input.type, input.links, input.domainId, userAccessRights));
   }
 
   private <T extends Element> T execute(
@@ -81,11 +81,7 @@ public class AddLinksUseCase
 
   @Valid
   public record InputData(
-      UUID elementId,
-      Class<? extends Element> type,
-      UUID domainId,
-      Set<CustomLinkState> links,
-      UserAccessRights userRights)
+      UUID elementId, Class<? extends Element> type, UUID domainId, Set<CustomLinkState> links)
       implements UseCase.InputData {}
 
   @Valid

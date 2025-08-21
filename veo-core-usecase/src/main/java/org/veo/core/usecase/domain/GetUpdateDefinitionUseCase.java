@@ -23,6 +23,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.repository.DomainRepository;
@@ -38,7 +39,7 @@ public class GetUpdateDefinitionUseCase
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, input.authenticatedClient.getId());
     return new OutputData(domain.getDomainMigrationDefinition().migrations());
   }

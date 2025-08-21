@@ -48,12 +48,12 @@ public abstract class AbstractRiskUseCase<
     super(repositoryProvider);
   }
 
-  protected R applyOptionalInput(InputData input, R risk) {
+  protected R applyOptionalInput(InputData input, R risk, UserAccessRights userAccessRights) {
     if (input.getControlRef().isPresent()) {
       var control =
           repositoryProvider
               .getElementRepositoryFor(Control.class)
-              .findById(input.getControlRef().get(), input.user)
+              .findById(input.getControlRef().get(), userAccessRights)
               .orElseThrow();
       control.checkSameClient(input.authenticatedClient());
       risk.mitigate(control);
@@ -63,7 +63,7 @@ public abstract class AbstractRiskUseCase<
       var riskOwner =
           repositoryProvider
               .getElementRepositoryFor(Person.class)
-              .findById(input.getRiskOwnerRef().get(), input.user)
+              .findById(input.getRiskOwnerRef().get(), userAccessRights)
               .orElseThrow();
       riskOwner.checkSameClient(input.authenticatedClient());
       risk.appoint(riskOwner);
@@ -74,7 +74,6 @@ public abstract class AbstractRiskUseCase<
 
   @Valid
   public record InputData(
-      @NotNull UserAccessRights user,
       @NotNull Client authenticatedClient,
       @NotNull UUID riskAffectedRef,
       @NotNull UUID scenarioRef,
@@ -94,7 +93,6 @@ public abstract class AbstractRiskUseCase<
     }
 
     public InputData(
-        UserAccessRights user,
         Client authenticatedClient,
         UUID riskAffectedRef,
         UUID scenarioRef,
@@ -103,7 +101,6 @@ public abstract class AbstractRiskUseCase<
         UUID riskOwnerRef,
         Set<RiskValues> riskValues) {
       this(
-          user,
           authenticatedClient,
           riskAffectedRef,
           scenarioRef,

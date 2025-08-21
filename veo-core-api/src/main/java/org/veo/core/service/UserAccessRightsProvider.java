@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2025  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,31 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.domaintemplate;
-
-import java.util.List;
-
-import jakarta.validation.Valid;
+package org.veo.core.service;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.DomainTemplate;
-import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class FindDomainTemplatesUseCase
-    implements TransactionalUseCase<UseCase.EmptyInput, FindDomainTemplatesUseCase.OutputData> {
-  private final DomainTemplateRepository repository;
-
-  @Override
-  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
-    return new OutputData(repository.findAll());
-  }
-
-  @Valid
-  public record OutputData(@Valid List<DomainTemplate> getDomainTemplates)
-      implements UseCase.OutputData {}
+public interface UserAccessRightsProvider {
+  UserAccessRights getAccessRights();
 }

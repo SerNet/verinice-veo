@@ -23,6 +23,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Profile;
@@ -45,7 +46,7 @@ public class ApplyProfileIncarnationDescriptionUseCase
   private final IncarnationDescriptionApplier applier;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     return new OutputData(
         applier.incarnate(
             input.unitId, input.descriptions, profileItemRepository, input.authenticatedClient));

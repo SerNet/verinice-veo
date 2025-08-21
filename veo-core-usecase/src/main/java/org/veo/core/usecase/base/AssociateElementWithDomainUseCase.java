@@ -45,7 +45,7 @@ public class AssociateElementWithDomainUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getById(input.domainId, input.userRights.clientId());
     var element = fetchElement(input);
     input.userRights.checkElementWriteAccess(element);

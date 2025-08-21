@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Action;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.DomainRepository;
@@ -35,7 +36,7 @@ public class GetAvailableActionsUseCase
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, input.clientId);
     return new OutputData(domain.getAvailableActions(input.elementType));
   }

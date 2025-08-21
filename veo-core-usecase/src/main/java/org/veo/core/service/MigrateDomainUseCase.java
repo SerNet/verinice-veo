@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
@@ -57,7 +58,7 @@ public class MigrateDomainUseCase
   // transaction when calling this from another use case)
   @Transactional
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var newDomain = domainRepository.getById(input.domainId);
     Client client = newDomain.getOwner();
 
@@ -80,13 +81,15 @@ public class MigrateDomainUseCase
             .orElseThrow();
     transferDomainCustomizationUseCase.execute(
         new TransferDomainCustomizationUseCase.InputData(
-            domainToUpdate.getId(), newDomain.getId(), newDomain.getOwner().getId()));
-    migrateUnits(client, domainToUpdate, newDomain);
+            domainToUpdate.getId(), newDomain.getId(), newDomain.getOwner().getId()),
+        userAccessRights);
+    migrateUnits(client, domainToUpdate, newDomain, userAccessRights);
     domainToUpdate.setActive(false);
     return EmptyOutput.INSTANCE;
   }
 
-  private void migrateUnits(Client client, Domain oldDomain, Domain newDomain) {
+  private void migrateUnits(
+      Client client, Domain oldDomain, Domain newDomain, UserAccessRights userAccessRights) {
     log.info(
         "Performing migration for domain {}->{} (client {})",
         oldDomain,
@@ -98,7 +101,8 @@ public class MigrateDomainUseCase
     for (Unit unit : unitsToUpdate) {
       try {
         migrateUnitUseCase.execute(
-            new MigrateUnitUseCase.InputData(unit.getId(), oldDomain.getId(), newDomain.getId()));
+            new MigrateUnitUseCase.InputData(unit.getId(), oldDomain.getId(), newDomain.getId()),
+            userAccessRights);
       } catch (Exception e) {
         failureCount++;
         log.error("Error migrating unit {}", unit, e);

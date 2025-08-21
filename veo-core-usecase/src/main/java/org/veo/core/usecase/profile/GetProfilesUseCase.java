@@ -22,6 +22,7 @@ import java.util.Set;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
@@ -41,7 +42,7 @@ public class GetProfilesUseCase extends AbstractProfileUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Set<Profile> profiles =
         profileRepo.findAllByDomainId(input.authenticatedClient.getId(), input.domain.getId());

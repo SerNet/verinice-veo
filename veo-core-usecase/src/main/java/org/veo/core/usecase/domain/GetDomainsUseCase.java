@@ -21,6 +21,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.repository.DomainRepository;
@@ -35,7 +36,7 @@ public class GetDomainsUseCase
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     return new OutputData(
         domainRepository
             .findActiveDomainsWithProfilesAndRiskDefinitions(input.authenticatedClient.getId())

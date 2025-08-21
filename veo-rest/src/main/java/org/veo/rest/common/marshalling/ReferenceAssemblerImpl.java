@@ -111,8 +111,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   private static final UUID DUMMY_UUID = UUID.fromString(DUMMY_UUID_STRING);
 
   private static final UriComponents GET_ASSET =
-      createTemplate(
-          on(AssetController.class).getAsset(ANY_AUTH, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
+      createTemplate(on(AssetController.class).getAsset(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_CONTROL =
       createTemplate(on(ControlController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
@@ -136,51 +135,41 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(on(PersonController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROCESS =
-      createTemplate(
-          on(ProcessController.class).getProcess(ANY_USER, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
+      createTemplate(on(ProcessController.class).getProcess(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_SCENARIO =
       createTemplate(on(ScenarioController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_SCOPE =
-      createTemplate(
-          on(ScopeController.class).getScope(ANY_USER, DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
+      createTemplate(on(ScopeController.class).getScope(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_UNIT =
       createTemplate(on(UnitController.class).getUnit(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_IN_DOMAIN =
       createTemplate(
-          on(AssetInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(AssetInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_CONTROL_IN_DOMAIN =
       createTemplate(
-          on(ControlInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(ControlInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_DOCUMENT_IN_DOMAIN =
       createTemplate(
-          on(DocumentInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(DocumentInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_INCIDENT_IN_DOMAIN =
       createTemplate(
-          on(IncidentInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(IncidentInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_PERSON_IN_DOMAIN =
       createTemplate(
-          on(PersonInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(PersonInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_PROCESS_IN_DOMAIN =
       createTemplate(
-          on(ProcessInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(ProcessInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_SCENARIO_IN_DOMAIN =
       createTemplate(
-          on(ScenarioInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(ScenarioInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_SCOPE_IN_DOMAIN =
       createTemplate(
-          on(ScopeInDomainController.class)
-              .getElement(ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(ScopeInDomainController.class).getElement(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_RI =
       createTemplate(linkToRequirementImplementation(AssetController.class));
@@ -210,13 +199,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               .getProfileItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_RISK =
-      createTemplate(on(AssetController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
+      createTemplate(on(AssetController.class).getRisk(DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_PROCESS_RISK =
-      createTemplate(on(ProcessController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
+      createTemplate(on(ProcessController.class).getRisk(DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_SCOPE_RISK =
-      createTemplate(on(ScopeController.class).getRisk(ANY_USER, DUMMY_UUID, DUMMY_UUID));
+      createTemplate(on(ScopeController.class).getRisk(DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_USER_CONFIGURATION =
       createTemplate(
@@ -370,7 +359,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   private static Object linkToRequirementImplementation(
       Class<? extends RiskAffectedResource> controller) {
-    return on(controller).getRequirementImplementation(ANY_USER, DUMMY_UUID, DUMMY_UUID);
+    return on(controller).getRequirementImplementation(DUMMY_UUID, DUMMY_UUID);
   }
 
   private static Object linkToRequirementImplementations(

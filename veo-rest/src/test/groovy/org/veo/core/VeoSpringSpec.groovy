@@ -44,6 +44,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.service.EntitySchemaService
+import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.jpa.AssetDataRepository
@@ -61,6 +62,7 @@ import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.rest.security.CustomUserDetailsManager
+import org.veo.rest.security.NoRestrictionAccessRight
 import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
 
@@ -150,13 +152,16 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     CustomUserDetailsManager userDetailsManager
 
+    @Autowired
+    UserAccessRightsProvider userAccessRightsProvider
+
     def deleteUnitRecursively(Unit unit) {
         // Query the repository since the persistence context was cleared
         unitDataRepository.findByParentId(unit.id).each {
             deleteUnitRecursively(it)
         }
         deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
-                unit.client))
+                unit.client), NoRestrictionAccessRight.from(unit.client.idAsString))
     }
 
     def setup() {

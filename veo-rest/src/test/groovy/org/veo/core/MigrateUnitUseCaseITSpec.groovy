@@ -50,6 +50,7 @@ import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("user@domain.example")
 class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
@@ -322,10 +323,10 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             unitRepository.save(newUnit(client)).tap{unit ->
                 def profileId = dsgvoDomain.profiles.find { it.name == "Beispielorganisation" }.id
                 var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
-                        new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoDomain.id, null, profileId, false)
+                        new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, dsgvoDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                         ).references
                 applyProfileIncarnationDescriptionUseCase.execute(
-                        new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions)
+                        new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)
                         )
             }
         }
@@ -403,7 +404,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
 
     def runUseCase(UUID unitId, UUID domainIdOld = dsgvoDomain.id, UUID domainIdNew = dsgvoDomainV2.id) {
         executeInTransaction {
-            useCase.execute(new InputData(unitId, domainIdOld, domainIdNew))
+            useCase.execute(new InputData(unitId, domainIdOld, domainIdNew), NoRestrictionAccessRight.from(client.idAsString))
         }
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.SystemMessage;
 import org.veo.core.repository.SystemMessageRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -36,7 +37,7 @@ public class GetAllSystemMessageUseCase
   final SystemMessageRepository systemMessageRepository;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     List<SystemMessage> all = systemMessageRepository.findAll();
     return new OutputData(all);
   }

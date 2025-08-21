@@ -66,7 +66,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
             CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-                    outputMapper))
+                    outputMapper, userAccessRightsProvider.accessRights))
         }
     ] as UseCaseInteractor
 

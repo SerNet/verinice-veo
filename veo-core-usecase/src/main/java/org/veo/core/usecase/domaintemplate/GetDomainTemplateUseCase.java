@@ -19,6 +19,7 @@ package org.veo.core.usecase.domaintemplate;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.repository.ClientRepository;
@@ -40,7 +41,7 @@ public class GetDomainTemplateUseCase
   }
 
   @Override
-  public OutputData execute(IdAndClient input) {
+  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
     Client client =
         UseCaseTools.checkClientExists(input.authenticatedClient().getId(), clientRepository);
 

@@ -69,7 +69,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Process,id, user))
+        usecase.execute(new InputData(Process, id), user)
 
         then:
         1 * processRepository.getById(id, user) >> process
@@ -88,7 +88,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Person,id, user))
+        usecase.execute(new InputData(Person, id), user)
 
         then:
         1 * personRepository.getById(id, user) >> person
@@ -108,7 +108,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        usecase.execute(new InputData(Scope, scopeId, user))
+        usecase.execute(new InputData(Scope, scopeId), user)
 
         then:
         1 * scopeRepository.getById(scopeId, user) >> scope

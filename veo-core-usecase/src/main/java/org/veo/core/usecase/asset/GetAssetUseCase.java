@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.AssetRepository;
@@ -33,11 +34,13 @@ public class GetAssetUseCase extends GetElementUseCase<Asset> {
   }
 
   @Override
-  public GetElementUseCase.OutputData<Asset> execute(InputData input) {
+  public GetElementUseCase.OutputData<Asset> execute(
+      InputData input, UserAccessRights userAccessRights) {
     var asset =
         assetRepository
-            .findById(input.elementId(), input.embedRisks(), input.userRights())
+            .findById(input.elementId(), input.embedRisks(), userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.elementId(), Asset.class));
-    return new GetElementUseCase.OutputData<>(asset, getDomain(asset, input).orElse(null));
+    return new GetElementUseCase.OutputData<>(
+        asset, getDomain(asset, input, userAccessRights).orElse(null));
   }
 }

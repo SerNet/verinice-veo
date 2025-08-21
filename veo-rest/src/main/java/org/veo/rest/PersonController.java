@@ -162,7 +162,6 @@ public class PersonController extends AbstractCompositeElementController<Person,
         QueryInputMapper.map(
             client,
             unitUuid,
-            user,
             null,
             displayName,
             subType,
@@ -212,12 +211,11 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public CompletableFuture<ResponseEntity<List<FullPersonDto>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElementParts(user, uuid, request);
+    return super.getElementParts(uuid, request);
   }
 
   @DeleteMapping(UUID_PARAM_SPEC)
@@ -225,13 +223,12 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @ApiResponse(responseCode = "204", description = "Person deleted")
   @ApiResponse(responseCode = "404", description = "Person not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deletePerson(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {
     return useCaseInteractor.execute(
         deleteElementUseCase,
-        new DeleteElementUseCase.InputData(Person.class, uuid, user),
+        new DeleteElementUseCase.InputData(Person.class, uuid),
         output -> ResponseEntity.noContent().build());
   }
 
@@ -270,7 +267,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
           @PathVariable
           UUID uuid,
       @RequestParam(value = DOMAIN_PARAM) UUID domainId) {
-    return inspect(user, uuid, domainId, Person.class);
+    return inspect(uuid, domainId, Person.class);
   }
 
   @Override

@@ -71,11 +71,10 @@ public interface ProcessRiskResource {
             @Content(array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
   })
   @Valid
-  Future<List<ProcessRiskDto>> getRisks(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID processId);
+  Future<List<ProcessRiskDto>> getRisks(@PathVariable UUID processId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
-  @Operation(summary = "Retrieves an process risk")
+  @Operation(summary = "Retrieves a process risk")
   @ApiResponses({
     @ApiResponse(
         responseCode = "200",
@@ -85,9 +84,7 @@ public interface ProcessRiskResource {
   })
   @Valid
   Future<ResponseEntity<ProcessRiskDto>> getRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable UUID processId,
-      @PathVariable UUID scenarioId);
+      @PathVariable UUID processId, @PathVariable UUID scenarioId);
 
   @Operation(summary = "Creates a risk")
   @PostMapping(value = RELPATH)

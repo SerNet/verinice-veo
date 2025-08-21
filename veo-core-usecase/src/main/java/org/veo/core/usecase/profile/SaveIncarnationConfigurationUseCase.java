@@ -22,6 +22,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.repository.DomainRepository;
@@ -38,7 +39,7 @@ public class SaveIncarnationConfigurationUseCase
   private final DomainRepository domainRepository;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
     domain.setIncarnationConfiguration(input.incarnationConfiguration);
     return EmptyOutput.INSTANCE;

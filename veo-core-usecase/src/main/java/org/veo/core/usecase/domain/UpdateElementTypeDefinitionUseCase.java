@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
@@ -45,7 +46,7 @@ public class UpdateElementTypeDefinitionUseCase
   private final DomainRepository repository;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
             .findById(input.domainId)

@@ -40,7 +40,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def input = new InputData(namedInput, existingClient.id, Optional.empty(), 1, [] as Set)
-        def newUnit = usecase.execute(input).unit
+        def newUnit = usecase.execute(input, noRestrictionExistingClient).unit
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -67,7 +67,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2, [] as Set)
 
         when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).unit
+        def newUnit = usecase.execute(input, noRestrictionExistingClient).unit
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -94,7 +94,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [existingDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input)
+        usecase.execute(input,noRestrictionExistingClient)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -122,7 +122,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input)
+        usecase.execute(input,noRestrictionExistingClient)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -150,7 +150,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [anotherDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input)
+        usecase.execute(input,noRestrictionExistingClient)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)

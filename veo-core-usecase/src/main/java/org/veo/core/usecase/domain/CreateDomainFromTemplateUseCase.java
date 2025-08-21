@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
@@ -41,7 +42,7 @@ public class CreateDomainFromTemplateUseCase
   private final DomainTemplateService domainTemplateService;
 
   @Override
-  public EmptyOutput execute(InputData input) {
+  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }

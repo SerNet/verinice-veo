@@ -32,6 +32,7 @@ import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -54,7 +55,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         when:
         def result = executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new GetBreakingChangesUseCase.InputData(client.id, domain.id)
+                    new GetBreakingChangesUseCase.InputData(client.id, domain.id), NoRestrictionAccessRight.from(client.idAsString)
                     ).breakingChanges
         }
 
@@ -264,7 +265,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         domainDataRepository.save(domain)
         return executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new GetBreakingChangesUseCase.InputData(client.id, domain.id)
+                    new GetBreakingChangesUseCase.InputData(client.id, domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
                     ).breakingChanges
         }
     }

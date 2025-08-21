@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
@@ -67,7 +68,7 @@ public class CreateUnitUseCase
   private final EntityFactory entityFactory;
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Client client =
         clientRepository
             .findById(input.clientId)

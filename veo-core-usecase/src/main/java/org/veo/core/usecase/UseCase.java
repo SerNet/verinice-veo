@@ -35,7 +35,7 @@ import org.veo.core.entity.Client;
  */
 public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
 
-  O execute(I input);
+  O execute(I input, UserAccessRights userAccessRights);
 
   /**
    * Execute the usecase with the input, use the result resultMapper to produce a R.
@@ -43,8 +43,9 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
    * <p>Override this Method and annotate it with @Transactional in the concrete use case when you
    * need to transform only the output.
    */
-  default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
-    return resultMapper.apply(execute(input));
+  default <R> R executeAndTransformResult(
+      I input, Function<O, R> resultMapper, UserAccessRights userAccessRights) {
+    return resultMapper.apply(execute(input, userAccessRights));
   }
 
   /**
@@ -82,8 +83,4 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
    */
   @Valid
   record IdAndClient(UUID id, Client authenticatedClient) implements UseCase.InputData {}
-
-  @Valid
-  record IdAndClientAndRights(UUID id, Client authenticatedClient, UserAccessRights userRights)
-      implements UseCase.InputData {}
 }

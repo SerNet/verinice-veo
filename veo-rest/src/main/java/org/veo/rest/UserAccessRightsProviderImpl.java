@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2024  Urs Zeidler
+ * Copyright (C) 2025  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,33 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.message;
+package org.veo.rest;
 
-import jakarta.validation.Valid;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.SystemMessage;
-import org.veo.core.repository.SystemMessageRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.service.UserAccessRightsProvider;
+import org.veo.rest.security.ApplicationUser;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public class GetSystemMessageUseCase
-    implements TransactionalUseCase<
-        GetSystemMessageUseCase.InputData, GetSystemMessageUseCase.OutputData> {
-
-  final SystemMessageRepository systemMessageRepository;
-
+public class UserAccessRightsProviderImpl implements UserAccessRightsProvider {
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    return new OutputData(systemMessageRepository.getById(input.id));
+  public UserAccessRights getAccessRights() {
+    var auth = SecurityContextHolder.getContext().getAuthentication();
+    return ApplicationUser.authenticatedUser(auth.getPrincipal());
   }
-
-  @Valid
-  public record InputData(long id) implements UseCase.InputData {}
-
-  @Valid
-  public record OutputData(SystemMessage message) implements UseCase.OutputData {}
 }

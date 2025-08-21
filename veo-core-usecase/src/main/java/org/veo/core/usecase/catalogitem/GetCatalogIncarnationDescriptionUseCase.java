@@ -25,6 +25,7 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainBase;
@@ -65,7 +66,7 @@ public class GetCatalogIncarnationDescriptionUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     log.info(
         "Creating incarnation descriptions for items {} from domain {} in unit: {}",
         input.catalogItemIds,

@@ -25,6 +25,7 @@ import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.client.DeleteClientUseCase
 import org.veo.core.usecase.client.DeleteClientUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("admin")
 class DeleteClientUseCaseITSpec extends VeoSpringSpec {
@@ -73,7 +74,7 @@ class DeleteClientUseCaseITSpec extends VeoSpringSpec {
 
     def runUseCase(Client client) {
         executeInTransaction {
-            deleteClientUseCase.execute(new InputData(client.id))
+            deleteClientUseCase.execute(new InputData(client.id), NoRestrictionAccessRight.from(client.idAsString))
         }
     }
 

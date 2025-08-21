@@ -19,6 +19,7 @@ package org.veo.core.usecase.domain;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
@@ -39,7 +40,8 @@ public class CreateDomainUseCase
   private final DomainTemplateRepository domainTemplateRepository;
 
   @Override
-  public CreateDomainUseCase.OutputData execute(InputData input) {
+  public CreateDomainUseCase.OutputData execute(
+      InputData input, UserAccessRights userAccessRights) {
     if (!domainTemplateRepository.getDomainTemplateIds(input.name).isEmpty()) {
       throw new EntityAlreadyExistsException(
           "Templates already exist for domain name '%s'".formatted(input.name));

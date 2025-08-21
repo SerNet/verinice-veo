@@ -62,7 +62,7 @@ class CreateCatalogFromUnitUseCaseITSpec extends VeoSpringSpec{
 
         when:
         executeInTransaction {
-            useCase.execute(new CreateCatalogFromUnitUseCase.InputData(domain.id, client, unit.id))
+            useCase.execute(new CreateCatalogFromUnitUseCase.InputData(domain.id, client, unit.id), NoRestrictionAccessRight.from(client.idAsString))
         }
         domain = executeInTransaction {
             domainRepository.findById(domain.id).get().tap {
@@ -84,7 +84,7 @@ class CreateCatalogFromUnitUseCaseITSpec extends VeoSpringSpec{
             }
         }
         executeInTransaction {
-            useCase.execute(new CreateCatalogFromUnitUseCase.InputData(domain.id, client, unit.id))
+            useCase.execute(new CreateCatalogFromUnitUseCase.InputData(domain.id, client, unit.id), NoRestrictionAccessRight.from(client.idAsString))
         }
         domain = executeInTransaction {
             domainRepository.findById(domain.id).get().tap {

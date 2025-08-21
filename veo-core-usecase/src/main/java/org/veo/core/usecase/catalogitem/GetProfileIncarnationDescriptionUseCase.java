@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
@@ -63,7 +64,7 @@ public class GetProfileIncarnationDescriptionUseCase
   }
 
   @Override
-  public OutputData execute(InputData input) {
+  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     log.info(
         "profile: {}, unit: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
     Unit unit = unitRepository.getByIdFetchClient(input.unitId);

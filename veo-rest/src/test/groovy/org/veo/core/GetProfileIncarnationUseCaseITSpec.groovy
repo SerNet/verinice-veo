@@ -19,20 +19,11 @@ package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
 
-import org.veo.core.entity.Client
-import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
-import org.veo.core.usecase.unit.DeleteUnitUseCase
-import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
-
-import net.ttddyy.dsproxy.QueryCountHolder
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("user@domain.example")
 class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
@@ -57,7 +48,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         def result = executeInTransaction {
             def profileId = domain.profiles.first().id
             getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId,false)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
         }
 
@@ -68,7 +59,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         result = executeInTransaction {
             def profileId = domain.profiles.first().id
             getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, true)
+                    new GetProfileIncarnationDescriptionUseCase.InputData(client, unit.id, domain.id, null, profileId, true), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
         }
 

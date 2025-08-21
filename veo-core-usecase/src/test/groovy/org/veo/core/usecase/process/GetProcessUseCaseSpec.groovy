@@ -40,7 +40,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
 
         when:
-        def output = usecase.execute(new GetElementUseCase.InputData(id,  user))
+        def output = usecase.execute(new GetElementUseCase.InputData(id), user)
 
         then:
         1 * processRepository.findById(id, _, user) >> Optional.of(process)

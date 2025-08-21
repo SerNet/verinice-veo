@@ -62,7 +62,6 @@ public interface RiskAffectedResource {
       responseCode = "404",
       description = "Risk-affected, control, or requirement implementation not found")
   Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID riskAffectedId,
