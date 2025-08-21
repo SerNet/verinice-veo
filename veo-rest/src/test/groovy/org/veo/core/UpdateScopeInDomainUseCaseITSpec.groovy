@@ -32,7 +32,7 @@ import org.veo.core.usecase.base.UpdateScopeInDomainUseCase
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
-import org.veo.rest.security.NoRestrictionAccesRight
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("content-creator")
 class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
@@ -91,11 +91,11 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
         def etag = ETag.from(scope)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag, null, NoRestrictionAccesRight.from(client.idAsString)))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag, null, NoRestrictionAccessRight.from(client.idAsString)))
         }
 
         scope = executeInTransaction {
-            scopeRepository.getById(scope.id, NoRestrictionAccesRight.from(client.idAsString)).tap {
+            scopeRepository.getById(scope.id, NoRestrictionAccessRight.from(client.idAsString)).tap {
                 it.controlImplementations.size()
                 it.members.size()
             }
@@ -132,11 +132,11 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
         def etag = ETag.from(scope)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag, null, NoRestrictionAccesRight.from(client.idAsString)))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag, null, NoRestrictionAccessRight.from(client.idAsString)))
         }
 
         scope = executeInTransaction {
-            scopeRepository.getById(scope.id, NoRestrictionAccesRight.from(client.idAsString)).tap {
+            scopeRepository.getById(scope.id, NoRestrictionAccessRight.from(client.idAsString)).tap {
                 it.members.size()
             }
         }

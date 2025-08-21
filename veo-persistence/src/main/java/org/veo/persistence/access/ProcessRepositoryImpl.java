@@ -89,7 +89,7 @@ public class ProcessRepositoryImpl
   public Optional<Process> findByIdWithRiskValues(UUID id, UserAccessRights rights) {
     return processDataRepository
         .findById(
-            id, rights.clientId(), rights.isUnitAccessResticted(), rights.getReadableUnitIds())
+            id, rights.clientId(), rights.isUnitAccessRestricted(), rights.getReadableUnitIds())
         .map(Process.class::cast);
   }
 }

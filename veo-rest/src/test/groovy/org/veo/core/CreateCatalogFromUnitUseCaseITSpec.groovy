@@ -26,7 +26,7 @@ import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
-import org.veo.rest.security.NoRestrictionAccesRight
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("content-creator")
 class CreateCatalogFromUnitUseCaseITSpec extends VeoSpringSpec{
@@ -79,7 +79,7 @@ class CreateCatalogFromUnitUseCaseITSpec extends VeoSpringSpec{
                 associateWithDomain(domain, "Asset", "even better")
             })
 
-            assetRepository.getById(asset.id, NoRestrictionAccesRight.from(client.idAsString)).tap {
+            assetRepository.getById(asset.id, NoRestrictionAccessRight.from(client.idAsString)).tap {
                 parent.parts.add(it)
             }
         }

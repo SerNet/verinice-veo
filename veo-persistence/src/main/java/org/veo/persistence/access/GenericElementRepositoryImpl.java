@@ -114,7 +114,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         .findById(
             elementId,
             userRights.clientId(),
-            userRights.isUnitAccessResticted(),
+            userRights.isUnitAccessRestricted(),
             userRights.getReadableUnitIds())
         .map(e -> (T) e);
   }

@@ -28,14 +28,14 @@ import org.veo.core.entity.ClientOwned;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public final class NoRestrictionAccesRight implements UserAccessRights {
+public final class NoRestrictionAccessRight implements UserAccessRights {
   private final String clientId;
 
   @Override
   public void checkClient(ClientOwned id) {}
 
   @Override
-  public boolean isUnitAccessResticted() {
+  public boolean isUnitAccessRestricted() {
     return false;
   }
 
@@ -59,8 +59,8 @@ public final class NoRestrictionAccesRight implements UserAccessRights {
     return clientId;
   }
 
-  public static NoRestrictionAccesRight from(String clientId) {
-    return new NoRestrictionAccesRight(clientId);
+  public static NoRestrictionAccessRight from(String clientId) {
+    return new NoRestrictionAccessRight(clientId);
   }
 
   @Override

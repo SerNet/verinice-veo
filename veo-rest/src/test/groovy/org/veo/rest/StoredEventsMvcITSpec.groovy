@@ -34,7 +34,7 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-import org.veo.rest.security.NoRestrictionAccesRight
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import spock.lang.Issue
 
@@ -215,7 +215,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the entity is retrieved"
-        def updatedDocument = documentRepository.getById(UUID.fromString(documentId), NoRestrictionAccesRight.from(client.idAsString))
+        def updatedDocument = documentRepository.getById(UUID.fromString(documentId), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "the correct changeNumber was written to the entity"
         updatedDocument.changeNumber == 1
@@ -233,7 +233,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the document is retrieved"
-        documentRepository.getById(UUID.fromString(documentId), NoRestrictionAccesRight.from(client.idAsString))
+        documentRepository.getById(UUID.fromString(documentId), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "the document is gone"
         thrown(NotFoundException)

@@ -103,7 +103,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   public Optional<T> findById(UUID id, UserAccessRights user) {
     return dataRepository
-        .findById(id, user.clientId(), user.isUnitAccessResticted(), user.getReadableUnitIds())
+        .findById(id, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
         .map(e -> (T) e);
   }
 
@@ -115,7 +115,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   public Set<T> findByIds(Set<UUID> ids, UserAccessRights user) {
     return dataRepository
-        .findByIds(ids, user.clientId(), user.isUnitAccessResticted(), user.getReadableUnitIds())
+        .findByIds(ids, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
         .stream()
         .map(e -> (T) e)
         .collect(Collectors.toSet());

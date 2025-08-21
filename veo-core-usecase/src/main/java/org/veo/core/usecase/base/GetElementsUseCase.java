@@ -88,7 +88,7 @@ public class GetElementsUseCase
 
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
     // TODO: verinice-veo#3950
-    if (input.userRights.isUnitAccessResticted()) {
+    if (input.userRights.isUnitAccessRestricted()) {
       Optional.ofNullable(new QueryCondition<>(input.userRights.getReadableUnitIds()))
           .map(c -> unitRepository.findByIds(c.getValues()))
           .ifPresent(query::whereUnitIn);

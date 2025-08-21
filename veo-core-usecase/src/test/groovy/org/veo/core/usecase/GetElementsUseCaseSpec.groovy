@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.UserAccessRights
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Person
 import org.veo.core.repository.ElementQuery
@@ -27,7 +26,7 @@ import org.veo.core.repository.QueryCondition
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.base.GetElementsUseCase
 import org.veo.core.usecase.base.GetElementsUseCase.InputData
-import org.veo.rest.security.NoRestrictionAccesRight
+import org.veo.rest.security.NoRestrictionAccessRight
 
 class GetElementsUseCaseSpec extends UseCaseSpec {
 
@@ -54,7 +53,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(
                 InputData.builder()
                 .pagingConfiguration(pagingConfiguration)
-                .userRights(NoRestrictionAccesRight.from(existingClient.id.toString()))
+                .userRights(NoRestrictionAccessRight.from(existingClient.id.toString()))
                 .build())
 
         then:
@@ -72,7 +71,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
         }
         def input =
                 InputData.builder()
-                .userRights(NoRestrictionAccesRight.from(existingClient.id.toString()))
+                .userRights(NoRestrictionAccessRight.from(existingClient.id.toString()))
                 .unitUuid(Mock(QueryCondition) {
                     getValues() >> [existingUnit.id]
                 })

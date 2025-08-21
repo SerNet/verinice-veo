@@ -43,13 +43,13 @@ public interface UserAccessRights {
 
   String getUsername();
 
-  default boolean isUnitAccessResticted() {
+  default boolean isUnitAccessRestricted() {
     if (getRoles().contains(READ_WRITE_ALL_UNITS)) return false;
     return getRoles().contains(UNIT_ACCESS_RESTRICTION);
   }
 
   default void checkUnitCreateAllowed() {
-    if (isUnitAccessResticted()) {
+    if (isUnitAccessRestricted()) {
       if (!getRoles().contains("unit:create")) {
         throw new NotAllowedException("Missing unit:create permission.");
       }
@@ -57,7 +57,7 @@ public interface UserAccessRights {
   }
 
   default void checkUnitDeleteAllowed() {
-    if (isUnitAccessResticted()) {
+    if (isUnitAccessRestricted()) {
       if (!getRoles().contains("unit:delete")) {
         throw new NotAllowedException("Missing unit:delete permission.");
       }
@@ -65,7 +65,7 @@ public interface UserAccessRights {
   }
 
   default void checkUnitUpdateAllowed() {
-    if (isUnitAccessResticted()) {
+    if (isUnitAccessRestricted()) {
       if (!getRoles().contains("unit:update")) {
         throw new NotAllowedException("Missing unit:update permission.");
       }
@@ -73,7 +73,7 @@ public interface UserAccessRights {
   }
 
   default void checkCreateElementWriteAccess(ElementState<?> element) {
-    if (isUnitAccessResticted()) {
+    if (isUnitAccessRestricted()) {
       if (!getWritableUnitIds().contains(element.getOwner().getId())) {
         throw new NotAllowedException(
             "Missing unit '%s' write permission.".formatted(element.getOwner().getId().toString()));
@@ -87,7 +87,7 @@ public interface UserAccessRights {
 
   default void checkElementWriteAccess(Unit unit) {
     checkClient(unit);
-    if (isUnitAccessResticted()) {
+    if (isUnitAccessRestricted()) {
       if (!getWritableUnitIds().contains(unit.getId())) {
         throw new NotAllowedException(
             "Missing unit '%s' write permission.".formatted(unit.getName()));

@@ -94,7 +94,7 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
         .findByIdsWithRiskValues(
             Set.of(id),
             rights.clientId(),
-            rights.isUnitAccessResticted(),
+            rights.isUnitAccessRestricted(),
             rights.getReadableUnitIds())
         .stream()
         .findFirst()
