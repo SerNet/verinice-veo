@@ -44,7 +44,7 @@ class OpenApiRestTestITSpec extends VeoRestTest {
             return true
         }
         if (propDef.type == "string") {
-            return propDef.format != null || propDef.enum != null || propDef.maxLength != null
+            return propDef.format != null || propDef.enum != null || propDef.maxLength != null || propDef.pattern != null
         }
         return true
     }

@@ -18,18 +18,14 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.persistence.access.ClientRepositoryImpl
-
-import spock.lang.Ignore
-import spock.lang.IgnoreRest
 
 @WithUserDetails("user@domain.example")
 class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
@@ -58,9 +54,9 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         when: "changing color and translations"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.riskValues.first().translations.(DE).name = "a new name"
-        rd.riskValues.first().htmlColor = "#00000"
+        rd.riskValues.first().htmlColor = "#000000"
         rd.probability.translations.(DE).name = "a new prop"
-        rd.probability.levels.first().htmlColor = "#00000"
+        rd.probability.levels.first().htmlColor = "#000000"
         rd.probability.levels.first().translations.(DE).name = "a new level name"
         rd.categories.find{ it.id == "C" }.translations.(DE).name = "my new dimension name"
         rd.categories.find{ it.id == "C" }.potentialImpacts.first().translations.(DE).name = "my new impact name"
@@ -69,9 +65,9 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
             riskValues.first().translations.(DE).name == "a new name"
-            riskValues.first().htmlColor == "#00000"
+            riskValues.first().htmlColor == "#000000"
             probability.translations.(DE).name == "a new prop"
-            probability.levels.first().htmlColor == "#00000"
+            probability.levels.first().htmlColor == "#000000"
             probability.levels.first().translations.(DE).name == "a new level name"
             categories.find{ it.id == "C" }.translations.(DE).name == "my new dimension name"
             categories.find{ it.id == "C" }.potentialImpacts.first().translations.(DE).name == "my new impact name"
@@ -84,7 +80,23 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.newId) {
             riskValues.first().translations.(DE).name == "a new name"
-            riskValues.first().htmlColor == "#00000"
+            riskValues.first().htmlColor == "#000000"
+        }
+    }
+
+    def "invalid color codes are rejected"() {
+        when:
+        def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
+        rd.riskValues.first().htmlColor = "#foo"
+
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, 400)
+
+        then:
+        HandlerMethodValidationException e = thrown()
+        with(e.parameterValidationResults.first()  ) {
+            with(it.resolvableErrors.first()) {
+                it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
+            }
         }
     }
 

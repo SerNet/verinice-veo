@@ -19,9 +19,8 @@ package org.veo.core.entity.riskdefinition;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
-import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
@@ -45,14 +44,14 @@ import lombok.ToString;
 public class DiscreteValue
     implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
 
-  public DiscreteValue(@Size(max = 255) String htmlColor) {
+  public DiscreteValue(String htmlColor) {
     super();
     this.htmlColor = htmlColor;
   }
 
   private int ordinalValue;
 
-  @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+  @Pattern(regexp = "#[0-9a-fA-F]{6}")
   @ToString.Include
   private String htmlColor;
 

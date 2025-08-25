@@ -1278,6 +1278,26 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "RiskValue is well-documented"() {
+        expect:
+        with(getSchema('RiskValue')) {
+            it.properties.keySet() ==~ [
+                'ordinalValue',
+                'htmlColor',
+                'translations',
+                'symbolicRisk'
+            ]
+            it.required ==~ [
+                'translations',
+                'symbolicRisk'
+            ]
+            it.properties.htmlColor == [
+                type:'string',
+                pattern: '#[0-9a-fA-F]{6}'
+            ]
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])

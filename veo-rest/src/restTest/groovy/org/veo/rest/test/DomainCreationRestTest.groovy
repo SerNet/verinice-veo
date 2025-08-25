@@ -882,7 +882,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         when: "changing translations"
         get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
-            definition.riskValues[0].htmlColor = "#44444"
+            definition.riskValues[0].htmlColor = "#444444"
             definition.riskValues[0].translations.de.name = "Risk name 1"
             definition.riskValues[0].translations.de.description = "risk description"
             definition.probability.translations.de.name = "a new name"
@@ -898,7 +898,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then: "the change is persisted"
         with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
-            it.riskValues[0].htmlColor == "#44444"
+            it.riskValues[0].htmlColor == "#444444"
             it.riskValues[0].translations.de.name == "Risk name 1"
             it.probability.translations.de.name == "a new name"
             it.probability.translations.de.description == "a new description"
