@@ -25,13 +25,13 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.36'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
     implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.10'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.11'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10'
+    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11'
 }
 
 jar {
