@@ -18,7 +18,6 @@
 package org.veo.rest.security;
 
 import static java.util.function.Function.identity;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -113,7 +112,11 @@ public class WebSecurity {
 
   // Paths that never change state on the server:
   // Inspections are transient and may be POSTed by regular users.
-  private static final String[] TRANSIENT_PATHS = {"/**/evaluation/**"};
+  private static final String[] TRANSIENT_PATHS = {
+    "/domains/*/*/evaluation/**",
+    // TODO VEO-1987 remove legacy endpoint pattern
+    "/*/evaluation/**"
+  };
 
   // Paths to monitoring and metrics information:
   private static final String ACTUATOR_PATHS = "/actuator/**";
@@ -167,38 +170,24 @@ public class WebSecurity {
           auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
 
           // admin access:
-          for (String path : ADMIN_PATHS) {
-            auth.requestMatchers(antMatcher(path)).hasRole("veo-admin");
-          }
+          auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");
 
           // POST is allowed to transient paths for regular users:
-          for (String path : TRANSIENT_PATHS) {
-            auth.requestMatchers(antMatcher(HttpMethod.POST, path)).hasRole("veo-user");
-          }
+          auth.requestMatchers(HttpMethod.POST, TRANSIENT_PATHS).hasRole("veo-user");
 
           // content-creator access:
-          auth.requestMatchers(antMatcher(CONTENT_CREATOR_PATHS)).hasRole("veo-content-creator");
+          auth.requestMatchers(CONTENT_CREATOR_PATHS).hasRole("veo-content-creator");
 
           // read-only access:
-          Stream.of(USER_VIEWABLE_PATHS)
+
+          Stream.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
               .forEach(
-                  path ->
-                      Stream.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
-                          .forEach(
-                              method ->
-                                  auth.requestMatchers(antMatcher(method, path))
-                                      .hasRole("veo-user")));
+                  method -> auth.requestMatchers(method, USER_VIEWABLE_PATHS).hasRole("veo-user"));
 
           // write-only access:
-          Stream.of(USER_EDITABLE_PATHS)
+          Stream.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
               .forEach(
-                  path ->
-                      Stream.of(
-                              HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
-                          .forEach(
-                              method ->
-                                  auth.requestMatchers(antMatcher(method, path))
-                                      .hasRole("veo-write")));
+                  method -> auth.requestMatchers(method, USER_EDITABLE_PATHS).hasRole("veo-write"));
 
           // authentication without specific role requirements and fallback in
           // case of missing
