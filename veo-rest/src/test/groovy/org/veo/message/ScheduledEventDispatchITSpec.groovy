@@ -42,7 +42,6 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.GetUnitsUseCase
 import org.veo.jobs.MessageDeletionJob
 import org.veo.jobs.MessagingJob
-import org.veo.jobs.UserSwitcher
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
@@ -103,9 +102,6 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     @Autowired
     private RabbitAdmin rabbitAdmin
 
-    @AutoCleanup('revokeUser')
-    UserSwitcher userSwitcher
-
     @Value('${veo.message.queues.veo}')
     String testQueue
 
@@ -128,7 +124,6 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     }
 
     def setup() {
-        userSwitcher = new UserSwitcher()
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
         storedEventRepository.deleteAll()
         eventSubscriber.receivedEvents.clear()
