@@ -107,6 +107,9 @@ public class WebSecurity {
   // Paths that require the role 'content-creator' for read access:
   private static final String CONTENT_CREATOR_PATHS = "/content-creation/**";
 
+  // Unit count path, needs an API key
+  private static final String UNIT_COUNT_PATH = "/admin/unit-count";
+
   // Paths that must only be accessible by the admin role:
   private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
 
@@ -168,6 +171,9 @@ public class WebSecurity {
 
           // public access to swagger-ui:
           auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
+
+          // public access to unit-count, API key is checked in the controller
+          auth.requestMatchers(HttpMethod.GET, UNIT_COUNT_PATH).permitAll();
 
           // admin access:
           auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");

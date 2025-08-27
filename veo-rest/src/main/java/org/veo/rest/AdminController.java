@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,17 +35,21 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SystemMessageDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.specification.NotAllowedException;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
+import org.veo.core.usecase.unit.GetUnitCountUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -52,12 +57,23 @@ import org.veo.rest.security.ApplicationUser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping(AdminController.URL_BASE_PATH)
+@SecurityScheme(
+    name = AdminController.SECURITY_SCHEME_APIKEY,
+    type = SecuritySchemeType.APIKEY,
+    in = SecuritySchemeIn.HEADER,
+    description = "API key authentication",
+    paramName = AdminController.HEADER_NAME_APIKEY)
 @RequiredArgsConstructor
 public class AdminController {
   private final UseCaseInteractor useCaseInteractor;
@@ -68,8 +84,15 @@ public class AdminController {
   private final AsyncTaskExecutor taskExecutor;
   private final SaveSystemMessageUseCase saveSystemMessageUseCase;
   private final DeleteSystemMessageUseCase deleteSystemMessageUseCase;
+  private final GetUnitCountUseCase getUnitCountUseCase;
+
+  public static final String SECURITY_SCHEME_APIKEY = "ApiKeyAuth";
+  public static final String HEADER_NAME_APIKEY = "X-API-KEY";
 
   public static final String URL_BASE_PATH = "/admin";
+
+  @Value("${veo.api-keys.unit-count}")
+  private final String unitCountApiKey;
 
   @PostMapping("/messages")
   @Operation(summary = "Create a message.")
@@ -147,5 +170,19 @@ public class AdminController {
           log.info("end of updateAllClientDomainsUseCase task");
         });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
+  }
+
+  @GetMapping("/unit-count")
+  @Operation(summary = "Returns the overall number of units")
+  @SecurityRequirements(@SecurityRequirement(name = SECURITY_SCHEME_APIKEY))
+  public CompletableFuture<Long> getUnitCount(WebRequest request) {
+    String apiKey = request.getHeader(HEADER_NAME_APIKEY);
+    if (!unitCountApiKey.equals(apiKey)) {
+      throw new NotAllowedException("Invalid API key");
+    }
+    return useCaseInteractor.execute(
+        getUnitCountUseCase,
+        UseCase.EmptyInput.INSTANCE,
+        GetUnitCountUseCase.OutputData::numberOfUnits);
   }
 }

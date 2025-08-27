@@ -106,4 +106,32 @@ public interface UserAccessRights {
   default UUID clientId() {
     return UUID.fromString(getClientId());
   }
+
+  class AnonymousUser implements UserAccessRights {
+
+    @Override
+    public Set<UUID> getReadableUnitIds() {
+      return Set.of();
+    }
+
+    @Override
+    public Set<UUID> getWritableUnitIds() {
+      return Set.of();
+    }
+
+    @Override
+    public List<String> getRoles() {
+      return List.of();
+    }
+
+    @Override
+    public String getClientId() {
+      return null;
+    }
+
+    @Override
+    public String getUsername() {
+      return null;
+    }
+  }
 }

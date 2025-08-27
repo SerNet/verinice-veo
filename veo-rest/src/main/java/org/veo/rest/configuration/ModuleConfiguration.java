@@ -195,6 +195,7 @@ import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.core.usecase.unit.GetUnitCountUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
@@ -1347,6 +1348,11 @@ public class ModuleConfiguration {
   @Bean
   GetBreakingChangesUseCase getBreakingChangesUseCase(DomainRepository domainRepository) {
     return new GetBreakingChangesUseCase(domainRepository);
+  }
+
+  @Bean
+  GetUnitCountUseCase getUnitCountUseCase(UnitRepository unitRepository) {
+    return new GetUnitCountUseCase(unitRepository);
   }
 
   @Bean

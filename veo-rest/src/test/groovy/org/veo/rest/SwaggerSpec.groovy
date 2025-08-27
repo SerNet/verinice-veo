@@ -493,6 +493,25 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /admin/unit-count"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/admin/unit-count"].get
+
+        expect: "that the correct schema is used"
+        with (endPointInfo) {
+            it.responses['200'].content['application/json'].schema == [type: 'integer', format: 'int64']
+            it.security == [[ApiKeyAuth:[]]]
+        }
+    }
+
+    def "Security scheme documentation is complete"() {
+        expect:
+        with (parsedApiDocs.components.securitySchemes) {
+            it.keySet() ==~ ['OAuth2', 'ApiKeyAuth']
+            it.ApiKeyAuth == [type: 'apiKey', in: 'header', name: 'X-API-KEY', description: 'API key authentication']
+        }
+    }
+
     def "Content schema for #method request to #path, response status #status is ApiResponseBody"() {
         expect:
         statusInfo.content == ['application/json':[schema:[$ref:'#/components/schemas/ApiResponseBody']]]
@@ -551,7 +570,7 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    def "No unexpected security overrides are present"(op) {
+    def "No unexpected security overrides are present for #op.method #op.path"(op) {
         expect:
         !('security' in op.documentation.keySet())
 
@@ -566,6 +585,10 @@ class SwaggerSpec extends VeoSpringSpec {
                             method: it.key,
                             documentation: it.value
                         ]
+                    }
+                }.tap {
+                    removeIf {
+                        it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
                     }
                 }
     }

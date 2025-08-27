@@ -17,12 +17,17 @@
  ******************************************************************************/
 package org.veo.rest
 
+import java.nio.charset.StandardCharsets
+
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.specification.NotAllowedException
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.jobs.UserSwitcher
 
 import groovy.util.logging.Log
 
@@ -60,7 +65,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client = createTestClient()
         createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def domainId = parseJson(get("/domains")).find{it.name == "DSGVO-test"}.id
+        def domainId = parseJson(get("/domains")).find { it.name == "DSGVO-test" }.id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(UUID.fromString(domainId), true)
 
         when: "requesting a unit dump"
@@ -92,12 +97,12 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
-        def domainId = parseJson(get("/domains")).find{it.templateVersion=="1.4.0"}.id
+        def domainId = parseJson(get("/domains")).find { it.templateVersion == "1.4.0" }.id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(UUID.fromString(domainId), true, true)
 
         when: "the process risk values are preserved before migration"
         def json = parseJson(get("/admin/unit-dump/$unitId"))
-        def risk = json.risks.find{it.process != null}
+        def risk = json.risks.find { it.process != null }
         def oldDomainName = risk.domains.(domainId).reference.displayName
         def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues
         def oldImpactValues = risk.domains.(domainId).riskDefinitions.DSRA.impactValues
@@ -162,5 +167,70 @@ class AdminControllerMvcITSpec extends ContentSpec {
                 }
             }
         }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "regular user with correct API key can query unit count"() {
+        given:
+        def client = createTestClient()
+        unitDataRepository.save(newUnit(client))
+
+        when:
+        def result = get("/admin/unit-count", ['x-api-key': 'dracula']).andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+
+        then:
+        result == '1'
+
+        when:
+        def client2 = createTestClient()
+        unitDataRepository.save(newUnit(client2))
+
+        result = get("/admin/unit-count", ['x-api-key': 'dracula']).andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+
+        then:
+        result == '2'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "regular user with wrong API key cannot query unit count"() {
+        when:
+        get("/admin/unit-count", ['x-api-key': 'invalid'], 403)
+
+        then:
+        thrown(NotAllowedException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "regular user without api key cannot query unit count"() {
+        when:
+        get("/admin/unit-count", 403)
+
+        then:
+        thrown(NotAllowedException)
+    }
+
+    @WithAnonymousUser
+    def "unauthenticated user with correct api key can query unit count"() {
+        given:
+        new UserSwitcher().runAsAdmin {
+            createTestClient().tap {
+                unitDataRepository.save(newUnit(it))
+            }
+        }
+
+        when:
+        def result = get("/admin/unit-count", ['x-api-key': 'dracula']).andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+
+        then:
+        result == '1'
+    }
+
+    @WithAnonymousUser
+    def "unauthenticated user without api key cannot query unit count"() {
+        when:
+        get("/admin/unit-count", 403)
+
+        then:
+        thrown(NotAllowedException)
     }
 }

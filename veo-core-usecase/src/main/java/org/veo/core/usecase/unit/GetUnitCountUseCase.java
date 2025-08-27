@@ -15,23 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest;
-
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+package org.veo.core.usecase.unit;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.service.UserAccessRightsProvider;
-import org.veo.rest.security.ApplicationUser;
+import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.TransactionalUseCase;
+import org.veo.core.usecase.UseCase;
 
-public class UserAccessRightsProviderImpl implements UserAccessRightsProvider {
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class GetUnitCountUseCase
+    implements TransactionalUseCase<UseCase.EmptyInput, GetUnitCountUseCase.OutputData> {
+  private final UnitRepository unitRepository;
+
   @Override
-  public UserAccessRights getAccessRights() {
-    var auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth instanceof AnonymousAuthenticationToken) {
-      return new UserAccessRights.AnonymousUser();
-    }
-    Object principal = auth.getPrincipal();
-    return ApplicationUser.authenticatedUser(principal);
+  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
+    return new OutputData(unitRepository.count());
   }
+
+  public record OutputData(Long numberOfUnits) implements UseCase.OutputData {}
 }

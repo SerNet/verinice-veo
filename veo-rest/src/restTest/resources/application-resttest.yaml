@@ -33,6 +33,8 @@ veo:
         pass: ''
     proxyHost: cache.int.company.de
     proxyPort: 3128
+  api-keys:
+    unit-count: dracula
 
 spring:
   datasource:

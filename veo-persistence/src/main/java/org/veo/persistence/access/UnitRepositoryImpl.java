@@ -60,4 +60,9 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   public List<Unit> findByDomain(UUID domainId) {
     return dataRepository.findByDomainsId(domainId).stream().map(Unit.class::cast).toList();
   }
+
+  @Override
+  public Long count() {
+    return dataRepository.count();
+  }
 }

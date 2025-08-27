@@ -48,4 +48,6 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
   }
 
   List<Unit> findByDomain(UUID domainId);
+
+  Long count();
 }
