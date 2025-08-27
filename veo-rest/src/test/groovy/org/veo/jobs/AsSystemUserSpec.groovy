@@ -25,19 +25,12 @@ import org.veo.core.entity.Client
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.rest.security.ApplicationUser
 
-import spock.lang.AutoCleanup
-
 class AsSystemUserSpec extends VeoSpringSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
 
-    @AutoCleanup('revokeUser')
-    private UserSwitcher userSwitcher
-
-    def setup() {
-        userSwitcher = new UserSwitcher()
-    }
+    private UserSwitcher userSwitcher = new UserSwitcher()
 
     def "System user works in configured client"() {
         given: "three clients"
@@ -57,16 +50,15 @@ class AsSystemUserSpec extends VeoSpringSpec {
     }
 
     Client createClient(String clientId) {
-        userSwitcher.switchToUser("testuser", clientId)
-        def client = null
-        txTemplate.execute {
-            client = newClient {
-                id = UUID.fromString(clientId)
+        userSwitcher.runAsUser("testuser", clientId) {
+            txTemplate.execute {
+                newClient {
+                    id = UUID.fromString(clientId)
+                }.tap {
+                    defaultDomainCreator.addDomain(it, "ISO", false)
+                    clientRepository.save(it)
+                }
             }
-            defaultDomainCreator.addDomain(client, "ISO", false)
-            clientRepository.save(client)
         }
-        userSwitcher.revokeUser()
-        client
     }
 }

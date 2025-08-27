@@ -18,7 +18,6 @@
 package org.veo.jobs
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -30,21 +29,25 @@ import org.veo.rest.security.ApplicationUser
  */
 class UserSwitcher {
 
-    Authentication originalAuthentication
-
-    void revokeUser() {
-        if (originalAuthentication != null)
-            SecurityContextHolder.getContext().setAuthentication(originalAuthentication)
+    def runAsUser(String username, boolean admin=false, String clientId, int maxUnits = 2, final Closure closure) {
+        def currentAuth = SecurityContextHolder.getContext()
+                .getAuthentication()
+        try {
+            var user = ApplicationUser.authenticatedUser(username,
+                    clientId,
+                    "veo-user", admin ? ["veo-admin"]: [], maxUnits)
+            var token = new AnonymousAuthenticationToken(username, user,
+                    List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
+            SecurityContextHolder.getContext().setAuthentication(token)
+            return closure.call()
+        } finally {
+            if (currentAuth != null) {
+                SecurityContextHolder.getContext().setAuthentication(currentAuth)
+            }
+        }
     }
 
-    void switchToUser(String username, String clientId, int maxUnits = 2) {
-        this.originalAuthentication = SecurityContextHolder.getContext()
-                .getAuthentication()
-        var user = ApplicationUser.authenticatedUser(username,
-                clientId,
-                "veo-user", Collections.emptyList(), maxUnits)
-        var token = new AnonymousAuthenticationToken(username, user,
-                List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
-        SecurityContextHolder.getContext().setAuthentication(token)
+    def runAsAdmin(final Closure closure) {
+        runAsUser('admin', true,null, closure)
     }
 }
