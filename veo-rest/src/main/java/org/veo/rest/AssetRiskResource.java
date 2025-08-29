@@ -50,10 +50,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public interface AssetRiskResource {
 
   String RESOURCE_NAME = "risks";

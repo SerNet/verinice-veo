@@ -52,7 +52,6 @@ import org.veo.rest.security.ApplicationUser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,7 +59,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AdminController.URL_BASE_PATH)
 @RequiredArgsConstructor
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class AdminController {
   private final UseCaseInteractor useCaseInteractor;
   private final DeleteClientUseCase deleteClientUseCase;

@@ -551,6 +551,25 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "No unexpected security overrides are present"(op) {
+        expect:
+        !('security' in op.documentation.keySet())
+
+        where:
+        op << parsedApiDocs
+                .paths
+                .entrySet()
+                .collectMany{ path ->
+                    path.value.entrySet().collect{
+                        [
+                            path: path.key,
+                            method: it.key,
+                            documentation: it.value
+                        ]
+                    }
+                }
+    }
+
     def "Unit parameter in profile update endpoint is documented"() {
         when:
         def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{domainId}/profiles/{profileId}"]

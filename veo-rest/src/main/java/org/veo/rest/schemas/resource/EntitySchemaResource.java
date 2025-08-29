@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.core.entity.ElementType;
-import org.veo.rest.RestApplication;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +38,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 /**
  * REST service which provides methods to query schemas for business entities. The schemas that are
@@ -49,7 +47,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
  */
 @RestController
 @RequestMapping(EntitySchemaResource.URL_BASE_PATH)
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 // @RolesAllowed("SCOPE_veo-user") // configured in WebSecurityConfig instead.
 // Other scopes could be used to secure individual methods.
 public interface EntitySchemaResource {

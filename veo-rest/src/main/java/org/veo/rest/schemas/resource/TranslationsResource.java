@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
-import org.veo.rest.RestApplication;
 
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,12 +37,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 /** REST endpoint which provides methods to UI translations in JSON format. */
 @RestController
 @RequestMapping(TranslationsResource.URL_BASE_PATH)
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 // @RolesAllowed("ROLE_USER")
 public interface TranslationsResource {
 

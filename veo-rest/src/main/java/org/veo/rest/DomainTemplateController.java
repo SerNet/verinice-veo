@@ -52,7 +52,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,7 +67,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(DomainTemplateController.URL_BASE_PATH)
 @RequiredArgsConstructor
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 @Slf4j
 public class DomainTemplateController extends AbstractEntityController {
 

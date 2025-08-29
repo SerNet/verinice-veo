@@ -48,13 +48,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(UserConfigurationController.URL_BASE_PATH)
 @RequiredArgsConstructor
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class UserConfigurationController extends AbstractVeoController {
 
   public static final String URL_BASE_PATH = "/" + UserConfiguration.PLURAL_TERM;
