@@ -94,10 +94,20 @@ public class AdminController {
   @Value("${veo.api-keys.unit-count}")
   private final String unitCountApiKey;
 
+  @Value("${veo.api-keys.system-messages}")
+  private final String systemMessagesApiKey;
+
   @PostMapping("/messages")
   @Operation(summary = "Create a message.")
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
-      @RequestBody @Valid @NotNull SystemMessageDto systemMessage) {
+      @RequestBody @Valid @NotNull SystemMessageDto systemMessage,
+      WebRequest request,
+      @Parameter(hidden = true) ApplicationUser applicationUser) {
+    ensureEditMessagesPermission(request, applicationUser);
     return useCaseInteractor.execute(
         saveSystemMessageUseCase,
         new SaveSystemMessageUseCase.InputData(null, systemMessage),
@@ -112,8 +122,16 @@ public class AdminController {
 
   @PutMapping("/messages/{messageId}")
   @Operation(summary = "Update a message.")
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
-      @PathVariable long messageId, @RequestBody @Valid @NotNull SystemMessageDto systemMessage) {
+      @PathVariable long messageId,
+      @RequestBody @Valid @NotNull SystemMessageDto systemMessage,
+      WebRequest request,
+      @Parameter(hidden = true) ApplicationUser applicationUser) {
+    ensureEditMessagesPermission(request, applicationUser);
     return useCaseInteractor.execute(
         saveSystemMessageUseCase,
         new SaveSystemMessageUseCase.InputData(messageId, systemMessage),
@@ -122,8 +140,15 @@ public class AdminController {
 
   @DeleteMapping("/messages/{messageId}")
   @Operation(summary = "Deletes the message with the id.)")
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteSystemMessage(
-      @PathVariable long messageId) {
+      @PathVariable long messageId,
+      WebRequest request,
+      @Parameter(hidden = true) ApplicationUser applicationUser) {
+    ensureEditMessagesPermission(request, applicationUser);
     return useCaseInteractor.execute(
         deleteSystemMessageUseCase,
         new DeleteSystemMessageUseCase.InputData(messageId),
@@ -185,5 +210,14 @@ public class AdminController {
         getUnitCountUseCase,
         UseCase.EmptyInput.INSTANCE,
         GetUnitCountUseCase.OutputData::numberOfUnits);
+  }
+
+  private void ensureEditMessagesPermission(WebRequest request, ApplicationUser applicationUser) {
+    if (applicationUser == null || !applicationUser.isAdmin()) {
+      String apiKey = request.getHeader(HEADER_NAME_APIKEY);
+      if (!systemMessagesApiKey.equals(apiKey)) {
+        throw new NotAllowedException("Invalid API key");
+      }
+    }
   }
 }

@@ -504,6 +504,39 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for POST /admin/messages"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/admin/messages"].post
+
+        expect: "that the correct schema is used"
+        with(endPointInfo) {
+            it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
+            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+        }
+    }
+
+    def "endpoint documentation is correct for PUT /admin/messages/{messageId}"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/admin/messages/{messageId}"].put
+
+        expect: "that the correct schema is used"
+        with (endPointInfo) {
+            it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
+            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+        }
+    }
+
+    def "endpoint documentation is correct for DELETE /admin/messages/{messageId}"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/admin/messages/{messageId}"].delete
+
+        expect: "that the correct schema is used"
+        with (endPointInfo) {
+            it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
+            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+        }
+    }
+
     def "Security scheme documentation is complete"() {
         expect:
         with (parsedApiDocs.components.securitySchemes) {
@@ -588,7 +621,12 @@ class SwaggerSpec extends VeoSpringSpec {
                     }
                 }.tap {
                     removeIf {
-                        it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
+                        (it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
+                                ||  it.path.startsWith('/admin/messages') && it.method in [
+                                    'post',
+                                    'put',
+                                    'delete'
+                                ]) // has API key auth
                     }
                 }
     }

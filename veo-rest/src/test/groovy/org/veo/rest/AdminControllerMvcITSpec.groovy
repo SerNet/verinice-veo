@@ -186,6 +186,100 @@ class AdminControllerMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "regular user with correct API key can write system message"() {
+        when:
+        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
+
+        then:
+        result.message == 'SystemMessage created successfully.'
+        def id = result.resourceId
+
+        when:
+        result = parseJson(put("/admin/messages/$id", [message:[DE: "test message"], level: 'WARNING'], ['x-api-key': 'hello']))
+
+        then:
+        result.message == 'SystemMessage updated.'
+
+        when:
+        delete("/admin/messages/$id", ['x-api-key': 'hello'])
+
+        then:
+        noExceptionThrown()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "regular user with wrong API key cannot write system message"() {
+        when:
+        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        delete("/admin/messages/123", ['x-api-key': 'invalid'], 403)
+
+        then:
+        thrown(NotAllowedException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "regular user without api key cannot write system message"() {
+        when:
+        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        delete("/admin/messages/123", 403)
+
+        then:
+        thrown(NotAllowedException)
+    }
+
+    @WithAnonymousUser
+    def "unauthenticated user with correct api key can write system message"() {
+        when:
+        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
+
+        then:
+        result.success == true
+    }
+
+    @WithAnonymousUser
+    def "unauthenticated user without api key cannot write system message"() {
+        when:
+        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], 403)
+
+        then:
+        thrown(NotAllowedException)
+
+        when:
+        delete("/admin/messages/123", 403)
+
+        then:
+        thrown(NotAllowedException)
+    }
+
+    @WithUserDetails("user@domain.example")
     def "regular user with correct API key can query unit count"() {
         given:
         def client = createTestClient()

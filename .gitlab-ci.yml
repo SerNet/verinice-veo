@@ -135,6 +135,7 @@ http_rest_tests:
       VEO_DEFAULT_DOMAINTEMPLATE_NAMES: DS-GVO,test-domain
       VEO_ETAG_SALT: zuL4Q8JKdy
       VEO_APIKEYS_UNITCOUNT: "dracula"
+      VEO_APIKEYS_SYSTEMMESSAGES: "hello"
   variables:
     FF_NETWORK_PER_BUILD: 1
     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres

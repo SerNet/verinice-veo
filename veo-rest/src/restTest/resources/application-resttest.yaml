@@ -35,6 +35,7 @@ veo:
     proxyPort: 3128
   api-keys:
     unit-count: dracula
+    system-messages: hello
 
 spring:
   datasource:

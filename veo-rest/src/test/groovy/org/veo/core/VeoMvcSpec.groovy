@@ -81,11 +81,18 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     ResultActions post(String url, Map content, int expectedStatusCode = 201) {
-        doRequest(MockMvcRequestBuilders.post(url)
-                .contentType(APPLICATION_JSON)
-                .content(toJson(content))
-                .accept(APPLICATION_JSON),
-                expectedStatusCode)
+        post(url, content, null, expectedStatusCode)
+    }
+
+    ResultActions post(String url, Map content, Map headers, int expectedStatusCode = 201) {
+        doRequest(MockMvcRequestBuilders.post(url).tap{b->
+            contentType(APPLICATION_JSON)
+            b.content(toJson(content))
+            accept(APPLICATION_JSON)
+            headers?.each {k,v->
+                b.header(k, v)
+            }
+        },expectedStatusCode)
     }
 
     ResultActions get(URI uri, int expectedStatusCode = 200) {
@@ -127,8 +134,17 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     ResultActions delete(String url, int expectedStatusCode = 204) {
-        doRequest(MockMvcRequestBuilders.delete(url)
-                .accept(APPLICATION_JSON), expectedStatusCode)
+        delete(url, null, expectedStatusCode)
+    }
+
+    ResultActions delete(String url, Map headers, int expectedStatusCode = 204) {
+        doRequest(MockMvcRequestBuilders.delete(url).tap{b->
+            accept(APPLICATION_JSON)
+            headers?.each {k,v->
+                b.header(k, v)
+            }
+        }
+        , expectedStatusCode)
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode) throws Exception {
