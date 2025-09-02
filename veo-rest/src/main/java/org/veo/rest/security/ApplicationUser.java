@@ -105,10 +105,18 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
     return clientIDs.get(0);
   }
 
-  public static ApplicationUser authenticatedUser(Object principal) {
+  public static ApplicationUser findAuthenticatedUser(Object principal) {
     if (principal instanceof Jwt jwt) return new ApplicationUser(jwt);
     else if (principal instanceof ApplicationUser applicationUser) return applicationUser;
-    throw new IllegalArgumentException("Principal does not represent an authenticated user.");
+    return null;
+  }
+
+  public static ApplicationUser authenticatedUser(Object principal) {
+    return Optional.ofNullable(findAuthenticatedUser(principal))
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Principal does not represent an authenticated user."));
   }
 
   public static ApplicationUser authenticatedUser(

@@ -35,7 +35,7 @@ public class AuthAwareImpl implements AuditorAware<String> {
     var currentUser =
         Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
             .map(Authentication::getPrincipal)
-            .map(ApplicationUser::authenticatedUser)
+            .map(ApplicationUser::findAuthenticatedUser)
             .map(ApplicationUser::getUsername);
     log.debug(
         "Current auditor determined from SecurityContext as {}", currentUser.orElse("-MISSING-"));

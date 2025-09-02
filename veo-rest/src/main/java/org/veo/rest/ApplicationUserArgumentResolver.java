@@ -40,6 +40,6 @@ public class ApplicationUserArgumentResolver implements HandlerMethodArgumentRes
       NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory) {
     var auth = SecurityContextHolder.getContext().getAuthentication();
-    return ApplicationUser.authenticatedUser(auth.getPrincipal());
+    return ApplicationUser.findAuthenticatedUser(auth.getPrincipal());
   }
 }
