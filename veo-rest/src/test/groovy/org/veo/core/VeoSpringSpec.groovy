@@ -63,7 +63,6 @@ import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.rest.security.CustomUserDetailsManager
-import org.veo.rest.security.NoRestrictionAccessRight
 import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
 
@@ -162,7 +161,7 @@ abstract class VeoSpringSpec extends VeoSpec {
             deleteUnitRecursively(it)
         }
         deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
-                unit.client), NoRestrictionAccessRight.from(unit.client.idAsString))
+                unit.client), userAccessRightsProvider.accessRights)
     }
 
     def setup() {
