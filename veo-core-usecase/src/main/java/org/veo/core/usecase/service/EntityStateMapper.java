@@ -162,6 +162,7 @@ public class EntityStateMapper {
     target.setLevel(source.getLevel());
     target.setEffective(source.getEffective());
     target.setPublication(source.getPublication());
+    target.setTags(source.getTags());
   }
 
   private void publishPartsChanged(CompositeElement entity, Set oldParts) {

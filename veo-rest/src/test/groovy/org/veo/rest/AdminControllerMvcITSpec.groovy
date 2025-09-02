@@ -169,6 +169,22 @@ class AdminControllerMvcITSpec extends ContentSpec {
         }
     }
 
+    def "create system message with tags"() {
+        when:
+        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO', tags: ['foo', 'bar']]))
+
+        then:
+        result == [success:true, resourceId:'1', message:'SystemMessage created successfully.']
+
+        when:
+        result = parseJson(get("/messages/1"))
+
+        then:
+        with(result) {
+            tags ==~ ['foo', 'bar']
+        }
+    }
+
     @WithUserDetails("user@domain.example")
     def "regular user with correct API key can query unit count"() {
         given:

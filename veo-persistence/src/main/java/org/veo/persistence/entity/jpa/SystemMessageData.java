@@ -18,6 +18,8 @@
 package org.veo.persistence.entity.jpa;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,6 +71,11 @@ public class SystemMessageData implements SystemMessage {
   @Nullable @ToString.Include private Instant effective;
 
   private MessageLevel level;
+
+  @NotNull
+  @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
+  private Set<String> tags = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {

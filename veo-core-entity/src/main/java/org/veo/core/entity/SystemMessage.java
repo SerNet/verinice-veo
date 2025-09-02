@@ -18,6 +18,7 @@
 package org.veo.core.entity;
 
 import java.time.Instant;
+import java.util.Set;
 
 import org.veo.core.entity.state.SystemMessageState;
 
@@ -40,6 +41,8 @@ public interface SystemMessage extends Entity, SystemMessageState {
   void setEffective(Instant effective);
 
   void setLevel(MessageLevel level);
+
+  void setTags(Set<String> tags);
 
   @Override
   default Class<? extends Entity> getModelInterface() {

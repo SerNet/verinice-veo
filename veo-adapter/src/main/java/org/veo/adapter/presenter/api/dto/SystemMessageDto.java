@@ -18,6 +18,8 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -63,6 +65,10 @@ public class SystemMessageDto implements SystemMessageState {
 
   @NotNull private MessageLevel level;
 
+  @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull
+  private Set<String> tags = new HashSet<>();
+
   public static SystemMessageDto of(SystemMessage message) {
     return new SystemMessageDto(
         message.getId(),
@@ -70,6 +76,7 @@ public class SystemMessageDto implements SystemMessageState {
         message.getCreatedAt(),
         message.getPublication(),
         message.getEffective(),
-        message.getLevel());
+        message.getLevel(),
+        message.getTags());
   }
 }

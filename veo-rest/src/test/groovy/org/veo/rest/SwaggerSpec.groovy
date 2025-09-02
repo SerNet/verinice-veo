@@ -1334,6 +1334,27 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "SystemMessageDto is well-documented"() {
+        expect:
+        with(getSchema('SystemMessageDto')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'message',
+                'createdAt',
+                'publication',
+                'effective',
+                'level',
+                'tags'
+            ]
+            it.required == ['level']
+            it.properties.tags == [
+                type       : 'array',
+                items      : [type: 'string'],
+                uniqueItems: true
+            ]
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2024  Urs Zeidler
+ * Copyright (C) 2025  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,27 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.state;
+package org.veo.persistence.migrations
 
-import java.time.Instant;
-import java.util.Set;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.SystemMessage.MessageLevel;
-import org.veo.core.entity.TranslatedText;
+import groovy.sql.Sql
 
-public interface SystemMessageState {
+class V116__add_system_message_tags extends BaseJavaMigration {
 
-  Long getId();
+    @Override
+    void migrate(Context context) throws Exception {
 
-  TranslatedText getMessage();
-
-  Instant getCreatedAt();
-
-  Instant getPublication();
-
-  Instant getEffective();
-
-  MessageLevel getLevel();
-
-  Set<String> getTags();
+        new Sql(context.connection).with {
+            execute('''ALTER TABLE system_message ADD COLUMN tags jsonb not null default '[]'::jsonb;''')
+        }
+    }
 }
