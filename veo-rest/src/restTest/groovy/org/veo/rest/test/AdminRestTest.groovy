@@ -17,16 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import static org.veo.rest.test.UserType.DEFAULT
-
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.temporal.Temporal
-import java.time.temporal.TemporalAccessor
-import java.time.temporal.TemporalAdjuster
-import java.time.temporal.TemporalAdjusters
-import java.time.temporal.TemporalAmount
-import java.time.temporal.TemporalUnit
 
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
@@ -131,8 +123,7 @@ class AdminRestTest extends VeoRestTest{
         post("/admin/messages",[message:[DE: "test message"],
             publication: "$pubDate",
             effective: "$effDate",
-            level: "INFO",
-            type: "SYSTEM"
+            level: "INFO"
         ],403, UserType.DEFAULT)
 
         and: "users cannot modify a message"
