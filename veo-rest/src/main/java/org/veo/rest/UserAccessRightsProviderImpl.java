@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.veo.core.UserAccessRights;
@@ -28,10 +27,7 @@ public class UserAccessRightsProviderImpl implements UserAccessRightsProvider {
   @Override
   public UserAccessRights getAccessRights() {
     var auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth instanceof AnonymousAuthenticationToken) {
-      return new UserAccessRights.AnonymousUser();
-    }
     Object principal = auth.getPrincipal();
-    return ApplicationUser.authenticatedUser(principal);
+    return ApplicationUser.findAuthenticatedUser(principal);
   }
 }
