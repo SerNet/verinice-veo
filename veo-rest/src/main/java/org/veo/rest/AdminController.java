@@ -45,7 +45,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
@@ -77,7 +76,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AdminController {
   private final UseCaseInteractor useCaseInteractor;
-  private final DeleteClientUseCase deleteClientUseCase;
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
@@ -152,18 +150,6 @@ public class AdminController {
     return useCaseInteractor.execute(
         deleteSystemMessageUseCase,
         new DeleteSystemMessageUseCase.InputData(messageId),
-        out -> ResponseEntity.noContent().build());
-  }
-
-  @DeleteMapping("/client/{clientId}")
-  @Operation(
-      summary =
-          "Deletes client and all associated data (including units, domains, elements & risks)")
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
-      @PathVariable String clientId) {
-    return useCaseInteractor.execute(
-        deleteClientUseCase,
-        new DeleteClientUseCase.InputData(UUID.fromString(clientId)),
         out -> ResponseEntity.noContent().build());
   }
 

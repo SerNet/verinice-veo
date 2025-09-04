@@ -122,7 +122,6 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
-import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
@@ -847,16 +846,6 @@ public class ModuleConfiguration {
       ClientRepository clientRepository) {
     return new GetProfileIncarnationDescriptionUseCase(
         genericRepository, unitRepository, profileRepository, clientRepository);
-  }
-
-  @Bean
-  public DeleteClientUseCase deleteClientUseCase(
-      AccountProvider accountProvider,
-      ClientRepository clientRepository,
-      UnitRepository unitRepository,
-      DeleteUnitUseCase deleteUnitUseCase) {
-    return new DeleteClientUseCase(
-        accountProvider, clientRepository, deleteUnitUseCase, unitRepository);
   }
 
   @Bean
