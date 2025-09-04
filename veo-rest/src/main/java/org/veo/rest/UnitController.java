@@ -20,12 +20,10 @@ package org.veo.rest;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
-import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -72,6 +70,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
@@ -82,7 +81,6 @@ import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
-import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
@@ -234,15 +232,12 @@ public class UnitController extends AbstractEntityController {
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
   public @Valid Future<List<FullUnitDto>> getUnits(
       @Parameter(hidden = true) ApplicationUser user,
-      @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) UUID parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     // TODO VEO-425 apply display name filter.
-    final GetUnitsUseCase.InputData inputData =
-        new GetUnitsUseCase.InputData(Optional.ofNullable(parentUuid));
     getClient(user); // TODO: better do #4173
     return useCaseInteractor.execute(
         getUnitsUseCase,
-        inputData,
+        UseCase.EmptyInput.INSTANCE,
         output -> output.units().stream().map(entityToDtoTransformer::transformUnit2Dto).toList());
   }
 

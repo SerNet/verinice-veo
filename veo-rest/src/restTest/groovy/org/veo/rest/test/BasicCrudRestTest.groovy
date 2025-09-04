@@ -380,20 +380,6 @@ class BasicCrudRestTest extends VeoRestTest {
         UUID.fromString(unitId)
         def targetUriUnit = "$baseUrl/units/$unitId"
 
-        and: 'Creating a sub-unit'
-        def subUnitName = 'CRUD test sub-unit'
-        def subUnitBody = [
-            name: subUnitName,
-            domains:[
-                [targetUri: "/domains/$dsgvoDomainId"]
-            ],
-            parent: [displayName: unitName, targetUri: targetUriUnit]
-        ]
-        def postSubUnitResponse = post("$baseUrl/units", subUnitBody, 201, UserType.DEFAULT)
-        def subUnitId = postSubUnitResponse.body.resourceId
-        UUID.fromString(subUnitId)
-        def targetUriSubUnit = "$baseUrl/units/$subUnitId"
-
         and: 'Creating an asset inside the unit'
         def assetBody = [
             name: 'an asset inside the unit',
@@ -402,17 +388,6 @@ class BasicCrudRestTest extends VeoRestTest {
             owner: [displayName: unitName, targetUri: targetUriUnit]
         ]
         post("$baseUrl/domains/$dsgvoDomainId/assets", assetBody, 201, UserType.DEFAULT)
-
-        and: 'Creating an asset inside the sub-unit'
-        def subUnitAssetName = 'filter test asset'
-        def subUnitAssetBody = [
-            name: subUnitAssetName,
-            subType: 'AST_Application',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]]
-        def postSubUnitAssetResponse = post("$baseUrl/domains/$dsgvoDomainId/assets", subUnitAssetBody, 201, UserType.DEFAULT)
-        def subUnitAssetId = postSubUnitAssetResponse.body.resourceId
-        UUID.fromString(subUnitAssetId)
 
         and: 'Creating 2 processes inside the unit'
         def processBody = [
@@ -430,19 +405,6 @@ class BasicCrudRestTest extends VeoRestTest {
         ]
         post("$baseUrl/domains/$dsgvoDomainId/processes", processBody2, 201, UserType.DEFAULT)
 
-        and: 'Creating a process inside the sub-unit'
-        def subUnitProcessName = 'filter test process'
-        def subUnitProcessBody = [
-            name: subUnitProcessName,
-            subType: 'PRO_DataProcessing',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
-        ]
-        def postSubUnitProcessResponse =
-                post("$baseUrl/domains/$dsgvoDomainId/processes", subUnitProcessBody, 201, UserType.DEFAULT)
-        def subUnitProcessId = postSubUnitProcessResponse.body.resourceId
-        UUID.fromString(subUnitProcessId)
-
         and: 'Creating a person inside the unit'
         def personBody = [
             name: 'a person inside the unit',
@@ -451,29 +413,6 @@ class BasicCrudRestTest extends VeoRestTest {
             owner: [displayName: unitName, targetUri: targetUriUnit]
         ]
         post("$baseUrl/domains/$dsgvoDomainId/persons", personBody, 201, UserType.DEFAULT)
-
-        and: 'Creating 2 persons inside the sub-unit'
-        def subUnitPersonName1 = 'filter test person 1'
-        def subUnitPersonBody = [
-            name: subUnitPersonName1,
-            subType: 'PER_Person',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
-        ]
-        def postSubUnitPersonResponse = post("$baseUrl/domains/$dsgvoDomainId/persons", subUnitPersonBody, 201, UserType.DEFAULT)
-        def subUnitPersonId1 = postSubUnitPersonResponse.body.resourceId
-        UUID.fromString(subUnitPersonId1)
-
-        def subUnitPersonName2 = 'filter test person 2'
-        def subUnitPersonBody2 = [
-            name: subUnitPersonName2,
-            subType: 'PER_Person',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
-        ]
-        def postSubUnitPersonResponse2 = post("$baseUrl/domains/$dsgvoDomainId/persons", subUnitPersonBody2, 201, UserType.DEFAULT)
-        def subUnitPersonId2 = postSubUnitPersonResponse2.body.resourceId
-        UUID.fromString(subUnitPersonId2)
 
         and: 'Creating a control inside the unit'
         def controlBody = [
@@ -484,30 +423,6 @@ class BasicCrudRestTest extends VeoRestTest {
         ]
         post("$baseUrl/domains/$dsgvoDomainId/controls", controlBody, 201, UserType.DEFAULT)
 
-        and: 'Creating a control inside the sub-unit'
-        def subUnitControlName = 'filter test control'
-        def subUnitControlBody = [
-            name: subUnitControlName,
-            subType: 'CTL_TOM',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
-        ]
-        def postSubUnitControlResponse = post("$baseUrl/domains/$dsgvoDomainId/controls", subUnitControlBody, 201, UserType.DEFAULT)
-        def subUnitControlId = postSubUnitControlResponse.body.resourceId
-        UUID.fromString(subUnitControlId)
-
-        and: 'Creating a scenario inside the sub unit'
-        def unitScenarioName1 = 'filter test scenario'
-        def unitScenarioBody1 = [
-            name: unitScenarioName1,
-            subType: 'SCN_Scenario',
-            status: 'NEW',
-            owner: [displayName: subUnitName, targetUri: targetUriSubUnit]
-        ]
-        def postUnitScenarioResponse1 = post("$baseUrl/domains/$dsgvoDomainId/scenarios", unitScenarioBody1, 201, UserType.DEFAULT)
-        def unitScenarioId1 = postUnitScenarioResponse1.body.resourceId
-        UUID.fromString(unitScenarioId1)
-
         and: 'Creating a scenario inside the unit'
         def unitScenarioName2 = 'filter test scenario'
         def unitScenarioBody2 = [
@@ -516,56 +431,19 @@ class BasicCrudRestTest extends VeoRestTest {
             status: 'NEW',
             owner: [displayName: unitName, targetUri: targetUriUnit]
         ]
-        def postUnitScenarioResponse2 = post("$baseUrl/domains/$dsgvoDomainId/scenarios", unitScenarioBody2, 201, UserType.DEFAULT)
-        def unitScenarioId2 = postUnitScenarioResponse2.body.resourceId
-        UUID.fromString(unitScenarioId2)
-
-        and: 'Loading the unit'
-        def getUnitResponse = get("$baseUrl/units/$subUnitId", 200, UserType.DEFAULT)
-        getUnitResponse.body.id == subUnitId
-        getUnitResponse.body.name == subUnitName
-
-        and: 'Loading all assets in the sub-unit'
-        def getAllAssetsResponse = get("$baseUrl/assets?unit=$subUnitId", 200, UserType.DEFAULT)
-        getAllAssetsResponse.body.totalItemCount == 1
-        getAllAssetsResponse.body.items[0].id == subUnitAssetId
-        getAllAssetsResponse.body.items[0].name == subUnitAssetName
-
-        and: 'Loading all processes in the sub-unit'
-        def getProcessesResponse = get("$baseUrl/processes?unit=$subUnitId", 200, UserType.DEFAULT)
-        getProcessesResponse.body.totalItemCount == 1
-        getProcessesResponse.body.items[0].id == subUnitProcessId
-        getProcessesResponse.body.items[0].name == subUnitProcessName
-
-        and: 'Loading all persons in the sub-unit'
-        def getPersonsResponse = get("$baseUrl/persons?unit=$subUnitId", 200, UserType.DEFAULT)
-        getPersonsResponse.body.totalItemCount == 2
-        getPersonsResponse.body.items[0].id == subUnitPersonId1
-        getPersonsResponse.body.items[0].name == subUnitPersonName1
-        getPersonsResponse.body.items[1].id == subUnitPersonId2
-        getPersonsResponse.body.items[1].name == subUnitPersonName2
-
-        and: 'Loading all controls in the sub-unit'
-        def getControlResponse = get("$baseUrl/controls?unit=$subUnitId", 200, UserType.DEFAULT)
-        getControlResponse.body.totalItemCount == 1
-        getControlResponse.body.items[0].id == subUnitControlId
-        getControlResponse.body.items[0].name == subUnitControlName
+        def postUnitScenarioResponse = post("$baseUrl/domains/$dsgvoDomainId/scenarios", unitScenarioBody2, 201, UserType.DEFAULT)
+        def unitScenarioId = postUnitScenarioResponse.body.resourceId
+        UUID.fromString(unitScenarioId)
 
         and: 'Loading all scenarios in the unit'
         def getScenarioResponse = get("$baseUrl/scenarios?unit=$unitId", 200, UserType.DEFAULT)
         getScenarioResponse.body.items*.id ==~ [
-            unitScenarioId1,
-            unitScenarioId2
+            unitScenarioId
         ]
 
         and: 'Loading scenarios with an non existing unit fails'
         def nonExistingUnitId = UUID.randomUUID().toString()
         get("$baseUrl/scenarios?unit=$nonExistingUnitId", 404, UserType.DEFAULT)
-
-        // TODO VEO-1250 Delete the sub-unit first
-
-        and: 'Deleting the sub unit'
-        delete("$baseUrl/units/$subUnitId", 204, UserType.DEFAULT)
 
         and: 'Deleting the unit'
         delete("$baseUrl/units/$unitId", 204, UserType.DEFAULT)
@@ -580,12 +458,6 @@ class BasicCrudRestTest extends VeoRestTest {
         responseBody.owner == "An owner must be present."
 
         expect:
-        post("/units", [
-            name: "u",
-            parent: [targetUri: "httpx://uri.geller"]
-        ], 422).body.message == "Invalid entity reference: httpx://uri.geller"
-
-        and:
         post("/domains/$testDomainId/incidents", [
             name: "terrible incident",
             owner: [targetUri: "/units/$unitId"],

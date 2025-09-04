@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import static java.lang.String.format;
-
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -83,19 +80,7 @@ public class CreateUnitUseCase
     // change event
     // which we listen to. This would require messaging middleware.
     client.incrementTotalUnits(input.maxUnits);
-    Unit newUnit;
-    if (input.parentUnitId.isEmpty()) {
-      newUnit = entityFactory.createUnit(input.nameableInput.name(), null);
-    } else {
-      Unit parentUnit =
-          unitRepository
-              .findById(input.parentUnitId.get())
-              .orElseThrow(
-                  () ->
-                      new ReferenceTargetNotFoundException(
-                          format("Parent unit %s was not found", input.parentUnitId.get())));
-      newUnit = entityFactory.createUnit(input.nameableInput.name(), parentUnit);
-    }
+    Unit newUnit = entityFactory.createUnit(input.nameableInput.name());
 
     newUnit.setAbbreviation(input.nameableInput.abbreviation());
     newUnit.setDescription(input.nameableInput.description());
@@ -129,11 +114,7 @@ public class CreateUnitUseCase
   }
 
   @Valid
-  public record InputData(
-      NameableInputData nameableInput,
-      Optional<UUID> parentUnitId,
-      Integer maxUnits,
-      Set<UUID> domainIds)
+  public record InputData(NameableInputData nameableInput, Integer maxUnits, Set<UUID> domainIds)
       implements UseCase.InputData {}
 
   @Valid

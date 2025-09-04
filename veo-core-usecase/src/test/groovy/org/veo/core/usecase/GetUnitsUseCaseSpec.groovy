@@ -19,13 +19,8 @@ package org.veo.core.usecase
 
 import static java.util.UUID.randomUUID
 
-import org.veo.core.UserAccessRights
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
-import org.veo.core.repository.ClientRepository
-import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.unit.GetUnitsUseCase
-import org.veo.rest.security.NoRestrictionAccessRight
 
 import spock.lang.Specification
 
@@ -52,37 +47,5 @@ public class GetUnitsUseCaseSpec extends Specification {
         existingClient.getUnit(_)>> Optional.of(existingUnit)
 
         existingClient.createUnit(_)>>existingUnit
-    }
-
-    def "Find units by parent unit" () {
-        Unit subUnit1 = Mock()
-        subUnit1.getDomains() >> []
-        subUnit1.getParent() >> existingUnit
-        subUnit1.getName() >> "Subunit 1"
-        subUnit1.getIdAsString() >> randomUUID()
-
-        Unit subUnit2 = Mock()
-        subUnit2.getDomains() >> []
-        subUnit2.getParent() >> existingUnit
-        subUnit2.getName() >> "Subunit 2"
-        subUnit2.getIdAsString() >> randomUUID()
-
-        given: "fake repositories that record method calls"
-        def clientRepo = Mock(ClientRepository)
-        def unitRepo = Mock(UnitRepository)
-
-        when: "a request is made with a parent-ID"
-        def input = new GetUnitsUseCase.InputData(
-                Optional.of(existingUnit.id))
-        def sot = new GetUnitsUseCase(clientRepo, unitRepo)
-        def output = sot.execute(input, NoRestrictionAccessRight.from(existingClient.id.toString()))
-
-        then: "a client was retrieved"
-        1 * unitRepo.findById(_) >> Optional.of(existingUnit)
-        1 * unitRepo.findByParent(_) >> [subUnit1, subUnit2]
-
-        and: "both subunits are returned"
-        output.units.size() == 2
-        output.units == [subUnit1, subUnit2]
     }
 }

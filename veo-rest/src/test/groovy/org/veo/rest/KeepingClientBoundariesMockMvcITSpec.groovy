@@ -128,23 +128,20 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "can't change the client of a unit"() {
+    def "can't update a unit owned by another client"() {
         given: "a unit that belongs to another client"
         def otherClientsUnit = txTemplate.execute({
             Unit unit = newUnit(otherClient)
-            unit.setParent(otherClientsUnit)
             unitRepository.save(unit)
         })
 
-        when: "a put request tries to move the asset to the user's unit"
+        when: "a user in this client tries to update the other client's unit"
         Map headers = [
             'If-Match': ETag.from(otherClientsUnit.idAsString, 0)
         ]
         put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString , [
             id: '' + otherClientsUnit.idAsString,
-            name: 'hijacked-unit',
-            parent: [displayName: 'Test unit',
-                targetUri: 'http://localhost//units/' + unit.id]
+            name: 'hijacked-unit'
         ], headers, 404)
 
         then: "the unit is not found (no information leaked)"
@@ -338,7 +335,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         given: "a unit that belongs to another client"
         def otherClientsUnit = txTemplate.execute({
             Unit unit = newUnit(otherClient)
-            unit.setParent(otherClientsUnit)
             unitRepository.save(unit)
         })
 

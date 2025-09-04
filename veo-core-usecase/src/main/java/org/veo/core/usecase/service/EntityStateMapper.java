@@ -95,8 +95,6 @@ public class EntityStateMapper {
     mapNameableProperties(source, target);
 
     target.setDomains(idRefResolver.resolve(source.getDomains()));
-    target.setParent(
-        Optional.ofNullable(source.getParent()).map(idRefResolver::resolve).orElse(null));
   }
 
   public static void mapNameableProperties(Nameable source, Nameable target) {

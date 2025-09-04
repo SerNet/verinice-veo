@@ -293,7 +293,7 @@ abstract class VeoSpec extends Specification {
 
     static UnitData newUnit(Client client, @DelegatesTo(value = Unit.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Unit") Closure init = null) {
-        return factory.createUnit(null, null).tap {
+        return factory.createUnit(null).tap {
             it.client = client
             it.domains = new HashSet<>(client?.domains ?: [])
             VeoSpec.execute(it, init)

@@ -65,7 +65,7 @@ public interface EntityFactory {
 
   Scenario createScenario(String name, Unit unit);
 
-  Unit createUnit(String name, Unit unit);
+  Unit createUnit(String name);
 
   Document createDocument(String name, Unit parent);
 

@@ -18,14 +18,11 @@
 package org.veo.core.usecase.unit;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -33,7 +30,7 @@ import org.veo.core.usecase.UseCase;
 
 /** Reinstantiate a persisted unit object. */
 public class GetUnitsUseCase
-    implements TransactionalUseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
+    implements TransactionalUseCase<UseCase.EmptyInput, GetUnitsUseCase.OutputData> {
 
   private final UnitRepository unitRepository;
 
@@ -46,21 +43,9 @@ public class GetUnitsUseCase
    * unit object was not found in the repository.
    */
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    if (input.parentUuid.isEmpty())
-      return new OutputData(unitRepository.findByUser(userAccessRights));
-    else {
-      UUID parentId = input.parentUuid.get();
-      Unit parentUnit =
-          unitRepository
-              .findById(parentId)
-              .orElseThrow(() -> new NotFoundException(parentId, Unit.class));
-      return new OutputData(unitRepository.findByParent(parentUnit));
-    }
+  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
+    return new OutputData(unitRepository.findByUser(userAccessRights));
   }
-
-  @Valid
-  public record InputData(Optional<UUID> parentUuid) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid List<Unit> units) implements UseCase.OutputData {}

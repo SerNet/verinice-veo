@@ -131,13 +131,9 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Unit createUnit(String name, Unit parent) {
+  public Unit createUnit(String name) {
     Unit unit = new UnitData();
     unit.setName(name);
-    unit.setParent(parent);
-    if (parent != null) {
-      unit.setClient(parent.getClient());
-    }
     unit.setDomains(new HashSet<>());
     return unit;
   }

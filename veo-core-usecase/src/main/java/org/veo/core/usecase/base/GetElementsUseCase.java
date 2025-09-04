@@ -56,7 +56,6 @@ public class GetElementsUseCase
   private final ClientRepository clientRepository;
   private final GenericElementRepository genericRepository;
   private final RepositoryProvider repositoryProvider;
-  private final UnitHierarchyProvider unitHierarchyProvider;
   private final UnitRepository unitRepository;
 
   /**
@@ -97,9 +96,7 @@ public class GetElementsUseCase
         .map(
             condition ->
                 condition.getValues().stream()
-                    .flatMap(
-                        (UUID rootUnitId) ->
-                            unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
+                    .map(unitRepository::getById)
                     .collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
 

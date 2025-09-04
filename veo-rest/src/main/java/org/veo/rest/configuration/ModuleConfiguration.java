@@ -104,7 +104,6 @@ import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
@@ -399,10 +398,9 @@ public class ModuleConfiguration {
       ClientRepository clientRepository,
       GenericElementRepository elementRepository,
       RepositoryProvider repositoryProvider,
-      UnitHierarchyProvider unitHierarchyProvider,
       UnitRepository unitrepo) {
     return new GetElementsUseCase(
-        clientRepository, elementRepository, repositoryProvider, unitHierarchyProvider, unitrepo);
+        clientRepository, elementRepository, repositoryProvider, unitrepo);
   }
 
   @Bean
@@ -622,11 +620,6 @@ public class ModuleConfiguration {
   @Bean
   public IdentifiableFactory identifiableFactory() {
     return new IdentifiableDataFactory();
-  }
-
-  @Bean
-  public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
-    return new UnitHierarchyProvider(unitRepository);
   }
 
   @Bean

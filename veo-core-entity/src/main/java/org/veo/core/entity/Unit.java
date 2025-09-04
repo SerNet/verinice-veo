@@ -54,10 +54,6 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
 
   void setClient(Client aClient);
 
-  Unit getParent();
-
-  void setParent(Unit aParent);
-
   /**
    * Add the given Domain to the collection of domains.
    *
@@ -71,10 +67,6 @@ public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable,
    * @return true if removed
    */
   boolean removeFromDomains(Domain aDomain);
-
-  Set<Unit> getUnits();
-
-  void setUnits(Set<Unit> units);
 
   Set<Domain> getDomains();
 

@@ -34,7 +34,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
     PagingConfiguration<String> pagingConfiguration = Mock()
     RepositoryProvider repositoryProvider = Mock()
 
-    GetElementsUseCase usecase = new GetElementsUseCase(clientRepository, repo, repositoryProvider, unitHierarchyProvider, unitRepository)
+    GetElementsUseCase usecase = new GetElementsUseCase(clientRepository, repo, repositoryProvider, unitRepository)
 
     def setup() {
         repo.query(existingClient) >> query
@@ -81,8 +81,8 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
-        1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * unitRepository.getById(existingUnit.id) >> existingUnit
+        1 * query.whereUnitIn([existingUnit] as Set)
         1 * query.whereSubTypeMatches(input.subType)
         1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
         output.elements.resultPage*.id == [id]

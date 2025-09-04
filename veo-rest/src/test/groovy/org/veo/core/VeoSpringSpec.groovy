@@ -161,21 +161,13 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     UserAccessRightsProvider userAccessRightsProvider
 
-    def deleteUnitRecursively(Unit unit) {
-        // Query the repository since the persistence context was cleared
-        unitDataRepository.findByParentId(unit.id).each {
-            deleteUnitRecursively(it)
-        }
-        deleteUnitUseCase.execute(new UseCase.EntityId(unit.id), NoRestrictionAccessRight.from(unit.client.id.toString()))
-    }
-
     def setup() {
 
         txTemplate.execute {
             TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
             clientDataRepository.findAll().each { client ->
-                unitDataRepository.findByClientId(client.id, false, null).findAll { it.parent == null }.each {
-                    deleteUnitRecursively(it)
+                unitDataRepository.findByClientId(client.id, false, null).each {
+                    deleteUnitUseCase.execute(new UseCase.EntityId(it.id), NoRestrictionAccessRight.from(it.client.idAsString))
                 }
                 // Reload the client since the persistence context was cleared
                 clientRepository.delete(clientRepository.getById(client.id))

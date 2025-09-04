@@ -178,9 +178,7 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Unit instance passes validation"() {
         given : "a valid unit"
-        Unit unit = newUnit(client) {
-            parent = unit
-        }
+        Unit unit = newUnit(client)
 
         when : "it is validated"
         validator.validate(unit)

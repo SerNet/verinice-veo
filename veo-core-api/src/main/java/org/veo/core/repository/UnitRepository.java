@@ -36,8 +36,6 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
   List<Unit> findByClient(Client client);
 
-  List<Unit> findByParent(Unit parent);
-
   Optional<Unit> findByIdFetchClient(UUID id, UserAccessRights user);
 
   default Unit getById(UUID unitId) {

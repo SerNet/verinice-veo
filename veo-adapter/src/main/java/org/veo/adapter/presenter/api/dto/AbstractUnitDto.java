@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
-import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.UnitState;
@@ -48,12 +47,6 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
       description = "The description for the Unit.",
       example = "This is currently the main and only unit for our organization.")
   private String description;
-
-  @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
-  private Set<IdRef<Unit>> units = Collections.emptySet();
-
-  @Schema(implementation = IdRefUnitParent.class)
-  private IdRef<Unit> parent;
 
   @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
   private Set<IdRef<Domain>> domains = Collections.emptySet();

@@ -366,26 +366,6 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.time < 500
     }
 
-    def "SQL performance for selecting subunits of a unit"() {
-        given:
-        createClient()
-        createSubUnits(100)
-
-        when:
-        def units
-        def queryCounts = trackQueryCounts{
-            units = selectSubUnits(unit)
-        }
-
-        then:
-        units.size() == 100
-        queryCounts.delete == 0
-        queryCounts.insert == 0
-        queryCounts.update == 0
-        queryCounts.select == 2
-        queryCounts.time < 500
-    }
-
     def "SQL performance for deleting 1 unit with 100 persons of 2 parts each"() {
         given:
         createClient()
@@ -406,7 +386,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 16
         queryCounts.insert == 10
         queryCounts.update == 0
-        queryCounts.select == 23
+        queryCounts.select == 22
         queryCounts.time < 4000
     }
 
@@ -452,7 +432,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 1 // This count is off - at least 18 events are being inserted. See issue #2266.
         queryCounts.update in [2l, 3l]
-        queryCounts.select == 47
+        queryCounts.select == 46
         queryCounts.time < 500
     }
 
@@ -640,24 +620,6 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             if (withRisks)
                 processDataRepository.findAllWithRisksByIdIn([id])
             result
-        }
-    }
-
-    void createSubUnits(int count) {
-        executeInTransaction {
-            for (i in 0..<count) {
-                def unit = newUnit(client).tap {
-                    name = "unit" + i
-                    parent = unit
-                }
-                unitRepository.save(unit)
-            }
-        }
-    }
-
-    List<Unit> selectSubUnits(Unit owner) {
-        executeInTransaction {
-            unitRepository.findByParent(owner)
         }
     }
 

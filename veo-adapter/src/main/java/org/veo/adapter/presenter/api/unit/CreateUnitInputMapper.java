@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.unit;
 
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -52,11 +50,9 @@ public final class CreateUnitInputMapper {
 
   public static CreateUnitUseCase.InputData map(
       CreateUnitDto dto, String clientId, Integer maxUnits) {
-    Optional<UUID> parentId = Optional.ofNullable(dto.getParent()).map(IdRef::getId);
 
     return new InputData(
         new NameableInputData(dto.getName(), dto.getAbbreviation(), dto.getDescription()),
-        parentId,
         maxUnits,
         dto.getDomains().stream().map(IdRef::getId).collect(Collectors.toSet()));
   }

@@ -521,14 +521,10 @@ public final class EntityToDtoTransformer {
     var target = new FullUnitDto();
     target.setId(source.getId());
     target.setVersion(source.getVersion());
-    target.setUnits(convertSet(source.getUnits(), u -> IdRef.from(u, referenceAssembler)));
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
 
     target.setDomains(convertReferenceSet(source.getDomains()));
-    if (source.getParent() != null) {
-      target.setParent(IdRef.from(source.getParent(), referenceAssembler));
-    }
 
     return target;
   }

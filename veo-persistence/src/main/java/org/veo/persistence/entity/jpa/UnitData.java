@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,8 +29,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -70,27 +67,9 @@ public class UnitData extends IdentifiableVersionedData implements Unit {
   @JoinColumn(name = "client_id")
   private Client client;
 
-  @OneToMany(
-      mappedBy = "parent",
-      fetch = FetchType.LAZY,
-      targetEntity = UnitData.class,
-      cascade = CascadeType.ALL)
-  @Valid
-  private final Set<Unit> units = new HashSet<>();
-
-  @ManyToOne(targetEntity = UnitData.class)
-  private Unit parent;
-
   @Column(name = "domains")
   @ManyToMany(targetEntity = DomainData.class)
   private Set<Domain> domains = new HashSet<>();
-
-  @Override
-  public void setUnits(Set<Unit> units) {
-    units.forEach(u -> u.setParent(this));
-    this.units.clear();
-    this.units.addAll(units);
-  }
 
   @Override
   public void setDomains(Set<Domain> newDomains) {

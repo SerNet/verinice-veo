@@ -251,74 +251,36 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve all assets for a unit recursively"() {
-        given: "A sub unit and a sub sub unit with one asset each"
-        def subUnit = unitRepository.save(newUnit(unit.client) {
-            parent = unit
-        })
-        def subSubUnit = unitRepository.save(newUnit(unit.client) {
-            parent = subUnit
-        })
-
-        assetRepository.save(newAsset(subUnit) {
-            name = "asset 0"
-        })
-        assetRepository.save(newAsset(subSubUnit) {
-            name = "asset 1"
-        })
-
-        when: "all assets for the root unit are queried"
-        def result = parseJson(get("/assets?unit=${unit.idAsString}"))
-
-        then: "both assets from the unit's hierarchy are returned"
-        result.items*.name.sort() == ['asset 0', 'asset 1']
-    }
-
-    @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit filtering by displayName"() {
-        given: "A sub unit and a sub sub unit with one asset each"
-        def subUnit = unitRepository.save(newUnit(unit.client) {
-            parent = unit
-        })
-        def subSubUnit = unitRepository.save(newUnit(unit.client) {
-            parent = subUnit
-        })
-
-        assetRepository.save(newAsset( subUnit) {
+        given: "A unit with two assets"
+        assetRepository.save(newAsset(unit) {
             name = "asset 0"
         })
-        assetRepository.save(newAsset( subSubUnit) {
+        assetRepository.save(newAsset(unit) {
             name = "asset 1"
         })
 
-        when: "all assets for the root unit matching the filter"
+        when: "all assets for the unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.idAsString}&displayName=sset 1"))
 
-        then: "only the matching asset from the unit's hierarchy is returned"
+        then: "only the matching asset is returned"
         result.items*.name == ["asset 1"]
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit filtering by displayName with special characters"() {
-        given: "A sub unit and a sub sub unit with one asset each"
-        def subUnit = unitRepository.save(newUnit(unit.client) {
-            parent = unit
-        })
-        def subSubUnit = unitRepository.save(newUnit(unit.client) {
-            parent = subUnit
-        })
-
-        assetRepository.save(newAsset( subUnit) {
+        given: "A unit with two assets"
+        assetRepository.save(newAsset(unit) {
             name = "Fußballverein Äächen 0"
         })
-        assetRepository.save(newAsset( subSubUnit) {
+        assetRepository.save(newAsset(unit) {
             name = "Fußballverein Äächen 1"
         })
 
-        when: "all assets for the root unit matching the filter"
+        when: "all assets for the unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.idAsString}&displayName=ballverein Äächen 1"))
 
-        then: "only the matching asset from the unit's hierarchy is returned"
+        then: "only the matching asset is returned"
         result.items*.name == ["Fußballverein Äächen 1"]
     }
 

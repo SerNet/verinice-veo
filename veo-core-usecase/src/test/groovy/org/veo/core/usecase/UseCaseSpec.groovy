@@ -28,7 +28,6 @@ import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.base.UnitHierarchyProvider
 import org.veo.core.usecase.service.RefResolverFactory
 import org.veo.rest.security.NoRestrictionAccessRight
 
@@ -44,9 +43,7 @@ abstract class UseCaseSpec extends Specification {
     Client anotherClient
     Unit existingUnit
     Domain existingDomain
-    Set<Unit> existingUnitHierarchyMembers
     ClientRepository clientRepository = Mock()
-    UnitHierarchyProvider unitHierarchyProvider = Mock()
     UnitRepository unitRepository = Mock()
     RepositoryProvider repositoryProvider = Mock()
     EntityFactory entityFactory = Mock()
@@ -85,12 +82,6 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.id >> id
         existingUnit.getModelInterface() >> Unit
         existingUnit.getVersion() >> 0
-
-        existingUnitHierarchyMembers = [
-            existingUnit,
-            Mock(Unit),
-            Mock(Unit)
-        ]
 
         client.createUnit(_)>>existingUnit
     }
