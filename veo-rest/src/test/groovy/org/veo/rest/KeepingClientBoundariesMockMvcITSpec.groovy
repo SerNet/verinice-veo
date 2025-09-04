@@ -159,7 +159,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Asset.PLURAL_TERM, otherClientsAsset.idAsString)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -173,7 +173,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Control.PLURAL_TERM, otherClientsControl.idAsString)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -187,7 +187,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Person.PLURAL_TERM, otherClientsPerson.idAsString)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -201,7 +201,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         putEntityToAnotherUnit("/domains/$otherClientsDomainId/" + Process.PLURAL_TERM, otherClientsProcess.idAsString)
 
         then: "an exception is thrown"
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

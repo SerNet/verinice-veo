@@ -56,7 +56,6 @@ import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,7 +71,6 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.inspection.Finding;
@@ -83,7 +81,6 @@ import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -121,7 +118,6 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @GetMapping
   @Operation(summary = "Loads all persons")
   public @Valid Future<PageDto<FullPersonDto>> getPersons(
-      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -156,11 +152,9 @@ public class PersonController extends AbstractCompositeElementController<Person,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    Client client = getClient(user);
 
     return getElements(
         QueryInputMapper.map(
-            client,
             unitUuid,
             null,
             displayName,
@@ -191,12 +185,11 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(UUID_PARAM_SPEC)
   public Future<ResponseEntity<FullPersonDto>> getElement(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,
       WebRequest request) {
-    return super.getElement(auth, uuid, request);
+    return super.getElement(uuid, request);
   }
 
   @Override
@@ -245,10 +238,9 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Valid @RequestBody FullPersonDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(user, element, domainId);
+    return super.evaluate(element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted person")
@@ -262,7 +254,6 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,

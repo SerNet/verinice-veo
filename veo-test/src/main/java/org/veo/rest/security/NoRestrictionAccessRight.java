@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public final class NoRestrictionAccessRight implements UserAccessRights {
   private final String clientId;
+  private final Integer maxUnits;
 
   @Override
   public void checkClient(ClientOwned id) {}
@@ -60,11 +61,20 @@ public final class NoRestrictionAccessRight implements UserAccessRights {
   }
 
   public static NoRestrictionAccessRight from(String clientId) {
-    return new NoRestrictionAccessRight(clientId);
+    return new NoRestrictionAccessRight(clientId, 0);
+  }
+
+  public static NoRestrictionAccessRight from(String clientId, Integer maxUnits) {
+    return new NoRestrictionAccessRight(clientId, maxUnits);
   }
 
   @Override
   public String getUsername() {
     return "System";
+  }
+
+  @Override
+  public Integer getMaxUnits() {
+    return maxUnits;
   }
 }

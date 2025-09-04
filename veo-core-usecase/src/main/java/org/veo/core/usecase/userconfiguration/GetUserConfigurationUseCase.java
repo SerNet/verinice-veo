@@ -18,7 +18,6 @@
 package org.veo.core.usecase.userconfiguration;
 
 import java.util.Map;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -40,13 +39,12 @@ public class GetUserConfigurationUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     UserConfiguration userConfiguration =
         userConfigurationRepository.getUserConfiguration(
-            input.clientId, input.userName, input.applicationId);
+            userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId);
     return new OutputData(userConfiguration.getConfiguration());
   }
 
   @Valid
-  public record InputData(UUID clientId, String userName, String applicationId)
-      implements UseCase.InputData {}
+  public record InputData(String applicationId) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(Map<String, Object> configuration) implements UseCase.OutputData {}

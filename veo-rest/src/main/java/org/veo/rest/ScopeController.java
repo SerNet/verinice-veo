@@ -80,7 +80,6 @@ import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scope;
@@ -105,7 +104,6 @@ import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -173,7 +171,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @ApiResponse(responseCode = "200", description = "Scopes loaded")
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<PageDto<FullScopeDto>> getScopes(
-      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -211,11 +208,9 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
-    Client client = getClient(user);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     return getElements(
         QueryInputMapper.map(
-                client,
                 unitUuid,
                 null,
                 displayName,
@@ -356,11 +351,10 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull ScopeRiskDto dto, UUID scopeId) {
+      @Valid @NotNull ScopeRiskDto dto, UUID scopeId) {
 
     var input =
         new CreateScopeRiskUseCase.InputData(
-            getClient(user.getClientId()),
             scopeId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -391,10 +385,9 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, UUID scopeId, UUID scenarioId) {
+      UUID scopeId, UUID scenarioId) {
 
-    Client client = getClient(user.getClientId());
-    var input = new DeleteRiskUseCase.InputData(user, Scope.class, client, scopeId, scenarioId);
+    var input = new DeleteRiskUseCase.InputData(Scope.class, scopeId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -431,20 +424,16 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
-      @Valid @RequestBody FullScopeDto dto,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(user, dto, domainId);
+      @Valid @RequestBody FullScopeDto dto, @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(dto, domainId);
   }
 
   @Override
   public CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
-      ApplicationUser user, UUID scopeId, UUID scenarioId, ScopeRiskDto dto, String eTag) {
+      UUID scopeId, UUID scenarioId, ScopeRiskDto dto, String eTag) {
 
-    var client = getClient(user.getClientId());
     var input =
         new UpdateScopeRiskUseCase.InputData(
-            client,
             scopeId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -476,16 +465,10 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
-      String eTag,
-      ApplicationUser user,
-      UUID riskAffectedId,
-      UUID controlId,
-      RequirementImplementationDto dto) {
+      String eTag, UUID riskAffectedId, UUID controlId, RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(
-            user,
-            getClient(user),
             TypedId.from(riskAffectedId, Scope.class),
             TypedId.from(controlId, Control.class),
             dto,
@@ -495,7 +478,6 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      ApplicationUser user,
       UUID riskAffectedId,
       UUID controlId,
       Integer pageSize,
@@ -505,14 +487,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         GetRequirementImplementationsByControlImplementationInputMapper.map(
-            getClient(user),
-            Scope.class,
-            riskAffectedId,
-            controlId,
-            pageSize,
-            pageNumber,
-            sortColumn,
-            sortOrder),
+            Scope.class, riskAffectedId, controlId, pageSize, pageNumber, sortColumn, sortOrder),
         out ->
             PagingMapper.toPage(
                 out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));

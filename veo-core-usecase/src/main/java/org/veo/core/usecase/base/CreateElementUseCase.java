@@ -63,14 +63,18 @@ public class CreateElementUseCase<TEntity extends Element>
       InputData<TEntity> input, UserAccessRights userAccessRights) {
 
     var state = input.newEntity;
-    input.user.checkCreateElementWriteAccess(state);
+    userAccessRights.checkCreateElementWriteAccess(state);
     Class<TEntity> entityType = state.getModelInterface();
     var entity = identifiableFactory.create(entityType);
-    entityStateMapper.mapState(
-        state, entity, false, refResolverFactory.db(input.authenticatedClient));
+    var client =
+        repositoryProvider
+            .getRepositoryFor(Client.class)
+            .findById(userAccessRights.clientId())
+            .get();
+    entityStateMapper.mapState(state, entity, false, refResolverFactory.db(client));
     DomainSensitiveElementValidator.validate(entity);
-    designatorService.assignDesignator(entity, input.authenticatedClient);
-    addToScopes(entity, input.scopeIds, input.authenticatedClient);
+    designatorService.assignDesignator(entity, client);
+    addToScopes(entity, input.scopeIds, client);
     evaluateDecisions(entity);
     entity = repositoryProvider.getElementRepositoryFor(state.getModelInterface()).save(entity);
     if (Process.class.equals(entityType)
@@ -115,11 +119,7 @@ public class CreateElementUseCase<TEntity extends Element>
 
   @Valid
   public record InputData<TEntity extends Element>(
-      ElementState<TEntity> newEntity,
-      Client authenticatedClient,
-      Set<UUID> scopeIds,
-      UserAccessRights user)
-      implements UseCase.InputData {}
+      ElementState<TEntity> newEntity, Set<UUID> scopeIds) implements UseCase.InputData {}
 
   @Valid
   public record OutputData<TEntity>(@Valid TEntity entity) implements UseCase.OutputData {}

@@ -675,8 +675,10 @@ public class ModuleConfiguration {
   public CreateDomainUseCase createDomainUseCase(
       EntityFactory entityFactory,
       DomainRepository domainRepository,
-      DomainTemplateRepository domainTemplateRepository) {
-    return new CreateDomainUseCase(entityFactory, domainRepository, domainTemplateRepository);
+      DomainTemplateRepository domainTemplateRepository,
+      ClientRepository clientRepository) {
+    return new CreateDomainUseCase(
+        entityFactory, domainRepository, domainTemplateRepository, clientRepository);
   }
 
   @Bean

@@ -19,8 +19,8 @@ package org.veo.core.usecase.domain
 
 import org.veo.core.entity.Domain
 import org.veo.core.repository.DomainRepository
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
 
 class GetDomainsUseCaseSpec extends UseCaseSpec {
 
@@ -42,7 +42,7 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
         domainRepository.findActiveDomainsWithProfilesAndRiskDefinitions(existingClient.id) >> [existingDomain, domain]
 
         when:
-        def output = usecase.execute(new InputData(existingClient), noRestrictionExistingClient)
+        def output = usecase.execute(UseCase.EmptyInput.INSTANCE, noRestrictionExistingClient)
 
         then:
         output.objects ==~ [existingDomain, domain]

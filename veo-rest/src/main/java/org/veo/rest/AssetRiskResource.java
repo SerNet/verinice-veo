@@ -42,10 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -86,9 +84,7 @@ public interface AssetRiskResource {
   @PostMapping(value = RELPATH)
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Risk created")})
   CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody AssetRiskDto dto,
-      @PathVariable UUID assetId);
+      @Valid @NotNull @RequestBody AssetRiskDto dto, @PathVariable UUID assetId);
 
   @PutMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Updates a risk")
@@ -98,7 +94,6 @@ public interface AssetRiskResource {
   })
   @Valid
   CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
-      @Parameter(hidden = true) ApplicationUser user,
       @PathVariable UUID assetId,
       @PathVariable UUID scenarioId,
       @Valid @NotNull @RequestBody AssetRiskDto assetDto,
@@ -112,7 +107,5 @@ public interface AssetRiskResource {
     @ApiResponse(responseCode = "404", description = "Risk not found")
   })
   CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable UUID assetId,
-      @PathVariable UUID scenarioId);
+      @PathVariable UUID assetId, @PathVariable UUID scenarioId);
 }

@@ -36,12 +36,11 @@ public class GetInspectionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
+    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
     return new OutputData(domain.getInspection(input.inspectionRef));
   }
 
-  public record InputData(UUID authenticatedClientId, UUID domainId, String inspectionRef)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, String inspectionRef) implements UseCase.InputData {}
 
   public record OutputData(Inspection inspection) implements UseCase.OutputData {}
 }

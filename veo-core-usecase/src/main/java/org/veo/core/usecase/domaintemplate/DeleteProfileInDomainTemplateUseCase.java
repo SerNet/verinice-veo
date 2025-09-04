@@ -22,7 +22,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -53,6 +52,5 @@ public class DeleteProfileInDomainTemplateUseCase
   }
 
   @Valid
-  public record InputData(Client client, UUID domainTemplateId, UUID profileId)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainTemplateId, UUID profileId) implements UseCase.InputData {}
 }

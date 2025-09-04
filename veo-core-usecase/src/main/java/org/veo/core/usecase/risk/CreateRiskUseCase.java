@@ -70,7 +70,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     if (domains.size() != input.domainRefs().size()) {
       throw new UnprocessableDataException("Unable to resolve all domain references");
     }
-
+    checkDomainOwnership(riskAffected.getOwningClient().get(), domains);
     // Validate security constraints:
     userAccessRights.checkElementWriteAccess(riskAffected);
 
@@ -79,7 +79,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     boolean newRiskCreated = false;
 
     if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
-      designatorService.assignDesignator(risk, input.authenticatedClient());
+      designatorService.assignDesignator(risk, riskAffected.getOwningClient().get());
       newRiskCreated = true;
     }
 

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.userconfiguration;
 
-import java.util.UUID;
-
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
@@ -39,7 +37,7 @@ public class DeleteUserConfigurationUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     UserConfiguration userConfiguration =
         userConfigurationRepository.getUserConfiguration(
-            input.clientId, input.userName, input.applicationId);
+            userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId);
     userConfigurationRepository.delete(userConfiguration);
     return new OutputData(userConfiguration.getApplicationId());
   }
@@ -50,8 +48,7 @@ public class DeleteUserConfigurationUseCase
   }
 
   @Valid
-  public record InputData(UUID clientId, String userName, String applicationId)
-      implements UseCase.InputData {}
+  public record InputData(String applicationId) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(String applicationId) implements UseCase.OutputData {}

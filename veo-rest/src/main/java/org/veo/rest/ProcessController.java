@@ -78,7 +78,6 @@ import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Process;
@@ -102,7 +101,6 @@ import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -239,7 +237,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @GetMapping
   @Operation(summary = "Loads all processes")
   public @Valid Future<PageDto<FullProcessDto>> getProcesses(
-      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -277,12 +274,10 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
-    Client client = getClient(user);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
     return getElements(
         QueryInputMapper.map(
-                client,
                 parentUuid,
                 null,
                 displayName,
@@ -316,10 +311,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Valid @RequestBody FullProcessDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(user, element, domainId);
+    return super.evaluate(element, domainId);
   }
 
   @Override
@@ -364,10 +358,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull ProcessRiskDto dto, UUID processId) {
+      @Valid @NotNull ProcessRiskDto dto, UUID processId) {
     var input =
         new CreateProcessRiskUseCase.InputData(
-            getClient(user.getClientId()),
             processId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -398,10 +391,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, UUID processId, UUID scenarioId) {
+      UUID processId, UUID scenarioId) {
 
-    Client client = getClient(user.getClientId());
-    var input = new DeleteRiskUseCase.InputData(user, Process.class, client, processId, scenarioId);
+    var input = new DeleteRiskUseCase.InputData(Process.class, processId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -409,11 +401,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
-      ApplicationUser user, UUID processId, UUID scenarioId, ProcessRiskDto dto, String eTag) {
-    var client = getClient(user.getClientId());
+      UUID processId, UUID scenarioId, ProcessRiskDto dto, String eTag) {
     var input =
         new UpdateProcessRiskUseCase.InputData(
-            client,
             processId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -463,16 +453,10 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
-      String eTag,
-      ApplicationUser user,
-      UUID riskAffectedId,
-      UUID controlId,
-      RequirementImplementationDto dto) {
+      String eTag, UUID riskAffectedId, UUID controlId, RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(
-            user,
-            getClient(user),
             TypedId.from(riskAffectedId, Process.class),
             TypedId.from(controlId, Control.class),
             dto,
@@ -482,7 +466,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      ApplicationUser user,
       UUID riskAffectedId,
       UUID controlId,
       Integer pageSize,
@@ -492,14 +475,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         GetRequirementImplementationsByControlImplementationInputMapper.map(
-            getClient(user),
-            Process.class,
-            riskAffectedId,
-            controlId,
-            pageSize,
-            pageNumber,
-            sortColumn,
-            sortOrder),
+            Process.class, riskAffectedId, controlId, pageSize, pageNumber, sortColumn, sortOrder),
         out ->
             PagingMapper.toPage(
                 out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));

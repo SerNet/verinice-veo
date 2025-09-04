@@ -25,7 +25,6 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
@@ -67,7 +66,7 @@ public class GetRequirementImplementationsByControlImplementationUseCase
             .map(ReqImplRef::getUUID)
             .collect(Collectors.toSet());
 
-    var query = requirementImplementationRepository.query(input.authenticatedClient);
+    var query = requirementImplementationRepository.query(owner.getOwningClient().get());
     var domain = input.domain == null ? null : getEntity(input.domain, userAccessRights);
     if (domain != null) {
       if (!domain.isActive()) {
@@ -89,7 +88,6 @@ public class GetRequirementImplementationsByControlImplementationUseCase
 
   @Valid
   public record InputData(
-      @NotNull Client authenticatedClient,
       @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
       @NotNull ITypedId<Control> control,
       @Nullable ITypedId<Domain> domain,
@@ -97,11 +95,10 @@ public class GetRequirementImplementationsByControlImplementationUseCase
       implements UseCase.InputData {
 
     public InputData(
-        @NotNull Client authenticatedClient,
         @NotNull ITypedId<? extends RiskAffected<?, ?>> owner,
         @NotNull ITypedId<Control> control,
         @NotNull PagingConfiguration<String> pagingConfiguration) {
-      this(authenticatedClient, owner, control, null, pagingConfiguration);
+      this(owner, control, null, pagingConfiguration);
     }
   }
 

@@ -60,7 +60,6 @@ import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,10 +89,8 @@ import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -111,7 +108,6 @@ import lombok.RequiredArgsConstructor;
 public class ScenarioInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scenario.PLURAL_TERM;
-  private final ClientLookup clientLookup;
   private final GetScenarioUseCase getScenarioUseCase;
   private final CreateElementUseCase<Scenario> createUseCase;
   private final UpdateScenarioInDomainUseCase updateUseCase;
@@ -150,7 +146,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @GetMapping
   @Operation(summary = "Loads all scenarios in a domain")
   public @Valid Future<PageDto<FullScenarioInDomainDto>> getScenarios(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -191,7 +186,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(user),
             unitUuid,
             domainId,
             displayName,
@@ -224,7 +218,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullScenarioInDomainDto>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -252,14 +245,11 @@ public class ScenarioInDomainController implements ElementInDomainResource {
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder,
-      WebRequest request) {
-    var client = clientLookup.getClient(user);
-    elementService.ensureElementExists(domainId, uuid, getScenarioUseCase, user);
+          String sortOrder) {
+    elementService.ensureElementExists(domainId, uuid, getScenarioUseCase);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            client,
             null,
             domainId,
             null,
@@ -288,7 +278,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       headers = @Header(name = "Location"))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -296,7 +285,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<UUID> scopeIds) {
-    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
+    return elementService.createElement(domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing scenario with a domain")
@@ -305,7 +294,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Scenario or domain not found")
   @ApiResponse(responseCode = "409", description = "Scenario already associated with domain")
   public CompletableFuture<ResponseEntity<FullScenarioInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -314,7 +302,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        user, domainId, uuid, dto, Scenario.class, entityToDtoTransformer::transformScenario2Dto);
+        domainId, uuid, dto, Scenario.class, entityToDtoTransformer::transformScenario2Dto);
   }
 
   @Operation(summary = "Updates a scenario from the viewpoint of a domain")
@@ -324,7 +312,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Scenario not found or scenario not associated with domain")
   public CompletableFuture<ResponseEntity<FullScenarioInDomainDto>> updateElement(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -335,13 +322,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody FullScenarioInDomainDto dto) {
     return elementService.update(
-        user,
-        domainId,
-        eTag,
-        uuid,
-        dto,
-        updateUseCase,
-        entityToDtoTransformer::transformScenario2Dto);
+        domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformScenario2Dto);
   }
 
   @Operation(summary = "Retrieve inbound and outbound links for a scenario in a domain")
@@ -351,7 +332,6 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Scenario or domain not found or scenario not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -378,7 +358,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        user, domainId, uuid, Scenario.class, pageSize, pageNumber, sortColumn, sortOrder);
+        domainId, uuid, Scenario.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing scenario")
@@ -413,18 +393,16 @@ public class ScenarioInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullScenarioInDomainDto dto) {
-    return elementService.evaluate(user, dto, domainId);
+    return elementService.evaluate(dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific scenario JSON schema")
   @Override
-  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, ElementType.SCENARIO);
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
+    return elementService.getJsonSchema(domainId, ElementType.SCENARIO);
   }
 }

@@ -25,9 +25,7 @@ import java.util.function.Function;
 
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -40,9 +38,7 @@ import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.rest.security.ApplicationUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,19 +53,15 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   private final InspectElementUseCase inspectElementUseCase;
   private final GetElementsUseCase getElementsUseCase;
 
-  @Autowired private TransactionalRunner runner;
-
   /**
    * Load the element for the given id. The result is provided asynchronously by the executed use
    * case.
    *
-   * @param auth the authentication in whose context the element is loaded
    * @param uuid an ID in the UUID format as specified in RFC 4122
    * @param request the corresponding web request
    * @return the element for the given ID if one was found. Null otherwise.
    */
-  public @Valid Future<ResponseEntity<E>> getElement(
-      Authentication auth, UUID uuid, WebRequest request) {
+  public @Valid Future<ResponseEntity<E>> getElement(UUID uuid, WebRequest request) {
     if (getEtag(elementType.getType(), uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
@@ -95,10 +87,10 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      ApplicationUser user, @Valid E dto, String domainId) {
+      @Valid E dto, String domainId) {
     return useCaseInteractor.execute(
         evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(getClient(user), UUID.fromString(domainId), dto),
+        new EvaluateElementUseCase.InputData(UUID.fromString(domainId), dto),
         output -> ResponseEntity.ok().body(output));
   }
 
@@ -108,13 +100,6 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
         inspectElementUseCase,
         new InspectElementUseCase.InputData(elementType, elementId, domainId),
         output -> ResponseEntity.ok().body(output.findings()));
-  }
-
-  @SuppressWarnings("unchecked")
-  protected ResponseEntity<E> toResponseEntity(T entity) {
-    return ResponseEntity.ok()
-        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion()))
-        .body((E) entityToDtoTransformer.transform2Dto(entity, false));
   }
 
   protected abstract E entity2Dto(T entity);

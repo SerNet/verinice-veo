@@ -24,11 +24,9 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -49,12 +47,8 @@ public class UpdateElementTypeDefinitionUseCase
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
-            .findById(input.domainId)
+            .findById(input.domainId, userAccessRights.clientId())
             .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
-    Client client = input.authenticatedClient;
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -91,7 +85,6 @@ public class UpdateElementTypeDefinitionUseCase
 
   @Valid
   public record InputData(
-      @Valid Client authenticatedClient,
       UUID domainId,
       ElementType elementType,
       ElementTypeDefinitionState elementTypeDefinition,

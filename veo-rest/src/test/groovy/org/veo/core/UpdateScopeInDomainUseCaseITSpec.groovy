@@ -91,7 +91,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
         def etag = ETag.from(scope)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag), NoRestrictionAccessRight.from(client.idAsString))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, etag), NoRestrictionAccessRight.from(client.idAsString))
         }
 
         scope = executeInTransaction {
@@ -132,7 +132,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
         def etag = ETag.from(scope)
         executeInTransaction {
-            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, client, etag), NoRestrictionAccessRight.from(client.idAsString))
+            useCase.execute(new UpdateElementInDomainUseCase.InputData(scope.id, dto, domain.id, etag), NoRestrictionAccessRight.from(client.idAsString))
         }
 
         scope = executeInTransaction {

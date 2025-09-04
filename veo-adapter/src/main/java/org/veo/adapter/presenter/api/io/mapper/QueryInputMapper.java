@@ -26,8 +26,6 @@ import java.util.UUID;
 
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
-import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
@@ -42,7 +40,6 @@ import lombok.NoArgsConstructor;
 public class QueryInputMapper {
 
   public static GetElementsUseCase.InputData map(
-      Client client,
       UUID unitUuid,
       UUID domainId,
       String displayName,
@@ -80,11 +77,9 @@ public class QueryInputMapper {
   }
 
   public static GetElementsUseCase.InputData map(
-      Client client,
       UUID domainId,
       UUID scopeId,
       Set<ElementType> elementTypes,
-      UserAccessRights userRights,
       PagingConfiguration<String> config) {
     return GetElementsUseCase.InputData.builder()
         .elementTypes(whereIn(elementTypes))
@@ -95,7 +90,6 @@ public class QueryInputMapper {
   }
 
   public static QueryCatalogItemsUseCase.InputData map(
-      Client client,
       UUID domainId,
       ElementType elementType,
       String subType,
@@ -104,7 +98,6 @@ public class QueryInputMapper {
       String description,
       PagingConfiguration<String> config) {
     return new QueryCatalogItemsUseCase.InputData(
-        client.getId(),
         domainId,
         config,
         whereEqualsOrNull(elementType),

@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -57,8 +56,7 @@ public class ApplyProfileIncarnationDescriptionUseCase
             .orElseThrow(() -> new NotFoundException(input.unitId(), Unit.class));
     userAccessRights.checkElementWriteAccess(unit);
     return new OutputData(
-        applier.incarnate(
-            unit, input.descriptions, profileItemRepository, input.authenticatedClient));
+        applier.incarnate(unit, input.descriptions, profileItemRepository, unit.getClient()));
   }
 
   @Override
@@ -68,7 +66,6 @@ public class ApplyProfileIncarnationDescriptionUseCase
 
   @Valid
   public record InputData(
-      Client authenticatedClient,
       @NotNull UUID unitId,
       @NotNull List<TemplateItemIncarnationDescriptionState<ProfileItem, Profile>> descriptions)
       implements UseCase.InputData {}

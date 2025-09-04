@@ -18,7 +18,6 @@
 package org.veo.core.usecase.domain;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.BreakingChange;
@@ -32,22 +31,19 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GetBreakingChangesUseCase
-    implements TransactionalUseCase<
-        GetBreakingChangesUseCase.InputData, GetBreakingChangesUseCase.OutputData> {
+    implements TransactionalUseCase<UseCase.EntityId, GetBreakingChangesUseCase.OutputData> {
 
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, input.authenticatedClientId);
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    var domain = repository.getActiveById(input.id(), userAccessRights.clientId());
     var template = domain.getDomainTemplate();
     if (template == null) {
-      throw new NotFoundException("No domain template found for domain %s", input.domainId);
+      throw new NotFoundException("No domain template found for domain %s", input.id());
     }
     return new OutputData(DomainDiff.determineBreakingChanges(domain, template));
   }
-
-  public record InputData(UUID authenticatedClientId, UUID domainId) implements UseCase.InputData {}
 
   public record OutputData(List<BreakingChange> breakingChanges) implements UseCase.OutputData {}
 }

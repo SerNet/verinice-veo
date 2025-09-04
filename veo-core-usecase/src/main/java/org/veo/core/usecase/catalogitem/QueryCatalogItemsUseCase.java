@@ -46,7 +46,7 @@ public class QueryCatalogItemsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.clientId);
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     var query = catalogItemRepository.query(domain);
     Optional.ofNullable(input.elementTypes).ifPresent(query::whereElementTypeMatches);
     Optional.ofNullable(input.subTypes).ifPresent(query::whereSubTypeMatches);
@@ -58,7 +58,6 @@ public class QueryCatalogItemsUseCase
   }
 
   public record InputData(
-      @NotNull UUID clientId,
       @NotNull UUID domainId,
       @NotNull PagingConfiguration<String> pagingConfiguration,
       QueryCondition<ElementType> elementTypes,

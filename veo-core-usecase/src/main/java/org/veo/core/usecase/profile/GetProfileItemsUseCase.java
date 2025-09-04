@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -33,30 +32,27 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
-public class GetProfileItemsUseCase extends AbstractProfileUseCase
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class GetProfileItemsUseCase
     implements TransactionalUseCase<
         GetProfileItemsUseCase.InputData, GetProfileItemsUseCase.OutputData> {
 
-  public GetProfileItemsUseCase(ProfileRepository profileRepo) {
-    super(profileRepo);
-  }
+  private final ProfileRepository profileRepo;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     Profile profile =
         profileRepo
-            .findById(input.authenticatedClient.getId(), input.profile.getId())
+            .findById(userAccessRights.clientId(), input.profile.getId())
             .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
 
     return new OutputData(profile.getItems());
   }
 
   @Valid
-  public record InputData(
-      @NotNull Client authenticatedClient,
-      @NotNull ITypedId<Domain> domain,
-      @NotNull ITypedId<Profile> profile)
+  public record InputData(@NotNull ITypedId<Domain> domain, @NotNull ITypedId<Profile> profile)
       implements UseCase.InputData {}
 
   @Valid

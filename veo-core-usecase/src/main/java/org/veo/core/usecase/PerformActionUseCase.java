@@ -80,9 +80,10 @@ public class PerformActionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.user.clientId());
-    var element = genericElementRepository.getById(input.elementId, input.elementType, input.user);
-    input.user.checkElementWriteAccess(element);
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var element =
+        genericElementRepository.getById(input.elementId, input.elementType, userAccessRights);
+    userAccessRights.checkElementWriteAccess(element);
     var action =
         domain
             .findAction(input.actionId)
@@ -223,8 +224,7 @@ public class PerformActionUseCase
       @NotNull UUID domainId,
       @NotNull UUID elementId,
       @NotNull Class<? extends Element> elementType,
-      @NotNull String actionId,
-      @NotNull UserAccessRights user)
+      @NotNull String actionId)
       implements UseCase.InputData {}
 
   public record OutputData(@NotNull ActionResult result) implements UseCase.OutputData {}

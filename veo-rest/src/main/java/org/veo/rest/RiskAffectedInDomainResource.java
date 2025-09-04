@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,7 +56,6 @@ public interface RiskAffectedInDomainResource {
       description =
           "Risk-affected element or control not found, or control not implemented or not associated with domain")
   Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID domainId,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID riskAffectedId,
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID controlId,

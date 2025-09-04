@@ -37,7 +37,6 @@ import jakarta.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,15 +65,12 @@ import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
-import org.veo.core.entity.Versioned;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
@@ -104,7 +100,6 @@ import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -157,11 +152,10 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Domain created")
   @ApiResponse(responseCode = "409", description = "Templates with name already exist")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
-      Authentication auth, @Valid @RequestBody CreateDomainDto domainDto) {
+      @Valid @RequestBody CreateDomainDto domainDto) {
     return useCaseInteractor.execute(
         createDomainUseCase,
         new CreateDomainUseCase.InputData(
-            getAuthenticatedClient(auth),
             domainDto.getName(),
             domainDto.getAbbreviation(),
             domainDto.getDescription(),
@@ -178,7 +172,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "409", description = "Domain still in use")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDomain(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID id) {
@@ -190,15 +183,12 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Updates an element type definition in a domain")
   @ApiResponse(responseCode = "204", description = "Element type definition updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
-      Authentication auth,
       @PathVariable UUID id,
       @PathVariable ElementType type,
       @Valid @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,
-        new UpdateElementTypeDefinitionUseCase.InputData(
-            client, id, type, elementTypeDefinitionDto, false),
+        new UpdateElementTypeDefinitionUseCase.InputData(id, type, elementTypeDefinitionDto, false),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -210,17 +200,13 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
   // TODO #3042: remove this when we remove support for JSON schema
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
-      Authentication auth,
-      @PathVariable UUID id,
-      @PathVariable ElementType type,
-      @RequestBody JsonNode schemaNode) {
-    Client client = getAuthenticatedClient(auth);
+      @PathVariable UUID id, @PathVariable ElementType type, @RequestBody JsonNode schemaNode) {
     try {
       ElementTypeDefinition typeDefinition =
           objectSchemaParser.parseTypeDefinitionFromObjectSchema(type, schemaNode);
       return useCaseInteractor.execute(
           updateElementTypeDefinitionUseCase,
-          new UpdateElementTypeDefinitionUseCase.InputData(client, id, type, typeDefinition, true),
+          new UpdateElementTypeDefinitionUseCase.InputData(id, type, typeDefinition, true),
           out -> ResponseEntity.noContent().build());
     } catch (JsonProcessingException e) {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
@@ -234,8 +220,6 @@ public class ContentCreationController extends AbstractVeoController {
           "Update the incarnation config for this domain. This determines the default parameters when incarnating catalog items.")
   @ApiResponse(responseCode = "204", description = "Incarnation config updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveIncarnationConfiguration(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -250,7 +234,6 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Update domain-specific configuration related to control implementations.")
   @ApiResponse(responseCode = "204", description = "Control implementations config updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveControlImplementationConfiguration(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -269,7 +252,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Decision created")
   @ApiResponse(responseCode = "200", description = "Decision updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDecision(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -295,7 +277,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Decision deleted")
   @ApiResponse(responseCode = "404", description = "Domain or decision not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDecision(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -316,7 +297,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Inspection created")
   @ApiResponse(responseCode = "200", description = "Inspection updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDecision(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -344,7 +324,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Inspection deleted")
   @ApiResponse(responseCode = "404", description = "Domain or inspection not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteInspection(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -369,7 +348,6 @@ public class ContentCreationController extends AbstractVeoController {
       responseCode = "422",
       description = "Requested risk definition modification is not supported yet")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveRiskDefinition(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -385,7 +363,6 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveRiskDefinitionUseCase,
         new SaveRiskDefinitionUseCase.InputData(
-            UUID.fromString(user.getClientId()),
             domainId,
             riskDefinitionId,
             riskDefinition,
@@ -416,7 +393,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Risk definition deleted")
   @ApiResponse(responseCode = "404", description = "Domain or risk definition not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRiskDefinition(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -437,15 +413,13 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Catalog items created")
   @ApiResponse(responseCode = "404", description = "Domain or unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createCatalogForDomain(
-      Authentication auth,
       @PathVariable UUID domainId,
       @Parameter(description = "The id of the unit containing the catalog elements.")
           @RequestParam(name = UNIT_PARAM)
           UUID unitId) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         createCatalogForDomainUseCase,
-        new CreateCatalogFromUnitUseCase.InputData(domainId, client, unitId),
+        new CreateCatalogFromUnitUseCase.InputData(domainId, unitId),
         out -> RestApiResponse.noContent());
   }
 
@@ -453,18 +427,15 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Creates a profile for a domain")
   @ApiResponse(responseCode = "201", description = "Profile created")
   public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomain(
-      Authentication auth,
       @PathVariable UUID domainId,
       @RequestParam(name = UNIT_PARAM, required = false) UUID unitId,
       @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor
         .execute(
             createProfileFromUnitUseCase,
             new CreateProfileFromUnitUseCase.InputData(
                 domainId,
-                client,
-                Optional.ofNullable(unitId).orElse(null),
+                unitId,
                 null,
                 createParameter.getName(),
                 createParameter.getDescription(),
@@ -478,7 +449,6 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Update a profile for a domain")
   @ApiResponse(responseCode = "204", description = "Profile updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateProfileForDomain(
-      Authentication auth,
       @PathVariable UUID domainId,
       @PathVariable @NotNull UUID profileId,
       @Parameter(
@@ -489,12 +459,10 @@ public class ContentCreationController extends AbstractVeoController {
           @RequestParam(name = UNIT_PARAM, required = false)
           UUID unitId,
       @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
-    Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         createProfileFromUnitUseCase,
         new CreateProfileFromUnitUseCase.InputData(
             domainId,
-            client,
             unitId,
             profileId,
             createParameter.getName(),
@@ -509,7 +477,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Profile deleted")
   @ApiResponse(responseCode = "404", description = "Domain or profile not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProfile(
-      Authentication auth, @PathVariable UUID domainId, @PathVariable @NotNull UUID profileId) {
+      @PathVariable UUID domainId, @PathVariable @NotNull UUID profileId) {
     return useCaseInteractor.execute(
         deleteProfileUseCase,
         new DeleteProfileUseCase.InputData(domainId, profileId),
@@ -523,7 +491,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "409", description = "Template with version already exists")
   @ApiResponse(responseCode = "422", description = "Version is lower than current template version")
   public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
-      Authentication auth,
       @PathVariable UUID id,
       @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
     if (createParameter == null) {
@@ -542,14 +509,11 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Import or update a profile in a domain template")
   @ApiResponse(responseCode = "201", description = "Profile created")
   public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomainTemplate(
-      Authentication auth,
-      @PathVariable UUID id,
-      @Valid @NotNull @RequestBody ExportProfileDto profileDto) {
-    Client client = getAuthenticatedClient(auth);
+      @PathVariable UUID id, @Valid @NotNull @RequestBody ExportProfileDto profileDto) {
     return useCaseInteractor
         .execute(
             createProfileInDomainTemplate,
-            new CreateProfileInDomainTemplateUseCase.InputData(client, id, profileDto),
+            new CreateProfileInDomainTemplateUseCase.InputData(id, profileDto),
             out -> IdRef.from(out.profile(), referenceAssembler))
         .thenApply(result -> ResponseEntity.status(201).body(result));
   }
@@ -558,11 +522,10 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Delete a profile in a domain template")
   @ApiResponse(responseCode = "204", description = "Profile deleted")
   public Future<ResponseEntity<Void>> deleteProfileInDomainTemplate(
-      Authentication auth, @PathVariable UUID id, @PathVariable UUID profileId) {
+      @PathVariable UUID id, @PathVariable UUID profileId) {
     return useCaseInteractor.execute(
         deleteProfileInDomainTemplateUseCase,
-        new DeleteProfileInDomainTemplateUseCase.InputData(
-            getAuthenticatedClient(auth), id, profileId),
+        new DeleteProfileInDomainTemplateUseCase.InputData(id, profileId),
         out -> ResponseEntity.noContent().build());
   }
 
@@ -578,7 +541,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Domain template not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
   public @Valid Future<ResponseEntity<ExportDomainTemplateDto>> getDomainTemplate(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id) {
+      @PathVariable UUID id) {
     return useCaseInteractor
         .execute(
             getDomainTemplateUseCase,
@@ -615,7 +578,6 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "200", description = "Migration definition updated")
   @ApiResponse(responseCode = "422", description = "Migration definition not consistent.")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveUpdateDefinition(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -637,10 +599,8 @@ public class ContentCreationController extends AbstractVeoController {
       })
   @ApiResponse(responseCode = "404", description = "Domain not found or has no domain template")
   public @Valid Future<ResponseEntity<List<DomainMigrationStep>>> getUpdateDefinitions(
-      @Parameter(hidden = true) Authentication auth,
-      @PathVariable UUID domainId,
-      WebRequest request) {
-    if (getEtag(Domain.class, domainId).map(request::checkNotModified).orElse(false)) {
+      @PathVariable UUID domainId, WebRequest request) {
+    if (getEtag(domainId).map(request::checkNotModified).orElse(false)) {
       return null;
     }
 
@@ -654,9 +614,8 @@ public class ContentCreationController extends AbstractVeoController {
                 ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(updateDefinition));
   }
 
-  private <T extends Identifiable & Versioned> Optional<String> getEtag(
-      Class<T> entityClass, UUID id) {
-    return etagService.getEtag(entityClass, id);
+  private Optional<String> getEtag(UUID id) {
+    return etagService.getEtag(Domain.class, id);
   }
 
   private CompletableFuture<ResponseEntity<ApiResponseBody>> doCreateDomainTemplate(

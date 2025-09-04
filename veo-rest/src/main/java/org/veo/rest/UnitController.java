@@ -82,7 +82,6 @@ import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -202,7 +201,6 @@ public class UnitController extends AbstractEntityController {
                                   IdRefTailoringReferenceParameterReferencedElement.class,
                               description = "A reference list of the created elements"))))
   public CompletableFuture<ResponseEntity<List<ElementInDomainIdRef<Element>>>> applyIncarnations(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
       @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
@@ -250,7 +248,7 @@ public class UnitController extends AbstractEntityController {
               schema = @Schema(implementation = FullUnitDto.class)))
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id, WebRequest request) {
+      @PathVariable UUID id, WebRequest request) {
     if (getEtag(Unit.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
@@ -279,8 +277,7 @@ public class UnitController extends AbstractEntityController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiResponseBody.class)))
-  public CompletableFuture<UnitDumpDto> exportUnit(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id) {
+  public CompletableFuture<UnitDumpDto> exportUnit(@PathVariable UUID id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         new GetUnitDumpUseCase.InputData(id, null),
@@ -292,8 +289,8 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "201", description = "Unit imported")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> importUnit(
-      @Parameter(hidden = true) ApplicationUser user, @RequestBody @Valid UnitDumpDto dto) {
-    return doImportUnit(user, dto);
+      @RequestBody @Valid UnitDumpDto dto) {
+    return doImportUnit(dto);
   }
 
   @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -301,17 +298,15 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "201", description = "Unit imported")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> importUnitMultipart(
-      @Parameter(hidden = true) ApplicationUser user, @NotNull @RequestPart MultipartFile file) {
+      @NotNull @RequestPart MultipartFile file) {
     UnitDumpDto dto = parse(file, UnitDumpDto.class);
-    return doImportUnit(user, dto);
+    return doImportUnit(dto);
   }
 
-  private CompletableFuture<ResponseEntity<ApiResponseBody>> doImportUnit(
-      ApplicationUser user, UnitDumpDto dto) {
+  private CompletableFuture<ResponseEntity<ApiResponseBody>> doImportUnit(UnitDumpDto dto) {
     return useCaseInteractor.execute(
         unitImportUseCase,
         new UnitImportUseCase.InputData(
-            user.getMaxUnits(),
             dto.getUnit(),
             dto.getElements().stream().map(e -> (ElementState<?>) e).collect(Collectors.toSet()),
             dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),
@@ -333,12 +328,10 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = RestApiResponse.class)))
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
-      @Parameter(hidden = true) ApplicationUser user,
       @Valid @RequestBody CreateUnitDto createUnitDto) {
-    log.info("Create unit, maxUnits = {}", user.getMaxUnits());
     return useCaseInteractor.execute(
         createUnitUseCase,
-        CreateUnitInputMapper.map(createUnitDto, user.getClientId(), user.getMaxUnits()),
+        CreateUnitInputMapper.map(createUnitDto),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.unit());
           return RestApiResponse.created(URL_BASE_PATH, body);
@@ -350,7 +343,6 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "204", description = "Unit updated")
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<FullUnitDto> updateUnit(
-      @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(IF_MATCH_HEADER) @NotBlank(message = IF_MATCH_HEADER_NOT_BLANK_MESSAGE)
           String eTag,
       @PathVariable UUID id,
@@ -367,7 +359,6 @@ public class UnitController extends AbstractEntityController {
   @ApiResponse(responseCode = "204", description = "Unit deleted")
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid) {

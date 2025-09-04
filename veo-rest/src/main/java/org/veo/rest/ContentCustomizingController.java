@@ -43,7 +43,6 @@ import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,8 +83,6 @@ public class ContentCustomizingController extends AbstractVeoController {
       responseCode = "422",
       description = "Requested risk definition modification is not supported yet")
   public CompletableFuture<ResponseEntity<RiskDefinitionEvaluationDto>> evaluateRiskDefinition(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -115,7 +112,6 @@ public class ContentCustomizingController extends AbstractVeoController {
       responseCode = "422",
       description = "Requested risk definition modification is not supported yet")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveRiskDefinition(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -131,11 +127,7 @@ public class ContentCustomizingController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveRiskDefinitionUseCase,
         new SaveRiskDefinitionUseCase.InputData(
-            UUID.fromString(user.getClientId()),
-            domainId,
-            riskDefinitionId,
-            riskDefinition,
-            ALLOWED_CHANGES),
+            domainId, riskDefinitionId, riskDefinition, ALLOWED_CHANGES),
         out ->
             out.newRiskDefinition()
                 ? RestApiResponse.created(

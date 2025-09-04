@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,7 +76,6 @@ public interface RiskAffectedResource {
       description = "Risk-affected, control, or requirement implementation not found")
   Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
       @RequestHeader(name = IF_MATCH_HEADER) @NotNull String eTag,
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID riskAffectedId,
@@ -93,7 +91,6 @@ public interface RiskAffectedResource {
       responseCode = "404",
       description = "Element or control not found or control not implemented")
   Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID riskAffectedId,

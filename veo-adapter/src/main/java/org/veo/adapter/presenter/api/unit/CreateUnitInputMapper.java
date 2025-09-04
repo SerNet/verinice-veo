@@ -48,12 +48,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CreateUnitInputMapper {
 
-  public static CreateUnitUseCase.InputData map(
-      CreateUnitDto dto, String clientId, Integer maxUnits) {
+  public static CreateUnitUseCase.InputData map(CreateUnitDto dto) {
 
     return new InputData(
         new NameableInputData(dto.getName(), dto.getAbbreviation(), dto.getDescription()),
-        maxUnits,
         dto.getDomains().stream().map(IdRef::getId).collect(Collectors.toSet()));
   }
 }

@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Profile;
@@ -68,7 +67,6 @@ public class CreateProfileFromUnitUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
-    Client client = input.authenticatedClient;
     Profile profile =
         input.profileId == null
             ? factory.createProfile(domain)
@@ -93,7 +91,7 @@ public class CreateProfileFromUnitUseCase
     if (input.unitId != null) {
       cleanProfile(profile);
       var unit = unitRepository.getById(input.unitId);
-      unit.checkSameClient(client);
+      unit.checkSameClient(domain.getOwner());
 
       Map<Element, ProfileItem> elementsToProfileItems =
           getElements(unit, domain).stream()
@@ -137,7 +135,6 @@ public class CreateProfileFromUnitUseCase
   @Valid
   public record InputData(
       UUID domainId,
-      Client authenticatedClient,
       UUID unitId,
       UUID profileId,
       String name,

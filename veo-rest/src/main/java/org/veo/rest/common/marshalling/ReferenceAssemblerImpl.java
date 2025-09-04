@@ -19,13 +19,11 @@ package org.veo.rest.common.marshalling;
 
 import static java.lang.String.format;
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
-import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_LONG;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
-import static org.veo.rest.ControllerConstants.ANY_USER;
 
 import java.util.Set;
 import java.util.UUID;
@@ -114,37 +112,36 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(on(AssetController.class).getAsset(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_CONTROL =
-      createTemplate(on(ControlController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(ControlController.class).getElement(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_DOCUMENT =
-      createTemplate(on(DocumentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(DocumentController.class).getElement(DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_DOMAIN =
       createTemplate(on(DomainController.class).getDomain(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_DOMAIN_TEMPLATE =
-      createTemplate(on(ContentCreationController.class).getDomainTemplate(ANY_AUTH, DUMMY_UUID));
+      createTemplate(on(ContentCreationController.class).getDomainTemplate(DUMMY_UUID));
 
   private static final UriComponents GET_INCIDENT =
-      createTemplate(on(IncidentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(IncidentController.class).getElement(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROFILE =
-      createTemplate(
-          on(DomainController.class).getProfile(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(DomainController.class).getProfile(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PERSON =
-      createTemplate(on(PersonController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(PersonController.class).getElement(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROCESS =
       createTemplate(on(ProcessController.class).getProcess(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_SCENARIO =
-      createTemplate(on(ScenarioController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(ScenarioController.class).getElement(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_SCOPE =
       createTemplate(on(ScopeController.class).getScope(DUMMY_UUID, ANY_BOOLEAN, ANY_REQUEST));
 
   private static final UriComponents GET_UNIT =
-      createTemplate(on(UnitController.class).getUnit(ANY_USER, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(UnitController.class).getUnit(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_ASSET_IN_DOMAIN =
       createTemplate(
@@ -186,17 +183,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(linkToRequirementImplementations(ScopeController.class));
 
   private static final UriComponents GET_INSPECTION =
-      createTemplate(
-          on(DomainController.class).getInspection(ANY_AUTH, DUMMY_UUID, DUMMY_UUID_STRING));
+      createTemplate(on(DomainController.class).getInspection(DUMMY_UUID, DUMMY_UUID_STRING));
 
   private static final UriComponents GET_CATALOG_ITEM =
       createTemplate(
-          on(DomainController.class).getCatalogItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+          on(DomainController.class).getCatalogItem(DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_PROFILE_ITEM =
-      createTemplate(
-          on(DomainController.class)
-              .getProfileItem(ANY_AUTH, DUMMY_UUID, DUMMY_UUID, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(DomainController.class).getProfileItem(DUMMY_UUID, DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_ASSET_RISK =
       createTemplate(on(AssetController.class).getRisk(DUMMY_UUID, DUMMY_UUID));
@@ -208,8 +202,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       createTemplate(on(ScopeController.class).getRisk(DUMMY_UUID, DUMMY_UUID));
 
   private static final UriComponents GET_USER_CONFIGURATION =
-      createTemplate(
-          on(UserConfigurationController.class).getUserConfiguration(ANY_USER, ANY_STRING));
+      createTemplate(on(UserConfigurationController.class).getUserConfiguration(ANY_STRING));
 
   private static final UriComponents GET_SYSTEM_MESSAGE =
       createTemplate(on(MessageController.class).getSystemMessage(ANY_LONG));
@@ -366,7 +359,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       Class<? extends RiskAffectedResource> controller) {
     return on(controller)
         .getRequirementImplementations(
-            ANY_USER, DUMMY_UUID, DUMMY_UUID, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING);
+            DUMMY_UUID, DUMMY_UUID, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING);
   }
 
   @Override

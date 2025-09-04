@@ -21,19 +21,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.CacheControl;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
-
-import org.veo.rest.security.ApplicationUser;
 
 /** This class contains constants for the REST controllers. */
 // @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public final class ControllerConstants {
 
   // Placeholder objects to generate method proxies for HATEOAS URLs:
-  public static final Authentication ANY_AUTH = new UsernamePasswordAuthenticationToken(null, null);
-  public static final ApplicationUser ANY_USER = null;
   public static final Integer ANY_INT = null;
   public static final Long ANY_LONG = null;
   public static final String ANY_STRING = null;

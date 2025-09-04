@@ -20,10 +20,10 @@ package org.veo.core.usecase.domain;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -38,6 +38,7 @@ public class CreateDomainUseCase
   private final EntityFactory entityFactory;
   private final DomainRepository domainRepository;
   private final DomainTemplateRepository domainTemplateRepository;
+  private final ClientRepository clientRepository;
 
   @Override
   public CreateDomainUseCase.OutputData execute(
@@ -46,7 +47,8 @@ public class CreateDomainUseCase
       throw new EntityAlreadyExistsException(
           "Templates already exist for domain name '%s'".formatted(input.name));
     }
-    if (domainRepository.nameExistsInClient(input.name, input.client)) {
+    var client = clientRepository.getActiveById(userAccessRights.clientId());
+    if (domainRepository.nameExistsInClient(input.name, client)) {
       throw new EntityAlreadyExistsException(
           "A domain with name '%s' already exists in this client".formatted(input.name));
     }
@@ -54,7 +56,7 @@ public class CreateDomainUseCase
     var domain = entityFactory.createDomain(input.name, input.authority, null);
     domain.setAbbreviation(input.abbreviation);
     domain.setDescription(input.description);
-    domain.setOwner(input.client);
+    domain.setOwner(client);
     // TODO VEO-1812: Remove assignment because domains should not have a template version
     domain.setTemplateVersion("0.1.0");
     return new OutputData(domainRepository.save(domain));
@@ -66,8 +68,7 @@ public class CreateDomainUseCase
   }
 
   @Valid
-  public record InputData(
-      Client client, String name, String abbreviation, String description, String authority)
+  public record InputData(String name, String abbreviation, String description, String authority)
       implements UseCase.InputData {}
 
   @Valid

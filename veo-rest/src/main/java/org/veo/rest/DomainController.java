@@ -50,7 +50,6 @@ import jakarta.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +71,6 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.core.entity.BreakingChange;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
@@ -85,6 +83,7 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
@@ -106,7 +105,6 @@ import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -120,7 +118,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * REST service which provides methods to manage domains.
  *
- * <p>Uses async calls with {@code CompletableFuture} to parallelize long running operations (i.e.
+ * <p>Uses async calls with {@code CompletableFuture} to parallelize long-running operations (i.e.
  * network calls to the database or to other HTTP services).
  *
  * @see <a href=
@@ -163,15 +161,10 @@ public class DomainController extends AbstractEntityController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
-  public @Valid Future<List<FullDomainDto>> getDomains(
-      @Parameter(hidden = true) Authentication auth) {
-
-    Client client = getAuthenticatedClient(auth);
-
-    final GetDomainsUseCase.InputData inputData = new GetDomainsUseCase.InputData(client);
+  public @Valid Future<List<FullDomainDto>> getDomains() {
     return useCaseInteractor.execute(
         getDomainsUseCase,
-        inputData,
+        UseCase.EmptyInput.INSTANCE,
         output ->
             output.objects().stream().map(entityToDtoTransformer::transformDomain2Dto).toList());
   }
@@ -210,8 +203,7 @@ public class DomainController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
-  public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(
-      @PathVariable UUID id, WebRequest request) {
+  public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(@PathVariable UUID id) {
     return useCaseInteractor
         .execute(
             exportDomainUseCase,
@@ -224,27 +216,24 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/incarnation-configuration")
   @Operation(summary = "Loads the incarnation configuration for the domain")
   public @Valid Future<IncarnationConfiguration> getIncarnationConfiguration(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId) {
     return useCaseInteractor.execute(
         getIncarnationConfigurationUseCase,
-        new GetIncarnationConfigurationUseCase.InputData(getAuthenticatedClient(auth), domainId),
+        new EntityId(domainId),
         GetIncarnationConfigurationUseCase.OutputData::incarnationConfiguration);
   }
 
   @GetMapping("/{domainId}/profiles")
   @Operation(summary = "Loads all profiles in the domain")
   public @Valid Future<List<ShortProfileDto>> getProfiles(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId) {
     return useCaseInteractor.execute(
         getProfilesUseCase,
-        new GetProfilesUseCase.InputData(
-            getAuthenticatedClient(auth), TypedId.from(domainId, Domain.class)),
+        new GetProfilesUseCase.InputData(TypedId.from(domainId, Domain.class)),
         out ->
             out.profiles().stream().map(entityToDtoTransformer::transformProfile2ListDto).toList());
   }
@@ -252,10 +241,6 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/profiles/{profileId}")
   @Operation(summary = "Loads a profile in the domain")
   public @Valid Future<ResponseEntity<FullProfileDto>> getProfile(
-      @Parameter(hidden = true) Authentication auth,
-      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
-          @PathVariable
-          UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID profileId,
@@ -267,11 +252,7 @@ public class DomainController extends AbstractEntityController {
     return useCaseInteractor
         .execute(
             getProfileUseCase,
-            new GetProfileUseCase.InputData(
-                getAuthenticatedClient(auth),
-                TypedId.from(domainId, Domain.class),
-                TypedId.from(profileId, Profile.class),
-                false),
+            new GetProfileUseCase.InputData(TypedId.from(profileId, Profile.class), false),
             t -> entityToDtoTransformer.transformProfile2Dto(t.profile()))
         .thenApply(
             profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
@@ -280,20 +261,16 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/profiles/{profileId}/items")
   @Operation(summary = "Loads all profile items in the profile")
   public @Valid Future<List<ShortProfileItemDto>> getProfileItems(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          UUID profileId,
-      WebRequest request) {
+          UUID profileId) {
     return useCaseInteractor.execute(
         getProfileItemsUseCase,
         new GetProfileItemsUseCase.InputData(
-            getAuthenticatedClient(auth),
-            TypedId.from(domainId, Domain.class),
-            TypedId.from(profileId, Profile.class)),
+            TypedId.from(domainId, Domain.class), TypedId.from(profileId, Profile.class)),
         out ->
             out.items().stream()
                 .map(entityToDtoTransformer::transformShortProfileItem2Dto)
@@ -303,7 +280,6 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/profiles/{profileId}/items/{itemId}")
   @Operation(summary = "Loads a profile item in the profile")
   public @Valid Future<ResponseEntity<ShortProfileItemDto>> getProfileItem(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -312,12 +288,10 @@ public class DomainController extends AbstractEntityController {
           UUID profileId,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          UUID itemId,
-      WebRequest request) {
+          UUID itemId) {
     return useCaseInteractor.execute(
         getProfileItemUseCase,
         new GetProfileItemUseCase.InputData(
-            getAuthenticatedClient(auth),
             TypedId.from(domainId, Domain.class),
             TypedSymbolicId.from(
                 itemId, ProfileItem.class, TypedId.from(profileId, Profile.class))),
@@ -330,23 +304,14 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/profiles/{profileId}/export")
   @Operation(summary = "export a profile from a domain")
   public @Valid Future<ResponseEntity<ExportProfileDto>> exportProfile(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          UUID domainId,
-      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
-          @PathVariable
-          UUID profileId,
-      WebRequest request) {
+          UUID profileId) {
 
     return useCaseInteractor
         .execute(
             getProfileUseCase,
-            new GetProfileUseCase.InputData(
-                getAuthenticatedClient(auth),
-                TypedId.from(domainId, Domain.class),
-                TypedId.from(profileId, Profile.class),
-                true),
+            new GetProfileUseCase.InputData(TypedId.from(profileId, Profile.class), true),
             o -> entityToDtoTransformer.transformProfile2ExportDto(o.profile()))
         .thenApply(
             profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
@@ -355,7 +320,6 @@ public class DomainController extends AbstractEntityController {
   @GetMapping("/{domainId}/catalog-items")
   @Operation(summary = "Loads catalog items in a domain")
   public @Valid Future<PageDto<ShortCatalogItemDto>> getCatalogItems(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -390,7 +354,6 @@ public class DomainController extends AbstractEntityController {
     return useCaseInteractor.execute(
         queryCatalogItemsUseCase,
         QueryInputMapper.map(
-            getAuthenticatedClient(auth),
             domainId,
             elementType,
             subType,
@@ -410,7 +373,6 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "304", description = "Not modified")
   @ApiResponse(responseCode = "404", description = "Domain or catalog item not found")
   public @Valid Future<ResponseEntity<ShortCatalogItemDto>> getCatalogItem(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -437,9 +399,7 @@ public class DomainController extends AbstractEntityController {
               schema = @Schema(implementation = ElementStatusCounts.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
-      @PathVariable UUID id,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId,
-      WebRequest request) {
+      @PathVariable UUID id, @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId) {
 
     return useCaseInteractor
         .execute(
@@ -454,11 +414,11 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "200", description = "Inspections found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<List<ShortInspectionDto>>> getInspections(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID domainId) {
+      @PathVariable UUID domainId) {
     return useCaseInteractor
         .execute(
             getInspectionsUseCase,
-            new GetInspectionsUseCase.InputData(getAuthenticatedClient(auth).getId(), domainId),
+            new GetInspectionsUseCase.InputData(domainId),
             out ->
                 entityToDtoTransformer.transformInspections2ShortDtos(
                     out.inspections(), out.domain()))
@@ -471,14 +431,12 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "200", description = "Inspection found")
   @ApiResponse(responseCode = "404", description = "Domain or inspection not found")
   public @Valid Future<ResponseEntity<Inspection>> getInspection(
-      @Parameter(hidden = true) Authentication auth,
       @PathVariable UUID domainId,
       @PathVariable @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH) String inspectionId) {
     return useCaseInteractor
         .execute(
             getInspectionUseCase,
-            new GetInspectionUseCase.InputData(
-                getAuthenticatedClient(auth).getId(), domainId, inspectionId),
+            new GetInspectionUseCase.InputData(domainId, inspectionId),
             GetInspectionUseCase.OutputData::inspection)
         .thenApply(
             inspection -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(inspection));
@@ -495,12 +453,11 @@ public class DomainController extends AbstractEntityController {
               schema = @Schema(implementation = CatalogItemsTypeCount.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<CatalogItemsTypeCount>> getCatalogItemsTypeCount(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
+      @PathVariable UUID id) {
     return useCaseInteractor
         .execute(
             getCatalogItemsTypeCountUseCase,
-            new GetCatalogItemsTypeCountUseCase.InputData(id, client),
+            new EntityId(id),
             GetCatalogItemsTypeCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
@@ -510,7 +467,6 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain or unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @PathVariable UUID id,
       @PathVariable UUID profileId,
       @RequestParam(name = UNIT_PARAM) UUID unitId) {
@@ -527,8 +483,7 @@ public class DomainController extends AbstractEntityController {
             references ->
                 useCaseInteractor.execute(
                     applyProfileIncarnationDescriptionUseCase,
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                        getClient(user), unitId, references),
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(unitId, references),
                     out -> ResponseEntity.noContent().build()));
   }
 
@@ -537,16 +492,14 @@ public class DomainController extends AbstractEntityController {
   @ApiResponse(responseCode = "200", description = "Breaking changes computed")
   @ApiResponse(responseCode = "404", description = "Domain not found or has no domain template")
   public @Valid Future<ResponseEntity<List<BreakingChange>>> getBreakingChanges(
-      @Parameter(hidden = true) Authentication auth,
-      @PathVariable UUID domainId,
-      WebRequest request) {
+      @PathVariable UUID domainId, WebRequest request) {
     if (getEtag(Domain.class, domainId).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     return useCaseInteractor
         .execute(
             getBreakingChangesUseCase,
-            new GetBreakingChangesUseCase.InputData(getAuthenticatedClient(auth).getId(), domainId),
+            new EntityId(domainId),
             GetBreakingChangesUseCase.OutputData::breakingChanges)
         .thenApply(
             breakingChanges ->
@@ -557,7 +510,6 @@ public class DomainController extends AbstractEntityController {
   @Operation(summary = "Loads a risk definition from a domain.")
   @ApiResponse(responseCode = "200", description = "Risk definition evaluated")
   public CompletableFuture<ResponseEntity<RiskDefinition>> getRiskDefinition(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,

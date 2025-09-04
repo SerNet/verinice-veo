@@ -44,10 +44,10 @@ public class GetLinksByElementUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getById(input.domainRef.getId(), input.userRights.clientId());
+    var domain = domainRepository.getById(input.domainRef.getId(), userAccessRights.clientId());
     var element =
         elementRepository.getById(
-            input.elementRef().getId(), input.elementRef.getType(), input.userRights);
+            input.elementRef().getId(), input.elementRef.getType(), userAccessRights);
     if (!element.isAssociatedWithDomain(domain)) {
       throw NotFoundException.elementNotAssociatedWithDomain(element, domain.getIdAsString());
     }
@@ -59,7 +59,6 @@ public class GetLinksByElementUseCase
   public record InputData(
       @NotNull TypedId<? extends Element> elementRef,
       @NotNull TypedId<Domain> domainRef,
-      @NotNull UserAccessRights userRights,
       @NotNull PagingConfiguration<LinkQuery.SortCriterion> pagingConfiguration)
       implements UseCase.InputData {}
 

@@ -23,7 +23,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.exception.NotFoundException;
@@ -50,11 +49,10 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
   @Override
   public OutputData<T> execute(InputData<T> input, UserAccessRights userAccessRights) {
-    var idRefResolver = refResolverFactory.db(input.authenticatedClient);
-
+    var storedElement = repo.getById(input.id, userAccessRights);
+    var idRefResolver = refResolverFactory.db(storedElement.getOwningClient().get());
     var domain = idRefResolver.resolve(input.domainId, Domain.class);
     var inputElement = input.element;
-    var storedElement = repo.getById(input.id, userAccessRights);
     userAccessRights.checkElementWriteAccess(storedElement);
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
@@ -80,11 +78,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
   @Valid
   public record InputData<T extends Element>(
-      UUID id,
-      @Valid ElementState<T> element,
-      UUID domainId,
-      Client authenticatedClient,
-      String eTag)
+      UUID id, @Valid ElementState<T> element, UUID domainId, String eTag)
       implements UseCase.InputData {}
 
   @Valid

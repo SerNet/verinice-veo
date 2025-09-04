@@ -79,7 +79,7 @@ public class CreateUnitUseCase
     // name
     // change event
     // which we listen to. This would require messaging middleware.
-    client.incrementTotalUnits(input.maxUnits);
+    client.incrementTotalUnits(userAccessRights.getMaxUnits());
     Unit newUnit = entityFactory.createUnit(input.nameableInput.name());
 
     newUnit.setAbbreviation(input.nameableInput.abbreviation());
@@ -114,7 +114,7 @@ public class CreateUnitUseCase
   }
 
   @Valid
-  public record InputData(NameableInputData nameableInput, Integer maxUnits, Set<UUID> domainIds)
+  public record InputData(NameableInputData nameableInput, Set<UUID> domainIds)
       implements UseCase.InputData {}
 
   @Valid

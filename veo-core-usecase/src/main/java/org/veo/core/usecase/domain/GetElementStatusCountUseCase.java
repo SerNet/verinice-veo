@@ -27,7 +27,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
@@ -51,10 +50,7 @@ public class GetElementStatusCountUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId);
-    if (!userAccessRights.clientId().equals(domain.getOwner().getId())) {
-      throw new ClientBoundaryViolationException(domain, userAccessRights.clientId());
-    }
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

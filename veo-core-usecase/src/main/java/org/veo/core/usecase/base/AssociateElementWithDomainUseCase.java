@@ -46,19 +46,19 @@ public class AssociateElementWithDomainUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getById(input.domainId, input.userRights.clientId());
-    var element = fetchElement(input);
-    input.userRights.checkElementWriteAccess(element);
+    var domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    var element = fetchElement(input, userAccessRights);
+    userAccessRights.checkElementWriteAccess(element);
     element.associateWithDomain(domain, input.subType, input.status);
     element.setUpdatedAt(Instant.now());
     DomainSensitiveElementValidator.validate(element);
     // re-fetch the element to make sure it is returned with updated versioning information and
     // transaction listeners are called
-    return new OutputData(fetchElement(input), domain);
+    return new OutputData(fetchElement(input, userAccessRights), domain);
   }
 
-  private Element fetchElement(InputData input) {
-    return elementRepository.getById(input.elementId, input.elementType, input.userRights);
+  private Element fetchElement(InputData input, UserAccessRights userAccessRights) {
+    return elementRepository.getById(input.elementId, input.elementType, userAccessRights);
   }
 
   @Valid
@@ -67,8 +67,7 @@ public class AssociateElementWithDomainUseCase
       UUID elementId,
       UUID domainId,
       String subType,
-      String status,
-      UserAccessRights userRights)
+      String status)
       implements UseCase.InputData {}
 
   @Valid

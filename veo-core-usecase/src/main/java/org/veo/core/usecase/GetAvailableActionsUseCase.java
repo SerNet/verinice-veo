@@ -37,15 +37,11 @@ public class GetAvailableActionsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.clientId);
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
     return new OutputData(domain.getAvailableActions(input.elementType));
   }
 
-  public record InputData(
-      @NotNull UUID domainId,
-      @NotNull UUID elementId,
-      @NotNull ElementType elementType,
-      @NotNull UUID clientId)
+  public record InputData(@NotNull UUID domainId, @NotNull ElementType elementType)
       implements UseCase.InputData {}
 
   public record OutputData(@NotNull Map<String, Action> actions) implements UseCase.OutputData {}

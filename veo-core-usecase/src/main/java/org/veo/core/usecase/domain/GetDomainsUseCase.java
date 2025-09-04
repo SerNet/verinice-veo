@@ -22,7 +22,6 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -32,20 +31,17 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GetDomainsUseCase
-    implements TransactionalUseCase<GetDomainsUseCase.InputData, GetDomainsUseCase.OutputData> {
+    implements TransactionalUseCase<UseCase.EmptyInput, GetDomainsUseCase.OutputData> {
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
     return new OutputData(
         domainRepository
-            .findActiveDomainsWithProfilesAndRiskDefinitions(input.authenticatedClient.getId())
+            .findActiveDomainsWithProfilesAndRiskDefinitions(userAccessRights.clientId())
             .stream()
             .toList());
   }
-
-  @Valid
-  public record InputData(Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid List<Domain> objects) implements UseCase.OutputData {}

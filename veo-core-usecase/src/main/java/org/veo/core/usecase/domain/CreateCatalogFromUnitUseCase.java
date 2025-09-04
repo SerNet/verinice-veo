@@ -39,7 +39,6 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
@@ -74,15 +73,11 @@ public class CreateCatalogFromUnitUseCase
     Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
     Set<CatalogItem> previousCatalogItems = Set.copyOf(domain.getCatalogItems());
 
-    Client client = input.authenticatedClient;
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    var unit = unitRepository.getById(input.unitId);
-    unit.checkSameClient(client);
+    var unit = unitRepository.getById(input.unitId, userAccessRights);
+    Client client = domain.getOwner();
     Set<Element> elements = getElements(unit, domain);
 
     deleteObsoleteCatalogItems(domain, client, elements);
@@ -143,6 +138,5 @@ public class CreateCatalogFromUnitUseCase
   }
 
   @Valid
-  public record InputData(UUID domainId, Client authenticatedClient, UUID unitId)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, UUID unitId) implements UseCase.InputData {}
 }

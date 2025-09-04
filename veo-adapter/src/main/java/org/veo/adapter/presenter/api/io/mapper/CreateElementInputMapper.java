@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -35,8 +33,8 @@ import lombok.NoArgsConstructor;
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
   public static <T extends Element> CreateElementUseCase.InputData<T> map(
-      ElementState<T> state, Client client, List<UUID> scopeIds, UserAccessRights user) {
-    return new CreateElementUseCase.InputData<>(state, client, mapIds(scopeIds), user);
+      ElementState<T> state, List<UUID> scopeIds) {
+    return new CreateElementUseCase.InputData<>(state, mapIds(scopeIds));
   }
 
   private static Set<UUID> mapIds(List<UUID> ids) {

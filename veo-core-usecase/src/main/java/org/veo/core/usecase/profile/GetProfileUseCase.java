@@ -21,8 +21,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
@@ -30,19 +28,18 @@ import org.veo.core.repository.ProfileRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GetProfileUseCase extends AbstractProfileUseCase
+@RequiredArgsConstructor
+public class GetProfileUseCase
     implements TransactionalUseCase<GetProfileUseCase.InputData, GetProfileUseCase.OutputData> {
 
-  public GetProfileUseCase(ProfileRepository profileRepo) {
-    super(profileRepo);
-  }
+  private final ProfileRepository profileRepo;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    checkClientOwnsDomain(input.authenticatedClient, input.domain.getId());
     var profile =
         (input.fastLoadDetails
                 ? profileRepo.findProfileByIdFetchTailoringReferences(
@@ -55,11 +52,7 @@ public class GetProfileUseCase extends AbstractProfileUseCase
   }
 
   @Valid
-  public record InputData(
-      @NotNull Client authenticatedClient,
-      @NotNull ITypedId<Domain> domain,
-      @NotNull ITypedId<Profile> profile,
-      boolean fastLoadDetails)
+  public record InputData(@NotNull ITypedId<Profile> profile, boolean fastLoadDetails)
       implements UseCase.InputData {}
 
   @Valid

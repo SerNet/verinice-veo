@@ -60,7 +60,6 @@ import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,10 +90,8 @@ import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -112,7 +109,6 @@ import lombok.RequiredArgsConstructor;
 public class DocumentInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Document.PLURAL_TERM;
-  private final ClientLookup clientLookup;
   private final GetDocumentUseCase getDocumentUseCase;
   private final CreateElementUseCase<Document> createUseCase;
   private final UpdateDocumentInDomainUseCase updateUseCase;
@@ -151,7 +147,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @GetMapping
   @Operation(summary = "Loads all documents in a domain")
   public @Valid Future<PageDto<FullDocumentInDomainDto>> getDocument(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -192,7 +187,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(user),
             unitUuid,
             domainId,
             displayName,
@@ -225,7 +219,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/parts")
   public @Valid Future<PageDto<FullDocumentInDomainDto>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -253,14 +246,11 @@ public class DocumentInDomainController implements ElementInDomainResource {
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder,
-      WebRequest request) {
-    var client = clientLookup.getClient(user);
-    elementService.ensureElementExists(domainId, uuid, getDocumentUseCase, user);
+          String sortOrder) {
+    elementService.ensureElementExists(domainId, uuid, getDocumentUseCase);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            client,
             null,
             domainId,
             null,
@@ -289,7 +279,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
       headers = @Header(name = "Location"))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -297,7 +286,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<UUID> scopeIds) {
-    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
+    return elementService.createElement(domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing document with a domain")
@@ -306,7 +295,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Document or domain not found")
   @ApiResponse(responseCode = "409", description = "Document already associated with domain")
   public CompletableFuture<ResponseEntity<FullDocumentInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -315,7 +303,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        user, domainId, uuid, dto, Document.class, entityToDtoTransformer::transformDocument2Dto);
+        domainId, uuid, dto, Document.class, entityToDtoTransformer::transformDocument2Dto);
   }
 
   @Operation(summary = "Updates a document from the viewpoint of a domain")
@@ -325,7 +313,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Document not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullDocumentInDomainDto>> updateElement(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -336,13 +323,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
           UUID uuid,
       @Valid @NotNull @RequestBody FullDocumentInDomainDto dto) {
     return elementService.update(
-        user,
-        domainId,
-        eTag,
-        uuid,
-        dto,
-        updateUseCase,
-        entityToDtoTransformer::transformDocument2Dto);
+        domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformDocument2Dto);
   }
 
   @Operation(summary = "Retrieve inbound and outbound links for a document in a domain")
@@ -352,7 +333,6 @@ public class DocumentInDomainController implements ElementInDomainResource {
       responseCode = "404",
       description = "Document or domain not found or document not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -379,7 +359,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        user, domainId, uuid, Document.class, pageSize, pageNumber, sortColumn, sortOrder);
+        domainId, uuid, Document.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing document")
@@ -414,18 +394,16 @@ public class DocumentInDomainController implements ElementInDomainResource {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullDocumentInDomainDto dto) {
-    return elementService.evaluate(user, dto, domainId);
+    return elementService.evaluate(dto, domainId);
   }
 
   @Operation(summary = "Returns domain-specific document JSON schema")
   @Override
-  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, ElementType.DOCUMENT);
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
+    return elementService.getJsonSchema(domainId, ElementType.DOCUMENT);
   }
 }

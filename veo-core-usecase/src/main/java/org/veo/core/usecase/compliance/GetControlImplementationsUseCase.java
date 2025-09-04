@@ -29,7 +29,6 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
@@ -65,20 +64,24 @@ public class GetControlImplementationsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var query = controlImplementationRepository.query(input.authenticatedClient, input.domainId);
-    Domain domain = domainRepository.getById(input.domainId, input.authenticatedClient.getId());
-    applyAdditionalQueryParameters(input, domain, query);
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    var query = controlImplementationRepository.query(domain.getOwner(), input.domainId);
+    applyAdditionalQueryParameters(input, domain, query, userAccessRights);
 
     var result = query.execute(input.pagingConfiguration);
     return new OutputData(result);
   }
 
   private void applyAdditionalQueryParameters(
-      InputData input, Domain domain, ControlImplementationQuery query) {
+      InputData input,
+      Domain domain,
+      ControlImplementationQuery query,
+      UserAccessRights userAccessRights) {
     Optional.ofNullable(input.control)
         .ifPresent(
             id -> {
-              Control control = genericElementRepository.getById(id, Control.class, input.user);
+              Control control =
+                  genericElementRepository.getById(id, Control.class, userAccessRights);
               if (!control.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
                     control, input.domainId.toString());
@@ -89,7 +92,7 @@ public class GetControlImplementationsUseCase
         .ifPresent(
             id -> {
               RiskAffected<?, ?> ra =
-                  genericElementRepository.getById(id.getId(), id.getType(), input.user);
+                  genericElementRepository.getById(id.getId(), id.getType(), userAccessRights);
               if (!ra.isAssociatedWithDomain(domain)) {
                 throw NotFoundException.elementNotAssociatedWithDomain(
                     ra, input.domainId.toString());
@@ -123,8 +126,6 @@ public class GetControlImplementationsUseCase
 
   @Valid
   public record InputData(
-      @NotNull UserAccessRights user,
-      @NotNull Client authenticatedClient,
       UUID control,
       @NotNull UUID domainId,
       TypedId<? extends RiskAffected<?, ?>> riskAffectedId,

@@ -17,37 +17,28 @@
  ******************************************************************************/
 package org.veo.core.usecase.profile;
 
-import java.util.UUID;
-
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GetIncarnationConfigurationUseCase
-    implements TransactionalUseCase<
-        GetIncarnationConfigurationUseCase.InputData,
-        GetIncarnationConfigurationUseCase.OutputData> {
+    implements TransactionalUseCase<EntityId, GetIncarnationConfigurationUseCase.OutputData> {
 
   private final DomainRepository domainRepository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, input.authenticatedClient.getId());
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    var domain = domainRepository.getActiveById(input.id(), userAccessRights.clientId());
     return new OutputData(domain.getIncarnationConfiguration());
   }
-
-  @Valid
-  public record InputData(@NotNull Client authenticatedClient, @NotNull UUID domainId)
-      implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid IncarnationConfiguration incarnationConfiguration)

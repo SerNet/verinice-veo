@@ -22,7 +22,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileState;
@@ -54,7 +53,7 @@ public class CreateProfileInDomainTemplateUseCase
             .findById(input.templateId)
             .orElseThrow(() -> new NotFoundException(input.templateId, DomainTemplate.class));
 
-    if (!checkClient(input.client, domainTemplate)) {
+    if (!checkClient(userAccessRights.clientId(), domainTemplate)) {
       throw new MissingAdminPrivilegesException();
     }
     domainTemplate.getProfiles().stream()
@@ -77,10 +76,10 @@ public class CreateProfileInDomainTemplateUseCase
   }
 
   /** test if the client can modify the domaintemplate * */
-  private boolean checkClient(Client client, DomainTemplate domainTemplate) {
+  private boolean checkClient(UUID clientId, DomainTemplate domainTemplate) {
     log.warn(
         "Client {} modify domaintemplate {}({})",
-        client.getIdAsString(),
+        clientId,
         domainTemplate.getName(),
         domainTemplate.getIdAsString());
     return true;
@@ -92,8 +91,7 @@ public class CreateProfileInDomainTemplateUseCase
   }
 
   @Valid
-  public record InputData(Client client, UUID templateId, ProfileState profile)
-      implements UseCase.InputData {}
+  public record InputData(UUID templateId, ProfileState profile) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(Profile profile) implements UseCase.OutputData {}

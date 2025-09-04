@@ -221,5 +221,10 @@ public class ClientChangedEventListener {
     public String getUsername() {
       return "system";
     }
+
+    @Override
+    public Integer getMaxUnits() {
+      return 0;
+    }
   }
 }

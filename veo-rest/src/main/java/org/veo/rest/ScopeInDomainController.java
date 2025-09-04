@@ -63,7 +63,6 @@ import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,7 +98,6 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
-import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase.ControlImplementationPurpose;
@@ -107,10 +105,8 @@ import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImp
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -131,9 +127,7 @@ public class ScopeInDomainController
     implements ElementInDomainResource, RiskAffectedInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scope.PLURAL_TERM;
-  private final ClientLookup clientLookup;
   private final GetScopeUseCase getScopeUseCase;
-  private final GetElementsUseCase getElementsUseCase;
   private final CreateElementUseCase<Scope> createUseCase;
   private final UpdateScopeInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -171,7 +165,6 @@ public class ScopeInDomainController
   @GetMapping
   @Operation(summary = "Loads all scopes in a domain")
   public @Valid Future<PageDto<FullScopeInDomainDto>> getControls(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -212,7 +205,6 @@ public class ScopeInDomainController
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            clientLookup.getClient(user),
             unitUuid,
             domainId,
             displayName,
@@ -241,7 +233,6 @@ public class ScopeInDomainController
       headers = @Header(name = "Location"))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -249,7 +240,7 @@ public class ScopeInDomainController
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<UUID> scopeIds) {
-    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
+    return elementService.createElement(domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing scope with a domain")
@@ -258,7 +249,6 @@ public class ScopeInDomainController
   @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   @ApiResponse(responseCode = "409", description = "Scope already associated with domain")
   public CompletableFuture<ResponseEntity<FullScopeInDomainDto>> associateElementWithDomain(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -267,7 +257,7 @@ public class ScopeInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
     return elementService.associateElementWithDomain(
-        user, domainId, uuid, dto, Scope.class, entityToDtoTransformer::transformScope2Dto);
+        domainId, uuid, dto, Scope.class, entityToDtoTransformer::transformScope2Dto);
   }
 
   @Operation(summary = "Updates a scope from the viewpoint of a domain")
@@ -275,7 +265,6 @@ public class ScopeInDomainController
   @ApiResponse(responseCode = "200", description = "Scope updated")
   @ApiResponse(responseCode = "404", description = "Scope not found or not associated with domain")
   public CompletableFuture<ResponseEntity<FullScopeInDomainDto>> updateElement(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -286,7 +275,7 @@ public class ScopeInDomainController
           UUID uuid,
       @Valid @NotNull @RequestBody FullScopeInDomainDto dto) {
     return elementService.update(
-        user, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformScope2Dto);
+        domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformScope2Dto);
   }
 
   @Operation(summary = "Retrieve inbound and outbound links for a scope in a domain")
@@ -296,7 +285,6 @@ public class ScopeInDomainController
       responseCode = "404",
       description = "Scope or domain not found or scope not associated with domain")
   public CompletableFuture<ResponseEntity<PageDto<InOrOutboundLinkDto>>> getLinks(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -323,7 +311,7 @@ public class ScopeInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
     return elementService.getLinks(
-        user, domainId, uuid, Scope.class, pageSize, pageNumber, sortColumn, sortOrder);
+        domainId, uuid, Scope.class, pageSize, pageNumber, sortColumn, sortOrder);
   }
 
   @Operation(summary = "Adds links to an existing scope")
@@ -358,12 +346,11 @@ public class ScopeInDomainController
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
       @Valid @RequestBody FullScopeInDomainDto dto) {
-    return elementService.evaluate(user, dto, domainId);
+    return elementService.evaluate(dto, domainId);
   }
 
   @Operation(summary = "Loads the members of a scope in a domain")
@@ -378,7 +365,6 @@ public class ScopeInDomainController
   @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   @GetMapping(value = "/{" + UUID_PARAM + "}/members")
   public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -408,44 +394,35 @@ public class ScopeInDomainController
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) Set<ElementType> elementTypes) {
-    var client = clientLookup.getClient(user);
-    elementService.ensureElementExists(domainId, uuid, getScopeUseCase, user);
+    elementService.ensureElementExists(domainId, uuid, getScopeUseCase);
     return elementService.getElements(
         domainId,
         QueryInputMapper.map(
-            client,
             domainId,
             uuid,
             elementTypes,
-            user,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformElement2Dto);
   }
 
   @Operation(summary = "Returns domain-specific scope JSON schema")
   @Override
-  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      Authentication auth, UUID domainId) {
-    return elementService.getJsonSchema(auth, domainId, ElementType.SCOPE);
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(UUID domainId) {
+    return elementService.getJsonSchema(domainId, ElementType.SCOPE);
   }
 
   @Operation(summary = "Loads available domain-specific actions for a scope")
   @GetMapping(UUID_PARAM_SPEC + "/actions")
   public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
-      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
-          UUID domainId,
-      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
-          @PathVariable
-          UUID uuid) {
-    return elementService.getActions(domainId, uuid, ElementType.SCOPE, auth);
+          UUID domainId) {
+    return elementService.getActions(domainId, ElementType.SCOPE);
   }
 
   @Operation(summary = "Performs a domain-specific action on a scope")
   @PostMapping(UUID_PARAM_SPEC + "/actions/{actionId}/execution")
   public CompletableFuture<ResponseEntity<ActionResultDto>> performAction(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -453,7 +430,7 @@ public class ScopeInDomainController
           @PathVariable
           UUID uuid,
       @Parameter(required = true, example = "threatOverview") @PathVariable String actionId) {
-    return elementService.performAction(domainId, uuid, Scope.class, actionId, user);
+    return elementService.performAction(domainId, uuid, Scope.class, actionId);
   }
 
   @Operation(summary = "Loads control implementations for a scope")
@@ -464,7 +441,6 @@ public class ScopeInDomainController
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "Scope or domain not found")
   public Future<PageDto<ControlImplementationDto>> getControlImplementations(
-      @Parameter(hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
@@ -498,8 +474,6 @@ public class ScopeInDomainController
     return elementService.getControlImplementations(
         domainId,
         new GetControlImplementationsUseCase.InputData(
-            user,
-            clientLookup.getClient(user),
             null,
             domainId,
             TypedId.from(uuid, Scope.class),
@@ -509,7 +483,6 @@ public class ScopeInDomainController
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      ApplicationUser user,
       UUID domainId,
       UUID riskAffectedId,
       UUID controlId,
@@ -520,7 +493,6 @@ public class ScopeInDomainController
       String sortOrder) {
     return elementService.getRequirementImplementations(
         new GetRequirementImplementationsByControlImplementationUseCase.InputData(
-            clientLookup.getClient(user),
             TypedId.from(riskAffectedId, Scope.class),
             TypedId.from(controlId, Control.class),
             TypedId.from(domainId, Domain.class),

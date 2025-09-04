@@ -63,8 +63,8 @@ public class EvaluateElementUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain =
         domainRepository.getByIdWithDecisionsAndInspections(
-            input.domainId, input.authenticatedClient.getId());
-    var element = fetchOrCreateElement(input.element, userAccessRights, input.authenticatedClient);
+            input.domainId, userAccessRights.clientId());
+    var element = fetchOrCreateElement(input.element, userAccessRights, domain.getOwner());
     element.setDecisionResults(decider.decide(element, domain), domain);
     var findings = inspector.inspect(element, domain);
     return new OutputData(element.getDecisionResults(domain), findings);
@@ -82,8 +82,7 @@ public class EvaluateElementUseCase
   }
 
   @Valid
-  public record InputData(Client authenticatedClient, UUID domainId, ElementState<?> element)
-      implements UseCase.InputData {}
+  public record InputData(UUID domainId, ElementState<?> element) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(

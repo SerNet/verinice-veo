@@ -24,7 +24,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +37,6 @@ public interface ElementInDomainResource {
   @ApiResponse(responseCode = "200", description = "Schema loaded")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   CompletableFuture<ResponseEntity<String>> getJsonSchema(
-      @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId);

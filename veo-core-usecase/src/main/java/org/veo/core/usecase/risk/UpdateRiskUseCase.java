@@ -55,7 +55,9 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     // Retrieve required elements for operation:
     var riskAffected =
         getEntity(TypedId.from(input.riskAffectedRef(), entityClass), userAccessRights);
-    var scenario = getEntity(TypedId.from(input.scenarioRef(), Scenario.class), userAccessRights);
+    var client = riskAffected.getOwningClient().get();
+    // make sure that we can load the scenario with the client's context
+    getEntity(TypedId.from(input.scenarioRef(), Scenario.class), userAccessRights);
     var domains = findEntities(Domain.class, input.domainRefs());
     var mitigation =
         input
@@ -71,10 +73,7 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     checkETag(risk, input);
     // Validate security constraints:
     userAccessRights.checkElementWriteAccess(riskAffected);
-    scenario.checkSameClient(input.authenticatedClient());
-    checkDomainOwnership(input.authenticatedClient(), domains);
-    mitigation.ifPresent(control -> control.checkSameClient(input.authenticatedClient()));
-    riskOwner.ifPresent(person -> person.checkSameClient(input.authenticatedClient()));
+    checkDomainOwnership(client, domains);
 
     // Execute requested operation:
     R result =

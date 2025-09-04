@@ -75,7 +75,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
                     new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString))
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString))
         }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead

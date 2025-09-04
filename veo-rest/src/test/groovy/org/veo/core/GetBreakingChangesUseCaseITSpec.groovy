@@ -31,6 +31,7 @@ import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase
 import org.veo.rest.security.NoRestrictionAccessRight
 
@@ -55,7 +56,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         when:
         def result = executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new GetBreakingChangesUseCase.InputData(client.id, domain.id), NoRestrictionAccessRight.from(client.idAsString)
+                    new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(client.idAsString)
                     ).breakingChanges
         }
 
@@ -265,7 +266,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         domainDataRepository.save(domain)
         return executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new GetBreakingChangesUseCase.InputData(client.id, domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
+                    new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
                     ).breakingChanges
         }
     }

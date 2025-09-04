@@ -29,7 +29,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,7 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * REST service which provides methods to manage domain templates.
  *
- * <p>Uses async calls with {@code CompletableFuture} to parallelize long running operations (i.e.
+ * <p>Uses async calls with {@code CompletableFuture} to parallelize long-running operations (i.e.
  * network calls to the database or to other HTTP services).
  *
  * @see <a href=
@@ -116,7 +115,6 @@ public class DomainTemplateController extends AbstractEntityController {
       })
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Domain(s) created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
-      Authentication auth,
       @PathVariable UUID id,
       @RequestParam(
               value = "restrictToClientsWithExistingDomain",

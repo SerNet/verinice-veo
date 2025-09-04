@@ -79,7 +79,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
@@ -102,7 +101,6 @@ import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -171,7 +169,6 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @GetMapping
   @Operation(summary = "Loads all assets")
   public @Valid Future<PageDto<FullAssetDto>> getAssets(
-      @Parameter(hidden = true) ApplicationUser user,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) UUID unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -209,12 +206,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
-    Client client = getClient(user);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
     return getElements(
         QueryInputMapper.map(
-                client,
                 unitUuid,
                 null,
                 displayName,
@@ -312,10 +307,9 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Parameter(required = true, hidden = true) ApplicationUser auth,
       @Valid @RequestBody FullAssetDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluate(auth, element, domainId);
+    return super.evaluate(element, domainId);
   }
 
   @Override
@@ -359,11 +353,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      ApplicationUser user, @Valid @NotNull AssetRiskDto dto, UUID assetId) {
+      @Valid @NotNull AssetRiskDto dto, UUID assetId) {
 
     var input =
         new CreateAssetRiskUseCase.InputData(
-            getClient(user.getClientId()),
             assetId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -394,10 +387,9 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      ApplicationUser user, UUID assetId, UUID scenarioId) {
+      UUID assetId, UUID scenarioId) {
 
-    Client client = getClient(user.getClientId());
-    var input = new DeleteRiskUseCase.InputData(user, Asset.class, client, assetId, scenarioId);
+    var input = new DeleteRiskUseCase.InputData(Asset.class, assetId, scenarioId);
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
@@ -405,11 +397,9 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
-      ApplicationUser user, UUID assetId, UUID scenarioId, AssetRiskDto dto, String eTag) {
-    var client = getClient(user.getClientId());
+      UUID assetId, UUID scenarioId, AssetRiskDto dto, String eTag) {
     var input =
         new UpdateAssetRiskUseCase.InputData(
-            client,
             assetId,
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -459,16 +449,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
-      String eTag,
-      ApplicationUser user,
-      UUID riskAffectedId,
-      UUID controlId,
-      RequirementImplementationDto dto) {
+      String eTag, UUID riskAffectedId, UUID controlId, RequirementImplementationDto dto) {
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(
-            user,
-            getClient(user),
             TypedId.from(riskAffectedId, Asset.class),
             TypedId.from(controlId, Control.class),
             dto,
@@ -478,7 +462,6 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
-      ApplicationUser user,
       UUID riskAffectedId,
       UUID controlId,
       Integer pageSize,
@@ -488,14 +471,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     return useCaseInteractor.execute(
         getRequirementImplementationsByControlImplementationUseCase,
         GetRequirementImplementationsByControlImplementationInputMapper.map(
-            getClient(user),
-            Asset.class,
-            riskAffectedId,
-            controlId,
-            pageSize,
-            pageNumber,
-            sortColumn,
-            sortOrder),
+            Asset.class, riskAffectedId, controlId, pageSize, pageNumber, sortColumn, sortOrder),
         out ->
             PagingMapper.toPage(
                 out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));

@@ -20,25 +20,20 @@ package org.veo.rest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
-import java.util.UUID;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.Client;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.rest.common.ClientNotActiveException;
-import org.veo.rest.security.ApplicationUser;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,21 +67,5 @@ public abstract class AbstractVeoController {
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
-  }
-
-  protected Client getClient(String clientId) {
-    UUID id = UUID.fromString(clientId);
-    return clientRepository
-        .findActiveById(id)
-        .orElseThrow(() -> new ClientNotActiveException(clientId));
-  }
-
-  protected Client getAuthenticatedClient(Authentication auth) {
-    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-    return getClient(user);
-  }
-
-  protected Client getClient(ApplicationUser user) {
-    return getClient(user.getClientId());
   }
 }

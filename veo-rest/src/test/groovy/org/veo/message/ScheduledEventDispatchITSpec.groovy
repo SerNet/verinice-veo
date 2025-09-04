@@ -33,7 +33,6 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 
-import org.veo.core.UserAccessRights
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.repository.UnitRepository
@@ -196,7 +195,6 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
                     new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvoTestDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                     ).references
             applyProfileIncarnationDescriptionUseCase.execute(new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                    client,
                     unit.id,
                     incarnationDescriptions
                     ), NoRestrictionAccessRight.from(client.idAsString))

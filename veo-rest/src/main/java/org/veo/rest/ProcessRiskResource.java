@@ -42,10 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -88,9 +86,7 @@ public interface ProcessRiskResource {
   @PostMapping(value = RELPATH)
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Risk created")})
   CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody ProcessRiskDto dto,
-      @PathVariable UUID processId);
+      @Valid @NotNull @RequestBody ProcessRiskDto dto, @PathVariable UUID processId);
 
   @PutMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Updates a risk")
@@ -100,7 +96,6 @@ public interface ProcessRiskResource {
   })
   @Valid
   CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
-      @Parameter(hidden = true) ApplicationUser user,
       @PathVariable UUID processId,
       @PathVariable UUID scenarioId,
       @Valid @NotNull @RequestBody ProcessRiskDto processDto,
@@ -114,7 +109,5 @@ public interface ProcessRiskResource {
     @ApiResponse(responseCode = "404", description = "Risk not found")
   })
   CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-      @Parameter(hidden = true) ApplicationUser user,
-      @PathVariable UUID processId,
-      @PathVariable UUID scenarioId);
+      @PathVariable UUID processId, @PathVariable UUID scenarioId);
 }

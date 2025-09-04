@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
@@ -55,7 +54,6 @@ public abstract class AbstractRiskUseCase<
               .getElementRepositoryFor(Control.class)
               .findById(input.getControlRef().get(), userAccessRights)
               .orElseThrow();
-      control.checkSameClient(input.authenticatedClient());
       risk.mitigate(control);
     }
 
@@ -65,7 +63,6 @@ public abstract class AbstractRiskUseCase<
               .getElementRepositoryFor(Person.class)
               .findById(input.getRiskOwnerRef().get(), userAccessRights)
               .orElseThrow();
-      riskOwner.checkSameClient(input.authenticatedClient());
       risk.appoint(riskOwner);
     }
 
@@ -74,7 +71,6 @@ public abstract class AbstractRiskUseCase<
 
   @Valid
   public record InputData(
-      @NotNull Client authenticatedClient,
       @NotNull UUID riskAffectedRef,
       @NotNull UUID scenarioRef,
       @NotNull Set<@NotNull UUID> domainRefs,
@@ -93,22 +89,13 @@ public abstract class AbstractRiskUseCase<
     }
 
     public InputData(
-        Client authenticatedClient,
         UUID riskAffectedRef,
         UUID scenarioRef,
         Set<UUID> domainRefs,
         UUID controlRef,
         UUID riskOwnerRef,
         Set<RiskValues> riskValues) {
-      this(
-          authenticatedClient,
-          riskAffectedRef,
-          scenarioRef,
-          domainRefs,
-          controlRef,
-          riskOwnerRef,
-          null,
-          riskValues);
+      this(riskAffectedRef, scenarioRef, domainRefs, controlRef, riskOwnerRef, null, riskValues);
     }
   }
 

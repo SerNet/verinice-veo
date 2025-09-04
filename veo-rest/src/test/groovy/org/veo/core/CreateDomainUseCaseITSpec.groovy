@@ -54,7 +54,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "creating a domain"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
+        useCase.execute(new CreateDomainUseCase.InputData( "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it has been persisted"
         def domain = domainRepository
@@ -72,7 +72,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
+        useCase.execute(new CreateDomainUseCase.InputData("do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)
@@ -86,7 +86,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
+        useCase.execute(new CreateDomainUseCase.InputData("do-main", "dom", "it's great", "st. nic"), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)

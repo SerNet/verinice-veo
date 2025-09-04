@@ -59,7 +59,7 @@ public class UnitImportUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     userAccessRights.checkUnitCreateAllowed();
     var client = clientRepository.getActiveById(userAccessRights.clientId());
-    client.incrementTotalUnits(input.maxUnits);
+    client.incrementTotalUnits(userAccessRights.getMaxUnits());
     var resolver = refResolverFactory.db(client);
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
     var elements =
@@ -104,8 +104,7 @@ public class UnitImportUseCase
     return 5;
   }
 
-  public record InputData(
-      Integer maxUnits, UnitState unit, Set<ElementState<?>> elements, Set<RiskState<?, ?>> risks)
+  public record InputData(UnitState unit, Set<ElementState<?>> elements, Set<RiskState<?, ?>> risks)
       implements UseCase.InputData {}
 
   public record OutputData(Unit unit) implements UseCase.OutputData {}

@@ -18,7 +18,6 @@
 package org.veo.core.usecase.userconfiguration;
 
 import java.util.Set;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -32,19 +31,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GetAllUserConfigurationKeysUseCase
     implements TransactionalUseCase<
-        GetAllUserConfigurationKeysUseCase.InputData,
-        GetAllUserConfigurationKeysUseCase.OutputData> {
+        UseCase.EmptyInput, GetAllUserConfigurationKeysUseCase.OutputData> {
   final UserConfigurationRepository userConfigurationRepository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+  public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
     Set<String> userConfiguration =
-        userConfigurationRepository.findAllKeysByUser(input.clientId, input.userName);
+        userConfigurationRepository.findAllKeysByUser(
+            userAccessRights.clientId(), userAccessRights.getUsername());
     return new OutputData(userConfiguration);
   }
-
-  @Valid
-  public record InputData(UUID clientId, String userName) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(Set<String> keys) implements UseCase.OutputData {}

@@ -337,7 +337,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                         new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvoDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
                         ).references
                 applyProfileIncarnationDescriptionUseCase.execute(
-                        new ApplyProfileIncarnationDescriptionUseCase.InputData(client, unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)
+                        new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)
                         )
             }
         }

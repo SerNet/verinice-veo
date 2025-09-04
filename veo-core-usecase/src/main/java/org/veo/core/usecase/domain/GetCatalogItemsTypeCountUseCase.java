@@ -18,21 +18,19 @@
 package org.veo.core.usecase.domain;
 
 import java.util.Set;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,19 +38,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class GetCatalogItemsTypeCountUseCase
-    implements TransactionalUseCase<
-        GetCatalogItemsTypeCountUseCase.InputData, GetCatalogItemsTypeCountUseCase.OutputData> {
+    implements TransactionalUseCase<EntityId, GetCatalogItemsTypeCountUseCase.OutputData> {
 
   private final DomainRepository domainRepository;
   private final CatalogItemRepository itemRepository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId);
-    Client client = input.authenticatedClient;
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    Domain domain = domainRepository.getById(input.id(), userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
@@ -64,9 +57,6 @@ public class GetCatalogItemsTypeCountUseCase
 
     return new OutputData(catalogItemTypeCounts);
   }
-
-  @Valid
-  public record InputData(UUID domainId, Client authenticatedClient) implements UseCase.InputData {}
 
   @Valid
   public record OutputData(@Valid CatalogItemsTypeCount result) implements UseCase.OutputData {}

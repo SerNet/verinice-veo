@@ -35,14 +35,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.UserConfiguration;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.GetAllUserConfigurationKeysUseCase;
 import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,13 +68,10 @@ public class UserConfigurationController extends AbstractVeoController {
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "User configuration not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
-  public @Valid Future<Set<String>> getUserConfiguration(
-      @Parameter(required = true, hidden = true) ApplicationUser applicationUser) {
-    Client authenticatedClient = getClient(applicationUser);
+  public @Valid Future<Set<String>> getUserConfiguration() {
     return useCaseInteractor.execute(
         getAllUserConfigurationKeysUseCase,
-        new GetAllUserConfigurationKeysUseCase.InputData(
-            authenticatedClient.getId(), applicationUser.getUsername()),
+        UseCase.EmptyInput.INSTANCE,
         GetAllUserConfigurationKeysUseCase.OutputData::keys);
   }
 
@@ -88,14 +84,11 @@ public class UserConfigurationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "User configuration not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
   public @Valid Future<Map<String, Object>> getUserConfiguration(
-      @Parameter(required = true, hidden = true) ApplicationUser applicationUser,
       @Parameter(required = true, description = "Id of the api-client") @PathVariable
           String appId) {
-    Client authenticatedClient = getClient(applicationUser);
     return useCaseInteractor.execute(
         getUserConfigurationUseCase,
-        new GetUserConfigurationUseCase.InputData(
-            authenticatedClient.getId(), applicationUser.getUsername(), appId),
+        new GetUserConfigurationUseCase.InputData(appId),
         GetUserConfigurationUseCase.OutputData::configuration);
   }
 
@@ -105,7 +98,6 @@ public class UserConfigurationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Configuration created")
   @ApiResponse(responseCode = "413", description = "Exceeds the configuration size limit.")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateUserConfiguration(
-      @Parameter(required = true, hidden = true) ApplicationUser applicationUser,
       @Parameter(required = true, description = "Id of the api-client") @PathVariable String appId,
       @Valid @RequestBody Map<String, Object> userConfiguration) {
     return useCaseInteractor.execute(
@@ -122,14 +114,11 @@ public class UserConfigurationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Configuration deleted")
   @ApiResponse(responseCode = "404", description = "Configuration not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUserConfiguration(
-      @Parameter(required = true, hidden = true) ApplicationUser applicationUser,
       @Parameter(required = true, description = "Id of the api-client") @PathVariable
           String appId) {
-    Client authenticatedClient = getClient(applicationUser);
     return useCaseInteractor.execute(
         deleteUserConfigurationUseCase,
-        new DeleteUserConfigurationUseCase.InputData(
-            authenticatedClient.getId(), applicationUser.getUsername(), appId),
+        new DeleteUserConfigurationUseCase.InputData(appId),
         output -> ResponseEntity.noContent().build());
   }
 }
