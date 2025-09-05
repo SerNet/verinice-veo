@@ -1298,6 +1298,42 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "ProbabilityLevel is well-documented"() {
+        expect:
+        with(getSchema('ProbabilityLevel')) {
+            it.properties.keySet() ==~ [
+                'ordinalValue',
+                'htmlColor',
+                'translations'
+            ]
+            it.required ==~ [
+                'translations'
+            ]
+            it.properties.htmlColor == [
+                type   : 'string',
+                pattern: '#[0-9a-fA-F]{6}'
+            ]
+        }
+    }
+
+    def "CategoryLevel is well-documented"() {
+        expect:
+        with(getSchema('CategoryLevel')) {
+            it.properties.keySet() ==~ [
+                'ordinalValue',
+                'htmlColor',
+                'translations'
+            ]
+            it.required ==~ [
+                'translations'
+            ]
+            it.properties.htmlColor == [
+                type:'string',
+                pattern: '#[0-9a-fA-F]{6}'
+            ]
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])

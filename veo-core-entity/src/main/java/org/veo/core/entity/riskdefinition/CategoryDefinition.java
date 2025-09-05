@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -72,7 +73,7 @@ public class CategoryDefinition extends DimensionDefinition<CategoryLevel> {
   }
 
   private List<List<RiskValue>> valueMatrix;
-  private List<CategoryLevel> potentialImpacts = new ArrayList<>();
+  @Valid private List<CategoryLevel> potentialImpacts = new ArrayList<>();
 
   public RiskValue getRiskValue(ProbabilityRef effectiveProbability, ImpactRef effectiveImpact) {
     ensureRiskValuesSupported();

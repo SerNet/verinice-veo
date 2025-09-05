@@ -98,6 +98,34 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
                 it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
             }
         }
+
+        when:
+        rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
+        rd.probability.levels.first().htmlColor = "#foo"
+
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, 400)
+
+        then:
+        e = thrown()
+        with(e.parameterValidationResults.first()  ) {
+            with(it.resolvableErrors.first()) {
+                it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
+            }
+        }
+
+        when:
+        rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
+        rd.categories.first().potentialImpacts.first().htmlColor = "#foo"
+
+        put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, 400)
+
+        then:
+        e = thrown()
+        with(e.parameterValidationResults.first()  ) {
+            with(it.resolvableErrors.first()) {
+                it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
+            }
+        }
     }
 
     def "normal user can add or remove riskvalues"() {
