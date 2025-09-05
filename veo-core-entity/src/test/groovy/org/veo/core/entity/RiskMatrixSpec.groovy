@@ -27,7 +27,6 @@ import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.entity.riskdefinition.RiskMethod
 import org.veo.core.entity.riskdefinition.RiskValue
-import org.veo.core.entity.specification.TranslationValidator
 
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.Validation
@@ -381,8 +380,8 @@ class RiskMatrixSpec extends Specification {
         rd.categories = [cd]
 
         rd.categories[0].potentialImpacts = [
-            new CategoryLevel("color-1"),
-            new CategoryLevel("color-2")
+            new CategoryLevel("#123456"),
+            new CategoryLevel("#123456")
         ]
 
         then: "the ordinal value is set"
@@ -419,11 +418,11 @@ class RiskMatrixSpec extends Specification {
         rd.probability = new ProbabilityDefinition()
         rd.probability.id = ProbabilityDefinition.DIMENSION_PROBABILITY
         rd.probability.levels = [
-            new ProbabilityLevel("color-1"),
-            new ProbabilityLevel("color-2")
+            new ProbabilityLevel("#123456"),
+            new ProbabilityLevel("#123456")
         ]
         rd.implementationStateDefinition = new ImplementationStateDefinition([
-            new CategoryLevel("color-1")
+            new CategoryLevel("#123456")
         ])
 
         then: "no more violations are present"
@@ -529,7 +528,7 @@ class RiskMatrixSpec extends Specification {
         RiskDefinition rd = new RiskDefinition()
         rd.riskMethod = new RiskMethod()
         rd.probability.levels = [
-            new ProbabilityLevel("a")
+            new ProbabilityLevel("#123456")
         ]
 
         rd.riskValues = [
@@ -547,7 +546,7 @@ class RiskMatrixSpec extends Specification {
         ]
 
         rd.implementationStateDefinition.levels = [
-            new CategoryLevel("color-1")
+            new CategoryLevel("#123456")
         ]
 
         then: "it validates nicely"
@@ -621,7 +620,7 @@ class RiskMatrixSpec extends Specification {
         rd.id= "simple-id"
         rd.riskMethod = new RiskMethod()
         rd.probability.levels = [
-            new ProbabilityLevel("a")
+            new ProbabilityLevel("#123456")
         ]
 
         rd.riskValues = [
@@ -634,7 +633,7 @@ class RiskMatrixSpec extends Specification {
         ]
 
         def potentialImpacts = [
-            new CategoryLevel("l2")
+            new CategoryLevel("#123456")
         ]
 
         rd.categories = [
@@ -647,7 +646,7 @@ class RiskMatrixSpec extends Specification {
         ]
 
         rd.implementationStateDefinition.levels = [
-            new CategoryLevel("color-1")
+            new CategoryLevel("#123456")
         ]
 
         rd
