@@ -48,7 +48,6 @@ import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
-import org.veo.jobs.UserSwitcher
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
@@ -171,19 +170,18 @@ abstract class VeoSpringSpec extends VeoSpec {
     }
 
     def setup() {
-        new UserSwitcher().runAsAdmin {
-            txTemplate.execute {
-                TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
-                clientDataRepository.findAll().each { client ->
-                    unitDataRepository.findByClientId(client.id, false, null).findAll { it.parent == null }.each {
-                        deleteUnitRecursively(it)
-                    }
-                    // Reload the client since the persistence context was cleared
-                    clientRepository.delete(clientRepository.getById(client.id))
+
+        txTemplate.execute {
+            TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
+            clientDataRepository.findAll().each { client ->
+                unitDataRepository.findByClientId(client.id, false, null).findAll { it.parent == null }.each {
+                    deleteUnitRecursively(it)
                 }
-                domainTemplateDataRepository.deleteAll()
-                eventStoreDataRepository.deleteAll()
+                // Reload the client since the persistence context was cleared
+                clientRepository.delete(clientRepository.getById(client.id))
             }
+            domainTemplateDataRepository.deleteAll()
+            eventStoreDataRepository.deleteAll()
         }
     }
 
