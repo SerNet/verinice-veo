@@ -94,6 +94,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             // 99 is the currently observed count of 85 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 99
             storedDeleteEvents.size() == 10
+            storedUnitDeleteEvents.size() == 1
         }
     }
 
@@ -186,7 +187,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 61
+            queryCounts.select == 62
             queryCounts.insert == 37
             queryCounts.update == 1
             queryCounts.delete == 64
@@ -194,6 +195,13 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             // 7784 is the currently observed count of 7627 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 7784
             storedDeleteEvents.size() == 1100
+            storedUnitDeleteEvents.size() == 1
+        }
+    }
+
+    def getStoredUnitDeleteEvents() {
+        storedEventDataRepository.findAll().findAll{
+            it.content != null && new JsonSlurper().parseText(it.content).eventType == 'unit_deletion'
         }
     }
 

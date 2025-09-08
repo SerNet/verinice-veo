@@ -524,8 +524,10 @@ public class ModuleConfiguration {
   public DeleteUnitUseCase getDeleteUnitUseCase(
       ClientRepositoryImpl clientRepository,
       UnitRepositoryImpl unitRepository,
-      GenericElementRepository elementRepository) {
-    return new DeleteUnitUseCase(clientRepository, unitRepository, elementRepository);
+      GenericElementRepository elementRepository,
+      MessageCreator messageCreator) {
+    return new DeleteUnitUseCase(
+        clientRepository, unitRepository, elementRepository, messageCreator);
   }
 
   @Bean

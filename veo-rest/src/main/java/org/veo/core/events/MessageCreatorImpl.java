@@ -35,6 +35,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.VersioningEvent;
@@ -64,6 +65,7 @@ public class MessageCreatorImpl implements MessageCreator {
   public static final String EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE =
       "element_type_definition_update";
   public static final String EVENT_TYPE_DOMAIN_TEMPLATE_CREATION = "domain_template_creation";
+  public static final String EVENT_TYPE_UNIT_DELETION = "unit_deletion";
 
   @Value("${veo.message.routing-key-prefix}")
   private String routingKeyPrefix;
@@ -129,6 +131,14 @@ public class MessageCreatorImpl implements MessageCreator {
     json.put("domainTemplateId", dt.getIdAsString());
     json.put("version", dt.getTemplateVersion());
     storeMessage(EVENT_TYPE_DOMAIN_TEMPLATE_CREATION, json, null, null);
+  }
+
+  @Override
+  public void createUnitDeletionMessage(Unit unit) {
+    var json = objectMapper.createObjectNode();
+    json.put("clientId", unit.getClient().getIdAsString());
+    json.put("unitId", unit.getIdAsString());
+    storeMessage(EVENT_TYPE_UNIT_DELETION, json, null, null);
   }
 
   private void storeMessage(String eventType, ObjectNode content, String uri, Long changeNumber) {

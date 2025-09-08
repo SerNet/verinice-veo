@@ -20,6 +20,7 @@ package org.veo.core.usecase;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 
@@ -36,4 +37,6 @@ public interface MessageCreator {
   void createElementTypeDefinitionUpdateMessage(Domain domain, ElementType entityType);
 
   void createDomainTemplateCreationEvent(Domain sourceDomain);
+
+  void createUnitDeletionMessage(Unit unit);
 }

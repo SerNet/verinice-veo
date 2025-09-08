@@ -27,6 +27,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -41,10 +42,11 @@ public class DeleteUnitUseCase
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
   private final GenericElementRepository genericElementRepository;
+  private final MessageCreator messageCreator;
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    Unit unit = unitRepository.getById(input.unitId, userAccessRights);
+    Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
     userAccessRights.checkUnitDeleteAllowed();
 
     genericElementRepository.deleteByUnit(unit);
@@ -52,6 +54,7 @@ public class DeleteUnitUseCase
     // Reload the client since the persistence context was cleared
     Client client = clientRepository.getById(userAccessRights.clientId());
     client.decrementTotalUnits();
+    messageCreator.createUnitDeletionMessage(unit);
     return EmptyOutput.INSTANCE;
   }
 

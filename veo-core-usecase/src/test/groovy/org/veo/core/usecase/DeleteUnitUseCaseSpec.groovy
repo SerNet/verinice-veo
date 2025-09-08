@@ -31,19 +31,23 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         existingUnit.id >> uid
         existingUnit.client >> existingClient
         def genericElementRepository = Mock(GenericElementRepository)
+        MessageCreator messageCreator = Mock(MessageCreator)
 
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId())
-        def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, genericElementRepository)
+        def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, genericElementRepository, messageCreator)
         usecase.execute(input, noRestrictionExistingClient)
 
         then: "the client for the unit is retrieved"
         1 * clientRepository.getById(_) >> existingClient
-        1 * unitRepository.getById(_,_) >> existingUnit
+        1 * unitRepository.getByIdFetchClient(_,_) >> existingUnit
 
         1 * genericElementRepository.deleteByUnit(existingUnit)
 
         and: "the unit is deleted"
         1 * unitRepository.delete(_)
+
+        and:
+        1 * messageCreator.createUnitDeletionMessage(existingUnit)
     }
 }

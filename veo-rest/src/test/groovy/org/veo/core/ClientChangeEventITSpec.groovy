@@ -505,7 +505,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             !repository.exists(client.id)
         }
 
-        and: "no outgoing events were produced for the deleted client"
-        eventStoreDataRepository.findPendingEvents(Instant.now(), Pageable.unpaged()).size() == 0
+        and: "one outgoing event is produced for the deleted client(delete unit)"
+        eventStoreDataRepository.findPendingEvents(Instant.now(), Pageable.unpaged()).size() == 1
     }
 }
