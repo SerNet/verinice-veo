@@ -34,6 +34,7 @@ import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase
+import org.veo.jobs.UserSwitcher
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
@@ -107,13 +108,15 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
         QueryCountHolder.clear()
 
         when: "simulating the GET"
-        executeInTransaction {
-            synchronousUseCaseInteractor.execute(
-                    useCase,
-                    new UseCase.IdAndClient(domainTemplateId, client), {
-                        entityToDtoTransformer.transformDomainTemplate2Dto(it.domainTemplate)
-                    }
-                    ).get()
+        new UserSwitcher().runAsUser("user", client.idAsString) {
+            executeInTransaction {
+                synchronousUseCaseInteractor.execute(
+                        useCase,
+                        new UseCase.EntityId(domainTemplateId), {
+                            entityToDtoTransformer.transformDomainTemplate2Dto(it.domainTemplate)
+                        }
+                        ).get()
+            }
         }
         def queryCounts = QueryCountHolder.grandTotal
 

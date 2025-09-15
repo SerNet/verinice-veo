@@ -29,8 +29,8 @@ import org.veo.core.entity.condition.Condition
 import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.risk.RiskDefinitionRef
-import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 
 /**
@@ -203,8 +203,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         when: "trying to retrieve the other client's domain"
         get("/domains/${domainSecondClient.idAsString}", 404)
 
-        then: "a client boundary violation is detected"
-        thrown(ClientBoundaryViolationException)
+        then: "the domain is not being found"
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

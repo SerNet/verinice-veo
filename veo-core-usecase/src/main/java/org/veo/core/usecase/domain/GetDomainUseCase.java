@@ -20,17 +20,15 @@ package org.veo.core.usecase.domain;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.UseCase.EntityId;
 
 public class GetDomainUseCase
-    implements TransactionalUseCase<IdAndClient, GetDomainUseCase.OutputData> {
+    implements TransactionalUseCase<EntityId, GetDomainUseCase.OutputData> {
   private final DomainRepository repository;
 
   public GetDomainUseCase(DomainRepository repository) {
@@ -38,12 +36,8 @@ public class GetDomainUseCase
   }
 
   @Override
-  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
-    Domain domain = repository.getById(input.id());
-    Client client = input.authenticatedClient();
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    Domain domain = repository.getById(input.id(), userAccessRights.clientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

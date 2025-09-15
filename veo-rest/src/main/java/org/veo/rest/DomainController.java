@@ -85,7 +85,7 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
@@ -187,15 +187,14 @@ public class DomainController extends AbstractEntityController {
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<FullDomainDto>> getDomain(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
+      @PathVariable UUID id, WebRequest request) {
     if (getEtag(Domain.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
     CompletableFuture<FullDomainDto> domainFuture =
         useCaseInteractor.execute(
             getDomainUseCase,
-            new UseCase.IdAndClient(id, client),
+            new EntityId(id),
             output -> entityToDtoTransformer.transformDomain2Dto(output.domain()));
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
@@ -212,12 +211,11 @@ public class DomainController extends AbstractEntityController {
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(
-      @Parameter(hidden = true) Authentication auth, @PathVariable UUID id, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
+      @PathVariable UUID id, WebRequest request) {
     return useCaseInteractor
         .execute(
             exportDomainUseCase,
-            new UseCase.IdAndClient(id, client),
+            new EntityId(id),
             o -> entityToDtoTransformer.transformDomain2ExportDto(o.exportDomain()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));

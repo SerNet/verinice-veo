@@ -119,7 +119,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   private static final UriComponents GET_DOCUMENT =
       createTemplate(on(DocumentController.class).getElement(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
   private static final UriComponents GET_DOMAIN =
-      createTemplate(on(DomainController.class).getDomain(ANY_AUTH, DUMMY_UUID, ANY_REQUEST));
+      createTemplate(on(DomainController.class).getDomain(DUMMY_UUID, ANY_REQUEST));
 
   private static final UriComponents GET_DOMAIN_TEMPLATE =
       createTemplate(on(ContentCreationController.class).getDomainTemplate(ANY_AUTH, DUMMY_UUID));

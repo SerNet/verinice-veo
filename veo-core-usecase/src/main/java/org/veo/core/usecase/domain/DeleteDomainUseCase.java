@@ -20,20 +20,18 @@ package org.veo.core.usecase.domain;
 import java.util.List;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
-import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.UseCase.EntityId;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, EmptyOutput> {
+public class DeleteDomainUseCase implements TransactionalUseCase<EntityId, EmptyOutput> {
 
   private final DomainRepository domainRepository;
   private final UnitRepository unitRepository;
@@ -45,13 +43,9 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
   }
 
   @Override
-  public EmptyOutput execute(IdAndClient input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.id());
-    Client client = input.authenticatedClient();
-    if (!client.equals(domain.getOwner())) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
-
+  public EmptyOutput execute(EntityId input, UserAccessRights userAccessRights) {
+    Domain domain = domainRepository.getById(input.id(), userAccessRights.clientId());
+    var client = domain.getOwner();
     log.info("client.domains {}", client.getDomains().size());
     List<Unit> units = unitRepository.findByClient(client);
     boolean isUsed =
@@ -65,6 +59,7 @@ public class DeleteDomainUseCase implements TransactionalUseCase<IdAndClient, Em
     }
 
     log.info("deleting unused domain {}", domain);
+    client.removeFromDomains(domain);
     domainRepository.deleteById(domain.getId());
     return EmptyOutput.INSTANCE;
   }

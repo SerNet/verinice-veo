@@ -26,11 +26,11 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.UseCaseTools;
 
 public class GetDomainTemplateUseCase
-    implements TransactionalUseCase<IdAndClient, GetDomainTemplateUseCase.OutputData> {
+    implements TransactionalUseCase<EntityId, GetDomainTemplateUseCase.OutputData> {
   private final DomainTemplateService templateService;
   private final ClientRepository clientRepository;
 
@@ -41,9 +41,8 @@ public class GetDomainTemplateUseCase
   }
 
   @Override
-  public OutputData execute(IdAndClient input, UserAccessRights userAccessRights) {
-    Client client =
-        UseCaseTools.checkClientExists(input.authenticatedClient().getId(), clientRepository);
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
 
     return new OutputData(templateService.getTemplate(client, input.id()));
   }

@@ -23,7 +23,6 @@ import java.util.function.Function;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.Client;
 
 /**
  * Superclass for all use cases. Each use case must provide an implementation of input and output
@@ -76,11 +75,6 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
     private EmptyInput() {}
   }
 
-  /**
-   * A combination of an entity ID and a Client. This is used to specify an element that is to be
-   * loaded in a client's context. The Client object is used to check if the given ID is valid in
-   * the client.
-   */
   @Valid
-  record IdAndClient(UUID id, Client authenticatedClient) implements UseCase.InputData {}
+  record EntityId(UUID id) implements UseCase.InputData {}
 }

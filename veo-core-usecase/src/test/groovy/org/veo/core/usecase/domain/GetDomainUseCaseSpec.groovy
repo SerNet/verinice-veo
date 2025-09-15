@@ -18,9 +18,8 @@
 package org.veo.core.usecase.domain
 
 import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
-import org.veo.core.usecase.UseCase.IdAndClient
+import org.veo.core.usecase.UseCase.EntityId
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.rest.security.NoRestrictionAccessRight
 
@@ -36,14 +35,14 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
 
-        repository.getById(existingDomainId) >> existingDomain
-        repository.getById(_) >> {throw new NotFoundException("")}
+        repository.getById(existingDomainId, existingClient.id) >> existingDomain
+        repository.getById(_, _) >> {throw new NotFoundException("")}
     }
 
     def "retrieve a domain"() {
         when :
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(existingDomainId, existingClient), noRestrictionExistingClient)
+        def output = usecase.execute(new EntityId(existingDomainId), noRestrictionExistingClient)
 
         then:
         output.domain != null
@@ -53,7 +52,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve an inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        usecase.execute(new IdAndClient(existingDomainId, existingClient), noRestrictionExistingClient)
+        usecase.execute(new EntityId(existingDomainId), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)
@@ -61,15 +60,15 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a domain unknown client"() {
         when:
-        usecase.execute(new IdAndClient(existingDomainId, anotherClient), NoRestrictionAccessRight.from(anotherClient.id.toString()))
+        usecase.execute(new EntityId(existingDomainId), NoRestrictionAccessRight.from(anotherClient.id.toString()))
 
         then:
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     def "retrieve an unknown domain"() {
         when:
-        usecase.execute(new IdAndClient(UUID.randomUUID(), existingClient), noRestrictionExistingClient)
+        usecase.execute(new EntityId(UUID.randomUUID()), noRestrictionExistingClient)
 
         then:
         thrown(NotFoundException)

@@ -81,7 +81,7 @@ import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
-import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
@@ -183,9 +183,7 @@ public class ContentCreationController extends AbstractVeoController {
           @PathVariable
           UUID id) {
     return useCaseInteractor.execute(
-        deleteDomainUseCase,
-        new IdAndClient(id, getAuthenticatedClient(auth)),
-        output -> RestApiResponse.noContent());
+        deleteDomainUseCase, new EntityId(id), output -> RestApiResponse.noContent());
   }
 
   @PutMapping(value = "/domains/{id}/element-type-definitions/{type}")
@@ -584,7 +582,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor
         .execute(
             getDomainTemplateUseCase,
-            new IdAndClient(id, getAuthenticatedClient(auth)),
+            new EntityId(id),
             output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.domainTemplate()))
         .thenApply(
             domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));
