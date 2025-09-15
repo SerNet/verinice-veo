@@ -72,6 +72,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.RiskState;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -263,7 +264,7 @@ public class UnitController extends AbstractEntityController {
     CompletableFuture<FullUnitDto> unitFuture =
         useCaseInteractor.execute(
             getUnitUseCase,
-            new org.veo.core.usecase.unit.GetUnitUseCase.InputData(id),
+            new EntityId(id),
             output -> entityToDtoTransformer.transformUnit2Dto(output.unit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
@@ -379,8 +380,6 @@ public class UnitController extends AbstractEntityController {
           UUID uuid) {
 
     return useCaseInteractor.execute(
-        deleteUnitUseCase,
-        new DeleteUnitUseCase.InputData(uuid),
-        output -> RestApiResponse.noContent());
+        deleteUnitUseCase, new EntityId(uuid), output -> RestApiResponse.noContent());
   }
 }

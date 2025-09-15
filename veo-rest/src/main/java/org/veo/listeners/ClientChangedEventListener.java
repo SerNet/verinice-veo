@@ -42,6 +42,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.service.DefaultDomainCreator;
 
@@ -166,10 +167,7 @@ public class ClientChangedEventListener {
     log.info("Delete data for client {}", client);
     unitRepository
         .findByClient(client)
-        .forEach(
-            unit ->
-                deleteUnitUseCase.execute(
-                    new DeleteUnitUseCase.InputData(unit.getId()), userAccessRights));
+        .forEach(unit -> deleteUnitUseCase.execute(new EntityId(unit.getId()), userAccessRights));
 
     // Reload the client since the persistence context was cleared
     repository.delete(repository.getById(client.getId()));

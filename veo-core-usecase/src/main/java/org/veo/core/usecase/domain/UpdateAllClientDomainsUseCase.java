@@ -48,8 +48,7 @@ public class UpdateAllClientDomainsUseCase
     int migrationsDone = 0;
     for (UUID newDomainId : newDomainIds) {
       try {
-        migrateDomainUseCase.execute(
-            new MigrateDomainUseCase.InputData(newDomainId), userAccessRights);
+        migrateDomainUseCase.execute(new EntityId(newDomainId), userAccessRights);
         migrationsDone++;
         log.info("{} of {} migrations performed", migrationsDone, count);
       } catch (MigrationFailedException e) {

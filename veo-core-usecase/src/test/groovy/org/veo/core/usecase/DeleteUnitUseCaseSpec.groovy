@@ -17,11 +17,9 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.UserAccessRights
 import org.veo.core.entity.Unit
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
-import org.veo.rest.security.NoRestrictionAccessRight
 
 public class DeleteUnitUseCaseSpec extends UseCaseSpec {
     def "Delete a unit with subunits" () {
@@ -34,7 +32,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         MessageCreator messageCreator = Mock(MessageCreator)
 
         when: "the unit is deleted"
-        def input = new DeleteUnitUseCase.InputData(existingUnit.getId())
+        def input = new UseCase.EntityId(existingUnit.getId())
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, genericElementRepository, messageCreator)
         usecase.execute(input, noRestrictionExistingClient)
 

@@ -18,9 +18,7 @@
 package org.veo.core.usecase.domain;
 
 import java.util.List;
-import java.util.UUID;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
@@ -33,18 +31,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GetUpdateDefinitionUseCase
-    implements TransactionalUseCase<
-        GetUpdateDefinitionUseCase.InputData, GetUpdateDefinitionUseCase.OutputData> {
+    implements TransactionalUseCase<UseCase.EntityId, GetUpdateDefinitionUseCase.OutputData> {
   private final DomainRepository repository;
 
   @Override
-  public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    var domain = repository.getActiveById(input.id(), userAccessRights.clientId());
     return new OutputData(domain.getDomainMigrationDefinition().migrations());
   }
-
-  @Valid
-  public record InputData(@NotNull UUID domainId) implements UseCase.InputData {}
 
   public record OutputData(@NotNull List<DomainMigrationStep> migrationSteps)
       implements UseCase.OutputData {}

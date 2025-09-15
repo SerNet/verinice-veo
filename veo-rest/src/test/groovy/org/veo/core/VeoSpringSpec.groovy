@@ -45,6 +45,7 @@ import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.service.UserAccessRightsProvider
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.jobs.UserSwitcher
@@ -70,7 +71,6 @@ import org.veo.test.VeoSpec
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
-import groovy.util.logging.Slf4j
 
 /**
  * Base class for veo specifications that use Spring
@@ -163,7 +163,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         unitDataRepository.findByParentId(unit.id).each {
             deleteUnitRecursively(it)
         }
-        deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id), NoRestrictionAccessRight.from(unit.client.id.toString()))
+        deleteUnitUseCase.execute(new UseCase.EntityId(unit.id), NoRestrictionAccessRight.from(unit.client.id.toString()))
     }
 
     def setup() {

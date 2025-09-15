@@ -87,6 +87,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -316,7 +317,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @Override
   public Future<List<ScopeRiskDto>> getRisks(UUID scopeId) {
 
-    var input = new GetScopeRisksUseCase.InputData(scopeId);
+    var input = new EntityId(scopeId);
 
     return useCaseInteractor.execute(
         getScopeRisksUseCase,

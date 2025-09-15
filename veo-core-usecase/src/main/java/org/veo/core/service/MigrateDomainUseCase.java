@@ -19,7 +19,6 @@ package org.veo.core.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -34,6 +33,7 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.MigrationFailedException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.unit.MigrateUnitUseCase;
 import org.veo.core.usecase.unit.TransferDomainCustomizationUseCase;
 
@@ -47,8 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class MigrateDomainUseCase
-    implements TransactionalUseCase<MigrateDomainUseCase.InputData, UseCase.EmptyOutput> {
+public class MigrateDomainUseCase implements TransactionalUseCase<EntityId, UseCase.EmptyOutput> {
   private final DomainRepository domainRepository;
   private final UnitRepository unitRepository;
   private final TransferDomainCustomizationUseCase transferDomainCustomizationUseCase;
@@ -58,8 +57,8 @@ public class MigrateDomainUseCase
   // transaction when calling this from another use case)
   @Transactional
   @Override
-  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var newDomain = domainRepository.getById(input.domainId);
+  public EmptyOutput execute(EntityId input, UserAccessRights userAccessRights) {
+    var newDomain = domainRepository.getById(input.id());
     Client client = newDomain.getOwner();
 
     Set<Domain> clientActiveDomains =
@@ -112,6 +111,4 @@ public class MigrateDomainUseCase
       throw MigrationFailedException.forDomain(unitsToUpdate.size(), failureCount);
     }
   }
-
-  public record InputData(UUID domainId) implements UseCase.InputData {}
 }

@@ -25,10 +25,10 @@ import org.springframework.test.context.DynamicPropertySource
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
-import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
@@ -213,7 +213,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
     def runUseCase(Unit unit, UserAccessRights user) {
         executeInTransaction {
-            deleteUnitUseCase.execute(new InputData(unit.id), NoRestrictionAccessRight.from(unit.client.idAsString))
+            deleteUnitUseCase.execute(new UseCase.EntityId(unit.id), NoRestrictionAccessRight.from(unit.client.idAsString))
         }
     }
 

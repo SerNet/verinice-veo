@@ -85,6 +85,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.common.ETag;
@@ -324,7 +325,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @Override
   public Future<List<ProcessRiskDto>> getRisks(UUID processId) {
 
-    var input = new GetProcessRisksUseCase.InputData(processId);
+    var input = new EntityId(processId);
 
     return useCaseInteractor.execute(
         getProcessRisksUseCase,

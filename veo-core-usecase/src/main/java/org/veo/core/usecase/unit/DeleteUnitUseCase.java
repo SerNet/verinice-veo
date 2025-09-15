@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
@@ -30,14 +26,14 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
+import org.veo.core.usecase.UseCase.EntityId;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class DeleteUnitUseCase
-    implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput>, RetryableUseCase {
+    implements TransactionalUseCase<EntityId, EmptyOutput>, RetryableUseCase {
 
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
@@ -45,8 +41,8 @@ public class DeleteUnitUseCase
   private final MessageCreator messageCreator;
 
   @Override
-  public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
+  public EmptyOutput execute(EntityId input, UserAccessRights userAccessRights) {
+    Unit unit = unitRepository.getByIdFetchClient(input.id(), userAccessRights);
     userAccessRights.checkUnitDeleteAllowed();
 
     genericElementRepository.deleteByUnit(unit);
@@ -72,7 +68,4 @@ public class DeleteUnitUseCase
   public int getMaxAttempts() {
     return 5;
   }
-
-  @Valid
-  public record InputData(UUID unitId) implements UseCase.InputData {}
 }

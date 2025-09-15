@@ -85,6 +85,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.usecase.InspectElementUseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
@@ -319,7 +320,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<List<AssetRiskDto>> getRisks(UUID assetId) {
-    var input = new GetAssetRisksUseCase.InputData(assetId);
+    var input = new EntityId(assetId);
 
     return useCaseInteractor.execute(
         getAssetRisksUseCase,

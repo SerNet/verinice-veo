@@ -647,7 +647,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor
         .execute(
             getUpdateDefinitionUseCase,
-            new GetUpdateDefinitionUseCase.InputData(domainId),
+            new EntityId(domainId),
             GetUpdateDefinitionUseCase.OutputData::migrationSteps)
         .thenApply(
             updateDefinition ->

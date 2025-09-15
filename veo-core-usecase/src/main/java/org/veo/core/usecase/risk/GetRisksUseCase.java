@@ -18,7 +18,6 @@
 package org.veo.core.usecase.risk;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -30,11 +29,12 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EntityId;
 
 import lombok.Value;
 
 public class GetRisksUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    implements TransactionalUseCase<GetRisksUseCase.InputData, GetRisksUseCase.OutputData<R>> {
+    implements TransactionalUseCase<EntityId, GetRisksUseCase.OutputData<R>> {
 
   private final RepositoryProvider repositoryProvider;
   private final Class<T> entityClass;
@@ -46,18 +46,15 @@ public class GetRisksUseCase<T extends RiskAffected<T, R>, R extends AbstractRis
 
   @Transactional
   @Override
-  public OutputData<R> execute(InputData input, UserAccessRights userAccessRights) {
+  public OutputData<R> execute(EntityId input, UserAccessRights userAccessRights) {
     var repositoryFor = repositoryProvider.getElementRepositoryFor(entityClass);
     var riskAffected =
         repositoryFor
-            .findById(input.riskAffectedRef, userAccessRights)
-            .orElseThrow(() -> new NotFoundException(input.riskAffectedRef, entityClass));
+            .findById(input.id(), userAccessRights)
+            .orElseThrow(() -> new NotFoundException(input.id(), entityClass));
 
     return new OutputData<>(riskAffected.getRisks());
   }
-
-  @Valid
-  public record InputData(UUID riskAffectedRef) implements UseCase.InputData {}
 
   @Valid
   @Value

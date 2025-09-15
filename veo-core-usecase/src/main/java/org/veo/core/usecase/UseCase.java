@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
 
@@ -76,5 +77,5 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
   }
 
   @Valid
-  record EntityId(UUID id) implements UseCase.InputData {}
+  record EntityId(@NotNull UUID id) implements UseCase.InputData {}
 }
