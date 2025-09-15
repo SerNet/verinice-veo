@@ -28,6 +28,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.specification.LicensingException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
@@ -67,6 +68,10 @@ public class CreateUnitUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     userAccessRights.checkUnitCreateAllowed();
+    if (userAccessRights.getTotalUnits() == null
+        || unitRepository.count() + 1 > userAccessRights.getTotalUnits()) {
+      throw new LicensingException("Your license does not permit the creation of more units.");
+    }
     Client client =
         clientRepository
             .findById(userAccessRights.getClientId())

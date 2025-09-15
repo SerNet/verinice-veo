@@ -29,13 +29,13 @@ import org.veo.rest.security.ApplicationUser
  */
 class UserSwitcher {
 
-    def runAsUser(String username, boolean admin=false, UUID clientId, int maxUnits = 2, final Closure closure) {
+    def runAsUser(String username, boolean admin=false, UUID clientId, int maxUnits = 2, int totalUnits = 2, final Closure closure) {
         def currentAuth = SecurityContextHolder.getContext()
                 .getAuthentication()
         try {
             var user = ApplicationUser.authenticatedUser(username,
                     clientId,
-                    "veo-user", admin ? ["veo-admin"]: [], maxUnits)
+                    "veo-user", admin ? ["veo-admin"]: [], maxUnits, totalUnits)
             var token = new AnonymousAuthenticationToken(username, user,
                     List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
             SecurityContextHolder.getContext().setAuthentication(token)

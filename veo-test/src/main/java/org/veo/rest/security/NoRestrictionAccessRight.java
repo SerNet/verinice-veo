@@ -32,6 +32,7 @@ import lombok.AllArgsConstructor;
 public final class NoRestrictionAccessRight implements UserAccessRights {
   private final UUID clientId;
   private final Integer maxUnits;
+  private final Integer totalUnits;
 
   @Override
   public void checkClient(ClientOwned id) {}
@@ -62,12 +63,14 @@ public final class NoRestrictionAccessRight implements UserAccessRights {
   }
 
   public static NoRestrictionAccessRight from(String clientId) {
-    return from(clientId, 0);
+    return new NoRestrictionAccessRight(
+        Optional.ofNullable(clientId).map(UUID::fromString).orElse(null), 0, 0);
   }
 
-  public static NoRestrictionAccessRight from(String clientId, Integer maxUnits) {
+  public static NoRestrictionAccessRight from(
+      String clientId, Integer maxUnits, Integer totalUnits) {
     return new NoRestrictionAccessRight(
-        Optional.ofNullable(clientId).map(UUID::fromString).orElse(null), maxUnits);
+        Optional.ofNullable(clientId).map(UUID::fromString).orElse(null), maxUnits, totalUnits);
   }
 
   @Override
@@ -78,5 +81,10 @@ public final class NoRestrictionAccessRight implements UserAccessRights {
   @Override
   public Integer getMaxUnits() {
     return maxUnits;
+  }
+
+  @Override
+  public Integer getTotalUnits() {
+    return totalUnits;
   }
 }

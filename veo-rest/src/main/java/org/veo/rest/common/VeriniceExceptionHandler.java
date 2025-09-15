@@ -48,6 +48,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.ContentTooLongException;
 import org.veo.core.entity.specification.ExceedLimitException;
+import org.veo.core.entity.specification.LicensingException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.entity.specification.NotAllowedException;
@@ -180,6 +181,11 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({InvalidFormatException.class})
   protected ResponseEntity<ApiResponseBody> handle(InvalidFormatException exception) {
     return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+
+  @ExceptionHandler({LicensingException.class})
+  protected ResponseEntity<ApiResponseBody> handle(LicensingException exception) {
+    return handle(exception, HttpStatus.FORBIDDEN);
   }
 
   private static ResponseEntity<Map<String, String>> handle(

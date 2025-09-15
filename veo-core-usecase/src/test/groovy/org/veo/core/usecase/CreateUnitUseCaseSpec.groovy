@@ -41,12 +41,13 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def input = new InputData(namedInput, [] as Set)
-        def newUnit = usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1)).unit
+        def newUnit = usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1, 1)).unit
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new unit was created and stored"
+        1 * unitRepository.count() >> 0
         1 * entityFactory.createUnit("New unit") >> newUnit1
         1 * unitRepository.save(newUnit1) >> newUnit1
         newUnit != null
@@ -67,12 +68,13 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, [existingDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1))
+        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1, 1))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
+        1 * unitRepository.count() >> 0
         1 * domainRepository.getByIds([existingDomain.id] as Set, existingClient.id) >> [existingDomain]
         1 * newUnit1.addToDomains([existingDomain] as Set)
         0 * newUnit1.addToDomains(_)
@@ -95,12 +97,13 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, [randomDomainId] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1))
+        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1, 1))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
+        1 * unitRepository.count() >> 0
         1 * domainRepository.getByIds([randomDomainId] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
         thrown(ReferenceTargetNotFoundException)
     }
@@ -123,12 +126,13 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, [anotherDomain.id] as Set)
 
         when: "the use case to create a unit is executed"
-        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1))
+        usecase.execute(input, NoRestrictionAccessRight.from(existingClient.idAsString, 1, 1))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
+        1 * unitRepository.count() >> 0
         1 * domainRepository.getByIds([anotherDomain.id] as Set, existingClient.id) >> { throw new NotFoundException(anotherDomain.id, Domain) }
         thrown(ReferenceTargetNotFoundException)
     }

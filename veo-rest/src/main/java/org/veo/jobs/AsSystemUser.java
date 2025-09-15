@@ -48,7 +48,12 @@ class AsSystemUser {
   static void runAsAdmin(final Runnable function) {
     var user =
         ApplicationUser.authenticatedUser(
-            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_ADMIN_ROLE), Integer.MAX_VALUE);
+            SYSTEMUSER_NAME,
+            null,
+            VEO_USER_SCOPE,
+            List.of(VEO_ADMIN_ROLE),
+            Integer.MAX_VALUE,
+            Integer.MAX_VALUE);
     run(function, user);
   }
 
@@ -59,6 +64,7 @@ class AsSystemUser {
             null,
             VEO_USER_SCOPE,
             List.of(VEO_CONTENT_CREATOR_ROLE),
+            Integer.MAX_VALUE,
             Integer.MAX_VALUE);
     run(function, user);
   }
@@ -70,6 +76,7 @@ class AsSystemUser {
             client.getId(),
             VEO_USER_SCOPE,
             Collections.emptyList(),
+            Integer.MAX_VALUE,
             Integer.MAX_VALUE);
     run(function, user);
   }

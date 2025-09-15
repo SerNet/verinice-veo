@@ -48,7 +48,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.specification.LicensingException
 import org.veo.core.entity.specification.MaxUnitsExceededException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -546,6 +546,36 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:"the action is not performed"
         thrown(MaxUnitsExceededException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "Total units limit is respected"() {
+        given: "another client with the maximum number of units for the realm"
+        def otherClient = repository.save(newClient())
+        def otherClientsUnits = urepository.saveAll((1..5).collect {newUnit(otherClient)} as Set)
+
+        when: "the user tries to create a unit"
+        post('/units', [name: 'Unit 1'], HttpStatus.SC_FORBIDDEN)
+
+        then: "the action is not performed"
+        LicensingException e = thrown()
+        e.message == "Your license does not permit the creation of more units."
+
+        when: "we delete one of the other client's units"
+        urepository.delete(otherClientsUnits.first())
+
+        and: "the user tries to create a unit"
+        def result = parseJson(post('/units', [name: 'Unit 1']))
+
+        then: "the request is successful"
+        result.success
+
+        when: "the user tries to create a second unit"
+        post('/units', [name: 'Unit 2'], HttpStatus.SC_FORBIDDEN)
+
+        then: "the action is not performed"
+        e = thrown()
+        e.message == "Your license does not permit the creation of more units."
     }
 
     @WithUserDetails("manyunitscreator@domain.example")

@@ -45,6 +45,8 @@ public interface UserAccessRights {
 
   Integer getMaxUnits();
 
+  Integer getTotalUnits();
+
   default boolean isUnitAccessRestricted() {
     if (getRoles().contains(READ_WRITE_ALL_UNITS)) return false;
     return getRoles().contains(UNIT_ACCESS_RESTRICTION);

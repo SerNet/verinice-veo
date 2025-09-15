@@ -226,5 +226,10 @@ public class ClientChangedEventListener {
     public Integer getMaxUnits() {
       return 0;
     }
+
+    @Override
+    public Integer getTotalUnits() {
+      return 0;
+    }
   }
 }

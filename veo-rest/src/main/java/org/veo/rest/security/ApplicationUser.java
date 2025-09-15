@@ -54,6 +54,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
   private final List<String> groups;
   private final List<String> roles;
   private final Integer maxUnits;
+  private final Integer totalUnits;
   private final Set<UUID> readableUnitIds;
   private final Set<UUID> writableUnitIds;
 
@@ -76,6 +77,9 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
         jwt.getClaimAsStringList("groups"),
         jwt.getClaimAsStringList("roles"),
         Optional.ofNullable(jwt.getClaimAsString("max_units")).map(Integer::parseInt).orElse(null),
+        Optional.ofNullable(jwt.getClaimAsString("total_units"))
+            .map(Integer::parseInt)
+            .orElse(null),
         Optional.ofNullable(jwt.getClaimAsStringList("unit_read_access"))
             .orElse(Collections.emptyList())
             .stream()
@@ -120,7 +124,12 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
   }
 
   public static ApplicationUser authenticatedUser(
-      String username, UUID clientId, String scopes, List<String> roles, Integer maxUnits) {
+      String username,
+      UUID clientId,
+      String scopes,
+      List<String> roles,
+      Integer maxUnits,
+      Integer totalUnits) {
     return new ApplicationUser(
         username,
         clientId,
@@ -132,6 +141,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
         Collections.emptyList(),
         roles,
         maxUnits,
+        totalUnits,
         Collections.emptySet(),
         Collections.emptySet());
   }
@@ -142,6 +152,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
       String scopes,
       List<String> roles,
       Integer maxUnits,
+      Integer totalUnits,
       Set<UUID> unitReads,
       Set<UUID> unitWrite) {
     return new ApplicationUser(
@@ -155,6 +166,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
         Collections.emptyList(),
         roles,
         maxUnits,
+        totalUnits,
         unitReads,
         unitWrite);
   }

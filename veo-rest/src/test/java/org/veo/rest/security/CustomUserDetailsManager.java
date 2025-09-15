@@ -72,6 +72,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             "veo-user",
             new ArrayList<>(List.of("veo-user", "veo-write")),
             2,
+            5,
             new HashSet<>(),
             new HashSet<>());
     basicUser.setAuthorities(
@@ -86,6 +87,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             UUID.fromString(TESTCLIENT_UUID),
             "veo-user",
             List.of("veo-user", "veo-write"),
+            50,
             50);
     manyUnitsCreator.setAuthorities(
         List.of(
@@ -98,6 +100,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             UUID.fromString(TESTCLIENT_UUID),
             "veo-admin",
             List.of("veo-user", "veo-admin", "veo-write"),
+            100,
             100);
     adminUser.setAuthorities(
         List.of(
@@ -111,6 +114,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             UUID.fromString(TESTCLIENT_UUID),
             "veo-content-creator",
             List.of("veo-user", "veo-content-creator", "veo-write"),
+            2,
             2);
     contentCreatorUser.setAuthorities(
         List.of(
@@ -121,7 +125,12 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     // A user with read-only access:
     ApplicationUser readOnlyUser =
         ApplicationUser.authenticatedUser(
-            "read-only-user", UUID.fromString(TESTCLIENT_UUID), "veo-user", List.of("veo-user"), 0);
+            "read-only-user",
+            UUID.fromString(TESTCLIENT_UUID),
+            "veo-user",
+            List.of("veo-user"),
+            0,
+            0);
     readOnlyUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
 
     // A user with no rights:
@@ -131,6 +140,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             UUID.fromString(TESTCLIENT_UUID),
             "veo-user",
             Collections.emptyList(),
+            0,
             0);
     noRightsUser.setAuthorities(Collections.emptyList());
 
@@ -141,6 +151,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
             UUID.fromString(TESTCLIENT_UUID),
             "veo-content-creator",
             List.of("veo-user", "veo-content-creator"),
+            0,
             0);
     contentCreatorUserReadonly.setAuthorities(
         List.of(
