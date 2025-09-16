@@ -57,15 +57,6 @@ public interface RequirementImplementationDataRepository
                       select distinct ri from requirement_implementation ri
                       join fetch ri.origin
                       join fetch ri.responsible
-                      where ri.responsible = ?1
-                     """)
-  Set<RequirementImplementationData> findByPerson(Person responsible);
-
-  @Query(
-      """
-                      select distinct ri from requirement_implementation ri
-                      join fetch ri.origin
-                      join fetch ri.responsible
                       where ri.responsible in ?1
                      """)
   Set<RequirementImplementationData> findByPersons(Set<Person> responsible);

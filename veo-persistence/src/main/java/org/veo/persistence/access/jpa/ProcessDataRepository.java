@@ -26,7 +26,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 
@@ -45,27 +44,6 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
           + "left join fetch ra.domain "
           + "where p.id IN ?1")
   Set<ProcessData> findByIdsWithRiskValues(Set<UUID> ids);
-
-  @Query(
-      "select distinct e from #{#entityName} e "
-          + "left join fetch e.owner unit "
-          + "left join fetch e.risks risks "
-          + "left join fetch risks.riskAspects ra "
-          + "left join fetch ra.domain "
-          + "where e.id IN ?1 and unit.client.id = ?2  and  (?3 = false or unit.id in ?4)")
-  Set<ProcessData> findByIdsWithRiskValues(
-      Set<UUID> ids, UUID clientId, boolean restrictUnitAccess, Set<UUID> allowedUnits);
-
-  @Query(
-      """
-         select distinct e from #{#entityName} e
-         inner join fetch e.owner o
-         left join fetch e.riskValuesAspects as rva
-         left join fetch rva.domain as d
-         left join fetch d.riskDefinitionSet
-         inner join fetch e.risks r
-         where o.client = ?1""")
-  Set<ProcessData> findAllHavingRisks(Client client);
 
   @Query(
       """

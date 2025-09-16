@@ -46,15 +46,6 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
 
   @Query(
       """
-         select ci from #{#entityName} ci
-           left join fetch ci.domain
-           left join fetch ci.domainTemplate
-           where ci.symbolicDbId in ?1 and ci.domain.owner = ?2
-         """)
-  Set<CatalogItemData> findAllByIdsFetchDomain(Iterable<UUID> ids, Client client);
-
-  @Query(
-      """
             select ci from #{#entityName} ci
               left join fetch ci.domain
               left join fetch ci.domainTemplate

@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
@@ -32,8 +31,4 @@ public interface RequirementImplementationRepository {
   Set<RequirementImplementation> findByControls(Set<Control> removedControls);
 
   Set<RequirementImplementation> findAllByRef(Set<ReqImplRef> requirementImplementations);
-
-  Set<RequirementImplementation> findByPerson(Person responsible);
-
-  Set<RequirementImplementation> findByPersons(Set<Person> responsibles);
 }

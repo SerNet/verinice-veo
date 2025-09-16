@@ -52,22 +52,6 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Optional<Client> findByIdFetchCatalogsAndItems(UUID id) {
-    return clientDataRepository
-        .findWithCatalogsAndItemsById(id)
-        .filter(IS_CLIENT_ACTIVE)
-        .map(Client.class::cast);
-  }
-
-  @Override
-  public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(UUID id) {
-    return clientDataRepository
-        .findWithCatalogsAndItemsAndTailoringReferencesById(id)
-        .filter(IS_CLIENT_ACTIVE)
-        .map(Client.class::cast);
-  }
-
-  @Override
   public Optional<Client> findByIdFetchTranslations(UUID id) {
     return clientDataRepository.findWithTranslationsById(id).map(Client.class::cast);
   }

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.repository.RequirementImplementationQuery;
@@ -42,20 +41,6 @@ public class RequirementImplementationRepositoryImpl
   @Override
   public RequirementImplementationQuery query(Client client) {
     return new RequirementImplementationQueryImpl(dataRepo, client);
-  }
-
-  @Override
-  public Set<RequirementImplementation> findByPerson(Person responsible) {
-    return dataRepo.findByPerson(responsible).stream()
-        .map(RequirementImplementation.class::cast)
-        .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Set<RequirementImplementation> findByPersons(Set<Person> responsibles) {
-    return dataRepo.findByPersons(responsibles).stream()
-        .map(RequirementImplementation.class::cast)
-        .collect(Collectors.toSet());
   }
 
   @Override

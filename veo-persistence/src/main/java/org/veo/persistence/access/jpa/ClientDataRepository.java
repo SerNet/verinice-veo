@@ -32,13 +32,6 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
   @Override
   Optional<ClientData> findById(UUID id);
 
-  @EntityGraph(attributePaths = {"domains.catalogItems"})
-  Optional<ClientData> findWithCatalogsAndItemsById(UUID id);
-
-  @EntityGraph(
-      attributePaths = {"domains.catalogItems", "domains.catalogItems.tailoringReferences"})
-  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesById(UUID id);
-
   @EntityGraph(attributePaths = {"domains.elementTypeDefinitions.translations"})
   Optional<ClientData> findWithTranslationsById(UUID id);
 

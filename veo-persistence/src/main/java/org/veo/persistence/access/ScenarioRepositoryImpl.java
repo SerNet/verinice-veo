@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScenarioRepository;
@@ -99,12 +98,5 @@ public class ScenarioRepositoryImpl
   public void deleteAll(Set<Scenario> elements) {
     removeRisks(elements.stream().map(ScenarioData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
-  }
-
-  @Override
-  public Set<Scenario> findByDomainWhereRiskValuesExist(Domain domain) {
-    return scenarioDataRepository.findByDomainWhereRiskValuesExist(domain).stream()
-        .map(Scenario.class::cast)
-        .collect(Collectors.toSet());
   }
 }

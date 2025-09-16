@@ -19,14 +19,11 @@ package org.veo.core.repository;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
 public interface RequirementImplementationQuery extends Query<RequirementImplementation, String> {
   void whereIdsIn(QueryCondition<UUID> ids);
-
-  void whereControlNotIn(QueryCondition<Control> controls);
 
   void whereControlInDomain(Domain domain);
 }

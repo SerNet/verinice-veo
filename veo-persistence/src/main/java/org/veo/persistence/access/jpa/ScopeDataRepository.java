@@ -26,10 +26,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
@@ -41,14 +38,6 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
           + "left join fetch risks.riskAspects "
           + "where risks.scenario in ?1")
   Set<ScopeData> findRisksWithValue(Collection<ScenarioData> causes);
-
-  @Query(
-      "select distinct s from #{#entityName} s "
-          + "left join fetch s.risks risks "
-          + "left join fetch risks.riskAspects ra "
-          + "left join fetch ra.domain "
-          + "where s.id IN ?1")
-  Set<ScopeData> findByIdsWithRiskValues(Set<UUID> ids);
 
   @Query(
       "select distinct e from #{#entityName} e "
@@ -73,32 +62,10 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
   Set<ScopeData> findWithRisksAndScenariosByIdIn(Iterable<UUID> ids);
 
   @Query(
-      """
-                     select distinct e from #{#entityName} e
-                     inner join fetch e.owner o
-                     left join fetch e.riskValuesAspects as rva
-                     left join fetch rva.domain as d
-                     left join fetch d.riskDefinitionSet
-                     inner join fetch e.risks r
-                     where o.client = ?1""")
-  Set<ScopeData> findAllHavingRisks(Client client);
-
-  <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
-
-  @Query(
       "select distinct e from #{#entityName} as e "
           + "inner join e.members m "
           + "where m.id in ?1 and e.id not in ?1")
   Set<Scope> findDistinctOthersByMemberIds(Set<UUID> ids);
-
-  @Query(
-      "select count(s) > 0 from #{#entityName} as s "
-          + "inner join s.scopeRiskValuesAspects r "
-          + "inner join s.riskValuesAspects rva "
-          + "inner join s.members m "
-          + "where m.id in ?1 and r.riskDefinitionRef = ?2 and r.domain.id = ?3")
-  boolean canUseRiskDefinition(
-      Set<UUID> elementIds, RiskDefinitionRef riskDefinitionRef, String domainId);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "members")
