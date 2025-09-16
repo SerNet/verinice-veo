@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import static java.util.stream.StreamSupport.stream;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -73,13 +70,6 @@ public class ClientRepositoryImpl
   @Override
   public Optional<Client> findByIdFetchTranslations(UUID id) {
     return clientDataRepository.findWithTranslationsById(id).map(Client.class::cast);
-  }
-
-  @Override
-  public List<Client> findAll() {
-    return stream(clientDataRepository.findAll().spliterator(), false)
-        .map(Client.class::cast)
-        .toList();
   }
 
   @Override

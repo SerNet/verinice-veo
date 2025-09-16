@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -41,8 +40,6 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
   Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(UUID id);
 
   Optional<Client> findByIdFetchTranslations(UUID id);
-
-  List<Client> findAll();
 
   default Client getById(UUID clientId) {
     return findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));

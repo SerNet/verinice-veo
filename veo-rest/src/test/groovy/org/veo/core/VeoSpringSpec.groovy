@@ -50,6 +50,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.jobs.UserSwitcher
 import org.veo.persistence.access.jpa.AssetDataRepository
+import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -95,6 +96,9 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     ClientRepository clientRepository
+
+    @Autowired
+    ClientDataRepository clientDataRepository
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository
@@ -170,7 +174,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         new UserSwitcher().runAsAdmin {
             txTemplate.execute {
                 TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
-                clientRepository.findAll().each { client ->
+                clientDataRepository.findAll().each { client ->
                     unitDataRepository.findByClientId(client.id, false, null).findAll { it.parent == null }.each {
                         deleteUnitRecursively(it)
                     }
