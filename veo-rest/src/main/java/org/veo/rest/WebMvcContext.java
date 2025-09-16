@@ -19,6 +19,10 @@ package org.veo.rest;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -26,19 +30,28 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.veo.core.UserAccessRights;
 import org.veo.core.entity.ElementType;
+import org.veo.core.repository.ClientRepository;
+import org.veo.rest.common.ClientNotActiveException;
+import org.veo.rest.security.ApplicationUser;
 
 /** Adds custom controller method parameter resolvers. */
 @Configuration
 class WebMvcContext implements WebMvcConfigurer {
 
   @Autowired private ObjectMapper defaultMapper;
+  @Autowired private ClientRepository clientRepository;
 
   @Override
   public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -64,5 +77,31 @@ class WebMvcContext implements WebMvcConfigurer {
             return ElementType.valueOf(source.toUpperCase(Locale.US));
           }
         });
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry
+        .addInterceptor(
+            new HandlerInterceptor() {
+              @Override
+              public boolean preHandle(
+                  HttpServletRequest request, HttpServletResponse response, Object handler) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                Optional.ofNullable(auth)
+                    .map(Authentication::getPrincipal)
+                    .map(ApplicationUser::findAuthenticatedUser)
+                    .map(UserAccessRights::clientId)
+                    .ifPresent(
+                        clientId -> {
+                          clientRepository
+                              .findActiveById(clientId)
+                              .orElseThrow(() -> new ClientNotActiveException(clientId.toString()));
+                        });
+                return true;
+              }
+            })
+        .excludePathPatterns(
+            "/admin/**", "/content-creation/**", "/content-customizing/**", "/messages/**");
   }
 }

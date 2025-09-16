@@ -32,6 +32,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     private ClientRepository clientRepo
 
     def setup() {
+        createTestClient()
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
     }
 

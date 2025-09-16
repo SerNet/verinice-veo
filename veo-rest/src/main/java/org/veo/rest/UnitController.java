@@ -231,10 +231,8 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
   public @Valid Future<List<FullUnitDto>> getUnits(
-      @Parameter(hidden = true) ApplicationUser user,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     // TODO VEO-425 apply display name filter.
-    getClient(user); // TODO: better do #4173
     return useCaseInteractor.execute(
         getUnitsUseCase,
         UseCase.EmptyInput.INSTANCE,
