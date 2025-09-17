@@ -43,7 +43,14 @@ build:
     - env
     - |-
       ADDITIONAL_TAGS="pipeline-id-${CI_PIPELINE_ID}"
-      if grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' <<<$CI_COMMIT_TAG; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,$CI_COMMIT_TAG,latest"; fi;
+      if grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' <<<$CI_COMMIT_TAG; then
+        ADDITIONAL_TAGS="$ADDITIONAL_TAGS,$CI_COMMIT_TAG"
+        git fetch --tags
+        LATEST_TAG=$(git tag --list | sort -V | tail -n1)
+        if [ "$CI_COMMIT_TAG" = "$LATEST_TAG" ]; then
+          ADDITIONAL_TAGS="$ADDITIONAL_TAGS,latest"
+        fi
+      fi
       if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export ADDITIONAL_TAGS="$ADDITIONAL_TAGS,develop"; fi;
     - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -PciCommitId=$CI_COMMIT_SHA jib -Djib.console=plain -Djib.to.image="$IMAGE_NAME:gitlab-git-${CI_COMMIT_SHA}" -Djib.to.tags="$ADDITIONAL_TAGS"
   interruptible: true
