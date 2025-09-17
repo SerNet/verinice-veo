@@ -18,6 +18,6 @@ Code-Review ersetzt AT.
 
 /label ~"1.Component::8.Undefined"
 
-/label ~"2.IssueType::3.Refactoring"
+/label ~"2.IssueType::3.Chore"
 
 /label ~"3.Status::1.Specification"
