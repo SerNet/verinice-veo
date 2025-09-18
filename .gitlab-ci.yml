@@ -3,7 +3,6 @@ image: eclipse-temurin:25.0.1_8-jdk@sha256:42fc3fe6804ec612f5ef8a613f8c06d8dd578
 variables:
   ORG_GRADLE_PROJECT_ci: 'true'
   CI_DEBUG_SERVICES: "true"
-  PROXY: $HTTPS_PROXY_HOST
   AUTH_URL: $OIDC_URL_DEV/realms/$OIDC_REALM_DEV
 
 include:
@@ -153,7 +152,7 @@ http_rest_tests:
   - name: eu.gcr.io/veo-projekt/veo:pipeline-id-${CI_PIPELINE_ID}
     alias: veo
     variables:
-      JDK_JAVA_OPTIONS: -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=3128 -Dhttps.proxyHost=$PROXY -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Djdk.serialFilter=maxbytes=0
+      JDK_JAVA_OPTIONS: -Djdk.serialFilter=maxbytes=0
       LOGGING_LEVEL_ROOT: WARN
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: test
@@ -178,10 +177,9 @@ http_rest_tests:
     VEO_RESTTEST_BASEURL: http://veo:8070
     VEO_RESTTEST_CLIENTID: $OIDC_CLIENT_DEV
     VEO_RESTTEST_OIDCURL: $OIDC_URL_DEV
-    VEO_RESTTEST_PROXYHOST: $PROXY
     VEO_RESTTEST_REALM: $OIDC_REALM_DEV
   script:
-    - ./gradlew -i -Dhttp.nonProxyHosts="localhost|veo" -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME restTest
+    - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME restTest
   interruptible: true
   artifacts:
     when: always
