@@ -464,6 +464,26 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.time < 500
     }
 
+    def "SQL performance for deleting a client"() {
+        given:
+        def client = createTestClient()
+        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
+        client = clientRepository.save(client)
+
+        when:
+        def queryCounts = trackQueryCounts{
+            clientRepository.delete(client)
+        }
+
+        then:
+        queryCounts.delete == 79
+        queryCounts.insert == 0
+        queryCounts.update == 10
+        queryCounts.select == 284
+        queryCounts.time < 500
+    }
+
     void createClient() {
         executeInTransaction {
             client = clientRepository.save(newClient() {
