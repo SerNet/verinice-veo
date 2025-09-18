@@ -30,7 +30,7 @@ veo:
       secondary-client:
         name: ''
         pass: ''
-    proxyHost: cache.int.company.de
+    proxyHost: # i.e. cache.int.company.de
     proxyPort: 3128
   api-keys:
     unit-count: dracula

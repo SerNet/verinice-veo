@@ -351,9 +351,10 @@ class VeoRestTest extends Specification {
         if (userTokenCache.hasProperty(user)) {
             return userTokenCache[user]
         }
-        def proxy = new HttpHost(proxyHost, proxyPort)
         def newToken = HttpClientBuilder.create().with {
-            it.proxy = proxy
+            if (proxyHost) {
+                it.proxy = new HttpHost(proxyHost, proxyPort)
+            }
             build()
         }.withCloseable {
             Configuration configuration = new Configuration(oidcUrl, realm, clientId, ['secret': ''], it)
