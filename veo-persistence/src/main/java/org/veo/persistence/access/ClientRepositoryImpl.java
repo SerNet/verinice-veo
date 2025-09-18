@@ -26,8 +26,8 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
-import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.access.jpa.UserConfigurationDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ValidationService;
@@ -37,17 +37,17 @@ public class ClientRepositoryImpl
     extends AbstractIdentifiableVersionedRepository<Client, ClientData>
     implements ClientRepository {
   private final ClientDataRepository clientDataRepository;
-  private final DomainDataRepository domainDataRepository;
+  private final DomainRepository domainRepository;
   private final UserConfigurationDataRepository userConfigurationDataRepository;
 
   public ClientRepositoryImpl(
       ClientDataRepository dataRepository,
-      DomainDataRepository domainDataRepository,
+      DomainRepository domainRepository,
       UserConfigurationDataRepository userConfigurationDataRepository,
       ValidationService validator) {
     super(dataRepository, validator);
     clientDataRepository = dataRepository;
-    this.domainDataRepository = domainDataRepository;
+    this.domainRepository = domainRepository;
     this.userConfigurationDataRepository = userConfigurationDataRepository;
   }
 
@@ -78,9 +78,8 @@ public class ClientRepositoryImpl
 
   @Override
   public void delete(Client client) {
-    userConfigurationDataRepository.deleteAll(
-        userConfigurationDataRepository.findUserConfigurationsByClient(client.getId()));
-    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getId()));
+    userConfigurationDataRepository.deleteByClient(client.getId());
+    domainRepository.deleteByClient(client);
     client.setDomains(Set.of());
     super.delete(client);
   }

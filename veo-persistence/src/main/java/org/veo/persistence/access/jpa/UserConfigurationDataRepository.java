@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.persistence.entity.jpa.UserConfigurationData;
@@ -37,6 +38,10 @@ public interface UserConfigurationDataRepository
 
   @Query("select e from #{#entityName} as e where e.client.id=?1")
   Set<UserConfigurationData> findUserConfigurationsByClient(UUID clientId);
+
+  @Query("delete from #{#entityName} where client.id=?1")
+  @Modifying
+  void deleteByClient(UUID clientId);
 
   @Query("select count(e) from #{#entityName} as e where e.client.id=?1 and e.userName=?2 ")
   int countUserConfigurations(UUID clientId, String username);

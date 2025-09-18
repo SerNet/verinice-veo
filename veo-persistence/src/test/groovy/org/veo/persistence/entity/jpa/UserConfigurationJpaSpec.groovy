@@ -23,7 +23,9 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.UserConfigurationDataRepository
@@ -49,6 +51,7 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
     Client client
     ClientRepositoryImpl clientRepo
     ValidationService validationMock = Mock()
+    DomainRepository domainRepository
 
     def setup() {
         factory = new EntityDataFactory()
@@ -56,7 +59,8 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
             client = newClient()
             client = clientRepository.save(client)
         }
-        clientRepo = new ClientRepositoryImpl(clientRepository, domainDataRepository, userConfigRepository, validationMock)
+        domainRepository = new DomainRepositoryImpl(domainDataRepository, entityManager, validationMock)
+        clientRepo = new ClientRepositoryImpl(clientRepository, domainRepository, userConfigRepository, validationMock)
     }
 
     def "test non null constraint client"() {
