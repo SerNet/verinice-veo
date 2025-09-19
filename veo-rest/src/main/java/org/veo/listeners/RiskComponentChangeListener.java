@@ -141,13 +141,10 @@ public class RiskComponentChangeListener {
       elements.forEach(riskService::evaluateChangedRiskComponent);
     }
     if (requiresImpactInheritanceRecalculation(event.getChanges())
-        && impactInheritanceCalculator.hasInheritingLinks().test(rd)) {
+        && ImpactInheritanceCalculator.HAS_INHERITING_LINKS.test(rd)) {
       List<Unit> units = unitRepository.findByDomain(domain.getId());
-      units.stream()
-          .forEach(
-              unit -> {
-                impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId());
-              });
+      units.forEach(
+          unit -> impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId()));
       log.debug("{} units updated", units.size());
     }
   }

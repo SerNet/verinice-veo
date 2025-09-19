@@ -80,7 +80,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritanceCalculator {
 
   @NoArgsConstructor
-  class FlyweightImpactInheritenceContext {
+  static class FlyweightImpactInheritanceContext {
     Unit unit;
     Domain domain;
     RiskDefinition riskDefinition;
@@ -104,7 +104,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     }
   }
 
-  final class UpdateAffectedGraphParameter {
+  static final class UpdateAffectedGraphParameter {
     AbstractGraph<Element, CustomLink> elementGraph;
     Domain domain;
     RiskDefinitionRef riskDefinitionRef;
@@ -153,7 +153,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         unit.getName(),
         domain.getName(),
         riskDefinitionId);
-    FlyweightImpactInheritenceContext data = prepareData(unit, domain, riskDefinitionId);
+    FlyweightImpactInheritanceContext data = prepareData(unit, domain, riskDefinitionId);
     if (!data.isInheritanceActive()) {
       log.debug(
           "Inheritance not active in unit: {} with domain {} for riskdefinition: {}/{} with linktypes: {}",
@@ -210,7 +210,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         .forEach(
             parameter ->
                 updateAllRootsInSubgraph(
-                    unit, domain, listOfRootElements, processed, changedElements, parameter));
+                    listOfRootElements, processed, changedElements, parameter));
 
     // TODO: #2908 compare the number of nodes in the flyweight graph to the number of riskaffected
     // in the unit and clear those not in the flyweight
@@ -220,8 +220,6 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
   }
 
   private void updateAllRootsInSubgraph(
-      Unit unit,
-      Domain domain,
       List<FlyweightElement> listOfRootElements,
       Set<FlyweightElement> processed,
       List<Element> changedElements,
@@ -247,10 +245,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         .log();
     allRootsOfGraph.stream()
         .sorted(comparing(Nameable::getName)) // walk roots in predictable manner
-        .forEach(
-            root -> {
-              updateAffectedGraph(parameter, root, changedElements);
-            });
+        .forEach(root -> updateAffectedGraph(parameter, root, changedElements));
   }
 
   @Override
@@ -264,7 +259,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         domain.getName(),
         riskDefinitionId);
 
-    FlyweightImpactInheritenceContext data = prepareData(unit, domain, riskDefinitionId);
+    FlyweightImpactInheritanceContext data = prepareData(unit, domain, riskDefinitionId);
     if (!data.isInheritanceActive()) {
       return Collections.emptyList();
     }
@@ -375,7 +370,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
    * returns a new sub graph with the concrete elements.
    */
   private UpdateAffectedGraphParameter createParameter(
-      FlyweightImpactInheritenceContext data,
+      FlyweightImpactInheritanceContext data,
       FlyweightElement affectedElement,
       Set<RiskAffected<?, ?>> riskAffectedCache) {
 
@@ -393,7 +388,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       dotExporter.setEdgeIdProvider(t -> t.getType() + ":");
       StringWriter sw = new StringWriter();
       dotExporter.exportGraph(elementGraph, sw);
-      log.debug("graph:\n{}", sw.toString());
+      log.debug("graph:\n{}", sw);
     }
 
     return new UpdateAffectedGraphParameter(
@@ -405,9 +400,9 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         riskAffectedCache);
   }
 
-  private FlyweightImpactInheritenceContext prepareData(
+  private FlyweightImpactInheritanceContext prepareData(
       Unit unit, Domain domain, String riskDefinitionId) {
-    FlyweightImpactInheritenceContext fd = new FlyweightImpactInheritenceContext();
+    FlyweightImpactInheritanceContext fd = new FlyweightImpactInheritanceContext();
     fd.unit = unit;
     fd.domain = domain;
     if (!unit.getDomains().contains(domain)) {
@@ -667,11 +662,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
   private Comparator<? super FlyweightElement> byElementName(
       Map<String, RiskAffected<?, ?>> idToElement) {
-    return (o1, o2) ->
-        idToElement
-            .get(o1.sourceId())
-            .getName()
-            .compareTo(idToElement.get(o2.sourceId()).getName());
+    return comparing(o -> idToElement.get(o.sourceId()).getName());
   }
 
   private Predicate<? super FlyweightElement> isPartOfGraph(

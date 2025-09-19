@@ -30,6 +30,11 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 public interface ImpactInheritanceCalculator {
 
+  Predicate<? super Domain> HAS_RISK_DEFINITION = d -> !d.getRiskDefinitions().isEmpty();
+
+  Predicate<? super RiskDefinition> HAS_INHERITING_LINKS =
+      rd -> !rd.getImpactInheritingLinks().isEmpty();
+
   /**
    * Calculates the impact inheritance for an affected Element in a unit for a risk definition.
    * Returns the changed elements.
@@ -44,55 +49,34 @@ public interface ImpactInheritanceCalculator {
   Collection<? extends Element> updateAllRootNodes(
       Unit unit, Domain domain, String riskDefinitionId);
 
-  default void calculateImpactInheritance(RiskAffected<?, ?> element, Domain domain) {
-    Unit owner = element.getOwner();
-    domain.getRiskDefinitions().values().stream()
-        .filter(hasInheritingLinks())
-        .forEach(
-            rd -> {
-              calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
-            });
-  }
-
   default void calculateImpactInheritance(
       RiskAffected<?, ?> element, Domain domain, String linkType) {
     Unit owner = element.getOwner();
     domain.getRiskDefinitions().values().stream()
-        .filter(hasInheritingLinks())
+        .filter(HAS_INHERITING_LINKS)
         .filter(isInheritingLinkType(linkType))
-        .forEach(
-            rd -> {
-              calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
-            });
+        .forEach(rd -> calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element));
   }
 
   default void calculateImpactInheritance(RiskAffected<?, ?> element) {
     Unit owner = element.getOwner();
     Client client = owner.getClient();
     client.getDomains().stream()
-        .filter(hasRiskDefinition())
+        .filter(HAS_RISK_DEFINITION)
         .forEach(
-            domain -> {
-              domain.getRiskDefinitions().values().stream()
-                  .filter(hasInheritingLinks())
-                  .forEach(
-                      rd -> {
-                        calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element);
-                      });
-            });
+            domain ->
+                domain.getRiskDefinitions().values().stream()
+                    .filter(HAS_INHERITING_LINKS)
+                    .forEach(
+                        rd ->
+                            calculateImpactInheritanceAndUpdateVersions(
+                                owner, domain, rd, element)));
   }
 
   private void calculateImpactInheritanceAndUpdateVersions(
       Unit unit, Domain domain, RiskDefinition rd, RiskAffected<?, ?> element) {
     calculateImpactInheritance(unit, domain, rd.getId(), element)
-        .forEach(
-            updatedElement -> {
-              updatedElement.setUpdatedAt(Instant.now());
-            });
-  }
-
-  default Predicate<? super Domain> hasRiskDefinition() {
-    return d -> !d.getRiskDefinitions().isEmpty();
+        .forEach(updatedElement -> updatedElement.setUpdatedAt(Instant.now()));
   }
 
   default Predicate<? super RiskDefinition> isInheritingLinkType(String linkType) {
@@ -102,17 +86,13 @@ public interface ImpactInheritanceCalculator {
             .anyMatch(l -> l.equals(linkType));
   }
 
-  default Predicate<? super RiskDefinition> hasInheritingLinks() {
-    return rd -> !rd.getImpactInheritingLinks().isEmpty();
-  }
-
   default void updateAllRootNodes(Unit unit) {
     unit.getDomains().forEach(domain -> updateAllRootNodes(unit, domain));
   }
 
   default void updateAllRootNodes(Unit unit, Domain domain) {
     domain.getRiskDefinitions().values().stream()
-        .filter(hasInheritingLinks())
+        .filter(HAS_INHERITING_LINKS)
         .forEach(rd -> updateAllRootNodes(unit, domain, rd.getId()));
   }
 }
