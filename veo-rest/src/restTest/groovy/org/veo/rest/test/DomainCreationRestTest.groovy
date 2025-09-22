@@ -522,11 +522,11 @@ class DomainCreationRestTest extends DomainRestTest {
             }
         }
 
-        and: "no probability levels to be illegal"
+        and: "probability levels must not be null"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.probability.levels = []
+            definition.probability.levels = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
-                body["probability.levels"] == "must not be empty"
+                body["probability.levels"] == "must not be null"
             }
         }
 

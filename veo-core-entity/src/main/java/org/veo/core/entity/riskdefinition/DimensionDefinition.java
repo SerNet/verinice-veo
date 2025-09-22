@@ -61,9 +61,9 @@ public abstract class DimensionDefinition<T extends DiscreteValue>
   }
 
   /** Initialize the ordinal value of each DiscreteValue in the list. */
-  static void initLevel(List<? extends DiscreteValue> discretValues) {
-    for (int i = 0; i < discretValues.size(); i++) {
-      discretValues.get(i).setOrdinalValue(i);
+  static void initLevel(List<? extends DiscreteValue> discreteValues) {
+    for (int i = 0; i < discreteValues.size(); i++) {
+      discreteValues.get(i).setOrdinalValue(i);
     }
   }
 

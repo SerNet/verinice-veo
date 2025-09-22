@@ -1082,6 +1082,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         and: "the effect is stated"
         with(ret) {
+            validationMessages.size() == 0
             effects.size() == 5
             effects.toSorted{it.category}*.description*.en== [
                 "Risk values for category 'A' are removed from all risks.",
@@ -1090,6 +1091,15 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                 "Risk values for category 'I' are removed from all risks.",
                 "Risk values for category 'R' are removed from all risks."
             ]
+        }
+
+        when:"we test the returned riskdefinition"
+        ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, [:],200))
+
+        then:
+        with(ret) {
+            validationMessages.size() == 0
+            effects.size() == 5
         }
 
         when: "we remove all riskvalues"
