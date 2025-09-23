@@ -123,8 +123,7 @@ public class CreateProfileFromUnitUseCase
     query.fetchRiskValuesAspects();
     query.fetchControlImplementations();
     query.fetchRequirementImplementations();
-    var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
-    return elements;
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
   }
 
   @Override

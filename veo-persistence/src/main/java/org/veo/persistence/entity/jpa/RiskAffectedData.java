@@ -147,17 +147,15 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   @Override
   public R obtainRisk(Scenario scenario) {
     scenario.checkSameClient(this);
-    var risk =
-        risks.stream()
-            .filter(r -> r.getScenario().equals(scenario))
-            .findAny()
-            .orElseGet(
-                () -> {
-                  var riskData = createRisk(scenario);
-                  addRisk(riskData);
-                  return riskData;
-                });
-    return risk;
+    return risks.stream()
+        .filter(r -> r.getScenario().equals(scenario))
+        .findAny()
+        .orElseGet(
+            () -> {
+              var riskData = createRisk(scenario);
+              addRisk(riskData);
+              return riskData;
+            });
   }
 
   @Override

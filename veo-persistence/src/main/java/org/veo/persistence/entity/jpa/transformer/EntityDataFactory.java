@@ -256,7 +256,6 @@ public class EntityDataFactory implements EntityFactory {
 
   @Override
   public SystemMessage createSystemMessage() {
-    SystemMessageData systemMessageData = new SystemMessageData();
-    return systemMessageData;
+    return new SystemMessageData();
   }
 }

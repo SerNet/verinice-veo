@@ -101,8 +101,7 @@ public class CreateCatalogFromUnitUseCase
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
     query.whereDomainsContain(domain);
-    var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
-    return elements;
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
   }
 
   @Override

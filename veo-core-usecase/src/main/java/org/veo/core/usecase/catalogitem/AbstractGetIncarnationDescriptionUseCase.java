@@ -88,14 +88,11 @@ public abstract class AbstractGetIncarnationDescriptionUseCase<
             unit,
             domain);
 
-    var incarnationDescriptions =
-        getList(
-            itemIdsInRequestedOrder,
-            itemsToElements,
-            tailoringReferenceFilter,
-            mergeBidirectionalReferences);
-
-    return incarnationDescriptions;
+    return getList(
+        itemIdsInRequestedOrder,
+        itemsToElements,
+        tailoringReferenceFilter,
+        mergeBidirectionalReferences);
   }
 
   private List<TailoringReferenceParameter> toParameters(
