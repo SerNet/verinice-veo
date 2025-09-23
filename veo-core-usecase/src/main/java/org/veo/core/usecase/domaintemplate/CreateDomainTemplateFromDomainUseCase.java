@@ -57,7 +57,7 @@ public class CreateDomainTemplateFromDomainUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
-            .findByIdWithProfilesAndRiskDefinitions(input.id, userAccessRights.clientId())
+            .findByIdWithProfilesAndRiskDefinitions(input.id, userAccessRights.getClientId())
             .orElseThrow(() -> new NotFoundException(input.id, Domain.class));
 
     updateVersion(domain, input.version);

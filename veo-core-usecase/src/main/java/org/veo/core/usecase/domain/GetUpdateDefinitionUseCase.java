@@ -36,7 +36,7 @@ public class GetUpdateDefinitionUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.id(), userAccessRights.clientId());
+    var domain = repository.getActiveById(input.id(), userAccessRights.getClientId());
     return new OutputData(domain.getDomainMigrationDefinition().migrations());
   }
 

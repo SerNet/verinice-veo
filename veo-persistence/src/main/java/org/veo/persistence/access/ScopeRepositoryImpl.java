@@ -93,7 +93,7 @@ public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeD
     return scopeDataRepository
         .findByIdsWithRiskValues(
             Set.of(id),
-            rights.clientId(),
+            rights.getClientId(),
             rights.isUnitAccessRestricted(),
             rights.getReadableUnitIds())
         .stream()

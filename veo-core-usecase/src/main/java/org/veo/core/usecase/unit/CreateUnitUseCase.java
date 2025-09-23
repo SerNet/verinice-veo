@@ -69,8 +69,8 @@ public class CreateUnitUseCase
     userAccessRights.checkUnitCreateAllowed();
     Client client =
         clientRepository
-            .findById(userAccessRights.clientId())
-            .orElseThrow(() -> new NotFoundException(userAccessRights.clientId(), Client.class));
+            .findById(userAccessRights.getClientId())
+            .orElseThrow(() -> new NotFoundException(userAccessRights.getClientId(), Client.class));
 
     // Note: the new client will get the name of the new unit by default.
     // If we want to get a client name we would have to do a REST call to

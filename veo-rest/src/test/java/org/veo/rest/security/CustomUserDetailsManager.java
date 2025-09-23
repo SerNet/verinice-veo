@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -67,7 +68,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     ApplicationUser basicUser =
         ApplicationUser.authenticatedUser(
             "user@domain.example",
-            TESTCLIENT_UUID,
+            UUID.fromString(TESTCLIENT_UUID),
             "veo-user",
             new ArrayList<>(List.of("veo-user", "veo-write")),
             2,
@@ -82,7 +83,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     ApplicationUser manyUnitsCreator =
         ApplicationUser.authenticatedUser(
             "manyunitscreator@domain.example",
-            TESTCLIENT_UUID,
+            UUID.fromString(TESTCLIENT_UUID),
             "veo-user",
             List.of("veo-user", "veo-write"),
             50);
@@ -94,7 +95,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     ApplicationUser adminUser =
         ApplicationUser.authenticatedUser(
             "admin",
-            TESTCLIENT_UUID,
+            UUID.fromString(TESTCLIENT_UUID),
             "veo-admin",
             List.of("veo-user", "veo-admin", "veo-write"),
             100);
@@ -107,7 +108,7 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     ApplicationUser contentCreatorUser =
         ApplicationUser.authenticatedUser(
             "content-creator",
-            TESTCLIENT_UUID,
+            UUID.fromString(TESTCLIENT_UUID),
             "veo-content-creator",
             List.of("veo-user", "veo-content-creator", "veo-write"),
             2);
@@ -120,20 +121,24 @@ public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
     // A user with read-only access:
     ApplicationUser readOnlyUser =
         ApplicationUser.authenticatedUser(
-            "read-only-user", TESTCLIENT_UUID, "veo-user", List.of("veo-user"), 0);
+            "read-only-user", UUID.fromString(TESTCLIENT_UUID), "veo-user", List.of("veo-user"), 0);
     readOnlyUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
 
     // A user with no rights:
     ApplicationUser noRightsUser =
         ApplicationUser.authenticatedUser(
-            "no-rights-user", TESTCLIENT_UUID, "veo-user", Collections.emptyList(), 0);
+            "no-rights-user",
+            UUID.fromString(TESTCLIENT_UUID),
+            "veo-user",
+            Collections.emptyList(),
+            0);
     noRightsUser.setAuthorities(Collections.emptyList());
 
     // A content-creator with no write access:
     ApplicationUser contentCreatorUserReadonly =
         ApplicationUser.authenticatedUser(
             "content-creator-readonly",
-            TESTCLIENT_UUID,
+            UUID.fromString(TESTCLIENT_UUID),
             "veo-content-creator",
             List.of("veo-user", "veo-content-creator"),
             0);

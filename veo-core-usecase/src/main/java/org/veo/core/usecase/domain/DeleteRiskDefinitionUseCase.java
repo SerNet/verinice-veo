@@ -43,7 +43,7 @@ public class DeleteRiskDefinitionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getById(input.domainId, userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

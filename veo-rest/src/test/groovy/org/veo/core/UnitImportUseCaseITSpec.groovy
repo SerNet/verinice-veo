@@ -60,7 +60,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         testDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
         testDomain2 = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
         client = clientRepository.save(client)
-        user.clientId() >> client.id
+        user.getClientId() >> client.id
     }
 
     def "Import a scope with an RI"() {

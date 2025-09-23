@@ -39,7 +39,7 @@ public class SaveDecisionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getById(input.domainId, userAccessRights.clientId());
+    var domain = repository.getById(input.domainId, userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

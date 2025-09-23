@@ -53,7 +53,7 @@ public class CreateProfileInDomainTemplateUseCase
             .findById(input.templateId)
             .orElseThrow(() -> new NotFoundException(input.templateId, DomainTemplate.class));
 
-    if (!checkClient(userAccessRights.clientId(), domainTemplate)) {
+    if (!checkClient(userAccessRights.getClientId(), domainTemplate)) {
       throw new MissingAdminPrivilegesException();
     }
     domainTemplate.getProfiles().stream()

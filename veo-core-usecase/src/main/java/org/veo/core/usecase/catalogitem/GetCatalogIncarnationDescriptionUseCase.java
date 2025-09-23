@@ -73,7 +73,7 @@ public class GetCatalogIncarnationDescriptionUseCase
         input.unitId);
     Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
     validateInput(input);
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     var items =
         catalogItemRepository.findAllByIdsFetchTailoringReferences(input.catalogItemIds(), domain);
     var incarnationDescriptions =

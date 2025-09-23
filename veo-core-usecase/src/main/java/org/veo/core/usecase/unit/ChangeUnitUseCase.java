@@ -56,7 +56,7 @@ public abstract class ChangeUnitUseCase
 
     userAccessRights.checkUnitUpdateAllowed();
     var storedUnit = unitRepository.getById(input.id, userAccessRights);
-    var client = clientRepository.getById(userAccessRights.clientId());
+    var client = clientRepository.getById(userAccessRights.getClientId());
     // check client and read unit access is done by the repository, write access by userAccessRights
     ETag.validate(input.eTag, storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);

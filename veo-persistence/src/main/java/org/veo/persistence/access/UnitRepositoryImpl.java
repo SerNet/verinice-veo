@@ -52,7 +52,8 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   @Override
   public List<Unit> findByUser(UserAccessRights user) {
     return dataRepository
-        .findByClientId(user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+        .findByClientId(
+            user.getClientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
         .stream()
         .map(Unit.class::cast)
         .toList();
@@ -62,7 +63,7 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   public Optional<Unit> findByIdFetchClient(UUID id, UserAccessRights user) {
     return dataRepository
         .findWithClientById(
-            id, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+            id, user.getClientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
         .map(Unit.class::cast);
   }
 
@@ -74,7 +75,8 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   @Override
   public Optional<Unit> findById(UUID unitId, UserAccessRights user) {
     return dataRepository
-        .findById(unitId, user.clientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
+        .findById(
+            unitId, user.getClientId(), user.isUnitAccessRestricted(), user.getReadableUnitIds())
         .map(Unit.class::cast);
   }
 

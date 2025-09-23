@@ -37,7 +37,7 @@ public class GetDomainUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    Domain domain = repository.getById(input.id(), userAccessRights.clientId());
+    Domain domain = repository.getById(input.id(), userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

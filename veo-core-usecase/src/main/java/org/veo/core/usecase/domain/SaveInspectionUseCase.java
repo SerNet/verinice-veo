@@ -39,7 +39,7 @@ public class SaveInspectionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
     boolean isNew = domain.applyInspection(input.inspectionId, input.inspection);
     domain.setUpdatedAt(Instant.now());
     return new OutputData(isNew);

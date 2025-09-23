@@ -113,7 +113,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     return dataRepository
         .findById(
             elementId,
-            userRights.clientId(),
+            userRights.getClientId(),
             userRights.isUnitAccessRestricted(),
             userRights.getReadableUnitIds())
         .map(e -> (T) e);

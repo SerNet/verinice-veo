@@ -39,7 +39,7 @@ public class GetUserConfigurationUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     UserConfiguration userConfiguration =
         userConfigurationRepository.getUserConfiguration(
-            userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId);
+            userAccessRights.getClientId(), userAccessRights.getUsername(), input.applicationId);
     return new OutputData(userConfiguration.getConfiguration());
   }
 

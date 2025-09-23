@@ -45,7 +45,7 @@ class GetUnitDumpUseCaseITSpec extends VeoSpringSpec {
         unit = unitDataRepository.save(newUnit(client) {
             domains = [testDomain, dsgvoDomain]
         })
-        user.clientId() >> client.id
+        user.getClientId() >> client.id
     }
 
     def "only exports elements in target domain"() {

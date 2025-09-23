@@ -38,7 +38,7 @@ public class GetInspectionsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
     return new OutputData(domain.getInspections(), domain);
   }
 

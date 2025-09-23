@@ -108,7 +108,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
         QueryCountHolder.clear()
 
         when: "simulating the GET"
-        new UserSwitcher().runAsUser("user", client.idAsString) {
+        new UserSwitcher().runAsUser("user", client.id) {
             executeInTransaction {
                 synchronousUseCaseInteractor.execute(
                         useCase,

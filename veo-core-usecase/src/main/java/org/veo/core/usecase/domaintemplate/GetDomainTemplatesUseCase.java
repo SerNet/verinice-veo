@@ -48,7 +48,8 @@ public class GetDomainTemplatesUseCase
    */
   @Override
   public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
-    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
+    Client client =
+        UseCaseTools.checkClientExists(userAccessRights.getClientId(), clientRepository);
 
     return new OutputData(templateService.getTemplates(client));
   }

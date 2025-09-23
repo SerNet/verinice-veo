@@ -29,7 +29,7 @@ import org.veo.rest.security.ApplicationUser
  */
 class UserSwitcher {
 
-    def runAsUser(String username, boolean admin=false, String clientId, int maxUnits = 2, final Closure closure) {
+    def runAsUser(String username, boolean admin=false, UUID clientId, int maxUnits = 2, final Closure closure) {
         def currentAuth = SecurityContextHolder.getContext()
                 .getAuthentication()
         try {

@@ -38,7 +38,7 @@ public class GetDomainsUseCase
   public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
     return new OutputData(
         domainRepository
-            .findActiveDomainsWithProfilesAndRiskDefinitions(userAccessRights.clientId())
+            .findActiveDomainsWithProfilesAndRiskDefinitions(userAccessRights.getClientId())
             .stream()
             .toList());
   }

@@ -37,7 +37,7 @@ public class DeleteUserConfigurationUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     UserConfiguration userConfiguration =
         userConfigurationRepository.getUserConfiguration(
-            userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId);
+            userAccessRights.getClientId(), userAccessRights.getUsername(), input.applicationId);
     userConfigurationRepository.delete(userConfiguration);
     return new OutputData(userConfiguration.getApplicationId());
   }

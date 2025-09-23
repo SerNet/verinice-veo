@@ -45,7 +45,7 @@ public class GetCatalogItemsTypeCountUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.id(), userAccessRights.clientId());
+    Domain domain = domainRepository.getById(input.id(), userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

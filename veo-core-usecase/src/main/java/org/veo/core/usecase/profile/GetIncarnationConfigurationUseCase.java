@@ -36,7 +36,7 @@ public class GetIncarnationConfigurationUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.id(), userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.id(), userAccessRights.getClientId());
     return new OutputData(domain.getIncarnationConfiguration());
   }
 

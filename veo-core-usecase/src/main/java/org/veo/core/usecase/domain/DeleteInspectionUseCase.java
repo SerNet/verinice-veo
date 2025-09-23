@@ -37,7 +37,7 @@ public class DeleteInspectionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
     domain.removeInspection(input.inspectionId);
     domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;

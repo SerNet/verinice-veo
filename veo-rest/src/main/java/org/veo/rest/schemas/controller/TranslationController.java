@@ -93,10 +93,9 @@ public class TranslationController implements TranslationsResource {
         });
   }
 
-  protected Client getClient(String clientId) {
-    UUID id = UUID.fromString(clientId);
+  protected Client getClient(UUID clientId) {
     return clientRepository
-        .findByIdFetchTranslations(id)
-        .orElseThrow(() -> new ClientNotActiveException(clientId));
+        .findByIdFetchTranslations(clientId)
+        .orElseThrow(() -> new ClientNotActiveException(clientId.toString()));
   }
 }

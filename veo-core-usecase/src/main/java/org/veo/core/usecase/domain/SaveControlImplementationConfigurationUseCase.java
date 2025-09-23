@@ -44,7 +44,7 @@ public class SaveControlImplementationConfigurationUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     var config =
         input.controlImplementationConfiguration.toConfig(
             domain.getControlImplementationConfiguration());

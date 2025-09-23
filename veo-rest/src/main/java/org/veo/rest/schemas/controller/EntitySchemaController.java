@@ -72,7 +72,7 @@ public class EntitySchemaController implements EntitySchemaResource {
           var clientDomainsById =
               domainRepository
                   .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-                      domainIDs.stream().toList(), UUID.fromString(user.getClientId()))
+                      domainIDs.stream().toList(), user.getClientId())
                   .stream()
                   .collect(Collectors.toMap(Domain::getId, Function.identity()));
           Set<Domain> domains = new HashSet<>(domainIDs.size());

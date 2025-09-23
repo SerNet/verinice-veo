@@ -37,7 +37,7 @@ public class GetAvailableActionsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     return new OutputData(domain.getAvailableActions(input.elementType));
   }
 

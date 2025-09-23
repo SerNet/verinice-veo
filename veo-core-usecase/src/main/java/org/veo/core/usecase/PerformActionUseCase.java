@@ -80,7 +80,7 @@ public class PerformActionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     var element =
         genericElementRepository.getById(input.elementId, input.elementType, userAccessRights);
     userAccessRights.checkElementWriteAccess(element);

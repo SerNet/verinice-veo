@@ -33,7 +33,7 @@ public class DeleteProfileUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     domain.removeProfile(input.profileId);
     return EmptyOutput.INSTANCE;
   }

@@ -39,7 +39,7 @@ public interface UserAccessRights {
 
   List<String> getRoles();
 
-  String getClientId();
+  UUID getClientId();
 
   String getUsername();
 
@@ -99,13 +99,9 @@ public interface UserAccessRights {
 
   default void checkClient(ClientOwned co) {
     if (co.getOwningClient().isPresent()) {
-      if (!co.getOwningClient().get().getId().equals(clientId())) {
-        throw new ClientBoundaryViolationException((Identifiable) co, clientId());
+      if (!co.getOwningClient().get().getId().equals(getClientId())) {
+        throw new ClientBoundaryViolationException((Identifiable) co, getClientId());
       }
     }
-  }
-
-  default UUID clientId() {
-    return UUID.fromString(getClientId());
   }
 }

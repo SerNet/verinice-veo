@@ -37,7 +37,7 @@ public class GetBreakingChangesUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.id(), userAccessRights.clientId());
+    var domain = repository.getActiveById(input.id(), userAccessRights.getClientId());
     var template = domain.getDomainTemplate();
     if (template == null) {
       throw new NotFoundException("No domain template found for domain %s", input.id());

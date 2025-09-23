@@ -67,7 +67,7 @@ class AsSystemUser {
     var user =
         ApplicationUser.authenticatedUser(
             SYSTEMUSER_NAME,
-            client.getIdAsString(),
+            client.getId(),
             VEO_USER_SCOPE,
             Collections.emptyList(),
             Integer.MAX_VALUE);

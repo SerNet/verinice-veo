@@ -34,9 +34,9 @@ class AsSystemUserSpec extends VeoSpringSpec {
 
     def "System user works in configured client"() {
         given: "three clients"
-        def client1 = createClient(UUID.randomUUID().toString())
-        def client2 = createClient(UUID.randomUUID().toString())
-        def client3 = createClient(UUID.randomUUID().toString())
+        def client1 = createClient(UUID.randomUUID())
+        def client2 = createClient(UUID.randomUUID())
+        def client3 = createClient(UUID.randomUUID())
 
         expect: "system user runs in correct client during loops"
         [client1, client2, client3].each { currentClient ->
@@ -44,16 +44,16 @@ class AsSystemUserSpec extends VeoSpringSpec {
                 def currentUser = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getPrincipal())
-                assert currentUser.clientId == currentClient.getIdAsString()
+                assert currentUser.getClientId() == currentClient.getId()
             })
         }
     }
 
-    Client createClient(String clientId) {
+    Client createClient(UUID clientId) {
         userSwitcher.runAsUser("testuser", clientId) {
             txTemplate.execute {
                 newClient {
-                    id = UUID.fromString(clientId)
+                    id = clientId
                 }.tap {
                     defaultDomainCreator.addDomain(it, "ISO", false)
                     clientRepository.save(it)

@@ -70,7 +70,7 @@ public class CreateCatalogFromUnitUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.getClientId());
     Set<CatalogItem> previousCatalogItems = Set.copyOf(domain.getCatalogItems());
 
     if (!domain.isActive()) {

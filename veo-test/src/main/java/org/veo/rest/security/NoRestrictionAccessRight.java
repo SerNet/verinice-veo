@@ -19,6 +19,7 @@ package org.veo.rest.security;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public final class NoRestrictionAccessRight implements UserAccessRights {
-  private final String clientId;
+  private final UUID clientId;
   private final Integer maxUnits;
 
   @Override
@@ -56,16 +57,17 @@ public final class NoRestrictionAccessRight implements UserAccessRights {
   }
 
   @Override
-  public String getClientId() {
+  public UUID getClientId() {
     return clientId;
   }
 
   public static NoRestrictionAccessRight from(String clientId) {
-    return new NoRestrictionAccessRight(clientId, 0);
+    return from(clientId, 0);
   }
 
   public static NoRestrictionAccessRight from(String clientId, Integer maxUnits) {
-    return new NoRestrictionAccessRight(clientId, maxUnits);
+    return new NoRestrictionAccessRight(
+        Optional.ofNullable(clientId).map(UUID::fromString).orElse(null), maxUnits);
   }
 
   @Override

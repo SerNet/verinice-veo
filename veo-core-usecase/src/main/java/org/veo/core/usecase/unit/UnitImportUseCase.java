@@ -58,7 +58,7 @@ public class UnitImportUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     userAccessRights.checkUnitCreateAllowed();
-    var client = clientRepository.getActiveById(userAccessRights.clientId());
+    var client = clientRepository.getActiveById(userAccessRights.getClientId());
     client.incrementTotalUnits(userAccessRights.getMaxUnits());
     var resolver = refResolverFactory.db(client);
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));

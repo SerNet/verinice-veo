@@ -64,7 +64,7 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
 
-    var client = clientRepository.getById(userAccessRights.clientId());
+    var client = clientRepository.getById(userAccessRights.getClientId());
     var unit =
         unitRepository
             .findById(input.unitId, userAccessRights)

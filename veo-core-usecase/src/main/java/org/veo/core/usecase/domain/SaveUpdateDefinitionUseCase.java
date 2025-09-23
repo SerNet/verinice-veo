@@ -42,7 +42,7 @@ public class SaveUpdateDefinitionUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = repository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
 
     var dmd = new DomainMigrationDefinition(input.migrationSteps());
     domain.setDomainMigrationDefinition(dmd);

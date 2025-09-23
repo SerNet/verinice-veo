@@ -47,7 +47,7 @@ public class CreateDomainUseCase
       throw new EntityAlreadyExistsException(
           "Templates already exist for domain name '%s'".formatted(input.name));
     }
-    var client = clientRepository.getActiveById(userAccessRights.clientId());
+    var client = clientRepository.getActiveById(userAccessRights.getClientId());
     if (domainRepository.nameExistsInClient(input.name, client)) {
       throw new EntityAlreadyExistsException(
           "A domain with name '%s' already exists in this client".formatted(input.name));

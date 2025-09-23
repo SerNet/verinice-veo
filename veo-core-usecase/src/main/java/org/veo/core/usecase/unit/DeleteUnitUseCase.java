@@ -48,7 +48,7 @@ public class DeleteUnitUseCase
     genericElementRepository.deleteByUnit(unit);
     unitRepository.delete(unit);
     // Reload the client since the persistence context was cleared
-    Client client = clientRepository.getById(userAccessRights.clientId());
+    Client client = clientRepository.getById(userAccessRights.getClientId());
     client.decrementTotalUnits();
     messageCreator.createUnitDeletionMessage(unit);
     return EmptyOutput.INSTANCE;

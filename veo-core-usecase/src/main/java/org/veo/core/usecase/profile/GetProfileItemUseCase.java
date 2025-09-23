@@ -47,7 +47,7 @@ public class GetProfileItemUseCase
             .findProfileItemByIdFetchTailoringReferences(
                 input.profileItem.getNamespaceId(),
                 input.profileItem.getSymbolicId(),
-                userAccessRights.clientId())
+                userAccessRights.getClientId())
             .orElseThrow(() -> new NotFoundException(input.profileItem)));
   }
 

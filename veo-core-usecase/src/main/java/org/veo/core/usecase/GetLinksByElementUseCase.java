@@ -44,7 +44,7 @@ public class GetLinksByElementUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getById(input.domainRef.getId(), userAccessRights.clientId());
+    var domain = domainRepository.getById(input.domainRef.getId(), userAccessRights.getClientId());
     var element =
         elementRepository.getById(
             input.elementRef().getId(), input.elementRef.getType(), userAccessRights);

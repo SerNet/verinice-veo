@@ -44,7 +44,7 @@ public class DeleteDomainUseCase implements TransactionalUseCase<EntityId, Empty
 
   @Override
   public EmptyOutput execute(EntityId input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.id(), userAccessRights.clientId());
+    Domain domain = domainRepository.getById(input.id(), userAccessRights.getClientId());
     var client = domain.getOwner();
     log.info("client.domains {}", client.getDomains().size());
     List<Unit> units = unitRepository.findByClient(client);

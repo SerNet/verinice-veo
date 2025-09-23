@@ -246,7 +246,7 @@ public class ElementInDomainService {
 
   public CompletableFuture<ResponseEntity<String>> getJsonSchema(
       UUID domainId, ElementType elementType) {
-    var clientId = userAccessRightsProvider.getAccessRights().clientId();
+    var clientId = userAccessRightsProvider.getAccessRights().getClientId();
     return CompletableFuture.supplyAsync(
         () -> {
           var domain =

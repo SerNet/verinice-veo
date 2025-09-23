@@ -64,7 +64,8 @@ public class GetElementsUseCase
    */
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
+    Client client =
+        UseCaseTools.checkClientExists(userAccessRights.getClientId(), clientRepository);
 
     var query = getRepo(input.elementTypes).query(client);
     applyDefaultQueryParameters(input, query, client, userAccessRights);

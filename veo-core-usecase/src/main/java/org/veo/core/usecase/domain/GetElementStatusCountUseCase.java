@@ -50,7 +50,7 @@ public class GetElementStatusCountUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

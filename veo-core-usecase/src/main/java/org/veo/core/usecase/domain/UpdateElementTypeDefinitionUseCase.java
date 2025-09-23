@@ -47,7 +47,7 @@ public class UpdateElementTypeDefinitionUseCase
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     Domain domain =
         repository
-            .findById(input.domainId, userAccessRights.clientId())
+            .findById(input.domainId, userAccessRights.getClientId())
             .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");

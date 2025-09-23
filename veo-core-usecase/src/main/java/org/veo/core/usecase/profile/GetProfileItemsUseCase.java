@@ -45,7 +45,7 @@ public class GetProfileItemsUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Profile profile =
         profileRepo
-            .findById(userAccessRights.clientId(), input.profile.getId())
+            .findById(userAccessRights.getClientId(), input.profile.getId())
             .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
 
     return new OutputData(profile.getItems());

@@ -45,7 +45,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
 
   private String password = null; // unused but required by UserDetails
   private final String username;
-  private final String clientId;
+  private final UUID clientId;
   private final String scopes;
   private final String email;
   private final String name;
@@ -90,7 +90,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
     this.claims = jwt.getClaims();
   }
 
-  private static String extractClientId(List<String> groups) {
+  private static UUID extractClientId(List<String> groups) {
     List<String> clientIDs =
         Optional.ofNullable(groups).orElseGet(Collections::emptyList).stream()
             .filter(g -> g.matches("^/veo_client:" + UUID_REGEX + "$"))
@@ -102,7 +102,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
           String.format("Expected 1 client for the account. Got %d.", clientIDs.size()));
     }
 
-    return clientIDs.get(0);
+    return UUID.fromString(clientIDs.get(0));
   }
 
   public static ApplicationUser findAuthenticatedUser(Object principal) {
@@ -120,7 +120,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
   }
 
   public static ApplicationUser authenticatedUser(
-      String username, String clientId, String scopes, List<String> roles, Integer maxUnits) {
+      String username, UUID clientId, String scopes, List<String> roles, Integer maxUnits) {
     return new ApplicationUser(
         username,
         clientId,
@@ -138,7 +138,7 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
 
   public static ApplicationUser authenticatedUser(
       String username,
-      String clientId,
+      UUID clientId,
       String scopes,
       List<String> roles,
       Integer maxUnits,

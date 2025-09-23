@@ -18,7 +18,6 @@
 package org.veo.rest.security;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -41,10 +40,7 @@ public class AccountProviderImpl implements AccountProvider {
         ApplicationUser.authenticatedUser(
             SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     var client =
-        Optional.ofNullable(user.getClientId())
-            .map(UUID::fromString)
-            .flatMap(clientRepository::findById)
-            .orElse(null);
+        Optional.ofNullable(user.getClientId()).flatMap(clientRepository::findById).orElse(null);
 
     return new AccountImpl(user.isAdmin(), client);
   }

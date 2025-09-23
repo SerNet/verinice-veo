@@ -52,18 +52,18 @@ public class SaveUserConfigurationUseCase
           "Exceeds the configuration size limit. (%d bytes)".formatted(maxBytesPerConfiguration));
     }
 
-    var client = clientRepository.getById(userAccessRights.clientId());
+    var client = clientRepository.getById(userAccessRights.getClientId());
     UserConfiguration userConfiguration =
         userConfigurationRepository
             .findUserConfiguration(
-                userAccessRights.clientId(), userAccessRights.getUsername(), input.applicationId)
+                userAccessRights.getClientId(), userAccessRights.getUsername(), input.applicationId)
             .orElse(
                 entityFactory.createUserConfiguration(
                     client, userAccessRights.getUsername(), input.applicationId));
     boolean created = !userConfiguration.isPersisted();
     if (created
         && userConfigurationRepository.countUserConfigurations(
-                userAccessRights.clientId(), userAccessRights.getUsername())
+                userAccessRights.getClientId(), userAccessRights.getUsername())
             >= maxUserConfigurations) {
       throw new ExceedLimitException(
           "Exceeds the configuration per user limit. (%d allowed)"

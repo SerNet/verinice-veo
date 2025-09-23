@@ -63,7 +63,7 @@ public class EvaluateElementUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain =
         domainRepository.getByIdWithDecisionsAndInspections(
-            input.domainId, userAccessRights.clientId());
+            input.domainId, userAccessRights.getClientId());
     var element = fetchOrCreateElement(input.element, userAccessRights, domain.getOwner());
     element.setDecisionResults(decider.decide(element, domain), domain);
     var findings = inspector.inspect(element, domain);

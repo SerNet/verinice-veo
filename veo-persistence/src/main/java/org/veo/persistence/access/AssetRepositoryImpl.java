@@ -90,7 +90,7 @@ public class AssetRepositoryImpl
     return assetDataRepository
         .findByIdsWithRiskValues(
             Set.of(id),
-            rights.clientId(),
+            rights.getClientId(),
             rights.isUnitAccessRestricted(),
             rights.getReadableUnitIds())
         .stream()

@@ -42,7 +42,8 @@ public class GetDomainTemplateUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    Client client = UseCaseTools.checkClientExists(userAccessRights.clientId(), clientRepository);
+    Client client =
+        UseCaseTools.checkClientExists(userAccessRights.getClientId(), clientRepository);
 
     return new OutputData(templateService.getTemplate(client, input.id()));
   }

@@ -62,7 +62,7 @@ public class AddLinksUseCase
       Set<CustomLinkState> links,
       UUID domainId,
       UserAccessRights userRights) {
-    var domain = domainRepository.getById(domainId, userRights.clientId());
+    var domain = domainRepository.getById(domainId, userRights.getClientId());
     var element = elementRepo.getById(elementId, type, userRights);
     userRights.checkElementWriteAccess(element);
     if (!element.isAssociatedWithDomain(domain)) {

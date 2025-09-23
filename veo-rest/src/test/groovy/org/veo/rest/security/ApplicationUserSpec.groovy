@@ -25,13 +25,13 @@ public class ApplicationUserSpec extends Specification {
 
     def "A user can be extracted from a Jwt token"() {
         when:
-        def clientId = UUID.randomUUID().toString()
+        def clientId = UUID.randomUUID()
         def jwt = new Jwt.Builder('foo').header('Foo', 'Bar').claim('groups', "/veo_client:$clientId").build()
         ApplicationUser user = ApplicationUser.authenticatedUser(jwt)
 
         then:
         user != null
-        user.clientId == clientId
+        user.getClientId() == clientId
     }
 
     def "A helpful error message is produced if a user does not belong to any groups"() {

@@ -39,7 +39,7 @@ public class SaveIncarnationConfigurationUseCase
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
-    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.clientId());
+    var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     domain.setIncarnationConfiguration(input.incarnationConfiguration);
     return EmptyOutput.INSTANCE;
   }

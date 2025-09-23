@@ -69,14 +69,14 @@ public class GetProfileIncarnationDescriptionUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    var client = clientRepository.getById(userAccessRights.clientId());
+    var client = clientRepository.getById(userAccessRights.getClientId());
     log.info(
         "profile: {}, unit: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
     Unit unit = unitRepository.getByIdFetchClient(input.unitId, userAccessRights);
     validateInput(input, client);
     Profile profile =
         profileRepository
-            .findById(userAccessRights.clientId(), input.profileId)
+            .findById(userAccessRights.getClientId(), input.profileId)
             .orElseThrow(() -> new NotFoundException(input.profileId, Profile.class));
 
     Domain domain = profile.requireDomainMembership();

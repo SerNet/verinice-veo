@@ -84,7 +84,7 @@ public class ClientChangedEventListener {
     switch (event.getType()) {
       case ACTIVATION -> log.info("client {} activated", client.getIdAsString());
       case DEACTIVATION -> log.info("client {} deactivated", client.getIdAsString());
-      case DELETION -> deleteClient(client, new NoRestriction(client.getIdAsString()));
+      case DELETION -> deleteClient(client, new NoRestriction(client.getId()));
       case MODIFICATION -> modifyClient(client, event);
       default -> throw new NotImplementedException("Unexpected value: " + event.getType());
     }
@@ -187,7 +187,7 @@ public class ClientChangedEventListener {
 
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   private static final class NoRestriction implements UserAccessRights {
-    private final String clientId;
+    private final UUID clientId;
 
     @Override
     public void checkClient(ClientOwned id) {}
@@ -213,7 +213,7 @@ public class ClientChangedEventListener {
     }
 
     @Override
-    public String getClientId() {
+    public UUID getClientId() {
       return clientId;
     }
 

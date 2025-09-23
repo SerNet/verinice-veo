@@ -43,7 +43,7 @@ public class GetProfilesUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     Set<Profile> profiles =
-        profileRepo.findAllByDomainId(userAccessRights.clientId(), input.domain.getId());
+        profileRepo.findAllByDomainId(userAccessRights.getClientId(), input.domain.getId());
     log.info("profiles: {}", profiles.size());
     return new OutputData(profiles);
   }

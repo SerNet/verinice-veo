@@ -43,8 +43,8 @@ public class GetProfileUseCase
     var profile =
         (input.fastLoadDetails
                 ? profileRepo.findProfileByIdFetchTailoringReferences(
-                    input.profile.getId(), userAccessRights.clientId())
-                : profileRepo.findById(userAccessRights.clientId(), input.profile.getId()))
+                    input.profile.getId(), userAccessRights.getClientId())
+                : profileRepo.findById(userAccessRights.getClientId(), input.profile.getId()))
             .orElseThrow(() -> new NotFoundException(input.profile.getId(), Profile.class));
     log.info("profile: {}", profile);
 

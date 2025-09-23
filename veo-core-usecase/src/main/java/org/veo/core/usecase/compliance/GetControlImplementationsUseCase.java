@@ -64,7 +64,7 @@ public class GetControlImplementationsUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
-    Domain domain = domainRepository.getById(input.domainId, userAccessRights.clientId());
+    Domain domain = domainRepository.getById(input.domainId, userAccessRights.getClientId());
     var query = controlImplementationRepository.query(domain.getOwner(), input.domainId);
     applyAdditionalQueryParameters(input, domain, query, userAccessRights);
 

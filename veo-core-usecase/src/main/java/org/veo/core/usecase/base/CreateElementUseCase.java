@@ -69,7 +69,7 @@ public class CreateElementUseCase<TEntity extends Element>
     var client =
         repositoryProvider
             .getRepositoryFor(Client.class)
-            .findById(userAccessRights.clientId())
+            .findById(userAccessRights.getClientId())
             .get();
     entityStateMapper.mapState(state, entity, false, refResolverFactory.db(client));
     DomainSensitiveElementValidator.validate(entity);

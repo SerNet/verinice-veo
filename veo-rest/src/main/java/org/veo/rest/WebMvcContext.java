@@ -91,7 +91,7 @@ class WebMvcContext implements WebMvcConfigurer {
                 Optional.ofNullable(auth)
                     .map(Authentication::getPrincipal)
                     .map(ApplicationUser::findAuthenticatedUser)
-                    .map(UserAccessRights::clientId)
+                    .map(UserAccessRights::getClientId)
                     .ifPresent(
                         clientId -> {
                           clientRepository

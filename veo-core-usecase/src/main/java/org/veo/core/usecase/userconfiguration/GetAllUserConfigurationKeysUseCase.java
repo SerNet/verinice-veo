@@ -38,7 +38,7 @@ public class GetAllUserConfigurationKeysUseCase
   public OutputData execute(EmptyInput input, UserAccessRights userAccessRights) {
     Set<String> userConfiguration =
         userConfigurationRepository.findAllKeysByUser(
-            userAccessRights.clientId(), userAccessRights.getUsername());
+            userAccessRights.getClientId(), userAccessRights.getUsername());
     return new OutputData(userConfiguration);
   }
 
