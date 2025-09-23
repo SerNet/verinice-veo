@@ -80,7 +80,7 @@ public class SchemaExtender {
   private static final String EXTERNAL_DOCUMENT_PATTERN =
       ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
   private final ObjectMapper mapper = new ObjectMapper().registerModule(new BlackbirdModule());
-  private final JsonNodeFactory factory = JsonNodeFactory.instance;
+  private static final JsonNodeFactory FACTORY = JsonNodeFactory.instance;
 
   /**
    * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementDto} schema with domain-specific
@@ -298,7 +298,7 @@ public class SchemaExtender {
                   .getCategories()
                   .forEach(
                       c -> {
-                        var impactValueSchema = factory.objectNode();
+                        var impactValueSchema = FACTORY.objectNode();
                         impactValueSchema
                             .putArray("enum")
                             .addAll(

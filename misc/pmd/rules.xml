@@ -63,7 +63,6 @@
         <exclude name="ExcessiveImports" />
         <exclude name="ExcessiveParameterList" />
         <exclude name="ExcessivePublicCount" />
-        <exclude name="FinalFieldCouldBeStatic" />
         <exclude name="GodClass" />
         <exclude name="ImmutableField" />
         <exclude name="LawOfDemeter" />
