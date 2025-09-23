@@ -465,8 +465,7 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetProcessRisksUseCase getProcessRisksUseCase(
-      RepositoryProvider repositoryProvider, ProcessRepository processRepository) {
+  public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider) {
     return new GetProcessRisksUseCase(repositoryProvider);
   }
 
@@ -482,9 +481,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetUnitsUseCase getUnitsUseCase(
-      ClientRepository repository, UnitRepositoryImpl unitRepository) {
-    return new GetUnitsUseCase(repository, unitRepository);
+  public GetUnitsUseCase getUnitsUseCase(UnitRepositoryImpl unitRepository) {
+    return new GetUnitsUseCase(unitRepository);
   }
 
   @Bean
@@ -575,10 +573,7 @@ public class ModuleConfiguration {
 
   @Bean
   public CreateProfileInDomainTemplateUseCase createProfileInDomainTemplateUseCase(
-      GenericElementRepository genericElementRepository,
-      UnitRepository unitRepository,
       DomainTemplateRepository domainTemplateRepository,
-      EntityFactory factory,
       ProfileRepository profileRepository,
       DomainStateMapper domainStateMapper) {
     return new CreateProfileInDomainTemplateUseCase(
@@ -1057,9 +1052,7 @@ public class ModuleConfiguration {
 
   @Bean
   public DefaultDomainCreator defaultDomainTemplateProvider(
-      @Value("${veo.default.domaintemplate.names}") String[] defaultDomainTemplateIds,
-      DomainTemplateService domainService,
-      DomainTemplateRepository domainTemplateRepository) {
+      DomainTemplateService domainService, DomainTemplateRepository domainTemplateRepository) {
     return new DefaultDomainCreator(domainService, domainTemplateRepository);
   }
 

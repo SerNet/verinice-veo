@@ -26,7 +26,6 @@
         <exclude name="LiteralsFirstInComparisons" />
         <exclude name="PreserveStackTrace" />
         <exclude name="UnusedAssignment" />
-        <exclude name="UnusedFormalParameter" />
     </rule>
     
     <rule ref="category/java/codestyle.xml">

@@ -17,16 +17,12 @@
  ******************************************************************************/
 package org.veo.service.risk;
 
-import java.util.Set;
-
-import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
 
 public class ImpactInheritanceCircleException extends RuntimeException {
   private static final long serialVersionUID = -2866120066937604789L;
 
-  public ImpactInheritanceCircleException(
-      RiskAffected<?, ?> affectedElement, Set<Element> allCycles) {
+  public ImpactInheritanceCircleException(RiskAffected<?, ?> affectedElement) {
     super(affectedElement.getName() + " is direct part of a cycle");
   }
 }

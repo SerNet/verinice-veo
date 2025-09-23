@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Unit;
-import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -34,7 +33,7 @@ public class GetUnitsUseCase
 
   private final UnitRepository unitRepository;
 
-  public GetUnitsUseCase(ClientRepository repository, UnitRepository unitRepository) {
+  public GetUnitsUseCase(UnitRepository unitRepository) {
     this.unitRepository = unitRepository;
   }
 

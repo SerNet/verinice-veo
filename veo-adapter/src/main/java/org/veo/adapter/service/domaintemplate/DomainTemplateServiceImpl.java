@@ -51,7 +51,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return domainTemplateRepository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(key);
   }
 
-  private void checkClientAccess(Client client, UUID key) {
+  private void checkClientAccess(
+      @SuppressWarnings("PMD.UnusedFormalParameter") Client client,
+      @SuppressWarnings("PMD.UnusedFormalParameter") UUID key) {
     // TODO VEO-1454 check the shop status for available products
   }
 
