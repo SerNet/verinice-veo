@@ -592,8 +592,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EntitySchemaGenerator entitySchemaGenerator(SchemaExtender schemaExtender) {
-    return new EntitySchemaGenerator(schemaExtender);
+  public EntitySchemaGenerator entitySchemaGenerator(
+      SchemaExtender schemaExtender, ObjectMapper objectMapper) {
+    return new EntitySchemaGenerator(schemaExtender, objectMapper);
   }
 
   @Bean

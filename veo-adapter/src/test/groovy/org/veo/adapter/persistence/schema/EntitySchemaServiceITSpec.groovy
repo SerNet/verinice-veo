@@ -18,6 +18,7 @@
 package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SchemaId
@@ -50,7 +51,8 @@ import spock.lang.Specification
  * schemas for two test domains and verifying the produced schemas.
  */
 class EntitySchemaServiceITSpec extends Specification {
-    static EntitySchemaService entitySchemaService = new EntitySchemaServiceImpl(new EntitySchemaGenerator(new SchemaExtender()))
+
+    static EntitySchemaService entitySchemaService = new EntitySchemaServiceImpl(new EntitySchemaGenerator(new SchemaExtender(), new ObjectMapper()))
     public static final String PROPS = "properties"
 
     def "entity schema is a valid schema"() {
