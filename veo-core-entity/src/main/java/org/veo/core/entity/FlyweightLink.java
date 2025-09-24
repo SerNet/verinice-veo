@@ -17,10 +17,4 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-public interface FlyweightLink {
-  String getSourceId();
-
-  String getTargetId();
-
-  String getType();
-}
+public record FlyweightLink(String sourceId, String targetId, String type) {}

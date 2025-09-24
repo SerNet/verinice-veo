@@ -38,7 +38,7 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
 
   @Query(
       value =
-          "SELECT source_id AS sourceId, target_id AS targetId, type "
+          "SELECT source_id::text AS sourceId, target_id::text AS targetId, type "
               + "FROM customlink l, element e, unit u "
               + "WHERE type IN :types AND domain_id = :domainId "
               + "AND source_id = e.db_id "
@@ -57,7 +57,7 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
     Set<FlyweightLink> allFlyweightElements = findAllLinks(types, domainId, unitId, clientId);
     Map<String, FlyweightElement> elementsById =
         allFlyweightElements.stream()
-            .collect(Collectors.groupingBy(FlyweightLink::getSourceId))
+            .collect(Collectors.groupingBy(FlyweightLink::sourceId))
             .entrySet()
             .stream()
             .map(entry -> new FlyweightElementData(entry.getKey(), new HashSet<>(entry.getValue())))
@@ -65,7 +65,7 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
 
     Set<FlyweightElement> allLeafs =
         allFlyweightElements.stream()
-            .collect(Collectors.groupingBy(FlyweightLink::getTargetId))
+            .collect(Collectors.groupingBy(FlyweightLink::targetId))
             .entrySet()
             .stream()
             .map(

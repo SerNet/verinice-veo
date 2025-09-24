@@ -17,10 +17,24 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.veo.core.entity.FlyweightElement;
 import org.veo.core.entity.FlyweightLink;
 
 public record FlyweightElementData(String sourceId, Set<FlyweightLink> links)
-    implements FlyweightElement {}
+    implements FlyweightElement {
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    FlyweightElementData that = (FlyweightElementData) o;
+    return Objects.equals(sourceId, that.sourceId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(sourceId);
+  }
+}

@@ -498,9 +498,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     flyweightGraphElements.stream()
         .flatMap(e -> e.links().stream())
         .forEach(
-            l ->
-                graph.addEdge(
-                    elementById.get(l.getSourceId()), elementById.get(l.getTargetId()), l));
+            l -> graph.addEdge(elementById.get(l.sourceId()), elementById.get(l.targetId()), l));
 
     log.debug(
         "FlyweightGraph- vertexes: {} edges:{}", graph.vertexSet().size(), graph.edgeSet().size());
