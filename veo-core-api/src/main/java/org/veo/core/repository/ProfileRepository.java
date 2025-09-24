@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 
@@ -41,8 +40,6 @@ public interface ProfileRepository extends IdentifiableVersionedRepository<Profi
 
   List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       UUID profileId, Client client);
-
-  Set<Profile> findAllByDomain(Domain domain);
 
   Set<Profile> findAllByDomainId(UUID clientId, UUID domainId);
 

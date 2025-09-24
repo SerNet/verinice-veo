@@ -197,7 +197,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
         when:
         def profileItem = executeInTransaction {
-            profileRepository.findAllByDomain(domain).first().getItems().first()
+            profileRepository.findAllByDomainId(domain.owner.id, domain.id).first().getItems().first()
         }
 
         then:"the content of the profile item that still conforms to the current element type definition is still there"

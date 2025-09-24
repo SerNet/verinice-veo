@@ -61,8 +61,6 @@ public interface Repository<T extends Identifiable> extends RepositoryBase<T, IT
 
   Set<T> findByIds(Set<UUID> ids);
 
-  Set<T> getByIds(Set<UUID> ids);
-
   void delete(T entity);
 
   void deleteById(UUID id);

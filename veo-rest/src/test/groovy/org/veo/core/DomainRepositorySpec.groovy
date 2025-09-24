@@ -59,7 +59,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
         def domain = domainRepository.save(newDomain(client))
 
         when:
-        def result = domainRepository.getByIds([domain.id] as Set)
+        def result = domainRepository.getByIds([domain.id] as Set, client.id)
 
         then:
         result.size() == 1
@@ -76,11 +76,11 @@ class DomainRepositorySpec extends VeoSpringSpec {
         domainRepository.getByIds([
             domain.id,
             randomId
-        ] as Set)
+        ] as Set, client.id)
 
         then:
         NotFoundException e = thrown()
-        e.message == "Entity $randomId not found"
+        e.message == "Domain $randomId not found"
     }
 
     def "getByIds throws for other client's domain"() {

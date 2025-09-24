@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.Client;
@@ -26,8 +25,4 @@ import org.veo.core.entity.ref.IEntityRef;
 
 public interface RepositoryBase<T extends Entity, TRef extends IEntityRef<T>> {
   Set<T> findAllByRefs(Set<TRef> refs, Client client);
-
-  default Optional<T> findByRef(TRef ref, Client client) {
-    return findAllByRefs(Set.of(ref), client).stream().findFirst();
-  }
 }

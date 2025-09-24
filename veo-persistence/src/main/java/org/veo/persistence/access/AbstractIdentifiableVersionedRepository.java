@@ -17,13 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import static java.lang.String.format;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -31,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.persistence.access.jpa.IdentifiableVersionedDataRepository;
 import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
@@ -92,21 +88,6 @@ abstract class AbstractIdentifiableVersionedRepository<
     return StreamSupport.stream(dataRepository.findAllById(idStrings).spliterator(), false)
         .map(e -> (T) e)
         .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Set<T> getByIds(Set<UUID> ids) {
-    Set<T> result = findByIds(ids);
-    if (result.size() < ids.size()) {
-      List<UUID> foundIds = result.stream().map(Identifiable::getId).toList();
-      List<String> unfoundIds =
-          ids.stream().filter(Predicate.not(foundIds::contains)).map(UUID::toString).toList();
-      throw new NotFoundException(
-          format(
-              "%s %s not found",
-              unfoundIds.size() == 1 ? "Entity" : "Entities", String.join(", ", unfoundIds)));
-    }
-    return result;
   }
 
   @Override

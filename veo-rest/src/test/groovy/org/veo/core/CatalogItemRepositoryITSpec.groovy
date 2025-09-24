@@ -64,11 +64,10 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         def itemRef = TypedSymbolicId.from(client.domains.first().catalogItems.first())
 
         when:
-        def item = catalogItemRepository.findByRef(itemRef, client)
+        def item = catalogItemRepository.findAllByRefs([itemRef] as Set, client).first()
 
         then:
-        item.present
-        with( item.get() ) {
+        with(item) {
             name == 'Control 1'
             elementType == ElementType.CONTROL
         }

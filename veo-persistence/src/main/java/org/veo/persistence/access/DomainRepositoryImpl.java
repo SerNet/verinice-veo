@@ -106,13 +106,8 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findByIds(Set<UUID> ids, @NonNull UUID clientId) {
-    return dataRepository.findAllByIdInAndOwnerIdIs(ids, clientId);
-  }
-
-  @Override
   public Set<Domain> getByIds(Set<UUID> ids, @NonNull UUID clientId) {
-    Set<Domain> result = findByIds(ids, clientId);
+    Set<Domain> result = dataRepository.findAllByIdInAndOwnerIdIs(ids, clientId);
     if (result.size() < ids.size()) {
       List<UUID> foundIds = result.stream().map(Identifiable::getId).toList();
       List<String> unfoundIds =

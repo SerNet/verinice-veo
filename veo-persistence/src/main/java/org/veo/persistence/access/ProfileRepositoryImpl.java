@@ -25,12 +25,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.persistence.access.jpa.ProfileDataRepository;
-import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ProfileData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -65,11 +63,6 @@ public class ProfileRepositoryImpl
       UUID profileId, UUID itemId, UUID clientId) {
     return profileDataRepository.findProfileItemByIdFetchTailoringReferences(
         profileId, itemId, clientId);
-  }
-
-  @Override
-  public Set<Profile> findAllByDomain(Domain domain) {
-    return profileDataRepository.findAllByDomain((DomainData) domain);
   }
 
   @Override
