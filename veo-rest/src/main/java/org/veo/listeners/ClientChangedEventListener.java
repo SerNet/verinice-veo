@@ -121,18 +121,18 @@ public class ClientChangedEventListener {
 
   private void addDomains(Client client, Map<String, List<String>> domainProducts, boolean save) {
     if (domainProducts != null && !domainProducts.isEmpty()) {
-      domainProducts
-          .keySet()
+      domainProducts.keySet().stream()
+          .filter(
+              domainName ->
+                  client.getDomains().stream()
+                      .filter(hasDomainTemplate())
+                      .noneMatch(referenceDomainTemplate(domainName)))
           .forEach(
               dn -> {
-                if (client.getDomains().stream()
-                    .filter(hasDomainTemplate())
-                    .noneMatch(referenceDomainTemplate(dn))) {
-                  log.info("create Domain {} for client {}", dn, client.getName());
-                  defaultDomainCreator.addDomain(client, dn, false);
-                  if (save) {
-                    repository.save(client);
-                  }
+                log.info("create Domain {} for client {}", dn, client.getName());
+                defaultDomainCreator.addDomain(client, dn, false);
+                if (save) {
+                  repository.save(client);
                 }
               });
     }

@@ -100,7 +100,8 @@ public class ElementInDomainService {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UserAccessRightsProvider userAccessRightsProvider;
 
-  public @Valid <
+  @Valid
+  public <
           TElement extends Element,
           TFullDto extends AbstractElementInDomainDto<TElement> & IdentifiableDto>
       Future<ResponseEntity<TFullDto>> getElement(
@@ -122,7 +123,8 @@ public class ElementInDomainService {
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
-  public @Valid <TElement extends Element> boolean ensureElementExists(
+  @Valid
+  public <TElement extends Element> boolean ensureElementExists(
       UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
     return runner.run(
             () ->
@@ -215,7 +217,8 @@ public class ElementInDomainService {
                     .orElseThrow()));
   }
 
-  public @Valid <TElement extends Element, TDto extends AbstractElementInDomainDto<TElement>>
+  @Valid
+  public <TElement extends Element, TDto extends AbstractElementInDomainDto<TElement>>
       CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
           @Valid TDto dto, UUID domainId) {
     dto.setDomain(TypedId.from(domainId, Domain.class));

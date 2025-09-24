@@ -31,7 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthAwareImpl implements AuditorAware<String> {
 
   @Override
-  public @Nonnull Optional<String> getCurrentAuditor() {
+  @Nonnull
+  public Optional<String> getCurrentAuditor() {
     var currentUser =
         Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
             .map(Authentication::getPrincipal)

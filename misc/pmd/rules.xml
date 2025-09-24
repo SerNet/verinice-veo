@@ -11,6 +11,7 @@
     </description>
 
     <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidCatchingGenericException" />
         <exclude name="AvoidDuplicateLiterals" />
         <exclude name="AvoidLiteralsInIfCondition" />
         <exclude name="AvoidFieldNameMatchingMethodName" />
@@ -48,7 +49,6 @@
 
     <rule ref="category/java/design.xml">
         <exclude name="UselessOverridingMethod" />    
-        <exclude name="AvoidCatchingGenericException" />
         <exclude name="AvoidThrowingNewInstanceOfSameException" />
         <exclude name="AvoidUncheckedExceptionsInSignatures" />
         <exclude name="CognitiveComplexity" />
