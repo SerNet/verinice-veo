@@ -19,7 +19,6 @@ package org.veo.persistence.access;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -37,8 +36,6 @@ public class FlyweightLinkRepositoryImpl implements FlyweightLinkRepository {
   @Override
   public Set<FlyweightElement> findAllLinksGroupedByElement(
       Set<String> types, UUID domainId, UUID unitId, UUID clientId) {
-    return linkRepo.findAllLinksGroupedByElement(types, domainId, unitId, clientId).stream()
-        .map(FlyweightElement.class::cast)
-        .collect(Collectors.toSet());
+    return linkRepo.findAllLinksGroupedByElement(types, domainId, unitId, clientId);
   }
 }

@@ -19,11 +19,11 @@ package org.veo.persistence.access.jpa;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -63,21 +63,12 @@ public interface FlyweightLinkDataRepostory extends JpaRepository<ElementData, S
             .map(entry -> new FlyweightElementData(entry.getKey(), new HashSet<>(entry.getValue())))
             .collect(Collectors.toMap(FlyweightElementData::sourceId, Function.identity()));
 
-    Set<FlyweightElement> allLeafs =
+    Stream<FlyweightElement> allLeafs =
         allFlyweightElements.stream()
             .collect(Collectors.groupingBy(FlyweightLink::targetId))
-            .entrySet()
+            .keySet()
             .stream()
-            .map(
-                e ->
-                    elementsById.getOrDefault(
-                        e.getKey(), new FlyweightElementData(e.getKey(), new HashSet<>())))
-            .collect(Collectors.toSet());
-
-    Set<FlyweightElement> allNonLeafs =
-        elementsById.entrySet().stream().map(Entry::getValue).collect(Collectors.toSet());
-    Set<FlyweightElement> all = new HashSet<>(allLeafs);
-    all.addAll(allNonLeafs);
-    return all;
+            .map(s -> elementsById.getOrDefault(s, new FlyweightElementData(s, new HashSet<>())));
+    return Stream.concat(elementsById.values().stream(), allLeafs).collect(Collectors.toSet());
   }
 }
