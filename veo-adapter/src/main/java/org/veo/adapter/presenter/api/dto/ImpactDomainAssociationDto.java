@@ -35,8 +35,4 @@ public class ImpactDomainAssociationDto extends DomainAssociationDto {
           "Key is risk definition ID, value contains impact values in the context of that risk definition.")
   @Valid
   protected Map<String, ImpactValuesDto> riskValues = new HashMap<>();
-
-  public ImpactDomainAssociationDto() {
-    super();
-  }
 }

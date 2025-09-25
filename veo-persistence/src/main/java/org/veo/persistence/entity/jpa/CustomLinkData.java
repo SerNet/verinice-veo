@@ -34,9 +34,6 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CustomLinkData extends CustomAttributeContainerData implements CustomLink {
-  public CustomLinkData() {
-    super();
-  }
 
   @Override
   public Element loadTarget() {

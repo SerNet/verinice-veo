@@ -42,7 +42,6 @@
         <exclude name="ShortVariable" />
         <exclude name="TooManyStaticImports" />
         <exclude name="UnnecessaryAnnotationValueElement" />
-        <exclude name="UnnecessaryConstructor" />
         <exclude name="UseExplicitTypes" />
         <exclude name="UseUnderscoresInNumericLiterals" />
     </rule>
