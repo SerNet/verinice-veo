@@ -114,12 +114,12 @@ public abstract class AbstractGetIncarnationDescriptionUseCase<
       TailoringReference<T, ?> reference, Element element) {
     return switch (reference.getReferenceType()) {
       case PART,
-              COMPOSITE,
-              RISK,
-              CONTROL_IMPLEMENTATION,
-              REQUIREMENT_IMPLEMENTATION,
-              SCOPE,
-              MEMBER ->
+          COMPOSITE,
+          RISK,
+          CONTROL_IMPLEMENTATION,
+          REQUIREMENT_IMPLEMENTATION,
+          SCOPE,
+          MEMBER ->
           fromReference(reference, element);
       case LINK, LINK_EXTERNAL ->
           fromLinkReference((LinkTailoringReference<T, ?>) reference, element);

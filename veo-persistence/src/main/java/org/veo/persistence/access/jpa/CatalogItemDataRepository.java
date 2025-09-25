@@ -59,7 +59,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
   Set<CatalogItem> findAllByDomain(DomainData domain);
 
   @Query(
-      """
+"""
             select new org.veo.core.repository.SubTypeCount(ci.elementType ,ci.subType, count(ci.subType))
             from #{#entityName} as ci
             where ci.domain.id = ?1

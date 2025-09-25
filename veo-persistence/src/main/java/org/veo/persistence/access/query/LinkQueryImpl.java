@@ -42,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LinkQueryImpl implements LinkQuery {
   public static final String WITH_LINK_SUB_QUERY =
-      """
+"""
        with l as ((select 'INBOUND' as direction, type, customlink.domain_id, source_id as element_id
                    from customlink where target_id = :elementId and domain_id = :domainId)
                   union
