@@ -19,7 +19,11 @@ package org.veo.core.entity.risk;
 
 import java.math.BigDecimal;
 
-public abstract class RiskReferenceFactory {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class RiskReferenceFactory {
   protected RiskRef createRiskRef(BigDecimal id) {
     return id == null ? null : new RiskRef(id);
   }

@@ -33,10 +33,11 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.UnitRepository;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public abstract class AbstractCreateItemsFromUnitUseCase<
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class AbstractCreateItemsFromUnitUseCase<
     T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
 
   protected final EntityFactory factory;

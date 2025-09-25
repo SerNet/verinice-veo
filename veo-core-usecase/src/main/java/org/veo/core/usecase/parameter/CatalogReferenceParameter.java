@@ -19,16 +19,18 @@ package org.veo.core.usecase.parameter;
 
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @EqualsAndHashCode
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-/** Represents a concrete reference on a concrete {@link Element}. */
 @Accessors(makeFinal = true)
-public abstract class CatalogReferenceParameter {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+/** Represents a concrete reference on a concrete {@link Element}. */
+public class CatalogReferenceParameter {
   private String id;
   private Element referencedElement;
 }

@@ -38,7 +38,7 @@ import org.veo.core.usecase.UseCaseInteractor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class AbstractVeoController {
+public class AbstractVeoController {
 
   @Autowired protected UseCaseInteractor useCaseInteractor;
   @Autowired protected ReferenceAssembler referenceAssembler;

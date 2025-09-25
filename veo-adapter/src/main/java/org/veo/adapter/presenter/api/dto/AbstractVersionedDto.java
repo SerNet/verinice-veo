@@ -26,13 +26,15 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 @Accessors(makeFinal = true)
-public abstract class AbstractVersionedDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AbstractVersionedDto {
   @Schema(
       description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
       example = "1990-12-31T23:59:60Z")

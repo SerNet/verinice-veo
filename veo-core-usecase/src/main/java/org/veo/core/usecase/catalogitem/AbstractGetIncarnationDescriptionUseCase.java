@@ -57,10 +57,11 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public abstract class AbstractGetIncarnationDescriptionUseCase<
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class AbstractGetIncarnationDescriptionUseCase<
     T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> {
   private final Class<T> itemType;
   private final GenericElementRepository genericElementRepository;
