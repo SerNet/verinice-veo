@@ -78,15 +78,6 @@ class SwaggerSpec extends VeoSpringSpec {
         !pageContent.contains('petstore')
     }
 
-    def "response DTO contains links property"() {
-        when:
-        def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
-
-        then:
-        assetDtoSchema.properties.links != null
-        assetDtoSchema.properties.links.description == 'The links for the asset.'
-    }
-
     def "operation documentation is complete for #op.method #op.path"(op) {
         expect:
         op.documentation.summary != null
@@ -117,23 +108,6 @@ class SwaggerSpec extends VeoSpringSpec {
         assetDtoSchema.properties.updatedAt.readOnly == true
     }
 
-    def "displayName is not required for parts when putting composite elements"() {
-        when:
-        def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
-
-        then:
-        scenarioDtoSchema.properties.parts != null
-        scenarioDtoSchema.properties.parts.type == 'array'
-        scenarioDtoSchema.properties.parts.items != null
-        scenarioDtoSchema.properties.parts.items.'$ref' == '#/components/schemas/PartReference'
-
-        when:
-        def partReferenceSchema = parsedApiDocs.components.schemas.PartReference
-
-        then:
-        !partReferenceSchema.required.contains('displayName')
-    }
-
     def "domain association schemas contain the expected fields"() {
         given:
         def schemas = parsedApiDocs.components.schemas
@@ -158,33 +132,6 @@ class SwaggerSpec extends VeoSpringSpec {
         riskSchema.properties.ownerRef == null
     }
 
-    def "scenario risk values are mapped correctly"() {
-        given:
-        def schemas = parsedApiDocs.components.schemas
-
-        expect:
-        def scenarioSchema = schemas.FullScenarioDto
-        scenarioSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ScenarioDomainAssociationDto"
-    }
-
-    def "scope risk values are mapped correctly"() {
-        given:
-        def schemas = parsedApiDocs.components.schemas
-
-        expect:
-        def scopeSchema = schemas.FullScopeDto
-        scopeSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ScopeDomainAssociationDto"
-    }
-
-    def "process risk values are mapped correctly"() {
-        given:
-        def schemas = parsedApiDocs.components.schemas
-
-        expect:
-        def processSchema = schemas.FullProcessDto
-        processSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ProcessDomainAssociationDto"
-    }
-
     def "decision rule ref values are mapped correctly"() {
         given:
         def schemas = parsedApiDocs.components.schemas
@@ -192,27 +139,6 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
         scopeDomainAssociationSchema.properties.decisionResults.additionalProperties.'$ref' == "#/components/schemas/DecisionResult"
-
-        def decisionResultsSchema = schemas.DecisionResult
-        decisionResultsSchema.properties.decisiveRule.type == "integer"
-        decisionResultsSchema.properties.agreeingRules.items.type == "integer"
-    }
-
-    def "targetUri is required for parts when putting composite elements"() {
-        when:
-        def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
-
-        then:
-        scenarioDtoSchema.properties.parts != null
-        scenarioDtoSchema.properties.parts.type == 'array'
-        scenarioDtoSchema.properties.parts.items != null
-        scenarioDtoSchema.properties.parts.items.'$ref' == '#/components/schemas/PartReference'
-
-        when:
-        def partReferenceSchema = parsedApiDocs.components.schemas.PartReference
-
-        then:
-        partReferenceSchema.required.contains('targetUri')
     }
 
     def "link attributes are not required"() {
@@ -221,20 +147,6 @@ class SwaggerSpec extends VeoSpringSpec {
 
         expect:
         !customLinkDtoSchema.required.contains("attributes")
-    }
-
-    def "targetUri is required for scope owner"() {
-        when:
-        def scopeDtoSchema = parsedApiDocs.components.schemas.FullScopeDto
-
-        then:
-        scopeDtoSchema.properties.owner.'$ref' == '#/components/schemas/OwnerReference'
-
-        when:
-        def ownerReferenceSchema = parsedApiDocs.components.schemas.OwnerReference
-
-        then:
-        ownerReferenceSchema.required.contains('targetUri')
     }
 
     def "allowed entity schema types are listed"() {
@@ -892,6 +804,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.items == [$ref: '#/components/schemas/PartReference']
             }
         }
+    }
+
+    def "PartReference is well-documented"() {
+        expect:
         with(getSchema('PartReference')) {
             it.description == '''A reference to an entity's part'''
             with(it.properties.displayName) {
@@ -903,6 +819,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 example == 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>'
                 format == 'uri'
             }
+            it.required == ['targetUri']
         }
     }
 
@@ -1124,7 +1041,102 @@ class SwaggerSpec extends VeoSpringSpec {
     def "FullAssetDto is mapped correctly"() {
         expect:
         with(getSchema('FullAssetDto')) {
-            it.properties.domains.additionalProperties.'$ref' == "#/components/schemas/AssetDomainAssociationDto"
+            it.properties.domains == [
+                type:'object',
+                additionalProperties: ['$ref' : "#/components/schemas/AssetDomainAssociationDto"],
+                description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            ]
+            it.properties.links == [
+                type:'object',
+                additionalProperties:[
+                    type:'array',
+                    description: 'The links for the asset.',
+                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                ],
+                description: 'The links for the asset.']
+        }
+    }
+
+    def "FullProcessDto is mapped correctly"() {
+        expect:
+        with(getSchema('FullProcessDto')) {
+            it.properties.domains == [
+                type:'object',
+                additionalProperties: ['$ref' : "#/components/schemas/ProcessDomainAssociationDto"],
+                description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            ]
+            it.properties.links == [
+                type:'object',
+                additionalProperties:[
+                    type:'array',
+                    description: 'The links for the process.',
+                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                ],
+                description: 'The links for the process.']
+        }
+    }
+
+    def "FullScopeDto is mapped correctly"() {
+        expect:
+        with(getSchema('FullScopeDto')) {
+            it.properties.domains == [
+                type:'object',
+                additionalProperties: ['$ref' : "#/components/schemas/ScopeDomainAssociationDto"],
+                description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            ]
+            it.properties.links == [
+                type:'object',
+                additionalProperties:[
+                    type:'array',
+                    description: 'Custom relations which do not affect the behavior.',
+                    title: 'CustomLink',
+                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                ],
+                description: 'Custom relations which do not affect the behavior.',
+                title: 'CustomLink'
+            ]
+            it.properties.owner == [$ref:'#/components/schemas/OwnerReference']
+        }
+    }
+
+    def "OwnerReference is well-documented"() {
+        expect:
+        with(getSchema('OwnerReference')) {
+            it.description == '''A reference to the unit containing this entity.'''
+            with(it.properties.displayName) {
+                description == 'A friendly human readable title of the referenced unit.'
+                example == 'My Unit'
+            }
+            with(it.properties.targetUri) {
+                description == 'The resource URL of the referenced unit.'
+                example == 'http://<api.veo.example>/veo/units/<00000000-0000-0000-0000-000000000000>'
+                format == 'uri'
+            }
+            it.required == ['targetUri']
+        }
+    }
+
+    def "FullScenarioDto is mapped correctly"() {
+        expect:
+        with(getSchema('FullScenarioDto')) {
+            it.properties.domains == [
+                type:'object',
+                additionalProperties: ['$ref' : "#/components/schemas/ScenarioDomainAssociationDto"],
+                description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+            ]
+            it.properties.links == [
+                type:'object',
+                additionalProperties:[
+                    type:'array',
+                    description: 'The links for the scenario.',
+                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                ],
+                description: 'The links for the scenario.'
+            ]
+            it.properties.parts == [
+                type:'array',
+                items: [ $ref: '#/components/schemas/PartReference']
+            ]
         }
     }
 
@@ -1132,7 +1144,11 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('AssetDomainAssociationDto')) {
             it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+            it.properties.riskValues == [
+                type: 'object',
+                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
+            ]
 
             // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
             //  'links' must also be present
@@ -1151,7 +1167,11 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('ProcessDomainAssociationDto')) {
             it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+            it.properties.riskValues == [
+                type: 'object',
+                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
+            ]
 
             // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
             //  'links' must also be present
@@ -1169,7 +1189,17 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('ScopeDomainAssociationDto')) {
             it.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-            it.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactValuesDto"
+            it.properties.riskValues == [
+                type: 'object',
+                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
+            ]
+            it.properties.decisionResults == [
+                type: 'object',
+                additionalProperties: [$ref: '#/components/schemas/DecisionResult'],
+                description: 'Results of all decisions concerning this element within this domain. Key is decision key, value is results.',
+                readOnly: true
+            ]
 
             // TODO #2542 in the legacy DTO schema, the property list must remain the same. But in the new DTO schema, 'customAspects' and
             //  'links' must also be present
@@ -1180,6 +1210,28 @@ class SwaggerSpec extends VeoSpringSpec {
                 'decisionResults',
                 'riskDefinition',
                 'riskValues',
+            ]
+        }
+    }
+
+    def "DecisionResult is well-documented"() {
+        expect:
+        with(getSchema('DecisionResult')) {
+
+            it.properties.decisiveRule == [
+                type: 'integer',
+                description: '''Index of a rule in a decision's rules list''',
+                format: 'int32',
+                nullable: true
+            ]
+            it.properties.agreeingRules == [
+                type: 'array',
+                description: 'All matching decision rules that support the final result value. They matched and have output values that are identical to what became the final result value of the decision.',
+                items: [
+                    type: 'integer',
+                    description: '''Index of a rule in a decision's rules list''',
+                    format: 'int32'
+                ]
             ]
         }
     }
