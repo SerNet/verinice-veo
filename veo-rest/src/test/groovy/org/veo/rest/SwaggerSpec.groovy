@@ -124,12 +124,106 @@ class SwaggerSpec extends VeoSpringSpec {
         ]
     }
 
-    def "abstract risk is mapped correctly"() {
-        given:
-        def riskSchema = parsedApiDocs.components.schemas.AbstractRiskDto
-
+    def "AbstractRiskDto is mapped correctly"() {
         expect:
-        riskSchema.properties.ownerRef == null
+        with(getSchema('AbstractRiskDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'designator',
+                'scenario',
+                'mitigation',
+                'riskOwner',
+                'domains',
+                '_self'
+            ]
+            it.properties.scenario == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.mitigation == [
+                $ref: '#/components/schemas/EntityReference',
+                description: 'This risk is mitigated by this control or control-composite.'
+            ]
+            it.properties.riskOwner == [
+                $ref: '#/components/schemas/EntityReference',
+                description: 'The accountable point-of-contact for this risk.'
+            ]
+            it.properties.domains == [
+                type: 'object',
+                additionalProperties: [
+                    $ref: '#/components/schemas/RiskDomainAssociationDto'
+                ],
+                description: 'Key is a domain-ID, values are the reference to the domain and its available risk definitions'
+            ]
+            it.required == ['designator', 'scenario']
+        }
+    }
+
+    def "ScopeRiskDto is mapped correctly"() {
+        expect:
+        with(getSchema('ScopeRiskDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'designator',
+                'scenario',
+                'mitigation',
+                'riskOwner',
+                'domains',
+                '_self',
+                'scope'
+            ]
+            it.properties.scenario == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.mitigation == [
+                $ref: '#/components/schemas/EntityReference',
+                description: 'This risk is mitigated by this control or control-composite.'
+            ]
+            it.properties.riskOwner == [
+                $ref: '#/components/schemas/EntityReference',
+                description: 'The accountable point-of-contact for this risk.'
+            ]
+            it.properties.domains == [
+                type: 'object',
+                additionalProperties: [
+                    $ref: '#/components/schemas/RiskDomainAssociationDto'
+                ],
+                description: 'Key is a domain-ID, values are the reference to the domain and its available risk definitions'
+            ]
+            it.properties.scope == [$ref: '#/components/schemas/IdRefScope']
+
+            it.required == ['designator', 'scenario']
+        }
+    }
+
+    def "IdRefScope is mapped correctly"() {
+        expect:
+        with(getSchema('IdRefScope')) {
+            it.properties.keySet() ==~ [
+                'displayName',
+                'name',
+                'id',
+                'targetUri',
+                'abbreviation',
+                'designator',
+                'type'
+            ]
+            it.properties.targetUri == [
+                type: 'string',
+                maxLength: 255,
+                minLength: 1
+            ]
+            it.properties.type == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.properties.designator == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.required == null
+        }
     }
 
     def "decision rule ref values are mapped correctly"() {
@@ -470,9 +564,25 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/messages"].get
 
         expect: "that the correct schema is used"
-        with (endPointInfo) {
+        with(endPointInfo) {
             it.responses['200'].content['application/json'] == [:]
-            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security == [
+                [ApiKeyAuth: []],
+                [OAuth2: []]
+            ]
+        }
+    }
+
+    def "endpoint documentation is correct for POST /{unitId}/incarnations"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/units/{unitId}/incarnations"].post
+
+        expect: "that the correct schema is used"
+        with (endPointInfo) {
+            it.responses['201'].content['application/json'].schema == [
+                type: 'array',
+                items: [$ref: '#/components/schemas/IdRefTailoringReferenceParameterReferencedElement']
+            ]
         }
     }
 
@@ -1001,6 +1111,43 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "TailoringReferenceParameterDto is well-documented"() {
+        expect:
+        with(getSchema('TailoringReferenceParameterDto')) {
+            it.description == 'Describes a reference of this element. It describes a link feature in the catalogItem which will be applied when the Catalogitem is incarnated. The referencedCatalogable needs to be changed to link an actual element. '
+            it.properties.keySet() ==~ [
+                'id',
+                'referencedElement',
+                'referenceKey',
+                'referenceType'
+            ]
+            it.properties.referencedElement == [
+                $ref: '#/components/schemas/IdRefTailoringReferenceParameterReferencedElement',
+                description: 'The actual reference to an existing element in the unit(it may be set or left like it is), or NULL when this reference should be resolved internally.'
+            ]
+            it.properties.referenceType == [
+                type : 'string',
+                description: 'The type of the Tailoringreference.',
+                enum : [
+                    'OMIT',
+                    'LINK',
+                    'LINK_EXTERNAL',
+                    'COPY',
+                    'COPY_ALWAYS',
+                    'PART',
+                    'COMPOSITE',
+                    'RISK',
+                    'SCOPE',
+                    'MEMBER',
+                    'CONTROL_IMPLEMENTATION',
+                    'REQUIREMENT_IMPLEMENTATION'
+                ],
+                example:'LINK or LINK_EXTERNAL',
+                readOnly:true
+            ]
+        }
+    }
+
     def "UnitDumpDto is well-documented"() {
         expect:
         with(getSchema('UnitDumpDto')) {
@@ -1157,6 +1304,76 @@ class SwaggerSpec extends VeoSpringSpec {
                 items: [ $ref: '#/components/schemas/PartReference'],
                 uniqueItems: true
             ]
+        }
+    }
+
+    def "CustomLinkDto is mapped correctly"() {
+        expect:
+        with(getSchema('CustomLinkDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'domains',
+                'attributes',
+                'target'
+            ]
+            it.properties.domains == [
+                type:'array',
+                items: [ $ref: '#/components/schemas/DomainsReference'],
+                uniqueItems: true
+            ]
+            it.properties.target == [$ref: '#/components/schemas/CustomLinkTarget']
+            it.properties.attributes == [
+                type:'object',
+                additionalProperties:[:],
+                description: 'The properties of the element described by the schema of the type attribute.']
+            it.required == ['target']
+        }
+    }
+
+    def "DomainsReference is mapped correctly"() {
+        expect:
+        with(getSchema('DomainsReference')) {
+            it.properties.keySet() ==~ ['displayName', 'targetUri']
+            it.properties.displayName == [
+                type       : 'string',
+                description: 'A friendly human readable title of the referenced domain.',
+                example    : 'ISO 27001:2013',
+                readOnly   : true
+            ]
+            it.properties.targetUri == [
+                type       : 'string',
+                format     : 'uri',
+                description: 'The resource URL of the referenced domains.',
+                example    : 'http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>',
+                maxLength  : 255,
+                minLength  : 1
+            ]
+            it.required == ['targetUri']
+        }
+    }
+
+    def "CustomLinkTarget is mapped correctly"() {
+        expect:
+        with(getSchema('CustomLinkTarget')) {
+            it.properties.keySet() ==~ ['displayName', 'targetUri']
+            it.properties.displayName == [
+                type       : 'string',
+                description: 'A friendly human readable title of the referenced entity.',
+                example    : 'My Entity',
+                readOnly   : true
+            ]
+            it.properties.targetUri == [
+                type       : 'string',
+                format     : 'uri',
+                description: 'The resource URL of the referenced entity.',
+                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
+                maxLength  : 255,
+                minLength  : 1
+            ]
+            it.required == ['targetUri']
         }
     }
 
