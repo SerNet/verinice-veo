@@ -39,7 +39,7 @@ public interface IdRefDomains extends IIdRef {
   @Schema(
       requiredMode = REQUIRED,
       description = "The resource URL of the referenced domains.",
-      example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>",
+      example = "http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
   @Override
   String getTargetUri();

@@ -39,7 +39,7 @@ public interface IdRefOwner extends IIdRef {
   @Schema(
       requiredMode = REQUIRED,
       description = "The resource URL of the referenced unit.",
-      example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>",
+      example = "http://<api.veo.example>/veo/units/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
   @Override
   String getTargetUri();

@@ -900,7 +900,7 @@ class SwaggerSpec extends VeoSpringSpec {
             }
             with(it.properties.targetUri) {
                 description == 'The resource URL of the referenced entity.'
-                example == 'http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>'
+                example == 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>'
                 format == 'uri'
             }
         }

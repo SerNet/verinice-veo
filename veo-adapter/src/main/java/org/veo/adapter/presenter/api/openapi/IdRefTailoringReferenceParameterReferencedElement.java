@@ -34,7 +34,8 @@ public interface IdRefTailoringReferenceParameterReferencedElement extends IIdRe
   @Schema(
       requiredMode = REQUIRED,
       description = "The resource URL of the referenced element.",
-      example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>",
+      example =
+          "http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>/catalog-items/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
   @Override
   String getTargetUri();

@@ -36,7 +36,7 @@ public interface IdRefTemplateItem extends IIdRef {
       requiredMode = REQUIRED,
       description = "The resource URL of the referenced template item.",
       example =
-          "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",
+          "http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>/catalog-items/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
   @Override
   String getTargetUri();
