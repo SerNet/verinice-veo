@@ -32,7 +32,6 @@ import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
-import groovy.transform.Memoized
 import spock.lang.Ignore
 import spock.lang.Shared
 
@@ -43,6 +42,13 @@ class SwaggerSpec extends VeoSpringSpec {
     @Autowired
     @Shared
     private MockMvc mvc
+
+    @Shared
+    Map parsedApiDocs
+
+    def setupSpec() {
+        parsedApiDocs = new JsonSlurper().parseText(apiDocsString)
+    }
 
     def "Swagger documentation is available"() {
         when:
@@ -1529,12 +1535,7 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString
-    }
-
-    def getParsedApiDocs() {
-        new JsonSlurper().parseText(apiDocsString)
     }
 }
