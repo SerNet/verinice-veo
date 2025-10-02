@@ -386,7 +386,17 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    def "endpoint documentation is correct for PUT /content-creation//domains/{id}/element-type-definitions/{type}"() {
+    def "endpoint documentation is correct for POST /content-creation/domains"() {
+        given:
+        def endPointInfo = parsedApiDocs.paths["/content-creation/domains"].post
+
+        expect: "that the correct schema is used"
+        with(endPointInfo) {
+            it.responses['201'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
+        }
+    }
+
+    def "endpoint documentation is correct for PUT /content-creation/domains/{id}/element-type-definitions/{type}"() {
         given:
         def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{id}/element-type-definitions/{type}"].put
 
@@ -1468,9 +1478,8 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('CreateDomainDto')) {
             it.properties.keySet() ==~ [
                 'name',
-                'abbreviation',
-                'description',
-                'authority'
+                'authority',
+                'translations'
             ]
             it.required ==~ ['name', 'authority']
             it.properties.name == [
@@ -1480,17 +1489,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 description: 'Domain name / standard',
                 example    : 'Data protection'
             ]
-            it.properties.abbreviation == [
-                maxLength: 255,
-                minLength: 1,
-                type     : 'string',
-                example  : 'Data prot.'
-            ]
-            it.properties.description == [
-                maxLength: 65535,
-                minLength: 1,
-                type     : 'string',
-                example  : 'Everything around data protection'
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -1518,6 +1519,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'domainMigrationDefinition',
                 'profiles_v2',
                 'controlImplementationConfiguration',
+                'translations',
                 '_self'
             ]
             it.required == [
@@ -1530,13 +1532,19 @@ class SwaggerSpec extends VeoSpringSpec {
                 minLength  : 0,
                 type       : 'string',
                 description: 'The abbreviation for the DomainTemplate.',
-                example    : 'DSGVO'
+                example    : 'DSGVO',
+                deprecated : true
             ]
             it.properties.description == [
                 maxLength  : 65535,
                 minLength  : 0,
                 type       : 'string',
-                description: 'The description for the DomainTemplate.'
+                description: 'The description for the DomainTemplate.',
+                deprecated : true
+            ]
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -1560,6 +1568,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'decisions',
                 'id',
                 'controlImplementationConfiguration',
+                'translations',
                 '_self'
             ]
             it.required ==~ [
@@ -1568,19 +1577,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 'name',
                 'templateVersion'
             ]
-            it.properties.abbreviation == [
-                maxLength  : 255,
-                minLength  : 0,
-                type       : 'string',
-                description: 'The abbreviation for the Domain.',
-                example    : 'Data prot.'
-            ]
-            it.properties.description == [
-                maxLength  : 65535,
-                minLength  : 0,
-                type       : 'string',
-                description: 'The description for the Domain.',
-                example    : 'Everything around data protection.'
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -1608,6 +1607,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'domainMigrationDefinition',
                 'profiles_v2',
                 'controlImplementationConfiguration',
+                'translations',
                 '_self'
             ]
             it.required == [
@@ -1615,18 +1615,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 'name',
                 'templateVersion'
             ]
-            it.properties.abbreviation == [
-                maxLength  : 255,
-                minLength  : 0,
-                type       : 'string',
-                description: 'The abbreviation for the DomainTemplate.',
-                example    : 'DSGVO'
-            ]
-            it.properties.description == [
-                maxLength  : 65535,
-                minLength  : 0,
-                type       : 'string',
-                description: 'The description for the DomainTemplate.'
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -1639,9 +1630,51 @@ class SwaggerSpec extends VeoSpringSpec {
                 'name',
                 'createdAt',
                 'templateVersion',
+                'translations',
                 '_self'
             ]
             it.required == ['templateVersion']
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+            ]
+        }
+    }
+
+    def "DomainMetadataDto is well-documented"() {
+        expect:
+        with(getSchema('DomainMetadataDto')) {
+            it.properties.keySet() ==~ [
+                'name',
+                'authority',
+                'createdAt',
+                'templateVersion',
+                'translations'
+            ]
+            it.required ==~ ['name', 'templateVersion']
+            it.properties.name == [
+                type       : 'string',
+                description: 'The name / standard for the Domain.',
+                example    : 'ISO 27001',
+                readOnly   : true
+            ]
+            it.properties.translations == [
+                type     : 'object',
+                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription'],
+                description: 'The translations for the domain.'
+            ]
+        }
+    }
+
+    def "NameAbbreviationAndDescription is well-documented"() {
+        expect:
+        with(getSchema('NameAbbreviationAndDescription')) {
+            it.properties.keySet() ==~ [
+                'name',
+                'abbreviation',
+                'description'
+            ]
+            it.required == ['name']
         }
     }
 

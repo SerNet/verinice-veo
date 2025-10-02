@@ -17,10 +17,15 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.Locale;
+import java.util.Optional;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.NameAbbreviationAndDescription;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
@@ -54,9 +59,18 @@ public class CreateDomainUseCase
     }
 
     var domain = entityFactory.createDomain(input.name, input.authority, null);
-    domain.setAbbreviation(input.abbreviation);
-    domain.setDescription(input.description);
     domain.setOwner(client);
+
+    if (input.translations != null) {
+      domain.setTranslations(input.translations);
+      // TODO #4275: remove compatibility code
+      Optional.ofNullable(input.translations.getTranslations().get(Locale.GERMAN))
+          .ifPresent(
+              germanTranslations -> {
+                domain.setAbbreviation(germanTranslations.getAbbreviation());
+                domain.setDescription(germanTranslations.getDescription());
+              });
+    }
     // TODO VEO-1812: Remove assignment because domains should not have a template version
     domain.setTemplateVersion("0.1.0");
     return new OutputData(domainRepository.save(domain));
@@ -68,7 +82,8 @@ public class CreateDomainUseCase
   }
 
   @Valid
-  public record InputData(String name, String abbreviation, String description, String authority)
+  public record InputData(
+      String name, String authority, Translated<NameAbbreviationAndDescription> translations)
       implements UseCase.InputData {}
 
   @Valid

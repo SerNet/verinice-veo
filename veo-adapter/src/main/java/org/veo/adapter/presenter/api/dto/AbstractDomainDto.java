@@ -33,6 +33,8 @@ import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.NameAbbreviationAndDescription;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -55,9 +57,11 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @ToString.Include
   private String name;
 
+  @Deprecated
   @Schema(description = "The abbreviation for the Domain.", example = "Data prot.")
   private String abbreviation;
 
+  @Deprecated
   @Schema(
       description = "The description for the Domain.",
       example = "Everything around data protection.")
@@ -65,7 +69,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
 
   @NotNull(message = "An authority must be present.")
   @Schema(
-      description = "The orgnization that published a standard",
+      description = "The organization that published a standard",
       example = "ISO",
       requiredMode = REQUIRED,
       accessMode = Schema.AccessMode.READ_ONLY)
@@ -90,6 +94,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   // controlImplementationConfiguration, remove @JsonProperty
   @JsonProperty("controlImplementationConfiguration")
   private ControlImplementationConfigurationDto controlImplementationConfigurationDto;
+
+  private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
   @Valid
   @Schema(

@@ -30,7 +30,9 @@ import jakarta.validation.constraints.Size;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -52,10 +54,12 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       requiredMode = REQUIRED)
   private String name;
 
+  @Deprecated
   @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")
   @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
+  @Deprecated
   @Schema(description = "The description for the DomainTemplate.")
   @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
@@ -87,6 +91,8 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       new EnumMap<>(ElementType.class);
 
   private Map<String, Decision> decisions = new HashMap<>();
+
+  private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
   @Override
   public Class<? extends DomainBase> getModelInterface() {

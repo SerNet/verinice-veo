@@ -125,13 +125,38 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "a domain is created"
         def domainId = parseJson(post("/content-creation/domains", [
             name:'myd1',
-            authority:"myAuthority"
+            authority:"myAuthority",
+            translations: [
+                de: [
+                    name: "DS-GVO / BDSG / was auch immer",
+                    description: "Besteste Domäne!",
+                    abbreviation: "DBWAI"
+
+                ]
+            ]
         ], 201)).resourceId
 
         then: "it can be retrieved"
         with(parseJson(get("/domains/$domainId"))) {
             name == "myd1"
             authority == "myAuthority"
+            translations.de.abbreviation == "DBWAI"
+            abbreviation == "DBWAI"
+        }
+
+        when: "we update the translation"
+        def translations = parseJson(get("/domains/$domainId")).translations
+        translations.de.abbreviation = "newAbbreviation"
+
+        put("/content-creation/domains/$domainId", [name:"name not used",
+            translations: (translations)], 204)
+
+        then: "the translation is changed"
+        with(parseJson(get("/domains/$domainId"))) {
+            name == "myd1"
+            authority == "myAuthority"
+            translations.de.abbreviation == "newAbbreviation"
+            abbreviation == "DBWAI"
         }
 
         when: "creating a unit using the domain"

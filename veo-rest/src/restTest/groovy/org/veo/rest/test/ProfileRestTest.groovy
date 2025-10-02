@@ -34,8 +34,6 @@ class ProfileRestTest extends VeoRestTest {
         newDomainName = "profile creation test ${randomUUID()}"
         newDomainId = post("/content-creation/domains", [
             name: newDomainName,
-            abbreviation: "pct",
-            description: "...",
             authority: "jj",
         ], 201, CONTENT_CREATOR).body.resourceId
         putElementTypeDefinitions(newDomainId)

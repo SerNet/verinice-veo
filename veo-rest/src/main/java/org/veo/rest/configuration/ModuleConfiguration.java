@@ -152,6 +152,7 @@ import org.veo.core.usecase.domain.GetInspectionsUseCase;
 import org.veo.core.usecase.domain.GetUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveDomainMetadataUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
@@ -326,6 +327,11 @@ public class ModuleConfiguration {
   public SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase(
       DomainRepository domainRepository) {
     return new SaveIncarnationConfigurationUseCase(domainRepository);
+  }
+
+  @Bean
+  public SaveDomainMetadataUseCase saveDomainMetadataUseCase(DomainRepository domainRepository) {
+    return new SaveDomainMetadataUseCase(domainRepository);
   }
 
   @Bean

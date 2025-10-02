@@ -34,16 +34,12 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Domain creation test ${randomUUID()}"
         def domainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "dct",
-            description: "best one ever",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
         then: "it can be retrieved"
         with(get("/domains/$domainId").body) {
             name == domainName
-            abbreviation == "dct"
-            description == "best one ever"
             authority == "JJ"
             templateVersion == "0.1.0"
             domainTemplate == null
@@ -132,8 +128,6 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then: "its metadata is correct"
         secondaryClientDomain.authority == "JJ"
-        secondaryClientDomain.abbreviation == "dct"
-        secondaryClientDomain.description == "best one ever"
         secondaryClientDomain.templateVersion == "1.0.0"
 
         and: "it contains the risk def, decision, inspection & incarnation config"
@@ -166,8 +160,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Domain creation test ${randomUUID()}"
         def domainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "dct",
-            description: "best one ever",
             authority: "uz",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -364,8 +356,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Risk definition test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "rdt",
-            description: "it's kind of risky",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
         put("/content-creation/domains/$newDomainId/element-type-definitions/scenario", [
@@ -467,8 +457,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Risk definition test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "rdt",
-            description: "it's kind of risky",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -493,8 +481,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Risk definition validation test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "rdvt",
-            description: "let's test risk definition validation",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -616,8 +602,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Risk definition validation test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "rdvt",
-            description: "let's test risk definition validation",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -830,8 +814,6 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Risk definition validation test ${randomUUID()}"
         def newDomainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "rdvt",
-            description: "let's test risk definition validation",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -986,16 +968,12 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainName = "Domain deletion test 1"
         def domainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "11",
-            description: "my",
             authority: "qq",
         ], 201, CONTENT_CREATOR).body.resourceId
 
         then: "it can be retrieved"
         with(get("/domains/$domainId").body) {
             name == domainName
-            abbreviation == "11"
-            description == "my"
             authority == "qq"
             templateVersion == "0.1.0"
             domainTemplate == null
@@ -1012,8 +990,6 @@ class DomainCreationRestTest extends DomainRestTest {
         when: "we have a domain"
         def domainId = post("/content-creation/domains", [
             name: "Domain deletion test 2",
-            abbreviation: "111",
-            description: "my1",
             authority: "qq1",
         ], 201, CONTENT_CREATOR).body.resourceId
 
@@ -1044,8 +1020,6 @@ class DomainCreationRestTest extends DomainRestTest {
         given:
         def domainId = post("/content-creation/domains", [
             name: "Domain deletion test 3",
-            abbreviation: "11",
-            description: "my",
             authority: "qq",
         ], 201, CONTENT_CREATOR).body.resourceId
 

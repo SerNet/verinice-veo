@@ -403,6 +403,7 @@ public final class EntityToDtoTransformer {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+    target.setTranslations(source.getTranslations());
 
     return target;
   }
@@ -443,6 +444,7 @@ public final class EntityToDtoTransformer {
         new ControlImplementationConfigurationDto(source.getControlImplementationConfiguration()));
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
+    target.setTranslations(source.getTranslations());
   }
 
   private ElementTypeDefinitionDto mapElementTypeDefinition(
@@ -643,6 +645,7 @@ public final class EntityToDtoTransformer {
     target.setName(source.getName());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setCreatedAt(source.getCreatedAt().toString());
+    target.setTranslations(source.getTranslations());
     return target;
   }
 

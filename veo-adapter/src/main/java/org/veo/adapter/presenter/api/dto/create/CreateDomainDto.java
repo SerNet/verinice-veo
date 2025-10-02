@@ -21,6 +21,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.NameAbbreviationAndDescription;
+import org.veo.core.entity.Translated;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -32,16 +34,10 @@ public class CreateDomainDto {
   @Size(min = 1, max = Domain.NAME_MAX_LENGTH)
   private String name;
 
-  @Schema(example = "Data prot.")
-  @Size(min = 1, max = Domain.ABBREVIATION_MAX_LENGTH)
-  private String abbreviation;
-
-  @Schema(example = "Everything around data protection")
-  @Size(min = 1, max = Domain.DESCRIPTION_MAX_LENGTH)
-  private String description;
-
   @NotNull
   @Schema(description = "The organization that publishes a standard", example = "ISO")
   @Size(min = 1, max = Domain.AUTHORITY_MAX_LENGTH)
   private String authority;
+
+  private Translated<NameAbbreviationAndDescription> translations;
 }

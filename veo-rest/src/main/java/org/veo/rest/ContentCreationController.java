@@ -56,6 +56,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.DomainMetadataDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProfileDto;
@@ -89,6 +90,7 @@ import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.GetUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveDomainMetadataUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
@@ -146,6 +148,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final CreateDomainUseCase createDomainUseCase;
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
   private final EtagService etagService;
+  private final SaveDomainMetadataUseCase saveDomainMetadataUseCase;
 
   @PostMapping("/domains")
   @Operation(summary = "Creates blank new domain")
@@ -156,10 +159,7 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         createDomainUseCase,
         new CreateDomainUseCase.InputData(
-            domainDto.getName(),
-            domainDto.getAbbreviation(),
-            domainDto.getDescription(),
-            domainDto.getAuthority()),
+            domainDto.getName(), domainDto.getAuthority(), domainDto.getTranslations()),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.domain());
           return RestApiResponse.created(URL_BASE_PATH, body);
@@ -212,6 +212,18 @@ public class ContentCreationController extends AbstractVeoController {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Cannot parse object schema.");
     }
+  }
+
+  @PutMapping("/domains/{domainId}")
+  @Operation(summary = "Update the domain metadata.")
+  @ApiResponse(responseCode = "204", description = "Domain metadata updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDomainMetadata(
+      @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID domainId,
+      @RequestBody DomainMetadataDto domainMetadata) {
+    return useCaseInteractor.execute(
+        saveDomainMetadataUseCase,
+        new SaveDomainMetadataUseCase.InputData(domainId, domainMetadata.getTranslations()),
+        empty -> ResponseEntity.noContent().build());
   }
 
   @PutMapping("/domains/{domainId}/incarnation-configuration")

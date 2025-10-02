@@ -144,8 +144,6 @@ class DomainRestTestITSpec extends DomainRestTest {
         def domainName = "catalogitem creation test ${randomUUID()}"
         def domainId = post("/content-creation/domains", [
             name: domainName,
-            abbreviation: "dct",
-            description: "best one ever",
             authority: "ME",
         ], 201, CONTENT_CREATOR).body.resourceId
 
