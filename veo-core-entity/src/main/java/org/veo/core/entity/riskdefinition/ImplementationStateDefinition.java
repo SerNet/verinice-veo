@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 
 import lombok.Data;
@@ -39,8 +40,7 @@ public class ImplementationStateDefinition extends DimensionDefinition<CategoryL
   }
 
   public ImplementationStateDefinition(
-      Translated<DiscreteValue.NameAbbreviationAndDescription> translations,
-      List<CategoryLevel> levels) {
+      Translated<NameAbbreviationAndDescription> translations, List<CategoryLevel> levels) {
     super(DIMENSION_IMPLEMENTATION_STATE, translations);
     this.levels = levels;
     initLevel(levels);

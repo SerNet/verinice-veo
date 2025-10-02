@@ -24,6 +24,7 @@ import java.util.Optional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 
 import lombok.Data;
@@ -37,8 +38,7 @@ import lombok.ToString;
 public class ProbabilityDefinition extends DimensionDefinition<ProbabilityLevel> {
 
   public ProbabilityDefinition(
-      Translated<DiscreteValue.NameAbbreviationAndDescription> translations,
-      List<ProbabilityLevel> levels) {
+      Translated<NameAbbreviationAndDescription> translations, List<ProbabilityLevel> levels) {
     super(DIMENSION_PROBABILITY, translations);
     this.levels = levels;
     Optional.ofNullable(levels).ifPresent(ProbabilityDefinition::initLevel);

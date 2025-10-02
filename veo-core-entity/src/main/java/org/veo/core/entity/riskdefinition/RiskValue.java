@@ -22,6 +22,7 @@ import static org.veo.core.entity.Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Translated;
 

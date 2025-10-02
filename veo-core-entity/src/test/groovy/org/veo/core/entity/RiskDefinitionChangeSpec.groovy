@@ -113,7 +113,7 @@ class RiskDefinitionChangeSpec extends Specification{
         when: "add risk value"
         rdNew = createRiskDefinition()
         rdNew.riskValues.add( new RiskValue(2, "#A0CF11", "symbolic_risk_3", new Translated([
-            (DE): new DiscreteValue.NameAbbreviationAndDescription("gering", "1","hh")
+            (DE): new NameAbbreviationAndDescription("gering", "1","hh")
         ])))
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
@@ -236,10 +236,10 @@ class RiskDefinitionChangeSpec extends Specification{
 
         rd.riskValues = [
             new RiskValue(0, "#A0CF11", "symbolic_risk_1", new Translated([
-                (DE): new DiscreteValue.NameAbbreviationAndDescription("gering", "1", "hh")
+                (DE): new NameAbbreviationAndDescription("gering", "1", "hh")
             ])),
             new RiskValue(1, "#FFFF13", "symbolic_risk_2", new Translated([
-                (DE): new DiscreteValue.NameAbbreviationAndDescription("mittel", "2", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.")
+                (DE): new NameAbbreviationAndDescription("mittel", "2", "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.")
             ])),
         ]
 

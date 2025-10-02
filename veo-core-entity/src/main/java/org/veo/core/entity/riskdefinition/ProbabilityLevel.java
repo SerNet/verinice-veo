@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 
 import lombok.Data;

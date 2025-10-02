@@ -30,6 +30,7 @@ import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ProbabilityRef;
@@ -65,7 +66,7 @@ public class CategoryDefinition extends DimensionDefinition<CategoryLevel> {
       String id,
       @NotNull List<List<RiskValue>> valueMatrix,
       @NotNull List<CategoryLevel> potentialImpacts,
-      Translated<DiscreteValue.NameAbbreviationAndDescription> translations) {
+      Translated<NameAbbreviationAndDescription> translations) {
     super(id, translations);
     this.valueMatrix = valueMatrix;
     this.potentialImpacts = potentialImpacts;

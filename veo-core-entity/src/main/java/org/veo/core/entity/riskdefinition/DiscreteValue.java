@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-import org.veo.core.entity.Nameable;
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
 
@@ -41,8 +41,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
-public class DiscreteValue
-    implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
+public class DiscreteValue implements TranslationProvider<NameAbbreviationAndDescription> {
 
   public DiscreteValue(String htmlColor) {
     super();
@@ -57,13 +56,4 @@ public class DiscreteValue
 
   @ToString.Exclude @NotNull @Valid
   private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
-
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  public static class NameAbbreviationAndDescription implements Nameable {
-    private String name;
-    private String abbreviation;
-    private String description;
-  }
 }

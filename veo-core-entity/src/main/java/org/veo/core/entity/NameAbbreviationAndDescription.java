@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Urs Zeidler
+ * Copyright (C) 2025  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.riskdefinition;
+package org.veo.core.entity;
 
-import org.veo.core.entity.NameAbbreviationAndDescription;
-import org.veo.core.entity.Translated;
+import jakarta.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CategoryLevel extends DiscreteValue {
-  public CategoryLevel(String htmlColor) {
-    super(htmlColor);
-  }
+public class NameAbbreviationAndDescription implements Nameable {
+  private String name;
 
-  public CategoryLevel(
-      int ordinalValue, String htmlColor, Translated<NameAbbreviationAndDescription> translations) {
-    super(ordinalValue, htmlColor, translations);
-  }
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
+
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 }

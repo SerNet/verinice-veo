@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.TranslationProvider;
 
@@ -43,7 +44,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 public abstract class DimensionDefinition<T extends DiscreteValue>
-    implements TranslationProvider<DiscreteValue.NameAbbreviationAndDescription> {
+    implements TranslationProvider<NameAbbreviationAndDescription> {
   protected static final String DIMENSION_PROBABILITY = "Prob";
   protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
 
@@ -53,8 +54,7 @@ public abstract class DimensionDefinition<T extends DiscreteValue>
   private String id;
 
   @NotNull @Valid
-  private Translated<DiscreteValue.NameAbbreviationAndDescription> translations =
-      new Translated<>();
+  private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
   public DimensionDefinition(String id) {
     this.id = id;
