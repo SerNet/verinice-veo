@@ -38,7 +38,12 @@ import org.veo.core.entity.state.DomainBaseState;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 import org.veo.core.entity.state.TemplateItemState;
 
-public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBaseState {
+public interface DomainBase
+    extends Nameable,
+        Identifiable,
+        Versioned,
+        DomainBaseState,
+        TranslationProvider<NameAbbreviationAndDescription> {
   int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int TEMPLATE_VERSION_MAX_LENGTH = 10;
   int DECISION_ID_MAX_LENGTH = 256;
@@ -185,4 +190,6 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   DomainMigrationDefinition getDomainMigrationDefinition();
 
   void setDomainMigrationDefinition(DomainMigrationDefinition domainUpdateDescription);
+
+  void setTranslations(Translated<NameAbbreviationAndDescription> translations);
 }

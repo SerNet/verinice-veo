@@ -42,7 +42,9 @@ import org.hibernate.annotations.Type;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Translated;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
@@ -72,9 +74,11 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @ToString.Include
   private String name;
 
+  @Deprecated
   @Column(name = "abbreviation")
   private String abbreviation;
 
+  @Deprecated
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
@@ -121,6 +125,12 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @Type(JsonType.class)
   private DomainMigrationDefinition domainMigrationDefinition =
       new DomainMigrationDefinition(Collections.emptyList());
+
+  @Column(name = "domain_display_translation")
+  @Type(JsonType.class)
+  @NotNull
+  @Valid
+  private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {
