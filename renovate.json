@@ -52,6 +52,12 @@
       "matchPackageNames": [
         "/^io.jsonwebtoken:/"
       ]
+    },
+    {
+      "matchPackageNames": [
+        "eclipse-temurin"
+      ],
+      "allowedVersions": "25-jdk"
     }
   ]
 }

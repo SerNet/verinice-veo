@@ -1,4 +1,4 @@
-image: eclipse-temurin:21.0.9_10-jdk@sha256:ec2005c536f3661c6ef1253292c9c623e582186749a3ef2ed90903d1aaf74640
+image: eclipse-temurin:25.0.1_8-jdk@sha256:adc4533ea69967c783ac2327dac7ff548fcf6401a7e595e723b414c0a7920eb2
 
 variables:
   ORG_GRADLE_PROJECT_ci: 'true'
