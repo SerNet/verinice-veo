@@ -26,8 +26,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.jgit.api.Git;
-
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.SerializableFileFilter;
 
@@ -67,12 +65,7 @@ public final class LicenseHeaderStep implements Serializable {
 
   public static FormatterStep create(File projectDirectory) throws IOException {
     Objects.requireNonNull(projectDirectory, "projectDirectory");
-    String author;
-    try (Git git = Git.open(projectDirectory)) {
-      author =
-          Optional.ofNullable(git.getRepository().getConfig().getString("user", null, "name"))
-              .orElse("<name>");
-    }
+    String author = Optional.ofNullable(GitConfigUtil.getUserName()).orElse("<name>");
     return create(author);
   }
 
