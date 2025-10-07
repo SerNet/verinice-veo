@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -48,13 +47,4 @@ public interface EntitySchemaService {
    * identifier, it will be ignored.
    */
   Translations findTranslations(Set<Domain> domains, Set<Locale> languages);
-
-  /**
-   * Filter the inputSchema to remove attributes that do not match the given user roles
-   *
-   * @param roles the role identifiers that the user is allowed to see
-   * @param inputSchema the input schema from which certain attributes will be removed
-   * @return the reduced JSON-schema document
-   */
-  String roleFilter(List<String> roles, String inputSchema);
 }

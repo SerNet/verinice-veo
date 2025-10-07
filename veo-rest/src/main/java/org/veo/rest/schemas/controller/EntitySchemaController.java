@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,9 +63,6 @@ public class EntitySchemaController implements EntitySchemaResource {
     return CompletableFuture.supplyAsync(
         () -> {
           ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-          List<String> userRoles =
-              user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-          // TODO define schema-roles for users
           // TODO use valid 'domain' class
 
           var clientDomainsById =
@@ -84,9 +80,7 @@ public class EntitySchemaController implements EntitySchemaResource {
             domains.add(domain);
           }
 
-          String schema =
-              schemaService.roleFilter(userRoles, schemaService.getSchema(type, domains));
-          return ResponseEntity.ok().body(schema);
+          return ResponseEntity.ok().body(schemaService.getSchema(type, domains));
         });
   }
 }

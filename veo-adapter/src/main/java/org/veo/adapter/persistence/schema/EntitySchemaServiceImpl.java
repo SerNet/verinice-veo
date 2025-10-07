@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -50,11 +49,6 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
   @Override
   public String getSchema(ElementType elementType, Domain domain) {
     return generator.createSchema(elementType, domain);
-  }
-
-  @Override
-  public String roleFilter(List<String> roles, String inputSchema) {
-    return inputSchema; // TODO VEO-966 filter schema elements by user role
   }
 
   @Override
