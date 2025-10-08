@@ -47,7 +47,7 @@ build:
         ADDITIONAL_TAGS="$ADDITIONAL_TAGS,$CI_COMMIT_TAG"
         apt-get update && apt-get -y install git
         git fetch --tags
-        LATEST_TAG=$(git tag --list | sort -V | tail -n1)
+        LATEST_TAG=$(git tag --list | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
         if [ "$CI_COMMIT_TAG" = "$LATEST_TAG" ]; then
           ADDITIONAL_TAGS="$ADDITIONAL_TAGS,latest"
         fi
