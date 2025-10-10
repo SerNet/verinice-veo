@@ -26,12 +26,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jakarta.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -145,29 +143,5 @@ public class DomainRepositoryImpl
         .findByIdWithDecisionsAndInspections(domainId, clientId)
         .map(Domain.class::cast)
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
-  }
-
-  @Override
-  @Transactional
-  public void deleteByClient(Client client) {
-    var clientId = client.getId();
-    em.flush();
-    Stream.of(
-            "delete from catalog_tailoring_reference where owner_db_id in (select db_id from catalogitem where domain_db_id in (select db_id from domain where owner_db_id = ?1))",
-            "delete from profile_tailoring_reference where owner_db_id in (select db_id from profile_item where owner_db_id in (select db_id from profile where domain_db_id in (select db_id from domain where owner_db_id = ?1)))",
-            "delete from profile_item where owner_db_id in (select db_id from profile where domain_db_id in (select db_id from domain where owner_db_id = ?1))",
-            "delete from profile where domain_db_id in (select db_id from domain where owner_db_id = ?1)",
-            "delete from catalogitem where domain_db_id in (select db_id from domain where owner_db_id = ?1)",
-            "delete from element_type_definition where owner_db_id in (select db_id from domain where owner_db_id = ?1)",
-            "delete from domain where owner_db_id = ?1",
-            "delete from decision_set where id in (select decision_set_id from domain where owner_db_id = ?1)",
-            "delete from inspection_set where id in (select inspection_set_id from domain where owner_db_id = ?1)",
-            "delete from risk_definition_set where id in (select risk_definition_set_id from domain where owner_db_id = ?1)")
-        .forEach(
-            statement -> em.createNativeQuery(statement).setParameter(1, clientId).executeUpdate());
-
-    em.clear();
-    var domains = dataRepository.findAllByClient(clientId);
-    dataRepository.deleteAll(domains);
   }
 }

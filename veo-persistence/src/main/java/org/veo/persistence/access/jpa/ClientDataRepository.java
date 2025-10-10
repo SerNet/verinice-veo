@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 
 import org.veo.persistence.entity.jpa.ClientData;
 
@@ -52,4 +53,7 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
               """)
   Set<ClientData> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
       UUID uuid, String name);
+
+  @Procedure("prepare_for_client_deletion")
+  void prepareForClientDeletion(UUID uuid);
 }
