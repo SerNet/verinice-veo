@@ -60,6 +60,7 @@ import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.persistence.access.jpa.SystemMessageDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -159,6 +160,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     CustomUserDetailsManager userDetailsManager
 
     @Autowired
+    SystemMessageDataRepository systemMessageDataRepository
+
+    @Autowired
     UserAccessRightsProvider userAccessRightsProvider
 
     def setup() {
@@ -174,6 +178,7 @@ abstract class VeoSpringSpec extends VeoSpec {
             }
             domainTemplateDataRepository.deleteAll()
             eventStoreDataRepository.deleteAll()
+            systemMessageDataRepository.deleteAll()
         }
     }
 
