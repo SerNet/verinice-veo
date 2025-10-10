@@ -1451,6 +1451,188 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "CreateDomainDto is well-documented"() {
+        expect:
+        with(getSchema('CreateDomainDto')) {
+            it.properties.keySet() ==~ [
+                'name',
+                'abbreviation',
+                'description',
+                'authority'
+            ]
+            it.required ==~ ['name', 'authority']
+            it.properties.name == [
+                maxLength  : 255,
+                minLength  : 1,
+                type       : 'string',
+                description: 'Domain name / standard',
+                example    : 'Data protection'
+            ]
+            it.properties.abbreviation == [
+                maxLength: 255,
+                minLength: 1,
+                type     : 'string',
+                example  : 'Data prot.'
+            ]
+            it.properties.description == [
+                maxLength: 65535,
+                minLength: 1,
+                type     : 'string',
+                example  : 'Everything around data protection'
+            ]
+        }
+    }
+
+    def "ExportDomainDto is well-documented"() {
+        expect:
+        with(getSchema('ExportDomainDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'name',
+                'abbreviation',
+                'description',
+                'authority',
+                'templateVersion',
+                'riskDefinitions',
+                'elementTypeDefinitions',
+                'decisions',
+                'id',
+                'catalogItems',
+                'inspections',
+                'incarnationConfiguration',
+                'domainMigrationDefinition',
+                'profiles_v2',
+                'controlImplementationConfiguration',
+                '_self'
+            ]
+            it.required == [
+                'authority',
+                'name',
+                'templateVersion'
+            ]
+            it.properties.abbreviation == [
+                maxLength  : 255,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The abbreviation for the DomainTemplate.',
+                example    : 'DSGVO'
+            ]
+            it.properties.description == [
+                maxLength  : 65535,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The description for the DomainTemplate.'
+            ]
+        }
+    }
+
+    def "FullDomainDto is well-documented"() {
+        expect:
+        with(getSchema('FullDomainDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'name',
+                'abbreviation',
+                'description',
+                'authority',
+                'templateVersion',
+                'riskDefinitions',
+                'domainTemplate',
+                'elementTypeDefinitions',
+                'decisions',
+                'id',
+                'controlImplementationConfiguration',
+                '_self'
+            ]
+            it.required ==~ [
+                'authority',
+                'elementTypeDefinitions',
+                'name',
+                'templateVersion'
+            ]
+            it.properties.abbreviation == [
+                maxLength  : 255,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The abbreviation for the Domain.',
+                example    : 'Data prot.'
+            ]
+            it.properties.description == [
+                maxLength  : 65535,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The description for the Domain.',
+                example    : 'Everything around data protection.'
+            ]
+        }
+    }
+
+    def "ExportDomainTemplateDto is well-documented"() {
+        expect:
+        with(getSchema('ExportDomainTemplateDto')) {
+            it.properties.keySet() ==~ [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'name',
+                'abbreviation',
+                'description',
+                'authority',
+                'templateVersion',
+                'riskDefinitions',
+                'elementTypeDefinitions',
+                'decisions',
+                'id',
+                'catalogItems',
+                'inspections',
+                'incarnationConfiguration',
+                'domainMigrationDefinition',
+                'profiles_v2',
+                'controlImplementationConfiguration',
+                '_self'
+            ]
+            it.required == [
+                'authority',
+                'name',
+                'templateVersion'
+            ]
+            it.properties.abbreviation == [
+                maxLength  : 255,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The abbreviation for the DomainTemplate.',
+                example    : 'DSGVO'
+            ]
+            it.properties.description == [
+                maxLength  : 65535,
+                minLength  : 0,
+                type       : 'string',
+                description: 'The description for the DomainTemplate.'
+            ]
+        }
+    }
+
+    def "DomainTemplateMetadataDto is well-documented"() {
+        expect:
+        with(getSchema('DomainTemplateMetadataDto')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'name',
+                'createdAt',
+                'templateVersion',
+                '_self'
+            ]
+            it.required == ['templateVersion']
+        }
+    }
+
     def "no unhelpful future schema for #response.method #response.path (#response.responseCode)"() {
         expect:
         !(response.schema.properties.keySet() ==~ ["done", "cancelled"])
