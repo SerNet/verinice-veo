@@ -24,21 +24,27 @@ import jakarta.validation.Valid;
 
 import javax.annotation.Nonnull;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.SystemMessageDto;
 import org.veo.core.entity.SystemMessage;
+import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.usecase.message.GetAllSystemMessageUseCase;
 import org.veo.core.usecase.message.GetSystemMessageUseCase;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -50,6 +56,9 @@ public class MessageController extends AbstractVeoController {
   private final GetSystemMessageUseCase getMessage;
   private final GetAllSystemMessageUseCase getAllMessages;
 
+  @Value("${veo.api-keys.system-messages}")
+  private final String systemMessagesApiKey;
+
   @GetMapping()
   @Operation(summary = "Loads system messages")
   @ApiResponse(
@@ -58,7 +67,18 @@ public class MessageController extends AbstractVeoController {
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "System messages not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
-  public @Valid Future<List<SystemMessageDto>> getSystemMessages() {
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
+  })
+  public @Valid Future<List<SystemMessageDto>> getSystemMessages(
+      WebRequest request, @Parameter(hidden = true) ApplicationUser applicationUser) {
+    if (applicationUser == null) {
+      String apiKey = request.getHeader(RestApplication.HEADER_NAME_APIKEY);
+      if (!systemMessagesApiKey.equals(apiKey)) {
+        throw new NotAllowedException("Invalid API key");
+      }
+    }
     return useCaseInteractor.execute(
         getAllMessages,
         new GetAllSystemMessageUseCase.InputData(),

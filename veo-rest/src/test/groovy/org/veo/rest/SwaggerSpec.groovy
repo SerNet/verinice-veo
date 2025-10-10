@@ -455,6 +455,17 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /messages"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/messages"].get
+
+        expect: "that the correct schema is used"
+        with (endPointInfo) {
+            it.responses['200'].content['application/json'] == [:]
+            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+        }
+    }
+
     def "Security scheme documentation is complete"() {
         expect:
         with (parsedApiDocs.components.securitySchemes) {
@@ -540,6 +551,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 }.tap {
                     removeIf {
                         (it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
+                                || it.path == '/messages' && it.method == 'get' // has API key auth
                                 ||  it.path.startsWith('/admin/messages') && it.method in [
                                     'post',
                                     'put',

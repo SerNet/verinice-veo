@@ -109,6 +109,7 @@ public class WebSecurity {
 
   // Unit count path, needs an API key
   private static final String UNIT_COUNT_PATH = "/admin/unit-count";
+  private static final String SYSTEM_MESSAGES_PATH = "/messages";
   private static final String ADMIN_SYSTEM_MESSAGES_PATH = "/admin/messages";
   private static final String ADMIN_SYSTEM_MESSAGE_PATH = "/admin/messages/*";
 
@@ -174,9 +175,10 @@ public class WebSecurity {
           // public access to swagger-ui:
           auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
 
-          // public access to unit-count and system message editing, API keys are checked in the
+          // public access to unit-count and system messages, API keys are checked in the
           // controller
           auth.requestMatchers(HttpMethod.GET, UNIT_COUNT_PATH).permitAll();
+          auth.requestMatchers(HttpMethod.GET, SYSTEM_MESSAGES_PATH).permitAll();
           auth.requestMatchers(HttpMethod.POST, ADMIN_SYSTEM_MESSAGES_PATH).permitAll();
           auth.requestMatchers(HttpMethod.PUT, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
           auth.requestMatchers(HttpMethod.DELETE, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
