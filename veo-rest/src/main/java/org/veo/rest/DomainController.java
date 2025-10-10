@@ -201,7 +201,7 @@ public class DomainController extends AbstractEntityController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = FullDomainDto.class)))
+              schema = @Schema(implementation = ExportDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ExportDomainDto>> exportDomain(@PathVariable UUID id) {
     return useCaseInteractor
