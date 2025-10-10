@@ -56,23 +56,14 @@ import org.veo.rest.security.ApplicationUser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping(AdminController.URL_BASE_PATH)
-@SecurityScheme(
-    name = AdminController.SECURITY_SCHEME_APIKEY,
-    type = SecuritySchemeType.APIKEY,
-    in = SecuritySchemeIn.HEADER,
-    description = "API key authentication",
-    paramName = AdminController.HEADER_NAME_APIKEY)
 @RequiredArgsConstructor
 public class AdminController {
   private final UseCaseInteractor useCaseInteractor;
@@ -83,9 +74,6 @@ public class AdminController {
   private final SaveSystemMessageUseCase saveSystemMessageUseCase;
   private final DeleteSystemMessageUseCase deleteSystemMessageUseCase;
   private final GetUnitCountUseCase getUnitCountUseCase;
-
-  public static final String SECURITY_SCHEME_APIKEY = "ApiKeyAuth";
-  public static final String HEADER_NAME_APIKEY = "X-API-KEY";
 
   public static final String URL_BASE_PATH = "/admin";
 
@@ -99,7 +87,7 @@ public class AdminController {
   @Operation(summary = "Create a message.")
   @SecurityRequirements({
     @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
-    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
   })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
       @RequestBody @Valid @NotNull SystemMessageDto systemMessage,
@@ -122,7 +110,7 @@ public class AdminController {
   @Operation(summary = "Update a message.")
   @SecurityRequirements({
     @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
-    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
   })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveSystemMessage(
       @PathVariable long messageId,
@@ -140,7 +128,7 @@ public class AdminController {
   @Operation(summary = "Deletes the message with the id.)")
   @SecurityRequirements({
     @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
-    @SecurityRequirement(name = SECURITY_SCHEME_APIKEY)
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
   })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteSystemMessage(
       @PathVariable long messageId,
@@ -185,9 +173,9 @@ public class AdminController {
 
   @GetMapping("/unit-count")
   @Operation(summary = "Returns the overall number of units")
-  @SecurityRequirements(@SecurityRequirement(name = SECURITY_SCHEME_APIKEY))
+  @SecurityRequirements(@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY))
   public CompletableFuture<Long> getUnitCount(WebRequest request) {
-    String apiKey = request.getHeader(HEADER_NAME_APIKEY);
+    String apiKey = request.getHeader(RestApplication.HEADER_NAME_APIKEY);
     if (!unitCountApiKey.equals(apiKey)) {
       throw new NotAllowedException("Invalid API key");
     }
@@ -199,7 +187,7 @@ public class AdminController {
 
   private void ensureEditMessagesPermission(WebRequest request, ApplicationUser applicationUser) {
     if (applicationUser == null || !applicationUser.isAdmin()) {
-      String apiKey = request.getHeader(HEADER_NAME_APIKEY);
+      String apiKey = request.getHeader(RestApplication.HEADER_NAME_APIKEY);
       if (!systemMessagesApiKey.equals(apiKey)) {
         throw new NotAllowedException("Invalid API key");
       }

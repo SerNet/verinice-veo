@@ -83,6 +83,12 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
                 @OAuthFlow(
                     authorizationUrl =
                         "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth")))
+@SecurityScheme(
+    name = RestApplication.SECURITY_SCHEME_APIKEY,
+    type = SecuritySchemeType.APIKEY,
+    in = SecuritySchemeIn.HEADER,
+    description = "API key authentication",
+    paramName = RestApplication.HEADER_NAME_APIKEY)
 @OpenAPIDefinition(
     info =
         @Info(
@@ -99,6 +105,9 @@ public class RestApplication {
   public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
   private static final Logger LOGGER = LoggerFactory.getLogger("veo-rest application properties");
   public static final String THREAD_NAME_PREFIX = "Verinice.VEO-Worker-";
+
+  public static final String SECURITY_SCHEME_APIKEY = "ApiKeyAuth";
+  public static final String HEADER_NAME_APIKEY = "X-API-KEY";
 
   @Autowired private ApplicationContext appContext;
 
