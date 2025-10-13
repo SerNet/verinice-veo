@@ -260,30 +260,35 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   @Override
   public String elementInDomainRefOf(Element element, Domain domain) {
-    var type = element.getModelInterface();
+    return elementInDomainRefOf(TypedId.from(element), domain.getId());
+  }
+
+  @Override
+  public String elementInDomainRefOf(ITypedId<Element> reference, UUID domainId) {
+    var type = reference.getType();
     if (Asset.class.isAssignableFrom(type)) {
-      return buildUri(GET_ASSET_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_ASSET_IN_DOMAIN, domainId, reference.getId());
     }
     if (Control.class.isAssignableFrom(type)) {
-      return buildUri(GET_CONTROL_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_CONTROL_IN_DOMAIN, domainId, reference.getId());
     }
     if (Document.class.isAssignableFrom(type)) {
-      return buildUri(GET_DOCUMENT_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_DOCUMENT_IN_DOMAIN, domainId, reference.getId());
     }
     if (Incident.class.isAssignableFrom(type)) {
-      return buildUri(GET_INCIDENT_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_INCIDENT_IN_DOMAIN, domainId, reference.getId());
     }
     if (Person.class.isAssignableFrom(type)) {
-      return buildUri(GET_PERSON_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_PERSON_IN_DOMAIN, domainId, reference.getId());
     }
     if (Process.class.isAssignableFrom(type)) {
-      return buildUri(GET_PROCESS_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_PROCESS_IN_DOMAIN, domainId, reference.getId());
     }
     if (Scenario.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCENARIO_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_SCENARIO_IN_DOMAIN, domainId, reference.getId());
     }
     if (Scope.class.isAssignableFrom(type)) {
-      return buildUri(GET_SCOPE_IN_DOMAIN, domain.getId(), element.getId());
+      return buildUri(GET_SCOPE_IN_DOMAIN, domainId, reference.getId());
     }
     throw new NotImplementedException(
         "%s references in domain context not supported".formatted(type.getSimpleName()));

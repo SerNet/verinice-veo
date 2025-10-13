@@ -55,6 +55,8 @@ public interface ReferenceAssembler {
    */
   String elementInDomainRefOf(Element element, Domain domain);
 
+  String elementInDomainRefOf(ITypedId<Element> reference, UUID domainId);
+
   /**
    * Returns an absolute reference to the target object, where the target object is identified using
    * a compound key.
