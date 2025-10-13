@@ -75,8 +75,7 @@ public class ClientRepositoryImpl
 
   @Override
   public void delete(Client client) {
-    clientDataRepository.prepareForClientDeletion(client.getId());
+    clientDataRepository.deleteClient(client.getId());
     entityManager.clear();
-    super.delete(client);
   }
 }

@@ -54,6 +54,6 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
   Set<ClientData> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
       UUID uuid, String name);
 
-  @Procedure("prepare_for_client_deletion")
-  void prepareForClientDeletion(UUID uuid);
+  @Procedure("delete_client")
+  void deleteClient(UUID uuid);
 }
