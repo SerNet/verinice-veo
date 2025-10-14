@@ -39,10 +39,4 @@ public interface IdRefTailoringReferenceParameterReferencedElement extends IIdRe
       format = "uri")
   @Override
   String getTargetUri();
-
-  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-  String getSearchesUri();
-
-  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-  String getResourcesUri();
 }
