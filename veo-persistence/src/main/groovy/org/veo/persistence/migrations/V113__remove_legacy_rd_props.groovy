@@ -47,7 +47,7 @@ set risk_definitions = (select jsonb_object_agg(key, value || jsonb_build_object
         'probability',
         (value -> 'probability') - 'name' - 'description' - 'abbreviation' || jsonb_build_object(
                 'levels', COALESCE((select jsonb_agg(value - 'name' - 'description' - 'abbreviation')
-                                    from jsonb_array_elements(value -> 'implementationStateDefinition' -> 'levels')), '[]'::jsonb)),
+                                    from jsonb_array_elements(value -> 'probability' -> 'levels')), '[]'::jsonb)),
         'implementationStateDefinition',
         (value -> 'implementationStateDefinition') - 'name' - 'description' - 'abbreviation' || jsonb_build_object(
                 'levels', (select array_agg(value - 'name' - 'description' - 'abbreviation')
