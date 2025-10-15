@@ -34,16 +34,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface IdRefCustomLinkTarget extends IIdRef {
 
   @Schema(
-      description = "A friendly human readable title of the referenced domain.",
-      example = "EU GDPR 2016-05-04",
+      description = "A friendly human readable title of the referenced entity.",
+      example = "My Entity",
       accessMode = Schema.AccessMode.READ_ONLY)
   @Override
   String getDisplayName();
 
   @Schema(
       requiredMode = REQUIRED,
-      description = "The resource URL of the referenced domain.",
-      example = "http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>",
+      description = "The resource URL of the referenced entity.",
+      example = "http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
   @Override
   String getTargetUri();
