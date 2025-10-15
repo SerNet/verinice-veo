@@ -22,13 +22,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityManager;
-
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
+import org.veo.persistence.access.jpa.UserConfigurationDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -37,15 +37,18 @@ public class ClientRepositoryImpl
     extends AbstractIdentifiableVersionedRepository<Client, ClientData>
     implements ClientRepository {
   private final ClientDataRepository clientDataRepository;
-  private final EntityManager entityManager;
+  private final DomainRepository domainRepository;
+  private final UserConfigurationDataRepository userConfigurationDataRepository;
 
   public ClientRepositoryImpl(
       ClientDataRepository dataRepository,
-      ValidationService validator,
-      EntityManager entityManager) {
+      DomainRepository domainRepository,
+      UserConfigurationDataRepository userConfigurationDataRepository,
+      ValidationService validator) {
     super(dataRepository, validator);
     clientDataRepository = dataRepository;
-    this.entityManager = entityManager;
+    this.domainRepository = domainRepository;
+    this.userConfigurationDataRepository = userConfigurationDataRepository;
   }
 
   @Override
@@ -75,8 +78,9 @@ public class ClientRepositoryImpl
 
   @Override
   public void delete(Client client) {
-    clientDataRepository.prepareForClientDeletion(client.getId());
-    entityManager.clear();
+    userConfigurationDataRepository.deleteByClient(client.getId());
+    domainRepository.deleteByClient(client);
+    client.setDomains(Set.of());
     super.delete(client);
   }
 }

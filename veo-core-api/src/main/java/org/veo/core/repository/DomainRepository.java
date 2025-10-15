@@ -73,4 +73,6 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
         .findFirst()
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }
+
+  void deleteByClient(Client client);
 }
