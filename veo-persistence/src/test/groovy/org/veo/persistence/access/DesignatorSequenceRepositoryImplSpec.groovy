@@ -73,6 +73,19 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         thrown(PersistenceException)
     }
 
+    def "deletes sequence"() {
+        given:
+        def clientId = UUID.randomUUID()
+        designatorSequenceRepo.createSequences(clientId)
+        designatorSequenceRepo.deleteSequences(clientId)
+
+        when:
+        designatorSequenceRepo.getNext(clientId, Asset.TYPE_DESIGNATOR)
+
+        then:
+        thrown(PersistenceException)
+    }
+
     def "idempotent sequence creation"() {
         given:
         def clientId = UUID.randomUUID()
@@ -80,6 +93,19 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
 
         when:
         designatorSequenceRepo.createSequences(clientId)
+
+        then:
+        notThrown(Exception)
+    }
+
+    def "idempotent sequence deletion"() {
+        given:
+        def clientId = UUID.randomUUID()
+        designatorSequenceRepo.createSequences(clientId)
+        designatorSequenceRepo.deleteSequences(clientId)
+
+        when:
+        designatorSequenceRepo.deleteSequences(clientId)
 
         then:
         notThrown(Exception)

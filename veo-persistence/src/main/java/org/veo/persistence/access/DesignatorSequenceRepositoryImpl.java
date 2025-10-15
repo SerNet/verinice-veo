@@ -75,6 +75,24 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
         .getResultList();
   }
 
+  /**
+   * Removes all designator sequences for given client from DB. This should be performed as a
+   * cleanup when the client is removed.
+   */
+  public void deleteSequences(UUID clientId) {
+    EntityType.TYPE_DESIGNATORS.forEach(
+        new Consumer<>() {
+          @Override
+          public void accept(String typeDesignator) {
+            em.createNativeQuery(
+                    "DROP SEQUENCE IF EXISTS "
+                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(
+                            clientId, typeDesignator))
+                .executeUpdate();
+          }
+        });
+  }
+
   private String getSequenceName(UUID clientId, String typeDesignator) {
     return "designator_" + clientId.toString().replace("-", "") + "_" + typeDesignator;
   }

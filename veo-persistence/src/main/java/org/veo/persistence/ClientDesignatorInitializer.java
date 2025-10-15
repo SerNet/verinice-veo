@@ -18,6 +18,7 @@
 package org.veo.persistence;
 
 import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.REMOVE;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,8 @@ public class ClientDesignatorInitializer {
   public void handle(ClientVersioningEvent event) {
     if (event.type() == PERSIST) {
       designatorSequenceRepository.createSequences(event.getClientId());
+    } else if (event.type() == REMOVE) {
+      designatorSequenceRepository.deleteSequences(event.getClientId());
     }
   }
 }
