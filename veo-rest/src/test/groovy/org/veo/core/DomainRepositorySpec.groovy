@@ -20,14 +20,21 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.condition.Condition
+import org.veo.core.entity.condition.GreaterThanMatcher
+import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.entity.jpa.DomainData
 
+import jakarta.persistence.EntityManager
 import jakarta.validation.ConstraintViolationException
 
 class DomainRepositorySpec extends VeoSpringSpec {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private DomainRepositoryImpl domainRepository
@@ -97,5 +104,64 @@ class DomainRepositorySpec extends VeoSpringSpec {
         then:
         NotFoundException e = thrown()
         e.message == "Domain ${domain.idAsString} not found"
+    }
+
+    def "domains can be deleted"() {
+        given: "a domain"
+        def client = createTestClient()
+        Domain domain = newDomain(client) {
+            name = "27001"
+            authority = "me"
+            translations: [
+                de: [
+                    name: "DS-GVO / BDSG / was auch immer",
+                    description: "Besteste Domäne!",
+                    abbreviation: "DBWAI"
+
+                ]
+            ]
+            riskDefinitions = ["rd": createRiskDefinition("rd")]
+            decisions.put("isGroup", newDecision(org.veo.core.entity.ElementType.CONTROL, "CTL_TOM") {
+                rules.add(newRule(true) {
+                    conditions.add(new Condition(new PartCountExpression("CTL_TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
+                })
+                defaultResultValue = false
+            })
+
+            applyInspection(name, newInspection())
+        }
+        domain = domainRepository.save(domain)
+        def rdSetId = domain.riskDefinitionSet.id
+        def deSetId = domain.decisionSet.id
+        def inSetId = domain.inspectionSet.id
+
+        when: "the domain is deleted"
+        client.removeFromDomains(domain);
+        domainRepository.deleteById(domain.getId());
+
+        then: "no exception is raised"
+        noExceptionThrown()
+
+        and: "the domain and its related objects are gone"
+        domainRepository.findById(domain.getId()).empty
+
+        when: "checking the parts"
+        def riskDefinitions = txTemplate.execute {
+            em.createNativeQuery("select * from risk_definition_set where id=?1")
+                    .setParameter(1, rdSetId).getResultList()
+        }
+        def decisions = txTemplate.execute {
+            em.createNativeQuery("select * from decision_set where id=?1")
+                    .setParameter(1, deSetId).getResultList()
+        }
+        def inspections = txTemplate.execute {
+            em.createNativeQuery("select * from inspection_set where id=?1")
+                    .setParameter(1, inSetId).getResultList()
+        }
+
+        then: "they are all gone"
+        riskDefinitions.empty
+        decisions.empty
+        inspections.empty
     }
 }
