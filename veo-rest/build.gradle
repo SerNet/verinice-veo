@@ -113,6 +113,7 @@ jib {
         environment = ['JDK_JAVA_OPTIONS':'-Djdk.serialFilter=maxbytes=0']
         user = 'nonroot'
         ports = ['8070']
+        mainClass = 'org.veo.rest.RestApplication'
     }
 }
 
