@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
@@ -26,7 +29,9 @@ import lombok.Setter;
 
 @Data
 @Valid
-public class ProbabilityImpl implements Probability {
+public class ProbabilityImpl implements Probability, Serializable {
+
+  @Serial private static final long serialVersionUID = 6584937698888245617L;
 
   private ProbabilityRef specificProbability;
 

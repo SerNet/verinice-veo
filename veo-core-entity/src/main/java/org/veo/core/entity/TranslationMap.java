@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -35,8 +37,9 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class TranslationMap {
+public class TranslationMap implements Serializable {
 
+  @Serial private static final long serialVersionUID = 5111831260064003621L;
   @NotNull @JsonValue private Map<Locale, Map<String, String>> translations = new HashMap<>();
 
   @JsonCreator

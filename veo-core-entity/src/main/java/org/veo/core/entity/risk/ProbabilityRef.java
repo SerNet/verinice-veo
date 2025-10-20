@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import jakarta.validation.Valid;
@@ -45,7 +47,9 @@ import lombok.ToString;
 @Valid
 @EqualsAndHashCode
 @ToString
-public class ProbabilityRef {
+public class ProbabilityRef implements Serializable {
+
+  @Serial private static final long serialVersionUID = 8165301865135321156L;
 
   @JsonCreator
   ProbabilityRef(BigDecimal idRef) {
