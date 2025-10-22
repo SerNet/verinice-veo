@@ -107,7 +107,7 @@ public sealed interface RiskDefinitionChange
     public List<RiskDefinitionChangeEffect> getEffects() {
       return List.of(
           new RiskDefinitionChangeEffect.RiskRecalculation(),
-          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(CategoryRef.from(cat)));
+          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(cat));
     }
 
     @JsonGetter
@@ -120,8 +120,7 @@ public sealed interface RiskDefinitionChange
       implements RiskDefinitionChange {
     @Override
     public List<RiskDefinitionChangeEffect> getEffects() {
-      return List.of(
-          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(cat)));
+      return List.of(new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(cat));
     }
 
     @JsonGetter
@@ -158,8 +157,8 @@ public sealed interface RiskDefinitionChange
     @Override
     public List<RiskDefinitionChangeEffect> getEffects() {
       return List.of(
-          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(cat)),
-          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(CategoryRef.from(cat)));
+          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(cat),
+          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(cat));
     }
   }
 
@@ -168,7 +167,6 @@ public sealed interface RiskDefinitionChange
     @Override
     public List<RiskDefinitionChangeEffect> getEffects() {
       return oldRd.getCategories().stream()
-          .map(CategoryRef::from)
           .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval::new)
           .map(RiskDefinitionChangeEffect.class::cast)
           .toList();
@@ -186,7 +184,7 @@ public sealed interface RiskDefinitionChange
     public List<RiskDefinitionChangeEffect> getEffects() {
       return List.of(
           new RiskDefinitionChangeEffect.RiskRecalculation(),
-          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(CategoryRef.from(newCat)));
+          new RiskDefinitionChangeEffect.RiskValueCategoryAddition(newCat));
     }
 
     @JsonGetter
@@ -201,8 +199,8 @@ public sealed interface RiskDefinitionChange
     public List<RiskDefinitionChangeEffect> getEffects() {
       return List.of(
           new RiskDefinitionChangeEffect.RiskRecalculation(),
-          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(CategoryRef.from(oldCat)),
-          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(CategoryRef.from(oldCat)));
+          new RiskDefinitionChangeEffect.RiskValueCategoryRemoval(oldCat),
+          new RiskDefinitionChangeEffect.ImpactCategoryRemoval(oldCat));
     }
 
     @JsonGetter
@@ -233,7 +231,7 @@ public sealed interface RiskDefinitionChange
     return getEffects(detectedChanges).stream()
         .filter(RiskDefinitionChangeEffect.ImpactCategoryRemoval.class::isInstance)
         .map(RiskDefinitionChangeEffect.ImpactCategoryRemoval.class::cast)
-        .map(RiskDefinitionChangeEffect.ImpactCategoryRemoval::category)
+        .map(RiskDefinitionChangeEffect.ImpactCategoryRemoval::getCategory)
         .distinct()
         .toList();
   }
@@ -242,7 +240,7 @@ public sealed interface RiskDefinitionChange
     return getEffects(detectedChanges).stream()
         .filter(RiskDefinitionChangeEffect.RiskValueCategoryAddition.class::isInstance)
         .map(RiskDefinitionChangeEffect.RiskValueCategoryAddition.class::cast)
-        .map(RiskDefinitionChangeEffect.RiskValueCategoryAddition::category)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryAddition::getCategory)
         .distinct()
         .toList();
   }
@@ -251,7 +249,7 @@ public sealed interface RiskDefinitionChange
     return getEffects(detectedChanges).stream()
         .filter(RiskDefinitionChangeEffect.RiskValueCategoryRemoval.class::isInstance)
         .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval.class::cast)
-        .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval::category)
+        .map(RiskDefinitionChangeEffect.RiskValueCategoryRemoval::getCategory)
         .distinct()
         .toList();
   }

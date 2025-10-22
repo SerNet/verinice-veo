@@ -21,12 +21,25 @@ import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 
 import java.util.Locale;
+import java.util.Optional;
 
+import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.risk.CategoryRef;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
 public sealed interface RiskDefinitionChangeEffect {
   TranslatedText getDescription();
+
+  @Data
+  @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+  sealed class RiskDefinitionChangeEffectImpl implements RiskDefinitionChangeEffect {
+    private final TranslatedText description;
+    private final CategoryRef category;
+  }
 
   public record RiskRecalculation() implements RiskDefinitionChangeEffect {
     @Override
@@ -52,48 +65,63 @@ public sealed interface RiskDefinitionChangeEffect {
     }
   }
 
-  public record RiskValueCategoryAddition(CategoryRef category)
-      implements RiskDefinitionChangeEffect {
-    @Override
-    public TranslatedText getDescription() {
-      return TranslatedText.builder()
-          .translation(
-              ENGLISH, "Risk values for category '%s' are added to risks.".formatted(category))
-          .translation(
-              GERMAN,
-              "Werte für die Kategorie '%s' werden Risiken hinzugefügt.".formatted(category))
-          .build();
+  final class RiskValueCategoryAddition extends RiskDefinitionChangeEffectImpl {
+
+    public RiskValueCategoryAddition(CategoryDefinition categoryDefinition) {
+      super(
+          TranslatedText.builder()
+              .translation(
+                  ENGLISH,
+                  "Risk values for the criterion '%s' are added to risks."
+                      .formatted(getNameOrId(categoryDefinition, ENGLISH)))
+              .translation(
+                  GERMAN,
+                  "Werte für das Kriterium '%s' werden Risiken hinzugefügt."
+                      .formatted(getNameOrId(categoryDefinition, GERMAN)))
+              .build(),
+          CategoryRef.from(categoryDefinition));
     }
   }
 
-  public record RiskValueCategoryRemoval(CategoryRef category)
-      implements RiskDefinitionChangeEffect {
-    @Override
-    public TranslatedText getDescription() {
-      return TranslatedText.builder()
-          .translation(
-              ENGLISH,
-              "Risk values for category '%s' are removed from all risks.".formatted(category))
-          .translation(
-              GERMAN,
-              "Werte für die Kategorie '%s' werden aus allen Risiken entfernt.".formatted(category))
-          .build();
+  final class RiskValueCategoryRemoval extends RiskDefinitionChangeEffectImpl {
+
+    public RiskValueCategoryRemoval(CategoryDefinition categoryDefinition) {
+      super(
+          TranslatedText.builder()
+              .translation(
+                  ENGLISH,
+                  "Risk values for the criterion '%s' are removed from all risks."
+                      .formatted(getNameOrId(categoryDefinition, ENGLISH)))
+              .translation(
+                  GERMAN,
+                  "Werte für das Kriterium '%s' werden aus allen Risiken entfernt."
+                      .formatted(getNameOrId(categoryDefinition, GERMAN)))
+              .build(),
+          CategoryRef.from(categoryDefinition));
     }
   }
 
-  public record ImpactCategoryRemoval(CategoryRef category) implements RiskDefinitionChangeEffect {
-    @Override
-    public TranslatedText getDescription() {
-      return TranslatedText.builder()
-          .translation(
-              Locale.ENGLISH,
-              "Impact values for category '%s' are removed from all assets, processes and scopes."
-                  .formatted(category))
-          .translation(
-              Locale.GERMAN,
-              "Auswirkungswerte für die Kategorie '%s' werden von allen Assets, Prozessen und Scopes entfernt."
-                  .formatted(category))
-          .build();
+  final class ImpactCategoryRemoval extends RiskDefinitionChangeEffectImpl {
+
+    public ImpactCategoryRemoval(CategoryDefinition categoryDefinition) {
+      super(
+          TranslatedText.builder()
+              .translation(
+                  Locale.ENGLISH,
+                  "Impact values for the criterion '%s' are removed from all assets, processes and scopes."
+                      .formatted(getNameOrId(categoryDefinition, ENGLISH)))
+              .translation(
+                  Locale.GERMAN,
+                  "Auswirkungswerte für das Kriterium '%s' werden von allen Assets, Prozessen und Scopes entfernt."
+                      .formatted(getNameOrId(categoryDefinition, GERMAN)))
+              .build(),
+          CategoryRef.from(categoryDefinition));
     }
+  }
+
+  private static String getNameOrId(CategoryDefinition cd, Locale locale) {
+    return Optional.ofNullable(cd.getTranslations(locale))
+        .map(NameAbbreviationAndDescription::getName)
+        .orElse(cd.getId());
   }
 }

@@ -926,8 +926,10 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             changes[0].categories == ["D"]
             changes[1].changeType == "ImpactListResize"
             changes[1].categories == ["D"]
-            effects[0].description.en == "Risk values for category 'D' are removed from all risks."
-            effects[1].description.en == "Impact values for category 'D' are removed from all assets, processes and scopes."
+            effects[0].description.en == "Risk values for the criterion 'D' are removed from all risks."
+            effects[0].description.de == "Werte für das Kriterium 'Schadenshöhe' werden aus allen Risiken entfernt."
+            effects[1].description.en == "Impact values for the criterion 'D' are removed from all assets, processes and scopes."
+            effects[1].description.de == "Auswirkungswerte für das Kriterium 'Schadenshöhe' werden von allen Assets, Prozessen und Scopes entfernt."
             validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
             validationMessages[0].changedCategories == ["D"]
         }
@@ -957,11 +959,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects.toSorted{it.category}*.description*.en ==
             [
                 "Risk values are recalculated.",
-                "Risk values for category 'A' are removed from all risks.",
-                "Risk values for category 'C' are removed from all risks.",
-                "Risk values for category 'D' are removed from all risks.",
-                "Risk values for category 'I' are removed from all risks.",
-                "Risk values for category 'R' are removed from all risks."
+                "Risk values for the criterion 'A' are removed from all risks.",
+                "Risk values for the criterion 'C' are removed from all risks.",
+                "Risk values for the criterion 'D' are removed from all risks.",
+                "Risk values for the criterion 'I' are removed from all risks.",
+                "Risk values for the criterion 'R' are removed from all risks."
             ]
 
             validationMessages.size() == 1
@@ -1000,7 +1002,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             changes[0].effects == null
             effects.size() == 2
             effects[0].description.en == "Risk values are recalculated."
-            effects[1].description.en == "Risk values for category 'C' are added to risks."
+            effects[1].description.en == "Risk values for the criterion 'C' are added to risks."
         }
 
         when: "we add a matrix to all categories and clean existing"
@@ -1025,10 +1027,10 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             effects.size() == 5
             effects.toSorted{it.category}*.description*.en == [
                 "Risk values are recalculated.",
-                "Risk values for category 'A' are added to risks.",
-                "Risk values for category 'C' are added to risks.",
-                "Risk values for category 'I' are added to risks.",
-                "Risk values for category 'R' are added to risks."
+                "Risk values for the criterion 'A' are added to risks.",
+                "Risk values for the criterion 'C' are added to risks.",
+                "Risk values for the criterion 'I' are added to risks.",
+                "Risk values for the criterion 'R' are added to risks."
             ]
             validationMessages.size() == 1
 
@@ -1085,11 +1087,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             validationMessages.size() == 0
             effects.size() == 5
             effects.toSorted{it.category}*.description*.en== [
-                "Risk values for category 'A' are removed from all risks.",
-                "Risk values for category 'C' are removed from all risks.",
-                "Risk values for category 'D' are removed from all risks.",
-                "Risk values for category 'I' are removed from all risks.",
-                "Risk values for category 'R' are removed from all risks."
+                "Risk values for the criterion 'A' are removed from all risks.",
+                "Risk values for the criterion 'C' are removed from all risks.",
+                "Risk values for the criterion 'D' are removed from all risks.",
+                "Risk values for the criterion 'I' are removed from all risks.",
+                "Risk values for the criterion 'R' are removed from all risks."
             ]
         }
 
@@ -1120,7 +1122,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         and: "the effect is stated"
         with(ret) {
             effects.size() == 1
-            effects[0].description.en == "Risk values for category 'D' are removed from all risks."
+            effects[0].description.en == "Risk values for the criterion 'D' are removed from all risks."
             effects[0].category ==~ ["D"]
         }
 
@@ -1173,17 +1175,17 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         with(ret) {
             effects.size() == 11
             effects*.description*.en .toSorted() == [
-                "Impact values for category 'A' are removed from all assets, processes and scopes.",
-                "Impact values for category 'C' are removed from all assets, processes and scopes.",
-                "Impact values for category 'D' are removed from all assets, processes and scopes.",
-                "Impact values for category 'I' are removed from all assets, processes and scopes.",
-                "Impact values for category 'R' are removed from all assets, processes and scopes.",
+                "Impact values for the criterion 'A' are removed from all assets, processes and scopes.",
+                "Impact values for the criterion 'C' are removed from all assets, processes and scopes.",
+                "Impact values for the criterion 'D' are removed from all assets, processes and scopes.",
+                "Impact values for the criterion 'I' are removed from all assets, processes and scopes.",
+                "Impact values for the criterion 'R' are removed from all assets, processes and scopes.",
                 "Risk values are recalculated.",
-                "Risk values for category 'A' are removed from all risks.",
-                "Risk values for category 'C' are removed from all risks.",
-                "Risk values for category 'D' are removed from all risks.",
-                "Risk values for category 'I' are removed from all risks.",
-                "Risk values for category 'R' are removed from all risks."
+                "Risk values for the criterion 'A' are removed from all risks.",
+                "Risk values for the criterion 'C' are removed from all risks.",
+                "Risk values for the criterion 'D' are removed from all risks.",
+                "Risk values for the criterion 'I' are removed from all risks.",
+                "Risk values for the criterion 'R' are removed from all risks."
             ]
             validationMessages.size() == 1
             validationMessages[0].description.en == "The following risk matrices have been resized, please adjust the risk values if necessary: [D]"
