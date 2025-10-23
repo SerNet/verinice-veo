@@ -32,9 +32,25 @@ import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.state.CustomAspectState;
@@ -42,6 +58,7 @@ import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
@@ -49,6 +66,28 @@ import lombok.ToString;
 /** Base transfer object for Elements. Contains common data for all Element DTOs. */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = {
+      @DiscriminatorMapping(schema = FullAssetDto.class, value = Asset.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullControlDto.class, value = Control.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullDocumentDto.class, value = Document.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullIncidentDto.class, value = Incident.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullPersonDto.class, value = Person.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullProcessDto.class, value = Process.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullScenarioDto.class, value = Scenario.SINGULAR_TERM),
+      @DiscriminatorMapping(schema = FullScopeDto.class, value = Scope.SINGULAR_TERM),
+    },
+    oneOf = {
+      FullAssetDto.class,
+      FullControlDto.class,
+      FullDocumentDto.class,
+      FullIncidentDto.class,
+      FullPersonDto.class,
+      FullProcessDto.class,
+      FullScenarioDto.class,
+      FullScopeDto.class
+    })
 public abstract class AbstractElementDto<T extends Element>
     extends AbstractVersionedSelfReferencingDto implements NameableDto, ElementState<T> {
 

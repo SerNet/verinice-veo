@@ -633,7 +633,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/scopes/{uuid}/members"].get
 
         expect: "that the correct schema is used"
-        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/FullElementDto']]
+        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto']]
     }
 
     def "endpoint documentation is correct for GET /domains/{domainId}/scopes/{uuid}/members"() {
@@ -711,7 +711,6 @@ class SwaggerSpec extends VeoSpringSpec {
             'DecisionRef',
             'RiskRef',
             'ReqImplRef',
-            'AbstractElementDto',
             'TypeDefinition'
         ]
     }
@@ -1157,13 +1156,13 @@ class SwaggerSpec extends VeoSpringSpec {
                 'elements',
                 'risks'
             ]
-            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/FullElementDto'], uniqueItems:true]
+            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto'], uniqueItems:true]
         }
     }
 
-    def "FullElementDto is well-documented"() {
+    def "AbstractElementDto is well-documented"() {
         expect:
-        with(getSchema('FullElementDto')) {
+        with(getSchema('AbstractElementDto')) {
 
             it.oneOf ==~ [
                 [$ref:'#/components/schemas/FullAssetDto'],
