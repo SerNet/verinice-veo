@@ -35,10 +35,15 @@ import javax.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.core.entity.AbstractRisk;
@@ -66,6 +71,12 @@ import lombok.experimental.Accessors;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @Accessors(makeFinal = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = AssetRiskDto.class),
+  @JsonSubTypes.Type(value = ProcessRiskDto.class),
+  @JsonSubTypes.Type(value = ScopeRiskDto.class),
+})
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
     implements RiskState, ModelDto {
 

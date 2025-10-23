@@ -162,38 +162,18 @@ class SwaggerSpec extends VeoSpringSpec {
     def "ScopeRiskDto is mapped correctly"() {
         expect:
         with(getSchema('ScopeRiskDto')) {
-            it.properties.keySet() ==~ [
-                'createdAt',
-                'createdBy',
-                'updatedAt',
-                'updatedBy',
-                'designator',
-                'scenario',
-                'mitigation',
-                'riskOwner',
-                'domains',
-                '_self',
-                'scope'
-            ]
-            it.properties.scenario == [$ref:'#/components/schemas/IdRefScenario']
-            it.properties.mitigation == [
-                $ref: '#/components/schemas/EntityReference',
-                description: 'This risk is mitigated by this control or control-composite.'
-            ]
-            it.properties.riskOwner == [
-                $ref: '#/components/schemas/EntityReference',
-                description: 'The accountable point-of-contact for this risk.'
-            ]
-            it.properties.domains == [
-                type: 'object',
-                additionalProperties: [
-                    $ref: '#/components/schemas/RiskDomainAssociationDto'
-                ],
-                description: 'Key is a domain-ID, values are the reference to the domain and its available risk definitions'
-            ]
-            it.properties.scope == [
-                $ref: '#/components/schemas/IdRefScope',
-                readOnly: true
+            it.properties == null
+            it.allOf == [
+                [$ref: '#/components/schemas/AbstractRiskDto'],
+                [
+                    type      : 'object',
+                    properties: [
+                        scope: [
+                            $ref    : '#/components/schemas/IdRefScope',
+                            readOnly: true
+                        ]
+                    ]
+                ]
             ]
 
             it.required == [
@@ -1193,7 +1173,16 @@ class SwaggerSpec extends VeoSpringSpec {
                 'risks'
             ]
             it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto'], uniqueItems:true]
-            it.properties.risks == [type:'array', items:[$ref:'#/components/schemas/AbstractRiskDto'], uniqueItems:true]
+            it.properties.risks == [
+                type:'array',
+                items:[
+                    oneOf:[
+                        [$ref: '#/components/schemas/AssetRiskDto'],
+                        [$ref: '#/components/schemas/ProcessRiskDto'],
+                        [$ref: '#/components/schemas/ScopeRiskDto']
+                    ]
+                ],
+                uniqueItems:true]
         }
     }
 

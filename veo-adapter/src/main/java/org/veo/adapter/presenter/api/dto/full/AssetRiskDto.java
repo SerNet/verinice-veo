@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.CompoundIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -46,6 +48,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class AssetRiskDto extends AbstractRiskDto {
 
   @Valid

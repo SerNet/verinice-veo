@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -37,8 +36,6 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
-import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
-import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -77,12 +74,6 @@ public class UnitDumpDto {
   @NotNull(message = "Elements must be present.")
   private Set<@Valid AbstractElementDto> elements;
 
-  @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
-  @JsonSubTypes({
-    @Type(value = AssetRiskDto.class),
-    @Type(value = ProcessRiskDto.class),
-    @Type(value = ScopeRiskDto.class),
-  })
   @NotNull(message = "Risks must be present.")
   private Set<@Valid @NotNull AbstractRiskDto> risks;
 }
