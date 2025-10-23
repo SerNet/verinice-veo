@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
@@ -25,5 +26,6 @@ import org.veo.core.entity.Constraints;
 public interface Ref {
   /** Returns a URI of the target object which may be a URL. */
   @Size(min = 1, max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+  @NotNull
   String getTargetUri();
 }

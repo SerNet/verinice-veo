@@ -229,7 +229,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 type: 'string',
                 readOnly: true
             ]
-            it.required == null
+            it.required == ['targetUri']
         }
     }
 
