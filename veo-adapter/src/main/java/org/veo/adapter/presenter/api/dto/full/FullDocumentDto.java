@@ -17,18 +17,86 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import jakarta.validation.Valid;
 
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.Document;
+import org.veo.core.entity.state.CompositeElementState;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
+/** Base transfer object for documents. Contains common data for all document DTOs. */
 @Data
-public class FullDocumentDto extends AbstractDocumentDto implements IdentifiableDto {
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "document", description = "Schema for document")
+public class FullDocumentDto extends CompositeEntityDto<Document>
+    implements IdentifiableDto, CompositeElementState<Document> {
 
-  @ToString.Include private UUID id;
+  @Override
+  @Schema(description = "The name for the document.", example = "Bitcoin Price Predictions")
+  public String getName() {
+    return super.getName();
+  }
+
+  @Override
+  @Schema(description = "The abbreviation for the document.", example = "BTC Price")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
+
+  @Override
+  @Schema(
+      description = "The description for the document.",
+      example = "All predictions regarding the price of Bitcoin.")
+  public String getDescription() {
+    return super.getDescription();
+  }
+
+  @Override
+  @Schema(description = "The links for the document.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
+
+  @Schema(description = "The customAspects for the document.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
+
+  @Override
+  public Class<Document> getModelInterface() {
+    return Document.class;
+  }
+
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
+
+  @Override
+  public void transferToDomain(UUID sourceDomainId, UUID targetDomainId) {
+    renameKey(domains, sourceDomainId, targetDomainId);
+  }
+
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<UUID, DomainAssociationDto> domains = new HashMap<>();
 }

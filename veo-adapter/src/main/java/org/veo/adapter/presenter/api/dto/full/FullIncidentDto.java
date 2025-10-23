@@ -17,18 +17,84 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import jakarta.validation.Valid;
 
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.state.CompositeElementState;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
+/** Base transfer object for incidents. Contains common data for all incident DTOs. */
 @Data
-public class FullIncidentDto extends AbstractIncidentDto implements IdentifiableDto {
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "incident", description = "Schema for incident")
+public class FullIncidentDto extends CompositeEntityDto<Incident>
+    implements IdentifiableDto, CompositeElementState<Incident> {
 
-  @ToString.Include private UUID id;
+  @Override
+  @Schema(description = "The name for the incident.", example = "Mail Server")
+  public String getName() {
+    return super.getName();
+  }
+
+  @Override
+  @Schema(description = "The abbreviation for the incident.", example = "MS")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
+
+  @Override
+  @Schema(description = "The description for the incident.", example = "A server handling e-mail.")
+  public String getDescription() {
+    return super.getDescription();
+  }
+
+  @Override
+  @Schema(description = "The links for the incident.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
+
+  @Schema(description = "The customAspects for the incident.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
+
+  @Override
+  public Class<Incident> getModelInterface() {
+    return Incident.class;
+  }
+
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
+
+  @Override
+  public void transferToDomain(UUID sourceDomainId, UUID targetDomainId) {
+    renameKey(domains, sourceDomainId, targetDomainId);
+  }
+
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<UUID, DomainAssociationDto> domains = new HashMap<>();
 }

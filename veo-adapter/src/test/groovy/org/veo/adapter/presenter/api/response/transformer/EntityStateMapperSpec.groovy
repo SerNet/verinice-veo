@@ -20,12 +20,12 @@ package org.veo.adapter.presenter.api.response.transformer
 import java.time.LocalDate
 
 import org.veo.adapter.presenter.api.common.IdRef
-import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
@@ -64,7 +64,7 @@ class EntityStateMapperSpec extends Specification {
 
     def "maps domains from DTO to entity"() {
         given: "a process with two domains and a DTO with different sub types for those domains"
-        AbstractProcessDto dto = Mock()
+        FullProcessDto dto = Mock()
         Process entity = Mock()
         entity.modelInterface >> Process
 

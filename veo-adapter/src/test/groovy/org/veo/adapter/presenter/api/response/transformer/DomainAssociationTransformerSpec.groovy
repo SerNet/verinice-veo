@@ -20,11 +20,11 @@ package org.veo.adapter.presenter.api.response.transformer
 import static java.util.UUID.randomUUID
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.AbstractAssetDto
-import org.veo.adapter.presenter.api.dto.AbstractControlDto
-import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.dto.full.FullControlDto
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
@@ -56,7 +56,7 @@ class DomainAssociationTransformerSpec extends Specification {
             findSubType(domain1) >> Optional.of("SuperOverseer")
         }
         referenceAssembler.targetReferenceOf(linkTargetPerson) >> "/persons/123"
-        AbstractProcessDto dto = Mock()
+        FullProcessDto dto = Mock()
         Process entity = Mock()
         entity.getImpactValues(_) >> [:]
         Map<String, ProcessDomainAssociationDto> capturedDomainMap
@@ -129,7 +129,7 @@ class DomainAssociationTransformerSpec extends Specification {
 
     def "maps sub types from entity to DTO asset"() {
         given: "an asset with different sub types in two domains"
-        AbstractAssetDto dto = Mock()
+        FullAssetDto dto = Mock()
         Asset entity = Mock()
         entity.getImpactValues(_) >> [:]
         Map<String, AssetDomainAssociationDto> capturedDomainMap
@@ -173,7 +173,7 @@ class DomainAssociationTransformerSpec extends Specification {
 
     def "maps applied catalog item from entity to DTO asset"() {
         given:
-        AbstractControlDto dto = Mock()
+        FullControlDto dto = Mock()
         Control entity = Mock()
         def catalogItemId = UUID.randomUUID()
         def catalogItem = Stub(CatalogItem) {

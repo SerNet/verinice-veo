@@ -17,18 +17,86 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import jakarta.validation.Valid;
 
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.state.ScenarioState;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
+/** Base transfer object for scenarios. Contains common data for all scenario DTOs. */
 @Data
-public class FullScenarioDto extends AbstractScenarioDto implements IdentifiableDto {
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "scenario", description = "Schema for scenario")
+public class FullScenarioDto extends CompositeEntityDto<Scenario>
+    implements IdentifiableDto, ScenarioState {
 
-  @ToString.Include private UUID id;
+  @Override
+  @Schema(description = "The name for the scenario.", example = "Flood")
+  public String getName() {
+    return super.getName();
+  }
+
+  @Override
+  @Schema(description = "The abbreviation for the scenario.", example = "FL")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
+
+  @Override
+  @Schema(
+      description = "The description for the scenario.",
+      example = "A flood is an overflow of water that submerges land that is usually dry.")
+  public String getDescription() {
+    return super.getDescription();
+  }
+
+  @Override
+  @Schema(description = "The links for the scenario.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
+
+  @Schema(description = "The customAspects for the scenario.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
+
+  @Override
+  public Class<Scenario> getModelInterface() {
+    return Scenario.class;
+  }
+
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
+
+  @Override
+  public void transferToDomain(UUID sourceDomainId, UUID targetDomainId) {
+    renameKey(domains, sourceDomainId, targetDomainId);
+  }
+
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<UUID, ScenarioDomainAssociationDto> domains = new HashMap<>();
 }

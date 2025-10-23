@@ -28,14 +28,6 @@ import java.util.function.Supplier;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.SymIdRef;
-import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
-import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
-import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
-import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
-import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
-import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
-import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
@@ -45,6 +37,14 @@ import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -72,7 +72,7 @@ import lombok.RequiredArgsConstructor;
 public class DomainAssociationTransformer {
   private final ReferenceAssembler referenceAssembler;
 
-  public void mapDomainsToDto(Asset source, AbstractAssetDto target, boolean newStructure) {
+  public void mapDomainsToDto(Asset source, FullAssetDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -84,7 +84,7 @@ public class DomainAssociationTransformer {
             newStructure));
   }
 
-  public void mapDomainsToDto(Control source, AbstractControlDto target, boolean newStructure) {
+  public void mapDomainsToDto(Control source, FullControlDto target, boolean newStructure) {
     target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
@@ -110,19 +110,19 @@ public class DomainAssociationTransformer {
     return inputMap.entrySet().stream().collect(toMap(e -> e.getKey().getIdRef(), Entry::getValue));
   }
 
-  public void mapDomainsToDto(Document source, AbstractDocumentDto target, boolean newStructure) {
+  public void mapDomainsToDto(Document source, FullDocumentDto target, boolean newStructure) {
     target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Incident source, AbstractIncidentDto target, boolean newStructure) {
+  public void mapDomainsToDto(Incident source, FullIncidentDto target, boolean newStructure) {
     target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Person source, AbstractPersonDto target, boolean newStructure) {
+  public void mapDomainsToDto(Person source, FullPersonDto target, boolean newStructure) {
     target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new, newStructure));
   }
 
-  public void mapDomainsToDto(Process source, AbstractProcessDto target, boolean newStructure) {
+  public void mapDomainsToDto(Process source, FullProcessDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -149,7 +149,7 @@ public class DomainAssociationTransformer {
         .collect(toMap(kv -> kv.getKey().getIdRef(), this::mapImpactValuesToDto));
   }
 
-  public void mapDomainsToDto(Scenario source, AbstractScenarioDto target, boolean newStructure) {
+  public void mapDomainsToDto(Scenario source, FullScenarioDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,
@@ -178,7 +178,7 @@ public class DomainAssociationTransformer {
     return riskValuesDto;
   }
 
-  public void mapDomainsToDto(Scope source, AbstractScopeDto target, boolean newStructure) {
+  public void mapDomainsToDto(Scope source, FullScopeDto target, boolean newStructure) {
     target.setDomains(
         extractDomainAssociations(
             source,

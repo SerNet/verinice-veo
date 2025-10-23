@@ -52,12 +52,7 @@ import lombok.ToString;
 public abstract class AbstractElementDto<T extends Element>
     extends AbstractVersionedSelfReferencingDto implements NameableDto, ElementState<T> {
 
-  @Override
-  @JsonIgnore
-  @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-  public UUID getId() {
-    return null;
-  }
+  @ToString.Include private UUID id;
 
   @Schema(
       description = "The name for the Element.",

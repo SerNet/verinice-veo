@@ -67,7 +67,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -176,13 +175,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
 
   @Override
   @Operation(summary = "Loads a control")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Control loaded",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = AbstractControlDto.class)))
+  @ApiResponse(responseCode = "200", description = "Control loaded")
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public Future<ResponseEntity<FullControlDto>> getElement(
