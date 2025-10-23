@@ -41,7 +41,6 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefEntity;
-import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -105,7 +104,6 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   @Valid
   @NotNull(message = "A scenario must be present.")
-  @Schema(requiredMode = REQUIRED, implementation = IdRefOwner.class)
   private IdRef<Scenario> scenario;
 
   @Valid

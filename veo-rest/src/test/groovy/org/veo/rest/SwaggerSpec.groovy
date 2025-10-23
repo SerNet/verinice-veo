@@ -139,7 +139,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'domains',
                 '_self'
             ]
-            it.properties.scenario == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.scenario == [$ref:'#/components/schemas/IdRefScenario']
             it.properties.mitigation == [
                 $ref: '#/components/schemas/EntityReference',
                 description: 'This risk is mitigated by this control or control-composite.'
@@ -175,7 +175,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 '_self',
                 'scope'
             ]
-            it.properties.scenario == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.scenario == [$ref:'#/components/schemas/IdRefScenario']
             it.properties.mitigation == [
                 $ref: '#/components/schemas/EntityReference',
                 description: 'This risk is mitigated by this control or control-composite.'
@@ -207,6 +207,35 @@ class SwaggerSpec extends VeoSpringSpec {
     def "IdRefScope is mapped correctly"() {
         expect:
         with(getSchema('IdRefScope')) {
+            it.properties.keySet() ==~ [
+                'displayName',
+                'name',
+                'id',
+                'targetUri',
+                'abbreviation',
+                'designator',
+                'type'
+            ]
+            it.properties.targetUri == [
+                type: 'string',
+                maxLength: 255,
+                minLength: 1
+            ]
+            it.properties.type == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.properties.designator == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.required == ['targetUri']
+        }
+    }
+
+    def "IdRefScenario is mapped correctly"() {
+        expect:
+        with(getSchema('IdRefScenario')) {
             it.properties.keySet() ==~ [
                 'displayName',
                 'name',
