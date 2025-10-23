@@ -37,6 +37,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ref.ITypedId;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +48,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AssetRiskDto extends AbstractRiskDto {
 
-  @Valid private IdRef<Asset> asset;
+  @Valid
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY, requiredMode = Schema.RequiredMode.REQUIRED)
+  private IdRef<Asset> asset = null;
 
   @Builder
   public AssetRiskDto(

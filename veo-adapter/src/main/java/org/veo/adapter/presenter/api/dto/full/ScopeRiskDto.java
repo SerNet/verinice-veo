@@ -37,6 +37,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.ref.ITypedId;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +48,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ScopeRiskDto extends AbstractRiskDto {
 
-  @Valid private IdRef<Scope> scope;
+  @Valid
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY, requiredMode = Schema.RequiredMode.REQUIRED)
+  private IdRef<Scope> scope;
 
   @Builder
   public ScopeRiskDto(

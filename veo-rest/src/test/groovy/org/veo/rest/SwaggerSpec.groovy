@@ -191,9 +191,16 @@ class SwaggerSpec extends VeoSpringSpec {
                 ],
                 description: 'Key is a domain-ID, values are the reference to the domain and its available risk definitions'
             ]
-            it.properties.scope == [$ref: '#/components/schemas/IdRefScope']
+            it.properties.scope == [
+                $ref: '#/components/schemas/IdRefScope',
+                readOnly: true
+            ]
 
-            it.required == ['designator', 'scenario']
+            it.required == [
+                'designator',
+                'scenario',
+                'scope'
+            ]
         }
     }
 
