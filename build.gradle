@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 import org.veo.SpockBlockFormatterStep
 
 plugins {
-    id 'org.springframework.boot' version '3.5.6' apply false
+    id 'org.springframework.boot' version '3.5.7' apply false
     id "com.github.spotbugs" version '6.4.4'
     id "com.diffplug.spotless" version "8.0.0" apply false
     id "io.freefair.lombok" version "9.0.0"
