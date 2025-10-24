@@ -1193,6 +1193,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'risks'
             ]
             it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto'], uniqueItems:true]
+            it.properties.risks == [type:'array', items:[$ref:'#/components/schemas/AbstractRiskDto'], uniqueItems:true]
         }
     }
 
