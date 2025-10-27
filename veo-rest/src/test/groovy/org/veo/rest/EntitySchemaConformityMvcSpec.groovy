@@ -71,7 +71,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdAssetJson = parseNode(get("/assets/$assetId"))
 
         when: "validating the asset JSON"
-        def validationMessages = schema.validate(createdAssetJson)
+        def validationMessages = validateWriteOnly(schema, createdAssetJson)
 
         then:
         validationMessages.empty
@@ -211,7 +211,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def controlJson = parseNode(get("/controls/$controlId"))
 
         when: "validating the control JSON"
-        def validationMessages = schema.validate(controlJson)
+        def validationMessages = validateWriteOnly(schema, controlJson)
 
         then:
         validationMessages.empty
@@ -236,7 +236,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdDocumentJson = parseNode(get("/documents/$documentId"))
 
         when: "validating the document JSON"
-        def validationMessages = documentSchema.validate(createdDocumentJson)
+        def validationMessages = validateWriteOnly(documentSchema, createdDocumentJson)
 
         then:
         validationMessages.empty
@@ -257,7 +257,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdIncidentJson = parseNode(get("/incidents/$incidentId"))
 
         when: "validating the incident JSON"
-        def validationMessages = incidentSchema.validate(createdIncidentJson)
+        def validationMessages = validateWriteOnly(incidentSchema, createdIncidentJson)
 
         then:
         validationMessages.empty
@@ -282,7 +282,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdPersonJson = parseNode(get("/persons/$personId"))
 
         when: "validating the process JSON"
-        def validationMessages = personSchema.validate(createdPersonJson)
+        def validationMessages = validateWriteOnly(personSchema, createdPersonJson)
 
         then:
         validationMessages.empty
@@ -327,7 +327,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdProcessJson = parseNode(get("/processes/$processId"))
 
         when: "validating the process JSON"
-        def validationMessages = processSchema.validate(createdProcessJson)
+        def validationMessages = validateWriteOnly(processSchema, createdProcessJson)
 
         then:
         validationMessages.empty
@@ -352,7 +352,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def createdScenarioJson = parseNode(get("/scenarios/$scenarioId"))
 
         when: "validating the scenario JSON"
-        def validationMessages = scenarioSchema.validate(createdScenarioJson)
+        def validationMessages = validateWriteOnly(scenarioSchema, createdScenarioJson)
 
         then:
         validationMessages.empty
@@ -407,7 +407,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def scope = parseNode(get("/scopes/$scopeId"))
 
         when: "validating the scope JSON"
-        def validationMessages = schema.validate(scope)
+        def validationMessages = validateWriteOnly(schema, scope)
 
         then:
         validationMessages.empty

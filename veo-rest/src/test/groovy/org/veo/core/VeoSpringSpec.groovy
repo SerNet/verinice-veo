@@ -27,12 +27,13 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.JsonSchema
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SchemaValidatorsConfig
-import com.networknt.schema.SpecVersion
-import com.networknt.schema.ValidationMessage
+import com.networknt.schema.ExecutionContext
+import com.networknt.schema.Schema
+import com.networknt.schema.SchemaContext
+import com.networknt.schema.SchemaRegistry
+import com.networknt.schema.SpecificationVersion
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
@@ -219,26 +220,29 @@ abstract class VeoSpringSpec extends VeoSpec {
         }
     }
 
-    JsonSchema getSchema(Client client, ElementType type) {
+    Schema getSchema(Client client, ElementType type) {
         parseSchema(entitySchemaService.getSchema(type, client.domains))
     }
 
-    JsonSchema getSchema(Domain domain, ElementType elementType) {
+    Schema getSchema(Domain domain, ElementType elementType) {
         parseSchema(entitySchemaService.getSchema(elementType, domain))
     }
 
-    Set<ValidationMessage> validate(Object target, ResultActions schema) {
-        return parseSchema(schema.andReturn().response.contentAsString)
-                .validate(new ObjectMapper().valueToTree(target))
+    List<Error> validate(Object target, ResultActions schema) {
+        return parseSchema(schema.andReturn().response.contentAsString).with {
+            validateWriteOnly(it, new ObjectMapper().valueToTree(target))
+        }
     }
 
-    private JsonSchema parseSchema(String schema) {
-        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(
-                schema,
-                new SchemaValidatorsConfig().tap {
-                    // schema is used to to validate outgoing data from an API
-                    writeOnly = true
-                })
+    List<Error> validateWriteOnly(Schema schema, JsonNode node) {
+        schema.validate(node, { ExecutionContext executionContext, SchemaContext schemaContext ->
+            executionContext.executionConfig {it.writeOnly(true)}
+        })
+    }
+
+    private Schema parseSchema(String schema) {
+        SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2019_09).getSchema(
+                schema)
     }
 
     Element saveNewElement(ElementType type, Unit owner, Domain domain, @DelegatesTo(value = Element.class, strategy = Closure.DELEGATE_FIRST) @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Element") Closure init = {}) {

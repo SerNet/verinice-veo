@@ -19,11 +19,11 @@ package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.JsonSchema
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SchemaId
+import com.networknt.schema.Schema
 import com.networknt.schema.SchemaLocation
-import com.networknt.schema.SpecVersion
+import com.networknt.schema.SchemaRegistry
+import com.networknt.schema.SpecificationVersion
+import com.networknt.schema.dialect.DialectId
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
@@ -181,26 +181,12 @@ class EntitySchemaServiceITSpec extends Specification {
         }
     }
 
-    private JsonSchema getMetaSchemaV2019_09() throws IOException {
-        def cl = getClass().getClassLoader()
-        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909, { builder ->
-            builder.schemaMappers {
-                // Use local schema files
-                it
-                        .mapPrefix("https://json-schema.org", "classpath:")
-                        .mapPrefix("http://json-schema.org", "classpath:")
-            }
-        })
-        .getSchema(SchemaLocation.of(SchemaId.V201909))
+    private static Schema getMetaSchemaV2019_09() throws IOException {
+        SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2019_09)
+                .getSchema(SchemaLocation.of(DialectId.DRAFT_2019_09))
     }
 
-    private List<JsonNode> getEntitySchemas() {
-        ElementType.values()
-                .collect { it.singularTerm }
-                .collect { getSchema(Set.of(getTestDomain()), "asset") }
-    }
-
-    private JsonNode getSchema(Set<Domain> domains, ElementType type) {
+    private static JsonNode getSchema(Set<Domain> domains, ElementType type) {
         Json.mapper().readTree(entitySchemaService.getSchema(type, domains))
     }
 

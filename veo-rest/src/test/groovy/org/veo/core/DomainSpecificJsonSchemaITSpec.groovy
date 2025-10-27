@@ -20,7 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.ValidationMessage
+import com.networknt.schema.Error
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
@@ -80,16 +80,16 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.subType = "C"
 
         then:
-        validate(element, elementType)*.message ==~ [
-            '$.subType: does not have a value in the enumeration ["A", "B"]'
+        validate(element, elementType)*.toString() ==~ [
+            '/subType: does not have a value in the enumeration ["A", "B"]'
         ]
 
         when: "using a sub type that does not define the current status"
         element.subType = "B"
 
         then:
-        validate(element, elementType)*.message ==~ [
-            '$.status: does not have a value in the enumeration ["B1", "B2"]'
+        validate(element, elementType)*.toString() ==~ [
+            '/status: does not have a value in the enumeration ["B1", "B2"]'
         ]
 
         where:
@@ -121,9 +121,9 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         then:
-        validate(element, elementType)*.message ==~ [
-            '$.customAspects.CA.foo: integer found, string expected',
-            '''$.customAspects: property 'NA' is not defined in the schema and the schema does not allow additional properties''',
+        validate(element, elementType)*.toString() ==~ [
+            '/customAspects/CA/foo: integer found, string expected',
+            '''/customAspects: property 'NA' is not defined in the schema and the schema does not allow additional properties''',
         ]
 
         where:
@@ -157,8 +157,8 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.links.LA[0].attributes.goo = 5
 
         then:
-        validate(element, elementType)*.message ==~ [
-            '$.links.LA[0].attributes.goo: integer found, string expected'
+        validate(element, elementType)*.toString() ==~ [
+            '/links/LA/0/attributes/goo: integer found, string expected'
         ]
 
         where:
@@ -215,19 +215,19 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.riskValues.noRiskNoFun.potentialImpactExplanations.Z = "Manuel said so"
 
         then:
-        validate(element, elementType)*.message ==~ [
-            '$.riskValues.noRiskNoFun.potentialImpacts.A: does not have a value in the enumeration [0, 1]',
-            '$.riskValues.noRiskNoFun.potentialImpactsCalculated.A: does not have a value in the enumeration [0, 1]',
-            '$.riskValues.noRiskNoFun.potentialImpactsEffective.A: does not have a value in the enumeration [0, 1]',
-            '$.riskValues.noRiskNoFun.potentialImpactReasons.A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual"]',
-            '$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons.A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual", "impact_method_high_water_mark"]',
-            '$.riskValues.noRiskNoFun.potentialImpactExplanations.A: integer found, string expected',
-            '''$.riskValues.noRiskNoFun.potentialImpacts: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
-            '''$.riskValues.noRiskNoFun.potentialImpactsCalculated: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
-            '''$.riskValues.noRiskNoFun.potentialImpactsEffective: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
-            '''$.riskValues.noRiskNoFun.potentialImpactReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
-            '''$.riskValues.noRiskNoFun.potentialImpactEffectiveReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
-            '''$.riskValues.noRiskNoFun.potentialImpactExplanations: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+        validate(element, elementType)*.toString() ==~ [
+            '/riskValues/noRiskNoFun/potentialImpacts/A: does not have a value in the enumeration [0, 1]',
+            '/riskValues/noRiskNoFun/potentialImpactsCalculated/A: does not have a value in the enumeration [0, 1]',
+            '/riskValues/noRiskNoFun/potentialImpactsEffective/A: does not have a value in the enumeration [0, 1]',
+            '/riskValues/noRiskNoFun/potentialImpactReasons/A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual"]',
+            '/riskValues/noRiskNoFun/potentialImpactEffectiveReasons/A: does not have a value in the enumeration ["impact_reason_cumulative", "impact_reason_distributive", "impact_reason_manual", "impact_method_high_water_mark"]',
+            '/riskValues/noRiskNoFun/potentialImpactExplanations/A: integer found, string expected',
+            '''/riskValues/noRiskNoFun/potentialImpacts: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+            '''/riskValues/noRiskNoFun/potentialImpactsCalculated: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+            '''/riskValues/noRiskNoFun/potentialImpactsEffective: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+            '''/riskValues/noRiskNoFun/potentialImpactReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+            '''/riskValues/noRiskNoFun/potentialImpactEffectiveReasons: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
+            '''/riskValues/noRiskNoFun/potentialImpactExplanations: property 'Z' is not defined in the schema and the schema does not allow additional properties''',
         ]
 
         where:
@@ -252,8 +252,8 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.riskDefinition = "riskEverything"
 
         then:
-        validate(element, ElementType.SCOPE)*.message ==~ [
-            '$.riskDefinition: does not have a value in the enumeration ["noRiskNoFun"]'
+        validate(element, ElementType.SCOPE)*.toString() ==~ [
+            '/riskDefinition: does not have a value in the enumeration ["noRiskNoFun"]'
         ]
     }
 
@@ -279,7 +279,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         // TODO #3211 ban additional properties
 
         then: "it is tolerated for now"
-        validate(element, ElementType.SCOPE)*.message ==~ []
+        validate(element, ElementType.SCOPE)*.toString() ==~ []
     }
 
     def "essential properties are required for #type.pluralTerm"() {
@@ -294,12 +294,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         ]
 
         expect:
-        validate(element, type)*.message ==~ [
-            '''$: required property 'name' not found''',
-            '''$: required property 'subType' not found''',
-            '''$: required property 'status' not found''',
-            '''$: required property 'owner' not found''',
-            '''$.links.LA[0]: required property 'target' not found''',
+        validate(element, type)*.toString() ==~ [
+            ''': required property 'name' not found''',
+            ''': required property 'subType' not found''',
+            ''': required property 'status' not found''',
+            ''': required property 'owner' not found''',
+            '''/links/LA/0: required property 'target' not found''',
         ]
 
         when:
@@ -310,14 +310,14 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.links.LA[0].target = null
 
         then:
-        validate(element, type)*.message ==~ [
-            '$.name: null found, string expected',
-            '$.owner: null found, object expected',
-            '$.status: null found, string expected',
-            '$.status: does not have a value in the enumeration ["A1", "A2", "B1", "B2"]',
-            '$.subType: null found, string expected',
-            '$.subType: does not have a value in the enumeration ["A", "B"]',
-            '$.links.LA[0].target: null found, object expected',
+        validate(element, type)*.toString() ==~ [
+            '/name: null found, string expected',
+            '/owner: null found, object expected',
+            '/status: null found, string expected',
+            '/status: does not have a value in the enumeration ["A1", "A2", "B1", "B2"]',
+            '/subType: null found, string expected',
+            '/subType: does not have a value in the enumeration ["A", "B"]',
+            '/links/LA/0/target: null found, object expected',
         ]
 
         where:
@@ -345,17 +345,17 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         element.riskValues.noRiskNoFun.potentialImpactReasons = null
 
         then:
-        validate(element, type)*.message ==~ [
-            '$.riskValues.noRiskNoFun.potentialImpacts: null found, object expected',
-            '$.riskValues.noRiskNoFun.potentialImpactReasons: null found, object expected',
+        validate(element, type)*.toString() ==~ [
+            '/riskValues/noRiskNoFun/potentialImpacts: null found, object expected',
+            '/riskValues/noRiskNoFun/potentialImpactReasons: null found, object expected',
         ]
 
         where:
         type << ElementType.RISK_AFFECTED_TYPES
     }
 
-    private Set<ValidationMessage> validate(Map element, ElementType elementType) {
-        getSchema(domain, elementType).validate(om.valueToTree(element))
+    private List<Error> validate(Map element, ElementType elementType) {
+        validateWriteOnly(getSchema(domain, elementType), om.valueToTree(element))
     }
 
     private void createElementTypeDefinition(ElementType elementType) {
