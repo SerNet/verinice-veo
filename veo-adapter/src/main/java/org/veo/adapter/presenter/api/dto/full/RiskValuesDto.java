@@ -21,8 +21,6 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.risk.DeterminedRisk;
@@ -40,6 +38,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PACKAGE)

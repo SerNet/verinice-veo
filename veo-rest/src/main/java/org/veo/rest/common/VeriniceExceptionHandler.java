@@ -34,8 +34,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
 import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
@@ -57,6 +55,7 @@ import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domain.DomainInUseException;
 
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 @ControllerAdvice
 @Slf4j

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.Schema
 import com.networknt.schema.SchemaLocation
 import com.networknt.schema.SchemaRegistry
@@ -47,6 +46,7 @@ import groovy.json.JsonSlurper
 import spock.lang.Specification
 import spock.util.mop.Use
 import tools.jackson.databind.JsonNode
+import tools.jackson.databind.ObjectMapper
 import tools.jackson.databind.json.JsonMapper
 
 /**

@@ -23,17 +23,17 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.EntitySchemaException;
 import org.veo.core.entity.definitions.ControlImplementationDefinition;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectWriter;
+import tools.jackson.databind.node.ObjectNode;
 
 public class EntitySchemaGenerator {
   private final Map<ElementType, Supplier<ObjectNode>> dtoByElementType =
@@ -66,7 +66,7 @@ public class EntitySchemaGenerator {
       schemaExtender.extendSchema(jsonSchema, elementType, domains);
 
       return writer.writeValueAsString(jsonSchema);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new EntitySchemaException("Schema creation failed", e);
     }
   }
@@ -77,7 +77,7 @@ public class EntitySchemaGenerator {
       schemaExtender.extendSchema(jsonSchema, elementType, domain);
 
       return writer.writeValueAsString(jsonSchema);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new EntitySchemaException("Schema creation failed", e);
     }
   }
@@ -89,7 +89,7 @@ public class EntitySchemaGenerator {
         schemaExtender.extendSchema(jsonSchema, controlImplementationDefinition);
       }
       return writer.writeValueAsString(jsonSchema);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new EntitySchemaException("Schema creation failed", e);
     }
   }

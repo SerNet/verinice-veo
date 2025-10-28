@@ -25,10 +25,10 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -37,10 +37,6 @@ import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
@@ -241,6 +237,11 @@ import io.swagger.v3.core.util.AnnotationsUtils;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.module.blackbird.BlackbirdModule;
 
 /**
  * This configuration takes care of wiring classes from core modules (Entity-Layer, Use-Case-Layer)
@@ -797,16 +798,18 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+  public JsonMapperBuilderCustomizer jsonCustomizer() {
     return builder ->
-        builder.featuresToDisable(
-            SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
-            SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
+        builder
+            .addModule(blackbirdModule())
+            .disable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS)
+            // work around issue https://github.com/FasterXML/jackson-databind/issues/5432
+            .disable(EnumFeature.WRITE_ENUMS_USING_TO_STRING);
   }
 
   @Bean
-  public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
-    return new Jackson2JsonMessageConverter(objectMapper);
+  public MessageConverter jsonMessageConverter(JsonMapper jsonMapper) {
+    return new JacksonJsonMessageConverter(jsonMapper);
   }
 
   @Bean

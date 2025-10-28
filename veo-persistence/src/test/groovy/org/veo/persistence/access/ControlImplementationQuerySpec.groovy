@@ -18,7 +18,7 @@
 package org.veo.persistence.access
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.mapping.PropertyReferenceException
+import org.springframework.data.core.PropertyReferenceException
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain

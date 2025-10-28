@@ -32,8 +32,9 @@ import org.keycloak.authorization.client.AuthzClient
 import org.keycloak.authorization.client.Configuration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpEntity
@@ -65,6 +66,7 @@ import spock.util.concurrent.PollingConditions
 webEnvironment = RANDOM_PORT)
 @ActiveProfiles(resolver = RestTestProfileResolver.class)
 @Slf4j
+@AutoConfigureTestRestTemplate
 class VeoRestTest extends Specification {
 
     @Autowired

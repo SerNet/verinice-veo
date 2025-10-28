@@ -35,10 +35,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ClientChangedEvent;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
@@ -48,6 +44,9 @@ import org.veo.message.EventMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Subscribes to incoming messages from the external RabbitMQ, parses the messages and forwards them
@@ -81,11 +80,11 @@ public class MessageSubscriber {
               key = {
                 "${veo.message.routing-key-prefix}" + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE
               }))
-  public void handleEventMessage(EventMessage event) throws JsonProcessingException {
+  public void handleEventMessage(EventMessage event) throws JacksonException {
     log.info("handle message: {} {}", event.getRoutingKey(), event);
     try {
       var content = objectMapper.readTree(event.getContent());
-      var eventType = content.get("eventType").asText();
+      var eventType = content.get("eventType").asString();
       switch (eventType) {
         case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE ->
             handleElementTypeDefinitionUpdate(content);
@@ -113,11 +112,11 @@ public class MessageSubscriber {
               exchange =
                   @Exchange(value = "${veo.message.exchanges.veo-subscriptions}", type = "topic"),
               key = {"${veo.message.routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE}))
-  public void handleSubscriptionMessage(EventMessage event) throws JsonProcessingException {
+  public void handleSubscriptionMessage(EventMessage event) throws JacksonException {
     log.info("handle subscription message: {} {}", event.getRoutingKey(), event);
     try {
       var content = objectMapper.readTree(event.getContent());
-      var eventType = content.get("eventType").asText();
+      var eventType = content.get("eventType").asString();
       switch (eventType) {
         case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
         default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
@@ -129,8 +128,8 @@ public class MessageSubscriber {
   }
 
   private void handleElementTypeDefinitionUpdate(JsonNode content) {
-    var domainId = UUID.fromString(content.get("domainId").asText());
-    var elementType = ElementType.fromString(content.get("elementType").asText());
+    var domainId = UUID.fromString(content.get("domainId").asString());
+    var elementType = ElementType.fromString(content.get("elementType").asString());
     log.info(
         "Received {} message for element type {} in domain {}",
         EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
@@ -148,10 +147,10 @@ public class MessageSubscriber {
   }
 
   private void handleClientStateEvent(JsonNode content) {
-    var clientId = UUID.fromString(content.get("clientId").asText());
-    var clientState = ClientChangeType.valueOf(content.get("type").asText());
+    var clientId = UUID.fromString(content.get("clientId").asString());
+    var clientState = ClientChangeType.valueOf(content.get("type").asString());
     var maxUnits = content.has("maxUnits") ? content.get("maxUnits").asInt() : null;
-    var clientName = content.has("name") ? content.get("name").asText() : null;
+    var clientName = content.has("name") ? content.get("name").asString() : null;
     var domainProducts =
         content.has("domainProducts")
             ? objectMapper.convertValue(content.get("domainProducts"), Map.class)

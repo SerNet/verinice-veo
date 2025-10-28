@@ -116,7 +116,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         assert entities.contains(entity)
 
         //when: "the entity is reattached"
-        entityManager.unwrap(Session.class).update(entity)
+        entityManager.unwrap(Session.class).merge(entity)
 
         //then: "the entity is present in the set"
         assert entities.contains(entity)

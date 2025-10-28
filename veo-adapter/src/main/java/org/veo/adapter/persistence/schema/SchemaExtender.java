@@ -25,14 +25,6 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
-
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -58,6 +50,15 @@ import org.veo.core.entity.risk.ImpactMethod;
 import org.veo.core.entity.risk.ImpactReason;
 import org.veo.core.entity.riskdefinition.DiscreteValue;
 
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.module.blackbird.BlackbirdModule;
+
 /** Add domain-specific sub schemas to an element schema. */
 public class SchemaExtender {
   private final SchemaProvider provider = SchemaProvider.getInstance();
@@ -80,7 +81,7 @@ public class SchemaExtender {
   public static final String TYPE = "type";
   private static final String EXTERNAL_DOCUMENT_PATTERN =
       ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
-  private final ObjectMapper mapper = new ObjectMapper().registerModule(new BlackbirdModule());
+  private final ObjectMapper mapper = JsonMapper.builder().addModule(new BlackbirdModule()).build();
   private static final JsonNodeFactory FACTORY = JsonNodeFactory.instance;
 
   /**
@@ -204,7 +205,7 @@ public class SchemaExtender {
       var riskDefinitionNode = (ObjectNode) props.get("riskDefinition");
       riskDefinitionNode
           .putArray("enum")
-          .addAll(domain.getRiskDefinitions().keySet().stream().map(TextNode::new).toList());
+          .addAll(domain.getRiskDefinitions().keySet().stream().map(StringNode::new).toList());
     }
     buildImpactSchema(domain, target);
   }
@@ -331,7 +332,7 @@ public class SchemaExtender {
                             .addAll(
                                 Arrays.stream(ImpactReason.values())
                                     .map(ImpactReason::getTranslationKey)
-                                    .map(TextNode::new)
+                                    .map(StringNode::new)
                                     .toList());
                         potImpactEffectiveReasonsProps
                             .putObject(c.getId())
@@ -339,12 +340,12 @@ public class SchemaExtender {
                             .addAll(
                                 Arrays.stream(ImpactReason.values())
                                     .map(ImpactReason::getTranslationKey)
-                                    .map(TextNode::new)
+                                    .map(StringNode::new)
                                     .toList())
                             .addAll(
                                 Arrays.stream(ImpactMethod.values())
                                     .map(ImpactMethod::getTranslationKey)
-                                    .map(TextNode::new)
+                                    .map(StringNode::new)
                                     .toList());
                         potImpactExplanationsProps.putObject(c.getId()).put(TYPE, "string");
                       });

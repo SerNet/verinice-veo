@@ -38,8 +38,6 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.ClientReadOnlyRepository;
@@ -48,6 +46,8 @@ import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.ParentElementQuery;
 import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.security.ApplicationUser;
+
+import tools.jackson.databind.ObjectMapper;
 
 /** Adds custom controller method parameter resolvers. */
 @Configuration

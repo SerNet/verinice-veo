@@ -17,26 +17,24 @@
  ******************************************************************************/
 package org.veo.rest.common.marshalling;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonComponent;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.node.TextNode;
+import org.springframework.boot.jackson.JacksonComponent;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.exception.UnprocessableDataException;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.node.StringNode;
+
 /**
  * Deserializes resource references from JSON. Uses {@link ReferenceAssembler} to deconstruct URLs.
  */
-@JsonComponent
+@JacksonComponent
 public class ElementInDomainReferenceDeserializer
-    extends JsonDeserializer<ElementInDomainIdRef<?>> {
+    extends ValueDeserializer<ElementInDomainIdRef<?>> {
 
   public static final String TARGET_URI = "targetUri";
   public static final String TARGET_IN_DOMAIN_URI = "targetInDomainUri";
@@ -44,16 +42,16 @@ public class ElementInDomainReferenceDeserializer
   @Autowired ReferenceAssembler urlAssembler;
 
   @Override
-  public ElementInDomainIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
-      throws IOException {
-    var treeNode = p.getCodec().readTree(p);
+  public ElementInDomainIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) {
+    var treeNode = p.readValueAsTree();
     var targetUri = treeNode.get(TARGET_URI);
     if (targetUri != null) {
-      return ElementInDomainIdRef.fromTargetUri(((TextNode) targetUri).asText(), urlAssembler);
+      return ElementInDomainIdRef.fromTargetUri(((StringNode) targetUri).asText(), urlAssembler);
     }
     var targetInDomain = treeNode.get(TARGET_IN_DOMAIN_URI);
     if (targetInDomain != null) {
-      return ElementInDomainIdRef.fromTargetUri(((TextNode) targetInDomain).asText(), urlAssembler);
+      return ElementInDomainIdRef.fromTargetUri(
+          ((StringNode) targetInDomain).asText(), urlAssembler);
     }
     throw new UnprocessableDataException(
         "Element reference must contain %s or %s".formatted(TARGET_URI, TARGET_IN_DOMAIN_URI));

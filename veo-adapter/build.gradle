@@ -6,14 +6,14 @@ dependencies {
     api project(":veo-core-usecase")
 
     implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'com.github.victools:jsonschema-generator:4.38.0'
-    implementation 'com.github.victools:jsonschema-module-jackson:4.38.0'
-    implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.38.0'
-    implementation 'com.github.victools:jsonschema-module-swagger-2:4.38.0'
+    implementation 'com.github.victools:jsonschema-generator:5.0.0'
+    implementation 'com.github.victools:jsonschema-module-jackson:5.0.0'
+    implementation 'com.github.victools:jsonschema-module-jakarta-validation:5.0.0'
+    implementation 'com.github.victools:jsonschema-module-swagger-2:5.0.0'
     implementation 'org.springframework:spring-context'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.42'
     implementation 'org.apache.commons:commons-lang3'
-    implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
+    implementation 'tools.jackson.module:jackson-module-blackbird'
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0'
 
     compileOnly('org.projectlombok:lombok')

@@ -28,14 +28,13 @@ import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.UseCaseInteractor;
 
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 public class AbstractVeoController {
@@ -54,9 +53,9 @@ public class AbstractVeoController {
       T dto = jsonObjectMapper.readValue(content, type);
       validateDto(dto);
       return dto;
-    } catch (JsonMappingException jsonMappingException) {
+    } catch (JacksonException jacksonException) {
       throw new IllegalArgumentException(
-          "Could not parse content of multipart file.", jsonMappingException);
+          "Could not parse content of multipart file.", jacksonException);
     } catch (IOException e) {
       throw new IllegalArgumentException("Could not read multipart file.", e);
     }

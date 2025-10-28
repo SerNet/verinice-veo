@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
@@ -32,6 +30,8 @@ import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.exc.JsonNodeException
 
 //TODO #3042: remove this when we remove support for JSON schema
 class ObjectSchemaParserITSpec extends Specification {
@@ -142,7 +142,7 @@ class ObjectSchemaParserITSpec extends Specification {
         })
     }
 
-    def "parsing an invalid schema throws an IllegalArgumentException"() {
+    def "parsing an invalid schema throws a JsonNodeException"() {
         given:
         def schemaNode = objectMapper.readTree(content)
 
@@ -150,7 +150,7 @@ class ObjectSchemaParserITSpec extends Specification {
         objectSchemaParser.parseTypeDefinitionFromObjectSchema(ElementType.PROCESS, schemaNode)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(JsonNodeException)
 
         where:
         content << ['' , '{}']

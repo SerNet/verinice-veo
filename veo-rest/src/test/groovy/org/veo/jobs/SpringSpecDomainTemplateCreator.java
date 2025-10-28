@@ -30,8 +30,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -43,6 +41,7 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.rest.security.NoRestrictionAccessRight;
 
 import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Creates test domain templates from resource files using injected application services. File
@@ -53,7 +52,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringSpecDomainTemplateCreator {
   private final ResourcePatternResolver resourceResolver =
       new PathMatchingResourcePatternResolver(getClass().getClassLoader());
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
   private final DomainTemplateRepository domainTemplateRepository;
   private Map<UUID, ExportDomainTemplateDto> domainTemplateDtos;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
@@ -109,7 +108,7 @@ public class SpringSpecDomainTemplateCreator {
                 .map(
                     r -> {
                       try {
-                        return objectMapper.readValue(
+                        return jsonMapper.readValue(
                             r.getInputStream(), ExportDomainTemplateDto.class);
                       } catch (IOException e) {
                         throw new RuntimeException(e);

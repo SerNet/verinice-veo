@@ -51,9 +51,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.DomainMetadataDto;
@@ -114,6 +111,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 @Slf4j
 @RestController
@@ -241,7 +240,7 @@ public class ContentCreationController extends AbstractVeoController {
           updateElementTypeDefinitionUseCase,
           new UpdateElementTypeDefinitionUseCase.InputData(id, type, typeDefinition, true),
           out -> ResponseEntity.noContent().build());
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Cannot parse object schema.");
     }

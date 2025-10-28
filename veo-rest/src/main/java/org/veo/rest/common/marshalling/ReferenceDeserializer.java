@@ -17,34 +17,32 @@
  ******************************************************************************/
 package org.veo.rest.common.marshalling;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonComponent;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.node.TextNode;
+import org.springframework.boot.jackson.JacksonComponent;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.TreeNode;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.node.StringNode;
+
 /**
  * Deserializes resource references from JSON. Uses {@link ReferenceAssembler} to deconstruct URLs.
  */
-@JsonComponent
-public class ReferenceDeserializer extends JsonDeserializer<IdRef<?>> {
+@JacksonComponent
+public class ReferenceDeserializer extends ValueDeserializer<IdRef<?>> {
 
   public static final String TARGET_URI = "targetUri";
 
   @Autowired ReferenceAssembler urlAssembler;
 
   @Override
-  public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-    TreeNode treeNode = p.getCodec().readTree(p);
-    TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
+  public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) {
+    TreeNode treeNode = p.readValueAsTree();
+    StringNode targetUri = (StringNode) treeNode.get(TARGET_URI);
     return IdRef.fromUri(targetUri.asText(), urlAssembler);
   }
 }

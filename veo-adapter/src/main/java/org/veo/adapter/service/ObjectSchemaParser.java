@@ -19,17 +19,12 @@ package org.veo.adapter.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslationProvider;
@@ -48,6 +43,12 @@ import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.module.blackbird.BlackbirdModule;
+
 /**
  * This class serves as a bridge between {@link ElementTypeDefinition} and the object JSON schema
  * used by the Object Schema Editor. It can update an existing element type definition with a
@@ -58,7 +59,7 @@ import org.veo.core.entity.transform.EntityFactory;
 public class ObjectSchemaParser {
 
   private static final ObjectMapper OBJECTMAPPER =
-      new ObjectMapper().registerModule(new BlackbirdModule());
+      JsonMapper.builder().addModule(new BlackbirdModule()).build();
 
   private static final String PROPERTIES = "properties";
 
@@ -69,7 +70,7 @@ public class ObjectSchemaParser {
   }
 
   public ElementTypeDefinition parseTypeDefinitionFromObjectSchema(
-      ElementType type, JsonNode schemaNode) throws JsonProcessingException {
+      ElementType type, JsonNode schemaNode) throws JacksonException {
     JsonNode properties = schemaNode.required(PROPERTIES);
     ElementTypeDefinition typeDefinition = entityFactory.createElementTypeDefinition(type, null);
     typeDefinition.setSubTypes(extractSubTypeDefinitions(properties));
@@ -82,7 +83,7 @@ public class ObjectSchemaParser {
   private Map<String, SubTypeDefinition> extractSubTypeDefinitions(JsonNode properties) {
     JsonNode domains = properties.required("domains");
 
-    JsonNode allOf = domains.required(PROPERTIES).elements().next().required("allOf");
+    JsonNode allOf = domains.required(PROPERTIES).iterator().next().required("allOf");
 
     return StreamSupport.stream(allOf.spliterator(), false)
         .collect(
@@ -112,20 +113,18 @@ public class ObjectSchemaParser {
 
   private Map<String, CustomAspectDefinition> extractCustomAspectDefinitions(JsonNode properties) {
     JsonNode customAspectsProperties = properties.required("customAspects").required(PROPERTIES);
-    Iterator<Entry<String, JsonNode>> aspectIt = customAspectsProperties.fields();
+    Set<Entry<String, JsonNode>> aspectIt = customAspectsProperties.properties();
     Map<String, CustomAspectDefinition> customAspects =
         new HashMap<>(customAspectsProperties.size());
-    while (aspectIt.hasNext()) {
-      Entry<String, JsonNode> entry = aspectIt.next();
+    for (Entry<String, JsonNode> entry : aspectIt) {
       String aspectName = entry.getKey();
       JsonNode aspectAttributes =
           entry.getValue().required(PROPERTIES).required("attributes").required(PROPERTIES);
       CustomAspectDefinition aspectDefinition = new CustomAspectDefinition();
-      Iterator<Entry<String, JsonNode>> attributeIt = aspectAttributes.fields();
+      Set<Entry<String, JsonNode>> attributeIt = aspectAttributes.properties();
       Map<String, AttributeDefinition> attributeDefinitions =
           new HashMap<>(aspectAttributes.size());
-      while (attributeIt.hasNext()) {
-        Entry<String, JsonNode> attributeEntry = attributeIt.next();
+      for (Entry<String, JsonNode> attributeEntry : attributeIt) {
         attributeDefinitions.put(
             attributeEntry.getKey(), parseAttributeDefinition(attributeEntry.getValue()));
       }
@@ -143,7 +142,7 @@ public class ObjectSchemaParser {
       var allowedValues = new ArrayList<String>();
       jsonSchema
           .required("enum")
-          .elements()
+          .iterator()
           .forEachRemaining(n -> allowedValues.add(n.textValue()));
       return new EnumAttributeDefinition(allowedValues);
     }
@@ -168,19 +167,17 @@ public class ObjectSchemaParser {
 
   private Map<String, LinkDefinition> extractLinkDefinitions(JsonNode properties) {
     JsonNode linksProperties = properties.required("links").required(PROPERTIES);
-    Iterator<Entry<String, JsonNode>> linkIt = linksProperties.fields();
+    Set<Entry<String, JsonNode>> linkIt = linksProperties.properties();
     Map<String, LinkDefinition> links = new HashMap<>(linksProperties.size());
-    while (linkIt.hasNext()) {
-      Entry<String, JsonNode> entry = linkIt.next();
+    for (Entry<String, JsonNode> entry : linkIt) {
       String linkName = entry.getKey();
       JsonNode linkProperties = entry.getValue().required("items").required(PROPERTIES);
       LinkDefinition linkDefinition = new LinkDefinition();
       JsonNode attributeProperties = linkProperties.required("attributes").required(PROPERTIES);
-      Iterator<Entry<String, JsonNode>> attributeIt = attributeProperties.fields();
+      Set<Entry<String, JsonNode>> attributeIt = attributeProperties.properties();
       Map<String, AttributeDefinition> attributeDefinitions =
           new HashMap<>(attributeProperties.size());
-      while (attributeIt.hasNext()) {
-        Entry<String, JsonNode> attributeEntry = attributeIt.next();
+      for (Entry<String, JsonNode> attributeEntry : attributeIt) {
         attributeDefinitions.put(
             attributeEntry.getKey(), parseAttributeDefinition(attributeEntry.getValue()));
       }
@@ -200,7 +197,7 @@ public class ObjectSchemaParser {
 
   @SuppressWarnings("unchecked")
   private Map<Locale, Map<String, String>> extractTranslations(JsonNode properties)
-      throws JsonProcessingException {
+      throws JacksonException {
     JsonNode translationsNode = properties.required("translations");
     return TranslationProvider.convertLocales(
         OBJECTMAPPER.treeToValue(translationsNode, Map.class));

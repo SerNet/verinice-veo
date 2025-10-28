@@ -20,7 +20,6 @@ package org.veo.adapter.persistence.schema;
 import java.util.function.Supplier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.victools.jsonschema.generator.Module;
 import com.github.victools.jsonschema.generator.Option;
 import com.github.victools.jsonschema.generator.OptionPreset;
@@ -28,14 +27,15 @@ import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfig;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
-import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.jackson.JacksonOption;
+import com.github.victools.jsonschema.module.jackson.JacksonSchemaModule;
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationModule;
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Generates JSON schemas for java classes. Returned Schemas are encapsulated in {@link Supplier}
@@ -58,7 +58,8 @@ public class SchemaProvider {
   }
 
   private SchemaGenerator createSchemaGenerator() {
-    JacksonModule jacksonModule = new JacksonModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED);
+    JacksonSchemaModule jacksonModule =
+        new JacksonSchemaModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED);
     JakartaValidationModule jakartaValidationModule = new JakartaValidationModule();
     Module swagger2Module = new Swagger2Module();
 

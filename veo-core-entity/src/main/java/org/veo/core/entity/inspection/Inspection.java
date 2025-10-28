@@ -26,6 +26,8 @@ import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -73,7 +75,7 @@ public class Inspection {
   String elementSubType;
 
   @NonNull VeoExpression condition;
-  final List<Suggestion> suggestions = new ArrayList<>();
+  @JsonProperty final List<Suggestion> suggestions = new ArrayList<>();
 
   public Optional<Finding> run(Element element, Domain domain) {
     if (elementType != null && !elementType.matches(element)) {

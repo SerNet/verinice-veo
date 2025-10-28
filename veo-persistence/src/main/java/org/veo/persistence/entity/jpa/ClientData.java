@@ -32,7 +32,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientState;
@@ -87,7 +87,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       targetEntity = DomainData.class)
-  @Where(clause = "active = true")
+  @SQLRestriction("active = true")
   @Valid
   private final Set<Domain> domains = new HashSet<>();
 

@@ -18,24 +18,26 @@
 package org.veo.rest;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
+import org.springframework.http.converter.AbstractJacksonHttpMessageConverter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import tools.jackson.core.Version;
+import tools.jackson.databind.AnnotationIntrospector;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.MapperConfig;
+import tools.jackson.databind.introspect.Annotated;
+import tools.jackson.databind.introspect.AnnotatedClass;
+import tools.jackson.databind.introspect.AnnotatedMember;
+import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
 
 /**
  * Uses a custom JSON media type, producing a more lightweight JSON output where read-only
  * properties and properties with default values are omitted.
  */
-public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessageConverter {
+public class CompactJsonHttpMessageConverter extends AbstractJacksonHttpMessageConverter {
   public static final MediaType MEDIA_TYPE_JSON_COMPACT =
       MediaType.parseMediaType("application/vnd.sernet.verinice.compact+json");
 
@@ -48,51 +50,50 @@ public class CompactJsonHttpMessageConverter extends AbstractJackson2HttpMessage
 
   private static ObjectMapper configureCompactMapper(ObjectMapper defaultMapper) {
     var includeNonDefault = new JsonInclude.Value(Dummy.class.getAnnotation(JsonInclude.class));
-    return defaultMapper
-        .copy()
-        // Omit properties where the value equals the default value as defined in the DTO class.
-        // setDefaultPropertyInclusion may seem like the obvious solution, but NON_DEFAULT does not
-        // behave as desired when used with setDefaultPropertyInclusion.
-        // https://fasterxml.github.io/jackson-annotations/javadoc/2.7/com/fasterxml/jackson/annotation/JsonInclude.Include.html#NON_DEFAULT
-        // https://stackoverflow.com/questions/68637273/jackson-objectmapper-custom-global-filter-usage
-        .setConfig(
-            defaultMapper
-                .getSerializationConfig()
-                .withAppendedAnnotationIntrospector(
-                    new AnnotationIntrospector() {
-                      @Override
-                      public Version version() {
-                        return null;
-                      }
+    var defaultIntrospector = defaultMapper.serializationConfig().getAnnotationIntrospector();
 
-                      @Override
-                      public JsonInclude.Value findPropertyInclusion(Annotated a) {
-                        if (a instanceof AnnotatedClass m && m.getRawType().isRecord()) {
-                          // NON_DEFAULT makes no sense for records, because jackson cannot apply
-                          // default values when deserializing a record:
-                          // https://github.com/FasterXML/jackson-future-ideas/issues/67
-                          return null;
-                        }
-                        return includeNonDefault;
-                      }
+    // Omit properties where the value equals the default value as defined in the DTO class.
+    // setDefaultPropertyInclusion may seem like the obvious solution, but NON_DEFAULT does not
+    // behave as desired when used with setDefaultPropertyInclusion.
+    // https://fasterxml.github.io/jackson-annotations/javadoc/2.7/com/fasterxml/jackson/annotation/JsonInclude.Include.html#NON_DEFAULT
+    // https://stackoverflow.com/questions/68637273/jackson-objectmapper-custom-global-filter-usage
 
-                      /** Omit read-only properties */
-                      @Override
-                      public boolean hasIgnoreMarker(AnnotatedMember m) {
-                        if (super.hasIgnoreMarker(m)) {
-                          return true;
-                        }
-                        var propAnn = m.getAnnotation(JsonProperty.class);
-                        if (propAnn != null && propAnn.access() == JsonProperty.Access.READ_ONLY) {
-                          return true;
-                        }
-                        var schemaAnn = m.getAnnotation(Schema.class);
-                        if (schemaAnn != null
-                            && schemaAnn.accessMode() == Schema.AccessMode.READ_ONLY) {
-                          return true;
-                        }
-                        return false;
-                      }
-                    }));
+    var newIntrospector =
+        AnnotationIntrospectorPair.create(
+            defaultIntrospector,
+            new AnnotationIntrospector() {
+              @Override
+              public Version version() {
+                return null;
+              }
+
+              @Override
+              public JsonInclude.Value findPropertyInclusion(MapperConfig<?> config, Annotated a) {
+                if (a instanceof AnnotatedClass m && m.getRawType().isRecord()) {
+                  // NON_DEFAULT makes no sense for records, because jackson cannot apply
+                  // default values when deserializing a record:
+                  // https://github.com/FasterXML/jackson-future-ideas/issues/67
+                  return null;
+                }
+                return includeNonDefault;
+              }
+
+              @Override
+              public boolean hasIgnoreMarker(MapperConfig<?> config, AnnotatedMember member) {
+                if (super.hasIgnoreMarker(config, member)) {
+                  return true;
+                }
+                var propAnn = member.getAnnotation(JsonProperty.class);
+                if (propAnn != null && propAnn.access() == JsonProperty.Access.READ_ONLY) {
+                  return true;
+                }
+                var schemaAnn = member.getAnnotation(Schema.class);
+                if (schemaAnn != null && schemaAnn.accessMode() == Schema.AccessMode.READ_ONLY) {
+                  return true;
+                }
+                return false;
+              }
+            });
+    return defaultMapper.rebuild().annotationIntrospector(newIntrospector).build();
   }
 }
