@@ -11,6 +11,7 @@ bin/
 .settings/
 *.log
 *.local.*
+.vscode
 
 vna-type-mapping-missing.properties
 application-local.properties
