@@ -22,7 +22,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefCustomLinkTarget;
 import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +37,6 @@ public class CustomLinkDto extends CustomAspectDto {
 
   @NotNull(message = "A target must be present.")
   @ToString.Include
-  @Schema(requiredMode = REQUIRED, implementation = IdRefCustomLinkTarget.class)
+  @Schema(requiredMode = REQUIRED, description = "The custom link's target")
   private IdRef<Element> target;
 }

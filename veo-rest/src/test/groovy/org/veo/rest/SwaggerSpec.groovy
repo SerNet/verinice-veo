@@ -1355,7 +1355,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 items: [ $ref: '#/components/schemas/DomainsReference'],
                 uniqueItems: true
             ]
-            it.properties.target == [$ref: '#/components/schemas/CustomLinkTarget']
+            it.properties.target == [
+                $ref: '#/components/schemas/IdRefElement',
+                description: '''The custom link's target'''
+            ]
             it.properties.attributes == [
                 type:'object',
                 additionalProperties:[:],
@@ -1417,28 +1420,6 @@ class SwaggerSpec extends VeoSpringSpec {
                 format     : 'uri',
                 description: 'The resource URL of the referenced domains.',
                 example    : 'http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>',
-                maxLength  : 255,
-                minLength  : 1
-            ]
-            it.required == ['targetUri']
-        }
-    }
-
-    def "CustomLinkTarget is mapped correctly"() {
-        expect:
-        with(getSchema('CustomLinkTarget')) {
-            it.properties.keySet() ==~ ['displayName', 'targetUri']
-            it.properties.displayName == [
-                type       : 'string',
-                description: 'A friendly human readable title of the referenced entity.',
-                example    : 'My Entity',
-                readOnly   : true
-            ]
-            it.properties.targetUri == [
-                type       : 'string',
-                format     : 'uri',
-                description: 'The resource URL of the referenced entity.',
-                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
                 maxLength  : 255,
                 minLength  : 1
             ]
