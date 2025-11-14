@@ -26,6 +26,8 @@ import org.veo.core.entity.Entity;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.SymIdentifiable;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * A representation of a URI reference to an {@link org.veo.core.entity.Identifiable} resource.
  * Offers methods to retrieve a resource identifier / resource locator to the resource itself and an
@@ -36,6 +38,10 @@ public interface IIdRef extends Ref {
 
   /** A user friendly name of the target object. */
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Schema(
+      description = "A friendly human readable title of the referenced entity.",
+      example = "Example title",
+      accessMode = Schema.AccessMode.READ_ONLY)
   String getDisplayName();
 
   static <T extends Entity> IIdRef from(T entity, ReferenceAssembler urlAssembler) {

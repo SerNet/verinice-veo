@@ -45,7 +45,6 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
-import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -118,15 +117,11 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   private IdRef<Scenario> scenario;
 
   @Valid
-  @Schema(
-      implementation = IdRefEntity.class,
-      description = "This risk is mitigated by this control or control-composite.")
+  @Schema(description = "This risk is mitigated by this control or control-composite.")
   private IdRef<Control> mitigation;
 
   @Valid
-  @Schema(
-      implementation = IdRefEntity.class,
-      description = "The accountable point-of-contact for this risk.")
+  @Schema(description = "The accountable point-of-contact for this risk.")
   private IdRef<Person> riskOwner;
 
   @Valid @JsonIgnore

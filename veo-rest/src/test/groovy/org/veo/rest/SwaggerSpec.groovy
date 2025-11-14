@@ -141,11 +141,11 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.scenario == [$ref:'#/components/schemas/IdRefScenario']
             it.properties.mitigation == [
-                $ref: '#/components/schemas/EntityReference',
+                $ref: '#/components/schemas/IdRefControl',
                 description: 'This risk is mitigated by this control or control-composite.'
             ]
             it.properties.riskOwner == [
-                $ref: '#/components/schemas/EntityReference',
+                $ref: '#/components/schemas/IdRefPerson',
                 description: 'The accountable point-of-contact for this risk.'
             ]
             it.properties.domains == [
@@ -197,9 +197,12 @@ class SwaggerSpec extends VeoSpringSpec {
                 'type'
             ]
             it.properties.targetUri == [
-                type: 'string',
-                maxLength: 255,
-                minLength: 1
+                type       : 'string',
+                format     : 'uri',
+                description: 'The resource URL of the referenced entity.',
+                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
+                maxLength  : 255,
+                minLength  : 1
             ]
             it.properties.type == [
                 type: 'string',
@@ -226,9 +229,12 @@ class SwaggerSpec extends VeoSpringSpec {
                 'type'
             ]
             it.properties.targetUri == [
-                type: 'string',
-                maxLength: 255,
-                minLength: 1
+                type       : 'string',
+                format     : 'uri',
+                description: 'The resource URL of the referenced entity.',
+                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
+                maxLength  : 255,
+                minLength  : 1
             ]
             it.properties.type == [
                 type: 'string',
@@ -1372,6 +1378,9 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.targetUri == [
                 type       : 'string',
+                format     : 'uri',
+                description: 'The resource URL of the referenced entity.',
+                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
                 maxLength  : 255,
                 minLength  : 1
             ]
@@ -1385,6 +1394,8 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.displayName == [
                 type       : 'string',
+                description: 'A friendly human readable title of the referenced entity.',
+                example    : 'Example title',
                 readOnly   : true
             ]
             it.required == ['targetUri']
