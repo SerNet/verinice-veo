@@ -953,25 +953,11 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.parts != null
             with(it.properties.parts) {
                 it.type == 'array'
-                it.items == [$ref: '#/components/schemas/PartReference']
+                it.items == [
+                    $ref: '#/components/schemas/IdRefIncident',
+                    description:'''A reference to an entity's part'''
+                ]
             }
-        }
-    }
-
-    def "PartReference is well-documented"() {
-        expect:
-        with(getSchema('PartReference')) {
-            it.description == '''A reference to an entity's part'''
-            with(it.properties.displayName) {
-                description == 'A friendly human readable title of the referenced entity.'
-                example == 'My Entity'
-            }
-            with(it.properties.targetUri) {
-                description == 'The resource URL of the referenced entity.'
-                example == 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>'
-                format == 'uri'
-            }
-            it.required == ['targetUri']
         }
     }
 
@@ -1332,7 +1318,10 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.parts == [
                 type:'array',
-                items: [ $ref: '#/components/schemas/PartReference'],
+                items: [
+                    $ref: '#/components/schemas/IdRefScenario',
+                    description: '''A reference to an entity's part'''
+                ],
                 uniqueItems: true
             ]
         }

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefPart;
 import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,7 +39,7 @@ public abstract class CompositeEntityDto<T extends Element> extends AbstractElem
 
   private Set<IdRef<T>> parts = Collections.emptySet();
 
-  @ArraySchema(schema = @Schema(implementation = IdRefPart.class))
+  @ArraySchema(schema = @Schema(description = "A reference to an entity's part"))
   public Set<IdRef<T>> getParts() {
     return parts;
   }
