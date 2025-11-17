@@ -151,7 +151,15 @@ public interface TemplateItem<
       @NotNull ImplementationStatus status,
       @Nullable String implementationStatement,
       @Nullable LocalDate implementationUntil,
-      @Nullable T responsible);
+      @Nullable T responsible,
+      @Nullable Integer cost,
+      @Nullable LocalDate implementationDate,
+      @Nullable T implementedBy,
+      @Nullable T document,
+      @Nullable LocalDate lastRevisionDate,
+      @Nullable T lastRevisionBy,
+      @Nullable LocalDate nextRevisionDate,
+      @Nullable T nextRevisionBy);
 
   default boolean isAppliedTo(Element element) {
     return findCatalogItem()

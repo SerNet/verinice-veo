@@ -26,6 +26,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
@@ -54,6 +55,26 @@ public class ProfileRequirementImplementationTailoringReferenceData
   String implementationStatement;
 
   private LocalDate implementationUntil;
+
+  private Integer cost;
+
+  private LocalDate implementationDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
+  private ProfileItem implementedBy;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
+  private ProfileItem document;
+
+  private LocalDate lastRevisionDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
+  private ProfileItem lastRevisionBy;
+
+  private LocalDate nextRevisionDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
+  private ProfileItem nextRevisionBy;
 
   @Override
   public boolean equals(Object obj) {

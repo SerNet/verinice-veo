@@ -1637,6 +1637,14 @@ class SwaggerSpec extends VeoSpringSpec {
                 'implementationStatement',
                 'origination',
                 'implementationUntil',
+                'cost',
+                'implementationDate',
+                'document',
+                'lastRevisionDate',
+                'lastRevisionBy',
+                'nextRevisionDate',
+                'nextRevisionBy',
+                'implementedBy',
                 '_self'
             ]
             it.required == null
@@ -1644,6 +1652,17 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'string',
                 minLength:1,
                 maxLength:65535
+            ]
+            it.properties.cost == [
+                type: 'integer',
+                format: 'int32',
+                minimum: 0
+            ]
+            it.properties.document == [$ref: '#/components/schemas/IdRefDocument']
+            it.properties.lastRevisionBy == [$ref: '#/components/schemas/IdRefPerson']
+            it.properties.lastRevisionDate == [
+                type: 'string',
+                format: 'date'
             ]
         }
     }

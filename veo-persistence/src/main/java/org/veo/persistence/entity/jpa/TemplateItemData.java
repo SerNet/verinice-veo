@@ -186,13 +186,31 @@ public abstract class TemplateItemData<
           ImplementationStatus status,
           @Nullable String implementationStatement,
           @Nullable LocalDate implementationUntil,
-          @Nullable T responsible) {
+          @Nullable T responsible,
+          @Nullable Integer cost,
+          @Nullable LocalDate implementationDate,
+          @Nullable T implementedBy,
+          @Nullable T document,
+          @Nullable LocalDate lastRevisionDate,
+          @Nullable T lastRevisionBy,
+          @Nullable LocalDate nextRevisionDate,
+          @Nullable T nextRevisionBy) {
     var ref = createRequirementImplementationTailoringReference();
     add(ref, TailoringReferenceType.REQUIREMENT_IMPLEMENTATION, control);
     ref.setStatus(status);
     ref.setImplementationStatement(implementationStatement);
     ref.setImplementationUntil(implementationUntil);
     ref.setResponsible(responsible);
+    ref.setCost(cost);
+    ref.setImplementationDate(implementationDate);
+    ref.setImplementedBy(implementedBy);
+
+    ref.setDocument(document);
+    ref.setLastRevisionDate(lastRevisionDate);
+    ref.setLastRevisionBy(lastRevisionBy);
+    ref.setNextRevisionDate(nextRevisionDate);
+    ref.setNextRevisionBy(nextRevisionBy);
+
     return ref;
   }
 

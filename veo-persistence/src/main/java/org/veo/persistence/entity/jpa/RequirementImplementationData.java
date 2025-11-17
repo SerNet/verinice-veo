@@ -45,6 +45,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.NaturalId;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ImplementationStatus;
@@ -73,6 +74,7 @@ import lombok.ToString;
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@SuppressWarnings("PMD.TooManyFields")
 public class RequirementImplementationData implements RequirementImplementation {
 
   /** A surrogate ID used by the persistence layer. */
@@ -125,7 +127,26 @@ public class RequirementImplementationData implements RequirementImplementation 
   @Column(length = DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
 
+  private Integer cost;
+
   private LocalDate implementationUntil;
+  private LocalDate implementationDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  private Person implementedBy;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DocumentData.class)
+  private Document document;
+
+  private LocalDate lastRevisionDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  private Person lastRevisionBy;
+
+  private LocalDate nextRevisionDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  private Person nextRevisionBy;
 
   public static RequirementImplementationData createNew(Control control) {
     var ri = new RequirementImplementationData();
@@ -156,6 +177,13 @@ public class RequirementImplementationData implements RequirementImplementation 
     return isNull(implementationStatement)
         && origination == SYSTEM_SPECIFIC
         && responsible == null
-        && status == UNKNOWN;
+        && status == UNKNOWN
+        && cost == null
+        && implementationUntil == null
+        && implementationDate == null
+        && lastRevisionDate == null
+        && lastRevisionBy == null
+        && nextRevisionDate == null
+        && nextRevisionBy == null;
   }
 }

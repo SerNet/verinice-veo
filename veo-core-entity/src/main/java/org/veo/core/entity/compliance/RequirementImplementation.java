@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 
@@ -54,4 +55,36 @@ public interface RequirementImplementation {
   boolean isUnedited();
 
   Control getControl();
+
+  Integer getCost();
+
+  LocalDate getImplementationDate();
+
+  Person getImplementedBy();
+
+  Document getDocument();
+
+  LocalDate getLastRevisionDate();
+
+  Person getLastRevisionBy();
+
+  LocalDate getNextRevisionDate();
+
+  Person getNextRevisionBy();
+
+  void setCost(Integer cost);
+
+  void setImplementationDate(LocalDate implementationDate);
+
+  void setImplementedBy(Person implementedBy);
+
+  void setDocument(Document document);
+
+  void setLastRevisionDate(LocalDate lastRevisionDate);
+
+  void setLastRevisionBy(Person lastRevisionBy);
+
+  void setNextRevisionDate(LocalDate nextRevisionDate);
+
+  void setNextRevisionBy(Person nextRevisionBy);
 }

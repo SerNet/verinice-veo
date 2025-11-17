@@ -18,6 +18,7 @@
 package org.veo.core.entity.state;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.compliance.Origination;
@@ -42,4 +43,20 @@ public interface RequirementImplementationState {
   String getImplementationUntil();
 
   void setImplementationUntil(String implementationUntil);
+
+  Integer getCost();
+
+  String getImplementationDate();
+
+  ITypedId<Person> getImplementedBy();
+
+  ITypedId<Document> getDocument();
+
+  String getLastRevisionDate();
+
+  ITypedId<Person> getLastRevisionBy();
+
+  String getNextRevisionDate();
+
+  ITypedId<Person> getNextRevisionBy();
 }

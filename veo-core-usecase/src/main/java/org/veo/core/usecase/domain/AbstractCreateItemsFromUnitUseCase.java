@@ -114,6 +114,22 @@ public class AbstractCreateItemsFromUnitUseCase<
                       ri.getImplementationUntil(),
                       Optional.ofNullable(ri.getResponsible())
                           .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      ri.getCost(),
+                      ri.getImplementationDate(),
+                      Optional.ofNullable(ri.getImplementedBy())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      Optional.ofNullable(ri.getDocument())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      ri.getLastRevisionDate(),
+                      Optional.ofNullable(ri.getLastRevisionBy())
+                          .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      ri.getNextRevisionDate(),
+                      Optional.ofNullable(ri.getNextRevisionBy())
+                          .map(elementsToCatalogItems::get)
                           .orElse(null)));
       risky.getRisks().stream()
           .filter(r -> r.getScenario().isAssociatedWithDomain(domain))

@@ -153,6 +153,21 @@ public class EntityStateMapper {
     target.setStatus(source.getStatus());
     target.setImplementationUntil(
         Optional.ofNullable(source.getImplementationUntil()).map(LocalDate::parse).orElse(null));
+    target.setCost(source.getCost());
+    target.setImplementationDate(
+        Optional.ofNullable(source.getImplementationDate()).map(LocalDate::parse).orElse(null));
+    target.setImplementedBy(
+        Optional.ofNullable(source.getImplementedBy()).map(idRefResolver::resolve).orElse(null));
+    target.setDocument(
+        Optional.ofNullable(source.getDocument()).map(idRefResolver::resolve).orElse(null));
+    target.setLastRevisionDate(
+        Optional.ofNullable(source.getLastRevisionDate()).map(LocalDate::parse).orElse(null));
+    target.setLastRevisionBy(
+        Optional.ofNullable(source.getLastRevisionBy()).map(idRefResolver::resolve).orElse(null));
+    target.setNextRevisionDate(
+        Optional.ofNullable(source.getNextRevisionDate()).map(LocalDate::parse).orElse(null));
+    target.setNextRevisionBy(
+        Optional.ofNullable(source.getNextRevisionBy()).map(idRefResolver::resolve).orElse(null));
   }
 
   public void mapSystemMessage(SystemMessageState source, SystemMessage target) {

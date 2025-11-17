@@ -43,4 +43,20 @@ public interface RequirementImplementationTailoringReferenceState<
 
   @Nullable
   ITypedSymbolicId<T, TNamespace> getResponsibleRef();
+
+  Integer getCost();
+
+  LocalDate getImplementationDate();
+
+  ITypedSymbolicId<T, TNamespace> getImplementedByRef();
+
+  ITypedSymbolicId<T, TNamespace> getDocumentRef();
+
+  LocalDate getLastRevisionDate();
+
+  ITypedSymbolicId<T, TNamespace> getLastRevisionByRef();
+
+  LocalDate getNextRevisionDate();
+
+  ITypedSymbolicId<T, TNamespace> getNextRevisionByRef();
 }

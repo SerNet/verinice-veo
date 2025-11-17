@@ -33,6 +33,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ControlImplementationTailoringReference;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
@@ -300,18 +301,19 @@ public class IncarnationDescriptionApplier {
       ri.setStatus(tr.getStatus());
       ri.setImplementationStatement(tr.getImplementationStatement());
       ri.setImplementationUntil(tr.getImplementationUntil());
-      Optional.ofNullable(tr.getResponsible())
-          .map(T::getSymbolicIdAsString)
-          .map(elementsByItemId::get)
-          .ifPresent(
-              responsible -> {
-                if (responsible instanceof Person person) {
-                  ri.setResponsible(person);
-                } else
-                  throw new ModelConsistencyException(
-                      "Cannot use %s as responsible for requirement implementation"
-                          .formatted(responsible.getModelType()));
-              });
+      ri.setResponsible(
+          resolve(tr.getResponsible(), Person.class, "responsible", elementsByItemId));
+      ri.setCost(tr.getCost());
+      ri.setImplementationDate(tr.getImplementationDate());
+      ri.setImplementedBy(
+          resolve(tr.getImplementedBy(), Person.class, "implementedBy", elementsByItemId));
+      ri.setDocument(resolve(tr.getDocument(), Document.class, "document", elementsByItemId));
+      ri.setLastRevisionDate(tr.getLastRevisionDate());
+      ri.setLastRevisionBy(
+          resolve(tr.getLastRevisionBy(), Person.class, "lastRevisionBy", elementsByItemId));
+      ri.setNextRevisionDate(tr.getNextRevisionDate());
+      ri.setNextRevisionBy(
+          resolve(tr.getNextRevisionBy(), Person.class, "nextRevisionBy", elementsByItemId));
     } else
       throw new ModelConsistencyException(
           "Cannot create requirement implementation from %s for %s targeting %s"
@@ -319,6 +321,28 @@ public class IncarnationDescriptionApplier {
                   tailoringReference.getClass().getSimpleName(),
                   origin.getModelType(),
                   target.getModelType()));
+  }
+
+  private <
+          E extends Element, T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
+      E resolve(
+          T reference,
+          Class<E> expectedType,
+          String propertyName,
+          Map<String, Element> elementsByItemId) {
+    return Optional.ofNullable(reference)
+        .map(T::getSymbolicIdAsString)
+        .map(elementsByItemId::get)
+        .map(
+            e -> {
+              if (!expectedType.isInstance(e)) {
+                throw new ModelConsistencyException(
+                    "Cannot use %s as %s for requirement implementation"
+                        .formatted(e.getModelType(), propertyName));
+              }
+              return (E) e;
+            })
+        .orElse(null);
   }
 
   private void addScope(Element origin, Element targetScope) {

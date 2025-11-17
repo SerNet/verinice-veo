@@ -188,8 +188,10 @@ class EntityStateMapperSpec extends Specification {
         }
         Control control = Mock()
         Person person = Mock()
+        Document document = Mock()
         IdRef controlRef = Mock()
         IdRef personRef = Mock()
+        IdRef documentRef = Mock()
         RequirementImplementation ri = Mock()
 
         def assetId = UUID.randomUUID()
@@ -203,6 +205,10 @@ class EntityStateMapperSpec extends Specification {
                     status = ImplementationStatus.PARTIAL
                     implementationUntil = '2025-01-01'
                     origination = Origination.SYSTEM_SPECIFIC
+                    cost = 1
+                    lastRevisionBy = personRef
+                    it.document = documentRef
+                    nextRevisionDate = '3000-01-01'
                 }
             ]
         }
@@ -212,7 +218,8 @@ class EntityStateMapperSpec extends Specification {
 
         then:
         1 * idRefResolver.resolve(controlRef) >> control
-        1 * idRefResolver.resolve(personRef) >> person
+        2 * idRefResolver.resolve(personRef) >> person
+        1 * idRefResolver.resolve(documentRef) >> document
         1 * entity.getDomains() >> []
         1 * entity.findRequirementImplementation(control) >> Optional.empty()
         1 * entity.addRequirementImplementation(control) >> ri
@@ -220,5 +227,9 @@ class EntityStateMapperSpec extends Specification {
         1 * ri.setStatus(ImplementationStatus.PARTIAL)
         1 * ri.setImplementationUntil(LocalDate.parse('2025-01-01'))
         1 * ri.setOrigination(Origination.SYSTEM_SPECIFIC)
+        1 * ri.setCost(1)
+        1 * ri.setDocument(document)
+        1 * ri.setLastRevisionBy(person)
+        1 * ri.setNextRevisionDate(LocalDate.of(3000, 1, 1))
     }
 }

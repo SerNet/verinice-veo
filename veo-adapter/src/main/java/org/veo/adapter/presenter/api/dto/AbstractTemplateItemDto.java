@@ -104,6 +104,23 @@ public abstract class AbstractTemplateItemDto<
       Optional.ofNullable(riSource.getResponsible())
           .map(r -> SymIdRef.from(r, uriAssembler))
           .ifPresent(riRefDto::setResponsible);
+      riRefDto.setCost(riSource.getCost());
+      riRefDto.setImplementationDate(riSource.getImplementationDate());
+      Optional.ofNullable(riSource.getImplementedBy())
+          .map(r -> SymIdRef.from(r, uriAssembler))
+          .ifPresent(riRefDto::setImplementedBy);
+      Optional.ofNullable(riSource.getDocument())
+          .map(r -> SymIdRef.from(r, uriAssembler))
+          .ifPresent(riRefDto::setDocument);
+      riRefDto.setLastRevisionDate(riSource.getLastRevisionDate());
+      Optional.ofNullable(riSource.getLastRevisionBy())
+          .map(r -> SymIdRef.from(r, uriAssembler))
+          .ifPresent(riRefDto::setLastRevisionBy);
+      riRefDto.setNextRevisionDate(riSource.getNextRevisionDate());
+      Optional.ofNullable(riSource.getNextRevisionBy())
+          .map(r -> SymIdRef.from(r, uriAssembler))
+          .ifPresent(riRefDto::setNextRevisionBy);
+
       return riRefDto;
     }
     return new TailoringReferenceDto<>();

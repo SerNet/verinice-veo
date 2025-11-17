@@ -382,6 +382,20 @@ public final class EntityToDtoTransformer {
     Optional.ofNullable(source.getImplementationUntil())
         .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
         .ifPresent(target::setImplementationUntil);
+    target.setCost(source.getCost());
+    Optional.ofNullable(source.getImplementationDate())
+        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
+        .ifPresent(target::setImplementationDate);
+    target.setImplementedBy(IdRef.from(source.getImplementedBy(), referenceAssembler));
+    target.setDocument(IdRef.from(source.getDocument(), referenceAssembler));
+    Optional.ofNullable(source.getLastRevisionDate())
+        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
+        .ifPresent(target::setLastRevisionDate);
+    target.setLastRevisionBy(IdRef.from(source.getLastRevisionBy(), referenceAssembler));
+    Optional.ofNullable(source.getNextRevisionDate())
+        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
+        .ifPresent(target::setNextRevisionDate);
+    target.setNextRevisionBy(IdRef.from(source.getNextRevisionBy(), referenceAssembler));
     return target;
   }
 

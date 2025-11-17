@@ -45,8 +45,56 @@ public interface RequirementImplementationTailoringReference<
 
   void setResponsible(@Nullable T responsible);
 
+  void setCost(Integer cost);
+
+  void setImplementationDate(@Nullable LocalDate implementationDate);
+
+  @Nullable
+  T getImplementedBy();
+
+  void setImplementedBy(@Nullable T implementedBy);
+
+  @Nullable
+  T getDocument();
+
+  void setDocument(@Nullable T document);
+
+  @Nullable
+  T getLastRevisionBy();
+
+  void setLastRevisionBy(@Nullable T lastRevisionBy);
+
+  void setLastRevisionDate(@Nullable LocalDate implementationDate);
+
+  @Nullable
+  T getNextRevisionBy();
+
+  void setNextRevisionBy(@Nullable T nextRevisionBy);
+
+  void setNextRevisionDate(@Nullable LocalDate implementationDate);
+
   @Override
   default ITypedSymbolicId<T, TNamespace> getResponsibleRef() {
     return Optional.ofNullable(getResponsible()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default ITypedSymbolicId<T, TNamespace> getImplementedByRef() {
+    return Optional.ofNullable(getImplementedBy()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default ITypedSymbolicId<T, TNamespace> getDocumentRef() {
+    return Optional.ofNullable(getDocument()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default ITypedSymbolicId<T, TNamespace> getLastRevisionByRef() {
+    return Optional.ofNullable(getLastRevisionBy()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default ITypedSymbolicId<T, TNamespace> getNextRevisionByRef() {
+    return Optional.ofNullable(getNextRevisionBy()).map(TypedSymbolicId::from).orElse(null);
   }
 }

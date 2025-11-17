@@ -242,7 +242,18 @@ public class DomainStateMapper {
               riDto.getStatus(),
               riDto.getImplementationStatement(),
               riDto.getImplementationUntil(),
-              Optional.ofNullable(riDto.getResponsibleRef()).map(resolver::resolve).orElse(null));
+              Optional.ofNullable(riDto.getResponsibleRef()).map(resolver::resolve).orElse(null),
+              riDto.getCost(),
+              riDto.getImplementationDate(),
+              Optional.ofNullable(riDto.getImplementedByRef()).map(resolver::resolve).orElse(null),
+              Optional.ofNullable(riDto.getDocumentRef()).map(resolver::resolve).orElse(null),
+              riDto.getLastRevisionDate(),
+              Optional.ofNullable(riDto.getLastRevisionByRef()).map(resolver::resolve).orElse(null),
+              riDto.getNextRevisionDate(),
+              Optional.ofNullable(riDto.getNextRevisionByRef())
+                  .map(resolver::resolve)
+                  .orElse(null));
+
       default -> owner.addTailoringReference(source.getReferenceType(), targetItem);
     }
   }

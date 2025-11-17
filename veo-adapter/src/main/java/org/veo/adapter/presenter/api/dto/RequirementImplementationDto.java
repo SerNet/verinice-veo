@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,6 +27,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ImplementationStatus;
@@ -38,6 +40,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@SuppressWarnings("PMD.TooManyFields")
 public class RequirementImplementationDto extends AbstractVersionedDto
     implements RequirementImplementationState {
   @JsonIgnore private RequirementImplementationRef selfRef;
@@ -45,6 +48,25 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   IdRef<Control> control;
   IdRef<Person> responsible;
   ImplementationStatus status;
+
+  @Min(0)
+  Integer cost;
+
+  @Schema(format = "date")
+  String implementationDate;
+
+  IdRef<Person> implementedBy;
+  IdRef<Document> document;
+
+  @Schema(format = "date")
+  String lastRevisionDate;
+
+  IdRef<Person> lastRevisionBy;
+
+  @Schema(format = "date")
+  String nextRevisionDate;
+
+  IdRef<Person> nextRevisionBy;
 
   @Size(min = 1, max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;

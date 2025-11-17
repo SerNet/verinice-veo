@@ -48,9 +48,44 @@ public class RequirementImplementationTailoringReferenceDto<
   private String implementationStatement;
   private LocalDate implementationUntil;
 
+  private Integer cost;
+
+  private LocalDate implementationDate;
+
+  private SymIdRef<T, TNamespace> implementedBy;
+  private SymIdRef<T, TNamespace> document;
+  private LocalDate lastRevisionDate;
+  private SymIdRef<T, TNamespace> lastRevisionBy;
+  private LocalDate nextRevisionDate;
+  private SymIdRef<T, TNamespace> nextRevisionBy;
+
   @Override
   @JsonIgnore
   public ITypedSymbolicId<T, TNamespace> getResponsibleRef() {
     return responsible;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedSymbolicId<T, TNamespace> getImplementedByRef() {
+    return implementedBy;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedSymbolicId<T, TNamespace> getDocumentRef() {
+    return document;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedSymbolicId<T, TNamespace> getLastRevisionByRef() {
+    return lastRevisionBy;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedSymbolicId<T, TNamespace> getNextRevisionByRef() {
+    return nextRevisionBy;
   }
 }

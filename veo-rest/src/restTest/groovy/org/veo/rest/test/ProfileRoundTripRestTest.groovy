@@ -133,11 +133,25 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 ]
             ]
         ]).body.resourceId
+        def originalDocumentId = post("/domains/$copyOfTestDomainId/documents", [
+            name: "oh man!",
+            subType: "Manual",
+            status: "CURRENT",
+            owner: [targetUri: "/units/$sourceUnitId"]
+        ]).body.resourceId
         get("/scopes/$originalScopeId/requirement-implementations/$originalSubControlId").with {
             body.status = "YES"
             body.responsible = [targetUri: "/persons/$originalPersonId"]
             body.implementationStatement = "bold statement"
             body.implementationUntil = "2025-01-01"
+            body.cost = 123
+            body.implementationDate = '2024-12-31'
+            body.implementedBy = [targetUri: "/persons/$originalPersonId"]
+            body.document = [targetUri: "/documents/$originalDocumentId"]
+            body.lastRevisionDate = '2025-03-01'
+            body.lastRevisionBy = [targetUri: "/persons/$originalPersonId"]
+            body.nextRevisionDate = '2125-01-01'
+            body.nextRevisionBy = [targetUri: "/persons/$originalPersonId"]
             put(body._self, body, getETag(), 204)
         }
         post("/processes/$originalProcessId/risks", [
@@ -241,11 +255,22 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 responsible.name == "poster person"
                 description == "Everything is under control"
                 with(owner.get(_requirementImplementations, 200, SECONDARY_CLIENT_USER).body.items) {
-                    it*.control*.name == ["sub control"]
-                    get(0).status == "YES"
-                    get(0).responsible.name == "poster person"
-                    get(0).implementationStatement == "bold statement"
-                    get(0).implementationUntil == "2025-01-01"
+                    it.size() == 1
+                    with(it.first() as Map) {
+                        control.name == "sub control"
+                        status == "YES"
+                        responsible.name == "poster person"
+                        implementationStatement == "bold statement"
+                        implementationUntil == "2025-01-01"
+                        cost == 123
+                        implementationDate == '2024-12-31'
+                        implementedBy.name == "poster person"
+                        document.name == "oh man!"
+                        lastRevisionDate == '2025-03-01'
+                        lastRevisionBy.name == "poster person"
+                        nextRevisionDate == '2125-01-01'
+                        nextRevisionBy.name == "poster person"
+                    }
                 }
             }
             get(0).riskValues.riskyDef.potentialImpacts.D == 1
