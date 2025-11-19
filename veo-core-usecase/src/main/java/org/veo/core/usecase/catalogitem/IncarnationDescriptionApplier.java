@@ -57,7 +57,6 @@ import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.AbstractTemplateItemRepository;
 import org.veo.core.repository.GenericElementRepository;
-import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 
@@ -68,7 +67,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IncarnationDescriptionApplier {
   private final EntityFactory factory;
-  private final UnitRepository unitRepository;
   private final ElementBatchCreator elementBatchCreator;
   private final GenericElementRepository elementRepository;
 

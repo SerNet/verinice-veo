@@ -879,12 +879,11 @@ public class ModuleConfiguration {
 
   @Bean
   public IncarnationDescriptionApplier incarnationDescriptionApplier(
-      UnitRepository unitRepository,
       ElementBatchCreator elementBatchCreator,
       EntityFactory factory,
       GenericElementRepository genericElementRepository) {
     return new IncarnationDescriptionApplier(
-        factory, unitRepository, elementBatchCreator, genericElementRepository);
+        factory, elementBatchCreator, genericElementRepository);
   }
 
   @Bean
