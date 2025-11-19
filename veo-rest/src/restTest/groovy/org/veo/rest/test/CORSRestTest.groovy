@@ -103,7 +103,7 @@ class CORSRestTest extends VeoRestTest{
         }
         def resp = exchange(relativeUri, HttpMethod.GET, headers, null)
         [
-            resp.statusCodeValue,
+            resp.statusCode.value(),
             resp.headers,
             resp.body.toString()
         ]
@@ -122,7 +122,7 @@ class CORSRestTest extends VeoRestTest{
         }
         def resp = exchange(relativeUri, HttpMethod.OPTIONS, headers, null)
         [
-            resp.statusCodeValue,
+            resp.statusCode.value(),
             resp.headers,
             resp.body.toString()
         ]

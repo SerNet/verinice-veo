@@ -202,13 +202,13 @@ class VeoRestTest extends Specification {
             put("accept", [mediaType.toString()])
         }, null, userType)
         assertStatusCode?.tap{
-            assert resp.statusCodeValue == it
+            assert resp.statusCode.value() == it
         }
         log.debug("retrieved data: {}", resp.body)
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
-                statusCode: resp.statusCodeValue)
+                statusCode: resp.statusCode.value())
     }
 
     Response post(String uri, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
@@ -222,23 +222,23 @@ class VeoRestTest extends Specification {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA)
         def resp = exchange(uri, HttpMethod.POST, headers, getMultipartBody(requestBody), userType)
         assertStatusCode?.tap{
-            assert resp.statusCodeValue == it
+            assert resp.statusCode.value() == it
         }
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
-                statusCode: resp.statusCodeValue)
+                statusCode: resp.statusCode.value())
     }
 
     Response post(String uri, HttpHeaders headers, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.POST, headers, requestBody?.with { toJson(it) }, userType)
         assertStatusCode?.tap{
-            assert resp.statusCodeValue == it
+            assert resp.statusCode.value() == it
         }
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
-                statusCode: resp.statusCodeValue)
+                statusCode: resp.statusCode.value())
     }
 
     Response put(String uri, Object requestBody, String etag = null, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
@@ -248,23 +248,23 @@ class VeoRestTest extends Specification {
 
         def resp = exchange(uri, HttpMethod.PUT, headers, requestBody?.with { toJson(it) }, userType)
         assertStatusCode?.tap{
-            assert resp.statusCodeValue == it
+            assert resp.statusCode.value() == it
         }
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
-                statusCode: resp.statusCodeValue)
+                statusCode: resp.statusCode.value())
     }
 
     Response delete(String uri, Integer assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
         assertStatusCode?.tap{
-            assert resp.statusCodeValue == it
+            assert resp.statusCode.value() == it
         }
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
-                statusCode: resp.statusCodeValue)
+                statusCode: resp.statusCode.value())
     }
 
     def getUnit(id) {
