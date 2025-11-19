@@ -1358,6 +1358,39 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "IdRefElement is mapped correctly"() {
+        expect:
+        with(getSchema('IdRefElement')) {
+            it.properties.keySet() ==~ [
+                'displayName',
+                'name',
+                'id',
+                'targetUri',
+                'abbreviation',
+                'designator',
+                'type'
+            ]
+            it.properties.targetUri == [
+                type       : 'string',
+                maxLength  : 255,
+                minLength  : 1
+            ]
+            it.properties.type == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.properties.designator == [
+                type: 'string',
+                readOnly: true
+            ]
+            it.properties.displayName == [
+                type       : 'string',
+                readOnly   : true
+            ]
+            it.required == ['targetUri']
+        }
+    }
+
     def "DomainsReference is mapped correctly"() {
         expect:
         with(getSchema('DomainsReference')) {
