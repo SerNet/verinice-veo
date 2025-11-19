@@ -218,7 +218,7 @@ public class EntityStateMapper {
     states.forEach(ciState -> transferState(target, idRefResolver, ciState));
   }
 
-  private static <T extends Element> void applyRequirementImplementations(
+  private <T extends Element> void applyRequirementImplementations(
       RiskAffectedStateWithRIs<?> source, RiskAffected<?, ?> target, IdRefResolver idRefResolver) {
     // Remove old RIs that are absent in list of new RIs
     Set<UUID> sourceRIControlIDs =
@@ -240,21 +240,8 @@ public class EntityStateMapper {
                   target
                       .findRequirementImplementation(control)
                       .orElseGet(() -> target.addRequirementImplementation(control));
-              transferState(idRefResolver, ris, ri);
+              mapState(ris, ri, idRefResolver);
             });
-  }
-
-  private static void transferState(
-      IdRefResolver idRefResolver,
-      RequirementImplementationState source,
-      RequirementImplementation target) {
-    target.setImplementationStatement(source.getImplementationStatement());
-    target.setImplementationUntil(
-        Optional.ofNullable(source.getImplementationUntil()).map(LocalDate::parse).orElse(null));
-    target.setOrigination(source.getOrigination());
-    target.setResponsible(
-        Optional.ofNullable(source.getResponsible()).map(idRefResolver::resolve).orElse(null));
-    target.setStatus(source.getStatus());
   }
 
   private static void transferState(
