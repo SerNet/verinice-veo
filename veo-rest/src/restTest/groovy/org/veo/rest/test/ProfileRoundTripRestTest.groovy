@@ -173,6 +173,83 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                 ]
             ]
         ])
+
+        when: "performing the round trip"
+        def newDomainInOtherClientId = performRoundTrip()
+
+        then: "the original elements have been recreated in the other client"
+        with(get("/domains/$newDomainInOtherClientId/assets", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 1
+            get(0).name == "asset enough?"
+            get(0).riskValues.riskyDef.potentialImpacts.D == 1
+        }
+        with(get("/domains/$newDomainInOtherClientId/controls", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 2
+            it*.name ==~ [
+                "freaky control",
+                "sub control"
+            ]
+        }
+        with(get("/domains/$newDomainInOtherClientId/processes", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 1
+            get(0).name == "process processing process"
+            get(0).riskValues.riskyDef.potentialImpacts.D == 0
+            get(0).links.necessaryData[0].target.displayName.endsWith("asset enough?")
+            get(0).links.necessaryData[0].target.id != originalAssetId
+            get(0).links.necessaryData[0].attributes.essential
+            with(get("/processes/${get(0).id}/risks", 200, SECONDARY_CLIENT_USER).body) {
+                size() == 1
+                get(0).scenario.displayName.endsWith("scenic scenario")
+                get(0).scenario.id != originalSubScenarioId
+                get(0).riskOwner.displayName.endsWith("poster person")
+                get(0).riskOwner.id != originalPersonId
+                get(0).mitigation.displayName.endsWith("freaky control")
+                get(0).mitigation.id != originalControlId
+                with(get(0).domains[newDomainInOtherClientId].riskDefinitions.riskyDef) {
+                    probability.specificProbability == 1
+                    probability.specificProbabilityExplanation == "The risk owner is a control freak who uses freaky controls, which mitigates the likelihood of this risk."
+                    with(impactValues.find { it.category == "D" }) {
+                        specificImpact == 2
+                        specificImpactExplanation == "Because I say so."
+                    }
+                    with(riskValues.find { it.category == "D" }) {
+                        userDefinedResidualRisk == 3
+                        residualRiskExplanation == "It's gonna be terrible."
+                        riskTreatments == ["RISK_TREATMENT_AVOIDANCE"]
+                    }
+                }
+            }
+        }
+        with(get("/domains/$newDomainInOtherClientId/scenarios", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 2
+            with(it.find { it.name == "scenic scenario" }) {
+                riskValues.riskyDef.potentialProbability == 2
+                riskValues.riskyDef.potentialProbabilityExplanation == "It's happened before"
+            }
+            with(it.find { it.name == "super scenario" }) {
+                parts.size() == 1
+                parts[0].displayName.endsWith("scenic scenario")
+                parts[0].id != originalSubScenarioId
+            }
+        }
+        with(get("/domains/$newDomainInOtherClientId/scopes", 200, SECONDARY_CLIENT_USER).body.items) {
+            size() == 1
+            get(0).name == "Can't cope with this scope"
+            get(0).controlImplementations.size() == 1
+            with(get(0).controlImplementations[0]) {
+                control.name == "freaky control"
+                responsible.name == "poster person"
+                description == "Everything is under control"
+                with(owner.get(_requirementImplementations, 200, SECONDARY_CLIENT_USER).body.items) {
+                    it*.control*.name == ["sub control"]
+                    get(0).status == "YES"
+                    get(0).responsible.name == "poster person"
+                    get(0).implementationStatement == "bold statement"
+                    get(0).implementationUntil == "2025-01-01"
+                }
+            }
+            get(0).riskValues.riskyDef.potentialImpacts.D == 1
+        }
     }
 
     def "change riskdefinition before roundtrip and apply profile"() {
