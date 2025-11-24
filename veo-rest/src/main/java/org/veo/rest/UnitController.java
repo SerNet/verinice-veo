@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER_NOT_BLANK_MESSAGE;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
@@ -228,9 +227,7 @@ public class UnitController extends AbstractEntityController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
-  public @Valid Future<List<FullUnitDto>> getUnits(
-      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
-    // TODO VEO-425 apply display name filter.
+  public @Valid Future<List<FullUnitDto>> getUnits() {
     return useCaseInteractor.execute(
         getUnitsUseCase,
         UseCase.EmptyInput.INSTANCE,
