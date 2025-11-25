@@ -134,7 +134,7 @@ testing {
             dependencies {
                 implementation 'com.networknt:json-schema-validator:2.0.0'
                 implementation "org.testcontainers:testcontainers"
-                implementation 'org.spockframework:spock-spring:2.4-M6-groovy-4.0'
+                implementation 'org.spockframework:spock-spring:2.4-M7-groovy-4.0'
 
                 runtimeOnly "org.testcontainers:spock"
                 runtimeOnly 'org.testcontainers:postgresql'
@@ -144,7 +144,7 @@ testing {
             dependencies {
                 implementation project()
 
-                runtimeOnly 'org.spockframework:spock-spring:2.4-M6-groovy-4.0'
+                runtimeOnly 'org.spockframework:spock-spring:2.4-M7-groovy-4.0'
             }
             // https://github.com/gradle/gradle/issues/19684
             sources {
