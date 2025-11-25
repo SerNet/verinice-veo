@@ -79,14 +79,14 @@ class ImpactInheritanceElementRemovalRestTestITSpec extends VeoRestTest {
 
         then: "inherited impact is correctly calculated"
         def dsra = get("/domains/$dsgvoDomainId/assets/${assetIDs[checkAsset]}").body?.riskValues?.DSRA
-        if (checkImpactBefore != null) {
-            assert dsra != null
-        }
         // if checkImpactBefore is null, dsra may have null values or not exist at all
         // if dsra exists, make sure it has the expected values
-        dsra?.with {
-            assert potentialImpactsEffective.C == checkImpactBefore
-            assert potentialImpactsCalculated.C == checkImpactBefore
+        if (checkImpactBefore != null) {
+            assert dsra != null
+            with(dsra) {
+                assert potentialImpactsEffective.C == checkImpactBefore
+                assert potentialImpactsCalculated.C == checkImpactBefore
+            }
         }
 
         when: "an element is removed"
@@ -151,14 +151,14 @@ class ImpactInheritanceElementRemovalRestTestITSpec extends VeoRestTest {
 
         then: "inherited impact is correctly calculated"
         def dsra = get("/domains/$dsgvoDomainId/assets/${assetIDs[checkAsset]}").body?.riskValues?.DSRA
-        if (checkImpactBefore != null) {
-            assert dsra != null
-        }
         // if checkImpactBefore is null, dsra may have null values or not exist at all
         // if dsra exists, make sure it has the expected values
-        dsra?.with {
-            assert potentialImpactsEffective.C == checkImpactBefore
-            assert potentialImpactsCalculated.C == checkImpactBefore
+        if (checkImpactBefore != null) {
+            assert dsra != null
+            with(dsra) {
+                potentialImpactsEffective.C == checkImpactBefore
+                potentialImpactsCalculated.C == checkImpactBefore
+            }
         }
 
         when: "an element is removed"
@@ -168,10 +168,10 @@ class ImpactInheritanceElementRemovalRestTestITSpec extends VeoRestTest {
         def dsraAfter = get("/domains/$dsgvoDomainId/assets/${assetIDs[checkAsset]}").body.riskValues.DSRA
         if (checkImpactAfter != null) {
             assert dsraAfter != null
-        }
-        dsraAfter?.with {
-            assert potentialImpactsEffective.C == checkImpactAfter
-            assert potentialImpactsCalculated.C == checkImpactAfter
+            with(dsraAfter) {
+                assert potentialImpactsEffective.C == checkImpactAfter
+                assert potentialImpactsCalculated.C == checkImpactAfter
+            }
         }
 
         where:
@@ -238,14 +238,14 @@ class ImpactInheritanceElementRemovalRestTestITSpec extends VeoRestTest {
 
         then: "inherited impact is correctly calculated"
         def dsra = get("/domains/$dsgvoDomainId/assets/${assetIDs[checkAsset]}").body?.riskValues?.DSRA
-        if (checkImpactBefore != null) {
-            assert dsra != null
-        }
         // if checkImpactBefore is null, dsra may have null values or not exist at all
         // if dsra exists, make sure it has the expected values
-        dsra?.with {
-            assert potentialImpactsEffective.C == checkImpactBefore
-            assert potentialImpactsCalculated.C == checkImpactBefore
+        if (checkImpactBefore != null) {
+            assert dsra != null
+            with(dsra) {
+                potentialImpactsEffective.C == checkImpactBefore
+                potentialImpactsCalculated.C == checkImpactBefore
+            }
         }
 
         when: "links are removed"
@@ -255,10 +255,10 @@ class ImpactInheritanceElementRemovalRestTestITSpec extends VeoRestTest {
         def dsraAfter = get("/domains/$dsgvoDomainId/assets/${assetIDs[checkAsset]}").body.riskValues.DSRA
         if (checkImpactAfter != null) {
             assert dsraAfter != null
-        }
-        dsraAfter?.with {
-            assert potentialImpactsEffective.C == checkImpactAfter
-            assert potentialImpactsCalculated.C == checkImpactAfter
+            with(dsraAfter) {
+                potentialImpactsEffective.C == checkImpactAfter
+                potentialImpactsCalculated.C == checkImpactAfter
+            }
         }
 
         where:

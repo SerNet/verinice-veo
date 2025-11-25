@@ -239,11 +239,11 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "an undefined subtype cannot be used"
-        put("/content-creation/domains/$domainId/control-implementation-configuration", [
+        with(put("/content-creation/domains/$domainId/control-implementation-configuration", [
             "complianceControlSubTypes": ["c1"],
             "mitigationControlSubType": "c2",
-        ], null, 400, CONTENT_CREATOR).with {
-            body.message == "Sub type c2 is not defined"
+        ], null, 400, CONTENT_CREATOR)) {
+            body.message == "Sub type c2 is not defined, availabe sub types: [c1, c10, c100]"
         }
 
         // TODO #3860 remove all the legacy property tests below
@@ -485,7 +485,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ], 201, CONTENT_CREATOR).body.resourceId
 
         expect: "no risk method to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.riskMethod = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body["riskMethod"] == "must not be null"
@@ -493,7 +493,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "no implementation state to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.implementationStateDefinition = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body["implementationStateDefinition"] == "must not be null"
@@ -501,7 +501,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "no probability definition to be illegal without matrix cleanup"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.probability = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body["message"] == "Value matrix for category D does not conform to probability."
@@ -509,7 +509,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "probability levels must not be null"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.probability.levels = null
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body["probability.levels"] == "must not be null"
@@ -517,7 +517,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "no categories to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories = []
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body["categories"] == "must not be empty"
@@ -525,7 +525,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "redundant category IDs to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories.find { it.id == "I" }.id = "C"
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "Categories not unique."
@@ -533,7 +533,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "redundant risk value IDs to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.riskValues.find { it.symbolicRisk == "symbolic_risk_3" }.symbolicRisk = "symbolic_risk_2"
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "SymbolicRisk not unique."
@@ -541,7 +541,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "empty matrix to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories[0].valueMatrix = []
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "Value matrix for category C does not conform to impacts."
@@ -549,7 +549,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "undefined symbolic risk in matrix to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories.find { it.id == "D" }.valueMatrix[0][0] = [
                 ordinalValue: 0,
                 symbolicRisk: "symbolic_risk_99",
@@ -560,7 +560,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "non-matching ordinal value and symbolic risk in matrix to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories.find { it.id == "D" }.valueMatrix[0][0] = [
                 ordinalValue: 2,
                 symbolicRisk: "symbolic_risk_1",
@@ -571,7 +571,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "missing impact in matrix to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories.find { it.id == "D" }.valueMatrix.removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "Value matrix for category D does not conform to impacts."
@@ -579,7 +579,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "missing probability in matrix to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.categories.find { it.id == "D" }.valueMatrix[1].removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "Value matrix for category D does not conform to probability."
@@ -587,7 +587,7 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         and: "invalid impact-inheriting link to be illegal"
-        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
             definition.impactInheritingLinks.person = [
                 "myImaginaryFriend"
             ]
@@ -909,7 +909,7 @@ class DomainCreationRestTest extends DomainRestTest {
         newCategory.translations.de.name = "my new Cat"
 
         then: "adding a category"
-        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.with { definition ->
+        get("/domains/$newDomainId").body.riskDefinitions.simpleDef.tap { definition ->
             definition.categories.add(newCategory)
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
                 body.message == "Risk definition updated"

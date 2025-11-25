@@ -341,7 +341,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ]).body.resourceId
 
         expect: "removing domain B from the unit to fail"
-        get(unitUri).with{
+        with(get(unitUri)) {
             body.domains.removeIf { it.targetUri.contains(domainIdB) }
             with(put(unitUri, body, getETag(), 422)) {
                 body.message == "Cannot remove domain $domainIdB from unit. 1 element(s) in the unit are associated with it, including: $type.singularTerm $elementId"
@@ -352,7 +352,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         delete("/$type.pluralTerm/$elementId")
 
         then: "the domain can be removed from the unit"
-        get(unitUri).with{
+        with(get(unitUri)) {
             body.domains.removeIf { it.targetUri.contains(domainIdB) }
             put(unitUri, body, getETag())
         }

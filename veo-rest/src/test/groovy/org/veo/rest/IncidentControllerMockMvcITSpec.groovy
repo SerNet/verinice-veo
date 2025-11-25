@@ -206,9 +206,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         incidentRepository.findById(b.id).empty
 
         and: "a and c are left intact"
-        incidentRepository.findById(a.id).with {
-            assert it.present
-            assert it.get().id == a.id
+        with(incidentRepository.findById(a.id)) {
+            it.present
+            it.get().id == a.id
         }
         def incidentFromDb = txTemplate.execute {
             return incidentRepository.findById(c.id).with {
