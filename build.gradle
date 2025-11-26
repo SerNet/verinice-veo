@@ -3,7 +3,7 @@ import org.veo.SpockBlockFormatterStep
 
 plugins {
     id 'org.springframework.boot' version '3.5.8' apply false
-    id "com.github.spotbugs" version '6.4.5'
+    id "com.github.spotbugs" version '6.4.6'
     id "com.diffplug.spotless" version "8.1.0" apply false
     id "io.freefair.lombok" version "9.1.0"
 }
