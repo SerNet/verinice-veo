@@ -32,14 +32,14 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.TranslatedText;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -57,7 +57,7 @@ public class SystemMessageData implements SystemMessage {
   @ToString.Include
   private Long id;
 
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private TranslatedText message = TranslatedText.empty();
 
@@ -74,7 +74,7 @@ public class SystemMessageData implements SystemMessage {
 
   @NotNull
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private Set<String> tags = new HashSet<>();
 
   @Override

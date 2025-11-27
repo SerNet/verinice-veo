@@ -30,12 +30,12 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.Domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -67,7 +67,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
   @JoinColumn(name = "domain_id")
   private Domain domain;
 
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 

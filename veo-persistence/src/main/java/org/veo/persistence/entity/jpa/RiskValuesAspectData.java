@@ -32,8 +32,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskTailoringReferenceValues;
@@ -49,7 +50,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -134,15 +134,15 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   }
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private ProbabilityImpl probability;
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private List<ImpactImpl> impactCategories = new ArrayList<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private List<DeterminedRiskImpl> riskCategories = new ArrayList<>();
 
   @Override

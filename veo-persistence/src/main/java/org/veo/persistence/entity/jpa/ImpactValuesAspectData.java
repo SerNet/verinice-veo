@@ -25,7 +25,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
@@ -36,7 +37,6 @@ import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.DimensionDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,7 +55,7 @@ class ImpactValuesAspectData extends AspectData {
   @Getter
   @NotNull
   @Column(columnDefinition = "jsonb", name = "impact_values")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   Map<RiskDefinitionRef, ImpactValues> values;
 
   @Deprecated()

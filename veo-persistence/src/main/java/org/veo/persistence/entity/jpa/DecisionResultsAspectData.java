@@ -24,14 +24,14 @@ import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,7 +50,7 @@ public class DecisionResultsAspectData extends AspectData {
   @Access(value = AccessType.PROPERTY)
   @Column(columnDefinition = "jsonb")
   @Getter
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private Map<DecisionRef, DecisionResult> results;
 
   void setResults(Map<DecisionRef, DecisionResult> results) {

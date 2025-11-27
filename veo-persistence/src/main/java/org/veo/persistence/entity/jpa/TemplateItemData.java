@@ -32,9 +32,10 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.ControlImplementationTailoringReference;
 import org.veo.core.entity.Element;
@@ -54,7 +55,6 @@ import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -113,12 +113,12 @@ public abstract class TemplateItemData<
   @Column(name = "status")
   protected String status;
 
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private Map<String, Map<String, Object>> customAspects = new HashMap<>();
 
   @NotNull
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private TemplateItemAspects aspects = new TemplateItemAspects();
 

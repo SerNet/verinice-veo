@@ -24,7 +24,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -32,7 +33,6 @@ import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 
 /** owner is risk-affected, target is scenario * */
@@ -48,7 +48,7 @@ public class ProfileRiskTailoringReferenceData extends ProfileTailoringReference
   private ProfileItem mitigation;
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions;
 
   @Override

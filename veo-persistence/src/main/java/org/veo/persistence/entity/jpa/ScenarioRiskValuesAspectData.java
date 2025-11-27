@@ -23,14 +23,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ class ScenarioRiskValuesAspectData extends AspectData {
   @Setter
   @NotNull
   @Column(columnDefinition = "jsonb", name = "probability")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   Map<RiskDefinitionRef, PotentialProbability> potentialProbability;
 
   @Override

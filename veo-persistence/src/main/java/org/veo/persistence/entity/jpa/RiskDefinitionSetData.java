@@ -30,12 +30,12 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -53,7 +53,7 @@ public class RiskDefinitionSetData {
 
   @NotNull
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 

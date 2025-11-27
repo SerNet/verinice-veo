@@ -28,12 +28,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.exception.NotFoundException;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -49,7 +49,7 @@ public class DecisionSetData {
   private Long id;
 
   @NotNull
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   Map<String, Decision> decisions = new HashMap<>();
 
   public void setDecisions(Map<String, Decision> decisions) {

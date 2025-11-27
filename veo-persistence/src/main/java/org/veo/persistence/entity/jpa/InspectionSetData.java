@@ -28,12 +28,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -49,7 +49,7 @@ public class InspectionSetData {
   private Long id;
 
   @NotNull
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   private Map<String, Inspection> inspections = new HashMap<>();
 
   public void setInspections(Map<String, Inspection> inspections) {

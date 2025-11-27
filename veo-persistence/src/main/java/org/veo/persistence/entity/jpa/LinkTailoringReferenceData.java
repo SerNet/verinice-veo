@@ -23,13 +23,13 @@ import java.util.Map;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.LinkTailoringReference;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -40,7 +40,7 @@ public class LinkTailoringReferenceData extends CatalogTailoringReferenceData
 
   @ToString.Include private String linkType;
 
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 

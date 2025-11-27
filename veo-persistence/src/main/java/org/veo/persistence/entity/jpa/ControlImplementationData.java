@@ -37,8 +37,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Control;
@@ -49,7 +50,6 @@ import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -105,7 +105,7 @@ public class ControlImplementationData implements ControlImplementation {
   String description;
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   Set<ReqImplRef> requirementImplementations = new HashSet<>();
 
   private ControlImplementationData(Control control) {

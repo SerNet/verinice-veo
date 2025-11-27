@@ -34,9 +34,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ElementType;
@@ -47,7 +48,6 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -74,27 +74,27 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   private DomainBase owner;
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   private Map<String, LinkDefinition> links = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   private TranslationMap translations = new TranslationMap();
 
   @Column(columnDefinition = "jsonb")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Valid
   private ControlImplementationDefinition controlImplementationDefinition;
 
