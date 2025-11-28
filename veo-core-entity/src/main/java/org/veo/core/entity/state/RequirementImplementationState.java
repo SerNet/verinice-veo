@@ -59,4 +59,8 @@ public interface RequirementImplementationState {
   String getNextRevisionDate();
 
   ITypedId<Person> getNextRevisionBy();
+
+  String getAssessmentDate();
+
+  ITypedId<Person> getAssessmentBy();
 }

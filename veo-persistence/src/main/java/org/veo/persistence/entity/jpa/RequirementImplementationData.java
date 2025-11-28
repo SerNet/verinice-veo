@@ -148,6 +148,11 @@ public class RequirementImplementationData implements RequirementImplementation 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
   private Person nextRevisionBy;
 
+  private LocalDate assessmentDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  private Person assessmentBy;
+
   public static RequirementImplementationData createNew(Control control) {
     var ri = new RequirementImplementationData();
     ri.id = UUID.randomUUID();
@@ -184,6 +189,8 @@ public class RequirementImplementationData implements RequirementImplementation 
         && lastRevisionDate == null
         && lastRevisionBy == null
         && nextRevisionDate == null
-        && nextRevisionBy == null;
+        && nextRevisionBy == null
+        && assessmentDate == null
+        && assessmentBy == null;
   }
 }

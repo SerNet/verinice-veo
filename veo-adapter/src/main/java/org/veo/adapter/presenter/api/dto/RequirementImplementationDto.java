@@ -68,6 +68,11 @@ public class RequirementImplementationDto extends AbstractVersionedDto
 
   IdRef<Person> nextRevisionBy;
 
+  @Schema(format = "date")
+  String assessmentDate;
+
+  IdRef<Person> assessmentBy;
+
   @Size(min = 1, max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
 

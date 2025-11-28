@@ -209,6 +209,7 @@ class EntityStateMapperSpec extends Specification {
                     lastRevisionBy = personRef
                     it.document = documentRef
                     nextRevisionDate = '3000-01-01'
+                    assessmentBy = personRef
                 }
             ]
         }
@@ -218,7 +219,7 @@ class EntityStateMapperSpec extends Specification {
 
         then:
         1 * idRefResolver.resolve(controlRef) >> control
-        2 * idRefResolver.resolve(personRef) >> person
+        3 * idRefResolver.resolve(personRef) >> person
         1 * idRefResolver.resolve(documentRef) >> document
         1 * entity.getDomains() >> []
         1 * entity.findRequirementImplementation(control) >> Optional.empty()
@@ -231,5 +232,6 @@ class EntityStateMapperSpec extends Specification {
         1 * ri.setDocument(document)
         1 * ri.setLastRevisionBy(person)
         1 * ri.setNextRevisionDate(LocalDate.of(3000, 1, 1))
+        1 * ri.setAssessmentBy(person)
     }
 }

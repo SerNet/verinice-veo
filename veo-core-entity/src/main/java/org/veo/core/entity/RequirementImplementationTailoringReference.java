@@ -73,6 +73,13 @@ public interface RequirementImplementationTailoringReference<
 
   void setNextRevisionDate(@Nullable LocalDate implementationDate);
 
+  @Nullable
+  T getAssessmentBy();
+
+  void setAssessmentBy(@Nullable T assessmentBy);
+
+  void setAssessmentDate(@Nullable LocalDate assessmentDate);
+
   @Override
   default ITypedSymbolicId<T, TNamespace> getResponsibleRef() {
     return Optional.ofNullable(getResponsible()).map(TypedSymbolicId::from).orElse(null);
@@ -96,5 +103,10 @@ public interface RequirementImplementationTailoringReference<
   @Override
   default ITypedSymbolicId<T, TNamespace> getNextRevisionByRef() {
     return Optional.ofNullable(getNextRevisionBy()).map(TypedSymbolicId::from).orElse(null);
+  }
+
+  @Override
+  default ITypedSymbolicId<T, TNamespace> getAssessmentByRef() {
+    return Optional.ofNullable(getAssessmentBy()).map(TypedSymbolicId::from).orElse(null);
   }
 }

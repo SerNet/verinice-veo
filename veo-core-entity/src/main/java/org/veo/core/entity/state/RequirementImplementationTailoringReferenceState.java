@@ -59,4 +59,8 @@ public interface RequirementImplementationTailoringReferenceState<
   LocalDate getNextRevisionDate();
 
   ITypedSymbolicId<T, TNamespace> getNextRevisionByRef();
+
+  LocalDate getAssessmentDate();
+
+  ITypedSymbolicId<T, TNamespace> getAssessmentByRef();
 }

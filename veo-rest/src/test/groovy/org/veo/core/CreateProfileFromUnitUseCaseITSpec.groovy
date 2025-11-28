@@ -87,6 +87,8 @@ class CreateProfileFromUnitUseCaseITSpec extends VeoSpringSpec{
                 lastRevisionDate = LocalDate.of(2010, 1, 1)
                 nextRevisionBy = person
                 nextRevisionDate = LocalDate.of(2100, 1, 1)
+                assessmentDate = LocalDate.of(1900, 1, 1)
+                assessmentBy = person
             }
         })
 
@@ -114,6 +116,8 @@ class CreateProfileFromUnitUseCaseITSpec extends VeoSpringSpec{
             lastRevisionDate.toString() == '2010-01-01'
             nextRevisionBy.name == 'Peter'
             nextRevisionDate.toString() == '2100-01-01'
+            assessmentDate.toString() == '1900-01-01'
+            assessmentBy.name == 'Peter'
         }
     }
 }

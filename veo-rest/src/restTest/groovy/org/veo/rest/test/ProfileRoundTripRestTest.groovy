@@ -152,6 +152,8 @@ class ProfileRoundTripRestTest extends VeoRestTest {
             body.lastRevisionBy = [targetUri: "/persons/$originalPersonId"]
             body.nextRevisionDate = '2125-01-01'
             body.nextRevisionBy = [targetUri: "/persons/$originalPersonId"]
+            body.assessmentDate = '2023-01-01'
+            body.assessmentBy = [targetUri: "/persons/$originalPersonId"]
             put(body._self, body, getETag(), 204)
         }
         post("/processes/$originalProcessId/risks", [
@@ -270,6 +272,8 @@ class ProfileRoundTripRestTest extends VeoRestTest {
                         lastRevisionBy.name == "poster person"
                         nextRevisionDate == '2125-01-01'
                         nextRevisionBy.name == "poster person"
+                        assessmentDate == '2023-01-01'
+                        assessmentBy.name == "poster person"
                     }
                 }
             }

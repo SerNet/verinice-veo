@@ -168,6 +168,10 @@ public class EntityStateMapper {
         Optional.ofNullable(source.getNextRevisionDate()).map(LocalDate::parse).orElse(null));
     target.setNextRevisionBy(
         Optional.ofNullable(source.getNextRevisionBy()).map(idRefResolver::resolve).orElse(null));
+    target.setAssessmentDate(
+        Optional.ofNullable(source.getAssessmentDate()).map(LocalDate::parse).orElse(null));
+    target.setAssessmentBy(
+        Optional.ofNullable(source.getAssessmentBy()).map(idRefResolver::resolve).orElse(null));
   }
 
   public void mapSystemMessage(SystemMessageState source, SystemMessage target) {

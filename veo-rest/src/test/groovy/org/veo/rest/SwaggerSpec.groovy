@@ -1645,6 +1645,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 'nextRevisionDate',
                 'nextRevisionBy',
                 'implementedBy',
+                'assessmentDate',
+                'assessmentBy',
                 '_self'
             ]
             it.required == null
@@ -1661,6 +1663,11 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.document == [$ref: '#/components/schemas/IdRefDocument']
             it.properties.lastRevisionBy == [$ref: '#/components/schemas/IdRefPerson']
             it.properties.lastRevisionDate == [
+                type: 'string',
+                format: 'date'
+            ]
+            it.properties.assessmentBy == [$ref: '#/components/schemas/IdRefPerson']
+            it.properties.assessmentDate == [
                 type: 'string',
                 format: 'date'
             ]

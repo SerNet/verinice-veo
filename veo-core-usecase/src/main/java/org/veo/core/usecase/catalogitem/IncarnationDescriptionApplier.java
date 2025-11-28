@@ -312,6 +312,9 @@ public class IncarnationDescriptionApplier {
       ri.setNextRevisionDate(tr.getNextRevisionDate());
       ri.setNextRevisionBy(
           resolve(tr.getNextRevisionBy(), Person.class, "nextRevisionBy", elementsByItemId));
+      ri.setAssessmentDate(tr.getAssessmentDate());
+      ri.setAssessmentBy(
+          resolve(tr.getAssessmentBy(), Person.class, "assessmentBy", elementsByItemId));
     } else
       throw new ModelConsistencyException(
           "Cannot create requirement implementation from %s for %s targeting %s"

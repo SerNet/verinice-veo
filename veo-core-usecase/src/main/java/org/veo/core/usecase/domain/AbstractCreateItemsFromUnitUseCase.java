@@ -130,6 +130,10 @@ public class AbstractCreateItemsFromUnitUseCase<
                       ri.getNextRevisionDate(),
                       Optional.ofNullable(ri.getNextRevisionBy())
                           .map(elementsToCatalogItems::get)
+                          .orElse(null),
+                      ri.getAssessmentDate(),
+                      Optional.ofNullable(ri.getAssessmentBy())
+                          .map(elementsToCatalogItems::get)
                           .orElse(null)));
       risky.getRisks().stream()
           .filter(r -> r.getScenario().isAssociatedWithDomain(domain))

@@ -58,6 +58,8 @@ public class RequirementImplementationTailoringReferenceDto<
   private SymIdRef<T, TNamespace> lastRevisionBy;
   private LocalDate nextRevisionDate;
   private SymIdRef<T, TNamespace> nextRevisionBy;
+  private LocalDate assessmentDate;
+  private SymIdRef<T, TNamespace> assessmentBy;
 
   @Override
   @JsonIgnore
@@ -87,5 +89,11 @@ public class RequirementImplementationTailoringReferenceDto<
   @JsonIgnore
   public ITypedSymbolicId<T, TNamespace> getNextRevisionByRef() {
     return nextRevisionBy;
+  }
+
+  @Override
+  @JsonIgnore
+  public ITypedSymbolicId<T, TNamespace> getAssessmentByRef() {
+    return assessmentBy;
   }
 }

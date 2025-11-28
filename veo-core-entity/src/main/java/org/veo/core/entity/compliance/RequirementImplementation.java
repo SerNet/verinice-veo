@@ -72,6 +72,10 @@ public interface RequirementImplementation {
 
   Person getNextRevisionBy();
 
+  LocalDate getAssessmentDate();
+
+  Person getAssessmentBy();
+
   void setCost(Integer cost);
 
   void setImplementationDate(LocalDate implementationDate);
@@ -87,4 +91,8 @@ public interface RequirementImplementation {
   void setNextRevisionDate(LocalDate nextRevisionDate);
 
   void setNextRevisionBy(Person nextRevisionBy);
+
+  void setAssessmentDate(LocalDate assessmentDate);
+
+  void setAssessmentBy(Person assessmentBy);
 }

@@ -250,9 +250,9 @@ public class DomainStateMapper {
               riDto.getLastRevisionDate(),
               Optional.ofNullable(riDto.getLastRevisionByRef()).map(resolver::resolve).orElse(null),
               riDto.getNextRevisionDate(),
-              Optional.ofNullable(riDto.getNextRevisionByRef())
-                  .map(resolver::resolve)
-                  .orElse(null));
+              Optional.ofNullable(riDto.getNextRevisionByRef()).map(resolver::resolve).orElse(null),
+              riDto.getAssessmentDate(),
+              Optional.ofNullable(riDto.getAssessmentByRef()).map(resolver::resolve).orElse(null));
 
       default -> owner.addTailoringReference(source.getReferenceType(), targetItem);
     }

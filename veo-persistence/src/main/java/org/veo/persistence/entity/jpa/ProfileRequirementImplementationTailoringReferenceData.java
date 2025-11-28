@@ -76,6 +76,11 @@ public class ProfileRequirementImplementationTailoringReferenceData
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
   private ProfileItem nextRevisionBy;
 
+  private LocalDate assessmentDate;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProfileItemData.class)
+  private ProfileItem assessmentBy;
+
   @Override
   public boolean equals(Object obj) {
     return super.equals(obj);

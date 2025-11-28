@@ -281,6 +281,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             body.lastRevisionBy = [targetUri: "/persons/$person1Id"]
             body.nextRevisionDate = '2500-01-01'
             body.nextRevisionBy = [targetUri: "/persons/$person1Id"]
+            body.assessmentDate = '1900-01-01'
             put(body._self, body, getETag(), 204)
         }
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").with {
@@ -289,6 +290,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             body.responsible = [targetUri: "/persons/$person2Id"]
             body.implementationUntil = '3000-01-01'
             body.implementationDate = '2999-12-31'
+            body.assessmentBy = [targetUri: "/persons/$person2Id"]
             put(body._self, body, getETag(), 204)
         }
 
@@ -303,6 +305,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             lastRevisionBy.displayName.endsWith("person 1")
             nextRevisionDate == '2500-01-01'
             nextRevisionBy.displayName.endsWith("person 1")
+            assessmentDate == '1900-01-01'
         }
         with(get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").body) {
             status == "YES"
@@ -310,6 +313,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             responsible.displayName.endsWith("person 2")
             implementationUntil == '3000-01-01'
             implementationDate == '2999-12-31'
+            assessmentBy.displayName.endsWith('person 2')
         }
 
         and: "implementation status is reflected in CI"
