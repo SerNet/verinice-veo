@@ -63,7 +63,7 @@ class CreateProfileFromUnitUseCaseITSpec extends VeoSpringSpec{
         given:
         def domain = domainRepository.save(newDomain(client))
         def unit = unitRepository.save(newUnit(client))
-        def person = assetRepository.save(newPerson(unit) {
+        def person = personDataRepository.save(newPerson(unit) {
             name = 'Peter'
             associateWithDomain(domain, "Person", "overpaid")
         })
