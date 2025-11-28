@@ -138,16 +138,16 @@ public class SchemaExtender {
 
   private void extendDomainAssociationSchema(
       ObjectNode target, ElementType elementType, Domain domain) {
-    if (elementType.equals(ElementType.SCENARIO)) {
+    if (elementType == ElementType.SCENARIO) {
       extendSchemaForScenario(target, domain);
     }
-    if (elementType.equals(ElementType.PROCESS)) {
+    if (elementType == ElementType.PROCESS) {
       extendSchemaForProcess(target, domain);
     }
-    if (elementType.equals(ElementType.ASSET)) {
+    if (elementType == ElementType.ASSET) {
       extendSchemaForAsset(target, domain);
     }
-    if (elementType.equals(ElementType.SCOPE)) {
+    if (elementType == ElementType.SCOPE) {
       extendSchemaForScope(target, domain);
     }
   }

@@ -73,7 +73,7 @@ public record CustomAspectAttribute(
   @Override
   public boolean matches(BreakingChange breakingChange) {
     return breakingChange.type().equals("customAspectAttribute")
-        && breakingChange.elementType().equals(elementType())
+        && breakingChange.elementType() == elementType()
         && breakingChange.customAspect().equals(customAspect())
         && breakingChange.attribute().equals(attribute());
   }

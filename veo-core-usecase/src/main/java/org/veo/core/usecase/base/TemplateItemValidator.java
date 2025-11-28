@@ -129,7 +129,7 @@ public class TemplateItemValidator {
     Optional.ofNullable(aspects.scenarioRiskValues())
         .ifPresent(
             v -> {
-              if (!elementType.equals(ElementType.SCENARIO)) {
+              if (elementType != ElementType.SCENARIO) {
                 throw new UnprocessableDataException(
                     "%s cannot contain scenario risk values"
                         .formatted(elementType.getSingularTerm()));

@@ -199,7 +199,7 @@ public class TemplateItemMigrationService {
     var items = catalogItemRepository.findAllByDomain(domain);
 
     // Migrate elements
-    items.stream().filter(e -> e.getElementType().equals(type)).forEach(e -> migrate(e, domain));
+    items.stream().filter(e -> e.getElementType() == type).forEach(e -> migrate(e, domain));
     migrateAllTailoringReferences(type, domain, items);
   }
 
@@ -229,7 +229,7 @@ public class TemplateItemMigrationService {
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(LinkTailoringReference.class::isInstance)
         .map(LinkTailoringReference.class::cast)
-        .filter(ltr -> ltr.getLinkSourceItem().getElementType().equals(type))
+        .filter(ltr -> ltr.getLinkSourceItem().getElementType() == type)
         .forEach(
             linkTailoringReference ->
                 domain

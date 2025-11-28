@@ -97,7 +97,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
       ClientState nextState = state.nextState(changeType);
       ClientState oldState = state;
       state = nextState;
-      return state.equals(oldState);
+      return state == oldState;
     }
     throw new IllegalStateException(
         "The client state: "

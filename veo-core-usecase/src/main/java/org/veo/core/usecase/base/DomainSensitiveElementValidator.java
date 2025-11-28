@@ -123,7 +123,7 @@ public class DomainSensitiveElementValidator {
 
   static void validateLinkTargetType(
       String linkType, LinkDefinition linkDefinition, ElementType targetType) {
-    if (!linkDefinition.getTargetType().equals(targetType)) {
+    if (linkDefinition.getTargetType() != targetType) {
       throw new IllegalArgumentException(
           String.format(
               "Invalid target type '%s' for link type '%s'",

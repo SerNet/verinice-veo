@@ -189,7 +189,7 @@ public class ElementMigrationService {
   }
 
   private boolean isValidTarget(Element target, Domain domain, LinkDefinition linkDef) {
-    return linkDef.getTargetType().equals(target.getType())
+    return linkDef.getTargetType() == target.getType()
         && linkDef.getTargetSubType().equals(target.findSubType(domain).orElse(null));
   }
 

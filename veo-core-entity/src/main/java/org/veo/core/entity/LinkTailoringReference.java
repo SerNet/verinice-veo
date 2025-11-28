@@ -36,14 +36,14 @@ public interface LinkTailoringReference<
   void setAttributes(Map<String, Object> attributes);
 
   default T getLinkSourceItem() {
-    if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
+    if (getReferenceType() == TailoringReferenceType.LINK_EXTERNAL) {
       return getTarget();
     }
     return getOwner();
   }
 
   default T getLinkTargetItem() {
-    if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
+    if (getReferenceType() == TailoringReferenceType.LINK_EXTERNAL) {
       return getOwner();
     }
     return getTarget();

@@ -97,9 +97,7 @@ public interface DomainBase
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration);
 
   default Optional<ElementTypeDefinition> findElementTypeDefinition(ElementType type) {
-    return getElementTypeDefinitions().stream()
-        .filter(d -> d.getElementType().equals(type))
-        .findFirst();
+    return getElementTypeDefinitions().stream().filter(d -> d.getElementType() == type).findFirst();
   }
 
   default ElementTypeDefinition getElementTypeDefinition(ElementType type) {
