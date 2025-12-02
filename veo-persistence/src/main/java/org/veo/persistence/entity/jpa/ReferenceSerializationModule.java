@@ -29,8 +29,6 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import org.veo.core.entity.risk.ImpactReason;
-
 public class ReferenceSerializationModule extends SimpleModule {
 
   private static final long serialVersionUID = 7359286298153893375L;
@@ -71,26 +69,6 @@ public class ReferenceSerializationModule extends SimpleModule {
           @Override
           public Locale deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return Locale.forLanguageTag(p.getValueAsString());
-          }
-        });
-
-    addSerializer(
-        ImpactReason.class,
-        new JsonSerializer<>() {
-          @Override
-          public void serialize(
-              ImpactReason reason, JsonGenerator gen, SerializerProvider serializers)
-              throws IOException {
-            gen.writeString(reason.getTranslationKey());
-          }
-        });
-    addDeserializer(
-        ImpactReason.class,
-        new JsonDeserializer<>() {
-          @Override
-          public ImpactReason deserialize(JsonParser p, DeserializationContext ctxt)
-              throws IOException {
-            return ImpactReason.fromTranslationKey(p.getValueAsString());
           }
         });
   }

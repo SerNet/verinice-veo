@@ -19,6 +19,9 @@ package org.veo.core.entity.risk;
 
 import jakarta.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,8 +42,9 @@ public enum ImpactReason {
    */
   MANUAL(Constants.MANUAL);
 
-  private final String translationKey;
+  @JsonValue private final String translationKey;
 
+  @JsonCreator
   public static ImpactReason fromTranslationKey(String name) {
     if (name != null) {
       for (ImpactReason r : values()) {
