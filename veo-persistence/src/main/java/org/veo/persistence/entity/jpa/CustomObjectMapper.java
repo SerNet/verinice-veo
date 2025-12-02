@@ -25,7 +25,6 @@ import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 public class CustomObjectMapper extends ObjectMapper {
   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public CustomObjectMapper() {
-    registerModule(new ReferenceSerializationModule());
     registerModule(new BlackbirdModule());
     disable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
   }
