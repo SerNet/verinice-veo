@@ -24,10 +24,15 @@ import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 
 public record ControlImplementationConfiguration(
-    Set<@Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH) String> complianceControlSubTypes,
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+        Set<@Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH) String>
+            complianceControlSubTypes,
     @Nullable @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
         String mitigationControlSubType) {
   public ControlImplementationConfiguration() {

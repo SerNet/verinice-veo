@@ -66,7 +66,7 @@ import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
-import org.veo.core.entity.ControlImplementationConfigurationDto;
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
@@ -249,9 +249,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      // TODO #3860 use ControlImplementationConfiguration type again
-      @RequestBody @Valid
-          ControlImplementationConfigurationDto controlImplementationConfiguration) {
+      @RequestBody @Valid ControlImplementationConfiguration controlImplementationConfiguration) {
     return useCaseInteractor.execute(
         saveControlImplementationConfigurationUseCase,
         new SaveControlImplementationConfigurationUseCase.InputData(

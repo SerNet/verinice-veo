@@ -1610,11 +1610,8 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "ControlImplementationConfiguration is well-documented"() {
         expect:
-        // TODO #3860 test ControlImplementationConfiguration again
-        with(getSchema('ControlImplementationConfigurationDto')) {
+        with(getSchema('ControlImplementationConfiguration')) {
             it.properties.keySet() ==~ [
-                'complianceControlSubType',
-                // TODO #3860 remove legacy property
                 'complianceControlSubTypes',
                 'mitigationControlSubType'
             ]

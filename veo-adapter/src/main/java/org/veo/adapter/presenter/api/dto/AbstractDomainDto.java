@@ -29,7 +29,7 @@ import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.core.entity.ControlImplementationConfigurationDto;
+import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
@@ -90,10 +90,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   private Map<String, Decision> decisions;
 
   @Schema(description = "Defines the relevant subtype for mitigation and/or compliance controls.")
-  // TODO #3860 use ControlImplementationConfiguration type again, rename back to
-  // controlImplementationConfiguration, remove @JsonProperty
   @JsonProperty("controlImplementationConfiguration")
-  private ControlImplementationConfigurationDto controlImplementationConfigurationDto;
+  private ControlImplementationConfiguration controlImplementationConfiguration;
 
   private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
 

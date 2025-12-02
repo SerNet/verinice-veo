@@ -26,7 +26,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.ControlImplementationConfiguration;
-import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.repository.DomainRepository;
@@ -45,9 +44,7 @@ public class SaveControlImplementationConfigurationUseCase
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
-    var config =
-        input.controlImplementationConfiguration.toConfig(
-            domain.getControlImplementationConfiguration());
+    var config = input.controlImplementationConfiguration;
     validate(domain.getElementTypeDefinition(ElementType.CONTROL), config);
     domain.setControlImplementationConfiguration(config);
     domain.setUpdatedAt(Instant.now());
@@ -72,7 +69,6 @@ public class SaveControlImplementationConfigurationUseCase
   @Valid
   public record InputData(
       @NotNull UUID domainId,
-      // TODO #3860 use ControlImplementationConfiguration type again
-      @NotNull ControlImplementationConfigurationDto controlImplementationConfiguration)
+      @NotNull ControlImplementationConfiguration controlImplementationConfiguration)
       implements UseCase.InputData {}
 }

@@ -108,11 +108,7 @@ public class DomainStateMapper {
     target.setDecisions(source.getDecisions());
     target.setInspections(source.getInspections());
     target.setIncarnationConfiguration(source.getIncarnationConfiguration());
-    // TODO #3860 revert to direct mapping
-    target.setControlImplementationConfiguration(
-        source
-            .getControlImplementationConfigurationDto()
-            .toConfig(target.getControlImplementationConfiguration()));
+    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
     target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
 
     // Create all catalog items and register them in the resolver before mapping them, because they

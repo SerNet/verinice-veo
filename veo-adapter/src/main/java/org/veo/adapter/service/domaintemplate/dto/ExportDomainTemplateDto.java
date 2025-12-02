@@ -35,7 +35,6 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationConfiguration;
-import org.veo.core.entity.ControlImplementationConfigurationDto;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
@@ -72,11 +71,8 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
 
   private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
 
-  // TODO #3860 use ControlImplementationConfiguration type again, rename back to
-  // controlImplementationConfiguration, remove @JsonProperty
-  @JsonProperty("controlImplementationConfiguration")
-  private ControlImplementationConfigurationDto controlImplementationConfigurationDto =
-      new ControlImplementationConfigurationDto(new ControlImplementationConfiguration());
+  private ControlImplementationConfiguration controlImplementationConfiguration =
+      new ControlImplementationConfiguration();
 
   private DomainMigrationDefinition domainMigrationDefinition =
       new DomainMigrationDefinition(Collections.emptyList());
