@@ -35,5 +35,6 @@ public class GraphNodeDto {
   private final String id;
   private final String displayName;
   private final ElementType elementType;
+  private final String elementSubType;
   private final UUID elementId;
 }

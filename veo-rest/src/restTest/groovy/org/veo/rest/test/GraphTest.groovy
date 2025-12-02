@@ -99,7 +99,13 @@ class GraphTestRestTest extends VeoRestTest {
         }
 
         and: "all nodes have valid required fields"
-        nodes.every { it.id && it.displayName && it.elementType }
+        nodes.every { it.id && it.displayName && it.elementType && it.elementSubType }
+
+        and: "nodes have correct subTypeName"
+        nodes.find { it.elementId == processId }.elementSubType == "BusinessProcess"
+        nodes.find { it.elementId == processSubId }.elementSubType == "BusinessProcess"
+        nodes.find { it.elementId == assetId }.elementSubType == "Information"
+        nodes.find { it.elementId == scopeId }.elementSubType == "Company"
 
         and: "the customlinks relation is present and correct"
         def customLink = links.find {

@@ -170,7 +170,11 @@ public class RelationGraphService {
             .map(
                 el ->
                     new GraphNodeDto(
-                        urlBuild(el, domainId), el.getDisplayName(), el.getType(), el.getId()))
+                        urlBuild(el, domainId),
+                        el.getDisplayName(),
+                        el.getType(),
+                        el.getSubType(domain),
+                        el.getId()))
             .toList();
     return new GraphResultDto(allEntities, relationDtos);
   }
