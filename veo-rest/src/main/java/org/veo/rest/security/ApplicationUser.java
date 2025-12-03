@@ -170,8 +170,4 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
         unitReads,
         unitWrite);
   }
-
-  public boolean isAdmin() {
-    return roles.contains("veo-admin");
-  }
 }

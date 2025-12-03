@@ -106,4 +106,8 @@ public interface UserAccessRights {
       }
     }
   }
+
+  default boolean isAdmin() {
+    return getRoles().contains("veo-admin");
+  }
 }
