@@ -1,13 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":automergeAll",
+    ":automergePr"
+  ],
   "reviewers": [
     "jj",
     "jk",
     "uz"
   ],
-  "automerge": true,
-  "automergeType": "pr",
-  "assignAutomerge": true,
   "ignoreDeps": [
     "postgres"
   ],
@@ -27,21 +29,9 @@
       ]
     },
     {
-      "groupName": "Spock",
-      "matchPackageNames": [
-        "/^org.spockframework:/"
-      ]
-    },
-    {
       "groupName": "Springdoc",
       "matchPackageNames": [
         "/^org.springdoc:/"
-      ]
-    },
-    {
-      "groupName": "Testcontainers",
-      "matchPackageNames": [
-        "/^org.testcontainers:/"
       ]
     },
     {
