@@ -14,7 +14,6 @@
   "packageRules": [
     {
       "groupName": "Spotless",
-      "allowedVersions": "!/6\\.1[789]\\.0/",
       "postUpgradeTasks": {
         "commands": [
           "./gradlew spotlessApply"
@@ -25,12 +24,6 @@
       },
       "matchPackageNames": [
         "/^com.diffplug.spotless/"
-      ]
-    },
-    {
-      "allowedVersions": "!/(2\\.3[789]\\.0)/",
-      "matchPackageNames": [
-        "/^com.diffplug.spotless:spotless-lib-extra/"
       ]
     },
     {
