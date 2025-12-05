@@ -10,6 +10,7 @@
     "jk",
     "uz"
   ],
+  "assignAutomerge": true,
   "ignoreDeps": [
     "postgres"
   ],
