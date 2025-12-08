@@ -13,7 +13,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.14'
     implementation 'io.swagger.core.v3:swagger-core-jakarta:2.2.41'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
-    implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.1'
+    implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0'
 
     compileOnly('org.projectlombok:lombok')
 }
