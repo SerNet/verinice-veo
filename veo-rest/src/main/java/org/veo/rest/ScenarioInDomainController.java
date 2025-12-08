@@ -74,6 +74,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -84,9 +85,11 @@ import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.InOrOutboundLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.LinkQuery;
+import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -208,6 +211,55 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto,
         ElementType.SCENARIO);
+  }
+
+  @Operation(summary = "Loads the parents (scopes and composites) of a scenario in a domain")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Parents loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array =
+                  @ArraySchema(
+                      schema = @Schema(implementation = AbstractElementInDomainDto.class))))
+  @ApiResponse(responseCode = "404", description = "Scenario or domain not found")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parents")
+  public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getParents(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(value = SORT_COLUMN_PARAM, required = false, defaultValue = "NAME")
+          ParentElementQuery.SortCriterion sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return elementService.getParents(
+        domainId,
+        uuid,
+        ElementType.SCENARIO,
+        entityToDtoTransformer::transformElement2Dto,
+        pageSize,
+        pageNumber,
+        sortColumn,
+        sortOrder);
   }
 
   @Operation(summary = "Loads the parts of a scenario in a domain")

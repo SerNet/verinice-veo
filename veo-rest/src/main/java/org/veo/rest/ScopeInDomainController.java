@@ -100,6 +100,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.LinkQuery;
+import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
@@ -407,6 +408,54 @@ public class ScopeInDomainController
             elementTypes,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformElement2Dto);
+  }
+
+  @Operation(summary = "Loads the parent elements (scopes) of a scope in a domain")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Parents loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array =
+                  @ArraySchema(schema = @Schema(implementation = FullElementInDomainDto.class))))
+  @ApiResponse(responseCode = "404", description = "Scope or domain not found")
+  @GetMapping(value = "/{" + UUID_PARAM + "}/parents")
+  public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getParents(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(value = SORT_COLUMN_PARAM, required = false, defaultValue = "NAME")
+          ParentElementQuery.SortCriterion sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return elementService.getParents(
+        domainId,
+        uuid,
+        ElementType.SCOPE,
+        entityToDtoTransformer::transformElement2Dto,
+        pageSize,
+        pageNumber,
+        sortColumn,
+        sortOrder);
   }
 
   @Operation(summary = "Returns domain-specific scope JSON schema")
