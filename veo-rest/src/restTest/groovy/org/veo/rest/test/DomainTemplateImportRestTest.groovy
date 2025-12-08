@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.veo.categories.MapGetProperties
+
 import spock.lang.Ignore
+import spock.util.mop.Use
 
 class DomainTemplateImportRestTest extends VeoRestTest {
 
+    @Use(MapGetProperties)
     def "import domain template"() {
         given: "a test template body"
         def template = getTemplateBody()

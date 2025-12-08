@@ -26,6 +26,7 @@ testing {
                 implementation 'com.networknt:json-schema-validator:3.0.0'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.apache.groovy:groovy-json'
+                implementation project(":veo-test")
             }
         }
     }

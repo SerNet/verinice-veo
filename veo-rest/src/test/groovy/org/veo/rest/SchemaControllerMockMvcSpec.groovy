@@ -20,14 +20,18 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.web.bind.MissingServletRequestParameterException
 
+import org.veo.categories.MapGetProperties
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
+
+import spock.util.mop.Use
 
 /**
  * Integration test for the schema controller. Uses mocked spring MVC environment.
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
+@Use(MapGetProperties)
 class SchemaControllerMockMvcSpec extends VeoMvcSpec {
 
     String domainId

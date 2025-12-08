@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 
+import org.veo.categories.MapGetProperties
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.attribute.AttributeDefinition
@@ -34,9 +35,11 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition
 import groovy.json.JsonSlurper
 import spock.lang.Ignore
 import spock.lang.Shared
+import spock.util.mop.Use
 
 @AutoConfigureMockMvc
 @EnableSharedInjection
+@Use(MapGetProperties)
 class SwaggerSpec extends VeoSpringSpec {
 
     @Autowired

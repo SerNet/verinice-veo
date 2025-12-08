@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.categories.MapGetProperties
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TranslationException
@@ -28,6 +29,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
 import groovy.json.JsonSlurper
+import spock.util.mop.Use
 
 class TranslationValidationMockMvcITSpec extends ContentSpec {
 
@@ -54,6 +56,7 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    @Use(MapGetProperties)
     def "updating an object schema with invalid translations is prevented"() {
         given: "an object schema with translation errors"
         def schemaJson = TranslationValidationMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {

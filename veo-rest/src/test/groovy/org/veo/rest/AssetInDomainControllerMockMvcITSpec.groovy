@@ -24,6 +24,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.presenter.api.DeviatingIdException
+import org.veo.categories.MapGetProperties
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.ElementType
@@ -37,6 +38,8 @@ import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.common.ETag
 import org.veo.rest.security.NoRestrictionAccessRight
+
+import spock.util.mop.Use
 
 @WithUserDetails("user@domain.example")
 class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -480,6 +483,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         result.success == true
     }
 
+    @Use(MapGetProperties)
     def "retrieve CI JSON schema"() {
         given:
         executeInTransaction {

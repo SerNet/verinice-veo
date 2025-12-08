@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.veo.categories.MapGetProperties
+
+import spock.util.mop.Use
+
+@Use(MapGetProperties)
 class OpenApiRestTestITSpec extends VeoRestTest {
     def "all schema properties have sufficient validation rules"() {
         expect:

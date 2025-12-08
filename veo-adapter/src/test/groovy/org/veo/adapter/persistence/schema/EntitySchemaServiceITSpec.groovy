@@ -24,6 +24,7 @@ import com.networknt.schema.SchemaRegistry
 import com.networknt.schema.SpecificationVersion
 import com.networknt.schema.dialect.DialectId
 
+import org.veo.categories.MapGetProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.ControlImplementationDefinition
@@ -44,6 +45,7 @@ import org.veo.core.service.EntitySchemaService
 
 import groovy.json.JsonSlurper
 import spock.lang.Specification
+import spock.util.mop.Use
 import tools.jackson.databind.JsonNode
 import tools.jackson.databind.json.JsonMapper
 
@@ -117,6 +119,7 @@ class EntitySchemaServiceITSpec extends Specification {
         schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.asString() ==~ ["extraRiskDef"]
     }
 
+    @Use(MapGetProperties)
     def "process schema domain association is complete"() {
         given:
         def testDomain = getTestDomain()
