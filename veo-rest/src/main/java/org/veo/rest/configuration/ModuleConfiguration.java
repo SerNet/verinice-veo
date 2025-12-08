@@ -104,6 +104,7 @@ import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.GetParentElementsUseCase;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
@@ -407,6 +408,14 @@ public class ModuleConfiguration {
       UnitRepository unitrepo) {
     return new GetElementsUseCase(
         clientRepository, elementRepository, repositoryProvider, unitrepo);
+  }
+
+  @Bean
+  public GetParentElementsUseCase getParentElementsUseCase(
+      ClientRepository clientRepository,
+      GenericElementRepository elementRepository,
+      DomainRepository domainRepository) {
+    return new GetParentElementsUseCase(clientRepository, elementRepository, domainRepository);
   }
 
   @Bean

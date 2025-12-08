@@ -55,6 +55,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.LinkQuery;
+import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.UserAccessRightsProvider;
@@ -67,6 +68,7 @@ import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.GetParentElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
@@ -83,6 +85,7 @@ public class ElementInDomainService {
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
   private final GetElementsUseCase getElementsUseCase;
+  private final GetParentElementsUseCase getParentElementsUseCase;
   private final AssociateElementWithDomainUseCase associateUseCase;
   private final ReferenceAssembler referenceAssembler;
   private final GetLinksByElementUseCase getLinksByElementUseCase;
@@ -350,5 +353,34 @@ public class ElementInDomainService {
                     p.page(),
                     link -> InOrOutboundLinkDto.from(link, p.domain(), referenceAssembler)))
         .thenApply(ResponseEntity::ok);
+  }
+
+  public <TFullDto> CompletableFuture<PageDto<TFullDto>> getParents(
+      UUID domainId,
+      UUID elementId,
+      ElementType elementType,
+      BiFunction<Element, Domain, TFullDto> toDtoMapper,
+      @Min(1) Integer pageSize,
+      Integer pageNumber,
+      ParentElementQuery.SortCriterion sortColumn,
+      String sortOrder) {
+    return useCaseInteractor.execute(
+        getParentElementsUseCase,
+        GetParentElementsUseCase.InputData.builder()
+            .domainId(domainId)
+            .elementType(elementType)
+            .elementId(elementId)
+            .pagingConfiguration(PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
+            .build(),
+        output ->
+            PagingMapper.toPage(
+                output.getParents(),
+                e ->
+                    toDtoMapper.apply(
+                        e,
+                        e.getDomains().stream()
+                            .filter(d -> d.getId().equals(domainId))
+                            .findFirst()
+                            .orElseThrow())));
   }
 }
