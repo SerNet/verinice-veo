@@ -55,6 +55,7 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
@@ -65,6 +66,7 @@ import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.access.query.LinkQueryImpl;
+import org.veo.persistence.access.query.ParentElementQueryImpl;
 import org.veo.persistence.entity.jpa.ControlImplementationData;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.RequirementImplementationData;
@@ -122,6 +124,11 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Override
   public LinkQuery queryLinks(Element element, Domain domain) {
     return new LinkQueryImpl(em, dataRepository, element, domain);
+  }
+
+  @Override
+  public ParentElementQuery queryParents(Element element, Domain domain) {
+    return new ParentElementQueryImpl(elementQueryFactory, element, domain);
   }
 
   @Override

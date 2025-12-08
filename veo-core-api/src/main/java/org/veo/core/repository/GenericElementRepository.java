@@ -62,6 +62,8 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
 
   LinkQuery queryLinks(Element element, Domain domain);
 
+  ParentElementQuery queryParents(Element element, Domain domain);
+
   /**
    * Delete all elements in the given unit. <b>This will clear the persistence context</b>, so all
    * entity references will become stale.
