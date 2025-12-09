@@ -1252,6 +1252,103 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "sync riskvalues in evaluation"() {
+        when: "we remove riskvalues from the middle"
+        def ret = parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            riskValues.remove(1)
+            parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined and the higest values are reduced"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 4
+            valueMatrix*.size() as Set ==~ [4]
+            valueMatrix[0]*.ordinalValue == [0, 0, 0, 0]
+            valueMatrix[1]*.ordinalValue ==~ [0, 0, 1, 2]
+            valueMatrix[2]*.ordinalValue ==~ [1, 1, 2, 2]
+            valueMatrix[3]*.ordinalValue ==~ [1, 2, 2, 2]
+            valueMatrix[3]*.symbolicRisk == [
+                "symbolic_risk_3",
+                "symbolic_risk_4",
+                "symbolic_risk_4",
+                "symbolic_risk_4"
+            ]
+            valueMatrix[3]*.htmlColor == [
+                "#FF8E43",
+                "#FF1212",
+                "#FF1212",
+                "#FF1212"
+            ]
+            valueMatrix[3]*.translations.de.name == [
+                "hoch",
+                "sehr hoch",
+                "sehr hoch",
+                "sehr hoch"
+            ]
+            valueMatrix[3]*.translations.de.abbreviation == [
+                "3",
+                "4",
+                "4",
+                "4"
+            ]
+        }
+
+        and: "a validation message is present"
+        with(ret) {
+            validationMessages.size() == 1
+            validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
+            validationMessages[0].changedCategories ==~ ["D"]
+        }
+
+        and: "the labels are moved"
+        ret.changes*.changeType as Set == [
+            "TranslationDiff",
+            "ColorDiff",
+            "RiskValueListResize",
+            "RiskMatrixDiff"
+        ] as Set
+
+        when: "we remove two riskvalues from start"
+        parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
+            riskValues.remove(0)
+            riskValues.remove(0)
+            ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
+        }
+
+        then: "the risk matrix is defined and the higest values are reduced"
+        with(ret.riskDefinition.categories.find{ it.id == "D" }) {
+            valueMatrix.size() == 4
+            valueMatrix*.size() as Set ==~ [4]
+            valueMatrix[0]*.ordinalValue == [0, 0, 0, 0]
+            valueMatrix[1]*.ordinalValue ==~ [0, 0, 1, 1]
+            valueMatrix[2]*.ordinalValue ==~ [1, 1, 1, 1]
+            valueMatrix[3]*.ordinalValue ==~ [1, 1, 1, 1]
+        }
+
+        and: "we save the risk definition"
+
+        and: "the labels are moved, a validation message is present"
+        ret.changes*.changeType as Set == [
+            "TranslationDiff",
+            "ColorDiff",
+            "RiskValueListResize",
+            "RiskMatrixDiff"
+        ] as Set
+
+        with(ret) {
+            validationMessages.size() == 1
+            validationMessages[0].description.en == "Risk matrices have been changed. Please adjust the risk values for the following criteria: [D]"
+            validationMessages[0].changedCategories ==~ ["D"]
+        }
+
+        when: "we use the riskdef to update the active riskdef"
+        put("/content-customizing/domains/$domainId/risk-definitions/r1d1", ret.riskDefinition, [:],200)
+
+        then:
+        noExceptionThrown()
+    }
+
+    @WithUserDetails("user@domain.example")
     def "change a category translation"() {
         when:
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {

@@ -104,10 +104,14 @@ public class EvaluateRiskDefinitionUseCase
         || input.riskDefinition.getProbability() == null) {
       input.riskDefinition.getCategories().stream().forEach(c -> c.setValueMatrix(null));
     } else {
-      RiskValue last = input.riskDefinition.getRiskValues().getLast();
       input.riskDefinition.getCategories().stream()
           .filter(CategoryDefinition::isRiskValuesSupported)
-          .forEach(cd -> syncRiskMatrix(input.riskDefinition.getProbability(), cd, last));
+          .forEach(
+              cd ->
+                  syncRiskMatrix(
+                      input.riskDefinition.getProbability(),
+                      cd,
+                      input.riskDefinition.getRiskValues()));
     }
     Set<RiskDefinitionChange> detectedChanges = new HashSet<>();
     domain
@@ -222,7 +226,7 @@ public class EvaluateRiskDefinitionUseCase
   }
 
   private void syncRiskMatrix(
-      ProbabilityDefinition probability, CategoryDefinition category, RiskValue last) {
+      ProbabilityDefinition probability, CategoryDefinition category, List<RiskValue> riskValues) {
     if (!category.getPotentialImpacts().isEmpty()) {
       List<List<RiskValue>> valueMatrix = category.getValueMatrix();
       int columns = category.getPotentialImpacts().size();
@@ -231,7 +235,7 @@ public class EvaluateRiskDefinitionUseCase
       for (int column = 0; column < columns; column++) {
         List<RiskValue> newRow = new ArrayList<>(rows);
         for (int row = 0; row < rows; row++) {
-          newRow.add(riskValueOrDefault(valueMatrix, column, row, last));
+          newRow.add(riskValueOrDefault(valueMatrix, column, row, riskValues));
         }
         rMatrix.add(newRow);
       }
@@ -242,12 +246,13 @@ public class EvaluateRiskDefinitionUseCase
   }
 
   private RiskValue riskValueOrDefault(
-      List<List<RiskValue>> valueMatrix, int column, int row, RiskValue defaultValue) {
+      List<List<RiskValue>> valueMatrix, int column, int row, List<RiskValue> riskValues) {
+    RiskValue defaultValue = riskValues.getLast();
     if (column > valueMatrix.size() - 1) return defaultValue;
     if (row > valueMatrix.get(column).size() - 1) return defaultValue;
     RiskValue riskValue = valueMatrix.get(column).get(row);
     if (defaultValue.getOrdinalValue() < riskValue.getOrdinalValue()) return defaultValue;
-    return riskValue;
+    return riskValues.get(riskValue.getOrdinalValue());
   }
 
   @Override
