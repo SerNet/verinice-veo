@@ -33,10 +33,10 @@ class UserSwitcher {
         def currentAuth = SecurityContextHolder.getContext()
                 .getAuthentication()
         try {
-            var user = ApplicationUser.authenticatedUser(username,
+            ApplicationUser user = ApplicationUser.authenticatedUser(username,
                     clientId,
                     "veo-user", admin ? ["veo-admin"]: [], maxUnits, totalUnits)
-            var token = new AnonymousAuthenticationToken(username, user,
+            def token = new AnonymousAuthenticationToken(username, user,
                     List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
             SecurityContextHolder.getContext().setAuthentication(token)
             return closure.call()
