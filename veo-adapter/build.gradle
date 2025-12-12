@@ -22,7 +22,7 @@ testing {
     suites {
         test{
             dependencies {
-                implementation 'com.networknt:json-schema-validator:2.0.0'
+                implementation 'com.networknt:json-schema-validator:2.0.1'
                 implementation 'io.swagger.core.v3:swagger-core-jakarta'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.apache.groovy:groovy-json'
