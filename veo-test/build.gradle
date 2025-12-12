@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 
 dependencies {
     api 'org.springframework.data:spring-data-commons'
-    api 'org.spockframework:spock-core:2.4-M7-groovy-4.0'
+    api 'org.spockframework:spock-core:2.4-groovy-4.0'
     api project(':veo-core-entity')
     api project(':veo-persistence')
 

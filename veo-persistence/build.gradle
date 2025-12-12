@@ -34,7 +34,7 @@ testing {
 
                 runtimeOnly "org.testcontainers:postgresql"
                 runtimeOnly 'org.postgresql:postgresql'
-                runtimeOnly 'org.spockframework:spock-spring:2.4-M7-groovy-4.0'
+                runtimeOnly 'org.spockframework:spock-spring:2.4-groovy-4.0'
             }
         }
     }
