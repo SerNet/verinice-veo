@@ -27,8 +27,6 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.ExecutionContext
 import com.networknt.schema.Schema
 import com.networknt.schema.SchemaContext
@@ -73,6 +71,8 @@ import org.veo.test.VeoSpec
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.json.JsonMapper
 
 /**
  * Base class for veo specifications that use Spring
@@ -230,7 +230,7 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     List<Error> validate(Object target, ResultActions schema) {
         return parseSchema(schema.andReturn().response.contentAsString).with {
-            validateWriteOnly(it, new ObjectMapper().valueToTree(target))
+            validateWriteOnly(it, JsonMapper.shared().valueToTree(target))
         }
     }
 

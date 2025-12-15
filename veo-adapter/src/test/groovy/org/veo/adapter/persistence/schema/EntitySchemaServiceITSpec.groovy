@@ -17,9 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.networknt.schema.Schema
 import com.networknt.schema.SchemaLocation
 import com.networknt.schema.SchemaRegistry
@@ -45,6 +43,8 @@ import org.veo.core.service.EntitySchemaService
 
 import groovy.json.JsonSlurper
 import spock.lang.Specification
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.json.JsonMapper
 
 /**
  * Tests {@link EntitySchemaService} , {@link EntitySchemaGenerator} & {@link SchemaExtender} by letting them produce
@@ -53,7 +53,6 @@ import spock.lang.Specification
 class EntitySchemaServiceITSpec extends Specification {
 
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceImpl(new EntitySchemaGenerator(new SchemaExtender(), new ObjectMapper()))
-    static JsonMapper jsonMapper = new JsonMapper()
     public static final String PROPS = "properties"
 
     def "entity schema is a valid schema"() {
@@ -113,8 +112,8 @@ class EntitySchemaServiceITSpec extends Specification {
         def schema = getSchema(Set.of(testDomain, extraTestDomain), ElementType.SCOPE)
 
         then:
-        schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["riskDefA", "riskDefB"]
-        schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["extraRiskDef"]
+        schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.asString() ==~ ["riskDefA", "riskDefB"]
+        schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.asString() ==~ ["extraRiskDef"]
     }
 
     def "process schema domain association is complete"() {
@@ -139,30 +138,30 @@ class EntitySchemaServiceITSpec extends Specification {
 
         expect:
         with(schema.get(PROPS).get("customAspects").get(PROPS)) { ap->
-            ap.get("test").get(p).get("attributes").get(p).get("testAttr").get("type").textValue() == "string"
-            ap.get("extraTest").get(p).get("attributes").get(p).get("extraTestAttr").get("type").textValue() == "boolean"
+            ap.get("test").get(p).get("attributes").get(p).get("testAttr").get("type").asString() == "string"
+            ap.get("extraTest").get(p).get("attributes").get(p).get("extraTestAttr").get("type").asString() == "boolean"
         }
         with(schema.get(PROPS).get("links").get(PROPS)) {
-            get("test").get("items").get(p).get("attributes").get(p).get("linkTestAttr").get("type").textValue() == "string"
-            get("test").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["process"]
-            get("test").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["otherSubType"]
+            get("test").get("items").get(p).get("attributes").get(p).get("linkTestAttr").get("type").asString() == "string"
+            get("test").get("items").get(p).get("target").get(p).get("type").get("enum")*.asString() == ["process"]
+            get("test").get("items").get(p).get("target").get(p).get("subType").get("enum")*.asString() == ["otherSubType"]
 
-            get("extraTest").get("items").get(p).get("attributes").get(p).get("extraLinkTestAttr").get("type").textValue() == "integer"
-            get("extraTest").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["scenario"]
-            get("extraTest").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["extraSubType"]
+            get("extraTest").get("items").get(p).get("attributes").get(p).get("extraLinkTestAttr").get("type").asString() == "integer"
+            get("extraTest").get("items").get(p).get("target").get(p).get("type").get("enum")*.asString() == ["scenario"]
+            get("extraTest").get("items").get(p).get("target").get(p).get("subType").get("enum")*.asString() == ["extraSubType"]
         }
         with(schema.get(PROPS).get("domains").get(PROPS)) {
-            get(testDomain.idAsString).get(p).get("subType").get("enum")*.textValue() == ["testSubType"]
-            get(testDomain.idAsString).get(p).get("status").get("enum")*.textValue() ==~ ["NEW", "OLD"]
-            get(testDomain.idAsString).get("allOf").first().get("if").get(p).get("subType").get("const").textValue() == "testSubType"
-            get(testDomain.idAsString).get("allOf").first().get("then").get(p).get("status").get("enum")*.textValue() == ["NEW", "OLD"]
+            get(testDomain.idAsString).get(p).get("subType").get("enum")*.asString() == ["testSubType"]
+            get(testDomain.idAsString).get(p).get("status").get("enum")*.asString() ==~ ["NEW", "OLD"]
+            get(testDomain.idAsString).get("allOf").first().get("if").get(p).get("subType").get("const").asString() == "testSubType"
+            get(testDomain.idAsString).get("allOf").first().get("then").get(p).get("status").get("enum")*.asString() == ["NEW", "OLD"]
 
             with(get(extraTestDomain.idAsString)) {
-                get(p).get("subType").get("enum")*.textValue() ==~ [
+                get(p).get("subType").get("enum")*.asString() ==~ [
                     "extraTestSubType",
                     "extraSuperSubType"
                 ]
-                get(p).get("status").get("enum")*.textValue() ==~ [
+                get(p).get("status").get("enum")*.asString() ==~ [
                     "EXTRA_NEW",
                     "EXTRA_OLD",
                     "SUPER_NEW",
@@ -171,11 +170,11 @@ class EntitySchemaServiceITSpec extends Specification {
 
                 with(get("allOf")) { JsonNode allOf ->
                     allOf.size() == 2
-                    with(allOf.find { it.get("if").get(p).get("subType").get("const").textValue() == "extraTestSubType" }) {
-                        get("then").get(p).get("status").get("enum")*.textValue() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
+                    with(allOf.find { it.get("if").get(p).get("subType").get("const").asString() == "extraTestSubType" }) {
+                        get("then").get(p).get("status").get("enum")*.asString() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
                     }
-                    with(allOf.find { it.get("if").get(p).get("subType").get("const").textValue() == "extraSuperSubType" }) {
-                        get("then").get(p).get("status").get("enum")*.textValue() ==~ ["SUPER_NEW", "SUPER_OLD"]
+                    with(allOf.find { it.get("if").get(p).get("subType").get("const").asString() == "extraSuperSubType" }) {
+                        get("then").get(p).get("status").get("enum")*.asString() ==~ ["SUPER_NEW", "SUPER_OLD"]
                     }
                 }
             }
@@ -188,7 +187,7 @@ class EntitySchemaServiceITSpec extends Specification {
     }
 
     private static JsonNode getSchema(Set<Domain> domains, ElementType type) {
-        jsonMapper.readTree(entitySchemaService.getSchema(type, domains))
+        JsonMapper.shared().readTree(entitySchemaService.getSchema(type, domains))
     }
 
     private Domain getTestDomain() {

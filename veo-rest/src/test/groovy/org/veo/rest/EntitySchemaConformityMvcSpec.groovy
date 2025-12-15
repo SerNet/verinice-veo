@@ -22,14 +22,14 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.web.bind.MethodArgumentNotValidException
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.repository.UnitRepository
+
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.json.JsonMapper
 
 /**
  * Tests if resources returned by the API conform to the entity schema.
@@ -41,7 +41,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     UnitRepository unitRepository
 
     Client client
-    ObjectMapper om = new ObjectMapper()
     String domainId
     String unitId
 
@@ -414,6 +413,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     }
 
     JsonNode parseNode(ResultActions resultActions) {
-        om.readTree(resultActions.andReturn().response.contentAsString)
+        JsonMapper.shared().readTree(resultActions.andReturn().response.contentAsString)
     }
 }

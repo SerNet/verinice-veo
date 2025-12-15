@@ -19,7 +19,6 @@ package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.Error
 
 import org.veo.core.entity.Domain
@@ -31,11 +30,12 @@ import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.service.EntitySchemaService
 
+import tools.jackson.databind.json.JsonMapper
+
 class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
     @Autowired
     EntitySchemaService entitySchemaService
     Domain domain
-    ObjectMapper om = new ObjectMapper()
 
     def setup() {
         domain = newDomain(newClient {}) {
@@ -355,7 +355,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
     }
 
     private List<Error> validate(Map element, ElementType elementType) {
-        validateWriteOnly(getSchema(domain, elementType), om.valueToTree(element))
+        validateWriteOnly(getSchema(domain, elementType), JsonMapper.shared().valueToTree(element))
     }
 
     private void createElementTypeDefinition(ElementType elementType) {
