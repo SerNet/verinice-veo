@@ -41,6 +41,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslationMap;
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -91,6 +92,11 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   @Type(JsonType.class)
   @Valid
   private TranslationMap translations = new TranslationMap();
+
+  @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
+  @Valid
+  private ControlImplementationDefinition controlImplementationDefinition;
 
   @Override
   public boolean equals(Object o) {

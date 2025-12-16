@@ -40,6 +40,13 @@ public class ElementTypeDefinitionValidator {
     validate(getSubTypeKeys(elementTypeDefinition.getSubTypes()));
     validate(getCaOrLinkKeys(elementTypeDefinition.getCustomAspects()));
     validate(getCaOrLinkKeys(elementTypeDefinition.getLinks()));
+    if (elementTypeDefinition.getControlImplementationDefinition() != null) {
+      validate(
+          getCaOrLinkKeys(
+              elementTypeDefinition.getControlImplementationDefinition().getCustomAspects()));
+      TranslationValidator.validateControlImplementationDefinition(
+          elementTypeDefinition.getControlImplementationDefinition());
+    }
     TranslationValidator.validate(elementTypeDefinition);
   }
 

@@ -466,6 +466,8 @@ public final class EntityToDtoTransformer {
     elementTypeDefinitionDto.setCustomAspects(elementTypeDefinition.getCustomAspects());
     elementTypeDefinitionDto.setLinks(elementTypeDefinition.getLinks());
     elementTypeDefinitionDto.setTranslations(elementTypeDefinition.getTranslations());
+    elementTypeDefinitionDto.setControlImplementationDefinition(
+        elementTypeDefinition.getControlImplementationDefinition());
     return elementTypeDefinitionDto;
   }
 

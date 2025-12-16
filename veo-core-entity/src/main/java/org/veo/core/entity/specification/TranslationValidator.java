@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.veo.core.entity.TranslationException;
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -202,5 +203,24 @@ public class TranslationValidator {
     var result = new ArrayList<>(List.of(attributeKey));
     result.addAll(attributeDefinition.getTranslationKeys());
     return result;
+  }
+
+  /**
+   * Validates translations for a ControlImplementationDefinition. Ensures all attribute keys in
+   * custom aspects have corresponding translations and that there are no superfluous translation
+   * keys.
+   */
+  public static void validateControlImplementationDefinition(
+      ControlImplementationDefinition ciDefinition) {
+    if (ciDefinition == null || ciDefinition.getTranslations().isEmpty()) {
+      return;
+    }
+
+    validate(
+        ciDefinition.getTranslations(),
+        "control_implementation",
+        ciDefinition.getCustomAspects(),
+        Map.of(),
+        Map.of());
   }
 }

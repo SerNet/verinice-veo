@@ -221,6 +221,8 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     existingDefinition.setLinks(definition.getLinks());
     existingDefinition.setSubTypes(definition.getSubTypes());
     existingDefinition.setTranslations(definition.getTranslations());
+    existingDefinition.setControlImplementationDefinition(
+        definition.getControlImplementationDefinition());
   }
 
   @Override

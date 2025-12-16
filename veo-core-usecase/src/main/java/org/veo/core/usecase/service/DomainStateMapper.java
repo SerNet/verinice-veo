@@ -87,6 +87,7 @@ public class DomainStateMapper {
     target.setCustomAspects(source.getCustomAspects());
     target.setLinks(source.getLinks());
     target.setTranslations(source.getTranslations());
+    target.setControlImplementationDefinition(source.getControlImplementationDefinition());
     return target;
   }
 

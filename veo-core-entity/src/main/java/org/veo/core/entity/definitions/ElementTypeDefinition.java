@@ -42,6 +42,8 @@ public interface ElementTypeDefinition extends ElementTypeDefinitionState {
 
   void setTranslations(Map<Locale, Map<String, String>> translations);
 
+  void setControlImplementationDefinition(ControlImplementationDefinition definition);
+
   default CustomAspectDefinition getCustomAspectDefinition(String caType) {
     return Optional.ofNullable(getCustomAspects().get(caType))
         .orElseThrow(

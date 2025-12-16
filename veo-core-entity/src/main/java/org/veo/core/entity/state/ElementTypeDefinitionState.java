@@ -22,6 +22,7 @@ import java.util.Map;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -39,4 +40,6 @@ public interface ElementTypeDefinitionState {
 
   @NotNull
   Map<Locale, Map<String, String>> getTranslations();
+
+  ControlImplementationDefinition getControlImplementationDefinition();
 }
