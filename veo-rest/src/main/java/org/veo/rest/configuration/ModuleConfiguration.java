@@ -158,6 +158,7 @@ import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
+import org.veo.core.usecase.domain.UpdateControlImplementationDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
@@ -958,6 +959,12 @@ public class ModuleConfiguration {
   public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
       DomainStateMapper domainStateMapper, DomainRepository domainRepository) {
     return new UpdateElementTypeDefinitionUseCase(domainStateMapper, domainRepository);
+  }
+
+  @Bean
+  public UpdateControlImplementationDefinitionUseCase
+      getUpdateControlImplementationDefinitionUseCase(DomainRepository domainRepository) {
+    return new UpdateControlImplementationDefinitionUseCase(domainRepository);
   }
 
   @Bean

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -41,6 +42,11 @@ public class ElementTypeDefinitionValidator {
     validate(getCaOrLinkKeys(elementTypeDefinition.getCustomAspects()));
     validate(getCaOrLinkKeys(elementTypeDefinition.getLinks()));
     if (elementTypeDefinition.getControlImplementationDefinition() != null) {
+      if (!ElementType.RISK_AFFECTED_TYPES.contains(elementTypeDefinition.getElementType())) {
+        throw new IllegalArgumentException(
+            "Control implementation attributes can only be defined for risk-affected element types (Asset, Process, Scope). Got: "
+                + elementTypeDefinition.getElementType());
+      }
       validate(
           getCaOrLinkKeys(
               elementTypeDefinition.getControlImplementationDefinition().getCustomAspects()));

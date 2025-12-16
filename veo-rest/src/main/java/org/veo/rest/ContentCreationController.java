@@ -94,6 +94,7 @@ import org.veo.core.usecase.domain.SaveDomainMetadataUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
+import org.veo.core.usecase.domain.UpdateControlImplementationDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
@@ -142,6 +143,8 @@ public class ContentCreationController extends AbstractVeoController {
   private final DeleteProfileInDomainTemplateUseCase deleteProfileInDomainTemplateUseCase;
   private final GetUpdateDefinitionUseCase getUpdateDefinitionUseCase;
   private final SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase;
+  private final UpdateControlImplementationDefinitionUseCase
+      updateControlImplementationDefinitionUseCase;
 
   public static final String URL_BASE_PATH = "/content-creation";
 
@@ -189,6 +192,36 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,
         new UpdateElementTypeDefinitionUseCase.InputData(id, type, elementTypeDefinitionDto, false),
+        out -> ResponseEntity.noContent().build());
+  }
+
+  @PutMapping(value = "/domains/{domainId}/element-type-definitions/{type}/control-implementation")
+  @Operation(
+      summary =
+          "Updates control implementation attribute definitions for a risk-affected element type")
+  @ApiResponse(
+      responseCode = "204",
+      description = "Control implementation attribute definition updated")
+  @ApiResponse(
+      responseCode = "400",
+      description =
+          "Element type is not risk-affected or control implementation definition is invalid")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateControlImplementationDefinition(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @Parameter(
+              required = true,
+              description = "Element type (must be a risk-affected type: asset, process, or scope)")
+          @PathVariable
+          ElementType type,
+      @Valid @RequestBody
+          org.veo.core.entity.definitions.ControlImplementationDefinition
+              controlImplementationDefinition) {
+    return useCaseInteractor.execute(
+        updateControlImplementationDefinitionUseCase,
+        new UpdateControlImplementationDefinitionUseCase.InputData(
+            domainId, type, controlImplementationDefinition),
         out -> ResponseEntity.noContent().build());
   }
 
