@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.TranslationException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
@@ -73,7 +74,94 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
         post("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/scope/object-schema", schemaJson, 422)
 
         then: "all missing and  mistyped/superfluous translations are listed"
-        Exception ex = thrown()
+        TranslationException ex = thrown()
         ex.message == "Issues were found in the translations: Language 'de': LEADING_SPACES: scope_SCP_Scope_status_NEW ; MISSING: scope_SCP_Processor_singular, scope_informationSecurityOfficer, scope_management ; SUPERFLUOUS: superfluous_key ; TRAILING_SPACES: scope_SCP_Scope_status_RELEASED    /    Language 'en': MISSING: scope_SCP_ResponsibleBody_plural, scope_SCP_Scope_status_IN_PROGRESS, scope_dataProtectionOfficer_affiliation_external"
+    }
+
+    @WithUserDetails("content-creator")
+    def "updating control-implementation definition with invalid translations is prevented"() {
+        given: "a control-implementation definition with translation errors"
+        def ciDefinition = [
+            customAspects: [
+                ciDetails: [
+                    attributeDefinitions: [
+                        implementationNotes: [
+                            type: "text"
+                        ],
+                        priority: [
+                            type: "text"
+                        ]
+                    ]
+                ]
+            ],
+            translations: [
+                de: [
+                    implementationNotes: ' Implementierungsnotizen',  // leading space
+                    priority: 'Priorität '                            // trailing space
+                ]
+            ]
+        ]
+
+        when: "a request is made to update control-implementation definition"
+        put("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/asset/control-implementation", ciDefinition, 204)
+
+        then: "the translation errors are reported"
+        AssertionError ex = thrown()
+        ex.message.contains("LEADING_SPACES") || ex.message.contains("TRAILING_SPACES")
+    }
+
+    @WithUserDetails("content-creator")
+    def "updating control-implementation definition with missing translations is prevented"() {
+        given: "a control-implementation definition missing translations"
+        def ciDefinition = [
+            customAspects: [
+                ciDetails: [
+                    attributeDefinitions: [
+                        implementationNotes: [
+                            type: "text"
+                        ]
+                    ]
+                ]
+            ],
+            translations: [
+                de: [:]
+            ]
+        ]
+
+        when: "a request is made to update control-implementation definition"
+        put("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/asset/control-implementation", ciDefinition, 422)
+
+        then: "the missing translation is reported"
+        Exception ex = thrown()
+        (ex.message.contains("MISSING") || ex.message.contains("Issues were found"))
+    }
+
+    @WithUserDetails("content-creator")
+    def "updating control-implementation definition with superfluous translations is prevented"() {
+        given: "a control-implementation definition with extra translations"
+        def ciDefinition = [
+            customAspects: [
+                ciDetails: [
+                    attributeDefinitions: [
+                        implementationNotes: [
+                            type: "text"
+                        ]
+                    ]
+                ]
+            ],
+            translations: [
+                de: [
+                    implementationNotes: 'Implementierungsnotizen',
+                    invalidExtraKey: 'Extra translation'  // superfluous key
+                ]
+            ]
+        ]
+
+        when: "a request is made to update control-implementation definition"
+        put("/content-creation/domains/${testDomain.idAsString}/element-type-definitions/asset/control-implementation", ciDefinition, 422)
+
+        then: "the superfluous translation is reported"
+        TranslationException ex = thrown()
+        ex.message.contains("SUPERFLUOUS")
     }
 }
