@@ -124,6 +124,9 @@ public class RelationGraphService {
 
     if (centerEl instanceof Scope centerScope) {
       for (Element member : centerScope.getMembers()) {
+        if (!member.getDomains().contains(domain)) {
+          continue;
+        }
         allElements.add(member);
         relationDtos.add(
             new RelationDto(
@@ -135,6 +138,9 @@ public class RelationGraphService {
     }
 
     for (Scope scope : centerEl.getScopes()) {
+      if (!scope.getDomains().contains(domain)) {
+        continue;
+      }
       allElements.add(scope);
       relationDtos.add(
           new RelationDto(
@@ -146,6 +152,9 @@ public class RelationGraphService {
 
     if (centerEl instanceof CompositeElement<?> compositeEl) {
       for (Element part : compositeEl.getParts()) {
+        if (!part.getDomains().contains(domain)) {
+          continue;
+        }
         allElements.add(part);
         relationDtos.add(
             new RelationDto(
@@ -156,6 +165,9 @@ public class RelationGraphService {
       }
 
       for (Element composite : compositeEl.getComposites()) {
+        if (!composite.getDomains().contains(domain)) {
+          continue;
+        }
         allElements.add(composite);
         relationDtos.add(
             new RelationDto(

@@ -226,4 +226,57 @@ class GraphTestRestTest extends VeoRestTest {
         and: "process A has two links (customlink + scope-member)"
         response.body.links.size() == 2
     }
+
+    def "scope relations exclude processes from other domains"() {
+        given: "two domains belongs to one unit"
+        def unitUri = post("/units", [
+            name: "Domain Unit A",
+            domains: [
+                [targetUri: "/domains/$testDomainId"],
+                [targetUri: "/domains/$dsgvoDomainId"]
+            ]
+        ]).location
+
+        and: "a process that exists ONLY in testDomain"
+        def processId = post("/domains/$testDomainId/processes", [
+            name: "dsgvoDomain Process",
+            owner: [targetUri: unitUri],
+            subType: "BusinessProcess",
+            status: "NEW"
+        ]).body.resourceId
+
+        and: "a scope created in dsgvoDomain domain and has ProcessId as a member"
+        def scopeId = post("/domains/$dsgvoDomainId/scopes", [
+            name: "Mixed Scope",
+            owner: [targetUri: unitUri],
+            subType: "SCP_Processor",
+            status: "NEW",
+            members: [
+                [targetUri: "/processes/$processId"]
+            ]
+        ]).body.resourceId
+
+        when: "relations for the scope are requested in dsgvoDomain"
+        def response = get(
+                "/domains/$dsgvoDomainId/scopes/$scopeId/relations",
+                200,
+                UserType.DEFAULT,
+                MediaType.APPLICATION_JSON
+                )
+
+        then: "the response is valid"
+        response.body.nodes instanceof List
+        response.body.links instanceof List
+
+        and: "the scope itself is present"
+        response.body.nodes.any { it.elementId == scopeId }
+
+        and: "the foreign process is NOT present"
+        response.body.nodes.every { it.elementId != processId }
+
+        and: "no relation exists for the foreign process"
+        response.body.links.every {
+            !((it.source.endsWith(processId) || it.target.endsWith(processId)))
+        }
+    }
 }
