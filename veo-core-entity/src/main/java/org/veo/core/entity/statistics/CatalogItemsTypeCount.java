@@ -36,7 +36,7 @@ public class CatalogItemsTypeCount {
   private final Map<ElementType, Map<String, Long>> values = new EnumMap<>(ElementType.class);
 
   public void setCount(ElementType type, String subType, Long count) {
-    values.computeIfAbsent(type, k -> new HashMap<String, Long>()).put(subType, count);
+    values.computeIfAbsent(type, k -> new HashMap<>()).put(subType, count);
   }
 
   @JsonAnyGetter
