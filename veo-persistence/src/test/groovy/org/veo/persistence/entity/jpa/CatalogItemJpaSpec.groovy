@@ -48,7 +48,7 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
         domain = client.domains.first()
     }
 
-    def "can persist profile #type tailoring references"() {
+    def "can persist profile #type tailoring references"(TailoringReferenceType type) {
         given:
         def catalogItemSymIds = txTemplate.execute {
             def item1 = newCatalogItem(domain) {
@@ -70,7 +70,7 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
                 item1,
                 item2
             ]
-            )*.symbolicIdAsString
+            )*.symbolicId
         }
 
         when:
