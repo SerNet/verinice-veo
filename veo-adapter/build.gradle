@@ -10,8 +10,9 @@ dependencies {
     implementation 'com.github.victools:jsonschema-module-jackson:4.38.0'
     implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.38.0'
     implementation 'com.github.victools:jsonschema-module-swagger-2:4.38.0'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.15'
-    implementation 'io.swagger.core.v3:swagger-core-jakarta:2.2.41'
+    implementation 'org.springframework:spring-context'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.41'
+    implementation 'org.apache.commons:commons-lang3'
     implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0'
 
@@ -23,7 +24,6 @@ testing {
         test{
             dependencies {
                 implementation 'com.networknt:json-schema-validator:2.0.1'
-                implementation 'io.swagger.core.v3:swagger-core-jakarta'
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.apache.groovy:groovy-json'
             }

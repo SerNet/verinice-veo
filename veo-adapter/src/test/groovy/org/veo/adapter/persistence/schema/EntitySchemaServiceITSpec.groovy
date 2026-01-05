@@ -19,6 +19,7 @@ package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.networknt.schema.Schema
 import com.networknt.schema.SchemaLocation
 import com.networknt.schema.SchemaRegistry
@@ -43,7 +44,6 @@ import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.service.EntitySchemaService
 
 import groovy.json.JsonSlurper
-import io.swagger.v3.core.util.Json
 import spock.lang.Specification
 
 /**
@@ -53,6 +53,7 @@ import spock.lang.Specification
 class EntitySchemaServiceITSpec extends Specification {
 
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceImpl(new EntitySchemaGenerator(new SchemaExtender(), new ObjectMapper()))
+    static JsonMapper jsonMapper = new JsonMapper()
     public static final String PROPS = "properties"
 
     def "entity schema is a valid schema"() {
@@ -187,7 +188,7 @@ class EntitySchemaServiceITSpec extends Specification {
     }
 
     private static JsonNode getSchema(Set<Domain> domains, ElementType type) {
-        Json.mapper().readTree(entitySchemaService.getSchema(type, domains))
+        jsonMapper.readTree(entitySchemaService.getSchema(type, domains))
     }
 
     private Domain getTestDomain() {
