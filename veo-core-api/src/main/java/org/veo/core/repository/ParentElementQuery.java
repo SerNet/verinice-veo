@@ -17,6 +17,12 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.veo.core.entity.Element;
 
 public interface ParentElementQuery extends Query<Element, ParentElementQuery.SortCriterion> {
@@ -24,6 +30,22 @@ public interface ParentElementQuery extends Query<Element, ParentElementQuery.So
     TYPE,
     ABBREVIATION,
     NAME,
-    DESIGNATOR
+    DESIGNATOR;
+
+    private static final Map<String, SortCriterion> LOOKUP =
+        Arrays.stream(values())
+            .collect(Collectors.toMap(v -> v.name().toUpperCase(Locale.US), Function.identity()));
+
+    public static SortCriterion fromString(String value) {
+      var criterion = LOOKUP.get(value.toUpperCase(Locale.US));
+      if (criterion == null) {
+        throw new IllegalArgumentException(
+            "Invalid sort criterion: "
+                + value
+                + ". Must be one of: "
+                + String.join(", ", LOOKUP.keySet()));
+      }
+      return criterion;
+    }
   }
 }

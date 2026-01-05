@@ -43,6 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.ElementType;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.LinkQuery;
+import org.veo.core.repository.ParentElementQuery;
 import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.security.ApplicationUser;
 
@@ -75,6 +77,20 @@ class WebMvcContext implements WebMvcConfigurer {
           @Override
           public ElementType convert(String source) {
             return ElementType.valueOf(source.toUpperCase(Locale.US));
+          }
+        });
+    registry.addConverter(
+        new Converter<String, ParentElementQuery.SortCriterion>() {
+          @Override
+          public ParentElementQuery.SortCriterion convert(String source) {
+            return ParentElementQuery.SortCriterion.fromString(source);
+          }
+        });
+    registry.addConverter(
+        new Converter<String, LinkQuery.SortCriterion>() {
+          @Override
+          public LinkQuery.SortCriterion convert(String source) {
+            return LinkQuery.SortCriterion.fromString(source);
           }
         });
   }
