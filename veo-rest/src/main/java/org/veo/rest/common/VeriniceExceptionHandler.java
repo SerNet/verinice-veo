@@ -52,6 +52,7 @@ import org.veo.core.entity.specification.LicensingException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.entity.specification.NotAllowedException;
+import org.veo.core.entity.specification.ResultSizeExceededException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domain.DomainInUseException;
 
@@ -85,6 +86,11 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({ExceedLimitException.class})
   protected ResponseEntity<ApiResponseBody> handle(ExceedLimitException exception) {
     return handle(exception, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler({ResultSizeExceededException.class})
+  protected ResponseEntity<ApiResponseBody> handle(ResultSizeExceededException exception) {
+    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   @ExceptionHandler({ContentTooLongException.class})

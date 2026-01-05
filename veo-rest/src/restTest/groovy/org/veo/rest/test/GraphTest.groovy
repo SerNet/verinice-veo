@@ -279,4 +279,57 @@ class GraphTestRestTest extends VeoRestTest {
             !((it.source.endsWith(processId) || it.target.endsWith(processId)))
         }
     }
+
+    def "returns 422 when element has too many related elements"() {
+        given: "a unit and domain"
+        def unitUri = post("/units", [
+            name: "Limit Unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).location
+
+        and: "a process with multiple relations"
+        def assetIds = (1..30).collect {
+            post("/domains/$testDomainId/assets", [
+                name: "Asset $it",
+                owner: [targetUri: unitUri],
+                subType: "Information",
+                status: "CURRENT"
+            ]).body.resourceId
+        }
+
+        def processId = post("/domains/$testDomainId/processes", [
+            name: "Process Limit",
+            owner: [targetUri: unitUri],
+            subType: "BusinessProcess",
+            status: "NEW",
+            links: [
+                necessaryData: assetIds.collect {
+                    [target: [targetUri: "/assets/$it"]]
+                }
+            ]
+        ]).body.resourceId
+
+        def scopeId = post("/domains/$testDomainId/scopes", [
+            name: "Scope",
+            subType: 'Company',
+            status: 'NEW',
+            owner: [targetUri: unitUri],
+            members: [
+                [targetUri: "/processes/$processId"],
+            ]
+        ])
+
+        when: "the relations endpoint is called"
+        def response = get(
+                "/domains/$testDomainId/processes/$processId/relations",
+                422,
+                UserType.DEFAULT,
+                MediaType.APPLICATION_JSON
+                )
+
+        then: "the limit error is returned"
+        response.body.message == "Too many related elements"
+    }
 }

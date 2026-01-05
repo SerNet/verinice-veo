@@ -42,6 +42,8 @@ veo:
       processingChunkSize: 5000
   taskExecutor:
     virtualThreads: true
+  graph:
+    max-neighbors: 30
 
 spring:
   data:
