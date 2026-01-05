@@ -149,6 +149,10 @@ public interface DomainBase
     return findCustomAspectDefinition(elementType, caType).map(definition::equals).orElse(false);
   }
 
+  default CustomAspectDefinition getCustomAspectDefinition(ElementType elementType, String caType) {
+    return getElementTypeDefinition(elementType).getCustomAspectDefinition(caType);
+  }
+
   default Optional<CustomAspectDefinition> findCustomAspectDefinition(
       ElementType elementType, String caType) {
     return Optional.ofNullable(

@@ -459,22 +459,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    *     given custom aspect in its domain
    */
   private Set<Domain> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
-    return ca.getDomain()
-        .findCustomAspectDefinition(getType(), ca.getType())
-        .map(
-            definition ->
-                getDomains().stream()
-                    .filter(
-                        d -> d.containsCustomAspectDefinition(getType(), ca.getType(), definition))
-                    .collect(Collectors.toSet()))
-        // TODO VEO-2011 throw an exception if the custom aspect type is not defined in the target
-        // domain. This workaround here (applying the custom aspect to the target domain anyway) is
-        // necessary, because profile elements are persisted as JSON and not migrated when element
-        // type definitions change. When the DTOs are deserialized from the profile JSON from the
-        // DB they are mapped to entities and this method may be called for a custom aspect that is
-        // no longer defined in the target domain (because the custom aspect definition has been
-        // removed from the target domain).
-        .orElse(Set.of(ca.getDomain()));
+    var definition = ca.getDomain().getCustomAspectDefinition(getType(), ca.getType());
+    return getDomains().stream()
+        .filter(d -> d.containsCustomAspectDefinition(getType(), ca.getType(), definition))
+        .collect(Collectors.toSet());
   }
 
   /**

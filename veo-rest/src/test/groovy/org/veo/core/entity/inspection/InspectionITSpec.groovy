@@ -140,14 +140,12 @@ class InspectionITSpec extends VeoSpec {
         }
 
         when:
-        farm.applyCustomAspect(newCustomAspect("assets", domain) {
-            attributes["haystack"] = [
-                'straw',
-                'straw',
-                'straw',
-                'straw'
-            ]
-        })
+        farm.customAspects.first().attributes["haystack"] = [
+            'straw',
+            'straw',
+            'straw',
+            'straw'
+        ]
         finding = inspection.run(farm, domain)
 
         then:
