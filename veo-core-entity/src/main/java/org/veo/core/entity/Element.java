@@ -183,7 +183,8 @@ public interface Element
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
 
-  default Optional<CustomAspect> getCustomAspect(Domain domain, String type) {
+  default Optional<CustomAspect> findCustomAspect(Domain domain, String type) {
+    // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
     return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
   }
 

@@ -520,11 +520,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return this.links.add(aCustomLink);
   }
 
-  private Optional<CustomAspect> findCustomAspect(Domain domain, String type) {
-    // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
-    return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
-  }
-
   /**
    * Add the given {@link CustomAspect} to the collection customAspects.
    *
