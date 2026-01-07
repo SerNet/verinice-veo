@@ -317,7 +317,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, ElementType type, @DelegatesTo(value = CustomLink.class)
+    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, ElementType type, @DelegatesTo(value = ElementTypeDefinition.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
