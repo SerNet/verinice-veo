@@ -64,13 +64,13 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
-            riskValues.first().translations.(DE).name == "a new name"
+            riskValues.first().translations.(super.DE).name == "a new name"
             riskValues.first().htmlColor == "#000000"
-            probability.translations.(DE).name == "a new prop"
+            probability.translations.(super.DE).name == "a new prop"
             probability.levels.first().htmlColor == "#000000"
-            probability.levels.first().translations.(DE).name == "a new level name"
-            categories.find{ it.id == "C" }.translations.(DE).name == "my new dimension name"
-            categories.find{ it.id == "C" }.potentialImpacts.first().translations.(DE).name == "my new impact name"
+            probability.levels.first().translations.(super.DE).name == "a new level name"
+            categories.find{ it.id == "C" }.translations.(super.DE).name == "my new dimension name"
+            categories.find{ it.id == "C" }.potentialImpacts.first().translations.(super.DE).name == "my new impact name"
         }
 
         when: "adding the definition as a new definition"
@@ -79,7 +79,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.newId) {
-            riskValues.first().translations.(DE).name == "a new name"
+            riskValues.first().translations.(super.DE).name == "a new name"
             riskValues.first().htmlColor == "#000000"
         }
     }
@@ -164,7 +164,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
-            categories.find{ it.id == "NEW" }.translations.(DE).name == "new kid on the block"
+            categories.find{ it.id == "NEW" }.translations.(super.DE).name == "new kid on the block"
             categories.find{ it.id == "NEW" }.potentialImpacts.first().htmlColor == "#101010"
         }
     }

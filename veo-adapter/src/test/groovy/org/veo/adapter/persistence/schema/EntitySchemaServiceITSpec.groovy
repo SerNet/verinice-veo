@@ -191,27 +191,29 @@ class EntitySchemaServiceITSpec extends Specification {
         def scopeSchema = getSchema(testDomain, ElementType.SCOPE)
         def processSchema = getSchema(testDomain, ElementType.PROCESS)
         def controlSchema = getSchema(testDomain, ElementType.CONTROL)
+        // we cannot access the constant from within the `with` https://issues.apache.org/jira/browse/GROOVY-10604
+        def p = PROPS
 
         expect:
         with(
-                assetSchema.get(PROPS).get("controlImplementations").get("items")) {
-                    with(it.get(PROPS).get("customAspects").get(PROPS)) {
-                        it.get("assetCiTest").get(PROPS).get("assetCiTestAttr").get("type").asString() == "string"
+                assetSchema.get(p).get("controlImplementations").get("items")) {
+                    with(it.get(p).get("customAspects").get(p)) {
+                        it.get("assetCiTest").get(p).get("assetCiTestAttr").get("type").asString() == "string"
                         !it.has("scopeCiTest")
                     }
                 }
         with(
-                scopeSchema.get(PROPS).get("controlImplementations").get("items")) {
-                    with(it.get(PROPS).get("customAspects").get(PROPS)) {
-                        it.get("scopeCiTest").get(PROPS).get("scopeCiTestAttr").get("type").asString() == "boolean"
+                scopeSchema.get(p).get("controlImplementations").get("items")) {
+                    with(it.get(p).get("customAspects").get(p)) {
+                        it.get("scopeCiTest").get(p).get("scopeCiTestAttr").get("type").asString() == "boolean"
                         !it.has("assetCiTest")
                     }
                 }
         with(
-                processSchema.get(PROPS).get("controlImplementations").get("items")) {
-                    !it.get(PROPS).has("customAspects")
+                processSchema.get(p).get("controlImplementations").get("items")) {
+                    !it.get(p).has("customAspects")
                 }
-        !controlSchema.get(PROPS).has("controlImplementations")
+        !controlSchema.get(p).has("controlImplementations")
     }
 
     private static Schema getMetaSchemaV2019_09() throws IOException {
