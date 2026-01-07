@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class EnumAttributeDefinition extends AttributeDefinition {
+public final class EnumAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "enum";
   @NotNull private List<String> allowedValues;
 

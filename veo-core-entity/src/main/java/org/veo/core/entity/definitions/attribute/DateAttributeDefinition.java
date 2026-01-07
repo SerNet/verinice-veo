@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DateAttributeDefinition extends AttributeDefinition {
+public final class DateAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "date";
 
   @Override

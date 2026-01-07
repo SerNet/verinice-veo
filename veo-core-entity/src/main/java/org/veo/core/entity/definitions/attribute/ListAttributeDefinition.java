@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ListAttributeDefinition extends AttributeDefinition {
+public final class ListAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "list";
   @NotNull private AttributeDefinition itemDefinition;
 

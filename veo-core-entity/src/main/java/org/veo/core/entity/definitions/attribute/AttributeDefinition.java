@@ -81,7 +81,15 @@ import lombok.Data;
           value = TextAttributeDefinition.TYPE),
     })
 @Data
-public abstract class AttributeDefinition {
+public abstract sealed class AttributeDefinition
+    permits BooleanAttributeDefinition,
+        DateAttributeDefinition,
+        DateTimeAttributeDefinition,
+        EnumAttributeDefinition,
+        ExternalDocumentAttributeDefinition,
+        IntegerAttributeDefinition,
+        ListAttributeDefinition,
+        TextAttributeDefinition {
 
   public abstract void validate(Object value) throws InvalidAttributeException;
 

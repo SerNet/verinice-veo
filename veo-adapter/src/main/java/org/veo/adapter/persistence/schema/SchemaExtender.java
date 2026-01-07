@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.NotImplementedException;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -349,35 +349,35 @@ public class SchemaExtender {
         });
   }
 
-  private JsonNode buildAttributeJsonSchema(AttributeDefinition attributeDefinition) {
+  private JsonNode buildAttributeJsonSchema(@NotNull AttributeDefinition attributeDefinition) {
     var schema = mapper.createObjectNode();
-    if (attributeDefinition instanceof BooleanAttributeDefinition) {
-      schema.put("type", "boolean");
-    } else if (attributeDefinition instanceof DateAttributeDefinition) {
-      schema.put("type", "string");
-      schema.put("format", "date");
-    } else if (attributeDefinition instanceof DateTimeAttributeDefinition) {
-      schema.put("type", "string");
-      schema.put("format", "date-time");
-    } else if (attributeDefinition instanceof EnumAttributeDefinition enumDefinition) {
-      schema.put("type", "string");
-      var allowedValues = schema.putArray("enum");
-      enumDefinition.getAllowedValues().forEach(allowedValues::add);
-    } else if (attributeDefinition instanceof ExternalDocumentAttributeDefinition) {
-      schema.put("type", "string");
-      schema.put("format", "uri");
-      schema.put("pattern", EXTERNAL_DOCUMENT_PATTERN);
-    } else if (attributeDefinition instanceof IntegerAttributeDefinition) {
-      schema.put("type", "integer");
-    } else if (attributeDefinition instanceof ListAttributeDefinition listDefinition) {
-      schema.put("type", "array");
-      schema.set("items", buildAttributeJsonSchema(listDefinition.getItemDefinition()));
-    } else if (attributeDefinition instanceof TextAttributeDefinition) {
-      schema.put("type", "string");
-    } else
-      throw new NotImplementedException(
-          "JSON schema creation not implemented for attribute type %s"
-              .formatted(attributeDefinition.getClass().getSimpleName()));
+    switch (attributeDefinition) {
+      case BooleanAttributeDefinition _ -> schema.put("type", "boolean");
+      case DateAttributeDefinition _ -> {
+        schema.put("type", "string");
+        schema.put("format", "date");
+      }
+      case DateTimeAttributeDefinition _ -> {
+        schema.put("type", "string");
+        schema.put("format", "date-time");
+      }
+      case EnumAttributeDefinition enumDefinition -> {
+        schema.put("type", "string");
+        var allowedValues = schema.putArray("enum");
+        enumDefinition.getAllowedValues().forEach(allowedValues::add);
+      }
+      case ExternalDocumentAttributeDefinition _ -> {
+        schema.put("type", "string");
+        schema.put("format", "uri");
+        schema.put("pattern", EXTERNAL_DOCUMENT_PATTERN);
+      }
+      case IntegerAttributeDefinition _ -> schema.put("type", "integer");
+      case ListAttributeDefinition listDefinition -> {
+        schema.put("type", "array");
+        schema.set("items", buildAttributeJsonSchema(listDefinition.getItemDefinition()));
+      }
+      case TextAttributeDefinition _ -> schema.put("type", "string");
+    }
     return schema;
   }
 }

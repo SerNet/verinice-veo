@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BooleanAttributeDefinition extends AttributeDefinition {
+public final class BooleanAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "boolean";
 
   @Override

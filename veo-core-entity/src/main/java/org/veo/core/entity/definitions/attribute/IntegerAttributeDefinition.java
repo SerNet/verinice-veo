@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IntegerAttributeDefinition extends AttributeDefinition {
+public final class IntegerAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "integer";
 
   @Override

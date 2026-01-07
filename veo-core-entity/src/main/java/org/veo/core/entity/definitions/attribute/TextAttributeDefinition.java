@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TextAttributeDefinition extends AttributeDefinition {
+public final class TextAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "text";
 
   @Override
