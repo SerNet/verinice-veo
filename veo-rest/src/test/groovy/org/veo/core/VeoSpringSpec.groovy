@@ -238,7 +238,10 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     List<Error> validateWriteOnly(Schema schema, JsonNode node) {
         schema.validate(node, { ExecutionContext executionContext, SchemaContext schemaContext ->
-            executionContext.executionConfig {it.writeOnly(true)}
+            executionContext.executionConfig {
+                it.writeOnly(true)
+                it.formatAssertionsEnabled(true)
+            }
         } as ExecutionContextCustomizer)
     }
 
