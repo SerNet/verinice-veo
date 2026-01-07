@@ -41,6 +41,7 @@ import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -120,12 +121,17 @@ public class SchemaExtender {
     extendDomainAssociationSchema(schema, elementType, domain);
     if (typeDef.getControlImplementationDefinition() != null) {
       var ciSchema = schema.required(PROPS).required("controlImplementations").required("items");
-      // TODO #4420 remove this once the "customAspects" property is added to the CI
-      ((ObjectNode) ciSchema.required(PROPS)).putObject("customAspects");
-      var ciCustomAspectProps = putProps(ciSchema, "customAspects");
-      addCustomAspectMap(
-          ciCustomAspectProps, typeDef.getControlImplementationDefinition().getCustomAspects());
+      extendSchema((ObjectNode) ciSchema, typeDef.getControlImplementationDefinition());
     }
+  }
+
+  public void extendSchema(
+      ObjectNode ciSchema,
+      @NotNull ControlImplementationDefinition controlImplementationDefinition) {
+    // TODO #4420 remove this once the "customAspects" property is added to the CI
+    ((ObjectNode) ciSchema.required(PROPS)).putObject("customAspects");
+    var ciCustomAspectProps = putProps(ciSchema, "customAspects");
+    addCustomAspectMap(ciCustomAspectProps, controlImplementationDefinition.getCustomAspects());
   }
 
   private static ObjectNode putProps(JsonNode schema, String node) {

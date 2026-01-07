@@ -564,6 +564,12 @@ public class ProcessInDomainController
         controlCustomAspectKeys);
   }
 
+  @Override
+  @Operation(summary = "Returns domain-specific process CI JSON schema")
+  public @Valid CompletableFuture<ResponseEntity<String>> getCIJsonSchema(UUID domainId) {
+    return elementService.getCIJsonSchema(domainId, ElementType.PROCESS);
+  }
+
   @GetMapping("/{processId}/relations")
   @Operation(
       summary =

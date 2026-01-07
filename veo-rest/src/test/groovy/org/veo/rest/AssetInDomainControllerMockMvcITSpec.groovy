@@ -24,9 +24,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.presenter.api.DeviatingIdException
-import org.veo.core.UserAccessRights
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.ElementType
+import org.veo.core.entity.definitions.ControlImplementationDefinition
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
@@ -476,5 +478,31 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the request is performed"
         result.success == true
+    }
+
+    def "retrieve CI JSON schema"() {
+        given:
+        executeInTransaction {
+            domainRepository.getById(UUID.fromString(testDomainId), client.id).tap {
+                getElementTypeDefinition(ElementType.ASSET).controlImplementationDefinition = new ControlImplementationDefinition().tap {
+                    customAspects.testCA = newCustomAspectDefinition {attributeDefinitions.testAttr = new IntegerAttributeDefinition()}
+                }
+            }
+        }
+
+        when:
+        def schema = parseJson(get("/domains/$testDomainId/assets/control-implementations/json-schema"))
+
+        then:
+        with(schema.properties.customAspects) {
+            it.additionalProperties == false
+            with (it.properties) {
+                it.keySet() ==~ ['testCA']
+                with(it.testCA) {
+                    it.additionalProperties == false
+                    it.properties == [testAttr:[type:'integer']]
+                }
+            }
+        }
     }
 }

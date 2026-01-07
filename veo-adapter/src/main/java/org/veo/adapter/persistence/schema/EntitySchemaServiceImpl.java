@@ -24,6 +24,7 @@ import java.util.Set;
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.service.EntitySchemaService;
 
@@ -88,6 +89,11 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
       }
     }
     return translations;
+  }
+
+  @Override
+  public String getSchema(ControlImplementationDefinition controlImplementationDefinition) {
+    return generator.createSchema(controlImplementationDefinition);
   }
 
   static boolean isRequested(Set<Locale> requestedLanguages, Locale languageEntry) {

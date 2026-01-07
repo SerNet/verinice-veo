@@ -26,14 +26,17 @@ import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,4 +91,12 @@ public interface RiskAffectedInDomainResource {
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder);
+
+  @GetMapping(value = "/control-implementations/json-schema")
+  @ApiResponse(responseCode = "200", description = "Schema loaded")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  CompletableFuture<ResponseEntity<String>> getCIJsonSchema(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId);
 }

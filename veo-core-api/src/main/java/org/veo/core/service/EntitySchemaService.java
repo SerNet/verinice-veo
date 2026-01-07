@@ -23,6 +23,7 @@ import java.util.Set;
 import org.veo.core.Translations;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.definitions.ControlImplementationDefinition;
 
 /**
  * Builds and returns an entity JSON-schema that matches the requestes entity type and domain(s).
@@ -47,4 +48,7 @@ public interface EntitySchemaService {
    * identifier, it will be ignored.
    */
   Translations findTranslations(Set<Domain> domains, Set<Locale> languages);
+
+  /** Build domain-specific CI DTO schema */
+  String getSchema(ControlImplementationDefinition controlImplementationDefinition);
 }

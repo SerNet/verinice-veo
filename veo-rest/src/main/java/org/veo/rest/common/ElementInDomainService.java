@@ -383,4 +383,21 @@ public class ElementInDomainService {
                             .findFirst()
                             .orElseThrow())));
   }
+
+  public CompletableFuture<ResponseEntity<String>> getCIJsonSchema(
+      UUID domainId, ElementType elementType) {
+    var clientId = userAccessRightsProvider.getAccessRights().getClientId();
+    return CompletableFuture.supplyAsync(
+        () -> {
+          var domain =
+              domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
+                  domainId, clientId);
+          return ResponseEntity.ok()
+              .body(
+                  entitySchemaService.getSchema(
+                      domain
+                          .getElementTypeDefinition(elementType)
+                          .getControlImplementationDefinition()));
+        });
+  }
 }

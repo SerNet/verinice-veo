@@ -562,6 +562,12 @@ public class AssetInDomainController
         controlCustomAspectKeys);
   }
 
+  @Override
+  @Operation(summary = "Returns domain-specific asset CI JSON schema")
+  public @Valid CompletableFuture<ResponseEntity<String>> getCIJsonSchema(UUID domainId) {
+    return elementService.getCIJsonSchema(domainId, ElementType.ASSET);
+  }
+
   @GetMapping("/{assetId}/relations")
   @Operation(
       summary =
