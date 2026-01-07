@@ -118,6 +118,14 @@ public class SchemaExtender {
     addCustomAspectMap(customAspectProps, typeDef.getCustomAspects());
     addLinks(linkProps, typeDef.getLinks(), linkDto);
     extendDomainAssociationSchema(schema, elementType, domain);
+    if (typeDef.getControlImplementationDefinition() != null) {
+      var ciSchema = schema.required(PROPS).required("controlImplementations").required("items");
+      // TODO #4420 remove this once the "customAspects" property is added to the CI
+      ((ObjectNode) ciSchema.required(PROPS)).putObject("customAspects");
+      var ciCustomAspectProps = putProps(ciSchema, "customAspects");
+      addCustomAspectMap(
+          ciCustomAspectProps, typeDef.getControlImplementationDefinition().getCustomAspects());
+    }
   }
 
   private static ObjectNode putProps(JsonNode schema, String node) {

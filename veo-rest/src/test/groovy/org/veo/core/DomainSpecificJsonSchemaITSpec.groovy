@@ -23,7 +23,9 @@ import com.networknt.schema.Error
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.definitions.ControlImplementationDefinition
 import org.veo.core.entity.definitions.LinkDefinition
+import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
@@ -354,6 +356,47 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
         type << ElementType.RISK_AFFECTED_TYPES
     }
 
+    def "#elementType.singularTerm CI custom aspects are validated"(ElementType elementType) {
+        given:
+        createElementTypeDefinition(elementType)
+        def element = [
+            name: "JSON schema validation test subject",
+            subType: "A",
+            status: "A1",
+            owner: [targetUri: "http://localhost/units/..."],
+            controlImplementations: [
+                [
+                    customAspects: [
+                        CICA: [
+                            date: "2026-01-01"
+                        ]
+                    ]
+
+                ]
+            ]
+        ]
+
+        expect:
+        validate(element, elementType).empty
+
+        when:
+        element.controlImplementations.first().tap {
+            customAspects.CICA.date = 5
+            customAspects.NADA = [
+                what: "ever"
+            ]
+        }
+
+        then:
+        validate(element, elementType)*.toString() ==~ [
+            '/controlImplementations/0/customAspects/CICA/date: integer found, string expected',
+            '''/controlImplementations/0/customAspects: property 'NADA' is not defined in the schema and the schema does not allow additional properties''',
+        ]
+
+        where:
+        elementType << ElementType.RISK_AFFECTED_TYPES
+    }
+
     private List<Error> validate(Map element, ElementType elementType) {
         validateWriteOnly(getSchema(domain, elementType), JsonMapper.shared().valueToTree(element))
     }
@@ -374,6 +417,12 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
                 targetSubType = "P"
                 attributeDefinitions.goo = new TextAttributeDefinition()
             }
+            if (ElementType.RISK_AFFECTED_TYPES.contains(elementType))
+                controlImplementationDefinition = new ControlImplementationDefinition().tap {
+                    customAspects.CICA = newCustomAspectDefinition {
+                        attributeDefinitions.date = new DateAttributeDefinition()
+                    }
+                }
         })
     }
 }

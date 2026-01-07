@@ -26,6 +26,7 @@ import com.networknt.schema.dialect.DialectId
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.definitions.ControlImplementationDefinition
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -181,6 +182,35 @@ class EntitySchemaServiceITSpec extends Specification {
         }
     }
 
+    def "CI CAs are included"() {
+        given:
+        def assetSchema = getSchema(testDomain, ElementType.ASSET)
+        def scopeSchema = getSchema(testDomain, ElementType.SCOPE)
+        def processSchema = getSchema(testDomain, ElementType.PROCESS)
+        def controlSchema = getSchema(testDomain, ElementType.CONTROL)
+
+        expect:
+        with(
+                assetSchema.get(PROPS).get("controlImplementations").get("items")) {
+                    with(it.get(PROPS).get("customAspects").get(PROPS)) {
+                        it.get("assetCiTest").get(PROPS).get("assetCiTestAttr").get("type").asString() == "string"
+                        !it.has("scopeCiTest")
+                    }
+                }
+        with(
+                scopeSchema.get(PROPS).get("controlImplementations").get("items")) {
+                    with(it.get(PROPS).get("customAspects").get(PROPS)) {
+                        it.get("scopeCiTest").get(PROPS).get("scopeCiTestAttr").get("type").asString() == "boolean"
+                        !it.has("assetCiTest")
+                    }
+                }
+        with(
+                processSchema.get(PROPS).get("controlImplementations").get("items")) {
+                    !it.get(PROPS).has("customAspects")
+                }
+        !controlSchema.get(PROPS).has("controlImplementations")
+    }
+
     private static Schema getMetaSchemaV2019_09() throws IOException {
         SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2019_09)
                 .getSchema(SchemaLocation.of(DialectId.DRAFT_2019_09))
@@ -188,6 +218,10 @@ class EntitySchemaServiceITSpec extends Specification {
 
     private static JsonNode getSchema(Set<Domain> domains, ElementType type) {
         JsonMapper.shared().readTree(entitySchemaService.getSchema(type, domains))
+    }
+
+    private static JsonNode getSchema(Domain domain, ElementType type) {
+        JsonMapper.shared().readTree(entitySchemaService.getSchema(type, domain))
     }
 
     private Domain getTestDomain() {
@@ -215,6 +249,15 @@ class EntitySchemaServiceITSpec extends Specification {
                         statuses >> ["NEW", "OLD"]
                     }
                 ]
+                controlImplementationDefinition >> Mock(ControlImplementationDefinition) {
+                    customAspects >> [
+                        assetCiTest: Mock(CustomAspectDefinition) {
+                            attributeDefinitions >> [
+                                assetCiTestAttr: new TextAttributeDefinition()
+                            ]
+                        }
+                    ]
+                }
             }
             getElementTypeDefinition(ElementType.CONTROL) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
@@ -248,6 +291,15 @@ class EntitySchemaServiceITSpec extends Specification {
                         statuses >> ["NEW", "OLD"]
                     }
                 ]
+                controlImplementationDefinition >> Mock(ControlImplementationDefinition) {
+                    customAspects >> [
+                        scopeCiTest: Mock(CustomAspectDefinition) {
+                            attributeDefinitions >> [
+                                scopeCiTestAttr: new BooleanAttributeDefinition()
+                            ]
+                        }
+                    ]
+                }
             }
             getElementTypeDefinition(ElementType.PROCESS) >> Mock(ElementTypeDefinition) {
                 customAspects >> [:]
