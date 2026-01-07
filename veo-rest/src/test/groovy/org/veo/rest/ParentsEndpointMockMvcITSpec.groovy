@@ -265,6 +265,7 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
             def composite = documentRepository.save(newDocument(unit) {
                 name = 'Composite Document'
                 abbreviation = 'CD'
+                designator = 'DOC-30'
                 parts << doc
                 associateWithDomain(testDomain, "DOC_Document", "NEW")
             })
@@ -302,6 +303,17 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
             'SCP-003'
         ]
         "NAME"        | "asc"     | "name"        | [
+            [name:'Zebra Scope'],
+            [name:'Alpha Scope'],
+            [name:'Beta Scope']
+        ]          | [
+            'Alpha Scope',
+            'Beta Scope',
+            'Composite Document',
+            'Zebra Scope'
+        ]
+        // Lowercase to test case-insensitive sorting
+        "name"        | "asc"     | "name"        | [
             [name:'Zebra Scope'],
             [name:'Alpha Scope'],
             [name:'Beta Scope']
