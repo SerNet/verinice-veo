@@ -27,7 +27,9 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.networknt.schema.Error
 import com.networknt.schema.ExecutionContext
+import com.networknt.schema.ExecutionContextCustomizer
 import com.networknt.schema.Schema
 import com.networknt.schema.SchemaContext
 import com.networknt.schema.SchemaRegistry
@@ -237,7 +239,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     List<Error> validateWriteOnly(Schema schema, JsonNode node) {
         schema.validate(node, { ExecutionContext executionContext, SchemaContext schemaContext ->
             executionContext.executionConfig {it.writeOnly(true)}
-        })
+        } as ExecutionContextCustomizer)
     }
 
     private Schema parseSchema(String schema) {
