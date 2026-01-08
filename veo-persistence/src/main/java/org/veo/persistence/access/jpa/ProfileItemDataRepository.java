@@ -45,7 +45,7 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
            where tr.id in ?1 and tr.owner.owner.domain.owner = ?2
          """)
   Set<ProfileTailoringReferenceData> findTailoringReferencesByIds(
-      Iterable<String> ids, Client client);
+      Iterable<UUID> ids, Client client);
 
   @Query(
       """

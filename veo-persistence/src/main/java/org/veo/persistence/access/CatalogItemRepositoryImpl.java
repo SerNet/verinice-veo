@@ -102,10 +102,7 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
   @Override
   public Set<TailoringReference<CatalogItem, DomainBase>> findTailoringReferencesByIds(
       Set<UUID> ids, Client client) {
-    return catalogItemDataRepository
-        .findTailoringReferencesByIds(
-            ids.stream().map(UUID::toString).collect(Collectors.toSet()), client)
-        .stream()
+    return catalogItemDataRepository.findTailoringReferencesByIds(ids, client).stream()
         .map(tr -> (TailoringReference<CatalogItem, DomainBase>) tr)
         .collect(Collectors.toSet());
   }

@@ -66,10 +66,7 @@ public class ProfileItemRepositoryImpl implements ProfileItemRepository {
   @Override
   public Set<TailoringReference<ProfileItem, Profile>> findTailoringReferencesByIds(
       Set<UUID> ids, Client client) {
-    return profileItemDataRepository
-        .findTailoringReferencesByIds(
-            ids.stream().map(UUID::toString).collect(Collectors.toSet()), client)
-        .stream()
+    return profileItemDataRepository.findTailoringReferencesByIds(ids, client).stream()
         .map(tr -> (TailoringReference<ProfileItem, Profile>) tr)
         .collect(Collectors.toSet());
   }

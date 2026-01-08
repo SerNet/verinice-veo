@@ -79,7 +79,7 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
            where tr.id in ?1 and tr.owner.domain.owner = ?2
          """)
   Set<CatalogTailoringReferenceData> findTailoringReferencesByIds(
-      Iterable<String> ids, Client client);
+      Iterable<UUID> ids, Client client);
 
   @Query(
       """
