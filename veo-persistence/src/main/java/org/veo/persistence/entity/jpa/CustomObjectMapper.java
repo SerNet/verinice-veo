@@ -18,7 +18,6 @@
 package org.veo.persistence.entity.jpa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 /** Custom mapping for use in JSONB DB columns. */
@@ -26,6 +25,5 @@ public class CustomObjectMapper extends ObjectMapper {
   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public CustomObjectMapper() {
     registerModule(new BlackbirdModule());
-    disable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
   }
 }

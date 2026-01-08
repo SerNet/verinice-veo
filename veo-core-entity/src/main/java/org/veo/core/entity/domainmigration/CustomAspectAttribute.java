@@ -20,6 +20,8 @@ package org.veo.core.entity.domainmigration;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.CustomAttributeContainer;
@@ -34,6 +36,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "A custom aspect attribute")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public record CustomAspectAttribute(
     @NotNull ElementType elementType,
     @NotNull
