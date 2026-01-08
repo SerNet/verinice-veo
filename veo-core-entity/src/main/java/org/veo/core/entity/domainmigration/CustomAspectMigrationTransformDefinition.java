@@ -19,11 +19,8 @@ package org.veo.core.entity.domainmigration;
 
 import jakarta.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import org.veo.core.entity.ElementType;
 import org.veo.core.entity.condition.VeoExpression;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,16 +28,4 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public record CustomAspectMigrationTransformDefinition(
     @NotNull VeoExpression migrationExpression, @JsonUnwrapped CustomAspectAttribute target)
-    implements MigrationTransformDefinition {
-
-  // work around https://github.com/FasterXML/jackson-databind/issues/3726
-  @JsonCreator
-  public CustomAspectMigrationTransformDefinition(
-      @JsonProperty("elementType") ElementType elementType,
-      @JsonProperty("customAspect") String customAspect,
-      @JsonProperty("attribute") String attribute,
-      @JsonProperty(value = "migrationExpression", required = true)
-          VeoExpression migrationExpression) {
-    this(migrationExpression, new CustomAspectAttribute(elementType, customAspect, attribute));
-  }
-}
+    implements MigrationTransformDefinition {}
