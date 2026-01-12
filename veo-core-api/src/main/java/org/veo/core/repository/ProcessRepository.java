@@ -26,5 +26,4 @@ import org.veo.core.entity.ProcessRisk;
  * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
  * methods - i.e. queries based on particular fields.
  */
-public interface ProcessRepository
-    extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {}
+public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {}
