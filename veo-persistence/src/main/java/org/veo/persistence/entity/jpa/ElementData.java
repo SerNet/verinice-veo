@@ -258,10 +258,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
               if (findCustomAspect(newDomain, caType)
                   .isEmpty()) { // Unaltered CAs have already been carried over during CA sync on
                 // domain association
-                var attributes =
-                    ca.getAttributes().entrySet().stream()
-                        .filter(e -> isIncluded(deprecatedDefinitions, ca, e))
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                var attributes = findNonDeprecatedAttributes(ca, deprecatedDefinitions);
                 if (!attributes.isEmpty()) {
                   applyCustomAspect(new CustomAspectData(caType, attributes, newDomain));
                 }
@@ -269,12 +266,14 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
             });
   }
 
-  private boolean isIncluded(
-      Collection<DomainSpecificValueLocation> deprecatedDefinitions,
-      CustomAspect ca,
-      Entry<String, Object> e) {
-    return !deprecatedDefinitions.contains(
-        new CustomAspectAttribute(getType(), ca.getType(), e.getKey()));
+  private Map<String, Object> findNonDeprecatedAttributes(
+      CustomAspect ca, Collection<DomainSpecificValueLocation> deprecatedDefinitions) {
+    return ca.getAttributes().entrySet().stream()
+        .filter(
+            attr ->
+                !deprecatedDefinitions.contains(
+                    new CustomAspectAttribute(getType(), ca.getType(), attr.getKey())))
+        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
   }
 
   private void migrateCustomLinks(
