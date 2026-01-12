@@ -39,7 +39,7 @@ public class QueryFunctions {
     return spec.and(
         (root, query, criteriaBuilder) ->
             criteriaBuilder.or(
-                condition.getValues().stream()
+                condition.values().stream()
                     .map(
                         str ->
                             criteriaBuilder.like(
@@ -65,7 +65,7 @@ public class QueryFunctions {
       Specification<T> spec, String propertyName, QueryCondition<V> condition) {
     return spec.and(
         (root, query, criteriaBuilder) ->
-            QueryFunctions.in(root.get(propertyName), condition.getValues(), criteriaBuilder));
+            QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder));
   }
 
   static <T, V> Specification<T> andNotIn(
@@ -73,6 +73,6 @@ public class QueryFunctions {
     return spec.and(
         (root, query, criteriaBuilder) ->
             criteriaBuilder.not(
-                QueryFunctions.in(root.get(propertyName), condition.getValues(), criteriaBuilder)));
+                QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder)));
   }
 }

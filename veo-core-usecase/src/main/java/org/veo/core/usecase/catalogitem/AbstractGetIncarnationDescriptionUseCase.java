@@ -189,7 +189,7 @@ public class AbstractGetIncarnationDescriptionUseCase<
               .toList(),
           domain);
       query.fetchAppliedCatalogItems();
-      var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      var elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
       return items.stream()
           .collect(
               Collectors.toMap(

@@ -154,7 +154,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   public void whereIdIn(QueryCondition<UUID> ids) {
     mySpec =
         mySpec.and(
-            (root, query, criteriaBuilder) -> in(root.get("id"), ids.getValues(), criteriaBuilder));
+            (root, query, criteriaBuilder) -> in(root.get("id"), ids.values(), criteriaBuilder));
   }
 
   @Override
@@ -164,7 +164,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
             (root, query, criteriaBuilder) ->
                 in(
                     root.get("elementType"),
-                    elementType.getValues().stream()
+                    elementType.values().stream()
                         .map(v -> criteriaBuilder.literal(v.name()))
                         .collect(Collectors.toSet()),
                     criteriaBuilder));
@@ -177,7 +177,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
             (root, query, criteriaBuilder) ->
                 in(
                     root.join("domainAssociations", JoinType.LEFT).get("subType"),
-                    condition.getValues(),
+                    condition.values(),
                     criteriaBuilder));
   }
 
@@ -189,13 +189,13 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
               Join<Object, Object> join = root.join("domainAssociations", JoinType.LEFT);
               return criteriaBuilder.and(
                   criteriaBuilder.equal(join.get("domain"), domain),
-                  criteriaBuilder.in(join.get("subType")).value(condition.getValues()));
+                  criteriaBuilder.in(join.get("subType")).value(condition.values()));
             });
   }
 
   @Override
   public void whereChildElementIn(QueryCondition<UUID> condition) {
-    var childIds = condition.getValues().stream().collect(Collectors.toSet());
+    var childIds = condition.values().stream().collect(Collectors.toSet());
     mySpec =
         mySpec.and(
             (root, query, criateriaBuilder) ->
@@ -248,7 +248,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
             (root, query, criteriaBuilder) ->
                 in(
                     root.join("domainAssociations", JoinType.LEFT).get("status"),
-                    condition.getValues(),
+                    condition.values(),
                     criteriaBuilder));
   }
 
@@ -297,7 +297,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
-                    root.join("scopes", JoinType.LEFT).get("id"), condition.getValue()));
+                    root.join("scopes", JoinType.LEFT).get("id"), condition.value()));
   }
 
   @Override
@@ -480,11 +480,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
-        pagingConfiguration.getPageNumber(),
-        pagingConfiguration.getPageSize(),
-        pagingConfiguration.getSortOrder() == PagingConfiguration.SortOrder.ASCENDING
+        pagingConfiguration.pageNumber(),
+        pagingConfiguration.pageSize(),
+        pagingConfiguration.sortOrder() == PagingConfiguration.SortOrder.ASCENDING
             ? Direction.ASC
             : Direction.DESC,
-        pagingConfiguration.getSortColumn());
+        pagingConfiguration.sortColumn());
   }
 }

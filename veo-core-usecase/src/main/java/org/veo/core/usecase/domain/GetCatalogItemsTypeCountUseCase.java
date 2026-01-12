@@ -52,8 +52,7 @@ public class GetCatalogItemsTypeCountUseCase
 
     CatalogItemsTypeCount catalogItemTypeCounts = new CatalogItemsTypeCount();
     Set<SubTypeCount> counts = itemRepository.getCountsBySubType(domain);
-    counts.forEach(
-        c -> catalogItemTypeCounts.setCount(c.getElementType(), c.getSubType(), c.getCount()));
+    counts.forEach(c -> catalogItemTypeCounts.setCount(c.elementType(), c.subType(), c.count()));
 
     return new OutputData(catalogItemTypeCounts);
   }

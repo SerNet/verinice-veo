@@ -126,7 +126,7 @@ public class RiskComponentChangeListener {
       query.whereDomainsContain(domain);
       query.whereElementTypeMatches(new QueryCondition<>(ElementType.RISK_RELATED_ELEMENTS));
 
-      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
       elements.forEach(
           e ->
               elementMigrationService.migrateRiskRelated(
@@ -137,7 +137,7 @@ public class RiskComponentChangeListener {
       ElementQuery<Element> query = elementRepository.query(client);
       query.whereDomainsContain(domain);
       query.whereElementTypeMatches(new QueryCondition<>(ElementType.RISK_AFFECTED_TYPES));
-      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+      List<Element> elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
       elements.forEach(riskService::evaluateChangedRiskComponent);
     }
     if (requiresImpactInheritanceRecalculation(event.getChanges())

@@ -63,8 +63,8 @@ public class GetElementStatusCountUseCase
 
     counts.forEach(
         c -> {
-          ElementType type = c.getType();
-          String subType = c.getSubType();
+          ElementType type = c.type();
+          String subType = c.subType();
           if (!domain.getElementTypeDefinition(type).getSubTypes().containsKey(subType)) {
             log.error(
                 "Unit {} ({}) contains elements with an invalid subType {} in domain {} ({})",
@@ -75,7 +75,7 @@ public class GetElementStatusCountUseCase
                 domain.getIdAsString());
             return;
           }
-          elementStatusCounts.setCount(type, subType, c.getStatus(), c.getCount());
+          elementStatusCounts.setCount(type, subType, c.status(), c.count());
         });
 
     return new OutputData(elementStatusCounts);

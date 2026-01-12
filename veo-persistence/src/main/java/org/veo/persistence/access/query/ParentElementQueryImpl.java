@@ -65,16 +65,16 @@ public class ParentElementQueryImpl implements ParentElementQuery {
     query.whereDomainsContain(domain);
     PagingConfiguration<String> elementQueryConfig =
         new PagingConfiguration<>(
-            pagingConfig.getPageSize(),
-            pagingConfig.getPageNumber(),
-            toColumnName(pagingConfig.getSortColumn()),
-            pagingConfig.getSortOrder());
+            pagingConfig.pageSize(),
+            pagingConfig.pageNumber(),
+            toColumnName(pagingConfig.sortColumn()),
+            pagingConfig.sortOrder());
 
     var result = query.execute(elementQueryConfig);
 
     // Convert PagedResult<Element, String> to PagedResult<Element, SortCriterion>
     return new PagedResult<>(
-        pagingConfig, result.getResultPage(), result.getTotalResults(), result.getTotalPages());
+        pagingConfig, result.resultPage(), result.totalResults(), result.totalPages());
   }
 
   private String toColumnName(SortCriterion sortCriterion) {

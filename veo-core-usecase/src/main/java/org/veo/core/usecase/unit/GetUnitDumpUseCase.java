@@ -79,7 +79,7 @@ public class GetUnitDumpUseCase
     if (domain != null) {
       query.whereDomainsContain(domain);
     }
-    var elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+    var elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
     if (domain != null) {
       // remove data from other domains
       elements.forEach(

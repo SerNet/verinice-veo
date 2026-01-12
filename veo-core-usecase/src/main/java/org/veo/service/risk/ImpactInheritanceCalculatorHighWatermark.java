@@ -588,7 +588,7 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       query.whereIdIn(new QueryCondition<>(ids));
     }
     query.fetchRiskValuesAspects();
-    return query.execute(PagingConfiguration.UNPAGED).getResultPage().stream().toList();
+    return query.execute(PagingConfiguration.UNPAGED).resultPage().stream().toList();
   }
 
   private Set<RiskAffected<?, ?>> mapIdsToRiskAffected(

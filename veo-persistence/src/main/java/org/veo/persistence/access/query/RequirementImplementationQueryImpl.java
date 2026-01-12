@@ -95,11 +95,11 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
 
   private static Pageable toPageable(PagingConfiguration<String> pagingConfiguration) {
     return PageRequest.of(
-        pagingConfiguration.getPageNumber(),
-        pagingConfiguration.getPageSize(),
-        pagingConfiguration.getSortOrder() == PagingConfiguration.SortOrder.ASCENDING
+        pagingConfiguration.pageNumber(),
+        pagingConfiguration.pageSize(),
+        pagingConfiguration.sortOrder() == PagingConfiguration.SortOrder.ASCENDING
             ? Direction.ASC
             : Direction.DESC,
-        pagingConfiguration.getSortColumn());
+        pagingConfiguration.sortColumn());
   }
 }

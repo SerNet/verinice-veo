@@ -76,9 +76,9 @@ public class GetElementsUseCase
       QueryCondition<ElementType> elementTypes) {
     // Prefer specific repository, because it supports more query filters.
     // TODO #2902 fix filters with generic repo
-    if (elementTypes != null && elementTypes.getValues().size() == 1) {
+    if (elementTypes != null && elementTypes.values().size() == 1) {
       return repositoryProvider.getElementRepositoryFor(
-          elementTypes.getValues().iterator().next().getType());
+          elementTypes.values().iterator().next().getType());
     }
     return genericRepository;
   }
@@ -90,13 +90,13 @@ public class GetElementsUseCase
     // TODO: verinice-veo#3950
     if (userAccessRights.isUnitAccessRestricted()) {
       Optional.ofNullable(new QueryCondition<>(userAccessRights.getReadableUnitIds()))
-          .map(c -> unitRepository.findByIds(c.getValues()))
+          .map(c -> unitRepository.findByIds(c.values()))
           .ifPresent(query::whereUnitIn);
     }
     Optional.ofNullable(input.unitUuid)
         .map(
             condition ->
-                condition.getValues().stream()
+                condition.values().stream()
                     .map(unitRepository::getById)
                     .collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
@@ -105,10 +105,9 @@ public class GetElementsUseCase
         .map(
             condition ->
                 client.getDomains().stream()
-                    .filter(d -> d.getId().equals(condition.getValue()))
+                    .filter(d -> d.getId().equals(condition.value()))
                     .findFirst()
-                    .orElseThrow(
-                        () -> new NotFoundException(input.domainId.getValue(), Domain.class)))
+                    .orElseThrow(() -> new NotFoundException(input.domainId.value(), Domain.class)))
         .ifPresentOrElse(
             d ->
                 Optional.ofNullable(input.subType)
@@ -125,10 +124,10 @@ public class GetElementsUseCase
     Optional.ofNullable(input.updatedBy).ifPresent(query::whereUpdatedByContainsIgnoreCase);
     Optional.ofNullable(input.childElementIds).ifPresent(query::whereChildElementIn);
     Optional.ofNullable(input.hasChildElements)
-        .map(SingleValueQueryCondition::getValue)
+        .map(SingleValueQueryCondition::value)
         .ifPresent(query::whereChildElementsPresent);
     Optional.ofNullable(input.hasParentElements)
-        .map(SingleValueQueryCondition::getValue)
+        .map(SingleValueQueryCondition::value)
         .ifPresent(query::whereParentElementPresent);
     Optional.ofNullable(input.compositeId)
         .ifPresent(

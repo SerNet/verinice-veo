@@ -82,7 +82,7 @@ public class RelationGraphService {
     query.whereDomainsContain(domain);
     query.whereElementTypeMatches(new QueryCondition<>(Set.of(elementType)));
 
-    List<Element> center = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+    List<Element> center = query.execute(PagingConfiguration.UNPAGED).resultPage();
 
     if (center.isEmpty()) {
       throw new NotFoundException("Element not found");
@@ -144,7 +144,7 @@ public class RelationGraphService {
             LinkQuery.SortCriterion.DIRECTION,
             PagingConfiguration.SortOrder.ASCENDING);
     var translations = entitySchemaService.findTranslations(Set.of(domain), Set.of(locale));
-    List<InOrOutboundLink> customLinks = linkQuery.execute(linkPaging).getResultPage();
+    List<InOrOutboundLink> customLinks = linkQuery.execute(linkPaging).resultPage();
     for (InOrOutboundLink customLink : customLinks) {
 
       Element linkedEl = customLink.linkedElement();

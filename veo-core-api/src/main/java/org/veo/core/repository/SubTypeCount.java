@@ -19,11 +19,4 @@ package org.veo.core.repository;
 
 import org.veo.core.entity.ElementType;
 
-import lombok.Data;
-
-@Data
-public class SubTypeCount {
-  private final ElementType elementType;
-  private final String subType;
-  private final long count;
-}
+public record SubTypeCount(ElementType elementType, String subType, long count) {}

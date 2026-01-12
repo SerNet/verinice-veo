@@ -59,15 +59,15 @@ public class LinkQueryImpl implements LinkQuery {
   public PagedResult<InOrOutboundLink, SortCriterion> execute(
       PagingConfiguration<SortCriterion> pagingConfig) {
     var totalResultCount = (long) linkQuery("select count(*) from l;").getSingleResult();
-    var totalPages = (int) Math.ceilDiv(totalResultCount, pagingConfig.getPageSize());
+    var totalPages = (int) Math.ceilDiv(totalResultCount, pagingConfig.pageSize());
     List<Object[]> resultList =
         linkQuery(
                 "select l.direction, l.type, l.element_id from l\n"
-                    + join(pagingConfig.getSortColumn())
-                    + order(pagingConfig.getSortColumn(), pagingConfig.getSortOrder())
+                    + join(pagingConfig.sortColumn())
+                    + order(pagingConfig.sortColumn(), pagingConfig.sortOrder())
                     + "limit :limit offset :offset;")
-            .setParameter("limit", pagingConfig.getPageSize())
-            .setParameter("offset", pagingConfig.getPageNumber() * pagingConfig.getPageSize())
+            .setParameter("limit", pagingConfig.pageSize())
+            .setParameter("offset", pagingConfig.pageNumber() * pagingConfig.pageSize())
             .getResultList();
     var linkedElementsById =
         elementDataRepository

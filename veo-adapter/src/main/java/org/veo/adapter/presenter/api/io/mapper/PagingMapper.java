@@ -32,10 +32,10 @@ public class PagingMapper {
   public static <TDto, TItem, TSortCriterion> PageDto<TDto> toPage(
       PagedResult<TItem, TSortCriterion> input, Function<TItem, TDto> mapper) {
     return new PageDto<>(
-        input.getResultPage().stream().map(mapper).toList(),
-        input.getTotalResults(),
-        input.getTotalPages(),
-        input.getPagingConfiguration().getPageNumber());
+        input.resultPage().stream().map(mapper).toList(),
+        input.totalResults(),
+        input.totalPages(),
+        input.pagingConfiguration().pageNumber());
   }
 
   public static <TSortCriterion> PagingConfiguration<TSortCriterion> toConfig(

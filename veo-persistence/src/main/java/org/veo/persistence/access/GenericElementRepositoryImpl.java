@@ -253,7 +253,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     query.fetchRiskValuesAspects();
     query.fetchControlImplementations();
     query.fetchRequirementImplementations();
-    List<Element> elements = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+    List<Element> elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
 
     elements.forEach(
         element -> {

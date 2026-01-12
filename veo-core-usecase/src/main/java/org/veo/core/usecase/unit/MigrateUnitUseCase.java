@@ -93,7 +93,7 @@ public class MigrateUnitUseCase
     var elementQuery = genericElementRepository.query(unit.getClient());
     elementQuery.whereUnitIn(Set.of(unit));
     elementQuery.whereDomainsContain(oldDomain);
-    var elements = elementQuery.execute(PagingConfiguration.UNPAGED).getResultPage();
+    var elements = elementQuery.execute(PagingConfiguration.UNPAGED).resultPage();
     unit.addToDomains(newDomain);
 
     associateNewDomain(oldDomain, newDomain, elements);

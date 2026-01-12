@@ -217,7 +217,7 @@ public class PerformActionUseCase
     query.whereOwnerIs(unit);
     query.fetchAppliedCatalogItems();
     var result = query.execute(PagingConfiguration.UNPAGED);
-    return result.getResultPage();
+    return result.resultPage();
   }
 
   public record InputData(

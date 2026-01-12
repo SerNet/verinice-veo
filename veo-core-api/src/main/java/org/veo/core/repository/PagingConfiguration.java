@@ -17,13 +17,12 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /** Used to limit the results from a repository to a number of items */
-@Data
-public class PagingConfiguration<TSortCriterion> {
+public record PagingConfiguration<TSortCriterion>(
+    int pageSize, int pageNumber, TSortCriterion sortColumn, SortOrder sortOrder) {
 
   public static final PagingConfiguration<String> UNPAGED =
       new PagingConfiguration<>(Integer.MAX_VALUE, 0, "name", SortOrder.ASCENDING);
@@ -31,11 +30,6 @@ public class PagingConfiguration<TSortCriterion> {
   public static <T> PagingConfiguration<T> unpaged(T sortCriterion) {
     return new PagingConfiguration<>(Integer.MAX_VALUE, 0, sortCriterion, SortOrder.ASCENDING);
   }
-
-  private final int pageSize;
-  private final int pageNumber;
-  private final TSortCriterion sortColumn;
-  private final SortOrder sortOrder;
 
   @Getter
   @RequiredArgsConstructor

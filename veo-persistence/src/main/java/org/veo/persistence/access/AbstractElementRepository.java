@@ -74,7 +74,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   public Set<T> findByDomain(Domain domain) {
     var query = query(domain.getOwningClient().get());
     query.whereDomainsContain(domain);
-    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).resultPage());
   }
 
   @Override
@@ -85,7 +85,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     query.fetchParentsAndChildrenAndSiblings();
     query.fetchRisks();
     query.fetchRiskValuesAspects();
-    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).resultPage());
   }
 
   @Transactional

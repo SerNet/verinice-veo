@@ -70,7 +70,7 @@ class GetElementsUseCaseSpec extends UseCaseSpec {
         def input =
                 InputData.builder()
                 .unitUuid(Mock(QueryCondition) {
-                    getValues() >> [existingUnit.id]
+                    values() >> [existingUnit.id]
                 })
                 .subType(Mock(QueryCondition))
                 .pagingConfiguration(pagingConfiguration)

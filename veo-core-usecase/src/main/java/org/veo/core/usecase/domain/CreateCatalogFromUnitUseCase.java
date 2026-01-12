@@ -101,7 +101,7 @@ public class CreateCatalogFromUnitUseCase
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
     query.whereDomainsContain(domain);
-    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).resultPage());
   }
 
   @Override
@@ -118,7 +118,7 @@ public class CreateCatalogFromUnitUseCase
     var query = genericElementRepository.query(client);
     query.fetchAppliedCatalogItems();
     query.whereAppliedItemIn(obsoleteItems, domain);
-    var incarnations = query.execute(PagingConfiguration.UNPAGED).getResultPage();
+    var incarnations = query.execute(PagingConfiguration.UNPAGED).resultPage();
 
     log.info(
         "removing references to obsolete catalog items from {} incarnations", incarnations.size());

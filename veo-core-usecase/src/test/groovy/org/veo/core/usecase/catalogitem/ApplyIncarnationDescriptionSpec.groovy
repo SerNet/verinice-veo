@@ -57,7 +57,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
 
         //and some basic behavior
         emptyQuery.execute(_) >> emptyQueryResult
-        emptyQueryResult.getResultPage() >> []
+        emptyQueryResult.resultPage() >> []
 
         def existingDomainId = UUID.randomUUID()
         existingDomain.id >> existingDomainId
