@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.http.CacheControl;
 import org.springframework.web.context.request.WebRequest;
 
@@ -31,15 +28,11 @@ public final class ControllerConstants {
   public static final Integer ANY_INT = null;
   public static final Long ANY_LONG = null;
   public static final String ANY_STRING = null;
-  public static final UUID ANY_UUID = null;
-  public static final List<String> ANY_STRING_LIST = null;
-  public static final List<UUID> ANY_UUID_LIST = null;
   public static final Boolean ANY_BOOLEAN = null;
   public static final WebRequest ANY_REQUEST = null;
   public static final String SCOPE_IDS_PARAM = "scopes";
   public static final String SCOPE_IDS_DESCRIPTION =
       "IDs of scopes that the new element should be a member of";
-  static final String PARENT_PARAM = "parent";
   static final String UUID_PARAM = "uuid";
   static final String UUID_PARAM_SPEC = "/{" + UUID_PARAM + "}";
   static final String UNIT_PARAM = "unit";

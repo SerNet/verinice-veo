@@ -66,15 +66,6 @@ public interface ControlImplementationDataRepository
 
   @Query(
       """
-              select distinct ci from control_implementation  ci
-              join fetch ci.owner
-              join fetch ci.responsible
-              where ci.responsible = ?1
-             """)
-  Set<ControlImplementation> findByPerson(Person responsible);
-
-  @Query(
-      """
                   select distinct ci from control_implementation  ci
                   join fetch ci.owner
                   join fetch ci.responsible

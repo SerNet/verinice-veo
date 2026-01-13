@@ -27,7 +27,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
-import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ProfileData;
 
 public interface ProfileDataRepository extends IdentifiableVersionedDataRepository<ProfileData> {
@@ -74,9 +73,6 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                 """)
   List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       UUID profileId, Client client);
-
-  @Query("select ci from #{#entityName} ci where ci.domain = ?1")
-  Set<Profile> findAllByDomain(DomainData domain);
 
   @Query("select ci from #{#entityName} ci where ci.domain.owner.id = ?1 and ci.domain.id = ?2")
   Set<Profile> findAllByDomainId(UUID clientId, UUID domainId);

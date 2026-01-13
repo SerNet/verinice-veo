@@ -95,8 +95,4 @@ public class RestApiResponse {
   public static ResponseEntity<ApiResponseBody> noContent() {
     return ResponseEntity.noContent().build();
   }
-
-  public static ResponseEntity<ApiResponseBody> badRequest() {
-    return ResponseEntity.badRequest().build();
-  }
 }

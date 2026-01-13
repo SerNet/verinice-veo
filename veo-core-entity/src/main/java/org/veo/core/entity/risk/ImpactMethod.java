@@ -39,17 +39,6 @@ public enum ImpactMethod {
 
   private final String translationKey;
 
-  public static ImpactMethod fromTranslationKey(String name) {
-    if (name != null) {
-      for (ImpactMethod r : values()) {
-        if (name.equalsIgnoreCase(r.getTranslationKey())) {
-          return r;
-        }
-      }
-    }
-    throw new IllegalArgumentException("No impact reason with name %s found".formatted(name));
-  }
-
   public static class Constants {
     public static final String HIGH_WATER_MARK = "impact_method_high_water_mark";
   }
