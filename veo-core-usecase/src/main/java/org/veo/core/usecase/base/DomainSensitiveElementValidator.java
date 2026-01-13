@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.CustomAspect;
+import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -143,6 +146,33 @@ public class DomainSensitiveElementValidator {
           String.format(
               "Invalid attributes for custom aspect type '%s': %s", ca.getType(), ex.getMessage()),
           ex);
+    }
+    var conflictingDomains =
+        element.getDomains().stream()
+            .filter(d -> !d.equals(ca.getDomain()))
+            .filter(
+                d ->
+                    d.containsCustomAspectDefinition(element.getType(), ca.getType(), caDefinition))
+            .filter(
+                otherDomain -> {
+                  var attributesInOtherDomain =
+                      element
+                          .findCustomAspect(otherDomain, ca.getType())
+                          .map(CustomAttributeContainer::getAttributes)
+                          .orElse(Collections.emptyMap());
+                  return !ca.getAttributes().equals(attributesInOtherDomain);
+                })
+            .toList();
+    if (!conflictingDomains.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Custom aspect '%s' is shared between domains %s and %s %s, but element has conflicting values for the custom aspect in those domains."
+              .formatted(
+                  ca.getType(),
+                  conflictingDomains.stream()
+                      .map(d -> "%s %s".formatted(d.getName(), d.getTemplateVersion()))
+                      .collect(Collectors.joining(", ")),
+                  ca.getDomain().getName(),
+                  ca.getDomain().getTemplateVersion()));
     }
   }
 

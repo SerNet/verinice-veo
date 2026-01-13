@@ -22,6 +22,8 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import java.util.function.Consumer
 
+import org.spockframework.runtime.SpockTimeoutError
+
 class DomainUpdateRestTest extends VeoRestTest {
 
     String currentDomainTemplateId
@@ -473,6 +475,126 @@ class DomainUpdateRestTest extends VeoRestTest {
             customAspects.details.numberOfPages == 83
             links.author[0].target.name == "Manuel el autor"
             links.author[0].attributes.writingFinished == "2024-04-01"
+        }
+    }
+
+    def "migration fails with conflicting CAs"() {
+        given: "a different domain with a conflicting CA where the attribute keys are different"
+        def additionalDomainId = post("/content-creation/domains", [
+            name: "Other domain ${UUID.randomUUID()}",
+            authority: "santa",
+        ], 201, CONTENT_CREATOR).body.resourceId
+        put("/content-creation/domains/$additionalDomainId/element-type-definitions/process", [
+            subTypes: [
+                PRO_Task: [
+                    statuses: ["Todo", "Done"]
+                ]
+            ],
+            customAspects: [
+                test1: [
+                    attributeDefinitions: [
+                        isVeryGood: [type: 'boolean'],
+                        internalName: [type: 'text'],
+                    ]
+                ]
+            ]
+        ], null, 204, CONTENT_CREATOR)
+        get("/units/$unitId").with{
+            body.domains.add([targetUri: "/domains/$additionalDomainId"])
+            put(body._self, body, getETag())
+        }
+
+        and: "a process with different attribute values per domain"
+        def processId = post("/domains/$oldDomainId/processes", [
+            name: "protegal process",
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            customAspects: [
+                test1: [
+                    Attribute1: false,
+                    Attribute2: "gecko",
+                ]
+            ],
+        ]).body.resourceId
+        post("/domains/$additionalDomainId/processes/$processId", [
+            subType: "PRO_Task",
+            status: "Todo",
+        ], 200)
+        get("/domains/$additionalDomainId/processes/$processId").with{
+            body.customAspects.test1 = [
+                isVeryGood: true,
+                internalName: "quick lizard"
+            ]
+            put(body._self, body, getETag())
+        }
+
+        when: "migrating to a new template version that renames the attributes, bringing the CA in line with the other domain"
+        def newDomainId = createNewTemplateAndMigrate {
+            it.templateVersion = "2.0.0"
+            it.elementTypeDefinitions.process.customAspects.test1.attributeDefinitions = [
+                isVeryGood: [type: 'boolean'],
+                internalName: [type: 'text'],
+            ]
+            it.domainMigrationDefinition = [migrations: [
+                    [description: [en: "keys are changed (the old ones were not very helpful)"],
+                        id: "fix-test1-keys",
+                        oldDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute1"
+                            ],
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "Attribute2"
+                            ],
+                        ],
+                        newDefinitions: [
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "isVeryGood",
+                                migrationExpression: [
+                                    type: 'customAspectAttributeValue',
+                                    customAspect: 'test1',
+                                    attribute: 'Attribute1'
+                                ]
+                            ],
+                            [
+                                type: "customAspectAttribute",
+                                elementType: "process",
+                                customAspect: "test1",
+                                attribute: "internalName",
+                                migrationExpression: [
+                                    type: 'customAspectAttributeValue',
+                                    customAspect: 'test1',
+                                    attribute: 'Attribute2'
+                                ]
+                            ],
+                        ],
+
+                    ],
+                ]]
+        }
+
+        then: "the migration failed"
+        // TODO #3942 / #4360 check error message.
+        thrown(SpockTimeoutError)
+        newDomainId == null
+
+        and: "the old conflicting values have been preserved"
+        with(get("/domains/$oldDomainId/processes/$processId").body) {
+            customAspects.test1.Attribute1 == false
+            customAspects.test1.Attribute2 == "gecko"
+        }
+        with(get("/domains/$additionalDomainId/processes/$processId").body) {
+            customAspects.test1.isVeryGood == true
+            customAspects.test1.internalName == "quick lizard"
         }
     }
 

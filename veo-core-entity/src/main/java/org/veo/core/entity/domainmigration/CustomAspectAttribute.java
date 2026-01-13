@@ -88,6 +88,6 @@ public record CustomAspectAttribute(
 
   @Override
   public void applyValue(Element element, Domain domain, Object value) {
-    element.findOrAddCustomAspect(domain, customAspect).getAttributes().put(attribute, value);
+    element.applyCustomAspectAttribute(domain, customAspect, attribute, value);
   }
 }

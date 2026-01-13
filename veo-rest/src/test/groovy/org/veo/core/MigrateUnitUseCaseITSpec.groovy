@@ -24,10 +24,18 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.domainmigration.CustomAspectAttribute
+import org.veo.core.entity.domainmigration.CustomAspectMigrationTransformDefinition
+import org.veo.core.entity.domainmigration.DomainMigrationDefinition
+import org.veo.core.entity.domainmigration.DomainMigrationStep
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.PotentialProbability
@@ -37,6 +45,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
+import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.MigrateUnitUseCase
@@ -400,6 +409,87 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+    }
+
+    def "Migration fails due to conflict in migrated CA attribute"() {
+        given: "an attribute that is renamed in a new domain version"
+        def domainA1 = domainDataRepository.save(newDomain(client) {
+            templateVersion = "1.0.0"
+            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+                subTypes.PRO_gram = newSubTypeDefinition {}
+                customAspects.put("performance", newCustomAspectDefinition {
+                    attributeDefinitions.isFast = new BooleanAttributeDefinition()
+                })
+            })
+        })
+        def domainA2 = domainDataRepository.save(newDomain(client) {
+            templateVersion = "2.0.0"
+            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+                subTypes.PRO_gram = newSubTypeDefinition {}
+                customAspects.put("performance", newCustomAspectDefinition {
+                    attributeDefinitions.isVeryFast = new BooleanAttributeDefinition()
+                })
+                domainMigrationDefinition = new DomainMigrationDefinition([
+                    (new DomainMigrationStep("rename", new TranslatedText([:]), [
+                        new CustomAspectAttribute(ElementType.PROCESS, "performance", "isFast"),
+                    ], [
+                        new CustomAspectMigrationTransformDefinition(
+                        new CustomAspectAttributeValueExpression("performance", "isFast"),
+                        new CustomAspectAttribute(ElementType.PROCESS, "performance", "isVeryFast"),
+                        )
+                    ]))
+                ])
+            })
+        })
+
+        and: "another domain that defines it just like A2"
+        def domainB = domainDataRepository.save(newDomain(client) {
+            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+                subTypes.PRO_gram = newSubTypeDefinition {}
+                customAspects.put("performance", newCustomAspectDefinition {
+                    attributeDefinitions.isVeryFast = new BooleanAttributeDefinition()
+                })
+            })
+        })
+
+        and: "a process with conflicted values for the CA"
+        def unit = unitRepository.save(newUnit(client) {
+            addToDomains(Set.of(domainA1, domainB))
+        })
+        def process = processRepository.save(newProcess(unit) {
+            associateWithDomain(domainA1, "PRO_gram", "NEW")
+            associateWithDomain(domainB, "PRO_gram", "NEW")
+            applyCustomAspect(newCustomAspect("performance", domainA1) {
+                attributes = [
+                    isFast: false
+                ]
+            })
+            applyCustomAspect(newCustomAspect("performance", domainB) {
+                attributes = [
+                    isVeryFast: true
+                ]
+            })
+        })
+
+        when: "migrating the process to the new version"
+        runUseCase(unit.id,domainA1.id, domainA2.id)
+
+        then:"a conflict is detected"
+        thrown(MigrationFailedException)
+
+        when: "resolving the conflict"
+        process.applyCustomAspectAttribute(domainB, "performance", "isVeryFast", false)
+        process = processRepository.save(process)
+
+        and: "re-attempting the migration"
+        runUseCase(unit.id,domainA1.id, domainA2.id)
+        process = processRepository.findById(process.id).get()
+
+        then: "migration succeeded"
+        noExceptionThrown()
+        !process.isAssociatedWithDomain(domainA1)
+        process.findCustomAspect(domainA2, "performance").get().attributes["isVeryFast"] == false
+        process.findCustomAspect(domainB, "performance").get().attributes["isVeryFast"] == false
     }
 
     def runUseCase(UUID unitId, UUID domainIdOld = dsgvoDomain.id, UUID domainIdNew = dsgvoDomainV2.id) {

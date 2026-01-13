@@ -238,7 +238,7 @@ public interface Element
       Domain newDomain,
       Collection<DomainSpecificValueLocation> excludedDefinitions);
 
-  CustomAspect findOrAddCustomAspect(Domain domain, String type);
+  void applyCustomAspectAttribute(Domain domain, String caType, String attribute, Object value);
 
   default ElementType getType() {
     return ElementType.fromModelInterface(getModelInterface());

@@ -52,7 +52,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
   protected CustomAttributeContainerData(
       String type, Map<String, Object> attributes, Domain domain) {
     this.type = type;
-    this.attributes = attributes;
+    this.attributes = new HashMap<>(attributes);
     this.domain = domain;
   }
 
@@ -78,6 +78,11 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
       return true;
     }
     return false;
+  }
+
+  @Override
+  public void setAttribute(String attribute, Object value) {
+    attributes.put(attribute, value);
   }
 
   @Override

@@ -404,6 +404,18 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .orElseGet(() -> addToLinks(newLink));
   }
 
+  /**
+   * Sets an attribute value in specified custom aspect. If specified custom aspect does not exist,
+   * it is created first. This does NOT sync with other domains - the attribute is only set in the
+   * given domain.
+   */
+  @Override
+  public void applyCustomAspectAttribute(
+      Domain domain, String caType, String attribute, Object value) {
+    requireAssociationWithDomain(domain);
+    findOrAddCustomAspect(domain, caType).setAttribute(attribute, value);
+  }
+
   @Override
   public CatalogItem toCatalogItem(Domain domain) {
     var item =
@@ -422,13 +434,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return item;
   }
 
-  @Override
-  public CustomAspect findOrAddCustomAspect(Domain domain, String type) {
+  private CustomAspect findOrAddCustomAspect(Domain domain, String type) {
     return findCustomAspect(domain, type)
         .orElseGet(
             () -> {
               var ca = new CustomAspectData(type, new HashMap<>(), domain);
-              applyCustomAspect(ca);
+              ca.setOwner(this);
+              customAspects.add(ca);
               return ca;
             });
   }

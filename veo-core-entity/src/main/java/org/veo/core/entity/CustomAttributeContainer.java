@@ -47,4 +47,6 @@ public interface CustomAttributeContainer {
    * @return {@code true} if any attributes have changed
    */
   boolean setAttributes(Map<String, Object> attributes);
+
+  void setAttribute(String attribute, Object value);
 }

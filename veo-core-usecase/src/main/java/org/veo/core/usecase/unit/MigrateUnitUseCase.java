@@ -114,18 +114,17 @@ public class MigrateUnitUseCase
     if (needsMigrationDefinition) {
       applyMigrationDefinition(oldDomain, newDomain, elements);
     }
+    log.debug("removing elements from old domain: {}", oldDomain);
+    elements.forEach(e -> e.removeFromDomains(oldDomain));
+    unit.removeFromDomains(oldDomain);
+    elements.forEach(
+        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
     var invalidElements =
         elements.stream()
             .filter(e -> !DomainSensitiveElementValidator.isValid(e, newDomain))
             .toList();
 
-    if (invalidElements.isEmpty()) {
-      log.info("migration successful, remove old domain: {}", oldDomain);
-      elements.forEach(e -> e.removeFromDomains(oldDomain));
-      unit.removeFromDomains(oldDomain);
-      elements.forEach(
-          element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
-    } else {
+    if (!invalidElements.isEmpty()) {
       throw MigrationFailedException.forUnit(elements.size(), invalidElements.size());
     }
     return new OutputData(invalidElements);
