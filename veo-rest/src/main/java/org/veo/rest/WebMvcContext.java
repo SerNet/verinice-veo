@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.ElementType;
+import org.veo.core.repository.ClientReadOnlyRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.ParentElementQuery;
@@ -53,7 +54,7 @@ import org.veo.rest.security.ApplicationUser;
 class WebMvcContext implements WebMvcConfigurer {
 
   @Autowired private ObjectMapper defaultMapper;
-  @Autowired private ClientRepository clientRepository;
+  @Autowired private ClientReadOnlyRepository clientRepository;
 
   @Override
   public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -111,7 +112,8 @@ class WebMvcContext implements WebMvcConfigurer {
                     .ifPresent(
                         clientId -> {
                           clientRepository
-                              .findActiveById(clientId)
+                              .findById(clientId)
+                              .filter(ClientRepository.IS_CLIENT_ACTIVE)
                               .orElseThrow(() -> new ClientNotActiveException(clientId.toString()));
                         });
                 return true;
