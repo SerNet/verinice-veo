@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -49,11 +48,6 @@ public class ClientRepositoryImpl
     clientDataRepository = dataRepository;
     this.domainRepository = domainRepository;
     this.userConfigurationDataRepository = userConfigurationDataRepository;
-  }
-
-  @Override
-  public Optional<Client> findByIdFetchTranslations(UUID id) {
-    return clientDataRepository.findWithTranslationsById(id).map(Client.class::cast);
   }
 
   @Override

@@ -40,4 +40,9 @@ public class ClientReadOnlyRepositoryImpl implements ClientReadOnlyRepository {
   public Optional<Client> findById(UUID id) {
     return clientDataRepository.findById(id).map(Client.class::cast);
   }
+
+  @Override
+  public Optional<Client> findByIdFetchTranslations(UUID id) {
+    return clientDataRepository.findWithTranslationsById(id).map(Client.class::cast);
+  }
 }

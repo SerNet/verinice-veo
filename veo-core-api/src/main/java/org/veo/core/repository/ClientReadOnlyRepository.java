@@ -31,4 +31,6 @@ import org.veo.core.entity.Client;
  */
 public interface ClientReadOnlyRepository {
   Optional<Client> findById(UUID id);
+
+  Optional<Client> findByIdFetchTranslations(UUID id);
 }

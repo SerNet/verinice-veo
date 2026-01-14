@@ -33,7 +33,7 @@ import org.veo.core.Translations;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
-import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ClientReadOnlyRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.VeoMessage;
 import org.veo.rest.common.ClientNotActiveException;
@@ -49,7 +49,7 @@ public class TranslationController implements TranslationsResource {
 
   private final EntitySchemaService schemaService;
 
-  private final ClientRepository clientRepository;
+  private final ClientReadOnlyRepository clientRepository;
 
   private final MessageSource messageSource;
 
