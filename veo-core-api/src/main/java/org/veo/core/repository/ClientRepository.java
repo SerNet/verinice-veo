@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -46,16 +45,6 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
       throw new IllegalStateException("Client not active. " + client.getState());
     }
     return client;
-  }
-
-  default Optional<Client> findActiveById(UUID clientId) {
-    Optional<Client> oClient = findById(clientId);
-    if (oClient.isPresent()) {
-      if (IS_CLIENT_ACTIVE.test(oClient.get())) {
-        return oClient;
-      }
-    }
-    return Optional.empty();
   }
 
   Set<Client> findAllActiveWhereDomainTemplateNotApplied(UUID domainTemplateId);
