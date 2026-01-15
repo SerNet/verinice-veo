@@ -492,6 +492,60 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         process.findCustomAspect(domainB, "performance").get().attributes["isVeryFast"] == false
     }
 
+    def "Migration fails with conflicted CA (non-breaking change)"() {
+        given: "a CA that is extended in the new DSGVO"
+        def caDef = dsgvoDomainV2
+                .getElementTypeDefinition(ElementType.DOCUMENT)
+                .getCustomAspectDefinition("document_details")
+
+        and: "another domain that defines it just like the new DSGVO"
+        def otherDomain = domainDataRepository.save(newDomain(client) {
+            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.DOCUMENT) {
+                subTypes.DOC_Document = newSubTypeDefinition {}
+                customAspects.put("document_details", caDef)
+            })
+        })
+
+        and: "a document with conflicted values for the CA"
+        def unit = unitRepository.save(newUnit(client) {
+            addToDomains(Set.of(dsgvoDomain, otherDomain))
+        })
+        def document = documentDataRepository.save(newDocument(unit) {
+            associateWithDomain(dsgvoDomain, "DOC_Document", "RELEASED")
+            associateWithDomain(otherDomain, "DOC_Document", "NEW")
+            applyCustomAspect(newCustomAspect("document_details", dsgvoDomain) {
+                attributes = [
+                    document_details_version: "draft-1"
+                ]
+            })
+            applyCustomAspect(newCustomAspect("document_details", otherDomain) {
+                attributes = [
+                    document_details_version: "0.0.1"
+                ]
+            })
+        })
+
+        when: "migrating the document to the new DSGVO version"
+        runUseCase(unit.id,dsgvoDomain.id, dsgvoDomainV2.id)
+
+        then:
+        thrown(MigrationFailedException)
+
+        when: "resolving the conflict"
+        document.applyCustomAspectAttribute(otherDomain, "document_details", "document_details_version", "draft-1")
+        document = documentDataRepository.save(document)
+
+        and: "re-attempting the migration"
+        runUseCase(unit.id,dsgvoDomain.id, dsgvoDomainV2.id)
+        document = documentDataRepository.findById(document.id).get()
+
+        then: "migration succeeded"
+        noExceptionThrown()
+        !document.isAssociatedWithDomain(dsgvoDomain)
+        document.findCustomAspect(dsgvoDomainV2, "document_details").get().attributes["document_details_version"] == "draft-1"
+        document.findCustomAspect(otherDomain, "document_details").get().attributes["document_details_version"] == "draft-1"
+    }
+
     def runUseCase(UUID unitId, UUID domainIdOld = dsgvoDomain.id, UUID domainIdNew = dsgvoDomainV2.id) {
         executeInTransaction {
             useCase.execute(new InputData(unitId, domainIdOld, domainIdNew), NoRestrictionAccessRight.from(client.idAsString))

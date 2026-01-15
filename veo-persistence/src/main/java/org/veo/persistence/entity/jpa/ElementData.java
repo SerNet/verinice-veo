@@ -255,13 +255,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .forEach(
             ca -> {
               String caType = ca.getType();
-              if (findCustomAspect(newDomain, caType)
-                  .isEmpty()) { // Unaltered CAs have already been carried over during CA sync on
-                // domain association
-                var attributes = findNonDeprecatedAttributes(ca, deprecatedDefinitions);
-                if (!attributes.isEmpty()) {
-                  applyCustomAspect(new CustomAspectData(caType, attributes, newDomain));
-                }
+              var attributes = findNonDeprecatedAttributes(ca, deprecatedDefinitions);
+              if (!attributes.isEmpty()) {
+                applyCustomAspectInIndividualDomain(caType, attributes, newDomain);
               }
             });
   }
