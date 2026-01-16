@@ -129,7 +129,7 @@ public class ElementInDomainService {
   @Valid
   public <TElement extends Element> boolean ensureElementExists(
       UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
-    return runner.run(
+    return runner.runReadOnly(
             () ->
                 getElementUseCase.execute(
                     new GetElementUseCase.InputData(uuid, domainId, false),

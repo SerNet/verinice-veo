@@ -31,8 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class TransactionalRunner {
 
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public <T> T run(Supplier<T> action) {
+  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+  public <T> T runReadOnly(Supplier<T> action) {
     return action.get();
   }
 }
