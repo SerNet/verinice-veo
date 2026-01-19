@@ -37,7 +37,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
@@ -127,7 +129,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       new DomainMigrationDefinition(Collections.emptyList());
 
   @Column(name = "domain_display_translation")
-  @Type(JsonType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @NotNull
   @Valid
   private Translated<NameAbbreviationAndDescription> translations = new Translated<>();
