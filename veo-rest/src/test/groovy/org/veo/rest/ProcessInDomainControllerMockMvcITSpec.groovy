@@ -453,4 +453,19 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def linksOfExpectedType = links.'necessaryData'
         linksOfExpectedType.size() == 1
     }
+
+    def "retrieve CI JSON schema if no ControlImplementationDefinition is set"() {
+        when:
+        def schema = parseJson(get("/domains/$testDomainId/processes/control-implementations/json-schema"))
+
+        then:
+        schema.properties.keySet() ==~ [
+            '_requirementImplementations',
+            'control',
+            'description',
+            'implementationStatus',
+            'owner',
+            'responsible'
+        ]
+    }
 }
