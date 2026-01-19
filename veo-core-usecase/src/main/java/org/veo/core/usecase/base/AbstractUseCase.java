@@ -85,10 +85,6 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
     return e;
   }
 
-  protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, UUID id) {
-    return repositoryProvider.getRepositoryFor(clazz).findById(id);
-  }
-
   protected <M extends Element> Optional<M> findElement(
       Class<M> clazz, UUID id, UserAccessRights user) {
     return repositoryProvider.getElementRepositoryFor(clazz).findById(id, user);
