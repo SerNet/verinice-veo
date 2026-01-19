@@ -23,6 +23,7 @@ import static java.util.function.Function.identity;
 import static org.veo.core.entity.risk.ImpactMethod.HIGH_WATER_MARK;
 import static org.veo.core.entity.risk.ImpactReason.MANUAL;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public record ImpactValues(
     Map<CategoryRef, String> potentialImpactExplanations) {
 
   public ImpactValues {
+    potentialImpacts = Map.copyOf(potentialImpacts);
     if (potentialImpactsCalculated == null) {
       potentialImpactsCalculated = newHashMap(5);
     }
@@ -112,5 +114,20 @@ public record ImpactValues(
     return potentialImpacts.containsKey(cat)
         ? potentialImpactReasons.getOrDefault(cat, MANUAL).getTranslationKey()
         : HIGH_WATER_MARK.getTranslationKey();
+  }
+
+  public ImpactValues withoutCategories(Collection<CategoryRef> impactCategoriesToUnset) {
+    return new ImpactValues(
+        withoutKeys(potentialImpacts, impactCategoriesToUnset),
+        withoutKeys(potentialImpactsCalculated, impactCategoriesToUnset),
+        withoutKeys(potentialImpactReasons, impactCategoriesToUnset),
+        withoutKeys(potentialImpactExplanations, impactCategoriesToUnset));
+  }
+
+  private static <K, V> @NotNull Map<K, V> withoutKeys(
+      @NotNull Map<K, V> source, Collection<K> keysToOmit) {
+    return source.entrySet().stream()
+        .filter(e -> !keysToOmit.contains(e.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

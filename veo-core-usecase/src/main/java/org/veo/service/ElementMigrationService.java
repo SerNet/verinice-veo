@@ -34,7 +34,6 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
-import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -202,22 +201,10 @@ public class ElementMigrationService {
     var impactsForDomain = ra.getImpactValues(domain);
     var oldImpacts = impactsForDomain.getOrDefault(rdRef, null);
     if (oldImpacts == null) return;
-
-    removedImpactCategories(detectedChanges)
-        .forEach(
-            remCat -> {
-              oldImpacts.potentialImpactsCalculated().remove(remCat);
-              oldImpacts.potentialImpacts().remove(remCat);
-              oldImpacts.potentialImpactReasons().remove(remCat);
-              oldImpacts.potentialImpactExplanations().remove(remCat);
-            });
-
-    impactsForDomain.put(
-        rdRef,
-        new ImpactValues(
-            oldImpacts.potentialImpacts(),
-            oldImpacts.potentialImpactsCalculated(),
-            oldImpacts.potentialImpactReasons(),
-            oldImpacts.potentialImpactExplanations()));
+    var impactCategoriesToUnset = removedImpactCategories(detectedChanges);
+    if (impactCategoriesToUnset.isEmpty()) {
+      return;
+    }
+    impactsForDomain.put(rdRef, oldImpacts.withoutCategories(impactCategoriesToUnset));
   }
 }

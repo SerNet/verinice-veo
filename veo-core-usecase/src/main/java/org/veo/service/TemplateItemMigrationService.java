@@ -42,6 +42,7 @@ import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
+import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -123,24 +124,32 @@ public class TemplateItemMigrationService {
 
   private void migrateAspects(
       TemplateItem<?, ?> item, RiskDefinition rd, Set<RiskDefinitionChange> detectedChanges) {
-    var impactCategoriesToUnset = removedImpactCategories(detectedChanges);
     TemplateItemAspects aspects = item.getAspects();
-    aspects
-        .findImpactValues(rd.toRef())
-        .ifPresent(
-            impactValues -> {
-              impactCategoriesToUnset.forEach(impactValues.potentialImpacts()::remove);
-              impactCategoriesToUnset.forEach(impactValues.potentialImpactReasons()::remove);
-              impactCategoriesToUnset.forEach(impactValues.potentialImpactExplanations()::remove);
-            });
 
     item.setAspects(
         new TemplateItemAspects(
-            aspects.impactValues(),
+            aspects.impactValues() == null
+                ? null
+                : migrateImpactValues(rd, detectedChanges, aspects.impactValues()),
             aspects.scenarioRiskValues() == null
                 ? null
                 : migrateScenarioValues(rd, detectedChanges, aspects.scenarioRiskValues()),
             aspects.scopeRiskDefinition()));
+  }
+
+  private Map<RiskDefinitionRef, ImpactValues> migrateImpactValues(
+      RiskDefinition rd,
+      Set<RiskDefinitionChange> detectedChanges,
+      Map<RiskDefinitionRef, ImpactValues> impactValues) {
+
+    var impactCategoriesToUnset = removedImpactCategories(detectedChanges);
+    ImpactValues valuesForRd = impactValues.get(rd.toRef());
+    if (impactCategoriesToUnset.isEmpty() || valuesForRd == null) {
+      return impactValues;
+    }
+    Map<RiskDefinitionRef, ImpactValues> result = new HashMap<>(impactValues);
+    result.put(rd.toRef(), valuesForRd.withoutCategories(impactCategoriesToUnset));
+    return result;
   }
 
   private Map<RiskDefinitionRef, PotentialProbability> migrateScenarioValues(
