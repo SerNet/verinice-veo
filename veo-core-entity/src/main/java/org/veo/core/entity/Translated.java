@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Translated<T> implements Serializable {
+public class Translated<T> {
 
   @NotNull @JsonValue private Map<Locale, T> translations = new HashMap<>();
 
