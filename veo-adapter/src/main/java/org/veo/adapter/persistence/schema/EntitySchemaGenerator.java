@@ -85,7 +85,9 @@ public class EntitySchemaGenerator {
   public String createSchema(ControlImplementationDefinition controlImplementationDefinition) {
     try {
       ObjectNode jsonSchema = baseCISchema.get();
-      schemaExtender.extendSchema(jsonSchema, controlImplementationDefinition);
+      if (controlImplementationDefinition != null) {
+        schemaExtender.extendSchema(jsonSchema, controlImplementationDefinition);
+      }
       return writer.writeValueAsString(jsonSchema);
     } catch (JsonProcessingException e) {
       throw new EntitySchemaException("Schema creation failed", e);

@@ -23,14 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.web.bind.MethodArgumentNotValidException
 
+import org.veo.categories.MapGetProperties
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Process
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.common.ETag
 
 import groovy.json.JsonSlurper
+import spock.util.mop.Use
 
 @WithUserDetails("user@domain.example")
 class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -452,5 +453,21 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         and: 'there is one link of the expected type'
         def linksOfExpectedType = links.'necessaryData'
         linksOfExpectedType.size() == 1
+    }
+
+    @Use(MapGetProperties)
+    def "retrieve CI JSON schema if no ControlImplementationDefinition is set"() {
+        when:
+        def schema = parseJson(get("/domains/$testDomainId/processes/control-implementations/json-schema"))
+
+        then:
+        schema.properties.keySet() ==~ [
+            '_requirementImplementations',
+            'control',
+            'description',
+            'implementationStatus',
+            'owner',
+            'responsible'
+        ]
     }
 }
