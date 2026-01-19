@@ -20,11 +20,7 @@ package org.veo.core.usecase;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.ClientRepository;
 
 /** A collection of methods used by use cases. */
@@ -41,21 +37,5 @@ public final class UseCaseTools {
     return clientRepository
         .findById(clientId)
         .orElseThrow(() -> new NotFoundException(clientId, Client.class));
-  }
-
-  /**
-   * Checks if the given domain is owned by the client.
-   *
-   * @throws IllegalArgumentException when used with a Domaintemplate instance, as Domaintemplate
-   *     can not be owned by a client.
-   * @throws ModelConsistencyException when the domain is not owned by the client.
-   */
-  public static void checkDomainBelongsToClient(Client client, DomainBase domain) {
-    if (domain instanceof DomainTemplate) {
-      throw new IllegalArgumentException("A DomainTemplate never belongs to a client");
-    }
-    if (!client.getDomains().contains(domain)) {
-      throw new ClientBoundaryViolationException(domain, client);
-    }
   }
 }
