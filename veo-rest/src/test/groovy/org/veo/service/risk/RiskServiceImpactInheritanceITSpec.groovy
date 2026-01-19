@@ -1231,12 +1231,8 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
             log.debug("{}", second.name)
 
-            try {
-                def changed = impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, first)
-                changed.forEach {assetDataRepository.save(it)}
-            } catch (ImpactInheritanceCircleException e) {
-                log.debug("Ignoring exception ", e)
-            }
+            def changed = impactInheritanceCalculator.calculateImpactInheritance(unit, domain, riskDefinitionId, first)
+            changed.forEach {assetDataRepository.save(it)}
 
             this.dataDrivenAssets = this.dataDrivenAssets
                     .collect {
