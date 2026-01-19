@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.DomainTemplateService;
@@ -60,7 +59,4 @@ public class CreateDomainFromTemplateUseCase
   @Valid
   public record InputData(UUID domainTemplateId, UUID clientId, boolean copyProfiles)
       implements UseCase.InputData {}
-
-  @Valid
-  public record OutputData(@Valid Domain domain) implements UseCase.OutputData {}
 }
