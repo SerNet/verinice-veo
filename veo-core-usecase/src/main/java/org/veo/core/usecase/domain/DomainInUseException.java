@@ -22,10 +22,6 @@ import org.veo.core.entity.DomainException;
 public class DomainInUseException extends DomainException {
   private static final long serialVersionUID = -929965484755631335L;
 
-  public DomainInUseException(String message, Exception inner) {
-    super(message, inner);
-  }
-
   public DomainInUseException(String message) {
     super(message);
   }
