@@ -14,8 +14,6 @@ _Angaben zur Implementierung._
 
 ---
 
-/label ~"1.Component::5.Undefined"
+/label ~"1.Component::8.Undefined"
 
 /label ~"2.IssueType::1.Story"
-
-/label ~"3.Status::1.Specification"
