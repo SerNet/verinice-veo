@@ -68,11 +68,11 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
-  @Column(name = "total_units")
+  @Column(name = "total_units", nullable = false)
   @Setter(value = AccessLevel.NONE)
   private int totalUnits;
 
-  @Column(name = "state")
+  @Column(name = "state", nullable = false)
   @Setter(value = AccessLevel.NONE)
   @Enumerated(EnumType.STRING)
   @ToString.Include

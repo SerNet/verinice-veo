@@ -52,11 +52,16 @@ public class UserConfigurationData implements UserConfiguration {
   @Column(name = "db_id")
   private UUID id;
 
-  @ToString.Include private String userName;
-  @ToString.Include private String applicationId;
+  @Column(nullable = false)
+  @ToString.Include
+  private String userName;
+
+  @Column(nullable = false)
+  @ToString.Include
+  private String applicationId;
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
-  @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "FK_client_id"))
+  @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "FK_client_id"), nullable = false)
   private Client client;
 
   @JdbcTypeCode(SqlTypes.JSON)

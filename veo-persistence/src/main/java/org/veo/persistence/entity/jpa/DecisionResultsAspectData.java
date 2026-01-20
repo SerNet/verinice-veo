@@ -48,7 +48,7 @@ public class DecisionResultsAspectData extends AspectData {
   }
 
   @Access(value = AccessType.PROPERTY)
-  @Column(columnDefinition = "jsonb")
+  @Column(columnDefinition = "jsonb", nullable = false)
   @Getter
   @JdbcTypeCode(SqlTypes.JSON)
   private Map<DecisionRef, DecisionResult> results;

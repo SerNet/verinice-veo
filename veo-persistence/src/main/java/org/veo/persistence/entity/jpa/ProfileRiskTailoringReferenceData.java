@@ -47,7 +47,7 @@ public class ProfileRiskTailoringReferenceData extends ProfileTailoringReference
   @ManyToOne(targetEntity = ProfileItemData.class)
   private ProfileItem mitigation;
 
-  @Column(columnDefinition = "jsonb")
+  @Column(columnDefinition = "jsonb", nullable = false)
   @JdbcTypeCode(SqlTypes.JSON)
   private Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions;
 

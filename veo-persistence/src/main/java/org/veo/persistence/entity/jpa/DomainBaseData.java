@@ -86,7 +86,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @ToString.Include
   private String authority;
 
-  @Column(name = "templateversion")
+  @Column(name = "templateversion", nullable = false)
   @ToString.Include
   private String templateVersion;
 
@@ -100,7 +100,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Valid
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "risk_definition_set_id")
+  @JoinColumn(name = "risk_definition_set_id", nullable = false)
   RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

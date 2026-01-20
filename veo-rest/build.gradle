@@ -147,6 +147,7 @@ testing {
                 implementation 'org.springframework.boot:spring-boot-resttestclient'
 
                 runtimeOnly 'org.spockframework:spock-spring:2.4-groovy-5.0'
+                runtimeOnly 'org.springframework.boot:spring-boot-restclient'
             }
             // https://github.com/gradle/gradle/issues/19684
             sources {

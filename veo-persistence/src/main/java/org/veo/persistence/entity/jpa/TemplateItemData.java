@@ -114,7 +114,7 @@ public abstract class TemplateItemData<
   protected String status;
 
   @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
+  @Column(columnDefinition = "jsonb", nullable = false)
   private Map<String, Map<String, Object>> customAspects = new HashMap<>();
 
   @NotNull
