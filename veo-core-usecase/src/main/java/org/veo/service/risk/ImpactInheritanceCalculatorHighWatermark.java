@@ -641,8 +641,10 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
 
   private Consumer<ImpactValues> clearCalculatedValues(RiskAffected<?, ?> affectedElement) {
     return iv -> {
-      iv.potentialImpactsCalculated().clear();
-      saveAffectedElement(affectedElement);
+      if (!iv.potentialImpactsCalculated().isEmpty()) {
+        iv.potentialImpactsCalculated().clear();
+        saveAffectedElement(affectedElement);
+      }
     };
   }
 
@@ -651,10 +653,12 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       List<Element> changedElements,
       Map<CategoryRef, ImpactRef> maxImpactPerCategorie) {
     return iv -> {
-      log.debug("{} set calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
-      iv.potentialImpactsCalculated().clear();
-      iv.potentialImpactsCalculated().putAll(maxImpactPerCategorie);
-      changedElements.add(saveAffectedElement(affectedElement));
+      if (!iv.potentialImpactsCalculated().equals(maxImpactPerCategorie)) {
+        log.debug("{} set calculated values {}", affectedElement.getName(), maxImpactPerCategorie);
+        iv.potentialImpactsCalculated().clear();
+        iv.potentialImpactsCalculated().putAll(maxImpactPerCategorie);
+        changedElements.add(saveAffectedElement(affectedElement));
+      }
     };
   }
 

@@ -329,9 +329,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         then: "the root element is set to impactValues2 as all others are"
         def queryCounts = QueryCountHolder.grandTotal
         verifyAll {
-            queryCounts.select == 14
+            queryCounts.select == 8
             queryCounts.insert == 0
-            queryCounts.update == 1
+            queryCounts.update == 0
             queryCounts.delete == 0
             queryCounts.time < 500
         }
@@ -381,15 +381,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then: "l0 is a root element so one changes"
-        result.size() == 1
-        result[0] == l0
+        then: "no values have changed"
+        result.empty
 
         and:
         verifyAll {
-            queryCounts.select == 14
+            queryCounts.select == 8
             queryCounts.insert == 0
-            queryCounts.update == 1
+            queryCounts.update == 0
             queryCounts.delete == 0
             queryCounts.time < 500
         }
@@ -440,14 +439,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"all impacts are changed in the chain"
-        result.size() == 5
-        result[0] == a1
+        then:"a2 .. a4 impacts are changed in the chain"
+        result.size() == 4
+        result[0] == a2
+        result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[2].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[3].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
-        result[4].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
-        result[4] == a5
+        result[3] == a5
 
         and:
         verifyAll {
@@ -535,17 +534,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         queryCounts = QueryCountHolder.grandTotal
 
         then: "c2 to c3 are affected as c4 has the same impact set"
-        result.size() == 9
+        result.size() == 2
         result[0] == c2
-        result[1] == b3
-        result[2] == b4
-        result[3] == b5
-
-        result[4] == c4
-        result[5] == c5
-        result[6] == c3
-        result[7] == c4
-        result[8] == c5
+        result[1] == c3
 
         and:
         verifyAll {
@@ -572,17 +563,16 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         queryCounts = QueryCountHolder.grandTotal
 
         then: "also the linked c4 and c5 is affected"
-        result.size() == 10
-        result[0] == c1
+        result.size() == 7
+        result[0] == c2
         result[0].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues2.get(riskDefinitionRef).potentialImpacts
-        result[1] == c2
-        result[2] == b3
-        result[3] == b4
-        result[4] == b5
-        result[5] == c4
+        result[1] == b3
+        result[2] == b4
+        result[3] == b5
+        result[4] == c4
         result[5].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues2.get(riskDefinitionRef).potentialImpacts
-        result[6] == c5
-        result[7] == c3
+        result[5] == c5
+        result[6] == c3
 
         and:
         verifyAll {
@@ -608,13 +598,11 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then: "only b1 and b2 are affected as b2 has an impact set"
-        result.size() == 7
-        result[0] == b1
-        result[0].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues3.get(riskDefinitionRef).potentialImpacts
-        result[1] == b2
-        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
-        result[1].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues1.get(riskDefinitionRef).potentialImpacts
+        then: "only b2 is affected as b2 has an impact set"
+        result.size() == 1
+        result[0] == b2
+        result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
+        result[0].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues1.get(riskDefinitionRef).potentialImpacts
 
         and:
         verifyAll {
@@ -691,24 +679,22 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then: "the linked a1-a5, b1-b5 and c4 and c5 are affected"
-        result.size() == 28// we have visited some elements more than once
-        result[0] == b1
-        result[1] == a1//has an impact set to 0 so only the calculated valued gets updated thru b1
-        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
-        result[2] == a2//for a2 to a5 the calculated values is 0 as the effective impact of a1 is 0
-        result[5] == a5
-        result[6] == b4//has the 1 impact inherited from b1 thru b3
-        result[6].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
-        result[7] == b5
-        result[8] == c4
-        result[9] == c5
-        result[10] == b2//has the 1 impact inherited from b1
-        result[10].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
-        result[11] == a2
-        result[12] == a3
-        result[13] == a4
-        result[27] == c5
+        then: "the linked a1-a5, b1-b5 and c4 and c5 are affected, c1 and b1 are excluded"
+        result.size() == 13
+        result[0] == a1 //has an impact set to 0 so only the calculated valued gets updated thru b1
+        result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
+        result[1] == a2//for a2 to a5 the calculated values is 0 as the effective impact of a1 is 0
+        result[4] == a5
+        result[5] == b4 //has the 1 impact inherited from b1 thru b3
+        result[5].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
+        result[6] == b5
+        result[7] == c4
+        result[8] == c5
+        result[9] == b2 //has the 1 impact inherited from b1
+        result[9].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
+        result[10] == b3
+        result[11] == c2
+        result[12] == c3
 
         and:
         verifyAll {
@@ -735,13 +721,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         queryCounts = QueryCountHolder.grandTotal
 
         then: "the linked a1-a5, b1-b5 and c4 and c5 are affected and the impact is 2"
-        result.size() == 5
-        result[0] == c1
-        result[0].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues2.get(riskDefinitionRef).potentialImpacts
-        result[1] == c2
-        result[2] == c3
-        result[3] == c4
-        result[4] == c5
+        result.size() == 4
+        !result.contains(c1)
+        result[0] == c2
+        result[1] == c3
+        result[2] == c4
+        result[3] == c5
 
         and:
         verifyAll {
@@ -768,7 +753,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         queryCounts = QueryCountHolder.grandTotal
 
         then: "the linked elements are updated the impact is 3"
-        result.size() == 9
+        result.size() == 7
         result[0] == b3
         result[0].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues3.get(riskDefinitionRef).potentialImpacts
         result[1] == b4
@@ -783,8 +768,6 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         result[5].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
         result[6] == c3
         result[6].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
-        result[7] == c4
-        result[8] == c5
 
         and:
         verifyAll {
@@ -871,13 +854,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then: "three elements are affected (p-100, p-1-100 and SYS-100)"
-        result.size() == 3
-        result[0] == process
-        result[1].name == "SYS-100"
-        result[2].name == "p-100"
-        result[2].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
-        result[2].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues1.get(riskDefinitionRef).potentialImpacts
+        then: "two elements are affected (p-100 and SYS-100)"
+        result.size() == 2
+        result[0].name == "SYS-100"
+        result[1].name == "p-100"
+        result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues1.get(riskDefinitionRef).potentialImpacts
+        result[1].getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues1.get(riskDefinitionRef).potentialImpacts
 
         and: "one impact was insert"
         verifyAll {
@@ -907,9 +889,8 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then: "one impact is set"
-        result.size() == 1
-        result[0] == a0
+        then: "no values are changed"
+        result.empty
         a0.getImpactValues(domain, riskDefinitionRef).get().getPotentialImpactsEffective() == impactValues2.get(riskDefinitionRef).potentialImpacts
 
         and:
@@ -935,7 +916,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         queryCounts = QueryCountHolder.grandTotal
 
         then: "51 assets where changed"
-        result.size() == 52
+        result.size() == 51
 
         and:
         verifyAll {
@@ -1008,12 +989,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then: "100 assets where changed"
-        result.size() == 100
-        result[0] == asset50
-        result[50] == a0
-        result[51] == assetsB[47]
-        result[99] == b0
+        then: "99 assets where changed"
+        result.size() == 99
+        !result.contains(asset50)
+        result[49] == a0
+        result[50] == assetsB[47]
+        result[98] == b0
 
         and:
         verifyAll {
@@ -1041,12 +1022,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def summary = elementByCount.entrySet().stream().collect(Collectors.summarizingInt({ it.getValue() }))
         log.debug("summary {}",summary)
 
-        //402 relvant assets
-        //B-48 -- B-0 3 times
-
-        then: "402 unique assets where changed"
-        elementByCount.entrySet().size() == 402
-        summary.count == 402
+        then: "302 unique assets where changed"
+        elementByCount.entrySet().size() == 302
+        summary.count == 302
 
         and:
         verifyAll {
@@ -1280,13 +1258,13 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def queryCounts = QueryCountHolder.grandTotal
 
         then:"all impacts are changed in the chain"
-        result.size() == 5
-        result[0] == a1
+        result.size() == 4
+        !result.contains(a1)
+        result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[2].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
         result[3].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
-        result[4].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
-        result[4] == a5
+        result[3] == a5
 
         and:
         verifyAll {
@@ -1388,14 +1366,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"the roots and their paths are returned"
-        result.size() == 4
-        result[0] == r1
-        result[1] == a1
+        then:"only the paths are returned"
+        result.size() == 2
+        !result.contains(r1)
+        !result.contains(r2)
+        result[0] == a1
+        result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == [:]
+        result[1] == a3
         result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == [:]
-        result[2] == r2
-        result[3] == a3
-        result[3].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == [:]
 
         and:
         verifyAll {
@@ -1452,14 +1430,14 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then: "the roots and their path are returned"
-        result.size() == 20
-        result[0] == line1[0]
-        result[10] == line2[0]
+        then: "only the paths are returned"
+        result.size() == 18
+        !result.contains(line1[0])
+        !result.contains(line2[0])
         result[1].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues2.get(riskDefinitionRef).potentialImpacts
-        result[9].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues2.get(riskDefinitionRef).potentialImpacts
-        result[11].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
-        result[19].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
+        result[8].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues2.get(riskDefinitionRef).potentialImpacts
+        result[9].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
+        result[17].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues3.get(riskDefinitionRef).potentialImpacts
 
         and:
         verifyAll {
@@ -1527,9 +1505,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
         and:
         verifyAll {
-            queryCounts.select == 12
+            queryCounts.select == 1
             queryCounts.insert == 0
-            queryCounts.update == 1
+            queryCounts.update == 0
             queryCounts.delete == 0
             queryCounts.time < 10
         }
