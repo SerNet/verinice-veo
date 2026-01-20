@@ -22,8 +22,6 @@ _What actual/faulty behavior was observed?_
 
 ---
 
-/label ~"1.Component::5.Undefined"
+/label ~"1.Component::8.Undefined"
 
 /label ~"2.IssueType::2.Bug"
-
-/label ~"3.Status::1.Specification"
