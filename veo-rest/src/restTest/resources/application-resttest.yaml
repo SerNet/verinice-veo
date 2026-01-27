@@ -56,9 +56,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
 
 server:
   servlet:
