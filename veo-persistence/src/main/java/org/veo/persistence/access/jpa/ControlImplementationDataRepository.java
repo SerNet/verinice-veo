@@ -57,7 +57,7 @@ public interface ControlImplementationDataRepository
           join fetch ci.owner
           where ci.control.id in ?1
          """)
-  Set<ControlImplementation> findByControlIdWithOwner(Set<String> controlIds);
+  Set<ControlImplementation> findByControlIdWithOwner(Set<UUID> controlIds);
 
   @Nonnull
   @Override

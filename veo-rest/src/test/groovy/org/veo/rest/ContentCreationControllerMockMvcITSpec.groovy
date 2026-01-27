@@ -592,7 +592,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
         }
 
-        def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}
+        def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}.collect {UUID.fromString(it)}
         def scenarios = txTemplate.execute {
             def list = scenarioDataRepository.findAllWithCompositesAndCompositesPartsByIdIn(scenarioIds)
             list.collect { it.appliedCatalogItems.size() }
@@ -1799,7 +1799,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when:
-        def process = processDataRepository.findWithRisksAndScenariosByIdIn([processId]).first()
+        def process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
         def risk = process.risks.first() as ProcessRiskData
 
         then:
@@ -1843,7 +1843,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when:
-        process = processDataRepository.findWithRisksAndScenariosByIdIn([processId]).first()
+        process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
         risk = process.risks.first() as ProcessRiskData
 
         then:
@@ -1934,7 +1934,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ]
 
         put("/domains/$domainId/processes/$processId",retrievedProcess, headers)
-        def process = processDataRepository.findWithRisksAndScenariosByIdIn([processId]).first()
+        def process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
 
         ImpactValues impactValues = process.getImpactValues(domain, rdRef).get()
 
@@ -1980,7 +1980,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ]
 
         put("/processes/$processId/risks/$scenarioId",retrievedProcessRisk, headers)
-        process = processDataRepository.findWithRisksAndScenariosByIdIn([processId]).first()
+        process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
         def risk = process.risks.first() as ProcessRiskData
 
         def impactProvider = risk.getImpactProvider(rdRef, domain)

@@ -71,5 +71,5 @@ public interface RequirementImplementationDataRepository
          select distinct ri from requirement_implementation  ri
          where ri.control.id in ?1
          """)
-  Set<RequirementImplementationData> findAllByControlIds(Set<String> controlIDs);
+  Set<RequirementImplementationData> findAllByControlIds(Set<UUID> controlIDs);
 }

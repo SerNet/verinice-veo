@@ -47,7 +47,7 @@ public class RequirementImplementationRepositoryImpl
   public Set<RequirementImplementation> findByControls(Set<Control> removedControls) {
     return dataRepo
         .findAllByControlIds(
-            removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet()))
+            removedControls.stream().map(Identifiable::getId).collect(Collectors.toSet()))
         .stream()
         .map(RequirementImplementation.class::cast)
         .collect(Collectors.toSet());

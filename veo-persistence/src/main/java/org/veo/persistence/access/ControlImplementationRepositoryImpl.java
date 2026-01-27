@@ -41,7 +41,7 @@ public class ControlImplementationRepositoryImpl implements ControlImplementatio
   @Override
   public Set<ControlImplementation> findByControls(Set<Control> removedControls) {
     return dataRepo.findByControlIdWithOwner(
-        removedControls.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet()));
+        removedControls.stream().map(Identifiable::getId).collect(Collectors.toSet()));
   }
 
   @Override
