@@ -64,6 +64,7 @@ import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
+import org.veo.adapter.presenter.api.dto.UpdatableDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -93,6 +94,7 @@ import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
+import org.veo.core.usecase.domain.GetDomainUpdatesUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
@@ -134,6 +136,7 @@ public class DomainController extends AbstractEntityController {
 
   private final GetDomainUseCase getDomainUseCase;
   private final GetDomainsUseCase getDomainsUseCase;
+  private final GetDomainUpdatesUseCase getDomainUpdatesUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemUseCase getCatalogItemUseCase;
@@ -525,5 +528,21 @@ public class DomainController extends AbstractEntityController {
         new EvaluateRiskDefinitionUseCase.InputData(
             domainId, riskDefinitionId, null, Collections.emptySet()),
         out -> ResponseEntity.ok(out.riskDefinition()));
+  }
+
+  @GetMapping(value = "/updates")
+  @Operation(summary = "Loads available updates for all domains")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Domain updates loaded",
+      useReturnTypeSchema = true)
+  public @Valid Future<List<UpdatableDomainDto>> getDomainUpdates() {
+    return useCaseInteractor.execute(
+        getDomainUpdatesUseCase,
+        UseCase.EmptyInput.INSTANCE,
+        outputData ->
+            outputData.updatableDomains().stream()
+                .map(u -> UpdatableDomainDto.from(u, referenceAssembler))
+                .toList());
   }
 }

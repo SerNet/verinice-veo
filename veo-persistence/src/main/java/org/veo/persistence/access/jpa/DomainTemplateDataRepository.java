@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +37,9 @@ public interface DomainTemplateDataRepository
 
   @Query(value = "select id from domaintemplate d where name = ?1 order by templateVersion")
   List<UUID> findTemplateIdsByName(String name);
+
+  @Query(value = "select d from domaintemplate d where name in ?1")
+  List<DomainTemplateData> findTemplatesByNames(Collection<String> name);
 
   @Query(
       value = "SELECT MAX(templateversion) from domaintemplate where name = ?1",

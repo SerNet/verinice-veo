@@ -354,6 +354,60 @@ class SwaggerSpec extends VeoSpringSpec {
         schema.example instanceof Map
     }
 
+    def "endpoint documentation is correct for GET /domains/updates"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/domains/updates"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema == [
+            type: 'array',
+            items: [$ref:'#/components/schemas/UpdatableDomainDto']
+        ]
+    }
+
+    def "UpdatableDomainDto is well-documented"() {
+        expect:
+        with(getSchema('UpdatableDomainDto')) {
+            it.readOnly == true
+            it.description == "A summary of available updates for a domain - a client must be updated to the next major version before it can be updated to the major version after next. Therefore, not all available updates can be performed directly."
+            it.properties.keySet() ==~ [
+                "domain",
+                "allUpdates",
+                "possibleUpdates",
+                "latestUpdate",
+                "latestPossibleUpdate"
+            ]
+            it.properties.domain == [
+                $ref:'#/components/schemas/DomainBaseIdRefDomain'
+            ]
+            it.properties.allUpdates == [
+                type: "array",
+                items: [$ref:'#/components/schemas/DomainBaseIdRefDomainTemplate'],
+                description: "All available newer versions of the domain",
+            ]
+            it.properties.possibleUpdates == [
+                type: "array",
+                items: [$ref:'#/components/schemas/DomainBaseIdRefDomainTemplate'],
+                description: "All newer versions that the client can be updated to directly",
+            ]
+            it.properties.latestUpdate == [
+                $ref:'#/components/schemas/DomainBaseIdRefDomainTemplate',
+                description: "The latest available version of the domain",
+            ]
+            it.properties.latestPossibleUpdate == [
+                $ref:'#/components/schemas/DomainBaseIdRefDomainTemplate',
+                description: "The latest version that the client can be updated to directly",
+            ]
+
+            it.required ==~ [
+                "domain",
+                "allUpdates",
+                "possibleUpdates",
+                "latestUpdate",
+            ]
+        }
+    }
+
     def "endpoint documentation is correct for GET /domain-templates"() {
         given: "the endpoint docs"
         def endPointInfo = parsedApiDocs.paths["/domain-templates"].get

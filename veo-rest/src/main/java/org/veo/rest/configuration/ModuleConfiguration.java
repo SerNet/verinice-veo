@@ -136,6 +136,7 @@ import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
+import org.veo.core.usecase.domain.GetDomainUpdatesUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
@@ -719,6 +720,12 @@ public class ModuleConfiguration {
   @Bean
   public GetDomainsUseCase getDomainsUseCase(DomainRepository domainRepository) {
     return new GetDomainsUseCase(domainRepository);
+  }
+
+  @Bean
+  public GetDomainUpdatesUseCase getDomainUpdatesUseCase(
+      DomainRepository domainRepository, DomainTemplateRepository domainTemplateRepository) {
+    return new GetDomainUpdatesUseCase(domainRepository, domainTemplateRepository);
   }
 
   @Bean

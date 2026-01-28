@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,8 @@ public interface DomainTemplateRepository extends Repository<DomainTemplate> {
   List<DomainTemplate> findAll();
 
   List<UUID> getDomainTemplateIds(String name);
+
+  List<DomainTemplate> findDomainTemplates(Collection<String> names);
 
   Optional<UUID> getLatestDomainTemplateId(String name);
 
