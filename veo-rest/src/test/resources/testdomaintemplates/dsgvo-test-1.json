@@ -2,6 +2,18 @@
   "id": "fece7858-8da5-59a3-b34a-6f8f831a256f",
   "name": "DSGVO-test",
   "abbreviation": "DSGVO",
+  "translations": {
+    "en": {
+      "name": "GDPR Test",
+      "abbreviation": "GDPRT",
+      "description": "Testing GDPR"
+    },
+    "de": {
+      "name": "DSGVO Test",
+      "abbreviation": "DSGVOT",
+      "description": "Testet DSGVO"
+    }
+  },
   "authority": "SERNET",
   "templateVersion": "1.0.0",
   "catalogItems": [

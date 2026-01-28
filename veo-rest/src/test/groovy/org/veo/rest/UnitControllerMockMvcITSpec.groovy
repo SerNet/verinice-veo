@@ -252,6 +252,8 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == "Test unit"
         result.abbreviation == "u-1"
         result.domains.first().displayName == "DSGVO DSGVO-test"
+        result.domains.first().templateVersion == "1.0.0"
+        result.domains.first().translations.en.abbreviation == "GDPRT"
     }
 
     @WithUserDetails("user@domain.example")

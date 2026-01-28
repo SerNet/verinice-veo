@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.LocalDate
 
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
@@ -141,7 +142,7 @@ class EntityStateMapperSpec extends Specification {
     def "Transform element DTO with links to entity"() {
         given: "an asset composite element DTO with two parts"
         def asset1Ref = Mock(IdRef)
-        def domain0Ref = Stub(IdRef) {
+        def domain0Ref = Stub(DomainBaseIdRef) {
             getId() >> domain0.id
         }
 

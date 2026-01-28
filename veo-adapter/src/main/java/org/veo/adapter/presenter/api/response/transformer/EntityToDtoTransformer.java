@@ -34,6 +34,7 @@ import jakarta.validation.Valid;
 
 import javax.annotation.Nullable;
 
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -540,7 +541,7 @@ public final class EntityToDtoTransformer {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
 
-    target.setDomains(convertReferenceSet(source.getDomains()));
+    target.setDomains(convertDomainReferenceSet(source.getDomains()));
 
     return target;
   }
@@ -549,7 +550,7 @@ public final class EntityToDtoTransformer {
     var target = new CustomLinkDto();
     target.setAttributes(source.getAttributes());
 
-    target.setDomains(convertReferenceSet(Set.of(source.getDomain())));
+    target.setDomains(convertDomainReferenceSet(Set.of(source.getDomain())));
     if (source.getTarget() != null) {
       target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
     }
@@ -613,7 +614,7 @@ public final class EntityToDtoTransformer {
   public CustomAspectDto transformCustomAspect2Dto(@Valid CustomAspect source) {
     var target = new CustomAspectDto();
     target.setAttributes(source.getAttributes());
-    target.setDomains(convertReferenceSet(Set.of(source.getDomain())));
+    target.setDomains(convertDomainReferenceSet(Set.of(source.getDomain())));
     return target;
   }
 
@@ -636,6 +637,10 @@ public final class EntityToDtoTransformer {
 
   private <T extends Identifiable> Set<IdRef<T>> convertReferenceSet(Set<T> domains) {
     return domains.stream().map(o -> IdRef.from(o, referenceAssembler)).collect(toSet());
+  }
+
+  private <T extends DomainBase> Set<DomainBaseIdRef<T>> convertDomainReferenceSet(Set<T> domains) {
+    return domains.stream().map(o -> DomainBaseIdRef.from(o, referenceAssembler)).collect(toSet());
   }
 
   private Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links) {

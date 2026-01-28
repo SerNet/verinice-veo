@@ -1158,6 +1158,29 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "FullUnitDto is well-documented"() {
+        expect:
+        with(getSchema('FullUnitDto')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'name',
+                'description',
+                'abbreviation',
+                'domains',
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                '_self',
+            ]
+            with(it.properties.domains) {
+                it.type == 'array'
+                it.items == [$ref:'#/components/schemas/DomainBaseIdRefDomain']
+                it.uniqueItems == true
+            }
+        }
+    }
+
     def "UnitDumpDto is well-documented"() {
         expect:
         with(getSchema('UnitDumpDto')) {
@@ -1344,7 +1367,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.domains == [
                 type:'array',
-                items: [ $ref: '#/components/schemas/DomainsReference'],
+                items: [ $ref: '#/components/schemas/DomainBaseIdRefDomain'],
                 uniqueItems: true
             ]
             it.properties.target == [
@@ -1397,21 +1420,58 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    def "DomainsReference is mapped correctly"() {
+    def "DomainBaseIdRefDomain is well-documented"() {
         expect:
-        with(getSchema('DomainsReference')) {
-            it.properties.keySet() ==~ ['displayName', 'targetUri']
+        with(getSchema('DomainBaseIdRefDomain')) {
+            it.properties.keySet() ==~ [
+                'targetUri',
+                'id',
+                'name',
+                'displayName',
+                'abbreviation',
+                'translations',
+                'type',
+                'templateVersion',
+            ]
+            it.properties.id == [
+                type: "string",
+                format: "uuid",
+                readOnly: true,
+            ]
+            it.properties.name == [
+                type: "string",
+                readOnly: true,
+            ]
+            it.properties.abbreviation == [
+                type: "string",
+                readOnly: true,
+            ]
+            it.properties.type == [
+                type: "string",
+                readOnly: true,
+            ]
+            it.properties.translations == [
+                type: "object",
+                additionalProperties: [
+                    $ref: "#/components/schemas/NameAbbreviationAndDescription"
+                ],
+                readOnly: true,
+            ]
+            it.properties.templateVersion == [
+                type: "string",
+                readOnly: true,
+            ]
             it.properties.displayName == [
                 type       : 'string',
-                description: 'A friendly human readable title of the referenced domain.',
-                example    : 'ISO 27001:2013',
+                description: 'A friendly human readable title of the referenced entity.',
+                example    : 'Example title',
                 readOnly   : true
             ]
             it.properties.targetUri == [
                 type       : 'string',
                 format     : 'uri',
-                description: 'The resource URL of the referenced domains.',
-                example    : 'http://<api.veo.example>/veo/domains/<00000000-0000-0000-0000-000000000000>',
+                description: 'The resource URL of the referenced entity.',
+                example    : 'http://<api.veo.example>/veo/<entitytype>/<00000000-0000-0000-0000-000000000000>',
                 maxLength  : 255,
                 minLength  : 1
             ]

@@ -20,6 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
@@ -258,9 +259,9 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
 
     def "Import a multi-domain unit"() {
         given:
-        def domain1Ref = IdRef.fromUri("/domains/${testDomain.id}", referenceAssembler)
-        def domain2Ref = IdRef.fromUri("/domains/${testDomain2.id}", referenceAssembler)
-        def domain3Ref = IdRef.fromUri("/domains/${testDomain3.id}", referenceAssembler)
+        def domain1Ref = DomainBaseIdRef.fromTargetUri("/domains/${testDomain.id}", referenceAssembler)
+        def domain2Ref = DomainBaseIdRef.fromTargetUri("/domains/${testDomain2.id}", referenceAssembler)
+        def domain3Ref = DomainBaseIdRef.fromTargetUri("/domains/${testDomain3.id}", referenceAssembler)
         UnitState unitDto = new FullUnitDto().tap {
             id = UUID.randomUUID()
             name = 'My unit'

@@ -46,7 +46,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   @Setter(AccessLevel.NONE)
   private String uri;
 
-  @JsonIgnore private final Identifiable entity;
+  @JsonIgnore protected final T entity;
 
   /** Create a IdRef for the given entity. */
   public static <T extends Identifiable> IdRef<T> from(

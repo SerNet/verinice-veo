@@ -22,13 +22,11 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.Collections;
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.UnitState;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -48,8 +46,7 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
       example = "This is currently the main and only unit for our organization.")
   private String description;
 
-  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
-  private Set<IdRef<Domain>> domains = Collections.emptySet();
+  private Set<DomainBaseIdRef<Domain>> domains = Collections.emptySet();
 
   @Override
   public Class<Unit> getModelInterface() {

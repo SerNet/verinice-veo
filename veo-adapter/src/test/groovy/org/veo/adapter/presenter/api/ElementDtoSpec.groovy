@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api
 
-import org.veo.adapter.presenter.api.common.IdRef
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.CustomAspectDto
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
@@ -33,10 +33,10 @@ class ElementDtoSpec extends Specification {
         def dto = new FullAssetDto()
         def domain1Id = UUID.randomUUID()
         def domain2Id = UUID.randomUUID()
-        IdRef<Domain> domain1Ref = Stub {
+        DomainBaseIdRef<Domain> domain1Ref = Stub {
             getId() >> domain1Id
         }
-        IdRef<Domain> domain2Ref = Stub {
+        DomainBaseIdRef<Domain> domain2Ref = Stub {
             getId() >> domain2Id
         }
         def domain1CA = new CustomAspectDto().tap {

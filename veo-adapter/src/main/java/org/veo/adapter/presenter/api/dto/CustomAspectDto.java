@@ -25,13 +25,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.common.DomainBaseIdRef;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
@@ -68,8 +66,7 @@ public class CustomAspectDto {
       accessMode = Schema.AccessMode.READ_ONLY)
   private String updatedBy;
 
-  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
-  private Set<IdRef<Domain>> domains = Collections.emptySet();
+  private Set<DomainBaseIdRef<Domain>> domains = Collections.emptySet();
 
   public static CustomAspectDto from(
       @Valid CustomAspect control, EntityToDtoTransformer entityToDtoTransformer) {
