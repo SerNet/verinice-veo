@@ -35,12 +35,18 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainId = post("/content-creation/domains", [
             name: domainName,
             authority: "JJ",
+            translations: [
+                de: [
+                    name: "Meine Domäne"
+                ]
+            ]
         ], 201, CONTENT_CREATOR).body.resourceId
 
         then: "it can be retrieved"
         with(get("/domains/$domainId").body) {
             name == domainName
             authority == "JJ"
+            translations.de.name == "Meine Domäne"
             templateVersion == "0.1.0"
             domainTemplate == null
             controlImplementationConfiguration == [
@@ -129,6 +135,7 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "its metadata is correct"
         secondaryClientDomain.authority == "JJ"
         secondaryClientDomain.templateVersion == "1.0.0"
+        secondaryClientDomain.translations.de.name == "Meine Domäne"
 
         and: "it contains the risk def, decision, inspection & incarnation config"
         secondaryClientDomain.decisions.truthy.elementSubType == "server"
