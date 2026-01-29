@@ -187,6 +187,7 @@ import org.veo.core.usecase.service.DomainStateMapper;
 import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
+import org.veo.core.usecase.service.UnitMigrationService;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitCountUseCase;
@@ -1062,10 +1063,8 @@ public class ModuleConfiguration {
   public MigrateUnitUseCase migrateUnitByCopyUseCase(
       DomainRepository domainRepository,
       UnitRepository unitRepository,
-      GenericElementRepository genericElementRepository,
-      Decider decider) {
-    return new MigrateUnitUseCase(
-        domainRepository, genericElementRepository, decider, unitRepository);
+      UnitMigrationService unitMigrationService) {
+    return new MigrateUnitUseCase(domainRepository, unitRepository, unitMigrationService);
   }
 
   @Bean
@@ -1113,6 +1112,12 @@ public class ModuleConfiguration {
       FlyweightLinkRepository linkRepo) {
     return new ImpactInheritanceCalculatorHighWatermark(
         processRepository, assetRepository, scopeRepository, linkRepo);
+  }
+
+  @Bean
+  public UnitMigrationService unitMigrationService(
+      GenericElementRepository genericElementRepository, Decider decider) {
+    return new UnitMigrationService(genericElementRepository, decider);
   }
 
   @Bean
