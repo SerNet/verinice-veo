@@ -34,11 +34,11 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.service.DomainTemplateService;
 
 import lombok.RequiredArgsConstructor;
 

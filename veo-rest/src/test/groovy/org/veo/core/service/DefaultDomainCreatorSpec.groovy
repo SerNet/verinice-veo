@@ -20,6 +20,7 @@ package org.veo.core.service
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.repository.DomainTemplateRepository
+import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.service.DefaultDomainCreator
 
 import spock.lang.Specification

@@ -25,10 +25,10 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
+import org.veo.core.usecase.service.DomainTemplateService;
 
 import lombok.RequiredArgsConstructor;
 

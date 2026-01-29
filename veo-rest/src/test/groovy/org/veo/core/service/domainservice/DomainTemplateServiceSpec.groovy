@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -36,9 +35,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 class DomainTemplateServiceSpec extends VeoSpringSpec {
     @Autowired
     private ClientRepositoryImpl repository
-
-    @Autowired
-    DomainTemplateServiceImpl domainTemplateService
 
     @Autowired
     DomainStateMapper domainStateMapper

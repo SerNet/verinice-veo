@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.service.domaintemplate;
+package org.veo.core.usecase.service;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,25 +27,25 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateService;
-import org.veo.core.usecase.service.DomainStateMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A {@link DomainTemplate} exist in the system space and is not directly bound to any client. This
+ * service manages the access rights. It is responsible for creating a client domain from a domain
+ * template.
+ */
 @RequiredArgsConstructor
 @Slf4j
-public class DomainTemplateServiceImpl implements DomainTemplateService {
-
+public class DomainTemplateService {
   private final DomainTemplateRepository domainTemplateRepository;
   private final DomainStateMapper domainStateMapper;
 
-  @Override
   public List<DomainTemplate> getTemplates(Client client) {
     return Collections.emptyList();
   }
 
-  @Override
   public DomainTemplate getTemplate(Client client, UUID key) {
     checkClientAccess(client, key);
     return domainTemplateRepository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(key);
@@ -57,12 +57,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     // TODO VEO-1454 check the shop status for available products
   }
 
-  @Override
   public Domain createDomain(Client client, UUID templateId) {
     return createDomain(client, templateId, true);
   }
 
-  @Override
   public Domain createDomain(Client client, UUID templateId, boolean copyProfiles) {
     DomainTemplate domainTemplate = getTemplate(client, templateId);
 
@@ -73,7 +71,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return domain;
   }
 
-  @Override
   public void copyProfileToDomain(Profile profile, Domain domain) {
     log.info(
         "create profile {} in domain {}:{}",
@@ -91,7 +88,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     domain.getProfiles().add(profileCopy);
   }
 
-  @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
     var newDomainTemplate = domainStateMapper.toTemplate(domain);
     if (domainTemplateRepository.exists(newDomainTemplate.getId())) {

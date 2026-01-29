@@ -21,9 +21,9 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ClientRepository
-import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCase.EmptyInput
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.rest.security.NoRestrictionAccessRight
 
 class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {

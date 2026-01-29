@@ -20,9 +20,9 @@ package org.veo.core.usecase.domaintemplate
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ClientRepository
-import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCase.EntityId
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.service.DomainTemplateService
 
 class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 

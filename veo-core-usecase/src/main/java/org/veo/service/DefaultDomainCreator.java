@@ -21,7 +21,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateService;
+import org.veo.core.usecase.service.DomainTemplateService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -53,7 +53,6 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.CatalogItem;
@@ -81,7 +80,6 @@ import org.veo.core.repository.SystemMessageRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.service.MigrateDomainUseCase;
@@ -192,6 +190,7 @@ import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
+import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -829,9 +828,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public DomainTemplateServiceImpl domainTemplateService(
+  public DomainTemplateService domainTemplateService(
       DomainTemplateRepository domainTemplateRepository, DomainStateMapper domainStateMapper) {
-    return new DomainTemplateServiceImpl(domainTemplateRepository, domainStateMapper);
+    return new DomainTemplateService(domainTemplateRepository, domainStateMapper);
   }
 
   @Bean

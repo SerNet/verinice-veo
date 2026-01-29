@@ -23,11 +23,11 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.UseCaseTools;
+import org.veo.core.usecase.service.DomainTemplateService;
 
 public class GetDomainTemplateUseCase
     implements TransactionalUseCase<EntityId, GetDomainTemplateUseCase.OutputData> {

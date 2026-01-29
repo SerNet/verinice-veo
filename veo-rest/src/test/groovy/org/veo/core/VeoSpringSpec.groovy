@@ -35,7 +35,6 @@ import com.networknt.schema.SchemaContext
 import com.networknt.schema.SchemaRegistry
 import com.networknt.schema.SpecificationVersion
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
@@ -47,6 +46,7 @@ import org.veo.core.repository.GenericElementRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.UseCase
+import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.jpa.AssetDataRepository
@@ -142,7 +142,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     StoredEventDataRepository eventStoreDataRepository
 
     @Autowired
-    DomainTemplateServiceImpl domainTemplateService
+    DomainTemplateService domainTemplateService
 
     @Autowired
     DefaultDomainCreator defaultDomainCreator

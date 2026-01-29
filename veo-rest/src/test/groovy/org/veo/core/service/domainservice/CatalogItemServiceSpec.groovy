@@ -20,7 +20,6 @@ package org.veo.core.service.domainservice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -37,9 +36,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
     @Autowired
     private UnitRepositoryImpl unitRepository
-
-    @Autowired
-    DomainTemplateServiceImpl domainTemplateService
 
     @Autowired
     private ControlRepositoryImpl repo
