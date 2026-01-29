@@ -795,8 +795,8 @@ public class ModuleConfiguration {
 
   @Bean
   public DomainChangeService domainChangeService(
-      DomainTemplateRepository domainTemplateRepository) {
-    return new DomainChangeService(domainTemplateRepository);
+      DomainTemplateRepository domainTemplateRepository, EventPublisher eventPublisher) {
+    return new DomainChangeService(domainTemplateRepository, eventPublisher);
   }
 
   @Bean
@@ -1044,8 +1044,8 @@ public class ModuleConfiguration {
 
   @Bean
   public TransferDomainCustomizationUseCase transferDomainCustomizationUseCase(
-      DomainRepository domainRepository, EventPublisher eventPublisher) {
-    return new TransferDomainCustomizationUseCase(domainRepository, eventPublisher);
+      DomainRepository domainRepository, DomainChangeService domainChangeService) {
+    return new TransferDomainCustomizationUseCase(domainRepository, domainChangeService);
   }
 
   @Bean

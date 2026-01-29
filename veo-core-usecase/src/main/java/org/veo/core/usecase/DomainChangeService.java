@@ -18,6 +18,8 @@
 package org.veo.core.usecase;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.zafarkhaja.semver.Version;
@@ -25,15 +27,23 @@ import com.github.zafarkhaja.semver.Version;
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.DomainDiff;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DomainChangeService {
   private final DomainTemplateRepository domainTemplateRepository;
+  private final EventPublisher eventPublisher;
 
   /**
    * Evaluate changes the domain made from its template by validating its migration steps and
@@ -71,6 +81,41 @@ public class DomainChangeService {
     return new DomainChangeEvaluation(false);
   }
 
+  public void transferCustomization(Domain sourceDomain, Domain targetDomain) {
+    // Copy all customized risk definitions to the new domain. This may overwrite risk definition
+    // changes from the new domain template version.
+    sourceDomain
+        .getRiskDefinitions()
+        .forEach(
+            (id, riskDef) -> {
+              var originalRiskDefinition =
+                  Optional.ofNullable(sourceDomain.getDomainTemplate())
+                      .flatMap(dt -> dt.findRiskDefinition(id))
+                      .orElse(null);
+              if (!riskDef.equals(originalRiskDefinition)) {
+                log.debug(
+                    "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
+                    id,
+                    sourceDomain.getName(),
+                    sourceDomain.getTemplateVersion(),
+                    sourceDomain.getIdAsString(),
+                    targetDomain.getTemplateVersion(),
+                    targetDomain.getIdAsString());
+                var oldRiskDefFromTargetDomain = targetDomain.findRiskDefinition(riskDef.getId());
+                var newRiskDef = migrate(riskDef, targetDomain);
+                targetDomain.applyRiskDefinition(id, newRiskDef);
+                oldRiskDefFromTargetDomain.ifPresent(
+                    ogRiskDef ->
+                        eventPublisher.publish(
+                            RiskDefinitionChangedEvent.from(
+                                targetDomain,
+                                newRiskDef,
+                                RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef),
+                                this)));
+              }
+            });
+  }
+
   private static void validate(
       Domain domain, DomainTemplate templateToMigrateFrom, List<BreakingChange> breakingChanges) {
     try {
@@ -95,6 +140,32 @@ public class DomainChangeService {
           "Migration definition not suited to update from old domain template %s: %s"
               .formatted(templateToMigrateFrom.getTemplateVersion(), ex.getMessage()));
     }
+  }
+
+  private static RiskDefinition migrate(RiskDefinition riskDef, Domain targetDomain) {
+    return riskDef.withImpactInheritingLinks(
+        migrate(riskDef.getImpactInheritingLinks(), targetDomain));
+  }
+
+  private static Map<ElementType, List<String>> migrate(
+      Map<ElementType, List<String>> impactInheritingLinks, Domain targetDomain) {
+    return impactInheritingLinks.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                e ->
+                    e.getValue().stream()
+                        .filter(
+                            link ->
+                                targetDomain
+                                    .getElementTypeDefinition(e.getKey())
+                                    .findLink(link)
+                                    .isPresent())
+                        .toList()))
+        .entrySet()
+        .stream()
+        .filter(e -> !e.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   public record DomainChangeEvaluation(
