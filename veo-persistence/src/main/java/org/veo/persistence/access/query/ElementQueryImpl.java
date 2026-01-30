@@ -102,7 +102,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private boolean fetchControlImplementations;
   private boolean fetchRequirementImplementations;
 
-  public ElementQueryImpl(
+  ElementQueryImpl(
       ElementDataRepository<TDataClass> repo,
       AssetDataRepository assetDataRepository,
       ControlDataRepository controlDataRepository,

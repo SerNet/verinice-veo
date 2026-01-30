@@ -75,6 +75,6 @@ public enum VeoMessage {
   }
 
   private static final class Constants {
-    public static final String ABBREVIATION_SUFFIX = "_abbreviation";
+    private static final String ABBREVIATION_SUFFIX = "_abbreviation";
   }
 }

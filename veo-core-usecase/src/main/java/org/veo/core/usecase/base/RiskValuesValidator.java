@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class RiskValuesValidator {
-  public static void validateScenarioRiskValues(
+  static void validateScenarioRiskValues(
       Map<RiskDefinitionRef, PotentialProbability> riskValues,
       DomainRiskReferenceProvider refProvider) {
     riskValues.forEach(
@@ -41,7 +41,7 @@ class RiskValuesValidator {
         });
   }
 
-  public static void validateImpactValues(
+  static void validateImpactValues(
       Map<RiskDefinitionRef, ImpactValues> impactValues, DomainRiskReferenceProvider refProvider) {
     impactValues.forEach(
         (riskDefRef, impact) -> {

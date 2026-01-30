@@ -96,11 +96,11 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
     return bean;
   }
 
-  private static class ProxyDataSourceInterceptor implements MethodInterceptor {
+  private static final class ProxyDataSourceInterceptor implements MethodInterceptor {
 
     private final DataSource dataSource;
 
-    public ProxyDataSourceInterceptor(
+    private ProxyDataSourceInterceptor(
         DataSource dataSource, long slowThreshold, boolean logAll, boolean resultSetRowCount) {
       super();
       var dataSourceBuilder =

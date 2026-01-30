@@ -61,7 +61,7 @@ public class EntityValidator {
     private final Class<T> type;
     private final EntitySpecification<T> specification;
 
-    public void validateIfApplicable(Object entity) {
+    void validateIfApplicable(Object entity) {
       if (type.isAssignableFrom(entity.getClass())) {
         var castEntity = type.cast(entity);
         if (!specification.test(castEntity)) {

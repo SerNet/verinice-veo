@@ -40,7 +40,7 @@ final class RiskReferenceFactoryImpl extends org.veo.core.entity.risk.RiskRefere
 
   private RiskReferenceFactoryImpl() {}
 
-  public static RiskReferenceFactoryImpl getInstance() {
+  static RiskReferenceFactoryImpl getInstance() {
     return INSTANCE;
   }
 

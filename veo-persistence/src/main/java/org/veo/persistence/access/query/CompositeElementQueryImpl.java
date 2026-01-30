@@ -42,7 +42,7 @@ import org.veo.persistence.entity.jpa.ElementData;
 class CompositeElementQueryImpl<
         TInterface extends CompositeElement<TInterface>, TDataClass extends ElementData>
     extends ElementQueryImpl<TInterface, TDataClass> implements CompositeElementQuery<TInterface> {
-  public CompositeElementQueryImpl(
+  CompositeElementQueryImpl(
       CompositeEntityDataRepository<TDataClass> repo,
       AssetDataRepository assetDataRepository,
       ControlDataRepository controlDataRepository,

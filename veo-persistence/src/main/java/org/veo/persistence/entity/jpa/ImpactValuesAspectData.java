@@ -48,7 +48,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class ImpactValuesAspectData extends AspectData {
 
-  public ImpactValuesAspectData(Domain domain, RiskAffected<?, ?> owner) {
+  ImpactValuesAspectData(Domain domain, RiskAffected<?, ?> owner) {
     super(domain, owner);
   }
 
@@ -59,7 +59,7 @@ class ImpactValuesAspectData extends AspectData {
   Map<RiskDefinitionRef, ImpactValues> values;
 
   @Deprecated()
-  public void setValues(Map<RiskDefinitionRef, ImpactValues> values) {
+  void setValues(Map<RiskDefinitionRef, ImpactValues> values) {
     if (values == null) {
       throw new IllegalArgumentException("The impact values need to be set.");
     }

@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainTemplateValidator {
-  public static void validateVersion(String version) {
+  static void validateVersion(String version) {
     try {
       validateVersion(Version.valueOf(version));
     } catch (ParseException parseEx) {
@@ -34,7 +34,7 @@ class DomainTemplateValidator {
     }
   }
 
-  public static void validateVersion(Version version) {
+  static void validateVersion(Version version) {
     if (!version.getPreReleaseVersion().isEmpty() || !version.getBuildMetadata().isEmpty()) {
       throw new IllegalArgumentException(
           "Pre-release & metadata labels are not supported for domain template versions");

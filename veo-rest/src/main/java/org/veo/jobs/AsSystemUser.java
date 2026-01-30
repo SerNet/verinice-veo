@@ -42,8 +42,8 @@ class AsSystemUser {
   private static final String VEO_USER = "SCOPE_veo-user";
   private static final String SYSTEMUSER_NAME = "system";
   private static final String VEO_USER_SCOPE = "veo-user";
-  public static final String VEO_ADMIN_ROLE = "veo-admin";
-  public static final String VEO_CONTENT_CREATOR_ROLE = "veo-content-creator";
+  private static final String VEO_ADMIN_ROLE = "veo-admin";
+  private static final String VEO_CONTENT_CREATOR_ROLE = "veo-content-creator";
 
   static void runAsAdmin(final Runnable function) {
     var user =

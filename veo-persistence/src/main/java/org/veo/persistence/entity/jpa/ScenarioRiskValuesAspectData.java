@@ -43,7 +43,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
 
-  public ScenarioRiskValuesAspectData(Domain domain, Scenario owner) {
+  ScenarioRiskValuesAspectData(Domain domain, Scenario owner) {
     super(domain, owner);
   }
 
