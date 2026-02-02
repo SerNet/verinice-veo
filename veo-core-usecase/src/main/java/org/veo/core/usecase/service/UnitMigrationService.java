@@ -19,6 +19,7 @@ package org.veo.core.usecase.service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,9 +87,6 @@ public class UnitMigrationService {
     if (needsMigrationDefinition) {
       applyMigrationDefinition(oldDomain, newDomain, elements);
     }
-    log.debug("removing elements from old domain: {}", oldDomain);
-    elements.forEach(e -> e.removeFromDomains(oldDomain));
-    unit.removeFromDomains(oldDomain);
     elements.forEach(
         element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
     var invalidElements =
@@ -97,8 +95,13 @@ public class UnitMigrationService {
             .toList();
 
     if (!invalidElements.isEmpty()) {
-      throw new DomainUpdateFailedException(oldDomain, elements);
+      // Conflicted elements are left associated with the old domain to allow for nicer error
+      // reporting.
+      throw new DomainUpdateFailedException(oldDomain, new HashSet<>(elements));
     }
+    log.debug("removing elements from old domain: {}", oldDomain);
+    elements.forEach(e -> e.removeFromDomains(oldDomain));
+    unit.removeFromDomains(oldDomain);
   }
 
   private void applyMigrationDefinition(

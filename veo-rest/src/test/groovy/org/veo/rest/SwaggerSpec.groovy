@@ -408,6 +408,55 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /domains/{domainId}/update"() {
+        given:
+        def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/update"].post
+
+        expect:
+        endPointInfo.parameters.size() == 2
+        with(endPointInfo.parameters[0]) {
+            it.name == "domainId"
+            it["in"] == "path"
+            it.required
+            it.schema == [
+                type:"string",
+                format: "uuid"
+            ]
+        }
+        with(endPointInfo.parameters[1]) {
+            it.name == "template"
+            it["in"] == "query"
+            it.required
+            it.schema == [
+                type:"string",
+                format: "uuid"
+            ]
+        }
+
+        and:
+        endPointInfo.responses.size() == 3
+        with(endPointInfo.responses['201']) {
+            it.description == "Client updated to new domain version"
+            it.content['application/json'].schema == [
+                $ref: '#/components/schemas/ApiResponseBody'
+            ]
+        }
+        with(endPointInfo.responses['404']) {
+            it.description == "Domain or domain template not found"
+            it.content['application/json'].schema == [
+                $ref: '#/components/schemas/ApiResponseBody'
+            ]
+        }
+        with(endPointInfo.responses['409']) {
+            it.description == "Update failed due to conflicted elements"
+            it.content['application/json'].schema == [
+                $ref: '#/components/schemas/ApiResponseBody'
+                // TODO #4360
+                // $ref: '#/components/schemas/DomainUpdateFailedResponseBody'
+            ]
+        }
+    }
+
     def "endpoint documentation is correct for GET /domain-templates"() {
         given: "the endpoint docs"
         def endPointInfo = parsedApiDocs.paths["/domain-templates"].get

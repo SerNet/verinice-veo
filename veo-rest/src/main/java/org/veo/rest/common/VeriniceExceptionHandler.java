@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.DomainUpdateFailedResponseBody;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.TranslationException;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
@@ -51,6 +54,7 @@ import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.entity.specification.ResultSizeExceededException;
+import org.veo.core.usecase.DomainUpdateFailedException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domain.DomainInUseException;
 
@@ -60,6 +64,8 @@ import tools.jackson.databind.exc.InvalidFormatException;
 @ControllerAdvice
 @Slf4j
 public class VeriniceExceptionHandler {
+
+  @Autowired ReferenceAssembler referenceAssembler;
 
   @ExceptionHandler({TranslationException.class})
   protected ResponseEntity<ApiResponseBody> handle(TranslationException exception) {
@@ -167,6 +173,12 @@ public class VeriniceExceptionHandler {
   public ResponseEntity<ApiResponseBody> handleConstraintViolationException(
       ConstraintViolationException ex) {
     return handle(ex, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(DomainUpdateFailedException.class)
+  public ResponseEntity<DomainUpdateFailedResponseBody> handle(DomainUpdateFailedException ex) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(new DomainUpdateFailedResponseBody(ex, referenceAssembler));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
-import java.util.List;
+import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -31,5 +31,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DomainUpdateFailedException extends RuntimeException {
   private final Domain oldDomain;
-  private final List<Element> conflictedElements;
+  private final Set<Element> conflictedElements;
 }

@@ -59,6 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.DomainUpdateFailedResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
@@ -84,6 +85,7 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
+import org.veo.core.usecase.UpdateDomainUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
@@ -114,6 +116,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,6 +141,7 @@ public class DomainController extends AbstractEntityController {
   private final GetDomainsUseCase getDomainsUseCase;
   private final GetDomainUpdatesUseCase getDomainUpdatesUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
+  private final UpdateDomainUseCase updateDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemUseCase getCatalogItemUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
@@ -488,6 +492,33 @@ public class DomainController extends AbstractEntityController {
                     applyProfileIncarnationDescriptionUseCase,
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(unitId, references),
                     out -> ResponseEntity.noContent().build()));
+  }
+
+  @PostMapping("/{domainId}/update")
+  @Operation(
+      summary =
+          "Update the domain to a newer template, migrating all associated units in the client.")
+  @ApiResponses({
+    @ApiResponse(responseCode = "201", description = "Client updated to new domain version"),
+    @ApiResponse(responseCode = "404", description = "Domain or domain template not found"),
+    @ApiResponse(
+        responseCode = "409",
+        description = "Update failed due to conflicted elements",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = DomainUpdateFailedResponseBody.class)))
+  })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomain(
+      @PathVariable UUID domainId, @RequestParam(name = "template") UUID domainTemplateId) {
+    return useCaseInteractor.execute(
+        updateDomainUseCase,
+        new UpdateDomainUseCase.InputData(domainId, domainTemplateId),
+        out ->
+            RestApiResponse.created(
+                referenceAssembler.targetReferenceOf(out.newDomain()),
+                out.newDomain().getId(),
+                "Domain updated"));
   }
 
   @GetMapping(value = "/{domainId}/breaking-changes")

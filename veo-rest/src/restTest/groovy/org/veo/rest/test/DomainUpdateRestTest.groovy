@@ -79,7 +79,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         when: "migrating to the new domain"
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "1.0.1"
-        }
+        }.resourceId
         def migratedScope = get("/scopes/$scopeId").body
 
         then: "the sub type and link are still present under the new domain"
@@ -189,7 +189,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]]
 
             it.domainMigrationDefinition = [migrations: migrationDefinitionChangeKey()]
-        }
+        }.resourceId
 
         def migratedScope = get("/domains/$newDomainId/scopes/$scopeId").body
 
@@ -217,7 +217,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         when: "migrating to a new patch template"
         newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "2.0.1"
-        }
+        }.resourceId
 
         then: "the process has been migrated without any changes"
         with(get("/domains/$newDomainId/processes/$processId").body) {
@@ -326,7 +326,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                         ],
                     ],
                 ],]
-        }
+        }.resourceId
         def processInNewDomain = get("/domains/$newDomainId/processes/$processId").body
 
         then: "the process has the migrated values in the new domain"
@@ -408,7 +408,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                     ],
                 ],
             ]
-        }
+        }.resourceId
 
         then: "the process has the migrated values in the new domain"
         with(get("/domains/$newDomainId/processes/$processWithoutTextId").body) {
@@ -463,7 +463,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         when: "migrating to a new template version"
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "1.0.1"
-        }
+        }.resourceId
 
         then: "the document has been migrated"
         get("/domains/$newDomainId/documents/$documentId").body.subType == "DOC_Document"
@@ -530,7 +530,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
 
         when: "migrating to a new template version that renames the attributes, bringing the CA in line with the other domain"
-        def newDomainId = createNewTemplateAndMigrate {
+        def response = createNewTemplateAndMigrate(409) {
             it.templateVersion = "2.0.0"
             it.elementTypeDefinitions.process.customAspects.test1.attributeDefinitions = [
                 isVeryGood: [type: 'boolean'],
@@ -583,9 +583,15 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
 
         then: "the migration failed"
-        // TODO #3942 / #4360 check error message.
-        thrown(SpockTimeoutError)
-        newDomainId == null
+        !response.success
+        response.message == "Domain update failed due to 1 conflicted element(s)."
+        response.conflictedElementsByUnit.size() == 1
+        with(response.conflictedElementsByUnit.first()) {
+            it.unit.id == super.unitId
+            it.elements*.name == ["protegal process"]
+            it.elements*.id == [processId]
+            it.elements*.subType == ["PRO_DataProcessing"]
+        }
 
         and: "the old conflicting values have been preserved"
         with(get("/domains/$oldDomainId/processes/$processId").body) {
@@ -645,7 +651,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "2.0.0"
             it.riskDefinitions = [:]
-        }
+        }.resourceId
 
         then:
         with(get("/domains/$newDomainId/scopes/$scopeId").body) {
@@ -664,7 +670,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "1.1.0"
             it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"])
-        }
+        }.resourceId
 
         then: "the changes from the new domain template have been applied"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
@@ -704,7 +710,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "1.1.0"
             it.riskDefinitions.definitelyRisky.riskValues.add([symbolicRisk: "two"])
-        }
+        }.resourceId
 
         then: "the customized version has been applied"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
@@ -732,7 +738,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "2.0.0"
             it.elementTypeDefinitions.scope.links.remove("scopeToProcessLink")
-        }
+        }.resourceId
 
         then: "the customized version has been applied, minus the invalid link"
         with(get("/domains/$newDomainId").body.riskDefinitions.definitelyRisky) {
@@ -765,7 +771,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ]
             it.templateVersion = "1.1.0"
-        }
+        }.resourceId
 
         and: "incarnating the migrated catalog"
         def incarnatedElementRefs = incarnateCatalogItems(unitId, newDomainId)
@@ -808,7 +814,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ]
             it.templateVersion = "1.1.0"
-        }
+        }.resourceId
 
         then: "the customized version has won"
         with(get("/domains/$newDomainId/risk-definitions/definitelyRisky").body) {
@@ -1006,17 +1012,15 @@ class DomainUpdateRestTest extends VeoRestTest {
         ]
     }
 
-    String createNewTemplateAndMigrate(Consumer<Map> updateTemplate) {
+    Object createNewTemplateAndMigrate(Consumer<Map> updateTemplate) {
+        createNewTemplateAndMigrate (201, updateTemplate)
+    }
+    Object createNewTemplateAndMigrate(int expectedStatusCode, Consumer<Map> updateTemplate) {
         def template = get("/content-creation/domain-templates/$currentDomainTemplateId").body
         updateTemplate(template)
         currentDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-        post("/domain-templates/$currentDomainTemplateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
-        post("/admin/domain-templates/$currentDomainTemplateId/allclientsupdate", null, 204, ADMIN)
-        defaultPolling.eventually {
-            def versions = get("/domains").body.findAll { it.name == templateName }*.templateVersion
-            versions == [template.templateVersion]
-        }
-        get("/domains").body.find{it.name == templateName}.id
+        def currentDomainId = get("/domains").body.find{it.name == templateName}.id
+        post("/domains/$currentDomainId/update?template=$currentDomainTemplateId", null, expectedStatusCode).body
     }
 
     private List<Map> migrationDefinitionChangeKey() {

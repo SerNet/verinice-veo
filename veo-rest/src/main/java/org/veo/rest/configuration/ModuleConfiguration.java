@@ -85,6 +85,7 @@ import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.PerformActionUseCase;
+import org.veo.core.usecase.UpdateDomainUseCase;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
@@ -1042,6 +1043,21 @@ public class ModuleConfiguration {
   @Bean
   public DeleteInspectionUseCase deleteInspectionUseCase(DomainRepository domainRepository) {
     return new DeleteInspectionUseCase(domainRepository);
+  }
+
+  @Bean
+  public UpdateDomainUseCase updateDomainUseCase(
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      DomainTemplateService domainTemplateService,
+      DomainChangeService domainChangeService,
+      UnitMigrationService unitMigrationService) {
+    return new UpdateDomainUseCase(
+        domainRepository,
+        unitRepository,
+        domainTemplateService,
+        domainChangeService,
+        unitMigrationService);
   }
 
   @Bean
