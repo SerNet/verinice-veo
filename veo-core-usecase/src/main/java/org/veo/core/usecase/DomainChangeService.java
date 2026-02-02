@@ -28,13 +28,12 @@ import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinitionChange;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.DomainDiff;
+import org.veo.service.TemplateItemMigrationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DomainChangeService {
   private final DomainTemplateRepository domainTemplateRepository;
-  private final EventPublisher eventPublisher;
+  private final TemplateItemMigrationService templateItemMigrationService;
 
   /**
    * Evaluate changes the domain made from its template by validating its migration steps and
@@ -106,12 +105,10 @@ public class DomainChangeService {
                 targetDomain.applyRiskDefinition(id, newRiskDef);
                 oldRiskDefFromTargetDomain.ifPresent(
                     ogRiskDef ->
-                        eventPublisher.publish(
-                            RiskDefinitionChangedEvent.from(
-                                targetDomain,
-                                newRiskDef,
-                                RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef),
-                                this)));
+                        templateItemMigrationService.migrateRiskDefinitionChange(
+                            targetDomain,
+                            newRiskDef,
+                            RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef)));
               }
             });
   }

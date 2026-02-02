@@ -796,8 +796,9 @@ public class ModuleConfiguration {
 
   @Bean
   public DomainChangeService domainChangeService(
-      DomainTemplateRepository domainTemplateRepository, EventPublisher eventPublisher) {
-    return new DomainChangeService(domainTemplateRepository, eventPublisher);
+      DomainTemplateRepository domainTemplateRepository,
+      TemplateItemMigrationService templateItemMigrationService) {
+    return new DomainChangeService(domainTemplateRepository, templateItemMigrationService);
   }
 
   @Bean
