@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
+// TODO #4517 remove
 public class MigrationFailedException extends RuntimeException {
 
   private static final long serialVersionUID = 6053728693818238191L;
@@ -28,13 +29,6 @@ public class MigrationFailedException extends RuntimeException {
     super(message);
     this.itemCount = itemCount;
     this.failureCount = failureCount;
-  }
-
-  public static MigrationFailedException forUnit(int elementCount, int failureCount) {
-    return new MigrationFailedException(
-        "Migration of unit failed for " + failureCount + " of " + elementCount + " elements(s)",
-        elementCount,
-        failureCount);
   }
 
   public static MigrationFailedException forDomain(int unitCount, int failureCount) {

@@ -34,7 +34,7 @@ import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
-import org.veo.core.usecase.MigrationFailedException;
+import org.veo.core.usecase.DomainUpdateFailedException;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.decision.Decider;
 
@@ -48,7 +48,7 @@ public class UnitMigrationService {
   private final Decider decider;
 
   public void update(Unit unit, Domain oldDomain, Domain newDomain)
-      throws MigrationFailedException {
+      throws DomainUpdateFailedException {
     Version oldVersion = Version.parse(oldDomain.getTemplateVersion());
     Version newVersion = Version.parse(newDomain.getTemplateVersion());
 
@@ -97,7 +97,7 @@ public class UnitMigrationService {
             .toList();
 
     if (!invalidElements.isEmpty()) {
-      throw MigrationFailedException.forUnit(elements.size(), invalidElements.size());
+      throw new DomainUpdateFailedException(oldDomain, elements);
     }
   }
 

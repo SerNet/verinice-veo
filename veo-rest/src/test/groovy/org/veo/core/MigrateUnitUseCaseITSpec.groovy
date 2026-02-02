@@ -45,6 +45,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
+import org.veo.core.usecase.DomainUpdateFailedException
 import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
@@ -475,7 +476,8 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         runUseCase(unit.id,domainA1.id, domainA2.id)
 
         then:"a conflict is detected"
-        thrown(MigrationFailedException)
+        def ex = thrown(DomainUpdateFailedException)
+        ex.conflictedElements*.id == [process.id]
 
         when: "resolving the conflict"
         process.applyCustomAspectAttribute(domainB, "performance", "isVeryFast", false)
@@ -529,7 +531,8 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         runUseCase(unit.id,dsgvoDomain.id, dsgvoDomainV2.id)
 
         then:
-        thrown(MigrationFailedException)
+        def ex = thrown(DomainUpdateFailedException)
+        ex.conflictedElements*.id == [document.id]
 
         when: "resolving the conflict"
         document.applyCustomAspectAttribute(otherDomain, "document_details", "document_details_version", "draft-1")
