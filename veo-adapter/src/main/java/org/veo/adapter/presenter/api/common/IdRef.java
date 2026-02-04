@@ -19,11 +19,9 @@ package org.veo.adapter.presenter.api.common;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -39,7 +37,6 @@ import lombok.Setter;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonFilter(VeoConstants.JSON_FILTER_IDREF)
 public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   @JsonIgnore private final ITypedId<T> ref;
   private final String displayName;

@@ -20,6 +20,4 @@ package org.veo.core;
 public class VeoConstants {
 
   public static final int DB_QUERY_CHUNK_SIZE = 10000;
-
-  public static final String JSON_FILTER_IDREF = "idref";
 }

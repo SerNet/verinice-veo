@@ -40,8 +40,6 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
@@ -53,7 +51,6 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
-import org.veo.core.VeoConstants;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
@@ -802,14 +799,9 @@ public class ModuleConfiguration {
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
     return builder ->
-        builder
-            .featuresToDisable(
-                SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
-                SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS)
-            .filters(
-                new SimpleFilterProvider()
-                    .addFilter(
-                        VeoConstants.JSON_FILTER_IDREF, SimpleBeanPropertyFilter.serializeAll()));
+        builder.featuresToDisable(
+            SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+            SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
   }
 
   @Bean
