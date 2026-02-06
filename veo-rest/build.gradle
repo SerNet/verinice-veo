@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 
 plugins {
     id "com.gorylenko.gradle-git-properties" version "2.5.5"
-    id 'com.google.cloud.tools.jib' version '3.5.2'
+    id 'com.google.cloud.tools.jib' version '3.5.3'
 }
 
 apply plugin: 'org.springframework.boot'
