@@ -27,6 +27,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
@@ -78,7 +80,8 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       example = "1.0.0",
       requiredMode = REQUIRED)
   @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
-  private String templateVersion;
+  @JsonProperty("templateVersion")
+  private String templateVersionAsString;
 
   @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();

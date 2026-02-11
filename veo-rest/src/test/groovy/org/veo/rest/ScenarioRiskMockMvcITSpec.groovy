@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.veo.rest
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+
+import com.github.zafarkhaja.semver.Version
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.ElementType
@@ -45,7 +46,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             def client = createTestClient()
             def domain = newDomain(client) {
                 name = "Scenario Risk Test"
-                templateVersion = "5.3.1"
+                templateVersion = Version.parse("5.3.1")
                 riskDefinitions = [
                     "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),

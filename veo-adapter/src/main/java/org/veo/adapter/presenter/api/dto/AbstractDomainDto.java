@@ -80,7 +80,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
       description = "Template version in Semantic Versioning 2.0.0 format",
       example = "1.0.0",
       accessMode = Schema.AccessMode.READ_ONLY)
-  private String templateVersion;
+  @JsonProperty("templateVersion")
+  private String templateVersionAsString;
 
   @Schema(description = "A list of risk definitions belonging to the domain.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();

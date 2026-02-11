@@ -128,7 +128,7 @@ public class MessageCreatorImpl implements MessageCreator {
     json.put("sourceDomainId", sourceDomain.getIdAsString());
     json.put("sourceClientId", sourceDomain.getOwner().getIdAsString());
     json.put("domainTemplateId", dt.getIdAsString());
-    json.put("version", dt.getTemplateVersion());
+    json.put("version", dt.getTemplateVersion().toString());
     storeMessage(EVENT_TYPE_DOMAIN_TEMPLATE_CREATION, json, null, null);
   }
 

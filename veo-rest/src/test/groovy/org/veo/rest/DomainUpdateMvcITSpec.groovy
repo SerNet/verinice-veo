@@ -34,7 +34,6 @@ import org.veo.core.entity.domainmigration.CustomAspectAttribute
 import org.veo.core.entity.domainmigration.CustomAspectMigrationTransformDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationStep
-import org.veo.core.usecase.DomainUpdateFailedException
 
 @WithUserDetails("user@domain.example")
 class DomainUpdateMvcITSpec extends VeoMvcSpec {
@@ -52,27 +51,27 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainTemplateDataRepository.saveAll([
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "0.5.0"
+                templateVersion = Version.parse("0.5.0")
             },
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "0.5.1"
+                templateVersion = Version.parse("0.5.1")
             },
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "0.5.2"
+                templateVersion = Version.parse("0.5.2")
             },
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "1.0.0"
+                templateVersion = Version.parse("1.0.0")
             },
             newDomainTemplate {
                 name = "esdProtection"
-                templateVersion = "1.8.3"
+                templateVersion = Version.parse("1.8.3")
             },
             newDomainTemplate {
                 name = "esdProtection"
-                templateVersion = "2.0.0"
+                templateVersion = Version.parse("2.0.0")
             },
         ])
 
@@ -80,14 +79,14 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainDataRepository.saveAll([
             newDomain(client) {
                 name = "lärmschutz"
-                templateVersion = "0.5.1"
+                templateVersion = Version.parse("0.5.1")
                 translations = new Translated<>([
                     (EN): new NameAbbreviationAndDescription("Hearing protection", "hp", "WHAT DID YOU SAY? I CAN'T HEAR YOU!")
                 ])
             },
             newDomain(client) {
                 name = "esdProtection"
-                templateVersion = "1.8.3"
+                templateVersion = Version.parse("1.8.3")
                 translations = new Translated<>([
                     (EN): new NameAbbreviationAndDescription("ESD Protection", "esdp", "High voltage")
                 ])
@@ -122,11 +121,11 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainTemplateDataRepository.saveAll([
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "0.5.0"
+                templateVersion = Version.parse("0.5.0")
             },
             newDomainTemplate {
                 name = "lärmschutz"
-                templateVersion = "0.5.1"
+                templateVersion = Version.parse("0.5.1")
             },
         ])
 
@@ -134,7 +133,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainDataRepository.saveAll([
             newDomain(client) {
                 name = "lärmschutz"
-                templateVersion = "0.5.1"
+                templateVersion = Version.parse("0.5.1")
                 translations = new Translated<>([:])
             }
         ])
@@ -151,23 +150,23 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainTemplateDataRepository.saveAll([
             newDomainTemplate {
                 name = "schmutzSchutz"
-                templateVersion = "0.1.0"
+                templateVersion = Version.parse("0.1.0")
             },
             newDomainTemplate {
                 name = "schmutzSchutz"
-                templateVersion = "1.0.0"
+                templateVersion = Version.parse("1.0.0")
             },
             newDomainTemplate {
                 name = "schmutzSchutz"
-                templateVersion = "1.0.1"
+                templateVersion = Version.parse("1.0.1")
             },
             newDomainTemplate {
                 name = "schmutzSchutz"
-                templateVersion = "1.1.0"
+                templateVersion = Version.parse("1.1.0")
             },
             newDomainTemplate {
                 name = "schmutzSchutz"
-                templateVersion = "2.0.0"
+                templateVersion = Version.parse("2.0.0")
             },
         ])
 
@@ -175,7 +174,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainDataRepository.saveAll([
             newDomain(client) {
                 name = "schmutzSchutz"
-                templateVersion = "0.1.0"
+                templateVersion = Version.parse("0.1.0")
                 translations = new Translated<>([:])
             }
         ])
@@ -203,7 +202,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         given: "two DTs with a similar CA, but one has an additional attr"
         def templateA = domainTemplateDataRepository.save(newDomainTemplate {
             name = "AnimalProtection"
-            templateVersion = "1.0.0"
+            templateVersion = Version.parse("1.0.0")
             translations.translations[Locale.ENGLISH] = new NameAbbreviationAndDescription("Animal protection", null, null)
             translations.translations[Locale.GERMAN] = new NameAbbreviationAndDescription("Tierschutz", null, null)
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
@@ -228,7 +227,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         })
         def templateB = domainTemplateDataRepository.save(newDomainTemplate {
             name = "EnvironmentProtection"
-            templateVersion = "1.0.0"
+            templateVersion = Version.parse("1.0.0")
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Animal = newSubTypeDefinition {}
                 customAspects.movement = newCustomAspectDefinition {
@@ -253,7 +252,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         and: "a minor update for a DT, adding an attribute and bringing the custom aspect in line with the other template"
         domainTemplateDataRepository.save(newDomainTemplate {
             name = "EnvironmentProtection"
-            templateVersion = "1.1.0"
+            templateVersion = Version.parse("1.1.0")
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Animal = newSubTypeDefinition {}
                 customAspects.movement = newCustomAspectDefinition {
@@ -287,7 +286,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         given: "two DTs with a similar CA, but with different keys"
         def templateA = domainTemplateDataRepository.save(newDomainTemplate {
             name = "MISO 27000"
-            templateVersion = "1.0.0"
+            templateVersion = Version.parse("1.0.0")
             translations.translations[Locale.ENGLISH] = new NameAbbreviationAndDescription("The MISO 27000", null, null)
             translations.translations[Locale.GERMAN] = new NameAbbreviationAndDescription("Die MISO 27000", null, null)
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
@@ -303,7 +302,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         })
         def templateB = domainTemplateDataRepository.save(newDomainTemplate {
             name = "MISO 27001"
-            templateVersion = "1.0.0"
+            templateVersion = Version.parse("1.0.0")
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Soup = newSubTypeDefinition {}
                 customAspects.nodles = newCustomAspectDefinition {
@@ -328,7 +327,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         and: "a major update for a DT, renaming the CA and bringing it in line with the other template"
         domainTemplateDataRepository.save(newDomainTemplate {
             name = "MISO 27001"
-            templateVersion = "2.0.0"
+            templateVersion = Version.parse("2.0.0")
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Soup = newSubTypeDefinition {}
                 customAspects.noodles = newCustomAspectDefinition {

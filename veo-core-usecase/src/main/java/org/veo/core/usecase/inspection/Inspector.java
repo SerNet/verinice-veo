@@ -56,7 +56,7 @@ public class Inspector {
   }
 
   private Collection<Finding> getMigrationFindings(Element element, Domain domain) {
-    Version currentVersion = Version.parse(domain.getTemplateVersion());
+    Version currentVersion = domain.getTemplateVersion();
     return domainTemplateRepository
         .findLatestBetween(
             // Both major and minor updates can cause conflicts. It is not possible to update

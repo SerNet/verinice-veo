@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.CustomAspectDefinition
@@ -35,7 +37,7 @@ class ElementCustomAspectSpec extends Specification {
 
     def "custom aspects are handled correctly on #elementType.pluralTerm"() {
         given: "two domains with some CA definitions"
-        def domainA = factory.createDomain("", "", "").tap {
+        def domainA = factory.createDomain("", "", Version.of(1)).tap {
             getElementTypeDefinition(elementType).customAspects = [
                 someType: new CustomAspectDefinition().tap {
                     attributeDefinitions = [
@@ -49,7 +51,7 @@ class ElementCustomAspectSpec extends Specification {
                 }
             ]
         }
-        def domainB = factory.createDomain("", "", "").tap {
+        def domainB = factory.createDomain("", "", Version.of(1)).tap {
             getElementTypeDefinition(elementType).customAspects = [
                 someType: new CustomAspectDefinition().tap {
                     attributeDefinitions = [

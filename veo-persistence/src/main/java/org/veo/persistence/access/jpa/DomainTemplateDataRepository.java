@@ -24,6 +24,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.persistence.entity.jpa.DomainTemplateData;
 
 public interface DomainTemplateDataRepository
@@ -63,7 +65,7 @@ public interface DomainTemplateDataRepository
           """)
   Optional<DomainTemplateData> findByIdWithRiskDefinitions(UUID id);
 
-  boolean existsByNameAndTemplateVersion(String name, String templateVersion);
+  boolean existsByNameAndTemplateVersion(String name, Version templateVersion);
 
   @Query(
       value =

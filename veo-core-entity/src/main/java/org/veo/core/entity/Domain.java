@@ -151,8 +151,8 @@ public interface Domain extends DomainBase, ClientOwned {
   }
 
   default void migrate(List<Element> elements, Domain oldDomain) {
-    Version oldVersion = Version.parse(oldDomain.getTemplateVersion());
-    Version newVersion = Version.parse(getTemplateVersion());
+    Version oldVersion = oldDomain.getTemplateVersion();
+    Version newVersion = getTemplateVersion();
 
     boolean needsMigrationDefinition = !oldVersion.isSameMajorVersionAs(newVersion);
     associateNewDomain(oldDomain, elements);

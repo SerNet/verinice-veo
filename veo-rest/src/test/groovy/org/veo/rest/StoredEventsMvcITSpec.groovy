@@ -20,6 +20,8 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -482,7 +484,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         when: "creating a domain template"
         def domainTemplate = domainTemplateRepository.save(newDomainTemplate() {
-            templateVersion = '1'
+            templateVersion = Version.of(1)
             authority = 'me'
 
             def item1 = newCatalogItem(it, {
@@ -515,7 +517,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         when: "updating some entities in the template"
         domainTemplate.tap {
-            templateVersion = '1'
+            templateVersion = Version.of(1)
             catalogItems.first().tap {
                 description = 'Ignore this!'
             }

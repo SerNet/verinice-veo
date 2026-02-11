@@ -29,9 +29,11 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.zafarkhaja.semver.Version;
 
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
+import org.veo.adapter.presenter.api.io.mapper.VersionMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationConfiguration;
@@ -94,5 +96,10 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
   @JsonIgnore
   public Set<ProfileState> getProfileStates() {
     return new HashSet<>(profilesNew);
+  }
+
+  @Override
+  public Version getTemplateVersion() {
+    return VersionMapper.parseVersion(getTemplateVersionAsString());
   }
 }

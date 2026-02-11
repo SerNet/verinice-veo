@@ -19,6 +19,8 @@ package org.veo.persistence.entity.jpa
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
@@ -65,7 +67,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'domain'
             description = 'a description'
             authority = 'ISO'
-            templateVersion = '1.0'
+            templateVersion = Version.of(1)
             riskDefinitions = ["id":
                 createRiskDefinition("id1")
             ]as Map

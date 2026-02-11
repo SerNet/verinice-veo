@@ -22,6 +22,8 @@ import java.util.Optional;
 
 import jakarta.validation.Valid;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.NameAbbreviationAndDescription;
@@ -72,7 +74,7 @@ public class CreateDomainUseCase
               });
     }
     // TODO VEO-1812: Remove assignment because domains should not have a template version
-    domain.setTemplateVersion("0.1.0");
+    domain.setTemplateVersion(Version.of(0, 1, 0));
     return new OutputData(domainRepository.save(domain));
   }
 

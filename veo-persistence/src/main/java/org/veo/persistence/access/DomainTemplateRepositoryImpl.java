@@ -112,7 +112,7 @@ public class DomainTemplateRepositoryImpl
 
   @Override
   public boolean templateExists(String name, Version version) {
-    return dataRepository.existsByNameAndTemplateVersion(name, version.toString());
+    return dataRepository.existsByNameAndTemplateVersion(name, version);
   }
 
   @Override

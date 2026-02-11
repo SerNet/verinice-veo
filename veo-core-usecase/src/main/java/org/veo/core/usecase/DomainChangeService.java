@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.zafarkhaja.semver.Version;
-
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -64,7 +62,7 @@ public class DomainChangeService {
       validate(domain, domain.getDomainTemplate(), newBreakingChanges);
       return new DomainChangeEvaluation(true);
     }
-    var previousMajor = Version.parse(domain.getTemplateVersion()).majorVersion() - 1;
+    var previousMajor = domain.getTemplateVersion().majorVersion() - 1;
     var previousMajorTemplate =
         domainTemplateRepository.findLatestByMajor(domain.getName(), previousMajor).orElse(null);
     if (previousMajorTemplate != null) {

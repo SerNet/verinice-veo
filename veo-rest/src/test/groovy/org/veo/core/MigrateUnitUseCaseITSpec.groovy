@@ -20,6 +20,8 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -415,7 +417,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
     def "Migration fails due to conflict in migrated CA attribute"() {
         given: "an attribute that is renamed in a new domain version"
         def domainA1 = domainDataRepository.save(newDomain(client) {
-            templateVersion = "1.0.0"
+            templateVersion = Version.parse("1.0.0")
             applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
                 subTypes.PRO_gram = newSubTypeDefinition {}
                 customAspects.put("performance", newCustomAspectDefinition {
@@ -424,7 +426,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
             })
         })
         def domainA2 = domainDataRepository.save(newDomain(client) {
-            templateVersion = "2.0.0"
+            templateVersion = Version.parse("2.0.0")
             applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
                 subTypes.PRO_gram = newSubTypeDefinition {}
                 customAspects.put("performance", newCustomAspectDefinition {

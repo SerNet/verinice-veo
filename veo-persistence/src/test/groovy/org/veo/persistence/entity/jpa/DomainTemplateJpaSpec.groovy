@@ -22,6 +22,8 @@ import static org.veo.core.entity.TailoringReferenceType.LINK
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.ElementType
@@ -217,23 +219,23 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         given: "different iso template versions and one unrelated mogs template"
         repository.save(newDomainTemplate {
             name = "ISO"
-            templateVersion = "10.0.2"
+            templateVersion = Version.parse("10.0.2")
         })
         repository.save(newDomainTemplate {
             name = "ISO"
-            templateVersion = "2.3.4"
+            templateVersion = Version.parse("2.3.4")
         })
         repository.save(newDomainTemplate {
             name = "ISO"
-            templateVersion = "10.1.0"
+            templateVersion = Version.parse("10.1.0")
         })
         repository.save(newDomainTemplate {
             name = "ISO"
-            templateVersion = "10.1.1"
+            templateVersion = Version.parse("10.1.1")
         })
         repository.save(newDomainTemplate {
             name = "MOGS"
-            templateVersion = "10.2.3"
+            templateVersion = Version.parse("10.2.3")
         })
 
         when:
@@ -241,7 +243,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
         then:
         result.present
-        repository.findById(result.get()).get().templateVersion == "10.1.1"
+        repository.findById(result.get()).get().templateVersion == Version.parse("10.1.1")
 
         when:
         def currentVersion = repository.findCurrentTemplateVersion("ISO")
@@ -255,7 +257,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         def client = clientRepository.save(newClient())
         def domainId = newDomain(client) {
             name = "main"
-            templateVersion = "0.1.0"
+            templateVersion = Version.parse("0.1.0")
         }.id
         clientRepository.save(client)
 

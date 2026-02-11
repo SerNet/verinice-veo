@@ -19,6 +19,8 @@ package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
@@ -443,7 +445,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         def domain2 = newDomain(client) {
             authority = 'ta'
-            templateVersion = '1.0'
+            templateVersion = Version.of(1)
         }
 
         client = clientRepository.save(client)

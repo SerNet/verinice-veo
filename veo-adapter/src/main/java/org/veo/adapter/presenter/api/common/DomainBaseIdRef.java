@@ -68,6 +68,6 @@ public class DomainBaseIdRef<TDomain extends DomainBase> extends IdRef<TDomain> 
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getTemplateVersion() {
-    return entity.getTemplateVersion();
+    return entity.getTemplateVersion().toString();
   }
 }

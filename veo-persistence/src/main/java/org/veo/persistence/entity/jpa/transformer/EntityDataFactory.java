@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -146,7 +148,7 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Domain createDomain(String name, String authority, String templateVersion) {
+  public Domain createDomain(String name, String authority, Version templateVersion) {
     Domain domain = new DomainData();
     domain.setId(UUID.randomUUID());
     domain.setName(name);
@@ -182,7 +184,7 @@ public class EntityDataFactory implements EntityFactory {
 
   @Override
   public DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, UUID id) {
+      String name, String authority, Version templateVersion, UUID id) {
     DomainTemplate domainTemplate = new DomainTemplateData();
     domainTemplate.setId(id);
     domainTemplate.setName(name);

@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
@@ -60,7 +62,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                templateVersion = "1.0.0"
+                templateVersion = Version.parse("1.0.0")
                 applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         SomeProcess: newSubTypeDefinition()
@@ -76,7 +78,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain1 = newDomain(client) {
                 abbreviation = "D1"
                 name = "Domain 1"
-                templateVersion = "1.0.0"
+                templateVersion = Version.parse("1.0.0")
             }
 
             client = clientRepository.save(client)

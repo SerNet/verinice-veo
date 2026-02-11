@@ -411,7 +411,7 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
-    target.setTemplateVersion(source.getTemplateVersion());
+    target.setTemplateVersionAsString(source.getTemplateVersion().toString());
     target.setDecisions(source.getDecisions());
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().stream()
@@ -443,7 +443,7 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
-    target.setTemplateVersion(source.getTemplateVersion());
+    target.setTemplateVersionAsString(source.getTemplateVersion().toString());
     target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
 
     mapVersionedSelfReferencingProperties(source, target);
@@ -665,7 +665,7 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId());
     target.setSelfRef(IdRef.from(source, referenceAssembler));
     target.setName(source.getName());
-    target.setTemplateVersion(source.getTemplateVersion());
+    target.setTemplateVersion(source.getTemplateVersion().toString());
     target.setCreatedAt(source.getCreatedAt().toString());
     target.setTranslations(source.getTranslations());
     return target;

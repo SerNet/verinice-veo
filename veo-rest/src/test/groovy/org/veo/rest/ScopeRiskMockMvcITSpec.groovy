@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
@@ -57,7 +59,7 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             def client = createTestClient()
             domain = newDomain(client) {
                 name = "Scope Risk Test"
-                templateVersion = "1.1.0"
+                templateVersion = Version.parse("1.1.0")
                 riskDefinitions = [
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.test.VeoSpec
 
 class DomainTemplateSpec extends VeoSpec {
@@ -25,7 +27,7 @@ class DomainTemplateSpec extends VeoSpec {
         given: "a domain template name, authority, ..."
         String name = 'Test domain'
         String auth = 'authority'
-        String templateVersion = '1.0'
+        Version templateVersion = Version.of(1)
 
         when : "DomainTemplate is created"
         DomainTemplate domainTemplate = newDomainTemplate() {

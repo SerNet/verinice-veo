@@ -38,7 +38,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
+
+import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
@@ -54,6 +57,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
+import org.veo.persistence.entity.jpa.transformer.VersionUserType;
 
 import lombok.Data;
 import lombok.ToString;
@@ -88,7 +92,8 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Column(name = "templateversion", nullable = false)
   @ToString.Include
-  private String templateVersion;
+  @Type(VersionUserType.class)
+  private Version templateVersion;
 
   @OneToMany(
       cascade = CascadeType.ALL,

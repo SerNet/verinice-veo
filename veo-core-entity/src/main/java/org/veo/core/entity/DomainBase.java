@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -46,7 +49,8 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void setAuthority(@NotNull String aAuthority);
 
-  void setTemplateVersion(@NotNull String aTemplateVersion);
+  @JsonIgnore
+  void setTemplateVersion(@NotNull Version aTemplateVersion);
 
   Set<CatalogItem> getCatalogItems();
 

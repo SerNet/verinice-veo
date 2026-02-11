@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.core.service;
 
+import com.github.zafarkhaja.semver.Version;
+
 public interface DomainTemplateIdGenerator {
 
-  String createDomainTemplateId(String name, String version);
+  String createDomainTemplateId(String name, Version version);
 }

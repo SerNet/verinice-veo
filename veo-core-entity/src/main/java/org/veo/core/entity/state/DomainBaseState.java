@@ -23,6 +23,9 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.ControlImplementationConfiguration;
 import org.veo.core.entity.DomainBase;
@@ -62,7 +65,8 @@ public interface DomainBaseState
 
   DomainMigrationDefinition getDomainMigrationDefinition();
 
-  String getTemplateVersion();
+  @JsonIgnore
+  Version getTemplateVersion();
 
   Set<TemplateItemState<CatalogItem, DomainBase>> getCatalogItemStates();
 

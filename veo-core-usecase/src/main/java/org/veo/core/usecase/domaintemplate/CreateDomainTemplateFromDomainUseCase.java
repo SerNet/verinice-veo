@@ -79,7 +79,6 @@ public class CreateDomainTemplateFromDomainUseCase
         domainChangeService.evaluateChanges(domain).introducesBreakingChanges();
     Optional.ofNullable(domain.getDomainTemplate())
         .map(DomainTemplate::getTemplateVersion)
-        .map(Version::parse)
         .ifPresentOrElse(
             /*
              If the domain is based on an existing template, enforce restrictions for different types of updates:
@@ -117,7 +116,7 @@ public class CreateDomainTemplateFromDomainUseCase
                             "Domain is not based on a template, but templates already exist.");
                       });
             });
-    domain.setTemplateVersion(version.toString());
+    domain.setTemplateVersion(version);
   }
 
   private static void throwMustBeMajor(Version templateVersion) {

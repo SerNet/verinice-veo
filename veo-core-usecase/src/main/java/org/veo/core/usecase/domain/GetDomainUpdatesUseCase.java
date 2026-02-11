@@ -23,8 +23,6 @@ import java.util.Objects;
 
 import jakarta.validation.Valid;
 
-import com.github.zafarkhaja.semver.Version;
-
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Nameable;
@@ -54,20 +52,18 @@ public class GetDomainUpdatesUseCase
         domains.stream()
             .map(
                 domain -> {
-                  var domainVersion = Version.parse(domain.getTemplateVersion());
+                  var domainVersion = domain.getTemplateVersion();
                   var allUpdates =
                       templates.stream()
                           .filter(t -> t.getName().equals(domain.getName()))
-                          .filter(
-                              t ->
-                                  Version.parse(t.getTemplateVersion()).isHigherThan(domainVersion))
+                          .filter(t -> t.getTemplateVersion().isHigherThan(domainVersion))
                           .sorted(Comparator.comparing(DomainBaseState::getTemplateVersion))
                           .toList();
                   var possibleUpdates =
                       allUpdates.stream()
                           .filter(
                               dt ->
-                                  Version.parse(dt.getTemplateVersion()).majorVersion()
+                                  dt.getTemplateVersion().majorVersion()
                                       <= domainVersion.majorVersion() + 1)
                           .toList();
                   if (!allUpdates.isEmpty()) {

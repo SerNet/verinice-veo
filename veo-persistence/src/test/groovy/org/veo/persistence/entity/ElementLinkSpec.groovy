@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementType
@@ -35,7 +37,7 @@ class ElementLinkSpec extends Specification {
 
     def "links are handled correctly on #elementType.pluralTerm"() {
         given: "two domains with some link definitions"
-        def domainA = factory.createDomain("", "", "").tap {
+        def domainA = factory.createDomain("", "", Version.of(1)).tap {
             getElementTypeDefinition(elementType).links = [
                 someType: new LinkDefinition().tap {
                     targetType = ElementType.ASSET
@@ -51,7 +53,7 @@ class ElementLinkSpec extends Specification {
                 }
             ]
         }
-        def domainB = factory.createDomain("", "", "").tap {
+        def domainB = factory.createDomain("", "", Version.of(1)).tap {
             getElementTypeDefinition(elementType).links = [
                 someType: new LinkDefinition().tap {
                     targetType = ElementType.ASSET

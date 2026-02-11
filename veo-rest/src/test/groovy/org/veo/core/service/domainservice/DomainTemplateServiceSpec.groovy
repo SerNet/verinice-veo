@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -121,7 +123,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             client = repository.save(client)
         }
         domainFromTemplate = client.domains.first()
-        domainFromTemplate.templateVersion = "1.1.0"
+        domainFromTemplate.templateVersion = Version.parse("1.1.0")
 
         def domainTemplateFromDomain = txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
@@ -137,7 +139,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate.domainTemplate.id == domainTemplateFromDomain.id
-        domainFromTemplate.templateVersion == "1.1.0"
+        domainFromTemplate.templateVersion == Version.parse("1.1.0")
         domainFromTemplate.catalogItems.size() == 6
         with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'Control-1'
@@ -178,7 +180,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             client = repository.save(client)
         }
         domainFromTemplate = client.domains.first()
-        domainFromTemplate.templateVersion = "1.0.1"
+        domainFromTemplate.templateVersion = Version.parse("1.0.1")
 
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)

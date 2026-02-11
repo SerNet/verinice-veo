@@ -19,6 +19,8 @@ package org.veo.core.entity.transform;
 
 import java.util.UUID;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -73,14 +75,14 @@ public interface EntityFactory {
    * Reconstitutes a domain without the reference to its owning client. Adding it to a client is the
    * caller's responsibility.
    */
-  Domain createDomain(String name, String authority, String templateVersion);
+  Domain createDomain(String name, String authority, Version templateVersion);
 
   CustomLink createCustomLink(Element linkTarget, Element linkSource, String type, Domain domain);
 
   Scope createScope(String name, Unit owner);
 
   DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, UUID id);
+      String name, String authority, Version templateVersion, UUID id);
 
   CatalogItem createCatalogItem(DomainBase domain);
 

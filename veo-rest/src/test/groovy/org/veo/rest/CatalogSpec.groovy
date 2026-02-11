@@ -20,6 +20,8 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.zafarkhaja.semver.Version
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
@@ -102,7 +104,7 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "ISO"
                 name = "IT-Grundschutz"
                 authority = 'ta'
-                templateVersion = '1.0'
+                templateVersion = Version.of(1)
                 domainTemplate = domainTemplate
                 riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
                 applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
@@ -428,7 +430,7 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "ISO"
                 name = "ISO"
                 authority = 'ta'
-                templateVersion = '1.0'
+                templateVersion = Version.of(1)
             }
 
             client = clientRepository.save(client)
@@ -471,7 +473,7 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "D1"
                 name = "Domain 1"
                 authority = 'ta'
-                templateVersion = '1.0'
+                templateVersion = Version.of(1)
             }
 
             newCatalogItem(domain3, {

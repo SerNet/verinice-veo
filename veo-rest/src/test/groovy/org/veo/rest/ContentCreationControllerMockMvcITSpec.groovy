@@ -1680,14 +1680,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
-                    .find{ it.name == domain.name && it.templateVersion == "1.1.0"}
+                    .find{ it.name == domain.name && it.templateVersion.toString() == "1.1.0"}
                     .tap{
                         it.profiles*.items*.tailoringReferences*.id
                     } // init proxy
         }
 
         then: "the template is found, the version is set"
-        dt.templateVersion == "1.1.0"
+        dt.templateVersion.toString() == "1.1.0"
 
         and: "the example profile exists"
         with(dt.profiles.find { it.name == "Example elements" }) {
