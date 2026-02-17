@@ -450,9 +450,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(endPointInfo.responses['409']) {
             it.description == "Update failed due to conflicted elements"
             it.content['application/json'].schema == [
-                $ref: '#/components/schemas/ApiResponseBody'
-                // TODO #4360
-                // $ref: '#/components/schemas/DomainUpdateFailedResponseBody'
+                $ref: '#/components/schemas/DomainUpdateFailedResponseBody'
             ]
         }
     }
@@ -741,6 +739,11 @@ class SwaggerSpec extends VeoSpringSpec {
                         path:path, method:method, status:status, statusInfo:statusInfo
                     ]
                 }
+            }
+        }.tap {
+            removeIf {
+                (it.path == '/domains/{domainId}/update' && it.method == 'post' // uses specific schema and has a separate test
+                        )
             }
         }
     }

@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -34,6 +37,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
@@ -237,6 +241,7 @@ import org.veo.service.risk.ImpactInheritanceCalculatorHighWatermark;
 import org.veo.service.risk.RiskService;
 
 import io.swagger.v3.core.util.AnnotationsUtils;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
@@ -1407,10 +1412,10 @@ public class ModuleConfiguration {
   }
 
   // by default, the content schema for every response is derived from the
-  // method return type. But for client errors (e.g. 400, 404 etc.), we return
+  // method return type. But for client errors (e.g. 400, 404 etc.), we usually return
   // a ApiResponseBody content. To avoid having to specify this for every
   // @ApiResponse with a 4xx response code, we override it in the generated
-  // schema for all the operations.
+  // schema for all the operations unless there is a specific content schema specified.
   @Bean
   public OperationCustomizer errorResponseSchemas(
       final SpringDocConfigProperties springDocConfigProperties) {
@@ -1428,8 +1433,39 @@ public class ModuleConfiguration {
           .getResponses()
           .forEach(
               (status, response) -> {
-                if (HttpStatus.resolve(Integer.parseInt(status)).is4xxClientError()) {
+                if (!HttpStatus.resolve(Integer.parseInt(status)).is4xxClientError()) {
+                  return;
+                }
+                var annotations =
+                    AnnotatedElementUtils.findMergedRepeatableAnnotations(
+                        handlerMethod.getMethod(), ApiResponse.class);
+                Optional<ApiResponse> annotationForStatusCode =
+                    annotations.stream().filter(a -> status.equals(a.responseCode())).findAny();
+                if (!annotationForStatusCode.isPresent()) {
                   response.setContent(content);
+                  return;
+                }
+                // check schema and override if not set
+                Optional<io.swagger.v3.oas.annotations.media.Content> contentForStatusCode =
+                    Arrays.stream(annotationForStatusCode.get().content())
+                        .filter(
+                            it ->
+                                it.mediaType()
+                                    .equals(
+                                        org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
+                        .findAny();
+                if (!contentForStatusCode.isPresent()) {
+                  response.setContent(content);
+                  return;
+                }
+                MediaType mediaType =
+                    response
+                        .getContent()
+                        .get(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+                var contentSchema = contentForStatusCode.get().schema();
+                if (mediaType != null && contentSchema == null
+                    || contentSchema.implementation() == Void.class) {
+                  mediaType.setSchema(schema);
                 }
               });
       return operation;
