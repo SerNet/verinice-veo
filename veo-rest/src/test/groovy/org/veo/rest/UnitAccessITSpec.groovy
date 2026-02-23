@@ -375,4 +375,49 @@ class UnitAccessITSpec extends VeoMvcSpec{
             ]
         ]
     }
+
+    def "domain update allowed for #rights"() {
+        given:
+        updateUser("user@domain.example", rights, unitId)
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+
+        when:
+        post("/domains/$domainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null)
+
+        then:
+        noExceptionThrown()
+        txTemplate.execute {
+            unitRepository.getById(unitId).domains*.templateVersion*.toString()
+        }== ["2.0.0"]
+
+        where:
+        rights << [
+            new TestUserRights(restrictUnitAccess: false),
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+            // Write privileges for individual units only cover writing INSIDE those units, but not editing the units
+            // themselves. Domain updates associate the units with the new domain, which counts as editing the units
+            // themselves, and not writing inside the units. See test below.
+        ]
+    }
+
+    def "domain update denied for #rights"() {
+        given:
+        updateUser("user@domain.example", rights, unitId)
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+
+        when:
+        post("/domains/$domainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null, 403)
+
+        then:
+        thrown(NotAllowedException)
+        txTemplate.execute {
+            unitRepository.getById(unitId).domains*.templateVersion*.toString()
+        } == ["1.0.0"]
+
+        where:
+        rights << [
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  false),
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  false, testUnitReadable: true, testUnitWritable: true),
+        ]
+    }
 }

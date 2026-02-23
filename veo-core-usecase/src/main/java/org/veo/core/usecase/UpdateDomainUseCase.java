@@ -48,6 +48,7 @@ public class UpdateDomainUseCase
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
+    userAccessRights.checkUnitUpdateAllowed();
     var oldDomain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     var newDomain =
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId, true);
