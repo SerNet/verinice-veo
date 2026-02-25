@@ -36,8 +36,8 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
+import org.veo.core.entity.compliance.Origination
 import org.veo.core.entity.state.UnitState
 import org.veo.core.usecase.unit.UnitImportUseCase
 import org.veo.rest.security.NoRestrictionAccessRight
@@ -84,6 +84,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 requirementImplementations.add(new RequirementImplementationDto().tap {
                     it.control = IdRef.fromUri("/controls/${controlId}", referenceAssembler)
                     it.status = ImplementationStatus.YES
+                    origination = Origination.SYSTEM_SPECIFIC
                 })
             }
         ]

@@ -1815,7 +1815,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'assessmentBy',
                 '_self'
             ]
-            it.required == null
+            it.required == ['origination']
             it.properties.implementationStatement == [
                 type:'string',
                 minLength:1,

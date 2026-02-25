@@ -109,6 +109,8 @@ public class RequirementImplementationData implements RequirementImplementation 
    * system that is required top show its compliance with a control.
    */
   @Enumerated(EnumType.STRING)
+  @NotNull
+  @NonNull
   Origination origination = SYSTEM_SPECIFIC;
 
   /** A responsible person usually the system owner. */

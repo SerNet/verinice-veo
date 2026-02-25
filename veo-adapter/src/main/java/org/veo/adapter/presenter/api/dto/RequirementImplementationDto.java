@@ -18,6 +18,7 @@
 package org.veo.adapter.presenter.api.dto;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -76,7 +77,7 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   @Size(min = 1, max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
 
-  Origination origination;
+  @NotNull Origination origination;
 
   @Schema(format = "date")
   String implementationUntil;
