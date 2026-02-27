@@ -103,7 +103,7 @@ public enum ElementTypeDtoInfo {
 
   public static ElementTypeDtoInfo get(ElementType elementType) {
     return Arrays.stream(values())
-        .filter(et -> et.getElementType().equals(elementType))
+        .filter(et -> et.getElementType() == elementType)
         .findFirst()
         .orElseThrow(
             () ->

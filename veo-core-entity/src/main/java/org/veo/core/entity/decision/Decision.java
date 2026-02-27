@@ -91,7 +91,7 @@ public class Decision {
   }
 
   public boolean isApplicableToElement(Element element, Domain domain) {
-    return getElementType().equals(element.getType())
+    return getElementType() == element.getType()
         && getElementSubType().equals(element.findSubType(domain).orElse(null));
   }
 
