@@ -659,7 +659,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with(endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
         }
     }
 
@@ -670,7 +670,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with (endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
         }
     }
 
@@ -681,7 +681,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with (endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security == [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
         }
     }
 
@@ -692,7 +692,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with(endPointInfo) {
             it.responses['200'].content['application/json'] == [:]
-            it.security == [
+            it.security ==~ [
                 [ApiKeyAuth: []],
                 [OAuth2: []]
             ]
@@ -707,7 +707,8 @@ class SwaggerSpec extends VeoSpringSpec {
         with (endPointInfo) {
             it.responses['201'].content['application/json'].schema == [
                 type: 'array',
-                items: [$ref: '#/components/schemas/IdRefTailoringReferenceParameterReferencedElement']
+                description: 'A reference list of the created elements',
+                items: [$ref: '#/components/schemas/ElementInDomainIdRef']
             ]
         }
     }
@@ -1487,7 +1488,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.attributes == [
                 type:'object',
-                additionalProperties:[:],
+                additionalProperties:[ type:'object' ],
                 description: 'The properties of the element described by the schema of the type attribute.']
             it.required == ['target']
         }
@@ -1666,7 +1667,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('DecisionResult')) {
 
             it.properties.decisiveRule == [
-                type: 'integer',
+                type: ['integer', 'null'],
                 description: '''Decision rule that matched first and therefore determined the result value. Can be null if none of the rules matched.''',
                 format: 'int32'
             ]
@@ -1768,8 +1769,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'array',
                 description: 'Elements contained in this composite element',
                 items:[
-                    $ref:'#/components/schemas/ElementInDomainIdRef',
-                    description:'Elements contained in this composite element'
+                    $ref:'#/components/schemas/ElementInDomainIdRef'
                 ],
                 uniqueItems:true
             ]

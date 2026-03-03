@@ -56,7 +56,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
-import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.CatalogItem;
@@ -194,11 +193,9 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array =
                   @ArraySchema(
-                      schema =
-                          @Schema(
-                              implementation =
-                                  IdRefTailoringReferenceParameterReferencedElement.class,
-                              description = "A reference list of the created elements"))))
+                      arraySchema =
+                          @Schema(description = "A reference list of the created elements"),
+                      schema = @Schema(implementation = ElementInDomainIdRef.class))))
   public CompletableFuture<ResponseEntity<List<ElementInDomainIdRef<Element>>>> applyIncarnations(
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
