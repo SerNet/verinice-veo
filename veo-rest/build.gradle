@@ -29,6 +29,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
+    runtimeOnly 'io.swagger.core.v3:swagger-core-jakarta:2.2.43'
 }
 
 jar {
