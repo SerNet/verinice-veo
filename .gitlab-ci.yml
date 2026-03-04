@@ -130,7 +130,7 @@ http_rest_tests:
   - name: eu.gcr.io/veo-projekt/veo:pipeline-id-${CI_PIPELINE_ID}
     alias: veo
     variables:
-      JDK_JAVA_OPTIONS: -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=3128 -Dhttps.proxyHost=$PROXY -Dhttps.proxyPort=3128 -Dhttps.proxySet=true
+      JDK_JAVA_OPTIONS: -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=3128 -Dhttps.proxyHost=$PROXY -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Djdk.serialFilter=maxbytes=0
       LOGGING_LEVEL_ROOT: WARN
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: test
