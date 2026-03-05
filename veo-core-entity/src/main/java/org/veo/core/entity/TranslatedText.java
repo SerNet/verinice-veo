@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,9 +34,7 @@ import lombok.Singular;
 /** A collection of translations of one particular term in different languages. */
 @Data
 @Builder
-public class TranslatedText implements Serializable {
-
-  @Serial private static final long serialVersionUID = -8986791116014815923L;
+public class TranslatedText {
 
   public static TranslatedText empty() {
     return new TranslatedText(new HashMap<>());

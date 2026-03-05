@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.io.Serializable;
-
 import jakarta.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NameAbbreviationAndDescription implements Nameable, Serializable {
+public class NameAbbreviationAndDescription implements Nameable {
   private String name;
 
   @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
