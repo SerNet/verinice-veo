@@ -34,6 +34,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -78,6 +79,7 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
     return Scope.class;
   }
 
+  @ArraySchema(schema = @Schema(implementation = ElementInDomainIdRef.class))
   private Set<ElementInDomainIdRef<Element>> members = Collections.emptySet();
 
   @Schema(description = "The ID of a risk definition")

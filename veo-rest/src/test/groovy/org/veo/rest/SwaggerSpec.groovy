@@ -842,8 +842,13 @@ class SwaggerSpec extends VeoSpringSpec {
             'DecisionRef',
             'RiskRef',
             'ReqImplRef',
-            'TypeDefinition'
-        ]
+            'TypeDefinition',
+            'ElementInDomainIdRefElement'
+        ] +
+        // work around https://github.com/swagger-api/swagger-core/issues/3323
+        ElementType.values().collect {
+            'ElementInDomainIdRef'+it.type.simpleName
+        }
     }
 
     @Ignore("No deprecated types at the moment")
@@ -1758,6 +1763,15 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.appliedCatalogItem == [
                 $ref:'#/components/schemas/SymIdRefCatalogItemDomainBase',
                 description:'A reference to the catalog item that this element was created from, if applicable'
+            ]
+            it.properties.parts == [
+                type:'array',
+                description: 'Elements contained in this composite element',
+                items:[
+                    $ref:'#/components/schemas/ElementInDomainIdRef',
+                    description:'Elements contained in this composite element'
+                ],
+                uniqueItems:true
             ]
         }
     }

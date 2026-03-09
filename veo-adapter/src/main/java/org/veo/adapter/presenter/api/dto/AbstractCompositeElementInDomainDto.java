@@ -26,6 +26,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.CompositeElementState;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +40,9 @@ public abstract class AbstractCompositeElementInDomainDto<T extends CompositeEle
 
   private Set<ElementInDomainIdRef<T>> parts = Collections.emptySet();
 
-  @Schema(description = "Elements contained in this composite element")
+  @ArraySchema(
+      arraySchema = @Schema(description = "Elements contained in this composite element"),
+      schema = @Schema(implementation = ElementInDomainIdRef.class))
   @Override
   public Set<ElementInDomainIdRef<T>> getParts() {
     return parts;

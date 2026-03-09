@@ -36,6 +36,8 @@ import lombok.NoArgsConstructor;
 public class InOrOutboundLinkDto {
   LinkDirection direction;
   String linkType;
+
+  @Schema(implementation = ElementInDomainIdRef.class)
   ElementInDomainIdRef<Element> linkedElement;
 
   public static InOrOutboundLinkDto from(

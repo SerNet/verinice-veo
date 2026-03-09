@@ -25,6 +25,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.DomainUpdateFailedException;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,7 +56,9 @@ public class DomainUpdateFailedResponseBody extends ApiResponseBody {
   }
 
   public record UnitElementsDtoGroup(
-      IdRef<Unit> unit, List<ElementInDomainIdRef<Element>> elements) {
+      IdRef<Unit> unit,
+      @ArraySchema(schema = @Schema(implementation = ElementInDomainIdRef.class))
+          List<ElementInDomainIdRef<Element>> elements) {
 
     static UnitElementsDtoGroup from(
         Unit unit,

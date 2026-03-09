@@ -36,6 +36,7 @@ public class LinkDto {
 
   @NotNull(message = "A target must be present.")
   @JsonProperty(required = true)
+  @Schema(implementation = ElementInDomainIdRef.class)
   private ElementInDomainIdRef<Element> target;
 
   @Schema(
