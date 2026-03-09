@@ -32,6 +32,7 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -82,7 +83,7 @@ public interface RiskAffectedResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID controlId,
-      @RequestBody RequirementImplementationDto dto);
+      @Valid @RequestBody RequirementImplementationDto dto);
 
   @GetMapping("/{riskAffectedId}/control-implementations/{controlId}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")

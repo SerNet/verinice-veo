@@ -77,7 +77,8 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   @Size(min = 1, max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
   String implementationStatement;
 
-  @NotNull Origination origination;
+  @NotNull(message = "Origination must be set.")
+  Origination origination;
 
   @Schema(format = "date")
   String implementationUntil;

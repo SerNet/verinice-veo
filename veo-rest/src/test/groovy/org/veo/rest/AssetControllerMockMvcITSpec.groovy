@@ -26,6 +26,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
@@ -552,6 +553,36 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the risk was removed as well"
         thrown(NotFoundException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "Cannot save RI without origin"() {
+        given:
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                name = 'New control-1'
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
+            })
+        }
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit) {
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
+                implementControl(control)
+            })
+        }
+
+        def ri= [
+            :
+        ]
+
+        when:
+        put("/assets/${asset.idAsString}/requirement-implementations/${control.idAsString}", ri, [
+            'If-Match': getETag(get("/assets/${asset.idAsString}"))
+        ], 400)
+
+        then: "the information was persisted"
+        MethodArgumentNotValidException ex = thrown()
+        ex.message.contains("Origination must be set.")
     }
 
     private List createRisk() {

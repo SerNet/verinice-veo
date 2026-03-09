@@ -758,4 +758,39 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         MethodArgumentNotValidException e = thrown()
         e.message.contains('Field error in object \'unitDumpDto\' on field \'risks[]\': rejected value [null]')
     }
+
+    @WithUserDetails("user@domain.example")
+    def "RI without origination is not accepted"() {
+        given:
+        def domain = parseJson(get("/domains/${domain.idAsString}"))
+
+        Map request = [
+            unit    : [
+                name: 'New unit',
+                id: UUID.randomUUID().toString()
+            ],
+            domains : [
+                domain
+            ],
+            elements: [
+                [
+                    "type" : "control",
+                    id: '8dfdf025-a36f-4434-aed5-d3a8dc314ced'
+                ],
+                [
+                    "type" : "asset",
+                    requirementImplementations:[
+                        [control: [targetUri: '/controls/8dfdf025-a36f-4434-aed5-d3a8dc314ced']]
+                    ]
+                ]
+            ]
+        ]
+
+        when:
+        post('/units/import', request, 400)
+
+        then:
+        MethodArgumentNotValidException e = thrown()
+        e.message.contains('Field error in object \'unitDumpDto\' on field \'elements[].requirementImplementations[].origination\': rejected value [null]')
+    }
 }
