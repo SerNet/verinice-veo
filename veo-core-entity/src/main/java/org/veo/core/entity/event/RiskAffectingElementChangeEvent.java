@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 import lombok.AccessLevel;
@@ -41,8 +42,13 @@ import lombok.With;
 public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent {
 
   public RiskAffectingElementChangeEvent(Element entity, Object source) {
+    this(entity, null, source);
+  }
+
+  public RiskAffectingElementChangeEvent(Element entity, Domain domain, Object source) {
     this.entity = entity;
     this.source = source;
+    this.domain = domain;
     this.changes.addAll(
         Set.of(PROBABILITY_VALUES_CHANGED, IMPACT_VALUES_CHANGED, RISK_VALUES_CHANGED));
     this.clientId = entity.getOwningClient().orElseThrow().getId();
@@ -58,6 +64,8 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
   Element entity;
 
   UUID clientId;
+
+  Domain domain;
 
   public RiskAffectingElementChangeEvent(
       Element element, Object source, RiskChangedEvent riskEvent) {

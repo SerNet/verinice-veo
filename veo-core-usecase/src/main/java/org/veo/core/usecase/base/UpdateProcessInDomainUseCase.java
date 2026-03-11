@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.UserAccessRights;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
@@ -48,7 +49,13 @@ public class UpdateProcessInDomainUseCase extends UpdateElementInDomainUseCase<P
   @Override
   public OutputData<Process> execute(InputData<Process> input, UserAccessRights userAccessRights) {
     var result = super.execute(input, userAccessRights); // TODO:VEO-2219 move to update element
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
+    Process entity = result.entity();
+    Domain domain =
+        entity.getDomains().stream()
+            .filter(d -> d.getId().equals(input.domainId()))
+            .findAny()
+            .get();
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, domain, this));
     return result;
   }
 

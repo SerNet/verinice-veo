@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.UserAccessRights;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
@@ -48,7 +49,13 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
   @Override
   public OutputData<Scope> execute(InputData<Scope> input, UserAccessRights userAccessRights) {
     OutputData<Scope> result = super.execute(input, userAccessRights);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
+    Scope entity = result.entity();
+    Domain domain =
+        entity.getDomains().stream()
+            .filter(d -> d.getId().equals(input.domainId()))
+            .findAny()
+            .get();
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, domain, this));
     return result;
   }
 

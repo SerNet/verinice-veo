@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.UserAccessRights;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
@@ -47,7 +48,13 @@ public class UpdateScenarioInDomainUseCase extends UpdateElementInDomainUseCase<
   public OutputData<Scenario> execute(
       InputData<Scenario> input, UserAccessRights userAccessRights) {
     var result = super.execute(input, userAccessRights);
-    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.entity(), this));
+    Scenario entity = result.entity();
+    Domain domain =
+        entity.getDomains().stream()
+            .filter(d -> d.getId().equals(input.domainId()))
+            .findAny()
+            .get();
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, domain, this));
     return result;
   }
 }

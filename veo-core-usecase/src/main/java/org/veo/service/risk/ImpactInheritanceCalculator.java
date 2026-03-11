@@ -59,18 +59,17 @@ public interface ImpactInheritanceCalculator {
   }
 
   default void calculateImpactInheritance(RiskAffected<?, ?> element) {
-    Unit owner = element.getOwner();
-    Client client = owner.getClient();
-    client.getDomains().stream()
-        .filter(HAS_RISK_DEFINITION)
-        .forEach(
-            domain ->
-                domain.getRiskDefinitions().values().stream()
-                    .filter(HAS_INHERITING_LINKS)
-                    .forEach(
-                        rd ->
-                            calculateImpactInheritanceAndUpdateVersions(
-                                owner, domain, rd, element)));
+    Client client = element.getOwningClient().get();
+    client.getDomains().stream().forEach(domain -> calculateImpactInheritance(element, domain));
+  }
+
+  default void calculateImpactInheritance(RiskAffected<?, ?> element, Domain domain) {
+    if (HAS_RISK_DEFINITION.test(domain)) {
+      Unit owner = element.getOwner();
+      domain.getRiskDefinitions().values().stream()
+          .filter(HAS_INHERITING_LINKS)
+          .forEach(rd -> calculateImpactInheritanceAndUpdateVersions(owner, domain, rd, element));
+    }
   }
 
   private void calculateImpactInheritanceAndUpdateVersions(

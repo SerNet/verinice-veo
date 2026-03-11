@@ -85,7 +85,12 @@ public class RiskComponentChangeListener {
               riskService.evaluateChangedRiskComponent(element);
               if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
                 if (element instanceof RiskAffected<?, ?> ra) {
-                  impactInheritanceCalculator.calculateImpactInheritance(ra);
+
+                  Optional.ofNullable(event.getDomain())
+                      .ifPresentOrElse(
+                          domain ->
+                              impactInheritanceCalculator.calculateImpactInheritance(ra, domain),
+                          () -> impactInheritanceCalculator.calculateImpactInheritance(ra));
                 }
               }
             });
