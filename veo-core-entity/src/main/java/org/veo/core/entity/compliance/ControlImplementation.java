@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.compliance;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 
@@ -53,4 +55,8 @@ public interface ControlImplementation {
   void remove(RequirementImplementation ri);
 
   void addRequirement(Control control);
+
+  Map<String, Map<String, Object>> getCustomAspects(Domain domain);
+
+  void setCustomAspects(Domain domain, Map<String, Map<String, Object>> customAspects);
 }

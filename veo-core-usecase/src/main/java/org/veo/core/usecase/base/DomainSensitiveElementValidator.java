@@ -132,6 +132,7 @@ public class DomainSensitiveElementValidator {
       errors.addAll(
           RiskValuesValidator.getImpactValueErrors(
               riskAffected.getImpactValues(domain), riskRefProvider));
+      errors.addAll(getControlImplementationCustomAspectErrors(riskAffected, domain));
     }
     if (element instanceof Scenario scenario) {
       errors.addAll(
@@ -227,5 +228,45 @@ public class DomainSensitiveElementValidator {
                   linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType)));
     }
     return new ArrayList<>();
+  }
+
+  private static List<ValidationError> getControlImplementationCustomAspectErrors(
+      RiskAffected<?, ?> riskAffected, Domain domain) {
+    var ciDef =
+        domain
+            .getElementTypeDefinition(riskAffected.getType())
+            .getControlImplementationDefinition();
+    for (var ci : riskAffected.getControlImplementations()) {
+      var ciCAs = ci.getCustomAspects(domain);
+      if (ciCAs.isEmpty()) {
+        continue;
+      }
+      if (!ci.getControl().getDomains().contains(domain)) {
+        return List.of(
+            new ValidationError.Generic(
+                "Cannot add custom aspects to a control implementation for domain '%s' because the control is not associated with it."
+                    .formatted(domain.getName())));
+      }
+      for (var entry : ciCAs.entrySet()) {
+        String caType = entry.getKey();
+        Map<String, Object> attributes = entry.getValue();
+        if (ciDef == null || !ciDef.getCustomAspects().containsKey(caType)) {
+          return List.of(
+              new ValidationError.Generic(
+                  "Custom aspect type '%s' is not defined for control implementations on element type '%s'."
+                      .formatted(caType, riskAffected.getType().getSingularTerm())));
+        }
+        var caDefinition = ciDef.getCustomAspects().get(caType);
+        try {
+          AttributeValidator.validate(attributes, caDefinition.getAttributeDefinitions());
+        } catch (IllegalArgumentException ex) {
+          return List.of(
+              new ValidationError.Generic(
+                  "Invalid attributes for CI custom aspect type '%s': %s"
+                      .formatted(caType, ex.getMessage())));
+        }
+      }
+    }
+    return List.of();
   }
 }

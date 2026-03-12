@@ -40,7 +40,7 @@ import lombok.ToString;
     description =
         "A material or immaterial object deemed valuable, such as a server, an application or a piece of information - this DTO represents an asset from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementInDomainDto<Asset>
-    implements PotentialImpactDomainAssociationState, RiskAffectedDto<Asset> {
+    implements PotentialImpactDomainAssociationState, RiskAffectedInDomainDto<Asset> {
 
   @Override
   @Schema(example = "Email server")
@@ -77,5 +77,5 @@ public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementI
   @Valid
   Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
-  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<ControlImplementationInDomainDto> controlImplementations = new HashSet<>();
 }

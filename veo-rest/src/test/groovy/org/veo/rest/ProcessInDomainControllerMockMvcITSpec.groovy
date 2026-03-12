@@ -464,6 +464,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         schema.properties.keySet() ==~ [
             '_requirementImplementations',
             'control',
+            'customAspects',
             'description',
             'implementationStatus',
             'owner',

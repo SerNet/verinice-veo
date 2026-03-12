@@ -129,8 +129,6 @@ public class SchemaExtender {
   public void extendSchema(
       ObjectNode ciSchema,
       @NotNull ControlImplementationDefinition controlImplementationDefinition) {
-    // TODO #4420 remove this once the "customAspects" property is added to the CI
-    ((ObjectNode) ciSchema.required(PROPS)).putObject("customAspects");
     var ciCustomAspectProps = putProps(ciSchema, "customAspects");
     addCustomAspectMap(ciCustomAspectProps, controlImplementationDefinition.getCustomAspects());
   }

@@ -37,7 +37,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
-import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
@@ -279,7 +279,7 @@ public class ElementInDomainService {
   }
 
   public <TElement extends Element>
-      Future<PageDto<ControlImplementationDto>> getControlImplementations(
+      Future<PageDto<ControlImplementationInDomainDto>> getControlImplementations(
           UUID domainId, GetControlImplementationsUseCase.InputData input) {
     return useCaseInteractor.execute(
         getControlImplementationsByControlUseCase,

@@ -48,7 +48,7 @@ import lombok.ToString;
     description =
         "A group that can contain different types of elements. Scopes represent organizational structures such as organizations, departments or projects.  This DTO represents a scope from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDto<Scope>
-    implements ScopeState, ScopeDomainAssociationState, RiskAffectedDto<Scope> {
+    implements ScopeState, ScopeDomainAssociationState, RiskAffectedInDomainDto<Scope> {
 
   @Override
   @Schema(example = "Data Inc.")
@@ -92,5 +92,5 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
   @Valid
   Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
-  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<ControlImplementationInDomainDto> controlImplementations = new HashSet<>();
 }

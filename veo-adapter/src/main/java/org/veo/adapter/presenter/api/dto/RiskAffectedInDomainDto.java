@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Alexander Koderman
+ * Copyright (C) 2026  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,32 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.state;
+package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.core.entity.Constraints;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.state.ControlImplementationState;
+import org.veo.core.entity.state.RiskAffectedState;
 
-@Valid
-public interface ControlImplementationState {
+public interface RiskAffectedInDomainDto<T extends RiskAffected<T, ?>>
+    extends RiskAffectedState<T> {
+  Set<ControlImplementationInDomainDto> getControlImplementations();
 
-  ITypedId<Control> getControl();
+  void setControlImplementations(Set<ControlImplementationInDomainDto> controlImplementations);
 
-  ITypedId<Person> getResponsible();
-
-  @Size(max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
-  String getDescription();
-
-  Set<CustomAspectState> getCustomAspectStates(UUID domainId);
-
-  default boolean references(Control ctl) {
-    return ctl.getId().equals(getControl().getId());
+  @Override
+  @JsonIgnore
+  default Set<ControlImplementationState> getControlImplementationStates() {
+    return getControlImplementations().stream()
+        .map(ControlImplementationState.class::cast)
+        .collect(Collectors.toSet());
   }
 }

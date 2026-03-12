@@ -211,7 +211,8 @@ class EntitySchemaServiceITSpec extends Specification {
                 }
         with(
                 processSchema.get(p).get("controlImplementations").get("items")) {
-                    !it.get(p).has("customAspects")
+                    it.get(p).has("customAspects")
+                    it.get(p).get("customAspects").get("type").asString() == "object"
                 }
         !controlSchema.get(p).has("controlImplementations")
     }

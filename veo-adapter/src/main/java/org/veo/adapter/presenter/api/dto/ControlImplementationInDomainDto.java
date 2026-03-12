@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2026  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,7 +27,7 @@ import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
 import org.veo.core.entity.Constraints;
@@ -48,13 +46,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class ControlImplementationDto implements ControlImplementationState {
-  @NotNull IdRef<Control> control;
+public class ControlImplementationInDomainDto implements ControlImplementationState {
+  @Schema(implementation = ElementInDomainIdRef.class)
+  @NotNull
+  ElementInDomainIdRef<Control> control;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   ImplementationStatus implementationStatus;
@@ -65,8 +66,9 @@ public class ControlImplementationDto implements ControlImplementationState {
 
   @Schema(
       description =
-          "Person who is responsible for whether this control should be implemented on this element")
-  IdRef<Person> responsible;
+          "Person who is responsible for whether this control should be implemented on this element",
+      implementation = ElementInDomainIdRef.class)
+  ElementInDomainIdRef<Person> responsible;
 
   @JsonIgnore RequirementImplementationsRef requirementImplementationsRef;
 
@@ -75,44 +77,42 @@ public class ControlImplementationDto implements ControlImplementationState {
     return requirementImplementationsRef.getUrl();
   }
 
-  @Schema(description = "Owner of the control implementation")
-  IdRef<RiskAffected<?, ?>> owner;
+  @Schema(
+      description = "Owner of the control implementation",
+      implementation = ElementInDomainIdRef.class)
+  ElementInDomainIdRef<RiskAffected<?, ?>> owner;
 
   @Schema(description = "Custom aspects for this control implementation")
   @Builder.Default
-  Map<UUID, CustomAspectMapDto> customAspects = new HashMap<>();
+  CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
-  public static ControlImplementationDto from(
-      ControlImplementation entity, ReferenceAssembler referenceAssembler, Set<Domain> domains) {
-    return ControlImplementationDto.builder()
-        .control(ref(entity.getControl(), referenceAssembler))
+  public static ControlImplementationInDomainDto from(
+      ControlImplementation entity, ReferenceAssembler referenceAssembler, @NonNull Domain domain) {
+    return ControlImplementationInDomainDto.builder()
+        .control(ref(entity.getControl(), referenceAssembler, domain))
         .description(entity.getDescription())
-        .responsible(ref(entity.getResponsible(), referenceAssembler))
+        .responsible(ref(entity.getResponsible(), referenceAssembler, domain))
         .requirementImplementationsRef(
             RequirementImplementationsRef.from(entity, referenceAssembler))
-        .owner(ref(entity.getOwner(), referenceAssembler))
+        .owner(ref(entity.getOwner(), referenceAssembler, domain))
         .implementationStatus(
             entity.getOwner().getRequirementImplementations().stream()
                 .filter(ri -> ri.getControl().equals(entity.getControl()))
                 .findAny()
                 .get()
                 .getStatus())
-        .customAspects(
-            domains.stream()
-                .collect(
-                    Collectors.toMap(
-                        Domain::getId, d -> CustomAspectMapDto.from(entity.getCustomAspects(d)))))
+        .customAspects(CustomAspectMapDto.from(entity.getCustomAspects(domain)))
         .build();
   }
 
-  private static <T extends Element> IdRef<T> ref(
-      T element, ReferenceAssembler referenceAssembler) {
-    return IdRef.from(element, referenceAssembler);
+  private static <T extends Element> ElementInDomainIdRef<T> ref(
+      T element, ReferenceAssembler referenceAssembler, @NonNull Domain domain) {
+    return ElementInDomainIdRef.from(element, domain, referenceAssembler);
   }
 
   @Override
   public Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
-    return customAspects.get(domainId).getValue().entrySet().stream()
+    return customAspects.getValue().entrySet().stream()
         .map(e -> new CustomAspectState.CustomAspectStateImpl(e.getKey(), e.getValue().getValue()))
         .collect(Collectors.toSet());
   }

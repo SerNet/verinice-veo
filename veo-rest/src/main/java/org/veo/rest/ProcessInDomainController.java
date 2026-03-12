@@ -78,7 +78,7 @@ import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.ActionDto;
-import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -504,7 +504,7 @@ public class ProcessInDomainController
       description = "Control implementations loaded",
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
   @ApiResponse(responseCode = "404", description = "Process or domain not found")
-  public Future<PageDto<ControlImplementationDto>> getControlImplementations(
+  public Future<PageDto<ControlImplementationInDomainDto>> getControlImplementations(
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,

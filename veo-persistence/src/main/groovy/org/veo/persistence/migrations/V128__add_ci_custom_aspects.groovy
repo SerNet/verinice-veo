@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Alexander Koderman
+ * Copyright (C) 2026  Aziz Khalledi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,32 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.state;
+package org.veo.persistence.migrations
 
-import java.util.Set;
-import java.util.UUID;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import groovy.sql.Sql
 
-import org.veo.core.entity.Constraints;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.ref.ITypedId;
+class V128__add_ci_custom_aspects extends BaseJavaMigration {
 
-@Valid
-public interface ControlImplementationState {
-
-  ITypedId<Control> getControl();
-
-  ITypedId<Person> getResponsible();
-
-  @Size(max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
-  String getDescription();
-
-  Set<CustomAspectState> getCustomAspectStates(UUID domainId);
-
-  default boolean references(Control ctl) {
-    return ctl.getId().equals(getControl().getId());
-  }
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+            ALTER TABLE control_implementation
+            ADD COLUMN custom_aspects jsonb not null DEFAULT '{}'::jsonb;
+        """)
+    }
 }

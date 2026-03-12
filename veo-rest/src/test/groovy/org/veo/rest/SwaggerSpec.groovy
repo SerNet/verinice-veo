@@ -1445,6 +1445,11 @@ class SwaggerSpec extends VeoSpringSpec {
                 title: 'CustomLink'
             ]
             it.properties.owner == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.controlImplementations == [
+                type:'array',
+                items:[ $ref:'#/components/schemas/ControlImplementationDto' ],
+                uniqueItems:true
+            ]
         }
     }
 
@@ -2147,6 +2152,109 @@ class SwaggerSpec extends VeoSpringSpec {
                 type     : 'object',
                 additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription'],
                 description: 'The translations for the domain.'
+            ]
+        }
+    }
+
+    def "ControlImplementationDto is well-documented"() {
+        expect:
+        with(getSchema('ControlImplementationDto')) {
+            it.properties.keySet() ==~ [
+                'control',
+                'implementationStatus',
+                'description',
+                'responsible',
+                'owner',
+                'customAspects',
+                '_requirementImplementations'
+            ]
+            it.required ==~ ['control']
+            it.properties.control == [$ref:'#/components/schemas/IdRefControl']
+            it.properties.customAspects == [
+                type:'object',
+                additionalProperties:[
+                    type:'object',
+                    additionalProperties:[
+                        type:'object',
+                        additionalProperties:[type:'object']
+                    ]
+                ],
+                description:'Custom aspects for this control implementation']
+            it.properties._requirementImplementations == [
+                type:'string',
+                readOnly:true
+            ]
+        }
+    }
+
+    def "FullScopeInDomainDto is well-documented"() {
+        expect:
+        with(getSchema('FullScopeInDomainDto')) {
+            it.properties.keySet() ==~ [
+                'id',
+                'name',
+                'abbreviation',
+                'description',
+                'designator',
+                'subType',
+                'status',
+                'type',
+                'owner',
+                'appliedCatalogItem',
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+                'customAspects',
+                'links',
+                'members',
+                'decisionResults',
+                'controlImplementations',
+                'riskDefinition',
+                'riskValues',
+                '_self'
+            ]
+            it.properties.members == [
+                type:'array',
+                items:[
+                    $ref:'#/components/schemas/ElementInDomainIdRef'
+                ],
+                uniqueItems:true
+            ]
+            it.properties.controlImplementations == [
+                type:'array',
+                items:[
+                    $ref:'#/components/schemas/ControlImplementationInDomainDto'
+                ],
+                uniqueItems:true
+            ]
+        }
+    }
+
+    def "ControlImplementationInDomainDto is well-documented"() {
+        expect:
+        with(getSchema('ControlImplementationInDomainDto')) {
+            it.properties.keySet() ==~ [
+                'control',
+                'implementationStatus',
+                'description',
+                'responsible',
+                'owner',
+                'customAspects',
+                '_requirementImplementations'
+            ]
+            it.required ==~ ['control']
+            it.properties.control == [$ref:'#/components/schemas/ElementInDomainIdRef']
+            it.properties.customAspects == [
+                type:'object',
+                additionalProperties:[
+                    type:'object',
+                    additionalProperties:[type:'object']
+                ],
+                description:'Custom aspects for this control implementation']
+            it.properties._requirementImplementations == [
+                type:'string',
+                readOnly:true
             ]
         }
     }

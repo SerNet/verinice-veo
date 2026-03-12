@@ -75,7 +75,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.persistence.schema.RelationGraphService;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
-import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -226,12 +226,12 @@ public class ControlInDomainController implements ElementInDomainResource {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = ControlImplementationDto.class)))
+              schema = @Schema(implementation = ControlImplementationInDomainDto.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Control or domain not found or control not associated with domain")
   @GetMapping(value = "/{" + UUID_PARAM + "}/control-implementations")
-  public @Valid Future<PageDto<ControlImplementationDto>> getControlImplementations(
+  public @Valid Future<PageDto<ControlImplementationInDomainDto>> getControlImplementations(
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,

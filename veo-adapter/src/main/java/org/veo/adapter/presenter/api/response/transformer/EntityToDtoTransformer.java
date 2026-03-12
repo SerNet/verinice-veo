@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -53,6 +54,7 @@ import org.veo.adapter.presenter.api.dto.ActionDto;
 import org.veo.adapter.presenter.api.dto.AttributesDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -63,6 +65,7 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
 import org.veo.adapter.presenter.api.dto.RiskAffectedDtoWithRIs;
+import org.veo.adapter.presenter.api.dto.RiskAffectedInDomainDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
@@ -580,12 +583,12 @@ public final class EntityToDtoTransformer {
         source.getRequirementImplementations().stream()
             .map(this::transformRequirementImplementation2Dto)
             .collect(toSet()));
-    mapRiskAffectedProperties(source, target, null);
+    mapRiskAffectedProperties(source, target, source.getDomains());
   }
 
-  public ControlImplementationDto mapControlImplementation(
-      ControlImplementation source, @Nullable Domain domain) {
-    return ControlImplementationDto.from(source, referenceAssembler, domain);
+  public ControlImplementationInDomainDto mapControlImplementation(
+      ControlImplementation source, @NotNull Domain domain) {
+    return ControlImplementationInDomainDto.from(source, referenceAssembler, domain);
   }
 
   private <TEntity extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
@@ -758,10 +761,18 @@ public final class EntityToDtoTransformer {
   }
 
   private <TElement extends RiskAffected<TElement, ?>> void mapRiskAffectedProperties(
-      TElement source, RiskAffectedDto<TElement> target, Domain domain) {
+      TElement source, RiskAffectedDto<TElement> target, Set<Domain> domains) {
     target.setControlImplementations(
         source.getControlImplementations().stream()
-            .map(ci -> mapControlImplementation(ci, domain))
+            .map(ci -> ControlImplementationDto.from(ci, referenceAssembler, domains))
+            .collect(toSet()));
+  }
+
+  private <TElement extends RiskAffected<TElement, ?>> void mapRiskAffectedProperties(
+      TElement source, RiskAffectedInDomainDto<TElement> target, Domain domain) {
+    target.setControlImplementations(
+        source.getControlImplementations().stream()
+            .map(ci -> ControlImplementationInDomainDto.from(ci, referenceAssembler, domain))
             .collect(toSet()));
   }
 

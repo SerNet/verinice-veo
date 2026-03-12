@@ -234,7 +234,9 @@ public class EntityStateMapper {
 
     // Apply new CIs
     Set<ControlImplementationState> states = source.getControlImplementationStates();
-    states.forEach(ciState -> transferState(target, idRefResolver, ciState));
+    states.forEach(
+        ciState ->
+            transferState(target, idRefResolver, ciState, source.getDomainAssociationStates()));
   }
 
   private <T extends Element> void applyRequirementImplementations(
@@ -266,11 +268,20 @@ public class EntityStateMapper {
   private static void transferState(
       RiskAffected<?, ?> target,
       IdRefResolver idRefResolver,
-      ControlImplementationState sourceState) {
+      ControlImplementationState sourceState,
+      Set<DomainAssociationState> domainAssociationStates) {
     var ci = target.implementControl(idRefResolver.resolve(sourceState.getControl()));
     ci.setDescription(sourceState.getDescription());
     ci.setResponsible(
         Optional.ofNullable(sourceState.getResponsible()).map(idRefResolver::resolve).orElse(null));
+    domainAssociationStates.forEach(
+        da -> {
+          var domain = idRefResolver.resolve(da.getDomain());
+          ci.setCustomAspects(
+              domain,
+              sourceState.getCustomAspectStates(domain.getId()).stream()
+                  .collect(Collectors.toMap(s -> s.getType(), s -> s.getAttributes())));
+        });
   }
 
   private static Predicate<Control> isNotPresentIn(RiskAffectedState<?> source) {

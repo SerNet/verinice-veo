@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -43,6 +45,7 @@ import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -108,6 +111,10 @@ public class ControlImplementationData implements ControlImplementation {
   @JdbcTypeCode(SqlTypes.JSON)
   Set<ReqImplRef> requirementImplementations = new HashSet<>();
 
+  @Column(name = "custom_aspects", columnDefinition = "jsonb")
+  @JdbcTypeCode(SqlTypes.JSON)
+  Map<UUID, Map<String, Map<String, Object>>> customAspects = new HashMap<>();
+
   private ControlImplementationData(Control control) {
     this.control = control;
   }
@@ -160,6 +167,20 @@ public class ControlImplementationData implements ControlImplementation {
   @Override
   public void remove(RequirementImplementation ri) {
     requirementImplementations.remove(ReqImplRef.from(ri));
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCustomAspects(Domain domain) {
+    return customAspects.getOrDefault(domain.getId(), new HashMap<>());
+  }
+
+  @Override
+  public void setCustomAspects(Domain domain, Map<String, Map<String, Object>> customAspects) {
+    if (customAspects == null || customAspects.isEmpty()) {
+      this.customAspects.remove(domain.getId());
+    } else {
+      this.customAspects.put(domain.getId(), Map.copyOf(customAspects));
+    }
   }
 
   @Override

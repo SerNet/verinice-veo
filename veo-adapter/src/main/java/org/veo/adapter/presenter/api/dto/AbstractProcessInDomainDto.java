@@ -42,7 +42,9 @@ import lombok.ToString;
         "A series of activities that uses organization resources to transform input into results - this DTO represents a process from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractProcessInDomainDto
     extends AbstractCompositeElementInDomainDto<Process>
-    implements ProcessState, PotentialImpactDomainAssociationState, RiskAffectedDto<Process> {
+    implements ProcessState,
+        PotentialImpactDomainAssociationState,
+        RiskAffectedInDomainDto<Process> {
 
   @Override
   @Schema(example = "External wage accounting")
@@ -80,5 +82,5 @@ public abstract class AbstractProcessInDomainDto
   @Valid
   Map<String, ImpactValuesDto> riskValues = new HashMap<>();
 
-  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
+  @Valid private Set<ControlImplementationInDomainDto> controlImplementations = new HashSet<>();
 }
