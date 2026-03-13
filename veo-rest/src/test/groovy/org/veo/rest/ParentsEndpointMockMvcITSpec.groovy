@@ -459,4 +459,29 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
             'Scope in Domain 2'
         ]
     }
+
+    def "retrieve scope parent of a process with link to scope"() {
+        given:
+        def (process, scope) = txTemplate.execute {
+            def proc = documentRepository.save(newProcess(unit) {
+                associateWithDomain(testDomain, "PRO_Process", "NEW")
+            })
+            def s = scopeRepository.save(newScope(unit) {
+                name = 'Micro scope'
+                members << proc
+                associateWithDomain(testDomain, "SCP_Scope", "NEW")
+            })
+            proc.addLink(newCustomLink(s, 'foo', testDomain))
+            [proc, s]
+        }
+
+        when:
+        def result = parseJson(get("/domains/$testDomainId/processes/${process.idAsString}/parents"))
+
+        then:
+        result.items.size() == 1
+        result.items*.name == ['Micro scope']
+        result.items*.type == ['scope']
+        result.totalItemCount == 1
+    }
 }

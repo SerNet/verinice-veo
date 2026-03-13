@@ -30,6 +30,7 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ParentElementQuery;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -43,6 +44,7 @@ public class GetParentElementsUseCase
         GetParentElementsUseCase.InputData, GetParentElementsUseCase.OutputData> {
 
   private final ClientRepository clientRepository;
+  private final RepositoryProvider repositoryProvider;
   private final GenericElementRepository genericRepository;
   private final DomainRepository domainRepository;
 
@@ -51,8 +53,8 @@ public class GetParentElementsUseCase
     var client = clientRepository.getById(userAccessRights.getClientId());
     var domain = domainRepository.getById(input.domainId, client.getId());
 
-    var element =
-        genericRepository.getById(input.elementId, input.elementType.getType(), userAccessRights);
+    var repo = repositoryProvider.getElementRepositoryFor(input.elementType.getType());
+    var element = repo.getByIdWithParents(input.elementId, userAccessRights);
 
     var pagedParents =
         genericRepository.queryParents(element, domain).execute(input.pagingConfiguration);
