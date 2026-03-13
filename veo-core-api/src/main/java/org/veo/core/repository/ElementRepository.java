@@ -40,4 +40,6 @@ public interface ElementRepository<T extends Element>
   Set<T> findByIds(Set<UUID> ids, UserAccessRights userRights);
 
   T getById(UUID id, UserAccessRights user);
+
+  T getByIdWithParents(UUID elementId, UserAccessRights userAccessRights);
 }

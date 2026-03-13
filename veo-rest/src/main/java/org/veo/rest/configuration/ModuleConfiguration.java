@@ -419,9 +419,11 @@ public class ModuleConfiguration {
   @Bean
   public GetParentElementsUseCase getParentElementsUseCase(
       ClientRepository clientRepository,
+      RepositoryProvider repositoryProvider,
       GenericElementRepository elementRepository,
       DomainRepository domainRepository) {
-    return new GetParentElementsUseCase(clientRepository, elementRepository, domainRepository);
+    return new GetParentElementsUseCase(
+        clientRepository, repositoryProvider, elementRepository, domainRepository);
   }
 
   @Bean

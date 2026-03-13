@@ -129,4 +129,12 @@ public interface ElementDataRepository<T extends ElementData>
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"scopes", "scopes.members"})
   List<T> findAllWithScopesAndScopeMembersByIdIn(List<UUID> ids);
+
+  @Transactional(readOnly = true)
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.scopes "
+          + "where e.id = ?1 and e.owner.client.id = ?2 and  (?3 = false or e.owner.id in ?4)")
+  Optional<T> findByIdWithParents(
+      UUID elementId, UUID clientId, boolean unitAccessRestricted, Set<UUID> readableUnitIds);
 }

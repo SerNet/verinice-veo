@@ -140,4 +140,16 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     linkDataRepository.deleteAll(links);
     links.forEach(CustomLink::remove);
   }
+
+  @Override
+  public T getByIdWithParents(UUID elementId, UserAccessRights userAccessRights) {
+    return dataRepository
+        .findByIdWithParents(
+            elementId,
+            userAccessRights.getClientId(),
+            userAccessRights.isUnitAccessRestricted(),
+            userAccessRights.getReadableUnitIds())
+        .map(e -> (T) e)
+        .orElseThrow(() -> new NotFoundException(elementId, elementType));
+  }
 }

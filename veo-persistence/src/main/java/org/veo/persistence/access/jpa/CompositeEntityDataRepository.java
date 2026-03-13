@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,4 +42,14 @@ public interface CompositeEntityDataRepository<T extends ElementData>
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"composites", "composites.parts"})
   List<T> findAllWithCompositesAndCompositesPartsByIdIn(List<UUID> ids);
+
+  @Transactional(readOnly = true)
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.scopes "
+          + "left join fetch e.composites "
+          + "where e.id = ?1 and e.owner.client.id = ?2 and  (?3 = false or e.owner.id in ?4)")
+  @Override
+  Optional<T> findByIdWithParents(
+      UUID elementId, UUID clientId, boolean unitAccessRestricted, Set<UUID> readableUnitIds);
 }
