@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import org.veo.core.entity.Domain;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.ValidationError;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -28,34 +30,30 @@ import lombok.NoArgsConstructor;
 /** Validates an element's subtype / status according to the domains' element type definitions. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class SubTypeValidator {
-  static void validate(Element element, Domain domain) {
-    element
-        .findSubType(domain)
-        .ifPresentOrElse(
-            subType -> {
-              validate(domain, subType, element.getStatus(domain), element.getType());
-            },
-            () -> {
-              throw new IllegalArgumentException(
-                  "Cannot assign element to domain without specifying a sub type");
-            });
+  static void validate(DomainBase domain, String subType, String status, ElementType modelType) {
+    ValidationError.throwOnErrors(getErrors(domain, subType, status, modelType));
   }
 
-  static void validate(DomainBase domain, String subType, String status, ElementType modelType) {
+  static List<ValidationError> getErrors(
+      DomainBase domain, String subType, String status, ElementType modelType) {
     if (subType == null)
-      throw new IllegalArgumentException(
-          "Cannot assign element to domain without specifying a sub type");
+      return List.of(
+          new ValidationError.Generic(
+              "Cannot assign element to domain without specifying a sub type"));
 
     var definition = domain.getElementTypeDefinition(modelType).getSubTypes().get(subType);
     if (definition == null) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Sub type '%s' is not defined for element type %s",
-              subType, modelType.getSingularTerm()));
+      return List.of(
+          new ValidationError.Generic(
+              String.format(
+                  "Sub type '%s' is not defined for element type %s",
+                  subType, modelType.getSingularTerm())));
     }
     if (!definition.getStatuses().contains(status)) {
-      throw new IllegalArgumentException(
-          String.format("Status '%s' is not allowed for sub type '%s'", status, subType));
+      return List.of(
+          new ValidationError.Generic(
+              String.format("Status '%s' is not allowed for sub type '%s'", status, subType)));
     }
+    return new ArrayList<>();
   }
 }

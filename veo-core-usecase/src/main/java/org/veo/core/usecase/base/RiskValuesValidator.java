@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.exception.RiskConsistencyException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
@@ -34,19 +37,46 @@ class RiskValuesValidator {
   static void validateScenarioRiskValues(
       Map<RiskDefinitionRef, PotentialProbability> riskValues,
       DomainRiskReferenceProvider refProvider) {
-    riskValues.forEach(
-        (riskDefRef, probability) -> {
-          var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
-          validator.validate(probability.potentialProbability());
-        });
+    ValidationError.throwOnErrors(getScenarioRiskValueErrors(riskValues, refProvider));
   }
 
   static void validateImpactValues(
       Map<RiskDefinitionRef, ImpactValues> impactValues, DomainRiskReferenceProvider refProvider) {
+    ValidationError.throwOnErrors(getImpactValueErrors(impactValues, refProvider));
+  }
+
+  static List<ValidationError> getScenarioRiskValueErrors(
+      Map<RiskDefinitionRef, PotentialProbability> riskValues,
+      DomainRiskReferenceProvider refProvider) {
+    var errors = new ArrayList<ValidationError>();
+    riskValues.forEach(
+        (riskDefRef, probability) -> {
+          var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
+          try {
+            validator.validate(probability.potentialProbability());
+          } catch (RiskConsistencyException ex) {
+            errors.add(new ValidationError.Generic(ex.getMessage()));
+          }
+        });
+    return errors;
+  }
+
+  static List<ValidationError> getImpactValueErrors(
+      Map<RiskDefinitionRef, ImpactValues> impactValues, DomainRiskReferenceProvider refProvider) {
+    var errors = new ArrayList<ValidationError>();
     impactValues.forEach(
         (riskDefRef, impact) -> {
           var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
-          impact.potentialImpacts().forEach(validator::validate);
+          impact
+              .potentialImpacts()
+              .forEach(
+                  (category, impactRef) -> {
+                    try {
+                      validator.validate(category, impactRef);
+                    } catch (RiskConsistencyException ex) {
+                      errors.add(new ValidationError.Generic(ex.getMessage()));
+                    }
+                  });
           // TODO #2663 Add a test for this. This validation becomes relevant when the automatism
           // that sets all missing reasons to MANUAL is removed.
           impact
@@ -55,9 +85,10 @@ class RiskValuesValidator {
               .forEach(
                   cat -> {
                     if (!impact.potentialImpactReasons().containsKey(cat)) {
-                      throw new RiskConsistencyException(
-                          "Reason missing for user-defined impact value in category '%s'"
-                              .formatted(cat.getIdRef()));
+                      errors.add(
+                          new ValidationError.Generic(
+                              "Reason missing for user-defined impact value in category '%s'"
+                                  .formatted(cat.getIdRef())));
                     }
                   });
           impact
@@ -66,9 +97,10 @@ class RiskValuesValidator {
               .forEach(
                   cat -> {
                     if (!impact.potentialImpacts().containsKey(cat)) {
-                      throw new RiskConsistencyException(
-                          "Cannot set impact reason for category '%s' (user-defined impact value absent)"
-                              .formatted(cat.getIdRef()));
+                      errors.add(
+                          new ValidationError.Generic(
+                              "Cannot set impact reason for category '%s' (user-defined impact value absent)"
+                                  .formatted(cat.getIdRef())));
                     }
                   });
           impact
@@ -77,11 +109,13 @@ class RiskValuesValidator {
               .forEach(
                   cat -> {
                     if (!impact.potentialImpacts().containsKey(cat)) {
-                      throw new RiskConsistencyException(
-                          "Cannot set impact explanation for category '%s' (user-defined impact value absent)"
-                              .formatted(cat.getIdRef()));
+                      errors.add(
+                          new ValidationError.Generic(
+                              "Cannot set impact explanation for category '%s' (user-defined impact value absent)"
+                                  .formatted(cat.getIdRef())));
                     }
                   });
         });
+    return errors;
   }
 }

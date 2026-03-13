@@ -42,6 +42,7 @@ import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.RiskTailoringReferenceValues;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -251,8 +252,8 @@ public class TemplateItemMigrationService {
                               linkDef.getAttributeDefinitions());
                           try {
                             TemplateItemValidator.validate(linkTailoringReference, domain);
-                          } catch (IllegalArgumentException illEx) {
-                            log.info("Tailoring reference validation failed", illEx);
+                          } catch (UnprocessableDataException unDaEx) {
+                            log.info("Tailoring reference validation failed", unDaEx);
                             log.info(
                                 "Deleting invalid tailoring reference {}",
                                 linkTailoringReference.getIdAsString());

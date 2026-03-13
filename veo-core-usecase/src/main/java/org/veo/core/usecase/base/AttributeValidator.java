@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.exception.InvalidAttributeException;
 
@@ -31,21 +34,37 @@ public class AttributeValidator {
 
   static void validate(
       Map<String, Object> attributes, Map<String, AttributeDefinition> attributeDefinitions) {
-    attributes.forEach((attrKey, attrValue) -> validate(attrKey, attrValue, attributeDefinitions));
+    ValidationError.throwOnErrors(getErrors(attributes, attributeDefinitions));
   }
 
   public static void validate(
       String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
+    ValidationError.throwOnErrors(getErrors(attrKey, attrValue, definitions));
+  }
+
+  public static List<ValidationError> getErrors(
+      Map<String, Object> attributes, Map<String, AttributeDefinition> attributeDefinitions) {
+    return attributes.entrySet().stream()
+        .flatMap((attr) -> getErrors(attr.getKey(), attr.getValue(), attributeDefinitions).stream())
+        .toList();
+  }
+
+  public static List<ValidationError> getErrors(
+      String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
     var attrDefinition = definitions.get(attrKey);
     if (attrDefinition == null) {
-      throw new IllegalArgumentException(String.format("Attribute '%s' is not defined", attrKey));
+      return List.of(
+          new ValidationError.Generic(String.format("Attribute '%s' is not defined", attrKey)));
     }
     try {
       attrDefinition.validate(attrValue);
     } catch (InvalidAttributeException e) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Invalid value '%s' for attribute '%s': %s", attrValue, attrKey, e.getMessage()));
+      return List.of(
+          new ValidationError.Generic(
+              String.format(
+                  "Invalid value '%s' for attribute '%s': %s",
+                  attrValue, attrKey, e.getMessage())));
     }
+    return Collections.emptyList();
   }
 }

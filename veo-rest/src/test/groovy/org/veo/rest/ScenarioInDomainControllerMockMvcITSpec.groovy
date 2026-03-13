@@ -24,6 +24,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -381,10 +382,10 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
         put("/domains/$testDomainId/scenarios/$scenario.id", json, [
             'If-Match': getETag(get("/domains/$testDomainId/scenarios/$scenario.id"))
-        ], 400)
+        ], 422)
 
         then:
-        IllegalArgumentException e2 = thrown()
+        UnprocessableDataException e2 = thrown()
         e2.message == "Invalid catalog item reference from domain 'DS-GVO'."
     }
 

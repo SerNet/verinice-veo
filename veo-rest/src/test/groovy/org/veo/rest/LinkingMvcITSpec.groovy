@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -295,10 +296,10 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], ['If-Match': scopeETag], 400)
+        ], ['If-Match': scopeETag], 422)
 
         then:
-        IllegalArgumentException ex = thrown()
+        UnprocessableDataException ex = thrown()
         ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
 
         when: "posting a scope with an invalid link"
@@ -318,7 +319,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then:
         ex = thrown()
@@ -409,10 +410,10 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], ['If-Match': scopeETag], 400)
+        ], ['If-Match': scopeETag], 422)
 
         then:
-        IllegalArgumentException ex = thrown()
+        UnprocessableDataException ex = thrown()
         ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
 
         when: "posting a scope with an invalid link"
@@ -432,7 +433,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then:
         ex = thrown()

@@ -26,6 +26,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.repository.UnitRepository
 
 import tools.jackson.databind.JsonNode
@@ -118,10 +119,10 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ]
 
         when: "posting the scope"
-        post("/domains/$domainId/controls", control, 400)
+        post("/domains/$domainId/controls", control, 422)
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
+        UnprocessableDataException ex = thrown()
 
         and: "the reason is given"
         ex.message == "Sub type 'CTL_Foo' is not defined for element type control"
@@ -150,10 +151,10 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             subType: "CTL_TOM",
             status: "CRAZY"
-        ], 400)
+        ], 422)
 
         then: "an exception is thrown"
-        ex = thrown(IllegalArgumentException)
+        ex = thrown(UnprocessableDataException)
         ex.message == "Status 'CRAZY' is not allowed for sub type 'CTL_TOM'"
 
         when: "posting a control with a valid status"

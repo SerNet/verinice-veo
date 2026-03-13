@@ -176,7 +176,7 @@ class LinkingRestTest extends VeoRestTest {
                     target: [targetInDomainUri: targetAUri]
                 ]
             ],
-        ], 400).body.message == "Link type 'sillyLink' is not defined for element type '$type.singularTerm'"
+        ], 422).body.message == "Link type 'sillyLink' is not defined for element type '$type.singularTerm'"
 
         and: "adding an existing link to fail"
         post(elementUri + "/links", [

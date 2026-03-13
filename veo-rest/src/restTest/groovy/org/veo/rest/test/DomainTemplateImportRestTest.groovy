@@ -164,13 +164,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ]
 
         when: "trying to create the template"
-        def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid value '1' for attribute 'process_accessAuthorization_description': must be a string")
 
         when: "trying to create the template with content type multipart"
-        response = postMultipart("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+        response = postMultipart("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid value '1' for attribute 'process_accessAuthorization_description': must be a string")
@@ -189,7 +189,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                 )
 
         when: "trying to create the template"
-        def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
@@ -229,7 +229,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         vtElement.subType = "PRO_fit"
 
         when: "trying to create the template"
-        def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Sub type 'PRO_fit' is not defined for element type process")
@@ -242,7 +242,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         vtItem.subType = null
 
         when: "trying to create the template"
-        def response = post("/content-creation/domain-templates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Cannot assign element to domain without specifying a sub type")

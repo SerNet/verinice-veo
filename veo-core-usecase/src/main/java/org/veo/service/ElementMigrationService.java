@@ -177,10 +177,9 @@ public class ElementMigrationService {
     new HashMap<>(attributes)
         .forEach(
             (attrKey, attrValue) -> {
-              try {
-                AttributeValidator.validate(attrKey, attrValue, definitions);
-              } catch (IllegalArgumentException illEx) {
-                log.debug("Attribute validation failed", illEx);
+              var errors = AttributeValidator.getErrors(attrKey, attrValue, definitions);
+              if (!errors.isEmpty()) {
+                log.debug("Attribute validation failed: {}", errors);
                 log.debug("Removing invalidate attribute {}", attrKey);
                 attributes.remove(attrKey);
               }

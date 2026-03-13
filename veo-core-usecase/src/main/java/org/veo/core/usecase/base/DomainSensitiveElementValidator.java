@@ -17,9 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomAttributeContainer;
@@ -29,6 +30,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -47,17 +49,13 @@ import lombok.extern.slf4j.Slf4j;
 public class DomainSensitiveElementValidator {
 
   public static boolean isValid(Element element, Domain domain) {
-    try {
-      validate(element, domain);
-      return true;
-    } catch (IllegalArgumentException e) {
+    var errors = getErrors(element, domain);
+    if (!errors.isEmpty()) {
       log.warn(
-          "element {} ({}) is invalid: {}",
-          element.getName(),
-          element.getIdAsString(),
-          e.getMessage());
+          "element {} ({}) is invalid: {}", element.getName(), element.getIdAsString(), errors);
       return false;
     }
+    return true;
   }
 
   public static void validate(Element element) {
@@ -86,20 +84,34 @@ public class DomainSensitiveElementValidator {
   }
 
   public static void validate(Element element, Domain domain) {
-    element.getCustomAspects(domain).forEach(ca -> validateCustomAspect(element, ca));
-    element
-        .getLinks(domain)
-        .forEach(
-            link -> {
-              validateLink(
-                  link.getType(),
-                  element,
-                  link.getTarget(),
-                  link.getAttributes(),
-                  link.getDomain());
-            });
+    ValidationError.throwOnErrors(getErrors(element, domain));
+  }
 
-    SubTypeValidator.validate(element, domain);
+  public static List<ValidationError> getErrors(Element element, Domain domain) {
+    var errors = new ArrayList<ValidationError>();
+    errors.addAll(
+        element.getCustomAspects(domain).stream()
+            .flatMap(ca -> getCustomAspectErrors(element, ca).stream())
+            .toList());
+    errors.addAll(
+        element.getLinks(domain).stream()
+            .flatMap(
+                link ->
+                    getLinkErrors(
+                        link.getType(),
+                        element,
+                        link.getTarget(),
+                        link.getAttributes(),
+                        link.getDomain())
+                        .stream())
+            .toList());
+
+    errors.addAll(
+        SubTypeValidator.getErrors(
+            domain,
+            element.findSubType(domain).orElse(null),
+            element.findStatus(domain).orElse(null),
+            element.getType()));
 
     element
         .findAppliedCatalogItem(domain)
@@ -107,46 +119,43 @@ public class DomainSensitiveElementValidator {
             catalogItem -> {
               DomainBase ciDomain = catalogItem.getDomainBase();
               if (!ciDomain.equals(domain)) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Invalid catalog item reference from domain '%s'.", ciDomain.getName()));
+                errors.add(
+                    new ValidationError.Generic(
+                        String.format(
+                            "Invalid catalog item reference from domain '%s'.",
+                            ciDomain.getName())));
               }
             });
 
     var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
     if (element instanceof RiskAffected<?, ?> riskAffected) {
-      RiskValuesValidator.validateImpactValues(
-          riskAffected.getImpactValues(domain), riskRefProvider);
+      errors.addAll(
+          RiskValuesValidator.getImpactValueErrors(
+              riskAffected.getImpactValues(domain), riskRefProvider));
     }
     if (element instanceof Scenario scenario) {
-      RiskValuesValidator.validateScenarioRiskValues(
-          scenario.getPotentialProbability(domain), riskRefProvider);
+      errors.addAll(
+          RiskValuesValidator.getScenarioRiskValueErrors(
+              scenario.getPotentialProbability(domain), riskRefProvider));
     }
+    return errors;
   }
 
   static void validateLinkTargetType(
       String linkType, LinkDefinition linkDefinition, ElementType targetType) {
-    if (linkDefinition.getTargetType() != targetType) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Invalid target type '%s' for link type '%s'",
-              targetType.getSingularTerm(), linkType));
-    }
+    ValidationError.throwOnErrors(getLinkTargetTypeErrors(linkType, targetType, linkDefinition));
   }
 
-  private static void validateCustomAspect(Element element, CustomAspect ca) {
+  private static List<ValidationError> getCustomAspectErrors(Element element, CustomAspect ca) {
     var caDefinition =
         ca.getDomain()
             .getElementTypeDefinition(element.getType())
             .getCustomAspectDefinition(ca.getType());
-    try {
-      AttributeValidator.validate(ca.getAttributes(), caDefinition.getAttributeDefinitions());
-    } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Invalid attributes for custom aspect type '%s': %s", ca.getType(), ex.getMessage()),
-          ex);
-    }
+    var errors =
+        ValidationError.mergeIfAny(
+            String.format("Invalid attributes for custom aspect type '%s'", ca.getType()),
+            AttributeValidator.getErrors(
+                ca.getAttributes(), caDefinition.getAttributeDefinitions()));
     var conflictingDomains =
         element.getDomains().stream()
             .filter(d -> !d.equals(ca.getDomain()))
@@ -164,63 +173,59 @@ public class DomainSensitiveElementValidator {
                 })
             .toList();
     if (!conflictingDomains.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Custom aspect '%s' is shared between domains %s and %s %s, but element has conflicting values for the custom aspect in those domains."
-              .formatted(
-                  ca.getType(),
-                  conflictingDomains.stream()
-                      .map(d -> "%s %s".formatted(d.getName(), d.getTemplateVersion()))
-                      .collect(Collectors.joining(", ")),
-                  ca.getDomain().getName(),
-                  ca.getDomain().getTemplateVersion()));
+      errors.add(
+          new ValidationError.CustomAspectConflict(ca.getType(), conflictingDomains, element));
     }
+    return errors;
   }
 
-  private static void validateLink(
+  private static List<ValidationError> getLinkErrors(
       String linkType,
       Element source,
       Element target,
       Map<String, Object> attributes,
       Domain domain) {
     ElementType modelType = source.getType();
-    var linkDefinition = getLinkDefinition(linkType, domain, modelType);
-    validateLinkTargetType(linkType, target, linkDefinition);
-    validateLinkTargetSubType(linkType, target, domain, linkDefinition);
-    try {
-      AttributeValidator.validate(attributes, linkDefinition.getAttributeDefinitions());
-    } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException(
-          String.format("Invalid attributes for link type '%s': %s", linkType, ex.getMessage()),
-          ex);
-    }
-  }
-
-  private static LinkDefinition getLinkDefinition(
-      String linkType, Domain domain, ElementType modelType) {
     var linkDefinition = domain.getElementTypeDefinition(modelType).getLinks().get(linkType);
     if (linkDefinition == null) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Link type '%s' is not defined for element type '%s'",
-              linkType, modelType.getSingularTerm()));
+      return List.of(
+          new ValidationError.Generic(
+              String.format(
+                  "Link type '%s' is not defined for element type '%s'",
+                  linkType, modelType.getSingularTerm())));
     }
-    return linkDefinition;
+    var errors = new ArrayList<ValidationError>();
+    errors.addAll(getLinkTargetTypeErrors(linkType, target.getType(), linkDefinition));
+    errors.addAll(getLinkTargetSubTypeErrors(linkType, target, domain, linkDefinition));
+    errors.addAll(
+        ValidationError.mergeIfAny(
+            String.format("Invalid attributes for link type '%s'c", linkType),
+            AttributeValidator.getErrors(attributes, linkDefinition.getAttributeDefinitions())));
+    return errors;
   }
 
-  private static void validateLinkTargetType(
-      String linkType, Element target, LinkDefinition linkDefinition) {
-    var targetType = target.getType();
-    validateLinkTargetType(linkType, linkDefinition, targetType);
+  private static List<ValidationError> getLinkTargetTypeErrors(
+      String linkType, ElementType targetType, LinkDefinition linkDefinition) {
+    if (linkDefinition.getTargetType() != targetType) {
+      return List.of(
+          new ValidationError.Generic(
+              String.format(
+                  "Invalid target type '%s' for link type '%s'",
+                  targetType.getSingularTerm(), linkType)));
+    }
+    return new ArrayList<>();
   }
 
-  private static void validateLinkTargetSubType(
+  private static List<ValidationError> getLinkTargetSubTypeErrors(
       String linkType, Element target, Domain domain, LinkDefinition linkDefinition) {
     var targetSubType = target.findSubType(domain).orElse(null);
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
-              linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
+      return List.of(
+          new ValidationError.Generic(
+              String.format(
+                  "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
+                  linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType)));
     }
+    return new ArrayList<>();
   }
 }
