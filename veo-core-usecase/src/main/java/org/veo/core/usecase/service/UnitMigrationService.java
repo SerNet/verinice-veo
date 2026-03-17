@@ -17,22 +17,11 @@
  ******************************************************************************/
 package org.veo.core.usecase.service;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.domainmigration.DomainMigrationStep;
-import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.DomainUpdateFailedException;
@@ -50,18 +39,13 @@ public class UnitMigrationService {
 
   public void update(Unit unit, Domain oldDomain, Domain newDomain)
       throws DomainUpdateFailedException {
-    Version oldVersion = Version.parse(oldDomain.getTemplateVersion());
-    Version newVersion = Version.parse(newDomain.getTemplateVersion());
-
-    boolean needsMigrationDefinition = !oldVersion.isSameMajorVersionAs(newVersion);
 
     log.info(
-        "Performing migration for domain {}::{}->{} (unit {}) need attribute migration: {}",
+        "Performing migration for domain {}::{}->{} (unit {})",
         newDomain.getName(),
         oldDomain.getTemplateVersion(),
         newDomain.getTemplateVersion(),
-        unit.getId(),
-        needsMigrationDefinition);
+        unit.getId());
 
     var elementQuery = genericElementRepository.query(unit.getClient());
     elementQuery.whereUnitIn(Set.of(unit));
@@ -69,24 +53,8 @@ public class UnitMigrationService {
     var elements = elementQuery.execute(PagingConfiguration.UNPAGED).resultPage();
     unit.addToDomains(newDomain);
 
-    associateNewDomain(oldDomain, newDomain, elements);
-    Map<ElementType, List<DomainSpecificValueLocation>> deprecatedDefinitions =
-        needsMigrationDefinition
-            ? newDomain.getDomainMigrationDefinition().migrations().stream()
-                .map(DomainMigrationStep::oldDefinitions)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(DomainSpecificValueLocation::elementType))
-            : Collections.emptyMap();
+    newDomain.migrate(elements, oldDomain);
 
-    elements.forEach(
-        element ->
-            element.copyDomainData(
-                oldDomain,
-                newDomain,
-                deprecatedDefinitions.getOrDefault(element.getType(), Collections.emptyList())));
-    if (needsMigrationDefinition) {
-      applyMigrationDefinition(oldDomain, newDomain, elements);
-    }
     elements.forEach(
         element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
     var invalidElements =
@@ -102,25 +70,5 @@ public class UnitMigrationService {
     log.debug("removing elements from old domain: {}", oldDomain);
     elements.forEach(e -> e.removeFromDomains(oldDomain));
     unit.removeFromDomains(oldDomain);
-  }
-
-  private void applyMigrationDefinition(
-      Domain oldDomain, Domain newDomain, List<Element> skipedElements) {
-    Map<ElementType, List<Element>> elementsByType =
-        skipedElements.stream().collect(Collectors.groupingBy(Element::getType));
-    newDomain.getDomainMigrationDefinition().migrations().stream()
-        .map(DomainMigrationStep::newDefinitions)
-        .flatMap(List::stream)
-        .forEach(d -> d.migrate(elementsByType, oldDomain, newDomain));
-  }
-
-  private void associateNewDomain(Domain oldDomain, Domain newDomain, List<Element> elements) {
-    elements.forEach(
-        element -> {
-          element.associateWithDomain(
-              newDomain,
-              newDomain.mapOldSubType(element.getSubType(oldDomain)),
-              newDomain.mapOldStatus(element.getStatus(oldDomain)));
-        });
   }
 }

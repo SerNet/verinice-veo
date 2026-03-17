@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -27,9 +28,13 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.condition.CurrentElementExpression;
 import org.veo.core.entity.condition.ImplementedRequirementsExpression;
 import org.veo.core.entity.condition.LinkTargetsExpression;
+import org.veo.core.entity.domainmigration.DomainMigrationStep;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -143,5 +148,49 @@ public interface Domain extends DomainBase, ClientOwned {
   default String mapOldStatus(String status) {
     // TODO verinice-veo#3378: include mapping in migration definition
     return status;
+  }
+
+  default void migrate(List<Element> elements, Domain oldDomain) {
+    Version oldVersion = Version.parse(oldDomain.getTemplateVersion());
+    Version newVersion = Version.parse(getTemplateVersion());
+
+    boolean needsMigrationDefinition = !oldVersion.isSameMajorVersionAs(newVersion);
+    associateNewDomain(oldDomain, elements);
+    Map<ElementType, List<DomainSpecificValueLocation>> deprecatedDefinitions =
+        needsMigrationDefinition
+            ? getDomainMigrationDefinition().migrations().stream()
+                .map(DomainMigrationStep::oldDefinitions)
+                .flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(DomainSpecificValueLocation::elementType))
+            : Collections.emptyMap();
+
+    elements.forEach(
+        element ->
+            element.copyDomainData(
+                oldDomain,
+                this,
+                deprecatedDefinitions.getOrDefault(element.getType(), Collections.emptyList())));
+    if (needsMigrationDefinition) {
+      applyMigrationDefinition(oldDomain, elements);
+    }
+  }
+
+  private void applyMigrationDefinition(Domain oldDomain, List<Element> elements) {
+    Map<ElementType, List<Element>> elementsByType =
+        elements.stream().collect(Collectors.groupingBy(Element::getType));
+    getDomainMigrationDefinition().migrations().stream()
+        .map(DomainMigrationStep::newDefinitions)
+        .flatMap(List::stream)
+        .forEach(d -> d.migrate(elementsByType, oldDomain, this));
+  }
+
+  private void associateNewDomain(Domain oldDomain, List<Element> elements) {
+    elements.forEach(
+        element -> {
+          element.associateWithDomain(
+              this,
+              mapOldSubType(element.getSubType(oldDomain)),
+              mapOldStatus(element.getStatus(oldDomain)));
+        });
   }
 }

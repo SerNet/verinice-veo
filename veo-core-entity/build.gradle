@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'java-library'
 
 dependencies {
 
@@ -6,6 +7,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.45'
+    api 'com.github.zafarkhaja:java-semver:0.10.2'
 }
 
 testing {
