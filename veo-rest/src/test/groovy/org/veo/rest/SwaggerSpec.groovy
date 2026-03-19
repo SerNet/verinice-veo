@@ -472,6 +472,30 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for POST /content-creation/domain-templates"() {
+        expect:
+        with(parsedApiDocs.paths["/content-creation/domain-templates"].post) {
+            with(
+                    it.requestBody) {
+                        required == true
+                        content.keySet() ==~ [
+                            'multipart/form-data',
+                            'application/json'
+                        ]
+                        content['application/json'] == [schema:[$ref:'#/components/schemas/ExportDomainTemplateDto']]
+                        content['multipart/form-data'] == [
+                            schema:[
+                                type:'object',
+                                properties:[
+                                    file:[type:'string', format:'binary']
+                                ],
+                                required:['file']
+                            ]
+                        ]
+                    }
+        }
+    }
+
     def "attribute definition types are mapped"() {
         given: "correct map of sub types extracted from the jackson annotation"
         def expectedSubTypeMap = AttributeDefinition
