@@ -1185,8 +1185,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Inspector inspector() {
-    return new Inspector();
+  public Inspector inspector(
+      DomainTemplateRepository domainTemplateRepository,
+      DomainTemplateService domainTemplateService,
+      DomainChangeService domainChangeService) {
+    return new Inspector(domainTemplateRepository, domainTemplateService, domainChangeService);
   }
 
   @Bean

@@ -112,4 +112,11 @@ public class DomainTemplateRepositoryImpl
   public Optional<DomainTemplate> findLatestByMajor(String name, long major) {
     return dataRepository.findLatestByMajor(name, major).map(DomainTemplate.class::cast);
   }
+
+  @Override
+  public Optional<DomainTemplate> findLatestBetween(String name, Version min, Version max) {
+    return dataRepository
+        .findLatestBetween(name, min.toString(), max.toString())
+        .map(DomainTemplate.class::cast);
+  }
 }

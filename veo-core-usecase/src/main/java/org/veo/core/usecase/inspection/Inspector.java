@@ -17,21 +17,65 @@
  ******************************************************************************/
 package org.veo.core.usecase.inspection;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.DomainChangeService;
+import org.veo.core.usecase.TemplateItems;
+import org.veo.core.usecase.base.DomainSensitiveElementValidator;
+import org.veo.core.usecase.service.DomainTemplateService;
+
+import lombok.RequiredArgsConstructor;
 
 /** Runs all applicable inspections on an element (in the context of a domain). */
+@RequiredArgsConstructor
 public class Inspector {
+  private final DomainTemplateRepository domainTemplateRepository;
+  private final DomainTemplateService domainTemplateService;
+  private final DomainChangeService domainChangeService;
+
   public Set<Finding> inspect(Element element, Domain domain) {
-    return domain.getInspections().values().stream()
-        .map(inspection -> inspection.run(element, domain))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+    return Stream.concat(
+            domain.getInspections().values().stream()
+                .map(inspection -> inspection.run(element, domain))
+                .filter(Optional::isPresent)
+                .map(Optional::get),
+            getMigrationFindings(element, domain).stream())
         .collect(Collectors.toSet());
+  }
+
+  private Collection<Finding> getMigrationFindings(Element element, Domain domain) {
+    Version currentVersion = Version.parse(domain.getTemplateVersion());
+    return domainTemplateRepository
+        .findLatestBetween(
+            // Both major and minor updates can cause conflicts. It is not possible to update
+            // directly to the major version after next.
+            domain.getName(),
+            currentVersion.nextMinorVersion(),
+            currentVersion.nextMajorVersion().nextMinorVersion(Long.MAX_VALUE))
+        .map(
+            majorUpdate -> {
+              // perform domain update dry run and report errors as warnings
+              var tempDomain =
+                  domainTemplateService.createDomain(
+                      element.getOwner().getClient(), majorUpdate.getId(), TemplateItems.NONE);
+              domainChangeService.transferCustomization(domain, tempDomain);
+              tempDomain.migrate(List.of(element), domain);
+              return DomainSensitiveElementValidator.getErrors(element, tempDomain).stream()
+                  .map(e -> e.toDomainUpdateFinding(tempDomain))
+                  .toList();
+            })
+        .orElse(Collections.emptyList());
   }
 }

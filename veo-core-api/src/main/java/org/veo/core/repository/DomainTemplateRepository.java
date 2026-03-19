@@ -48,4 +48,6 @@ public interface DomainTemplateRepository extends Repository<DomainTemplate> {
   boolean templateExists(String name, Version version);
 
   Optional<DomainTemplate> findLatestByMajor(String name, long major);
+
+  Optional<DomainTemplate> findLatestBetween(String name, Version min, Version max);
 }

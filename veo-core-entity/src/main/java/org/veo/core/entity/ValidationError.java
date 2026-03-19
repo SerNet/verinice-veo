@@ -19,13 +19,25 @@ package org.veo.core.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.inspection.Severity;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface ValidationError {
   String message();
+
+  Finding toDomainUpdateFinding(Domain domain);
 
   static void throwOnErrors(Collection<ValidationError> errors) {
     if (!errors.isEmpty()) {
@@ -50,7 +62,19 @@ public interface ValidationError {
 
   // TODO replace this fallback type with specific errors with multilingual and more helpful
   // messages
-  record Generic(String message) implements ValidationError {}
+  record Generic(String message) implements ValidationError {
+    @Override
+    public Finding toDomainUpdateFinding(Domain domain) {
+      return new Finding(
+          Severity.WARNING,
+          TranslatedText.of(
+              Map.of(
+                  "en",
+                  "The object cannot be migrated to the new domain version %s: %s"
+                      .formatted(domain.getTemplateVersion(), message))),
+          Collections.emptyList());
+    }
+  }
 
   record CustomAspectConflict(String caType, List<Domain> conflictingDomains, Element element)
       implements ValidationError {
@@ -62,6 +86,63 @@ public interface ValidationError {
               conflictingDomains.stream()
                   .map(d -> "%s %s".formatted(d.getName(), d.getTemplateVersion()))
                   .collect(Collectors.joining(", ")));
+    }
+
+    @Override
+    public Finding toDomainUpdateFinding(Domain domain) {
+      return new Finding(Severity.WARNING, getDescription(domain), Collections.emptyList());
+    }
+
+    @NonNull
+    private TranslatedText getDescription(Domain domain) {
+      return TranslatedText.of(
+          Map.of(
+              "en",
+              "The object cannot be migrated to the new domain version %s. In the new version, some attributes are shared with other domains (%s), but the object has deviating values in those domains:%n%n%s%n%nPlease edit this object here or in the other domains to align the deviating values."
+                  .formatted(
+                      domain.getTemplateVersion(),
+                      formatConflictingDomains(Locale.ENGLISH),
+                      formatConflictingAttributes(domain, Locale.ENGLISH)),
+              "de",
+              "Das Objekt ist nicht migrierbar auf die neue Domänen-Version %s. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (%s). Dieses Objekt hat jedoch dort abweichende Werte:%n%n%s%n%nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+                  .formatted(
+                      domain.getTemplateVersion(),
+                      formatConflictingDomains(Locale.GERMAN),
+                      formatConflictingAttributes(domain, Locale.GERMAN))));
+    }
+
+    private String formatConflictingDomains(Locale locale) {
+      return String.join(
+          ", ", conflictingDomains.stream().map(d -> d.getTranslations(locale).getName()).toList());
+    }
+
+    private String formatConflictingAttributes(Domain domain, Locale locale) {
+      // All conflicting domains should have the same values, so any of them will do for the
+      // comparison.
+      var otherDomain = conflictingDomains.getFirst();
+      var ourAttributes =
+          element
+              .findCustomAspect(domain, caType)
+              .map(CustomAspect::getAttributes)
+              .orElse(Collections.emptyMap());
+      var otherAttributes =
+          element
+              .findCustomAspect(otherDomain, caType)
+              .map(CustomAspect::getAttributes)
+              .orElse(Collections.emptyMap());
+      return Stream.concat(ourAttributes.keySet().stream(), otherAttributes.keySet().stream())
+          .distinct()
+          .filter(
+              attrKey -> !Objects.equals(ourAttributes.get(attrKey), otherAttributes.get(attrKey)))
+          .map(
+              attrKey ->
+                  "* %s: %s"
+                      .formatted(
+                          otherDomain
+                              .getElementTypeDefinition(element.getType())
+                              .findTranslation(locale, attrKey),
+                          Optional.ofNullable(otherAttributes.get(attrKey)).orElse("-")))
+          .collect(Collectors.joining("\n"));
     }
   }
 }

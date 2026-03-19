@@ -60,6 +60,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
+                templateVersion = "1.0.0"
                 applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                     subTypes = [
                         SomeProcess: newSubTypeDefinition()
@@ -75,6 +76,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain1 = newDomain(client) {
                 abbreviation = "D1"
                 name = "Domain 1"
+                templateVersion = "1.0.0"
             }
 
             client = clientRepository.save(client)
