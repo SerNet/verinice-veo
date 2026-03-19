@@ -330,6 +330,8 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         // export the template
         def exportedDomainTemplate = get("/content-creation/domain-templates/$templateId", 200, CONTENT_CREATOR).body
 
+        removeReadOnlyFields(exportedDomainTemplate)
+
         // import the template under a different name"
         exportedDomainTemplate.name = "completely different domain template ${randomUUID()}"
         def newDomainTemplateId = post("/content-creation/domain-templates", exportedDomainTemplate, 201, CONTENT_CREATOR).body.resourceId

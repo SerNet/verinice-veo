@@ -78,6 +78,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         modifiedDomain.templateVersion = '6.6.6'
         modifiedDomain.elementTypeDefinitions.process.translations.de.remove('process_controller')
         modifiedDomain.elementTypeDefinitions.process.translations.de.superfluous_key = "I'm not even supposed to be here today!"
+        removeReadOnlyFields(modifiedDomain)
 
         when: " we post the domain template"
         def response = post("/content-creation/domain-templates", modifiedDomain, 422, UserType.CONTENT_CREATOR)

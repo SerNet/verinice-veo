@@ -368,6 +368,7 @@ class VeoRestTest extends Specification {
     def copyDomain(String domainId) {
         def domain = get("/domains/$domainId/export").body
         // TODO #2386 use domain import instead of importing as a template
+        removeReadOnlyFields(domain)
         domain.name = "copy of $domain.name $domain.templateVersion ${randomUUID().toString().subSequence(0, 5)}"
         def templateId = post("/content-creation/domain-templates", domain, 201, CONTENT_CREATOR).body.resourceId
         post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
@@ -392,5 +393,17 @@ class VeoRestTest extends Specification {
                         return "file" // Filename has to be returned in order to be able to post.
                     }
                 }
+    }
+
+    protected void removeReadOnlyFields(Map domain) {
+        // remove read-only fields since we use DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES in the tests
+        domain.profiles_v2?.each {
+            it.items.each {
+                it.aspects.impactValues.each { k, v ->
+                    v.remove('potentialImpactEffectiveReasons')
+                    v.remove('potentialImpactsEffective')
+                }
+            }
+        }
     }
 }
