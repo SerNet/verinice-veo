@@ -36,6 +36,7 @@ veo:
   api-keys:
     unit-count: dracula
     system-messages: hello
+    domain-template-upload: temp
 
 spring:
   datasource:

@@ -493,6 +493,7 @@ class SwaggerSpec extends VeoSpringSpec {
                             ]
                         ]
                     }
+            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
         }
     }
 
@@ -832,7 +833,9 @@ class SwaggerSpec extends VeoSpringSpec {
                                     'post',
                                     'put',
                                     'delete'
-                                ]) // has API key auth
+                                ] // has API key auth
+                                || it.path == '/content-creation/domain-templates' && it.method == 'post' // has API key auth
+                                )
                     }
                 }
     }

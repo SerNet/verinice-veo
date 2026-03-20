@@ -109,6 +109,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.JacksonException;
@@ -597,6 +599,10 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Creates domain template")
   @ApiResponse(responseCode = "201", description = "Domain template created")
   @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
       @Valid @NotNull @RequestBody ExportDomainTemplateDto domainTemplateDto) {
     return doCreateDomainTemplate(domainTemplateDto);
@@ -609,6 +615,10 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(
       responseCode = "400",
       description = "The content of the domain template is not valid")
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
       @NotNull @RequestPart MultipartFile file) {
     ExportDomainTemplateDto domainTemplateDto = parse(file, ExportDomainTemplateDto.class);

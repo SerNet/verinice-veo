@@ -272,4 +272,12 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         where:
         entity << USER_EDITABLE_PATHS
     }
+
+    def "API key authentication works for domain template upload"() {
+        expect:
+        mvc.perform(MockMvcRequestBuilders
+                .post("/content-creation/domain-templates").header('X-API-KEY', 'invalid')).andReturn().response.status == 401
+        mvc.perform(MockMvcRequestBuilders
+                .post("/content-creation/domain-templates").header('X-API-KEY', 'temp')).andReturn().response.status == 415
+    }
 }

@@ -29,6 +29,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManagers;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -43,6 +46,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.veo.core.entity.ElementType;
 import org.veo.rest.DomainController;
+import org.veo.rest.RestApplication;
 import org.veo.rest.UnitController;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
 import org.veo.rest.schemas.resource.TranslationsResource;
@@ -54,6 +58,9 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class WebSecurity {
+
+  @Value("${veo.api-keys.domain-template-upload}")
+  private String dtUplpoadApiKey;
 
   private static final String ROOT_PATH = "/";
 
@@ -112,6 +119,8 @@ public class WebSecurity {
   private static final String SYSTEM_MESSAGES_PATH = "/messages";
   private static final String ADMIN_SYSTEM_MESSAGES_PATH = "/admin/messages";
   private static final String ADMIN_SYSTEM_MESSAGE_PATH = "/admin/messages/*";
+
+  private static final String CC_DOMAIN_TEMPLATE_PATH = "/content-creation/domain-templates";
 
   // Paths that must only be accessible by the admin role:
   private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
@@ -182,6 +191,17 @@ public class WebSecurity {
           auth.requestMatchers(HttpMethod.POST, ADMIN_SYSTEM_MESSAGES_PATH).permitAll();
           auth.requestMatchers(HttpMethod.PUT, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
           auth.requestMatchers(HttpMethod.DELETE, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
+
+          auth.requestMatchers(HttpMethod.POST, CC_DOMAIN_TEMPLATE_PATH)
+              .access(
+                  AuthorizationManagers.anyOf(
+                      (_, object) ->
+                          new AuthorizationDecision(
+                              dtUplpoadApiKey.equals(
+                                  object
+                                      .getRequest()
+                                      .getHeader(RestApplication.HEADER_NAME_APIKEY))),
+                      AuthorityAuthorizationManager.hasRole("veo-content-creator")));
 
           // admin access:
           auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");
