@@ -91,13 +91,6 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<UUID> findIdsByTemplateId(UUID domainTemplateId) {
-    return dataRepository.findIdsByDomainTemplateId(domainTemplateId).stream()
-        .map(UUID::fromString)
-        .collect(Collectors.toSet());
-  }
-
-  @Override
   public Optional<Domain> findById(@NonNull UUID domainId, @NonNull UUID clientId) {
     return dataRepository.findById(domainId, clientId);
   }

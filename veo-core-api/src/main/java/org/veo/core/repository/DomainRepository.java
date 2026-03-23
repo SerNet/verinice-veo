@@ -44,8 +44,6 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
       Collection<UUID> domainIds, UUID clientId);
 
-  Set<UUID> findIdsByTemplateId(UUID domainTemplateId);
-
   Optional<Domain> findById(UUID domainId, UUID clientId);
 
   Domain getActiveById(UUID domainId, UUID clientId);

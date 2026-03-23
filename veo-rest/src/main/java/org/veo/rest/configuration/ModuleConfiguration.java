@@ -79,7 +79,6 @@ import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
-import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.DomainChangeService;
@@ -154,7 +153,6 @@ import org.veo.core.usecase.domain.SaveDomainMetadataUseCase;
 import org.veo.core.usecase.domain.SaveInspectionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
-import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateControlImplementationDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -199,8 +197,6 @@ import org.veo.core.usecase.unit.GetUnitCountUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
-import org.veo.core.usecase.unit.MigrateUnitUseCase;
-import org.veo.core.usecase.unit.TransferDomainCustomizationUseCase;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
@@ -1031,12 +1027,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
-      DomainRepository domainRepository, MigrateDomainUseCase migrateDomainUseCase) {
-    return new UpdateAllClientDomainsUseCase(domainRepository, migrateDomainUseCase);
-  }
-
-  @Bean
   public GetInspectionUseCase getInspectionUseCase(DomainRepository domainRepository) {
     return new GetInspectionUseCase(domainRepository);
   }
@@ -1069,30 +1059,6 @@ public class ModuleConfiguration {
         domainTemplateService,
         domainChangeService,
         unitMigrationService);
-  }
-
-  @Bean
-  public TransferDomainCustomizationUseCase transferDomainCustomizationUseCase(
-      DomainRepository domainRepository, DomainChangeService domainChangeService) {
-    return new TransferDomainCustomizationUseCase(domainRepository, domainChangeService);
-  }
-
-  @Bean
-  public MigrateDomainUseCase migrateDomainUseCase(
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      TransferDomainCustomizationUseCase transferDomainCustomizationUseCase,
-      MigrateUnitUseCase migrateUnitUseCase) {
-    return new MigrateDomainUseCase(
-        domainRepository, unitRepository, transferDomainCustomizationUseCase, migrateUnitUseCase);
-  }
-
-  @Bean
-  public MigrateUnitUseCase migrateUnitByCopyUseCase(
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      UnitMigrationService unitMigrationService) {
-    return new MigrateUnitUseCase(domainRepository, unitRepository, unitMigrationService);
   }
 
   @Bean

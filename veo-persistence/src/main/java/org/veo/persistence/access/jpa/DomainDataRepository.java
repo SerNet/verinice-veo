@@ -32,9 +32,6 @@ import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
-  @Query("select e.id from #{#entityName} as e join e.domainTemplate as t where t.id = ?1")
-  Collection<String> findIdsByDomainTemplateId(UUID domainTemplateId);
-
   @Query(
       "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1 and d.active = true")
   Set<DomainData> findAllActiveByClient(UUID clientId);

@@ -31,8 +31,6 @@ import groovy.util.logging.Log
 @Log
 class AdminControllerMvcITSpec extends ContentSpec {
 
-    public static final String DSGVO_NAME = "DS-GVO DS-GVO"
-
     def "generates unit dump"() {
         given: "a unit with a bunch of elements and risks"
         def client = createTestClient()
@@ -62,83 +60,6 @@ class AdminControllerMvcITSpec extends ContentSpec {
                 "http://localhost/assets/$assetId/risks/$scenarioId",
                 "http://localhost/processes/$processId/risks/$scenarioId"
             ]
-        }
-    }
-
-    def "update client domains"() {
-        given: "a unit with a bunch of elements and risks"
-        def client = createTestClient()
-        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
-        def domainId = parseJson(get("/domains")).find { it.templateVersion == "1.4.0" }.id
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(UUID.fromString(domainId), true, true)
-
-        when: "the process risk values are preserved before migration"
-        def json = parseJson(get("/admin/unit-dump/$unitId"))
-        def risk = json.risks.find { it.process != null }
-        def oldDomainName = risk.domains.(domainId).reference.displayName
-        def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues
-        def oldImpactValues = risk.domains.(domainId).riskDefinitions.DSRA.impactValues
-        def oldProbability = risk.domains.(domainId).riskDefinitions.DSRA.probability
-
-        and: 'updating all clients'
-        post("/admin/domain-templates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
-
-        then: 'the elements and risks are transferred to the new domain'
-        defaultPolling.eventually {
-            with(parseJson(get("/admin/unit-dump/$unitId"))) {
-                domains.size() == 1
-                domains.first().templateVersion == '2.0.0'
-                def newDomainId = domains.first().id
-                elements.size() == 8
-                elements.each {
-                    assert it.domains.keySet() =~ [newDomainId]
-                    it.customAspects.each { type, ca ->
-                        assert ca.domains*.targetUri =~ [
-                            "http://localhost/domains/$domainId"
-                        ]
-                    }
-                    it.links.each { type, linksOfType ->
-                        linksOfType.each {
-                            assert it.domains*.targetUri =~ [
-                                "http://localhost/domains/$domainId"
-                            ]
-                        }
-                    }
-                }
-                // process is present with risk values:
-                with(elements.find { it.id == processId }) {
-                    name == "process"
-                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
-                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == 0
-                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == 1
-                }
-
-                // scenario is present with risk values:
-                with(elements.find { it.id == scenarioId }) {
-                    name == "scenario"
-                    domains.(newDomainId).riskValues.DSRA.potentialProbability == 2
-                }
-
-                // asset risk is present without risk values:
-                with(risks.find { it.asset != null }) {
-                    domains.size() == 1
-                    domains.(newDomainId) != null
-                    domains.(newDomainId).reference.displayName == AdminControllerMvcITSpec.DSGVO_NAME
-                    domains.(newDomainId).riskDefinitions.size() == 0
-                }
-
-                // process risk is present with risk values:
-                with(risks.find { it.process != null }) {
-                    domains.size() == 1
-                    domains.(newDomainId) != null
-
-                    domains.(newDomainId).reference.displayName == oldDomainName
-                    domains.(newDomainId).riskDefinitions.DSRA.riskValues ==~ oldRiskValues
-                    domains.(newDomainId).riskDefinitions.DSRA.impactValues ==~ oldImpactValues
-                    domains.(newDomainId).riskDefinitions.DSRA.probability == oldProbability
-                }
-            }
         }
     }
 

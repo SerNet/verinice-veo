@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +44,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.unit.GetUnitCountUseCase;
@@ -53,7 +51,6 @@ import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -68,9 +65,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminController {
   private final UseCaseInteractor useCaseInteractor;
   private final GetUnitDumpUseCase getUnitDumpUseCase;
-  private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
-  private final AsyncTaskExecutor taskExecutor;
   private final SaveSystemMessageUseCase saveSystemMessageUseCase;
   private final DeleteSystemMessageUseCase deleteSystemMessageUseCase;
   private final GetUnitCountUseCase getUnitCountUseCase;
@@ -148,27 +143,6 @@ public class AdminController {
         getUnitDumpUseCase,
         new GetUnitDumpUseCase.InputData(unitId, null),
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
-  }
-
-  @PostMapping("domain-templates/{id}/allclientsupdate")
-  @Operation(
-      summary = "Migrates all clients to the domain created from given domain template",
-      description =
-          "Runs as a background task. For each client, elements associated with a previous version of the domain are migrated to the given version and the old domain is deactivated.")
-  @SuppressFBWarnings({"CRLF_INJECTION_LOGS"})
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
-      @Parameter(hidden = true) ApplicationUser user, @PathVariable UUID id) {
-    log.info("Submit updateAllClientDomainsUseCase task for domainTemplate: {}", id);
-    taskExecutor.execute(
-        // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the
-        // task as event
-        () -> {
-          log.info("Start of updateAllClientDomainsUseCase task");
-          updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(id), out -> null, user);
-          log.info("end of updateAllClientDomainsUseCase task");
-        });
-    return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
   }
 
   @GetMapping("/unit-count")
