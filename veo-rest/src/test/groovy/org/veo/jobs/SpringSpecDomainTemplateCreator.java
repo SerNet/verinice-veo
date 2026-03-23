@@ -36,6 +36,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.rest.security.NoRestrictionAccessRight;
@@ -64,7 +65,8 @@ public class SpringSpecDomainTemplateCreator {
    * is attempted to create the domain template from the corresponding test domain template resource
    * file first.
    */
-  public Domain createDomainFromTemplate(UUID templateId, Client client, boolean copyProfiles) {
+  public Domain createDomainFromTemplate(
+      UUID templateId, Client client, TemplateItems templateItems) {
     if (!domainTemplateRepository.exists(templateId)) {
       createTestTemplate(templateId);
     }
@@ -72,7 +74,7 @@ public class SpringSpecDomainTemplateCreator {
         () -> {
           createDomainFromTemplateUseCase.execute(
               new CreateDomainFromTemplateUseCase.InputData(
-                  templateId, client.getId(), copyProfiles),
+                  templateId, client.getId(), templateItems),
               NoRestrictionAccessRight.from(client.getIdAsString()));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()

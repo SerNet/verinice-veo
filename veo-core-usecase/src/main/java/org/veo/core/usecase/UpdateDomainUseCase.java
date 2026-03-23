@@ -51,7 +51,7 @@ public class UpdateDomainUseCase
     userAccessRights.checkUnitUpdateAllowed();
     var oldDomain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     var newDomain =
-        domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId, true);
+        domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
     migrateUnits(oldDomain, newDomain);
     oldDomain.setActive(false);

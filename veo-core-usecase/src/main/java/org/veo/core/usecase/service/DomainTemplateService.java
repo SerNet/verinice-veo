@@ -27,6 +27,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.TemplateItems;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,13 +59,13 @@ public class DomainTemplateService {
   }
 
   public Domain createDomain(Client client, UUID templateId) {
-    return createDomain(client, templateId, true);
+    return createDomain(client, templateId, TemplateItems.CATALOG_AND_PROFILES);
   }
 
-  public Domain createDomain(Client client, UUID templateId, boolean copyProfiles) {
+  public Domain createDomain(Client client, UUID templateId, TemplateItems templateItems) {
     DomainTemplate domainTemplate = getTemplate(client, templateId);
 
-    var domain = domainStateMapper.toDomain(domainTemplate, copyProfiles);
+    var domain = domainStateMapper.toDomain(domainTemplate, templateItems);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);

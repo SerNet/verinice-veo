@@ -27,6 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
+import org.veo.core.usecase.TemplateItems
 import org.veo.rest.common.ClientNotActiveException
 
 /**
@@ -43,7 +44,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
         def client = createTestClient()
         executeInTransaction {
-            defaultDomainCreator.addDomain(client, "ISO", false)
+            defaultDomainCreator.addDomain(client, "ISO", TemplateItems.NONE)
             clientRepository.save(client)
         }
 
@@ -65,7 +66,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
     def "deactivate the client"() {
         given:
         def client = createTestClient()
-        def domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID, false )
+        def domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID, TemplateItems.NONE)
 
         when: "posting unit and asset as a new client"
         def unitId = parseJson(post("/units", [

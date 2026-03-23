@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
+import org.veo.core.usecase.TemplateItems
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.rest.security.ApplicationUser
 
@@ -55,7 +56,7 @@ class AsSystemUserSpec extends VeoSpringSpec {
                 newClient {
                     id = clientId
                 }.tap {
-                    defaultDomainCreator.addDomain(it, "ISO", false)
+                    defaultDomainCreator.addDomain(it, "ISO", TemplateItems.NONE)
                     clientRepository.save(it)
                 }
             }

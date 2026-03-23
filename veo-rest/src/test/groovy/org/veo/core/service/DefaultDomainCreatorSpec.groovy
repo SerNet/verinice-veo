@@ -20,6 +20,7 @@ package org.veo.core.service
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.repository.DomainTemplateRepository
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.service.DefaultDomainCreator
 
@@ -43,14 +44,14 @@ class DefaultDomainCreatorSpec extends Specification {
         def isoDomain = Mock(Domain)
 
         when: 'domains are created'
-        defaultDomainCreator.addDomain(client,"DS-GVO", true)
-        defaultDomainCreator.addDomain(client,"ISO", false)
+        defaultDomainCreator.addDomain(client,"DS-GVO", TemplateItems.CATALOG_AND_PROFILES)
+        defaultDomainCreator.addDomain(client,"ISO", TemplateItems.CATALOG_ONLY)
 
         then: 'both templates are incarnated in the client'
         1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.of(dsgvoTemplateId)
         1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
-        1 * domainTemplateService.createDomain(client, dsgvoTemplateId, true) >> dsgvoDomain
-        1 * domainTemplateService.createDomain(client, isoTemplateId, false) >> isoDomain
+        1 * domainTemplateService.createDomain(client, dsgvoTemplateId, TemplateItems.CATALOG_AND_PROFILES) >> dsgvoDomain
+        1 * domainTemplateService.createDomain(client, isoTemplateId, TemplateItems.CATALOG_ONLY) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
         1 * client.addToDomains(isoDomain)
     }

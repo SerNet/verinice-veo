@@ -27,6 +27,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.service.DomainStateMapper
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -293,7 +294,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def profile = template.profiles.first()
         def client = newClient()
-        def domain = domainStateMapper.toDomain(template, false)
+        def domain = domainStateMapper.toDomain(template, TemplateItems.CATALOG_ONLY)
 
         when:
         domainTemplateService.copyProfileToDomain(profile, domain)

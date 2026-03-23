@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
@@ -145,7 +146,7 @@ public class DomainTemplateController extends AbstractEntityController {
                       useCaseInteractor.execute(
                           createDomainFromTemplateUseCase,
                           new CreateDomainFromTemplateUseCase.InputData(
-                              domainTemplateId, clientId, true),
+                              domainTemplateId, clientId, TemplateItems.CATALOG_AND_PROFILES),
                           out -> void.class))
               .thenApply(
                   nothing -> {

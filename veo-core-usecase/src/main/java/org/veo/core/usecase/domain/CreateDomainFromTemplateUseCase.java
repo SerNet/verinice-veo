@@ -25,6 +25,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
@@ -46,7 +47,7 @@ public class CreateDomainFromTemplateUseCase
       throw new MissingAdminPrivilegesException();
     }
     var client = clientRepository.getActiveById(input.clientId);
-    domainTemplateService.createDomain(client, input.domainTemplateId, input.copyProfiles);
+    domainTemplateService.createDomain(client, input.domainTemplateId, input.templateItems);
     clientRepository.save(client);
     return EmptyOutput.INSTANCE;
   }
@@ -57,6 +58,6 @@ public class CreateDomainFromTemplateUseCase
   }
 
   @Valid
-  public record InputData(UUID domainTemplateId, UUID clientId, boolean copyProfiles)
+  public record InputData(UUID domainTemplateId, UUID clientId, TemplateItems templateItems)
       implements UseCase.InputData {}
 }

@@ -27,6 +27,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase
 import org.veo.core.usecase.common.ETag
@@ -68,7 +69,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
     def "save a scope with control child and CI"() {
         given:
-        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID, false).tap{
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID, TemplateItems.NONE).tap{
             client.addToDomains(it)
         }
         def scope = executeInTransaction {
@@ -108,7 +109,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
 
     def "save a scope with link to one of its members"() {
         given:
-        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID, false).tap{
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID, TemplateItems.NONE).tap{
             client.addToDomains(it)
         }
         def scope = executeInTransaction {

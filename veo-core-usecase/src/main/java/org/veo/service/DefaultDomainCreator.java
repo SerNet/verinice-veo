@@ -21,6 +21,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.service.DomainTemplateService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class DefaultDomainCreator {
   private final DomainTemplateService domainService;
   private final DomainTemplateRepository domainTemplateRepository;
 
-  public void addDomain(Client client, String templateName, boolean copyProfiles) {
+  public void addDomain(Client client, String templateName, TemplateItems templateItems) {
     domainTemplateRepository
         .getLatestDomainTemplateId(templateName)
         .ifPresentOrElse(
@@ -46,7 +47,7 @@ public class DefaultDomainCreator {
                   templateId,
                   templateName,
                   client.getIdAsString());
-              client.addToDomains(domainService.createDomain(client, templateId, copyProfiles));
+              client.addToDomains(domainService.createDomain(client, templateId, templateItems));
             },
             () -> {
               log.warn("Default domain template {} not found.", templateName);

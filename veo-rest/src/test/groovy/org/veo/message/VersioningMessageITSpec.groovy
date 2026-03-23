@@ -27,6 +27,7 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -63,7 +64,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         when: "creating a client and applying example profile"
         def client = createTestClient()
         executeInTransaction {
-            defaultDomainCreator.addDomain(client,"DS-GVO", true)
+            defaultDomainCreator.addDomain(client,"DS-GVO", TemplateItems.CATALOG_AND_PROFILES)
             client = clientRepository.save(client)
             var dsgvo = client.domains.find { it.name == "DS-GVO" }
             def unit = unitDataRepository.save(newUnit(client))

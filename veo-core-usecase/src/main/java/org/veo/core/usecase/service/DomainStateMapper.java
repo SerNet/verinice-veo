@@ -50,6 +50,7 @@ import org.veo.core.entity.state.TailoringReferenceState;
 import org.veo.core.entity.state.TemplateItemState;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.DomainTemplateIdGenerator;
+import org.veo.core.usecase.TemplateItems;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,11 +60,11 @@ public class DomainStateMapper {
   private final EntityFactory entityFactory;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
-  public Domain toDomain(DomainBaseState source, boolean copyProfiles) {
+  public Domain toDomain(DomainBaseState source, TemplateItems templateItems) {
     var target =
         entityFactory.createDomain(
             source.getName(), source.getAuthority(), source.getTemplateVersion());
-    map(source, target, copyProfiles);
+    map(source, target, templateItems);
     return target;
   }
 
@@ -76,7 +77,7 @@ public class DomainStateMapper {
             UUID.fromString(
                 domainTemplateIdGenerator.createDomainTemplateId(
                     source.getName(), source.getTemplateVersion())));
-    map(source, target, true);
+    map(source, target, TemplateItems.CATALOG_AND_PROFILES);
     return target;
   }
 
@@ -91,7 +92,7 @@ public class DomainStateMapper {
     return target;
   }
 
-  private void map(DomainBaseState source, DomainBase target, boolean copyProfiles) {
+  private void map(DomainBaseState source, DomainBase target, TemplateItems copyTemplateItems) {
     var resolver = refResolverFactory.local();
     var domainRef = TypedId.from(source.getId(), source.getModelInterface());
     target.setAbbreviation(source.getAbbreviation());
@@ -113,26 +114,28 @@ public class DomainStateMapper {
     target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
     target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
 
-    // Create all catalog items and register them in the resolver before mapping them, because they
-    // may reference each other.
-    target.setCatalogItems(
-        source.getCatalogItemStates().stream()
-            .map(
-                ci ->
-                    resolver.injectNewEntity(
-                        TypedSymbolicId.from(ci.getSymbolicId(), CatalogItem.class, domainRef)))
-            .collect(toSet()));
-    source
-        .getCatalogItemStates()
-        .forEach(
-            ciState ->
-                mapTemplateItem(
-                    ciState,
-                    resolver.resolve(
-                        TypedSymbolicId.from(
-                            ciState.getSymbolicId(), CatalogItem.class, domainRef)),
-                    resolver));
-    if (copyProfiles) {
+    if (copyTemplateItems != TemplateItems.NONE) {
+      // Create all catalog items and register them in the resolver before mapping them, because
+      // they may reference each other.
+      target.setCatalogItems(
+          source.getCatalogItemStates().stream()
+              .map(
+                  ci ->
+                      resolver.injectNewEntity(
+                          TypedSymbolicId.from(ci.getSymbolicId(), CatalogItem.class, domainRef)))
+              .collect(toSet()));
+      source
+          .getCatalogItemStates()
+          .forEach(
+              ciState ->
+                  mapTemplateItem(
+                      ciState,
+                      resolver.resolve(
+                          TypedSymbolicId.from(
+                              ciState.getSymbolicId(), CatalogItem.class, domainRef)),
+                      resolver));
+    }
+    if (copyTemplateItems == TemplateItems.CATALOG_AND_PROFILES) {
       target.setProfiles(
           source.getProfileStates().stream()
               .map(profileState -> toProfile(profileState, resolver, target))

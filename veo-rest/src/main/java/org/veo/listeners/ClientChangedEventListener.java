@@ -42,6 +42,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.UseCase.EntityId;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.service.DefaultDomainCreator;
@@ -130,7 +131,7 @@ public class ClientChangedEventListener {
           .forEach(
               dn -> {
                 log.info("create Domain {} for client {}", dn, client.getName());
-                defaultDomainCreator.addDomain(client, dn, false);
+                defaultDomainCreator.addDomain(client, dn, TemplateItems.CATALOG_ONLY);
                 if (save) {
                   repository.save(client);
                 }

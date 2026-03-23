@@ -45,6 +45,7 @@ import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.service.UserAccessRightsProvider
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
@@ -204,9 +205,9 @@ abstract class VeoSpringSpec extends VeoSpec {
         clientRepository.deleteById(UUID.fromString(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
     }
 
-    Domain createTestDomain(Client client, UUID templateId, boolean copyProfiles = true) {
+    Domain createTestDomain(Client client, UUID templateId, TemplateItems templateItems = TemplateItems.CATALOG_AND_PROFILES) {
         return txTemplate.execute {
-            return domainTemplateCreator.createDomainFromTemplate(templateId, client, copyProfiles)
+            return domainTemplateCreator.createDomainFromTemplate(templateId, client, templateItems)
         }
     }
 
