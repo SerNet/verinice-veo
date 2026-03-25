@@ -211,7 +211,11 @@ public class VeriniceExceptionHandler {
         errors.stream()
             .map(FieldError.class::cast)
             // TODO #2496 use JSON path instead of field path
-            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)),
+            .collect(
+                Collectors.toMap(
+                    FieldError::getField,
+                    FieldError::getDefaultMessage,
+                    (s1, s2) -> String.join(", ", s1, s2))),
         HttpStatus.BAD_REQUEST);
   }
 
