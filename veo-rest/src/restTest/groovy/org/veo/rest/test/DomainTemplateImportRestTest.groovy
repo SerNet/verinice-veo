@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+
 import org.veo.categories.MapGetProperties
 
 import spock.lang.Ignore
@@ -81,6 +84,27 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         domain.abbreviation == template.abbreviation
         domain.authority == template.authority
         domain.templateVersion == template.templateVersion
+    }
+
+    def "import domain template with API key authentication"() {
+        given:
+        def template = getTemplateBody()
+
+        when:
+        def templateId = post("/content-creation/domain-templates", new HttpHeaders().tap{
+            setContentType(MediaType.APPLICATION_JSON)
+            set('x-api-key', 'temp')
+        }, template, 201, UserType.ANONYMOUS).body.resourceId
+
+        def exportedDomain = get("/content-creation/domain-templates/$templateId").body
+
+        then:
+        with(exportedDomain) {
+            abbreviation == template.abbreviation
+            authority == template.authority
+            templateVersion == template.templateVersion
+            it.createdBy == 'API client'
+        }
     }
 
     def "cannot import template with identical name & version twice"() {
