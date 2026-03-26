@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -130,6 +129,7 @@ public interface ValidationError {
               .findCustomAspect(otherDomain, caType)
               .map(CustomAspect::getAttributes)
               .orElse(Collections.emptyMap());
+      var etd = otherDomain.getElementTypeDefinition(element.getType());
       return Stream.concat(ourAttributes.keySet().stream(), otherAttributes.keySet().stream())
           .distinct()
           .filter(
@@ -141,7 +141,8 @@ public interface ValidationError {
                           otherDomain
                               .getElementTypeDefinition(element.getType())
                               .findTranslation(locale, attrKey),
-                          Optional.ofNullable(otherAttributes.get(attrKey)).orElse("-")))
+                          etd.localizeCustomAspectAttributeValue(
+                              caType, attrKey, otherAttributes.get(attrKey), locale)))
           .collect(Collectors.joining("\n"));
     }
   }

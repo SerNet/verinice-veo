@@ -352,8 +352,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.size() == 1
-        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0. In the new version, some attributes are shared with other domains (The MISO 27000), but the object has deviating values in those domains:\n\n* contains noodles: false\n\nPlease edit this object here or in the other domains to align the deviating values."
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (Die MISO 27000). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* enthält Nudeln: false\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0. In the new version, some attributes are shared with other domains (The MISO 27000), but the object has deviating values in those domains:\n\n* contains noodles: no\n\nPlease edit this object here or in the other domains to align the deviating values."
+        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (Die MISO 27000). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* enthält Nudeln: nein\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
 
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domainB.id}/assets/$assetId")).with {

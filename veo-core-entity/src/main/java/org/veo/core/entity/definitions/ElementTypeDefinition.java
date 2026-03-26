@@ -17,13 +17,22 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 
 public interface ElementTypeDefinition extends ElementTypeDefinitionState {
@@ -63,5 +72,28 @@ public interface ElementTypeDefinition extends ElementTypeDefinitionState {
                 new IllegalArgumentException(
                     "Sub type %s is not defined, availabe sub types: %s"
                         .formatted(subType, getSubTypes().keySet())));
+  }
+
+  default String localizeCustomAspectAttributeValue(
+      String caType, String attrKey, @Nullable Object value, Locale locale) {
+    if (value == null) {
+      return "-";
+    }
+    return format(value, locale, getCustomAspectDefinition(caType).getAttributeDefinition(attrKey));
+  }
+
+  private String format(@NotNull Object value, Locale locale, AttributeDefinition attrDef) {
+    return switch (attrDef) {
+      case BooleanAttributeDefinition _ ->
+          ResourceBundle.getBundle("messages", locale)
+              .getString(Boolean.TRUE.equals(value) ? "yes" : "no");
+      case EnumAttributeDefinition _ -> getTranslations().get(locale).get(value);
+      case ListAttributeDefinition listDef ->
+          ((Collection<?>) value)
+              .stream()
+                  .map(i -> format(i, locale, listDef.getItemDefinition()))
+                  .collect(Collectors.joining(", "));
+      default -> value.toString();
+    };
   }
 }
