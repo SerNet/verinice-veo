@@ -24,6 +24,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,8 +34,16 @@ public class AuthAwareImpl implements AuditorAware<String> {
   @Override
   @Nonnull
   public Optional<String> getCurrentAuditor() {
+
+    var ctx = SecurityContextHolder.getContext();
+    var auth = ctx.getAuthentication();
+    if (auth instanceof PreAuthenticatedAuthenticationToken paat) {
+      // e.g. when authenticating using an API key
+      return Optional.of(paat.getName());
+    }
+
     var currentUser =
-        Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+        Optional.ofNullable(auth)
             .map(Authentication::getPrincipal)
             .map(ApplicationUser::findAuthenticatedUser)
             .map(ApplicationUser::getUsername);

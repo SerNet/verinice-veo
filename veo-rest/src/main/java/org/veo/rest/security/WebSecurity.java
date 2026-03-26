@@ -37,9 +37,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.CacheControlConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -195,12 +197,16 @@ public class WebSecurity {
           auth.requestMatchers(HttpMethod.POST, CC_DOMAIN_TEMPLATE_PATH)
               .access(
                   AuthorizationManagers.anyOf(
-                      (_, object) ->
-                          new AuthorizationDecision(
-                              dtUplpoadApiKey.equals(
-                                  object
-                                      .getRequest()
-                                      .getHeader(RestApplication.HEADER_NAME_APIKEY))),
+                      (_, object) -> {
+                        if (dtUplpoadApiKey.equals(
+                            object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
+                          SecurityContextHolder.getContext()
+                              .setAuthentication(
+                                  new PreAuthenticatedAuthenticationToken("API client", null));
+                          return new AuthorizationDecision(true);
+                        }
+                        return new AuthorizationDecision(false);
+                      },
                       AuthorityAuthorizationManager.hasRole("veo-content-creator")));
 
           // admin access:
