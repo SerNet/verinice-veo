@@ -21,6 +21,7 @@ import static groovy.json.JsonOutput.toJson
 import static java.util.UUID.randomUUID
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import static org.veo.rest.test.UserType.ADMIN
+import static org.veo.rest.test.UserType.ANONYMOUS
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import java.nio.charset.StandardCharsets
@@ -312,9 +313,11 @@ class VeoRestTest extends Specification {
     }
 
     ResponseEntity<String> exchange(String uri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
-        headers.put("Authorization", [
-            "Bearer " + getToken(userType)
-        ])
+        if (userType != ANONYMOUS) {
+            headers.put("Authorization", [
+                "Bearer " + getToken(userType)
+            ])
+        }
         def absoluteUri = uri.startsWith('http') ? uri : baseUrl + uri
         return restTemplate.exchange(absoluteUri, httpMethod, new HttpEntity(requestBody, headers), String.class)
     }

@@ -23,4 +23,5 @@ public enum UserType {
   CONTENT_CREATOR,
   READ_ONLY,
   SECONDARY_CLIENT_USER,
+  ANONYMOUS
 }
