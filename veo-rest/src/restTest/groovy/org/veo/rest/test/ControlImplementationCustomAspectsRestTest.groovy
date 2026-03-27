@@ -312,7 +312,7 @@ class ControlImplementationCustomAspectsRestTest extends VeoRestTest {
         def elementInExport = unitExport.elements.find { it.id == elementId }
         elementInExport != null
         elementInExport.controlImplementations.size() == 1
-        with(elementInExport.controlImplementations[0].customAspects[domainId]) {
+        with(elementInExport.controlImplementations[0].domains[domainId].customAspects) {
             ciDetails != null
             ciDetails.implementationNotes == "Exported notes"
             ciDetails.priority == "imported"

@@ -2165,24 +2165,35 @@ class SwaggerSpec extends VeoSpringSpec {
                 'description',
                 'responsible',
                 'owner',
-                'customAspects',
+                'domains',
                 '_requirementImplementations'
             ]
             it.required ==~ ['control']
             it.properties.control == [$ref:'#/components/schemas/IdRefControl']
+            it.properties.domains == [
+                type:'object',
+                additionalProperties:[$ref:'#/components/schemas/ControlImplementationDomainAssociationDto']
+            ]
+            it.properties._requirementImplementations == [
+                type:'string',
+                readOnly:true
+            ]
+        }
+    }
+
+    def "ControlImplementationDomainAssociationDto is well-documented"() {
+        expect:
+        with(getSchema('ControlImplementationDomainAssociationDto')) {
+            description == 'Domain-specific values for a control implementation'
+            it.properties.keySet() ==~ [
+                'customAspects'
+            ]
             it.properties.customAspects == [
                 type:'object',
                 additionalProperties:[
                     type:'object',
-                    additionalProperties:[
-                        type:'object',
-                        additionalProperties:[type:'object']
-                    ]
-                ],
-                description:'Custom aspects for this control implementation']
-            it.properties._requirementImplementations == [
-                type:'string',
-                readOnly:true
+                    additionalProperties:[type: 'object']
+                ]
             ]
         }
     }
