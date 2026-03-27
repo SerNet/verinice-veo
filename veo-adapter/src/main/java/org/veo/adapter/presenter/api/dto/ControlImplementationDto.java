@@ -80,9 +80,7 @@ public class ControlImplementationDto implements ControlImplementationState {
   @Schema(description = "Owner of the control implementation")
   IdRef<RiskAffected<?, ?>> owner;
 
-  @Schema(description = "Custom aspects for this control implementation")
-  @Builder.Default
-  Map<UUID, CustomAspectMapDto> customAspects = new HashMap<>();
+  @Builder.Default Map<UUID, ControlImplementationDomainAssociationDto> domains = new HashMap<>();
 
   public static ControlImplementationDto from(
       ControlImplementation entity, ReferenceAssembler referenceAssembler, Set<Domain> domains) {
@@ -99,11 +97,14 @@ public class ControlImplementationDto implements ControlImplementationState {
                 .findAny()
                 .get()
                 .getStatus())
-        .customAspects(
+        .domains(
             domains.stream()
                 .collect(
                     Collectors.toMap(
-                        Domain::getId, d -> CustomAspectMapDto.from(entity.getCustomAspects(d)))))
+                        Domain::getId,
+                        d ->
+                            new ControlImplementationDomainAssociationDto(
+                                CustomAspectMapDto.from(entity.getCustomAspects(d))))))
         .build();
   }
 
@@ -114,10 +115,10 @@ public class ControlImplementationDto implements ControlImplementationState {
 
   @Override
   public Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
-    return Optional.ofNullable(customAspects.get(domainId))
+    return Optional.ofNullable(domains.get(domainId))
         .map(
-            cas ->
-                cas.getValue().entrySet().stream()
+            da ->
+                da.getCustomAspects().getValue().entrySet().stream()
                     .map(
                         e ->
                             new CustomAspectState.CustomAspectStateImpl(
