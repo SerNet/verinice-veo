@@ -6,7 +6,7 @@ dependencies {
     compileOnly 'jakarta.validation:jakarta.validation-api'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.45'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.46'
     api 'com.github.zafarkhaja:java-semver:0.10.2'
 }
 
