@@ -104,6 +104,13 @@ public class DomainTemplateRepositoryImpl
   }
 
   @Override
+  public DomainTemplate getByIdWithRiskDefinitions(UUID id) {
+    return dataRepository
+        .findByIdWithRiskDefinitions(id)
+        .orElseThrow(() -> new NotFoundException(id, DomainTemplate.class));
+  }
+
+  @Override
   public boolean templateExists(String name, Version version) {
     return dataRepository.existsByNameAndTemplateVersion(name, version.toString());
   }

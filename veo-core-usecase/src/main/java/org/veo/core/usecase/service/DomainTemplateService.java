@@ -63,7 +63,14 @@ public class DomainTemplateService {
   }
 
   public Domain createDomain(Client client, UUID templateId, TemplateItems templateItems) {
-    DomainTemplate domainTemplate = getTemplate(client, templateId);
+    checkClientAccess(client, templateId);
+    DomainTemplate domainTemplate;
+    if (templateItems == TemplateItems.NONE) {
+      domainTemplate = domainTemplateRepository.getByIdWithRiskDefinitions(templateId);
+    } else {
+      domainTemplate =
+          domainTemplateRepository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(templateId);
+    }
 
     var domain = domainStateMapper.toDomain(domainTemplate, templateItems);
     domain.setDomainTemplate(domainTemplate);

@@ -55,6 +55,14 @@ public interface DomainTemplateDataRepository
       """)
   Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(UUID id);
 
+  @Query(
+      """
+            select dt from #{#entityName} dt
+              join fetch dt.riskDefinitionSet
+              where dt.id = ?1
+          """)
+  Optional<DomainTemplateData> findByIdWithRiskDefinitions(UUID id);
+
   boolean existsByNameAndTemplateVersion(String name, String templateVersion);
 
   @Query(
