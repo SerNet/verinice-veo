@@ -28,7 +28,7 @@ class V127__origination_required extends BaseJavaMigration {
     void migrate(Context context) throws Exception {
         new Sql(context.connection).execute("""
             UPDATE requirement_implementation
-              SET origination = 'system_specific'
+              SET origination = 'SYSTEM_SPECIFIC'
               WHERE origination IS NULL;
             ALTER TABLE requirement_implementation
               ALTER COLUMN origination
