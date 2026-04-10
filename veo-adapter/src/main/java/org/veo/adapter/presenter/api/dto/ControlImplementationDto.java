@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -112,8 +114,15 @@ public class ControlImplementationDto implements ControlImplementationState {
 
   @Override
   public Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
-    return customAspects.get(domainId).getValue().entrySet().stream()
-        .map(e -> new CustomAspectState.CustomAspectStateImpl(e.getKey(), e.getValue().getValue()))
-        .collect(Collectors.toSet());
+    return Optional.ofNullable(customAspects.get(domainId))
+        .map(
+            cas ->
+                cas.getValue().entrySet().stream()
+                    .map(
+                        e ->
+                            new CustomAspectState.CustomAspectStateImpl(
+                                e.getKey(), e.getValue().getValue()))
+                    .collect(Collectors.<CustomAspectState>toSet()))
+        .orElseGet(Collections::emptySet);
   }
 }
