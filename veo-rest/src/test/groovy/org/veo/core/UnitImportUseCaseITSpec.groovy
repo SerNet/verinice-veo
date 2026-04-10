@@ -424,4 +424,63 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
             ]
         }
     }
+
+    def "Import CIs without CAs"() {
+        given:
+        def domainRef = DomainBaseIdRef.fromTargetUri("/domains/${testDomain.id}", referenceAssembler)
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'My unit'
+            domains = [
+                domainRef
+            ]
+        }
+        def controlId = UUID.randomUUID()
+        def processId = UUID.randomUUID()
+
+        def elements = [
+            new FullControlDto().tap {
+                id = controlId
+                name = 'My control'
+                domains = [
+                    (testDomain.id) : new DomainAssociationDto().tap {
+                        subType = 'CTL_TOM'
+                        status = 'NEW'
+                    }
+                ]
+            },
+            new FullProcessDto().tap {
+                id = processId
+                name = 'My process'
+                domains = [
+                    (testDomain.id): new ProcessDomainAssociationDto().tap {
+                        subType = 'PRO_DataProcessing'
+                        status = 'NEW'
+                    }
+                ]
+                controlImplementations.add(new ControlImplementationDto().tap {
+                    it.control = IdRef.fromUri("/controls/${controlId}", referenceAssembler)
+                })
+            }
+        ]
+        def risks = []
+
+        when:
+        executeInTransaction { useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2)) }
+        def processes = executeInTransaction {
+            processDataRepository.findAll().tap {
+                it.controlImplementations*.control
+            }
+        }
+
+        then:
+        processes.size() == 1
+
+        with(processes.first()) {
+            it.controlImplementations.size() == 1
+            with(it.controlImplementations.first()) {
+                it.getCustomAspects(testDomain) == [:]
+            }
+        }
+    }
 }
