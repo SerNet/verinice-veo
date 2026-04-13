@@ -1520,7 +1520,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.attributes == [
                 type:'object',
-                additionalProperties:[ type:'object' ],
+                additionalProperties:[:],
                 description: 'The properties of the element described by the schema of the type attribute.']
             it.required == ['target']
         }
@@ -2176,7 +2176,7 @@ class SwaggerSpec extends VeoSpringSpec {
                     type:'object',
                     additionalProperties:[
                         type:'object',
-                        additionalProperties:[type:'object']
+                        additionalProperties:[:]
                     ]
                 ],
                 description:'Custom aspects for this control implementation']
@@ -2249,7 +2249,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 type:'object',
                 additionalProperties:[
                     type:'object',
-                    additionalProperties:[type:'object']
+                    additionalProperties:[:]
                 ],
                 description:'Custom aspects for this control implementation']
             it.properties._requirementImplementations == [
