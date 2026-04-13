@@ -40,7 +40,7 @@ public class CustomAspectAttributeValueExpression implements VeoExpression {
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    return element.getCustomAspects().stream()
+    return element.getCustomAspects(domain).stream()
         .filter(ca -> ca.getType().equals(customAspect))
         .findFirst()
         .map(ca -> ca.getAttributes().get(attribute))

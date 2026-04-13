@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.condition
 
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
 
@@ -69,5 +70,29 @@ class VeoExpressionITSpec extends Specification {
         [] | [:] | []
         [1, 2, 3] | [1:2 , 3:2] | [2, null, 2]
         ['foo', 'bar'] | [bar: 'baz'] | [null, 'baz']
+    }
+
+    def "Read same attribute from different domains"() {
+        given:
+        Domain domain1 = Mock()
+        CustomAspect ca1 = Stub {
+            getType() >> 'ca'
+            getAttributes()>> [attr: 'v1']
+        }
+        Domain domain2 = Mock()
+        CustomAspect ca2 = Stub {
+            getType() >> 'ca'
+            getAttributes()>> [attr: 'v2']
+        }
+        Element element = Stub {
+            getCustomAspects(domain1)>> [ca1]
+            getCustomAspects(domain2)>> [ca2]
+        }
+
+        CustomAspectAttributeValueExpression e = new CustomAspectAttributeValueExpression('ca', 'attr' )
+
+        expect:
+        e.getValue(element, domain1) == 'v1'
+        e.getValue(element, domain2) == 'v2'
     }
 }

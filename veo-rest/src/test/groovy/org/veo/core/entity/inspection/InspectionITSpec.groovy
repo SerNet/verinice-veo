@@ -61,7 +61,7 @@ class InspectionITSpec extends VeoSpec {
         when: "a mac has no tux sticker"
         def mac = newAsset(unit) {
             associateWithDomain(domain, "computer", "NEW")
-            customAspects.add(newCustomAspect("software", null) {
+            customAspects.add(newCustomAspect("software", domain) {
                 attributes["os"] = "macOs"
             })
         }
@@ -73,7 +73,7 @@ class InspectionITSpec extends VeoSpec {
         when: "a linux pc has no sticker"
         def linuxPc = newAsset(unit) {
             associateWithDomain(domain, "computer", "NEW")
-            customAspects.add(newCustomAspect("software", null) {
+            customAspects.add(newCustomAspect("software", domain) {
                 attributes["os"] = "linux"
             })
         }
