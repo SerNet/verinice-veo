@@ -62,7 +62,7 @@
     {
       "groupName": "JGraphT",
       "matchPackageNames": [
-        "/^org.jgrapht::/"
+        "/^org.jgrapht:/"
       ]
     }
   ]
