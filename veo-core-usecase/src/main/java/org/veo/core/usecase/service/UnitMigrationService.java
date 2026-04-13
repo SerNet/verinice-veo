@@ -65,7 +65,7 @@ public class UnitMigrationService {
     if (!invalidElements.isEmpty()) {
       // Conflicted elements are left associated with the old domain to allow for nicer error
       // reporting.
-      throw new DomainUpdateFailedException(oldDomain, new HashSet<>(elements));
+      throw new DomainUpdateFailedException(oldDomain, new HashSet<>(invalidElements));
     }
     log.debug("removing elements from old domain: {}", oldDomain);
     elements.forEach(e -> e.removeFromDomains(oldDomain));

@@ -22,8 +22,6 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import java.util.function.Consumer
 
-import org.spockframework.runtime.SpockTimeoutError
-
 class DomainUpdateRestTest extends VeoRestTest {
 
     String currentDomainTemplateId
@@ -528,6 +526,14 @@ class DomainUpdateRestTest extends VeoRestTest {
             ]
             put(body._self, body, getETag())
         }
+
+        and: "a process that only belongs to the domain that should be updated"
+        post("/domains/$oldDomainId/processes", [
+            name: "perfectly valid process",
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
 
         when: "migrating to a new template version that renames the attributes, bringing the CA in line with the other domain"
         def response = createNewTemplateAndMigrate(409) {
