@@ -58,6 +58,12 @@
         "eclipse-temurin"
       ],
       "allowedVersions": "25-jdk"
+    },
+    {
+      "groupName": "JGraphT",
+      "matchPackageNames": [
+        "/^org.jgrapht::/"
+      ]
     }
   ]
 }
