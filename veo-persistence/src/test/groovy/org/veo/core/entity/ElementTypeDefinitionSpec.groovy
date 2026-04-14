@@ -31,7 +31,7 @@ class ElementTypeDefinitionSpec extends VeoSpec {
 
     def "formats custom aspect attributes"() {
         given:
-        def etd = newElementTypeDefinition(ElementType.DOCUMENT,domain)
+        def etd = newElementTypeDefinition(ElementType.DOCUMENT,domain, false)
         domain.applyElementTypeDefinition(etd)
 
         and:

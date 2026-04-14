@@ -180,8 +180,16 @@ abstract class VeoSpec extends Specification {
 
     static ElementTypeDefinition newElementTypeDefinition(ElementType type, DomainBase it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
+        return newElementTypeDefinition(type, it, true, init)
+    }
+
+    static ElementTypeDefinition newElementTypeDefinition(ElementType type, DomainBase it, boolean createTranslations, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, it).tap{
             VeoSpec.execute(it, init)
+            if(createTranslations) {
+                VeoSpec.generateDummyTranslations(it)
+            }
         }
     }
 
@@ -315,13 +323,6 @@ abstract class VeoSpec extends Specification {
     static CustomLinkData newCustomLink(Element linkTarget, String type, DomainBase domain, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
         return factory.createCustomLink(linkTarget, null, type, domain).tap{
-            VeoSpec.execute(it, init)
-        }
-    }
-
-    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, ElementType type, @DelegatesTo(value = ElementTypeDefinition.class)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ElementTypeDefinition") Closure init = null) {
-        return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
         }
     }
@@ -543,6 +544,38 @@ abstract class VeoSpec extends Specification {
     private static def name(Entity target) {
         if (target.name == null) {
             target.name = target.modelType + " " + target.id
+        }
+    }
+
+    private static def generateDummyTranslations(ElementTypeDefinition etd) {
+        if (etd.translations == null || etd.translations.isEmpty()) {
+            def tranlationMap = new HashMap()
+            etd.getSubTypes().entrySet().forEach {
+                tranlationMap.put(etd.elementType.getSingularTerm()+"_"+it.key+"_plural", it.key)
+                tranlationMap.put(etd.elementType.getSingularTerm()+"_"+it.key+"_singular", it.key)
+                it.getValue().statuses.forEach{s->
+                    tranlationMap.put(etd.elementType.getSingularTerm()+"_"+it.key+"_status_"+s, s)
+                }
+            }
+            etd.customAspects.values().forEach{
+                it.getAttributeDefinitions().entrySet().forEach{ attDef->
+                    tranlationMap.put(attDef.getKey() , attDef.getKey())
+                    attDef.getValue().getTranslationKeys().forEach{tk->
+                        tranlationMap.put(tk , tk)
+                    }
+                }
+            }
+            etd.links.entrySet().forEach{
+                tranlationMap.put(it.getKey() , "link_name_"+it.getKey())
+                it.getValue().getAttributeDefinitions().entrySet().forEach{ attDef->
+                    tranlationMap.put(attDef.getKey() , attDef.getKey())
+                    attDef.getValue().getTranslationKeys().forEach{tk->
+                        tranlationMap.put(tk , "link_"+tk)
+                    }
+                }
+            }
+
+            etd.translations = Map.of(EN, tranlationMap)
         }
     }
 

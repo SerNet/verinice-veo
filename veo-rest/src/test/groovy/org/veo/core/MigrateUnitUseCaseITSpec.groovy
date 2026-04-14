@@ -417,7 +417,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         given: "an attribute that is renamed in a new domain version"
         def domainA1 = domainDataRepository.save(newDomain(client) {
             templateVersion = Version.parse("1.0.0")
-            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+            applyElementTypeDefinition(newElementTypeDefinition( ElementType.PROCESS, it) {
                 subTypes.PRO_gram = newSubTypeDefinition {}
                 customAspects.put("performance", newCustomAspectDefinition {
                     attributeDefinitions.isFast = new BooleanAttributeDefinition()
@@ -426,7 +426,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
         })
         def domainA2 = domainDataRepository.save(newDomain(client) {
             templateVersion = Version.parse("2.0.0")
-            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+            applyElementTypeDefinition(newElementTypeDefinition( ElementType.PROCESS, it) {
                 subTypes.PRO_gram = newSubTypeDefinition {}
                 customAspects.put("performance", newCustomAspectDefinition {
                     attributeDefinitions.isVeryFast = new BooleanAttributeDefinition()
@@ -446,7 +446,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
 
         and: "another domain that defines it just like A2"
         def domainB = domainDataRepository.save(newDomain(client) {
-            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.PROCESS) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                 subTypes.PRO_gram = newSubTypeDefinition {}
                 customAspects.put("performance", newCustomAspectDefinition {
                     attributeDefinitions.isVeryFast = new BooleanAttributeDefinition()
@@ -503,7 +503,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
 
         and: "another domain that defines it just like the new DSGVO"
         def otherDomain = domainDataRepository.save(newDomain(client) {
-            applyElementTypeDefinition(newElementTypeDefinition(it, ElementType.DOCUMENT) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, it) {
                 subTypes.DOC_Document = newSubTypeDefinition {}
                 customAspects.put("document_details", caDef)
             })

@@ -44,7 +44,7 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
     def setup() {
         def client = clientDataRepository.save(newClient() {
             newDomain(it) {
-                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it, false) {
                     customAspects.goodAspect = newCustomAspectDefinition {
                         attributeDefinitions = [
                             k1: new TextAttributeDefinition(),

@@ -161,7 +161,9 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         when: "removing one custom aspect type and one custom aspect attribute from the element type definition"
         def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
         etd.customAspects.remove("aspectTwo")
+        etd.translations.remove("aspectTwo")
         etd.customAspects.aspectOne.attributeDefinitions.remove("attrTwo")
+        etd.translations.en.remove("attrTwo")
         put("/content-creation/domains/$domainId/element-type-definitions/asset", etd, 204)
 
         and: "triggering message processing"

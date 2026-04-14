@@ -45,11 +45,13 @@ public class CreateDomainTemplateUseCase
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var state = input.domainTemplate;
-    var domainTemplate = mapper.toTemplate(state);
     validateVersion(input.domainTemplate.getTemplateVersion());
+    var domainTemplate = mapper.toTemplate(state);
     if (domainTemplateRepository.exists(domainTemplate.getId())) {
       throw new EntityAlreadyExistsException(domainTemplate);
     }
+
+    DomainTemplateValidator.validateDomainTemplate(domainTemplate);
 
     domainTemplate.getCatalogItems().forEach(TemplateItemValidator::validate);
     domainTemplate.getProfiles().stream()

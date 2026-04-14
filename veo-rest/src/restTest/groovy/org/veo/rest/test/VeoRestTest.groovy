@@ -69,6 +69,7 @@ webEnvironment = RANDOM_PORT)
 @Slf4j
 @AutoConfigureTestRestTemplate
 class VeoRestTest extends Specification {
+    protected Locale EN = Locale.ENGLISH
 
     @Autowired
     TestRestTemplate restTemplate

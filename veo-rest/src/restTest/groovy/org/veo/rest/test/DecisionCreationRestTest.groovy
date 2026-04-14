@@ -43,6 +43,14 @@ class DecisionCreationRestTest extends VeoRestTest {
                         ]
                     ]
                 ]
+            ],
+            translations : [
+                (EN): ["document_Article_plural":"document_Article_plural",
+                    "document_Article_singular": "document_Article_singular",
+                    "document_Article_status_Online":"document_Article_status_Online",
+                    "mostCommonWord":"mostCommonWord",
+                    "numberOfWords":"numberOfWords"
+                ]
             ]
         ], null, 204, CONTENT_CREATOR)
     }

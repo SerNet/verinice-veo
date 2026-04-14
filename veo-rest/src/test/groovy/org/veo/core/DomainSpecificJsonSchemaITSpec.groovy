@@ -402,7 +402,7 @@ class DomainSpecificJsonSchemaITSpec extends VeoSpringSpec {
     }
 
     private void createElementTypeDefinition(ElementType elementType) {
-        domain.applyElementTypeDefinition(newElementTypeDefinition(domain, elementType) {
+        domain.applyElementTypeDefinition(newElementTypeDefinition(elementType, domain) {
             subTypes.A = newSubTypeDefinition {
                 statuses = ["A1", "A2"]
             }

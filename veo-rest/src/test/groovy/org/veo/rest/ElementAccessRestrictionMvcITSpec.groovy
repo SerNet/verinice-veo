@@ -52,6 +52,7 @@ class ElementAccessRestrictionMvcITSpec extends VeoMvcSpec {
                 targetType = ElementType.DOCUMENT
                 targetSubType = "DOC_Document"
             })
+            ed.getTranslations().put((EN),["dok":"dok"])
         }
         domain = domainDataRepository.save(domain)
         domainId = domain.idAsString

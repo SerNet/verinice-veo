@@ -55,6 +55,9 @@ public class TranslationValidator {
   private static final Pattern LEADING_SPACE_PATTERN = Pattern.compile("^\\s.*$");
   private static final Pattern TRAILING_SPACE_PATTERN = Pattern.compile("^.*\\s$");
 
+  // TODO: #4804: make required languages configurable
+  private static final List<Locale> REQUIRED_LOCALES = Stream.of("EN").map(Locale::of).toList();
+
   public record Violation(Locale language, Reason reason, String key) {}
 
   public enum Reason {
@@ -89,6 +92,17 @@ public class TranslationValidator {
       Map<String, CustomAspectDefinition> customAspects,
       Map<String, LinkDefinition> links,
       Map<String, SubTypeDefinition> subTypes) {
+
+    if (!subTypes.isEmpty()) {
+      List<Locale> missingLocales =
+          REQUIRED_LOCALES.stream().filter(not(translations::containsKey)).toList();
+      if (!missingLocales.isEmpty()) {
+        throw new TranslationException(
+            missingLocales.stream()
+                .map(l -> new Violation(l, Reason.MISSING, "Translations empty for: " + type))
+                .toList());
+      }
+    }
 
     List<String> allEntityKeys = new ArrayList<>();
     allEntityKeys.addAll(attributeTranslationKeys(customAspects));

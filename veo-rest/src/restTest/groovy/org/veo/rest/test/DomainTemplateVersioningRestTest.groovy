@@ -124,6 +124,14 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
             customAspects.sight.attributeDefinitions.remove("nightBlind")
             customAspects.sight.attributeDefinitions.nightVision = [type: "boolean"]
 
+            translations.en.tap {
+                remove("needsGlasses")
+                remove("nightBlind")
+                put("needsReadingGlasses","nightVision")
+                put("needsDistanceSpecs","nightVision")
+                put("nightVision","nightVision")
+            }
+
             put("/content-creation/domains/$owner.domainId/element-type-definitions/person", it, null, 204, CONTENT_CREATOR)
         }
 

@@ -19,11 +19,36 @@ package org.veo.core.usecase.domaintemplate;
 
 import com.github.zafarkhaja.semver.Version;
 
+import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainTemplateValidator {
+  static void validateDomainTemplate(DomainTemplate domainTemplate) {
+    validateTranslations(domainTemplate);
+    validateVersion(domainTemplate.getTemplateVersion());
+  }
+
+  private static void validateTranslations(DomainBase domain) {
+    if (domain.getTranslations() == null || domain.getTranslations().getTranslations().isEmpty()) {
+      throw new UnprocessableDataException("No translations");
+    }
+    domain.getTranslations().getTranslations().entrySet().stream()
+        .forEach(
+            e -> {
+              if (e.getValue().getName() == null || e.getValue().getName().isEmpty()) {
+                throw new UnprocessableDataException(
+                    "Translated template name missing for '%s'."
+                        .formatted(e.getKey().getLanguage()));
+              }
+            });
+    domain.getElementTypeDefinitions().forEach(ElementTypeDefinitionValidator::validate);
+  }
 
   static void validateVersion(Version version) {
     if (!version.preReleaseVersion().isEmpty() || !version.buildMetadata().isEmpty()) {

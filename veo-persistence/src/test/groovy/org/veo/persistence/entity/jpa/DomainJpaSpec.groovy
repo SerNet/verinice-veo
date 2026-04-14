@@ -181,12 +181,16 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
         domain0 = newDomain(client) {domain->
-            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, domain) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, domain, false) {
                 subTypes = [
                     ctl : newSubTypeDefinition {
                         statuses = ["NEW"]
                     }
                 ]
+                translations = [(EN):["control_ctl_plural":"val1",
+                        "control_ctl_singular":"val1",
+                        "control_ctl_status_NEW":"val1"
+                    ]]
             })
         }
 

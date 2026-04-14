@@ -60,6 +60,16 @@ abstract class DomainRestTest extends VeoRestTest {
                                 ],
                             ]
                         ]
+                    ],
+                    translations: [
+                        en: [
+                            person_PER_Person_singular: "Server",
+                            person_PER_Person_status_NEW: "Servers",
+                            person_PER_Person_status_on: "Servers",
+                            person_PER_Person_plural: "off",
+                            needsGlasses: "on",
+                            nightBlind: "nightBlind"
+                        ]
                     ]
                 ],
                 null, 204, CONTENT_CREATOR)
@@ -71,6 +81,14 @@ abstract class DomainRestTest extends VeoRestTest {
                     subTypes: [
                         PRO_Process: [
                             statuses: ["NEW", "on"]
+                        ]
+                    ],
+                    translations: [
+                        en: [
+                            process_PRO_Process_singular: "Server",
+                            process_PRO_Process_plural: "Servers",
+                            process_PRO_Process_status_NEW: "off",
+                            process_PRO_Process_status_on: "ON"
                         ]
                     ]
                 ],

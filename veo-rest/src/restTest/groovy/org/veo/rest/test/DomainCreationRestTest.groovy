@@ -182,6 +182,21 @@ class DomainCreationRestTest extends DomainRestTest {
                 c100: [
                     statuses: ['night', 'day']
                 ]
+            ],
+            translations : [(EN):
+                ["control_c100_plural":"asset_AST_Application_plural",
+                    "control_c100_singular":"asset_AST_Application_singular",
+                    "control_c100_status_day":"asset_AST_Application_status_NEW",
+                    "control_c100_status_night":"asset_AST_Application_status_ARCHIVED",
+                    "control_c10_plural": "asset_AST_Application_status_FOR_REVIEW",
+                    "control_c10_singular": "asset_AST_Application_status_RELEASED",
+                    "control_c10_status_bad": "asset_AST_Application_status_IN_PROGRESS",
+                    "control_c10_status_good":"asset_AST_Application_plural",
+                    "control_c1_plural":"asset_AST_Application_singular",
+                    "control_c1_singular":"asset_AST_Application_status_NEW",
+                    "control_c1_status_c0":"asset_AST_Application_status_ARCHIVED",
+                    "control_c1_status_c1": "asset_AST_Application_status_FOR_REVIEW"
+                ]
             ]
         ], null, 204, CONTENT_CREATOR)
 
@@ -328,12 +343,27 @@ class DomainCreationRestTest extends DomainRestTest {
                     targetType: "scenario",
                     targetSubType: "HypotheticalScenario",
                 ]
+            ],
+            translations : [(EN):
+                ["requiredScenario":"asset_AST_Application_plural",
+                    "scenario_HypotheticalScenario_plural":"asset_AST_Application_singular",
+                    "scenario_HypotheticalScenario_singular":"asset_AST_Application_status_NEW",
+                    "scenario_HypotheticalScenario_status_NEW":"asset_AST_Application_status_ARCHIVED",
+                    "scenario_HypotheticalScenario_status_OLD": "asset_AST_Application_status_FOR_REVIEW"
+                ]
             ]
         ], null, 204, CONTENT_CREATOR)
         put("/content-creation/domains/$newDomainId/element-type-definitions/scope", [
             subTypes: [
                 SimpleScope: [
                     statuses: ["OLD", "NEW"]
+                ]
+            ],
+            translations : [(EN):
+                ["scope_SimpleScope_plural":"asset_AST_Application_plural",
+                    "scope_SimpleScope_singular":"asset_AST_Application_singular",
+                    "scope_SimpleScope_status_NEW":"asset_AST_Application_status_NEW",
+                    "scope_SimpleScope_status_OLD":"asset_AST_Application_status_ARCHIVED",
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)

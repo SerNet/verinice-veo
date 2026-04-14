@@ -58,6 +58,18 @@ class ControlImplementationRestTest extends VeoRestTest {
                         someAttr: [type: "integer"]
                     ]
                 ]
+            ],
+            translations : [(EN): ["control_ComplCtl_plural":"control_ComplCtl_plural",
+                    "control_ComplCtl_singular": "control_ComplCtl_singular",
+                    "control_ComplCtl_status_NEW" : "control_ComplCtl_status_NEW",
+                    "control_MitiCtl_plural": "control_MitiCtl_plural",
+                    "control_MitiCtl_singular":"control_MitiCtl_singular",
+                    "control_MitiCtl_status_NEW":"control_MitiCtl_status_NEW",
+                    "control_OtherComplCtl_plural": "control_OtherComplCtl_plural",
+                    "control_OtherComplCtl_singular": "control_OtherComplCtl_singular",
+                    "control_OtherComplCtl_status_NEW": "control_OtherComplCtl_status_NEW",
+                    "someAttr":"someAttr"
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domain2Id/element-type-definitions/control", [
@@ -71,6 +83,15 @@ class ControlImplementationRestTest extends VeoRestTest {
                         someAttr: [type: "integer"]
                     ]
                 ]
+            ],
+            translations : [(EN): ["control_ComplCtl_plural":"control_ComplCtl_plural",
+                    "control_ComplCtl_singular": "control_ComplCtl_singular",
+                    "control_ComplCtl_status_NEW" : "control_ComplCtl_status_NEW",
+                    "control_MitiCtl_plural": "control_MitiCtl_plural",
+                    "control_MitiCtl_singular":"control_MitiCtl_singular",
+                    "control_MitiCtl_status_NEW":"control_MitiCtl_status_NEW",
+                    "someAttr":"someAttr"
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/control-implementation-configuration", [
@@ -81,27 +102,54 @@ class ControlImplementationRestTest extends VeoRestTest {
         put("/content-creation/domains/$domainId/element-type-definitions/process", [
             subTypes: [
                 A: [statuses: ["NEW"]]
+            ],
+            translations : [(EN): ["process_A_plural":"process_A_plural",
+                    "process_A_singular": "process_A_singular",
+                    "process_A_status_NEW" : "process_A_status_NEW",
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/scope", [
             subTypes: [
                 A: [statuses: ["NEW"]]
+            ],
+            translations : [(EN): ["scope_A_plural":"process_A_plural",
+                    "scope_A_singular": "process_A_singular",
+                    "scope_A_status_NEW" : "process_A_status_NEW",
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/asset", [
             subTypes: [
                 A: [statuses: ["NEW"]]
+            ],
+            translations : [(EN): ["asset_A_plural":"process_A_plural",
+                    "asset_A_singular": "process_A_singular",
+                    "asset_A_status_NEW" : "process_A_status_NEW",
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/person", [
             subTypes: [
                 A: [statuses: ["NEW"]]
+            ],
+            translations : [(EN): ["person_A_plural":"process_A_plural",
+                    "person_A_singular": "process_A_singular",
+                    "person_A_status_NEW" : "process_A_status_NEW",
+                ]
             ]
+
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/scenario", [
             subTypes: [
                 A: [statuses: ["NEW"]]
+            ],
+            translations : [(EN): ["scenario_A_plural":"process_A_plural",
+                    "scenario_A_singular": "process_A_singular",
+                    "scenario_A_status_NEW" : "process_A_status_NEW",
+                ]
             ]
+
         ], null, 204, UserType.CONTENT_CREATOR)
         unitId = postNewUnit("U1", [
             domainId,
@@ -1225,6 +1273,13 @@ class ControlImplementationRestTest extends VeoRestTest {
                     ]
                 ]
             ]
+            ,
+            translations : [(EN): ["${type.singularTerm}_A_plural":"process_A_plural",
+                    "${type.singularTerm}_A_singular": "process_A_singular",
+                    "${type.singularTerm}_A_status_living" : "process_A_status_NEW",
+                ]
+            ]
+
         ], null, 204)
     }
 }

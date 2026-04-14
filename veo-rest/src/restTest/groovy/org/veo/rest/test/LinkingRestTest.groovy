@@ -45,6 +45,12 @@ class LinkingRestTest extends VeoRestTest {
             subTypes: [
                 ST: [statuses: ["NEW"]]
             ]
+            ,
+            translations : [(EN): ["${targetType.singularTerm}_ST_plural":"${targetType.singularTerm}_STA_plural",
+                    "${targetType.singularTerm}_ST_singular": "${targetType.singularTerm}_STA_singular",
+                    "${targetType.singularTerm}_ST_status_NEW": "${targetType.singularTerm}_STA_status_ON"
+                ]
+            ]
         ], "", 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/asset", [
             subTypes: [
@@ -54,6 +60,12 @@ class LinkingRestTest extends VeoRestTest {
                 someLink: [
                     targetType: targetType.singularTerm,
                     targetSubType: "ST",
+                ]
+            ],
+            translations : [(EN): ["asset_ST_plural":"asset_STA_plural",
+                    "asset_ST_singular": "asset_STA_singular",
+                    "asset_ST_status_NEW": "asset_STA_status_ON",
+                    "someLink":"someLink"
                 ]
             ]
         ], "", 204, CONTENT_CREATOR)
@@ -110,6 +122,15 @@ class LinkingRestTest extends VeoRestTest {
                         propOfTruth: [type: "boolean"]
                     ]
                 ],
+            ],
+            translations : [(EN): ["${type.singularTerm}_STA_plural":"${type.singularTerm}_STA_plural",
+                    "${type.singularTerm}_STA_singular": "${type.singularTerm}_STA_singular",
+                    "${type.singularTerm}_STA_status_NEW": "${type.singularTerm}_STA_status_ON",
+                    "linkTypeA":"linkTypeA",
+                    "linkTypeB":"linkTypeB",
+                    "propOfTruth":"someAttr"
+
+                ]
             ]
         ], null, 204)
         def targetAUri = post("/domains/$domainId/$type.pluralTerm", [

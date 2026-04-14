@@ -491,6 +491,13 @@ class MultiDomainElementRestTest extends VeoRestTest {
                         someAttr: [type: "text"]
                     ]
                 ],
+            ],
+            translations : [(EN): ["${type.singularTerm}_STA_plural":"${type.singularTerm}_STA_plural",
+                    "${type.singularTerm}_STA_singular": "${type.singularTerm}_STA_singular",
+                    "${type.singularTerm}_STA_status_NEW": "${type.singularTerm}_STA_status_NEW",
+                    "${type.singularTerm}_STA_status_OLD": "${type.singularTerm}_STA_status_OLD",
+                    "someAttr":"someAttr"
+                ]
             ]
         ], "", 204)
         put("/content-creation/domains/$domainIdB/element-type-definitions/$type.singularTerm", [
@@ -510,6 +517,14 @@ class MultiDomainElementRestTest extends VeoRestTest {
                         someAttr: [type: "integer"]
                     ]
                 ],
+            ],
+            translations : [(EN): ["${type.singularTerm}_STB_plural":"${type.singularTerm}_STB_plural",
+                    "${type.singularTerm}_STB_singular": "${type.singularTerm}_STB_singular",
+                    "${type.singularTerm}_STB_status_ON": "${type.singularTerm}_STB_status_ON",
+                    "${type.singularTerm}_STB_status_OFF": "${type.singularTerm}_STB_status_OFF",
+                    "someAttr":"someAttr"
+
+                ]
             ]
         ], "", 204)
     }

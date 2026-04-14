@@ -185,6 +185,9 @@ class DomainUpdateRestTest extends VeoRestTest {
                     'Attribute2': ['type': 'boolean'],
                     'Attribute3': ['type': 'text']
                 ]]
+            it.elementTypeDefinitions.process.translations.en.put("Attribute1", "newBool")
+            it.elementTypeDefinitions.process.translations.en.put("Attribute2", "newText")
+            it.elementTypeDefinitions.process.translations.en.put("Attribute3", "newText")
 
             it.domainMigrationDefinition = [migrations: migrationDefinitionChangeKey()]
         }.resourceId
@@ -270,6 +273,8 @@ class DomainUpdateRestTest extends VeoRestTest {
                     ]
                 ]
             ]
+            it.elementTypeDefinitions.process.translations.en.put("newBool", "newBool")
+            it.elementTypeDefinitions.process.translations.en.put("newText", "newText")
 
             it.domainMigrationDefinition = [
                 migrations: [
@@ -377,6 +382,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                     type: 'text'
                 ]
             }
+            it.elementTypeDefinitions.process.translations.en.put("Attribute3","Attribute3")
             it.domainMigrationDefinition = [
                 migrations: [
                     [
@@ -495,7 +501,14 @@ class DomainUpdateRestTest extends VeoRestTest {
                         internalName: [type: 'text'],
                     ]
                 ]
-            ]
+            ],
+            translations: [(EN):["process_PRO_Task_plural":"process_PRO_Task_plural",
+                    "process_PRO_Task_singular":"process_PRO_Task_singular",
+                    "process_PRO_Task_status_Done":"process_PRO_Task_status_Done",
+                    "process_PRO_Task_status_Todo":"process_PRO_Task_status_Todo",
+                    "internalName": "internalName",
+                    "isVeryGood": "isVeryGood"
+                ]]
         ], null, 204, CONTENT_CREATOR)
         get("/units/$unitId").with{
             body.domains.add([targetUri: "/domains/$additionalDomainId"])
@@ -513,7 +526,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                     Attribute1: false,
                     Attribute2: "gecko",
                 ]
-            ],
+            ]
         ]).body.resourceId
         post("/domains/$additionalDomainId/processes/$processId", [
             subType: "PRO_Task",
@@ -542,6 +555,8 @@ class DomainUpdateRestTest extends VeoRestTest {
                 isVeryGood: [type: 'boolean'],
                 internalName: [type: 'text'],
             ]
+            it.elementTypeDefinitions.process.translations.en.put("isVeryGood","isVeryGood")
+            it.elementTypeDefinitions.process.translations.en.put("internalName","internalName")
             it.domainMigrationDefinition = [migrations: [
                     [description: [en: "keys are changed (the old ones were not very helpful)"],
                         id: "fix-test1-keys",
@@ -744,6 +759,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "2.0.0"
             it.elementTypeDefinitions.scope.links.remove("scopeToProcessLink")
+            it.elementTypeDefinitions.scope.translations.en.remove("scopeToProcessLink")
         }.resourceId
 
         then: "the customized version has been applied, minus the invalid link"
@@ -848,6 +864,7 @@ class DomainUpdateRestTest extends VeoRestTest {
             name: templateName,
             templateVersion: "1.0.0",
             authority: "jj",
+            translations : [(EN): ["name":templateName]],
             catalogItems: [
                 [
                     id: UUID.randomUUID(),
@@ -867,7 +884,10 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["asset_AST_Application_plural":"asset_AST_Application_plural",
+                            "asset_AST_Application_singular":"asset_AST_Application_singular",
+                            "asset_AST_Application_status_NEW":"asset_AST_Application_status_NEW"] ]
                 ],
                 'control': [
                     'customAspects': [:],
@@ -878,7 +898,10 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["control_CTL_TOM_plural":"asset_AST_Application_plural",
+                            "control_CTL_TOM_singular":"asset_AST_Application_singular",
+                            "control_CTL_TOM_status_NEW":"asset_AST_Application_status_NEW"] ]
                 ],
                 'document': [
                     'customAspects': [:],
@@ -889,7 +912,10 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["document_DOC_Document_plural":"asset_AST_Application_plural",
+                            "document_DOC_Document_singular":"asset_AST_Application_singular",
+                            "document_DOC_Document_status_NEW":"asset_AST_Application_status_NEW"]]
                 ],
                 'incident': [
                     'customAspects': [:],
@@ -900,7 +926,10 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["incident_INC_Incident_plural":"asset_AST_Application_plural",
+                            "incident_INC_Incident_singular":"asset_AST_Application_singular",
+                            "incident_INC_Incident_status_NEW":"asset_AST_Application_status_NEW"]]
                 ],
                 'person': [
                     'customAspects': [:],
@@ -911,7 +940,11 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ],
-                    ]
+                    ],
+                    translations : [(EN): ["person_PER_DataProtectionOfficer_plural":"asset_AST_Application_plural",
+                            "person_PER_DataProtectionOfficer_singular":"asset_AST_Application_singular",
+                            "person_PER_DataProtectionOfficer_status_NEW":"asset_AST_Application_status_NEW"]]
+
                 ],
                 'process': [
                     'customAspects': [
@@ -945,7 +978,16 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["process_PRO_DataProcessing_plural":"asset_AST_Application_plural",
+                            "process_PRO_DataProcessing_singular":"asset_AST_Application_singular",
+                            "process_PRO_DataProcessing_status_NEW":"asset_AST_Application_status_NEW",
+                            "Attribute1":"Attribute1",
+                            "Attribute2":"Attribute2",
+                            "perfectNumber":"perfectNumber",
+                            "processToScopeLink":"processToScopeLink"
+                        ],]
+
                 ],
                 'scenario': [
                     'customAspects': [:],
@@ -956,7 +998,11 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["scenario_SCN_Scenario_plural":"asset_AST_Application_plural",
+                            "scenario_SCN_Scenario_singular":"asset_AST_Application_singular",
+                            "scenario_SCN_Scenario_status_NEW":"asset_AST_Application_status_NEW"]]
+
                 ],
                 'scope': [
                     'customAspects': [:],
@@ -973,7 +1019,11 @@ class DomainUpdateRestTest extends VeoRestTest {
                                 'NEW',
                             ]
                         ]
-                    ]
+                    ],
+                    translations : [(EN): ["scope_SCP_ResponsibleBody_plural":"asset_AST_Application_plural",
+                            "scope_SCP_ResponsibleBody_singular":"asset_AST_Application_singular",
+                            "scope_SCP_ResponsibleBody_status_NEW":"asset_AST_Application_status_NEW",
+                            "scopeToProcessLink":"scopeToProcessLink"]]
                 ]
             ],
             decisions: [

@@ -441,6 +441,13 @@ class ProfileRestTest extends VeoRestTest {
                             ]
                         ]
                     ],
+                    translations : [(EN): ["asset_server_plural":"asset_server_plural",
+                            "asset_server_singular": "asset_server_singular",
+                            "asset_server_status_off": "asset_server_status_NEW",
+                            "asset_server_status_on": "asset_server_status_OLD",
+                            "powerConsumptionWatt":"someAttr"
+                        ]
+                    ]
                 ], null, 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/control",
                 [
@@ -449,6 +456,12 @@ class ProfileRestTest extends VeoRestTest {
                             statuses: ["on", "off"]
                         ]
                     ],
+                    translations : [(EN): ["control_superControl_plural":"control_superControl_plural",
+                            "control_superControl_singular": "control_superControl_singular",
+                            "control_superControl_status_off": "control_superControl_status_NEW",
+                            "control_superControl_status_on": "asset_server_status_OLD"
+                        ]
+                    ]
                 ], null, 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/scenario",
                 [
@@ -457,6 +470,12 @@ class ProfileRestTest extends VeoRestTest {
                             statuses: ["hypothetical", "real"]
                         ]
                     ],
+                    translations : [(EN): ["scenario_danger_plural":"asset_superControl_plural",
+                            "scenario_danger_singular": "asset_superControl_singular",
+                            "scenario_danger_status_hypothetical": "asset_superControl_status_NEW",
+                            "scenario_danger_status_real": "scenario_danger_status_OLD"
+                        ]
+                    ]
                 ], null, 204, CONTENT_CREATOR)
     }
 }

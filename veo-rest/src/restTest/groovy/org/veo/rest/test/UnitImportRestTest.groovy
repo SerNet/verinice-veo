@@ -404,6 +404,12 @@ class UnitImportRestTest extends VeoRestTest {
                 Ctl: [
                     statuses: ["NEW"]
                 ]
+            ],
+            translations : [(EN):
+                ["control_Ctl_plural":"asset_AST_Application_plural",
+                    "control_Ctl_singular":"asset_AST_Application_singular",
+                    "control_Ctl_status_NEW":"asset_AST_Application_status_NEW",
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
 
@@ -422,6 +428,8 @@ class UnitImportRestTest extends VeoRestTest {
         and: "renaming the status in the domain"
         get("/domains/$domainId").body.elementTypeDefinitions.control.with {
             subTypes.Ctl.statuses[0] = "OUT_OF_CONTROL"
+            translations.en.put("control_Ctl_status_OUT_OF_CONTROL", "control_Ctl_status_OUT_OF_CONTROL")
+            translations.en.remove("control_Ctl_status_NEW")
             put("/content-creation/domains/$domainId/element-type-definitions/control", it, null, 204, UserType.CONTENT_CREATOR)
         }
 
@@ -462,6 +470,14 @@ class UnitImportRestTest extends VeoRestTest {
                         someAttr: [type: "integer"]
                     ]
                 ]
+            ],
+            translations : [
+                (EN):["process_ProcA_plural":"process_ProcA_plural",
+                    "process_ProcA_singular": "process_ProcA_singular",
+                    "process_ProcA_status_NEW" : "process_ProcA_status_NEW",
+                    "process_ProcA_status_OLD" : "process_ProcA_status_OLD",
+                    "someAttr" : "someAttr",
+                ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
         put("/content-creation/domains/$domainIdB/element-type-definitions/process", [
@@ -475,6 +491,14 @@ class UnitImportRestTest extends VeoRestTest {
                     attributeDefinitions: [
                         someAttr: [type: "integer"]
                     ]
+                ]
+            ],
+            translations : [
+                (EN):["process_ProcB_plural":"process_ProcA_plural",
+                    "process_ProcB_singular": "process_ProcA_singular",
+                    "process_ProcB_status_ON" : "process_ProcA_status_NEW",
+                    "process_ProcB_status_OFF" : "process_ProcA_status_OLD",
+                    "someAttr" : "someAttr",
                 ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)

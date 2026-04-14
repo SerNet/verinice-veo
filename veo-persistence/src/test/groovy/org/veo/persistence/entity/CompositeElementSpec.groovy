@@ -248,7 +248,7 @@ class CompositeElementSpec extends VeoSpec {
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"
         def domain = newDomain(client) {
-            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it, false) {
                 subTypes = [
                     ST: newSubTypeDefinition {
                         statuses = ["NEW"]
@@ -269,6 +269,12 @@ class CompositeElementSpec extends VeoSpec {
                 links = [
                     goodLink: new LinkDefinition()
                 ]
+                translations = [(EN):["process_ST_plural":"process_ST_plural",
+                        "process_ST_singular":"process_ST_singular",
+                        "process_ST_status_NEW":"process_ST_status_NEW",
+                        "goodLink":"goodLink",
+                        "val":"val1"
+                    ]]
             })
         }
         def p1 = newProcess(unit) {

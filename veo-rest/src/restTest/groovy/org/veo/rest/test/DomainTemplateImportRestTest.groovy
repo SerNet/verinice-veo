@@ -115,12 +115,14 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         post("/content-creation/domain-templates", [
             id: UUID.randomUUID(),
             name: name,
+            translations : [(EN): ["name":name] ],
             templateVersion: "2.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
         post("/content-creation/domain-templates", [
             id: UUID.randomUUID(),
             name: name,
+            translations : [(EN): ["name":name] ],
             templateVersion: "2.1.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
@@ -129,6 +131,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         post("/content-creation/domain-templates", [
             id: UUID.randomUUID(),
             name: name,
+            translations : [(EN): ["name":name] ],
             templateVersion: "2.1.0",
             authority: "me"
         ], 409, UserType.CONTENT_CREATOR)
@@ -142,6 +145,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         post("/content-creation/domain-templates", [
             id: UUID.randomUUID(),
             name: name,
+            translations : [(EN): ["name":name] ],
             templateVersion: "1.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
@@ -150,6 +154,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         post("/content-creation/domain-templates", [
             id: UUID.randomUUID(),
             name: name,
+            translations : [(EN): ["name":name] ],
             templateVersion: "1.1",
             authority: "me"
         ], 400, UserType.CONTENT_CREATOR)
@@ -338,6 +343,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
             'templateVersion': '1.0.0',
             'abbreviation': 'ITT',
             'authority': 'JJ',
+            'translations' : [(EN): ["name":"Import test template $domainId"] ],
             'catalogItems': [
                 [
                     'customAspects': [:],
@@ -376,7 +382,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["asset_AST_Application_plural":"asset_AST_Application_plural",
+                            "asset_AST_Application_singular":"asset_AST_Application_singular",
+                            "asset_AST_Application_status_NEW":"asset_AST_Application_status_NEW",
+                            "asset_AST_Application_status_ARCHIVED":"asset_AST_Application_status_ARCHIVED",
+                            "asset_AST_Application_status_FOR_REVIEW": "asset_AST_Application_status_FOR_REVIEW",
+                            "asset_AST_Application_status_RELEASED": "asset_AST_Application_status_RELEASED",
+                            "asset_AST_Application_status_IN_PROGRESS": "asset_AST_Application_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'control': [
                     'customAspects': [:],
                     'links': [:],
@@ -388,7 +405,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["control_CTL_TOM_plural":"control_CTL_TOM_plural",
+                            "control_CTL_TOM_singular":"control_CTL_TOM_singular",
+                            "control_CTL_TOM_status_NEW":"control_CTL_TOM_status_NEW",
+                            "control_CTL_TOM_status_ARCHIVED":"control_CTL_TOM_status_ARCHIVED",
+                            "control_CTL_TOM_status_FOR_REVIEW": "control_CTL_TOM_status_FOR_REVIEW",
+                            "control_CTL_TOM_status_RELEASED": "control_CTL_TOM_status_RELEASED",
+                            "control_CTL_TOM_status_IN_PROGRESS": "control_CTL_TOM_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'document': [
                     'customAspects': [:],
                     'links': [:],
@@ -400,7 +428,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["document_DOC_Document_plural":"asset_AST_Application_plural",
+                            "document_DOC_Document_singular":"incident_INC_Incident_singular",
+                            "document_DOC_Document_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "document_DOC_Document_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "document_DOC_Document_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "document_DOC_Document_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "document_DOC_Document_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'incident': [
                     'customAspects': [:],
                     'links': [:],
@@ -412,7 +451,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["incident_INC_Incident_plural":"incident_INC_Incident_plural",
+                            "incident_INC_Incident_singular":"incident_INC_Incident_singular",
+                            "incident_INC_Incident_status_NEW":"incident_INC_Incident_status_NEW",
+                            "incident_INC_Incident_status_ARCHIVED":"incident_INC_Incident_status_ARCHIVED",
+                            "incident_INC_Incident_status_FOR_REVIEW": "incident_INC_Incident_status_FOR_REVIEW",
+                            "incident_INC_Incident_status_RELEASED": "incident_INC_Incident_status_RELEASED",
+                            "incident_INC_Incident_status_IN_PROGRESS": "incident_INC_Incident_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'person': [
                     'customAspects': [:],
                     'links': [:],
@@ -432,7 +482,26 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        [
+                            "person_PER_DataProtectionOfficer_plural":"asset_AST_Application_plural",
+                            "person_PER_DataProtectionOfficer_singular":"incident_INC_Incident_singular",
+                            "person_PER_DataProtectionOfficer_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "person_PER_DataProtectionOfficer_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "person_PER_DataProtectionOfficer_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "person_PER_DataProtectionOfficer_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "person_PER_DataProtectionOfficer_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS",
+                            "person_PER_Person_plural":"asset_AST_Application_plural",
+                            "person_PER_Person_singular":"incident_INC_Incident_singular",
+                            "person_PER_Person_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "person_PER_Person_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "person_PER_Person_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "person_PER_Person_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "person_PER_Person_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'process': [
                     'customAspects': [
                         'process_accessAuthorization': [
@@ -475,7 +544,32 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        [
+                            "process_PRO_DataProcessing_plural":"asset_AST_Application_plural",
+                            "process_PRO_DataProcessing_singular":"incident_INC_Incident_singular",
+                            "process_PRO_DataProcessing_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "process_PRO_DataProcessing_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "process_PRO_DataProcessing_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "process_PRO_DataProcessing_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "process_PRO_DataProcessing_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS",
+                            "process_PRO_DataTransfer_plural":"asset_AST_Application_plural",
+                            "process_PRO_DataTransfer_singular":"incident_INC_Incident_singular",
+                            "process_PRO_DataTransfer_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "process_PRO_DataTransfer_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "process_PRO_DataTransfer_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "process_PRO_DataTransfer_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "process_PRO_DataTransfer_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS",
+                            "process_accessAuthorization_concept": "process_accessAuthorization_concept",
+                            "process_accessAuthorization_description":"process_accessAuthorization_description",
+                            "process_accessAuthorization_document": "process_accessAuthorization_document",
+                            "process_manager": "process_manager",
+                            "process_processing_asProcessor": "process_processing_asProcessor",
+                            "process_tom": "process_tom"
+                        ]
+                    ]
+                ],
                 'scenario': [
                     'customAspects': [:],
                     'links': [:],
@@ -487,7 +581,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["scenario_SCN_Scenario_plural":"asset_AST_Application_plural",
+                            "scenario_SCN_Scenario_singular":"incident_INC_Incident_singular",
+                            "scenario_SCN_Scenario_status_ARCHIVED":"incident_INC_Incident_status_NEW",
+                            "scenario_SCN_Scenario_status_FOR_REVIEW":"incident_INC_Incident_status_ARCHIVED",
+                            "scenario_SCN_Scenario_status_IN_PROGRESS": "incident_INC_Incident_status_FOR_REVIEW",
+                            "scenario_SCN_Scenario_status_NEW": "incident_INC_Incident_status_RELEASED",
+                            "scenario_SCN_Scenario_status_RELEASED": "incident_INC_Incident_status_IN_PROGRESS"
+                        ]
+                    ]
+                ],
                 'scope': [
                     'customAspects': [:],
                     'links': [:],
@@ -499,7 +604,19 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'RELEASED',
                                 'FOR_REVIEW',
                                 'ARCHIVED'
-                            ]]]]],
+                            ]]],
+                    translations : [(EN):
+                        ["scope_SCP_Scope_plural":"scope_SCP_Scope_plural",
+                            "scope_SCP_Scope_singular":"scope_SCP_Scope_singular",
+                            "scope_SCP_Scope_status_NEW":"scope_SCP_Scope_status_NEW",
+                            "scope_SCP_Scope_status_ARCHIVED":"scope_SCP_Scope_status_ARCHIVED",
+                            "scope_SCP_Scope_status_FOR_REVIEW": "scope_SCP_Scope_status_FOR_REVIEW",
+                            "scope_SCP_Scope_status_RELEASED": "scope_SCP_Scope_status_RELEASED",
+                            "scope_SCP_Scope_status_IN_PROGRESS": "scope_SCP_Scope_status_IN_PROGRESS"
+                        ]
+                    ]
+                ]
+            ],
             'decisions': [
                 'negativeDecision': [
                     'name': ['en': 'silly asset decision that always returns false'],

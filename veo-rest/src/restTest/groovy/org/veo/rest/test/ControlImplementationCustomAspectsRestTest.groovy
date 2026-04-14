@@ -44,9 +44,17 @@ class ControlImplementationCustomAspectsRestTest extends VeoRestTest {
 
         put("/content-creation/domains/$domainId/element-type-definitions/control", [
             subTypes: [ComplCtl: [statuses: ["NEW"]]],
+            translations : [(EN): ["control_ComplCtl_plural": "control_ComplCtl_plural",
+                    "control_ComplCtl_singular": "control_ComplCtl_singular",
+                    "control_ComplCtl_status_NEW":"control_ComplCtl_status_NEW",
+                ] ],
         ], null, 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domain2Id/element-type-definitions/control", [
             subTypes: [ComplCtl: [statuses: ["NEW"]]],
+            translations : [(EN): ["control_ComplCtl_plural": "control_ComplCtl_plural",
+                    "control_ComplCtl_singular": "control_ComplCtl_singular",
+                    "control_ComplCtl_status_NEW":"control_ComplCtl_status_NEW",
+                ] ],
         ], null, 204, CONTENT_CREATOR)
 
         put("/content-creation/domains/$domainId/control-implementation-configuration", [
@@ -74,9 +82,17 @@ class ControlImplementationCustomAspectsRestTest extends VeoRestTest {
 
         put("/content-creation/domains/$domainId/element-type-definitions/$type", [
             subTypes: [A: [statuses: ["NEW"]]],
+            translations : [(EN): ["${type}_A_plural": "process_A_plural",
+                    "${type}_A_singular": "process_A_singular",
+                    "${type}_A_status_NEW":"process_A_status_NEW",
+                ] ],
         ], null, 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domain2Id/element-type-definitions/$type", [
             subTypes: [A: [statuses: ["NEW"]]],
+            translations : [(EN): ["${type}_A_plural": "process_A_plural",
+                    "${type}_A_singular": "process_A_singular",
+                    "${type}_A_status_NEW":"process_A_status_NEW",
+                ] ],
         ], null, 204, CONTENT_CREATOR)
 
         put("/content-creation/domains/$domainId/element-type-definitions/$type/control-implementation", [
