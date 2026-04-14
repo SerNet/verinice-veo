@@ -57,8 +57,9 @@ public class ControlChangeListener {
       Control composite, Set<Control> oldRecursiveParts, Set<Element> newRecursiveParts) {
     var addedParts = new HashSet<>(newRecursiveParts);
     addedParts.removeAll(oldRecursiveParts);
-    ciService.addToControlImplementations(
-        composite, addedParts.stream().map(Control.class::cast).collect(Collectors.toSet()));
+    if (!addedParts.isEmpty())
+      ciService.addToControlImplementations(
+          composite, addedParts.stream().map(Control.class::cast).collect(Collectors.toSet()));
   }
 
   private void handleRemovedParts(Set<Control> oldRecursiveParts, Set<Element> newRecursiveParts) {
@@ -66,7 +67,7 @@ public class ControlChangeListener {
     removedParts.removeAll(newRecursiveParts);
     var removedControls =
         removedParts.stream().map(Control.class::cast).collect(Collectors.toSet());
-
-    ciService.removeRequirementsFromControlImplementations(removedControls);
+    if (!removedControls.isEmpty())
+      ciService.removeRequirementsFromControlImplementations(removedControls);
   }
 }
