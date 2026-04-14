@@ -77,7 +77,7 @@ public class EvaluateElementUseCase
         sourceId
             .map(id -> elementRepository.getById(id, source.getModelInterface(), user))
             .orElseGet(() -> identifiableFactory.create(source.getModelInterface()));
-    entityStateMapper.mapState(source, element, false, refResolverFactory.db(client));
+    entityStateMapper.mapState(source, element, false, false, refResolverFactory.db(client));
     return element;
   }
 

@@ -62,7 +62,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
           domain.getIdAsString());
     }
     ETag.validate(input.eTag, storedElement);
-    entityStateMapper.mapState(inputElement, storedElement, false, idRefResolver);
+    entityStateMapper.mapState(inputElement, storedElement, false, true, idRefResolver);
     storedElement.setUpdatedAt(Instant.now());
     storedElement.setDecisionResults(decider.decide(storedElement, domain), domain);
     DomainSensitiveElementValidator.validate(storedElement);

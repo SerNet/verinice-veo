@@ -104,7 +104,11 @@ public class EntityStateMapper {
   }
 
   public <T extends Element, S extends ElementState<T>> void mapState(
-      S source, T target, boolean removeFromOtherDomains, IdRefResolver idRefResolver) {
+      S source,
+      T target,
+      boolean removeFromOtherDomains,
+      boolean firePartsChanged,
+      IdRefResolver idRefResolver) {
     mapToEntity(source.getDomainAssociationStates(), target, idRefResolver, removeFromOtherDomains);
     mapElement(source, target, idRefResolver);
     if (target instanceof Scope scope) {
@@ -125,7 +129,9 @@ public class EntityStateMapper {
       CompositeElementState<T> compositeElementState = (CompositeElementState<T>) source;
       var oldParts = ce.getPartsRecursively();
       ce.setParts(idRefResolver.resolve(compositeElementState.getParts()));
-      publishPartsChanged(ce, oldParts);
+      if (firePartsChanged) {
+        publishPartsChanged(ce, oldParts);
+      }
     }
   }
 

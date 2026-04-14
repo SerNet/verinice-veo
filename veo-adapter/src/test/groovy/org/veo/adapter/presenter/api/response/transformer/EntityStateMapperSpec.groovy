@@ -91,7 +91,7 @@ class EntityStateMapperSpec extends Specification {
         ]
 
         when: "the sub types are mapped"
-        entityStateMapper.mapState(dto, entity, true, idRefResolver)
+        entityStateMapper.mapState(dto, entity, true, false, idRefResolver)
 
         then: "it is set"
         1 * entity.findSubType(domain0) >> Optional.empty()
@@ -131,7 +131,7 @@ class EntityStateMapperSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        entityStateMapper.mapState(compositeAssetDto, newCompositeAssetEntity, true, idRefResolver)
+        entityStateMapper.mapState(compositeAssetDto, newCompositeAssetEntity, true, false, idRefResolver)
 
         then: "the composite element is transformed with parts"
         1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
@@ -167,7 +167,7 @@ class EntityStateMapperSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        entityStateMapper.mapState(dto, entity, true, idRefResolver)
+        entityStateMapper.mapState(dto, entity, true, false, idRefResolver)
 
         then: "the composite element is transformed with parts"
         1 * entity.findSubType(domain0) >> Optional.empty()
@@ -216,7 +216,7 @@ class EntityStateMapperSpec extends Specification {
         }
 
         when:
-        entityStateMapper.mapState(dto, entity, true, idRefResolver)
+        entityStateMapper.mapState(dto, entity, true, false, idRefResolver)
 
         then:
         1 * idRefResolver.resolve(controlRef) >> control

@@ -71,7 +71,7 @@ public class CreateElementUseCase<TEntity extends Element>
             .getRepositoryFor(Client.class)
             .findById(userAccessRights.getClientId())
             .get();
-    entityStateMapper.mapState(state, entity, false, refResolverFactory.db(client));
+    entityStateMapper.mapState(state, entity, false, false, refResolverFactory.db(client));
     DomainSensitiveElementValidator.validate(entity);
     designatorService.assignDesignator(entity, client);
     addToScopes(entity, input.scopeIds, client);
