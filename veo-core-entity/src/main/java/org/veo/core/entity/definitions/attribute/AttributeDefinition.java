@@ -21,12 +21,14 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static java.util.Collections.emptyList;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -91,7 +93,11 @@ public abstract sealed class AttributeDefinition
         ListAttributeDefinition,
         TextAttributeDefinition {
 
-  public abstract void validate(Object value) throws InvalidAttributeException;
+  public void validate(Object value) throws UnprocessableDataException {
+    ValidationError.throwOnErrors(getErrors(value));
+  }
+
+  public abstract List<ValidationError> getErrors(Object value);
 
   /**
    * Returns any translation keys that must be defined for this attribute. Does NOT include the

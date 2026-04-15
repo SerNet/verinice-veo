@@ -24,7 +24,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,12 +40,14 @@ public final class EnumAttributeDefinition extends AttributeDefinition {
   @NotNull private List<String> allowedValues;
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       if (!allowedValues.contains(str)) {
-        throw new InvalidAttributeException("must be one of %s".formatted(allowedValues));
+        return List.of(ValidationError.localized("error_not_one_of", allowedValues));
       }
-    } else throw new InvalidAttributeException("must be a string");
+      return List.of();
+    }
+    return List.of(ValidationError.localized("error_no_string"));
   }
 
   @Override

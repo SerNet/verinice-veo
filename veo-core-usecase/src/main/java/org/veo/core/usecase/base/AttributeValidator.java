@@ -17,13 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
-import org.veo.core.entity.exception.InvalidAttributeException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -33,36 +32,40 @@ import lombok.NoArgsConstructor;
 public class AttributeValidator {
 
   static void validate(
-      Map<String, Object> attributes, Map<String, AttributeDefinition> attributeDefinitions) {
-    ValidationError.throwOnErrors(getErrors(attributes, attributeDefinitions));
-  }
-
-  public static void validate(
-      String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
-    ValidationError.throwOnErrors(getErrors(attrKey, attrValue, definitions));
+      Map<String, Object> attributes,
+      Map<String, AttributeDefinition> attributeDefinitions,
+      Map<Locale, Map<String, String>> translations) {
+    ValidationError.throwOnErrors(getErrors(attributes, attributeDefinitions, translations));
   }
 
   public static List<ValidationError> getErrors(
-      Map<String, Object> attributes, Map<String, AttributeDefinition> attributeDefinitions) {
+      Map<String, Object> attributes,
+      Map<String, AttributeDefinition> attributeDefinitions,
+      Map<Locale, Map<String, String>> translations) {
     return attributes.entrySet().stream()
-        .flatMap((attr) -> getErrors(attr.getKey(), attr.getValue(), attributeDefinitions).stream())
+        .flatMap(
+            (attr) ->
+                getErrors(attr.getKey(), attr.getValue(), attributeDefinitions, translations)
+                    .stream())
         .toList();
   }
 
   public static List<ValidationError> getErrors(
-      String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
+      String attrKey,
+      Object attrValue,
+      Map<String, AttributeDefinition> definitions,
+      Map<Locale, Map<String, String>> translations) {
     var attrDefinition = definitions.get(attrKey);
     if (attrDefinition == null) {
       return List.of(ValidationError.localized("error_attribute_not_defined", attrKey));
     }
 
-    try {
-      attrDefinition.validate(attrValue);
-    } catch (InvalidAttributeException e) {
-      return List.of(
-          ValidationError.localized(
-              "error_invalid_attribute_value", attrValue, attrKey, e.getMessage()));
-    }
-    return Collections.emptyList();
+    return ValidationError.mergeIfAny(
+        ValidationError.localized(
+            "error_invalid_attribute_value",
+            List.of(
+                (_) -> attrValue,
+                l -> translations.getOrDefault(l, Map.of()).getOrDefault(attrKey, attrKey))),
+        attrDefinition.getErrors(attrValue));
   }
 }

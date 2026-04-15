@@ -20,8 +20,9 @@ package org.veo.core.entity.definitions.attribute;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,14 +33,16 @@ public final class DateAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "date";
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       try {
         ISO_LOCAL_DATE.parse(str);
       } catch (DateTimeParseException ex) {
-        throw new InvalidAttributeException("must be a date in 'yyyy-MM-dd' format");
+        return List.of(ValidationError.localized("error_no_iso_date"));
       }
-    } else throw new InvalidAttributeException("must be a string");
+      return List.of();
+    }
+    return List.of(ValidationError.localized("error_no_string"));
   }
 
   @Override

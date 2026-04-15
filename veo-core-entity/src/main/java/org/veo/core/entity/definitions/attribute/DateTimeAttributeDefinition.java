@@ -19,8 +19,9 @@ package org.veo.core.entity.definitions.attribute;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,14 +32,16 @@ public final class DateTimeAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "dateTime";
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       try {
         DateTimeFormatter.ISO_INSTANT.parse(str);
       } catch (DateTimeParseException ex) {
-        throw new InvalidAttributeException("must be an ISO-8601 instant");
+        return List.of(ValidationError.localized("error_no_iso_date_time"));
       }
-    } else throw new InvalidAttributeException("must be a string");
+      return List.of();
+    }
+    return List.of(ValidationError.localized("error_no_string"));
   }
 
   @Override

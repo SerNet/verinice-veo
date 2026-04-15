@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions.attribute;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import java.util.Collections;
+import java.util.List;
+
+import org.veo.core.entity.ValidationError;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,10 +31,11 @@ public final class BooleanAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "boolean";
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (!(value instanceof Boolean)) {
-      throw new InvalidAttributeException("must be a boolean");
+      return List.of(ValidationError.localized("error_no_boolean"));
     }
+    return Collections.emptyList();
   }
 
   @Override

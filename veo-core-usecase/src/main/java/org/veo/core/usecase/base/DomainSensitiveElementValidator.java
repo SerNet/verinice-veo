@@ -148,15 +148,13 @@ public class DomainSensitiveElementValidator {
   }
 
   private static List<ValidationError> getCustomAspectErrors(Element element, CustomAspect ca) {
-    var caDefinition =
-        ca.getDomain()
-            .getElementTypeDefinition(element.getType())
-            .getCustomAspectDefinition(ca.getType());
+    var etd = ca.getDomain().getElementTypeDefinition(element.getType());
+    var caDefinition = etd.getCustomAspectDefinition(ca.getType());
     // TODO #919 include translated CA name in the error message
     var errors =
         new ArrayList<>(
             AttributeValidator.getErrors(
-                ca.getAttributes(), caDefinition.getAttributeDefinitions()));
+                ca.getAttributes(), caDefinition.getAttributeDefinitions(), etd.getTranslations()));
     var conflictingDomains =
         element.getDomains().stream()
             .filter(d -> !d.equals(ca.getDomain()))
@@ -202,7 +200,8 @@ public class DomainSensitiveElementValidator {
         ValidationError.mergeIfAny(
             ValidationError.localized(
                 "error_invalid_link_attributes", List.of(l -> etd.findTranslation(l, linkType))),
-            AttributeValidator.getErrors(attributes, linkDefinition.getAttributeDefinitions())));
+            AttributeValidator.getErrors(
+                attributes, linkDefinition.getAttributeDefinitions(), etd.getTranslations())));
     return errors;
   }
 
@@ -264,7 +263,9 @@ public class DomainSensitiveElementValidator {
                         }
                         var caDefinition = ciDef.getCustomAspects().get(caType);
                         return AttributeValidator.getErrors(
-                            attributes, caDefinition.getAttributeDefinitions());
+                            attributes,
+                            caDefinition.getAttributeDefinitions(),
+                            ciDef.getTranslations());
                       })
                   .flatMap(Collection::stream)
                   .toList();

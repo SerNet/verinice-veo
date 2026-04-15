@@ -46,11 +46,10 @@ public class TemplateItemValidator {
     item.getCustomAspects()
         .forEach(
             (caType, customAspects) -> {
-              var caDefinition =
-                  domain
-                      .getElementTypeDefinition(item.getElementType())
-                      .getCustomAspectDefinition(caType);
-              AttributeValidator.validate(customAspects, caDefinition.getAttributeDefinitions());
+              var etd = domain.getElementTypeDefinition(item.getElementType());
+              var caDefinition = etd.getCustomAspectDefinition(caType);
+              AttributeValidator.validate(
+                  customAspects, caDefinition.getAttributeDefinitions(), etd.getTranslations());
             });
 
     item.getTailoringReferences().forEach(tr -> validate(tr, domain));
@@ -76,8 +75,8 @@ public class TemplateItemValidator {
       T linkTargetItem,
       Map<String, Object> attributes,
       DomainBase domain) {
-    var linkDefinition =
-        domain.getElementTypeDefinition(linkSourceItem.getElementType()).getLinks().get(linkType);
+    var etd = domain.getElementTypeDefinition(linkSourceItem.getElementType());
+    var linkDefinition = etd.getLinks().get(linkType);
     if (linkDefinition == null) {
       throw new IllegalArgumentException(
           String.format(
@@ -87,7 +86,8 @@ public class TemplateItemValidator {
     validateLinkTargetType(linkType, linkTargetItem, linkDefinition);
     validateLinkTargetSubType(linkType, linkTargetItem, linkDefinition);
     try {
-      AttributeValidator.validate(attributes, linkDefinition.getAttributeDefinitions());
+      AttributeValidator.validate(
+          attributes, linkDefinition.getAttributeDefinitions(), etd.getTranslations());
     } catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException(
           String.format("Invalid attributes for link type '%s': %s", linkType, ex.getMessage()),

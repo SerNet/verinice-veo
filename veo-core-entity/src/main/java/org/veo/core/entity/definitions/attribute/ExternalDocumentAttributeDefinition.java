@@ -18,9 +18,10 @@
 package org.veo.core.entity.definitions.attribute;
 
 import java.net.URI;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,19 +36,21 @@ public non-sealed class ExternalDocumentAttributeDefinition extends AttributeDef
   private static final Pattern PROTOCOL_PATTERN_COMPILED = Pattern.compile(PROTOCOL_PATTERN);
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       try {
         URI.create(str);
       } catch (IllegalArgumentException ex) {
-        throw new InvalidAttributeException("must be a valid URI");
+        return List.of(ValidationError.localized("error_no_url"));
       }
       if (!PROTOCOL_PATTERN_COMPILED.matcher(str).find()) {
-        throw new InvalidAttributeException(
-            "URL protocol missing or not supported (must be one of %s)"
-                .formatted(String.join(", ", SUPPORTED_PROTOCOLS)));
+        return List.of(
+            ValidationError.localized(
+                "error_invalid_protocol", String.join(", ", SUPPORTED_PROTOCOLS)));
       }
-    } else throw new InvalidAttributeException("must be a string");
+      return List.of();
+    }
+    return List.of(ValidationError.localized("error_no_string"));
   }
 
   @Override

@@ -29,7 +29,9 @@ import org.veo.core.entity.Translated
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.domainmigration.CustomAspectAttribute
 import org.veo.core.entity.domainmigration.CustomAspectMigrationTransformDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition
@@ -253,6 +255,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainTemplateDataRepository.save(newDomainTemplate {
             name = "EnvironmentProtection"
             templateVersion = Version.parse("1.1.0")
+            translations.translations[Locale.ENGLISH] = new NameAbbreviationAndDescription("Environment protection", null, null)
+            translations.translations[Locale.GERMAN] = new NameAbbreviationAndDescription("Umweltschutz", null, null)
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Animal = newSubTypeDefinition {}
                 customAspects.movement = newCustomAspectDefinition {
@@ -269,8 +273,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.size() == 1
-        findings[0].description.en == "The object cannot be migrated to the new domain version 1.1.0. In the new version, some attributes are shared with other domains (Animal protection), but the object has deviating values in those domains:\n\n* Number of legs: 2\n\nPlease edit this object here or in the other domains to align the deviating values."
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 1.1.0. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (Tierschutz). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* Anzahl der Beine: 2\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+        findings[0].description.en == "The object cannot be migrated to the new domain version 1.1.0: In Environment protection 1.1.0, some attributes are shared with other domains (Animal protection), but the object has deviating values in those domains:\n\n* Number of legs: 2\n\nPlease edit this object here or in the other domains to align the deviating values."
+        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 1.1.0: In Umweltschutz 1.1.0 werden einige Attribute gemeinsam genutzt mit anderen Domänen (Tierschutz). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* Anzahl der Beine: 2\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
 
         when: "reevaluating with aligned values"
         findings = parseJson(get("/domains/${domainB.id}/assets/$assetId")).with {
@@ -328,6 +332,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         domainTemplateDataRepository.save(newDomainTemplate {
             name = "MISO 27001"
             templateVersion = Version.parse("2.0.0")
+            translations.translations[Locale.ENGLISH] = new NameAbbreviationAndDescription("The MISO 27000", null, null)
+            translations.translations[Locale.GERMAN] = new NameAbbreviationAndDescription("Die MISO 27000", null, null)
             applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
                 subTypes.Soup = newSubTypeDefinition {}
                 customAspects.noodles = newCustomAspectDefinition {
@@ -351,13 +357,95 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.size() == 1
-        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0. In the new version, some attributes are shared with other domains (The MISO 27000), but the object has deviating values in those domains:\n\n* contains noodles: no\n\nPlease edit this object here or in the other domains to align the deviating values."
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (Die MISO 27000). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* enthält Nudeln: nein\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0: In The MISO 27000 2.0.0, some attributes are shared with other domains (The MISO 27000), but the object has deviating values in those domains:\n\n* contains noodles: no\n\nPlease edit this object here or in the other domains to align the deviating values."
+        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: In Die MISO 27000 2.0.0 werden einige Attribute gemeinsam genutzt mit anderen Domänen (Die MISO 27000). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* enthält Nudeln: nein\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
 
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domainB.id}/assets/$assetId")).with {
             it.customAspects.nodles.hasNodles = false
             parseJson(post("/domains/${domainB.id}/assets/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.empty
+    }
+
+    def "warnings are generated for update conflicts due to redefined attributes"() {
+        given: "a domain template defining a URL as a free text"
+        def template = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Secure webhosting"
+            templateVersion = Version.parse("1.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Website = newSubTypeDefinition {}
+                customAspects.basics = newCustomAspectDefinition {
+                    attributeDefinitions.title = new TextAttributeDefinition()
+                    attributeDefinitions.location = new TextAttributeDefinition()
+                }
+            })
+        })
+
+        and: "an asset with an invalid URL attribute"
+        def domain = createTestDomain(client, template.id)
+        def unit = unitDataRepository.save(newUnit(client) {
+            addToDomains([domain] as Set)
+        })
+        def assetId = assetDataRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "Website", "NEW")
+            applyCustomAspectAttribute(domain, "basics", "location", "something-example")
+        }).id
+
+        and: "a major update for a DT, changing the attribute's type"
+        domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Secure webhosting"
+            templateVersion = Version.parse("2.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Website = newSubTypeDefinition {}
+                customAspects.basics = newCustomAspectDefinition {
+                    it.attributeDefinitions.title = new TextAttributeDefinition()
+                    it.attributeDefinitions.location = new ExternalDocumentAttributeDefinition()
+                }
+                translations = [
+                    (Locale.ENGLISH): [
+                        asset_Website_singular: "Website",
+                        asset_Website_plural: "Websites",
+                        asset_Website_status_NEW: "New",
+                        title: "Title",
+                        location: "Address"
+                    ],
+                    (Locale.GERMAN) : [
+                        asset_Website_singular: "Website",
+                        asset_Website_plural: "Websites",
+                        asset_Website_status_NEW: "Neu",
+                        title: "Titel",
+                        location: "Adresse"
+                    ],
+                ]
+            })
+            domainMigrationDefinition = new DomainMigrationDefinition([
+                new DomainMigrationStep("fix-url-type", TranslatedText.empty(), [
+                    new CustomAspectAttribute(ElementType.ASSET, "basics", "location")
+                ], [
+                    new CustomAspectMigrationTransformDefinition(new CustomAspectAttributeValueExpression("basics", "location"),
+                    new CustomAspectAttribute(ElementType.ASSET, "basics", "location"))
+                ])
+            ])
+        })
+
+        when: "evaluating the asset"
+        def findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
+            parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.size() == 1
+        // TODO #919 expect translated CA name
+        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0: Invalid value 'something-example' for attribute 'Address': URL does not contain a valid protocol - the following protocols are supported: http, https, ftp, ftps, smb"
+        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: Ungültiger Wert 'something-example' für Attribut 'Adresse': URL enthält kein gültiges Protokoll - die folgenden Protokolle werden unterstützt: http, https, ftp, ftps, smb"
+
+        when: "aligning the values and reevaluating"
+        findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
+            it.customAspects.basics.location = "https://something.example"
+            parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
         }
 
         then:

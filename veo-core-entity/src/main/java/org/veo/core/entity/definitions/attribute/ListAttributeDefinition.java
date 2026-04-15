@@ -24,7 +24,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import org.veo.core.entity.ValidationError;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,19 +40,18 @@ public final class ListAttributeDefinition extends AttributeDefinition {
   @NotNull private AttributeDefinition itemDefinition;
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
-    if (value instanceof List list) {
-      for (var i = 0; i < list.size(); i++) {
-        try {
-          itemDefinition.validate(list.get(i));
-        } catch (InvalidAttributeException ex) {
-          throw new InvalidAttributeException(
-              "invalid item at index %d: %s".formatted(i, ex.getMessage()));
-        }
-      }
-    } else {
-      throw new InvalidAttributeException("must be a list");
+  public List<ValidationError> getErrors(Object value) {
+    if (value instanceof List<?> list) {
+      return list.stream()
+          .flatMap(
+              item ->
+                  ValidationError.mergeIfAny(
+                      ValidationError.localized("error_invalid_value", value),
+                      itemDefinition.getErrors(item))
+                      .stream())
+          .toList();
     }
+    return List.of(ValidationError.localized("error_no_list"));
   }
 
   @Override

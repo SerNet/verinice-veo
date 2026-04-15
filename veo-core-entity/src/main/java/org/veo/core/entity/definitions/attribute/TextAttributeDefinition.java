@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions.attribute;
 
-import org.veo.core.entity.exception.InvalidAttributeException;
+import java.util.List;
+
+import org.veo.core.entity.ValidationError;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,10 +30,11 @@ public final class TextAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "text";
 
   @Override
-  public void validate(Object value) throws InvalidAttributeException {
+  public List<ValidationError> getErrors(Object value) {
     if (!(value instanceof String)) {
-      throw new InvalidAttributeException("must be a string");
+      return List.of(ValidationError.localized("error_no_string"));
     }
+    return List.of();
   }
 
   @Override

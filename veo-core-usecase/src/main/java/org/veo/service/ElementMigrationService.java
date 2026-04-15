@@ -23,6 +23,7 @@ import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedImp
 import static org.veo.core.entity.riskdefinition.RiskDefinitionChange.removedRiskValueCategories;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +65,10 @@ public class ElementMigrationService {
                 element.getCustomAspects().remove(ca);
                 return;
               }
-              migrateAttributes(ca.getAttributes(), caDefinition.getAttributeDefinitions());
+              migrateAttributes(
+                  ca.getAttributes(),
+                  caDefinition.getAttributeDefinitions(),
+                  definition.getTranslations());
             });
     element
         .getLinks(domain)
@@ -87,7 +91,10 @@ public class ElementMigrationService {
                 element.getLinks().remove(link);
                 return;
               }
-              migrateAttributes(link.getAttributes(), linkDefinition.getAttributeDefinitions());
+              migrateAttributes(
+                  link.getAttributes(),
+                  linkDefinition.getAttributeDefinitions(),
+                  definition.getTranslations());
             });
     migrateSubType(domain, definition, element);
   }
@@ -173,11 +180,14 @@ public class ElementMigrationService {
 
   /** Removes all invalid attributes from given custom aspect / link attributes. */
   public void migrateAttributes(
-      Map<String, Object> attributes, Map<String, AttributeDefinition> definitions) {
+      Map<String, Object> attributes,
+      Map<String, AttributeDefinition> definitions,
+      Map<Locale, Map<String, String>> translations) {
     new HashMap<>(attributes)
         .forEach(
             (attrKey, attrValue) -> {
-              var errors = AttributeValidator.getErrors(attrKey, attrValue, definitions);
+              var errors =
+                  AttributeValidator.getErrors(attrKey, attrValue, definitions, translations);
               if (!errors.isEmpty()) {
                 log.debug("Attribute validation failed: {}", errors);
                 log.debug("Removing invalidate attribute {}", attrKey);

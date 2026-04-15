@@ -229,7 +229,9 @@ public class TemplateItemMigrationService {
                 return;
               }
               elementMigrationService.migrateAttributes(
-                  entry.getValue(), caDefinition.getAttributeDefinitions());
+                  entry.getValue(),
+                  caDefinition.getAttributeDefinitions(),
+                  definition.getTranslations());
             });
   }
 
@@ -241,32 +243,33 @@ public class TemplateItemMigrationService {
         .map(LinkTailoringReference.class::cast)
         .filter(ltr -> ltr.getLinkSourceItem().getElementType() == type)
         .forEach(
-            linkTailoringReference ->
-                domain
-                    .getElementTypeDefinition(type)
-                    .findLink(linkTailoringReference.getLinkType())
-                    .ifPresentOrElse(
-                        linkDef -> {
-                          elementMigrationService.migrateAttributes(
-                              linkTailoringReference.getAttributes(),
-                              linkDef.getAttributeDefinitions());
-                          try {
-                            TemplateItemValidator.validate(linkTailoringReference, domain);
-                          } catch (UnprocessableDataException unDaEx) {
-                            log.info("Tailoring reference validation failed", unDaEx);
-                            log.info(
-                                "Deleting invalid tailoring reference {}",
-                                linkTailoringReference.getIdAsString());
-                            linkTailoringReference.remove();
-                          }
-                        },
-                        () -> {
+            linkTailoringReference -> {
+              var etd = domain.getElementTypeDefinition(type);
+              etd.findLink(linkTailoringReference.getLinkType())
+                  .ifPresentOrElse(
+                      linkDef -> {
+                        elementMigrationService.migrateAttributes(
+                            linkTailoringReference.getAttributes(),
+                            linkDef.getAttributeDefinitions(),
+                            etd.getTranslations());
+                        try {
+                          TemplateItemValidator.validate(linkTailoringReference, domain);
+                        } catch (UnprocessableDataException unDaEx) {
+                          log.info("Tailoring reference validation failed", unDaEx);
                           log.info(
-                              "Link type {} for tailoring reference is invalid, deleting invalid tailoring reference {}",
-                              linkTailoringReference.getLinkType(),
+                              "Deleting invalid tailoring reference {}",
                               linkTailoringReference.getIdAsString());
                           linkTailoringReference.remove();
-                        }));
+                        }
+                      },
+                      () -> {
+                        log.info(
+                            "Link type {} for tailoring reference is invalid, deleting invalid tailoring reference {}",
+                            linkTailoringReference.getLinkType(),
+                            linkTailoringReference.getIdAsString());
+                        linkTailoringReference.remove();
+                      });
+            });
   }
 
   private <TKey, TValue> Map<TKey, TValue> removeInvalidKeys(

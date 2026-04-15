@@ -25,7 +25,7 @@ import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefini
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
-import org.veo.core.entity.exception.InvalidAttributeException
+import org.veo.core.entity.exception.UnprocessableDataException
 
 import spock.lang.Specification
 
@@ -45,7 +45,7 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate(5)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "date attributes are validated"() {
@@ -64,25 +64,25 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("2023-10-5")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a date in a non-existing month"
         definition.validate("2023-20-01")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a date on a non-existing day"
         definition.validate("2023-02-29")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a date time"
         definition.validate("2023-01-26T13:50:47+01:00")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "date time attributes are validated"() {
@@ -100,19 +100,19 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("2023-1-26T13:50:47+01:00")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a date time in a non-existing month"
         definition.validate("2023-13-26T13:50:47+01:00")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a date time without a timezone"
         definition.validate("2023-01-26T13:50:47")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "enum attributes are validated"() {
@@ -131,13 +131,13 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("yellow")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating an int"
         definition.validate(1)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "external document attributes are validated"() {
@@ -158,31 +158,31 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("https://test.example/doc html")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a URL with an invalid protocol"
         definition.validate("about://test.example/doc.html")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a URL with an another invalid protocol"
         definition.validate("file:///tmp/some-file")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a URL with no protocol"
         definition.validate("test.example/https://test.example/doc.html")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating an int"
         definition.validate(5)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "integer attributes are validated"() {
@@ -200,13 +200,13 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("42")
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating a float"
         definition.validate(42.0f)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "list attributes are validated"() {
@@ -225,13 +225,13 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate([1, 2, 3, '4'])
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
 
         when: "validating an int"
         definition.validate(1)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 
     def "text attributes are validated"() {
@@ -250,6 +250,6 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate(5)
 
         then:
-        thrown(InvalidAttributeException)
+        thrown(UnprocessableDataException)
     }
 }
