@@ -64,6 +64,7 @@ spring:
       hibernate:
         format_sql: true
         order_inserts: true
+        default_batch_fetch_size: 20
         jdbc:
           # execute statements in batches:
           batch_size: 30

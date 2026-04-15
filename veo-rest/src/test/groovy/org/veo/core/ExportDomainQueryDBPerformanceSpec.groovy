@@ -17,15 +17,17 @@
  ******************************************************************************/
 package org.veo.core
 
-import net.ttddyy.dsproxy.QueryCountHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.domain.ExportDomainUseCase
 import org.veo.rest.security.NoRestrictionAccessRight
+
+import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
 class ExportDomainQueryDBPerformanceSpec extends VeoSpringSpec {
@@ -64,7 +66,7 @@ class ExportDomainQueryDBPerformanceSpec extends VeoSpringSpec {
             it.items.size() == 9
         }
         verifyAll {
-            queryCounts.select == 83
+            queryCounts.select == 14
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0

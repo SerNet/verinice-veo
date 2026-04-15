@@ -121,6 +121,6 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
         def queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 13
+        queryCounts.select == 9
     }
 }
