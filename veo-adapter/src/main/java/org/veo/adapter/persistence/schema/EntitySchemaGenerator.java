@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
-import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.EntitySchemaException;
@@ -50,7 +50,7 @@ public class EntitySchemaGenerator {
                   et -> SchemaProvider.getInstance().schema(et.getFullDomainSpecificDtoClass())));
 
   private final Supplier<ObjectNode> baseCISchema =
-      SchemaProvider.getInstance().schema(ControlImplementationDto.class);
+      SchemaProvider.getInstance().schema(ControlImplementationInDomainDto.class);
   private final SchemaExtender schemaExtender;
 
   private final ObjectWriter writer;
