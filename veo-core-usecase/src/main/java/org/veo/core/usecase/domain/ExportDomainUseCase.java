@@ -36,7 +36,9 @@ public class ExportDomainUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    Domain domain = repository.getById(input.id(), userAccessRights.getClientId());
+    Domain domain =
+        repository.getByIdWithRiskDefinitionsProfilesAndCatalogItems(
+            input.id(), userAccessRights.getClientId());
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }

@@ -39,6 +39,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
+import org.veo.persistence.access.jpa.ProfileDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -50,12 +51,17 @@ public class DomainRepositoryImpl
     implements DomainRepository {
 
   private final DomainDataRepository dataRepository;
+  private final ProfileDataRepository profileDataRepository;
   private final EntityManager em;
 
   public DomainRepositoryImpl(
-      DomainDataRepository dataRepository, EntityManager em, ValidationService validator) {
+      DomainDataRepository dataRepository,
+      ProfileDataRepository profileDataRepository,
+      EntityManager em,
+      ValidationService validator) {
     super(dataRepository, validator);
     this.dataRepository = dataRepository;
+    this.profileDataRepository = profileDataRepository;
     this.em = em;
   }
 
@@ -132,6 +138,21 @@ public class DomainRepositoryImpl
     return dataRepository
         .findByIdWithProfilesAndRiskDefinitions(id, clientId)
         .map(Domain.class::cast);
+  }
+
+  @Override
+  public Domain getByIdWithRiskDefinitionsProfilesAndCatalogItems(UUID id, UUID clientId) {
+    var d =
+        dataRepository
+            .findByIdWithProfilesAndRiskDefinitions(id, clientId)
+            .orElseThrow(() -> new NotFoundException(id, Domain.class));
+    dataRepository.findByIdWithDecisionsAndInspections(id, clientId);
+    dataRepository.findWithCatalogItemsAndAllReferencesById(id);
+    d.getProfiles()
+        .forEach(
+            p ->
+                profileDataRepository.findProfileByIdFetchTailoringReferences(p.getId(), clientId));
+    return d;
   }
 
   @Override

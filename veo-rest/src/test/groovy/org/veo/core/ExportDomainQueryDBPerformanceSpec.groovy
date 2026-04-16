@@ -66,7 +66,7 @@ class ExportDomainQueryDBPerformanceSpec extends VeoSpringSpec {
             it.items.size() == 9
         }
         verifyAll {
-            queryCounts.select == 14
+            queryCounts.select == 6
             queryCounts.insert == 0
             queryCounts.update == 0
             queryCounts.delete == 0

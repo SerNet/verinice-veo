@@ -56,6 +56,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   Optional<Domain> findByIdWithProfilesAndRiskDefinitions(UUID id, UUID clientId);
 
+  Domain getByIdWithRiskDefinitionsProfilesAndCatalogItems(@NonNull UUID id, UUID clientId);
+
   @Deprecated
   default Domain getById(UUID id) {
     return findById(id).orElseThrow(() -> new NotFoundException(id, Domain.class));

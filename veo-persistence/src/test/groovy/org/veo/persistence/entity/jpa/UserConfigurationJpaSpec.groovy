@@ -28,6 +28,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
+import org.veo.persistence.access.jpa.ProfileDataRepository
 import org.veo.persistence.access.jpa.UserConfigurationDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
@@ -40,6 +41,8 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
     TransactionTemplate txTemplate
     @Autowired
     DomainDataRepository domainDataRepository
+    @Autowired
+    ProfileDataRepository profileDataRepository
     @Autowired
     ClientDataRepository clientRepository
     @Autowired
@@ -59,7 +62,7 @@ class UserConfigurationJpaSpec extends AbstractJpaSpec {
             client = newClient()
             client = clientRepository.save(client)
         }
-        domainRepository = new DomainRepositoryImpl(domainDataRepository, entityManager, validationMock)
+        domainRepository = new DomainRepositoryImpl(domainDataRepository, profileDataRepository, entityManager, validationMock)
         clientRepo = new ClientRepositoryImpl(clientRepository, domainRepository, userConfigRepository, validationMock)
     }
 

@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.Client;
@@ -87,4 +88,12 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query("select count(d.id) > 0 from domain d where d.name = ?1 and d.owner = ?2")
   boolean nameExistsInClient(String name, Client client);
+
+  @EntityGraph(
+      attributePaths = {
+        "catalogItems",
+        "catalogItems.tailoringReferences",
+        "catalogItems.updateReferences"
+      })
+  void findWithCatalogItemsAndAllReferencesById(UUID id);
 }
