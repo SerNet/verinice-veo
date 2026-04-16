@@ -17,16 +17,17 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -34,22 +35,17 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.GraphNodeDto;
 import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.RelationDto;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.InOrOutboundLink;
-import org.veo.core.entity.LinkDirection;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
-import org.veo.core.entity.specification.ResultSizeExceededException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
-import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.core.repository.RelationRow;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.UserAccessRightsProvider;
 
@@ -68,11 +64,9 @@ public class RelationGraphService {
   private final UserAccessRightsProvider userAccessRightsProvider;
   private final GenericElementRepository genericRepository;
 
-  @Value("${veo.graph.max-neighbors:30}")
-  private int maxGraphNeighbors;
-
   @Transactional
-  public GraphResultDto getGraph(UUID id, UUID domainId, ElementType elementType, Locale locale) {
+  public GraphResultDto getGraph(
+      UUID id, UUID domainId, ElementType elementType, Locale locale, Integer limit) {
     UUID clientId = userAccessRightsProvider.getAccessRights().getClientId();
     Domain domain = domainRepository.getById(domainId, clientId);
 
@@ -90,13 +84,21 @@ public class RelationGraphService {
 
     Element centerEl = center.get(0);
 
-    List<RelationDto> relationDtos = new ArrayList<>();
+    List<RelationRow> rows =
+        genericRepository.queryGraph(id, domainId, elementType, limit).execute();
+
+    long totalCount = rows.isEmpty() ? 0 : rows.get(0).totalCount();
+
+    List<UUID> neighborIds = rows.stream().map(RelationRow::neighborId).distinct().toList();
+
+    List<Element> neighborElements = loadElementsByIds(domain, neighborIds);
+
     Set<Element> allElements = new HashSet<>();
     allElements.add(centerEl);
+    allElements.addAll(neighborElements);
 
-    addCustomLinksRelations(centerEl, domain, locale, allElements, relationDtos);
-    addScopeRelations(centerEl, domain, locale, allElements, relationDtos);
-    addCompositeRelations(centerEl, domain, locale, allElements, relationDtos);
+    Map<UUID, Element> elementsById =
+        allElements.stream().collect(Collectors.toMap(Element::getId, Function.identity()));
 
     List<GraphNodeDto> allEntities =
         allElements.stream()
@@ -109,7 +111,35 @@ public class RelationGraphService {
                         el.getSubType(domain),
                         el.getId()))
             .toList();
-    return new GraphResultDto(allEntities, relationDtos);
+
+    var translations = entitySchemaService.findTranslations(Set.of(domain), Set.of(locale));
+
+    List<RelationDto> relationDtos =
+        rows.stream()
+            .map(
+                row -> {
+                  String relationType = row.relationType();
+                  UUID sourceId = row.sourceId();
+                  UUID targetId = row.targetId();
+                  String linkType = row.linkType();
+
+                  Element source = elementsById.get(sourceId);
+                  Element target = elementsById.get(targetId);
+
+                  String label =
+                      RelationDto.RelationType.CUSTOM_LINK.name().equals(relationType)
+                          ? translations.get(locale, linkType).orElse(linkType)
+                          : buildPartsMembersLabel(locale);
+
+                  return new RelationDto(
+                      RelationDto.RelationType.valueOf(relationType),
+                      urlBuild(source, domainId),
+                      urlBuild(target, domainId),
+                      label);
+                })
+            .toList();
+
+    return new GraphResultDto(allEntities, relationDtos, totalCount);
   }
 
   private String urlBuild(Element el, UUID domainId) {
@@ -121,137 +151,15 @@ public class RelationGraphService {
     return locale.getLanguage().startsWith("de") ? "enthält" : "contains";
   }
 
-  private void checkLimit(Set<Element> allElements) {
-    int neighborCount = allElements.size() - 1;
-
-    if (neighborCount > maxGraphNeighbors) {
-      throw new ResultSizeExceededException("Too many related elements");
-    }
-  }
-
-  private void addCustomLinksRelations(
-      Element centerEl,
-      Domain domain,
-      Locale locale,
-      Set<Element> allElements,
-      List<RelationDto> relationDtos) {
-    LinkQuery linkQuery = genericRepository.queryLinks(centerEl, domain);
-
-    PagingConfiguration<LinkQuery.SortCriterion> linkPaging =
-        new PagingConfiguration<>(
-            maxGraphNeighbors + 1,
-            0,
-            LinkQuery.SortCriterion.DIRECTION,
-            PagingConfiguration.SortOrder.ASCENDING);
-    var translations = entitySchemaService.findTranslations(Set.of(domain), Set.of(locale));
-    List<InOrOutboundLink> customLinks = linkQuery.execute(linkPaging).resultPage();
-    for (InOrOutboundLink customLink : customLinks) {
-
-      Element linkedEl = customLink.linkedElement();
-      String linkType = customLink.linkType();
-
-      allElements.add(linkedEl);
-      checkLimit(allElements);
-
-      String sourceRef;
-      String targetRef;
-
-      if (customLink.direction() == LinkDirection.OUTBOUND) {
-        sourceRef = urlBuild(centerEl, domain.getId());
-        targetRef = urlBuild(linkedEl, domain.getId());
-      } else {
-        sourceRef = urlBuild(linkedEl, domain.getId());
-        targetRef = urlBuild(centerEl, domain.getId());
-      }
-
-      relationDtos.add(
-          new RelationDto(
-              RelationDto.RelationType.CUSTOM_LINK,
-              sourceRef,
-              targetRef,
-              translations.get(locale, linkType).orElse(linkType)));
-    }
-  }
-
-  private void addScopeRelations(
-      Element centerEl,
-      Domain domain,
-      Locale locale,
-      Set<Element> allElements,
-      List<RelationDto> relationDtos) {
-    if (centerEl instanceof Scope centerScope) {
-      for (Element member : centerScope.getMembers()) {
-        if (!member.getDomains().contains(domain)) {
-          continue;
-        }
-
-        allElements.add(member);
-        checkLimit(allElements);
-
-        relationDtos.add(
-            new RelationDto(
-                RelationDto.RelationType.PART_OR_MEMBER,
-                urlBuild(centerEl, domain.getId()),
-                urlBuild(member, domain.getId()),
-                buildPartsMembersLabel(locale)));
-      }
+  private List<Element> loadElementsByIds(Domain domain, List<UUID> ids) {
+    if (ids.isEmpty()) {
+      return List.of();
     }
 
-    for (Scope scope : centerEl.getScopes()) {
-      if (!scope.getDomains().contains(domain)) {
-        continue;
-      }
+    ElementQuery<Element> query = genericRepository.query(domain.getOwner());
+    query.whereIdIn(new QueryCondition<>(new HashSet<>(ids)));
+    query.whereDomainsContain(domain);
 
-      allElements.add(scope);
-      checkLimit(allElements);
-
-      relationDtos.add(
-          new RelationDto(
-              RelationDto.RelationType.PART_OR_MEMBER,
-              urlBuild(scope, domain.getId()),
-              urlBuild(centerEl, domain.getId()),
-              buildPartsMembersLabel(locale)));
-    }
-  }
-
-  private void addCompositeRelations(
-      Element centerEl,
-      Domain domain,
-      Locale locale,
-      Set<Element> allElements,
-      List<RelationDto> relationDtos) {
-    if (centerEl instanceof CompositeElement<?> compositeEl) {
-      for (Element part : compositeEl.getParts()) {
-        if (!part.getDomains().contains(domain)) {
-          continue;
-        }
-
-        allElements.add(part);
-        checkLimit(allElements);
-
-        relationDtos.add(
-            new RelationDto(
-                RelationDto.RelationType.PART_OR_MEMBER,
-                urlBuild(centerEl, domain.getId()),
-                urlBuild(part, domain.getId()),
-                buildPartsMembersLabel(locale)));
-      }
-
-      for (Element composite : compositeEl.getComposites()) {
-        if (!composite.getDomains().contains(domain)) {
-          continue;
-        }
-
-        allElements.add(composite);
-        checkLimit(allElements);
-
-        relationDtos.add(
-            new RelationDto(
-                RelationDto.RelationType.PART_OR_MEMBER,
-                urlBuild(composite, domain.getId()),
-                urlBuild(centerEl, domain.getId()),
-                buildPartsMembersLabel(locale)));
-      }
-    }
+    return query.execute(PagingConfiguration.UNPAGED).resultPage();
   }
 }

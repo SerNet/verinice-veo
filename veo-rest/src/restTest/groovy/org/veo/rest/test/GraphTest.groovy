@@ -280,19 +280,18 @@ class GraphTestRestTest extends VeoRestTest {
         }
     }
 
-    def "returns 422 when element has too many related elements"() {
-        given: "a unit and domain"
+    def "uses default limit when no limit parameter is provided"() {
+        given: "a process with 30 direct asset neighbors"
         def unitUri = post("/units", [
-            name: "Limit Unit",
+            name: "Limit Test Unit",
             domains: [
                 [targetUri: "/domains/$testDomainId"]
             ]
         ]).location
 
-        and: "a process with multiple relations"
-        def assetIds = (1..30).collect {
+        def assetIds = (1..30).collect { i ->
             post("/domains/$testDomainId/assets", [
-                name: "Asset $it",
+                name: "Asset $i",
                 owner: [targetUri: unitUri],
                 subType: "Information",
                 status: "CURRENT"
@@ -300,7 +299,7 @@ class GraphTestRestTest extends VeoRestTest {
         }
 
         def processId = post("/domains/$testDomainId/processes", [
-            name: "Process Limit",
+            name: "Process with many neighbors",
             owner: [targetUri: unitUri],
             subType: "BusinessProcess",
             status: "NEW",
@@ -311,25 +310,114 @@ class GraphTestRestTest extends VeoRestTest {
             ]
         ]).body.resourceId
 
-        def scopeId = post("/domains/$testDomainId/scopes", [
-            name: "Scope",
-            subType: 'Company',
-            status: 'NEW',
-            owner: [targetUri: unitUri],
-            members: [
-                [targetUri: "/processes/$processId"],
-            ]
-        ])
-
-        when: "the relations endpoint is called"
+        when: "the relations endpoint is called without limit"
         def response = get(
                 "/domains/$testDomainId/processes/$processId/relations",
-                422,
+                200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
                 )
 
-        then: "the limit error is returned"
-        response.body.message == "Too many related elements"
+        then: "the default limit of 25 neighbors is applied"
+        response.body.totalCount == 30
+        response.body.nodes.size() == 26
+        response.body.links.size() == 25
+
+        and: "the center node is included"
+        response.body.nodes.any { it.elementId == processId }
+    }
+
+    def "applies requested limit to direct neighbors"() {
+        given: "a process with 30 direct asset neighbors"
+        def unitUri = post("/units", [
+            name: "Requested Limit Unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).location
+
+        def assetIds = (1..30).collect { i ->
+            post("/domains/$testDomainId/assets", [
+                name: "Asset $i",
+                owner: [targetUri: unitUri],
+                subType: "Information",
+                status: "CURRENT"
+            ]).body.resourceId
+        }
+
+        def processId = post("/domains/$testDomainId/processes", [
+            name: "Process limit 10",
+            owner: [targetUri: unitUri],
+            subType: "BusinessProcess",
+            status: "NEW",
+            links: [
+                necessaryData: assetIds.collect {
+                    [target: [targetUri: "/assets/$it"]]
+                }
+            ]
+        ]).body.resourceId
+
+        when: "the relations endpoint is called with limit=10"
+        def response = get(
+                "/domains/$testDomainId/processes/$processId/relations?limit=10",
+                200,
+                UserType.DEFAULT,
+                MediaType.APPLICATION_JSON
+                )
+
+        then: "only 10 neighbors plus the center node are returned"
+        response.body.totalCount == 30
+        response.body.nodes.size() == 11
+        response.body.links.size() == 10
+
+        and: "the center node is included"
+        response.body.nodes.any { it.elementId == processId }
+    }
+
+    def "all available neighbors plus the center node are returned"() {
+        given: "a process with 30 direct asset neighbors"
+        def unitUri = post("/units", [
+            name: "Requested Limit Unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).location
+
+        def assetIds = (1..30).collect { i ->
+            post("/domains/$testDomainId/assets", [
+                name: "Asset $i",
+                owner: [targetUri: unitUri],
+                subType: "Information",
+                status: "CURRENT"
+            ]).body.resourceId
+        }
+
+        def processId = post("/domains/$testDomainId/processes", [
+            name: "Process limit 30",
+            owner: [targetUri: unitUri],
+            subType: "BusinessProcess",
+            status: "NEW",
+            links: [
+                necessaryData: assetIds.collect {
+                    [target: [targetUri: "/assets/$it"]]
+                }
+            ]
+        ]).body.resourceId
+
+        when: "the relations endpoint is called with limit=50"
+        def response = get(
+                "/domains/$testDomainId/processes/$processId/relations?limit=50",
+                200,
+                UserType.DEFAULT,
+                MediaType.APPLICATION_JSON
+                )
+
+        then: "only 25 neighbors plus the center node are returned"
+        response.body.totalCount == 30
+        response.body.nodes.size() == 31
+        response.body.links.size() == 30
+
+        and: "the center node is included"
+        response.body.nodes.any { it.elementId == processId }
     }
 }

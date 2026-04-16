@@ -70,6 +70,8 @@ public final class ControllerConstants {
   static final String FILTER_CI_DESC = "Filters the CI for compliance or mitigation.";
 
   static final CacheControl DEFAULT_CACHE_CONTROL = CacheControl.noCache();
+  static final int GRAPH_MAX_NEIGHBORS_LIMIT = 1000;
+  public static final String DEFAULT_GRAPH_NEIGHBORS_LIMIT = "25";
 
   private ControllerConstants() {}
 }

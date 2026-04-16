@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2025  Alina Tsikunova
+ * Copyright (C) 2026  Alina Tsikunova
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.repository;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@JsonPropertyOrder({"nodes", "links", "totalCount"})
-@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-@Data
-@Setter(AccessLevel.NONE)
-@RequiredArgsConstructor
-public class GraphResultDto {
-  private final List<GraphNodeDto> nodes;
-  private final List<RelationDto> links;
-  private final long totalCount;
+public interface GraphQuery {
+  List<RelationRow> execute();
 }

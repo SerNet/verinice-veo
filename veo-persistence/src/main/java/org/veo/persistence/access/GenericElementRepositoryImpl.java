@@ -42,6 +42,7 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -53,6 +54,7 @@ import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.GraphQuery;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ParentElementQuery;
@@ -65,6 +67,7 @@ import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
+import org.veo.persistence.access.query.GraphQueryImpl;
 import org.veo.persistence.access.query.LinkQueryImpl;
 import org.veo.persistence.access.query.ParentElementQueryImpl;
 import org.veo.persistence.entity.jpa.ControlImplementationData;
@@ -119,6 +122,11 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             userRights.isUnitAccessRestricted(),
             userRights.getReadableUnitIds())
         .map(e -> (T) e);
+  }
+
+  @Override
+  public GraphQuery queryGraph(UUID elementId, UUID domainId, ElementType elementType, int limit) {
+    return new GraphQueryImpl(em, elementId, domainId, elementType, limit);
   }
 
   @Override

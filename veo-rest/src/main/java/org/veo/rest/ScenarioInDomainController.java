@@ -19,9 +19,11 @@ package org.veo.rest;
 
 import static org.veo.rest.ControllerConstants.ABBREVIATION_PARAM;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
+import static org.veo.rest.ControllerConstants.DEFAULT_GRAPH_NEIGHBORS_LIMIT;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.GRAPH_MAX_NEIGHBORS_LIMIT;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
@@ -54,6 +56,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -467,7 +470,13 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       summary =
           "EXPERIMENTAL API - Returns the direct relations of a scenario for graph visualization")
   public GraphResultDto getScenarioGraph(
-      @PathVariable UUID domainId, @PathVariable UUID scenarioId, Locale locale) {
-    return relationGraphService.getGraph(scenarioId, domainId, ElementType.SCENARIO, locale);
+      @PathVariable UUID domainId,
+      @PathVariable UUID scenarioId,
+      Locale locale,
+      @RequestParam(required = false, defaultValue = DEFAULT_GRAPH_NEIGHBORS_LIMIT)
+          @Min(value = 1)
+          @Max(value = GRAPH_MAX_NEIGHBORS_LIMIT)
+          Integer limit) {
+    return relationGraphService.getGraph(scenarioId, domainId, ElementType.SCENARIO, locale, limit);
   }
 }

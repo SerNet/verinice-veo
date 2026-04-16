@@ -26,6 +26,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -63,6 +64,8 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
   LinkQuery queryLinks(Element element, Domain domain);
 
   ParentElementQuery queryParents(Element element, Domain domain);
+
+  GraphQuery queryGraph(UUID elementId, UUID domainId, ElementType elementType, int limit);
 
   /**
    * Delete all elements in the given unit. <b>This will clear the persistence context</b>, so all
