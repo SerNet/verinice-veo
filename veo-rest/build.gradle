@@ -119,7 +119,7 @@ testing {
     suites {
         configureEach {
             dependencies {
-                implementation 'org.keycloak:keycloak-authz-client:26.0.8'
+                implementation 'org.keycloak:keycloak-authz-client:26.0.9'
 
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.springframework.security:spring-security-test'
