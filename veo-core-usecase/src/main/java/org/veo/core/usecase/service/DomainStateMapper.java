@@ -19,6 +19,7 @@ package org.veo.core.usecase.service;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -84,10 +85,10 @@ public class DomainStateMapper {
   public ElementTypeDefinition toElementTypeDefinition(
       ElementType elementType, ElementTypeDefinitionState source, DomainBase owner) {
     var target = entityFactory.createElementTypeDefinition(elementType, owner);
-    target.setSubTypes(source.getSubTypes());
-    target.setCustomAspects(source.getCustomAspects());
-    target.setLinks(source.getLinks());
-    target.setTranslations(source.getTranslations());
+    target.setSubTypes(new HashMap<>(source.getSubTypes()));
+    target.setCustomAspects(new HashMap<>(source.getCustomAspects()));
+    target.setLinks(new HashMap<>(source.getLinks()));
+    target.setTranslations(new HashMap<>(source.getTranslations()));
     target.setControlImplementationDefinition(source.getControlImplementationDefinition());
     return target;
   }
