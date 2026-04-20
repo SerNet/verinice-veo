@@ -402,22 +402,33 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public FullDomainDto transformDomain2Dto(@Valid Domain source) {
+  public FullDomainDto transformDomain2Dto(Domain source) {
+    return transformDomain2Dto(source, false);
+  }
+
+  public FullDomainDto transformDomain2Dto(Domain source, boolean metadataOnly) {
     var target = new FullDomainDto();
+
     target.setId(source.getId());
-    target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersionAsString(source.getTemplateVersion().toString());
-    target.setDecisions(source.getDecisions());
-    target.setElementTypeDefinitions(
-        source.getElementTypeDefinitions().stream()
-            .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
-    target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
+    target.setName(source.getName());
 
-    mapVersionedSelfReferencingProperties(source, target);
-    mapNameableProperties(source, target);
-    target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
-    target.setTranslations(source.getTranslations());
+    if (!metadataOnly) {
+      target.setVersion(source.getVersion());
+
+      target.setDecisions(source.getDecisions());
+      target.setElementTypeDefinitions(
+          source.getElementTypeDefinitions().stream()
+              .collect(
+                  toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
+      target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
+
+      mapVersionedSelfReferencingProperties(source, target);
+      mapNameableProperties(source, target);
+      target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+      target.setTranslations(source.getTranslations());
+    }
 
     return target;
   }

@@ -21,6 +21,8 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.state.CustomAspectState;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,5 +55,11 @@ public class CustomAspectMapDto {
     return new CustomAspectMapDto(
         source.getCustomAspects(domain).stream()
             .collect(toMap(CustomAspect::getType, ca -> new AttributesDto(ca.getAttributes()))));
+  }
+
+  public Set<CustomAspectState> getCustomAspectStates() {
+    return value.entrySet().stream()
+        .map(e -> new CustomAspectState.CustomAspectStateImpl(e.getKey(), e.getValue().getValue()))
+        .collect(Collectors.toSet());
   }
 }

@@ -106,6 +106,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UnitController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
+  public static final String MEDIA_TYPE_UNIT_DUMP_V2_VALUE =
+      "application/vnd.sernet.verinice.unit-dump.v2+json";
 
   private static final String IMPORT_UNIT_DESCRIPTION =
       "Imports a previously exported unit. The unit, elements & risks in the request body are created as new resources. The domains in the request body are only used to find the equivalent existing domains. If the domains have been updated since the export, the exported elements or risks may have become incompatible and cannot be imported.";
@@ -255,7 +257,7 @@ public class UnitController extends AbstractEntityController {
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
   }
 
-  @GetMapping(value = "/{id}/export")
+  @GetMapping(value = "/{id}/export", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
   @ApiResponse(
       responseCode = "200",
@@ -272,10 +274,34 @@ public class UnitController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiResponseBody.class)))
   public CompletableFuture<UnitDumpDto> exportUnit(@PathVariable UUID id) {
+    return exportUnit(id, false);
+  }
+
+  @GetMapping(value = "/{id}/export", produces = MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
+  @Operation(summary = "Exports given unit in v2 format")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Unit export in v2 format",
+      content =
+          @Content(
+              mediaType = MEDIA_TYPE_UNIT_DUMP_V2_VALUE,
+              schema = @Schema(implementation = UnitDumpDto.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Unit not found",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiResponseBody.class)))
+  public CompletableFuture<UnitDumpDto> exportUnitV2(@PathVariable UUID id) {
+    return exportUnit(id, true);
+  }
+
+  private CompletableFuture<UnitDumpDto> exportUnit(UUID id, boolean newStructure) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         new GetUnitDumpUseCase.InputData(id, null),
-        out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
+        out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer, newStructure));
   }
 
   @PostMapping(value = "/import", consumes = MediaType.APPLICATION_JSON_VALUE)

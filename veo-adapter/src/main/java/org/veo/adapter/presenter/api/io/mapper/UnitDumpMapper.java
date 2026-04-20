@@ -36,13 +36,20 @@ import lombok.NoArgsConstructor;
 public class UnitDumpMapper {
   public static UnitDumpDto mapOutput(
       GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
+    return mapOutput(useCaseOutput, entityToDtoTransformer, false);
+  }
+
+  public static UnitDumpDto mapOutput(
+      GetUnitDumpUseCase.OutputData useCaseOutput,
+      EntityToDtoTransformer entityToDtoTransformer,
+      boolean newStructure) {
     var elementDtos =
         useCaseOutput.elements().stream()
-            .map(it -> entityToDtoTransformer.transform2Dto(it, false))
+            .map(it -> entityToDtoTransformer.transform2Dto(it, newStructure))
             .collect(Collectors.toSet());
     return new UnitDumpDto(
         entityToDtoTransformer.transformUnit2Dto(useCaseOutput.unit()),
-        mapDomains(useCaseOutput, entityToDtoTransformer),
+        mapDomains(useCaseOutput, entityToDtoTransformer, newStructure),
         elementDtos,
         getRisks(useCaseOutput.elements(), entityToDtoTransformer));
   }
@@ -58,9 +65,11 @@ public class UnitDumpMapper {
   }
 
   private static Set<FullDomainDto> mapDomains(
-      GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
+      GetUnitDumpUseCase.OutputData useCaseOutput,
+      EntityToDtoTransformer entityToDtoTransformer,
+      boolean newStructure) {
     return useCaseOutput.unit().getDomains().stream()
-        .map(entityToDtoTransformer::transformDomain2Dto)
+        .map(d -> entityToDtoTransformer.transformDomain2Dto(d, newStructure))
         .collect(Collectors.toSet());
   }
 }

@@ -47,12 +47,15 @@ public class ScopeDomainAssociationDto extends ImpactDomainAssociationDto {
       ITypedId<Domain> domain,
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
+    var effectiveCustomAspectStates =
+        customAspects == null ? customAspectStates : customAspects.getCustomAspectStates();
+    var effectiveCustomLinkStates = links == null ? customLinkStates : links.getCustomLinkStates();
     return new ScopeDomainAssociationStateImpl(
         domain,
         subType,
         status,
-        customAspectStates,
-        customLinkStates,
+        effectiveCustomAspectStates,
+        effectiveCustomLinkStates,
         riskDefinition,
         riskValues,
         appliedCatalogItem);

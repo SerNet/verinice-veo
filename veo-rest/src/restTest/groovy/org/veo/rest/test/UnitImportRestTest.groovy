@@ -17,7 +17,54 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.springframework.http.MediaType
+
+import org.veo.rest.UnitController
+
 class UnitImportRestTest extends VeoRestTest {
+
+    def "unit export supports v2 structure via media type"() {
+        given:
+        def unitId = postNewUnit().resourceId
+        post("/domains/$testDomainId/processes", [
+            name: "Versioned export process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW"
+        ]).body.resourceId
+
+        when:
+        def exportV1 = get("/units/$unitId/export").body
+        def exportV2 = get(
+                "/units/$unitId/export",
+                200,
+                UserType.DEFAULT,
+                MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
+                ).body
+        def processV1 = exportV1.elements.find { it.type == 'process' }
+        def processV2 = exportV2.elements.find { it.type == 'process' }
+
+        then:
+        processV1 != null
+        processV1.customAspects != null
+        processV1.links != null
+
+        and: "v2 moves customizations into domain associations"
+        with(processV2) {
+            customAspects == null
+            links == null
+            domains.size() >= 1
+            domains.values().every { it.customAspects != null }
+            domains.values().every { it.links != null }
+        }
+
+        and: "v2 domain export only contains metadata"
+        with(exportV2.domains.find { it.name == "test-domain" }) {
+            templateVersion != null
+            !containsKey('elementTypeDefinitions') || elementTypeDefinitions == [:]
+            !containsKey('riskDefinitions') || riskDefinitions == [:]
+        }
+    }
 
     def "export, delete and import a unit"() {
         given:
@@ -388,5 +435,198 @@ class UnitImportRestTest extends VeoRestTest {
 
         then: "it can be imported"
         post("/units/import", exportedUnit)
+    }
+
+    def "unit import rejects conflicting shared custom aspect values across domains"() {
+        given: "two domains with identical process custom aspect definitions"
+        def domainIdA = post("/content-creation/domains", [
+            name: "import conflict domain A ${UUID.randomUUID()}",
+            authority: "jj",
+            translations: [en:[name:"Import conflict domain A"]]
+        ], 201, UserType.CONTENT_CREATOR).body.resourceId
+        def domainIdB = post("/content-creation/domains", [
+            name: "import conflict domain B ${UUID.randomUUID()}",
+            authority: "jj",
+            translations: [en:[name:"Import conflict domain B"]]
+        ], 201, UserType.CONTENT_CREATOR).body.resourceId
+
+        put("/content-creation/domains/$domainIdA/element-type-definitions/process", [
+            subTypes: [
+                ProcA: [
+                    statuses: ["NEW", "OLD"]
+                ]
+            ],
+            customAspects: [
+                sharedCa: [
+                    attributeDefinitions: [
+                        someAttr: [type: "integer"]
+                    ]
+                ]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+        put("/content-creation/domains/$domainIdB/element-type-definitions/process", [
+            subTypes: [
+                ProcB: [
+                    statuses: ["ON", "OFF"]
+                ]
+            ],
+            customAspects: [
+                sharedCa: [
+                    attributeDefinitions: [
+                        someAttr: [type: "integer"]
+                    ]
+                ]
+            ]
+        ], null, 204, UserType.CONTENT_CREATOR)
+
+        and: "a process associated with both domains"
+        def unitId = postNewUnit("conflict import unit", [domainIdA, domainIdB]).resourceId
+        def processId = post("/domains/$domainIdA/processes", [
+            name: "conflict process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "ProcA",
+            status: "NEW"
+        ]).body.resourceId
+        post("/domains/$domainIdB/processes/$processId", [
+            subType: "ProcB",
+            status: "ON"
+        ], 200)
+
+        and: "an export payload in old format"
+        def exportedUnit = get("/units/$unitId/export").body
+        def process = exportedUnit.elements.find { it.type == "process" }
+
+        and: "conflicting shared custom aspect values in different domains"
+        process.domains[domainIdA].customAspects = [
+            sharedCa: [
+                someAttr: 1
+            ]
+        ]
+        process.domains[domainIdB].customAspects = [
+            sharedCa: [
+                someAttr: 2
+            ]
+        ]
+
+        when: "importing the manipulated payload"
+        def response = post("/units/import", exportedUnit, 422)
+
+        then: "import is rejected with a conflict message"
+        response.body.message.contains("Import conflict domain A")
+        response.body.message.contains("Import conflict domain B")
+        response.body.message.contains("the object has deviating values in those domains")
+    }
+
+    def "unit import supports new structure for element custom aspects and links"() {
+        given: "a unit with a process that has custom aspects and links"
+        def oldUnitId = postNewUnit("new structure import unit", [dsgvoDomainId]).resourceId
+        def oldUnitUri = "/units/$oldUnitId"
+        def targetAssetId = post("/domains/$dsgvoDomainId/assets", [
+            name: "target asset for new structure import",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: oldUnitUri],
+        ]).body.resourceId
+        post("/domains/$dsgvoDomainId/processes", [
+            customAspects: [
+                process_dataProcessing: [
+                    process_dataProcessing_legalBasis: [
+                        "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+                        "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
+                    ]
+                ]
+            ],
+            links: [
+                process_dataType: [
+                    [
+                        target: [
+                            targetUri: "$baseUrl/assets/$targetAssetId"
+                        ]
+                    ]
+                ]
+            ],
+            name: "new-structure import process",
+            owner: [targetUri: oldUnitUri],
+            subType: "PRO_DataProcessing",
+            status: "NEW"
+        ])
+
+        and: "a v2 export"
+        def exportedUnit = get(
+                "$oldUnitUri/export",
+                200,
+                UserType.DEFAULT,
+                MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
+                ).body
+
+        when: "importing the v2 payload"
+        def newUnitId = post("/units/import", exportedUnit).body.resourceId
+        def importedProcessId = get("/domains/$dsgvoDomainId/processes?unit=$newUnitId").body.items[0].id
+        def importedAssetId = get("/domains/$dsgvoDomainId/assets?unit=$newUnitId").body.items[0].id
+        def importedProcess = get("/domains/$dsgvoDomainId/processes/$importedProcessId").body
+
+        then: "import preserves custom aspects and links"
+        newUnitId != null
+        importedProcess.customAspects.process_dataProcessing.process_dataProcessing_legalBasis as Set == [
+            "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+            "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
+        ] as Set
+        importedProcess.links.process_dataType[0].target.targetUri.endsWith("/assets/$importedAssetId")
+    }
+
+    def "unit import with multipart supports new structure for element custom aspects and links"() {
+        given: "a unit with a process that has custom aspects and links"
+        def oldUnitId = postNewUnit("new structure multipart import unit", [dsgvoDomainId]).resourceId
+        def oldUnitUri = "/units/$oldUnitId"
+        def targetAssetId = post("/domains/$dsgvoDomainId/assets", [
+            name: "target asset for new structure multipart import",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: oldUnitUri],
+        ]).body.resourceId
+        post("/domains/$dsgvoDomainId/processes", [
+            customAspects: [
+                process_dataProcessing: [
+                    process_dataProcessing_legalBasis: [
+                        "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+                        "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
+                    ]
+                ]
+            ],
+            links: [
+                process_dataType: [
+                    [
+                        target: [
+                            targetUri: "$baseUrl/assets/$targetAssetId"
+                        ]
+                    ]
+                ]
+            ],
+            name: "new-structure multipart import process",
+            owner: [targetUri: oldUnitUri],
+            subType: "PRO_DataProcessing",
+            status: "NEW"
+        ])
+
+        and: "a v2 export"
+        def exportedUnit = get(
+                "$oldUnitUri/export",
+                200,
+                UserType.DEFAULT,
+                MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
+                ).body
+
+        when: "importing the v2 payload via multipart"
+        def newUnitId = postMultipart("/units/import", exportedUnit).body.resourceId
+        def importedProcessId = get("/domains/$dsgvoDomainId/processes?unit=$newUnitId").body.items[0].id
+        def importedAssetId = get("/domains/$dsgvoDomainId/assets?unit=$newUnitId").body.items[0].id
+        def importedProcess = get("/domains/$dsgvoDomainId/processes/$importedProcessId").body
+
+        then: "multipart import preserves custom aspects and links"
+        importedProcess.customAspects.process_dataProcessing.process_dataProcessing_legalBasis as Set == [
+            "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+            "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
+        ] as Set
+        importedProcess.links.process_dataType[0].target.targetUri.endsWith("/assets/$importedAssetId")
     }
 }

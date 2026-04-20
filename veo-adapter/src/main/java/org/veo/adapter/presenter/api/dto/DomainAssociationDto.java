@@ -81,8 +81,15 @@ public class DomainAssociationDto {
       Set<CustomAspectState> customAspectStates,
       // TODO #2543 remove
       Set<CustomLinkState> customLinkStates) {
-    // TODO #2542 use new customAspects & links fields if they are set
+    var effectiveCustomAspectStates =
+        customAspects == null ? customAspectStates : customAspects.getCustomAspectStates();
+    var effectiveCustomLinkStates = links == null ? customLinkStates : links.getCustomLinkStates();
     return new DomainAssociationStateImpl(
-        domain, subType, status, customAspectStates, customLinkStates, appliedCatalogItem);
+        domain,
+        subType,
+        status,
+        effectiveCustomAspectStates,
+        effectiveCustomLinkStates,
+        appliedCatalogItem);
   }
 }

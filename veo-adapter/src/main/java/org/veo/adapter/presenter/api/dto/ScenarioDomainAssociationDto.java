@@ -45,13 +45,16 @@ public class ScenarioDomainAssociationDto extends DomainAssociationDto {
       ITypedId<Domain> domain,
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
+    var effectiveCustomAspectStates =
+        customAspects == null ? customAspectStates : customAspects.getCustomAspectStates();
+    var effectiveCustomLinkStates = links == null ? customLinkStates : links.getCustomLinkStates();
     return new ScenarioDomainAssociationStateImpl(
         domain,
         subType,
         status,
         riskValues,
-        customAspectStates,
-        customLinkStates,
+        effectiveCustomAspectStates,
+        effectiveCustomLinkStates,
         appliedCatalogItem);
   }
 }
