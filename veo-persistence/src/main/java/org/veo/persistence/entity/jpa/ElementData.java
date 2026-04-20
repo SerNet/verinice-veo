@@ -227,7 +227,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     domainAssociations.add(new ElementDomainAssociationData(domain, this, subType, status));
 
     // apply identically-defined custom aspects from old domains to new domain
-    copyOf(customAspects).forEach(this::applyCustomAspect);
+    copyOf(customAspects).forEach(customAspect -> applyCustomAspect(customAspect, true));
   }
 
   @Override
@@ -354,9 +354,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public boolean removeCustomAspect(CustomAspect customAspect) {
+  public boolean removeCustomAspect(CustomAspect customAspect, boolean sync) {
     requireAssociationWithDomain(customAspect.getDomain());
-    return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
+    return getTargetDomainsForCustomAspectChange(customAspect, sync).stream()
         .map(d -> removeCustomAspectInIndividualDomain(customAspect.getType(), d))
         .toList()
         .contains(true);
@@ -368,7 +368,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     associateWithDomain(domain, item.getSubType(), item.getStatus());
     item.getCustomAspects().entrySet().stream()
         .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
-        .forEach(this::applyCustomAspect);
+        .forEach(customAspect -> applyCustomAspect(customAspect, true));
     applyItemAspects(item.getAspects(), domain);
   }
 
@@ -381,9 +381,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public boolean applyCustomAspect(CustomAspect customAspect) {
+  public boolean applyCustomAspect(CustomAspect customAspect, boolean sync) {
     requireAssociationWithDomain(customAspect.getDomain());
-    return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
+    return getTargetDomainsForCustomAspectChange(customAspect, sync).stream()
         .map(
             d ->
                 applyCustomAspectInIndividualDomain(
@@ -462,10 +462,14 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   /**
-   * @return all associated domains that have a custom aspect definition that is identical to how
-   *     given custom aspect in its domain
+   * @return if syncing, all associated domains that have a custom aspect definition that is
+   *     identical to how given custom aspect is defined in its own domain, otherwise just the CA's
+   *     domain
    */
-  private Set<Domain> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
+  private Set<Domain> getTargetDomainsForCustomAspectChange(CustomAspect ca, boolean sync) {
+    if (!sync) {
+      return Set.of(ca.getDomain());
+    }
     var definition = ca.getDomain().getCustomAspectDefinition(getType(), ca.getType());
     return getDomains().stream()
         .filter(d -> d.containsCustomAspectDefinition(getType(), ca.getType(), definition))

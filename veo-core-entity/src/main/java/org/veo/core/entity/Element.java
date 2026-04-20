@@ -112,7 +112,18 @@ public interface Element
    *
    * @return {@code true} if removed
    */
-  boolean removeCustomAspect(CustomAspect customAspect);
+  default boolean removeCustomAspect(CustomAspect customAspect) {
+    return removeCustomAspect(customAspect, true);
+  }
+
+  /**
+   * Removes given {@link CustomAspect} from this element.
+   *
+   * @param sync Whether removal should be propagated to all domains that have a definition for the
+   *     custom aspect type that is identical to the definition in the target domain.
+   * @return {@code true} if removed
+   */
+  boolean removeCustomAspect(CustomAspect customAspect, boolean sync);
 
   Set<CustomAspect> getCustomAspects();
 
@@ -204,7 +215,20 @@ public interface Element
    *
    * @return {@code true} if anything has changed on the element
    */
-  boolean applyCustomAspect(CustomAspect customAspect);
+  default boolean applyCustomAspect(CustomAspect customAspect) {
+    return applyCustomAspect(customAspect, true);
+  }
+
+  /**
+   * Applies given custom aspect, by either applying its attributes to a corresponding existing
+   * custom aspect or by adding it as a new custom aspect (if no corresponding custom aspect
+   * exists).
+   *
+   * @param sync Whether the change should be propagated to all domains that have a definition for
+   *     the given custom aspect type that is identical to the definition in the target domain.
+   * @return {@code true} if anything has changed on the element
+   */
+  boolean applyCustomAspect(CustomAspect customAspect, boolean sync);
 
   /**
    * Applies given link, by either applying its attributes to a corresponding existing link or by

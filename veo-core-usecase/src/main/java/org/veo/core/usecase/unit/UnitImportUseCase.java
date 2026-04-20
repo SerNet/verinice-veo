@@ -186,7 +186,7 @@ public class UnitImportUseCase
   private <T extends Element, TState extends ElementState<T>> void mapElement(
       TState source, IdRefResolver resolver) {
     var target = resolver.resolve(TypedId.from(source.getId(), source.getModelInterface()));
-    entityStateMapper.mapState(source, target, false, false, resolver);
+    entityStateMapper.mapState(source, target, true, false, false, resolver);
   }
 
   @Override

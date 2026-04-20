@@ -110,7 +110,22 @@ public class EntityStateMapper {
       boolean removeFromOtherDomains,
       boolean firePartsChanged,
       IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomainAssociationStates(), target, idRefResolver, removeFromOtherDomains);
+    mapState(source, target, removeFromOtherDomains, firePartsChanged, true, idRefResolver);
+  }
+
+  public <T extends Element, S extends ElementState<T>> void mapState(
+      S source,
+      T target,
+      boolean removeFromOtherDomains,
+      boolean firePartsChanged,
+      boolean syncCustomAspects,
+      IdRefResolver idRefResolver) {
+    mapToEntity(
+        source.getDomainAssociationStates(),
+        target,
+        idRefResolver,
+        removeFromOtherDomains,
+        syncCustomAspects);
     mapElement(source, target, idRefResolver);
     if (target instanceof Scope scope) {
       ScopeState scopeState = (ScopeState) source;
@@ -345,7 +360,7 @@ public class EntityStateMapper {
   }
 
   private <T extends Element> void applyCustomAspects(
-      DomainAssociationState source, T target, Domain domain) {
+      DomainAssociationState source, T target, Domain domain, boolean sync) {
 
     var customAspectStates = source.getCustomAspectStates();
     // Remove old CAs that are absent in new CAs
@@ -354,13 +369,13 @@ public class EntityStateMapper {
             oldCa ->
                 customAspectStates.stream()
                     .noneMatch(newCa -> newCa.getType().equals(oldCa.getType())))
-        .forEach(target::removeCustomAspect);
+        .forEach(customAspect -> target.removeCustomAspect(customAspect, sync));
     // Apply new CAs
     customAspectStates.forEach(
         caState -> {
           var newCa = entityFactory.createCustomAspect(caState.getType(), domain);
           newCa.setAttributes(caState.getAttributes());
-          target.applyCustomAspect(newCa);
+          target.applyCustomAspect(newCa, sync);
         });
   }
 
@@ -368,7 +383,8 @@ public class EntityStateMapper {
       Set<? extends DomainAssociationState> domains,
       Element target,
       IdRefResolver idRefResolver,
-      boolean removeFromOtherDomains) {
+      boolean removeFromOtherDomains,
+      boolean syncCustomAspects) {
     BiConsumer<Domain, DomainAssociationState> customMapper = (domain, association) -> {};
 
     if (target instanceof Process process) {
@@ -412,7 +428,8 @@ public class EntityStateMapper {
                       ((ScenarioDomainAssociationState) association).getRiskValues(), domain));
     }
 
-    mapToEntity(domains, target, idRefResolver, customMapper, removeFromOtherDomains);
+    mapToEntity(
+        domains, target, idRefResolver, customMapper, removeFromOtherDomains, syncCustomAspects);
   }
 
   private Map<RiskDefinitionRef, PotentialProbability> mapPotentialProbability(
@@ -447,7 +464,8 @@ public class EntityStateMapper {
       T target,
       IdRefResolver idRefResolver,
       BiConsumer<Domain, DomainAssociationState> customMapper,
-      boolean removeFromOtherDomains) {
+      boolean removeFromOtherDomains,
+      boolean syncCustomAspects) {
     if (removeFromOtherDomains) {
       target.getDomains().stream()
           .filter(d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getId())))
@@ -470,7 +488,7 @@ public class EntityStateMapper {
                   },
                   () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
           applyLinks(association, target, idRefResolver, domain);
-          applyCustomAspects(association, target, domain);
+          applyCustomAspects(association, target, domain, syncCustomAspects);
 
           target.setAppliedCatalogItem(
               domain,
