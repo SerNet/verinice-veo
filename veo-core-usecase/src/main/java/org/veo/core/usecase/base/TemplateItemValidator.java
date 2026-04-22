@@ -107,7 +107,7 @@ public class TemplateItemValidator {
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(
           String.format(
-              "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
+              "Expected target of link '%s' ('%s') to have subtype '%s' but found '%s'",
               linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
     }
   }

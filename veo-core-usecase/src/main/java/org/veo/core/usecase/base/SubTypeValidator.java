@@ -37,22 +37,16 @@ class SubTypeValidator {
   static List<ValidationError> getErrors(
       DomainBase domain, String subType, String status, ElementType modelType) {
     if (subType == null)
-      return List.of(
-          new ValidationError.Generic(
-              "Cannot assign element to domain without specifying a sub type"));
+      return List.of(ValidationError.localized("error_domain_association_without_sub_type"));
 
     var definition = domain.getElementTypeDefinition(modelType).getSubTypes().get(subType);
     if (definition == null) {
       return List.of(
-          new ValidationError.Generic(
-              String.format(
-                  "Sub type '%s' is not defined for element type %s",
-                  subType, modelType.getSingularTerm())));
+          ValidationError.localized(
+              "error_sub_type_not_defined", subType, modelType.getSingularTerm()));
     }
     if (!definition.getStatuses().contains(status)) {
-      return List.of(
-          new ValidationError.Generic(
-              String.format("Status '%s' is not allowed for sub type '%s'", status, subType)));
+      return List.of(ValidationError.localized("error_status_not_defined", status, subType));
     }
     return new ArrayList<>();
   }

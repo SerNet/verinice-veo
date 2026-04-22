@@ -56,6 +56,7 @@ class ElementMigrationServiceSpec extends Specification{
                     ]
                 }
             ]
+            translations >> [:]
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
@@ -97,6 +98,7 @@ class ElementMigrationServiceSpec extends Specification{
                     ]
                 }
             ]
+            translations >> [:]
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
@@ -132,6 +134,7 @@ class ElementMigrationServiceSpec extends Specification{
                     targetSubType >> "PER_Person"
                 }
             ]
+            translations >> [:]
         }
         def targetPerson = Mock(Element) {
             type >> ElementType.PERSON
@@ -177,6 +180,7 @@ class ElementMigrationServiceSpec extends Specification{
                     targetSubType >> "PER_Person"
                 }
             ]
+            translations >> [:]
         }
         def targetPerson = Mock(Element) {
             type >> ElementType.PERSON
@@ -218,6 +222,7 @@ class ElementMigrationServiceSpec extends Specification{
                     ]
                 }
             ]
+            translations >> [:]
         }
         def element = Spy(Element) {
             it.idAsString >> randomUUID()
@@ -263,6 +268,7 @@ class ElementMigrationServiceSpec extends Specification{
                     targetSubType >> "AST_Server"
                 },
             ]
+            translations >> [:]
         }
         def veryNiceTargetPerson = Spy(Element) {
             type >> ElementType.PERSON

@@ -216,7 +216,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
+        response.message.endsWith("Invalid target object type 'process' for link type 'process_manager'")
     }
 
     def "cannot import template with missing catalog item ID"() {
@@ -256,7 +256,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Sub type 'PRO_fit' is not defined for element type process")
+        response.message.endsWith("Subtype 'PRO_fit' is not defined for element type process")
     }
 
     def "cannot import template with sub-type-less catalog item"() {
@@ -269,7 +269,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Cannot assign element to domain without specifying a sub type")
+        response.message.endsWith("Cannot assign element to domain without specifying a subtype")
     }
 
     def "cannot import template where profile item has invalid risk values"() {

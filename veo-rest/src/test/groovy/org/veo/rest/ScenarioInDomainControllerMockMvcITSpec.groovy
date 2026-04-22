@@ -386,7 +386,7 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         UnprocessableDataException e2 = thrown()
-        e2.message == "Invalid catalog item reference from domain 'DS-GVO'."
+        e2.message == "Invalid catalog item reference from domain 'DS-GVO'"
     }
 
     // TODO #3274: review this wrt. #3622

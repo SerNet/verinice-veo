@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -120,10 +122,8 @@ public class DomainSensitiveElementValidator {
               DomainBase ciDomain = catalogItem.getDomainBase();
               if (!ciDomain.equals(domain)) {
                 errors.add(
-                    new ValidationError.Generic(
-                        String.format(
-                            "Invalid catalog item reference from domain '%s'.",
-                            ciDomain.getName())));
+                    ValidationError.localized(
+                        "error_invalid_catalog_item_domain", ciDomain.getName()));
               }
             });
 
@@ -152,9 +152,9 @@ public class DomainSensitiveElementValidator {
         ca.getDomain()
             .getElementTypeDefinition(element.getType())
             .getCustomAspectDefinition(ca.getType());
+    // TODO #919 include translated CA name in the error message
     var errors =
-        ValidationError.mergeIfAny(
-            String.format("Invalid attributes for custom aspect type '%s'", ca.getType()),
+        new ArrayList<>(
             AttributeValidator.getErrors(
                 ca.getAttributes(), caDefinition.getAttributeDefinitions()));
     var conflictingDomains =
@@ -175,7 +175,8 @@ public class DomainSensitiveElementValidator {
             .toList();
     if (!conflictingDomains.isEmpty()) {
       errors.add(
-          new ValidationError.CustomAspectConflict(ca.getType(), conflictingDomains, element));
+          ValidationError.customAspectConflict(
+              ca.getType(), ca.getDomain(), conflictingDomains, element));
     }
     return errors;
   }
@@ -187,20 +188,20 @@ public class DomainSensitiveElementValidator {
       Map<String, Object> attributes,
       Domain domain) {
     ElementType modelType = source.getType();
-    var linkDefinition = domain.getElementTypeDefinition(modelType).getLinks().get(linkType);
+    ElementTypeDefinition etd = domain.getElementTypeDefinition(modelType);
+    var linkDefinition = etd.getLinks().get(linkType);
     if (linkDefinition == null) {
       return List.of(
-          new ValidationError.Generic(
-              String.format(
-                  "Link type '%s' is not defined for element type '%s'",
-                  linkType, modelType.getSingularTerm())));
+          ValidationError.localized(
+              "error_link_type_not_defined", linkType, modelType.getSingularTerm()));
     }
     var errors = new ArrayList<ValidationError>();
     errors.addAll(getLinkTargetTypeErrors(linkType, target.getType(), linkDefinition));
     errors.addAll(getLinkTargetSubTypeErrors(linkType, target, domain, linkDefinition));
     errors.addAll(
         ValidationError.mergeIfAny(
-            String.format("Invalid attributes for link type '%s'c", linkType),
+            ValidationError.localized(
+                "error_invalid_link_attributes", List.of(l -> etd.findTranslation(l, linkType))),
             AttributeValidator.getErrors(attributes, linkDefinition.getAttributeDefinitions())));
     return errors;
   }
@@ -209,10 +210,8 @@ public class DomainSensitiveElementValidator {
       String linkType, ElementType targetType, LinkDefinition linkDefinition) {
     if (linkDefinition.getTargetType() != targetType) {
       return List.of(
-          new ValidationError.Generic(
-              String.format(
-                  "Invalid target type '%s' for link type '%s'",
-                  targetType.getSingularTerm(), linkType)));
+          ValidationError.localized(
+              "error_invalid_link_target_type", targetType.getSingularTerm(), linkType));
     }
     return new ArrayList<>();
   }
@@ -222,10 +221,12 @@ public class DomainSensitiveElementValidator {
     var targetSubType = target.findSubType(domain).orElse(null);
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       return List.of(
-          new ValidationError.Generic(
-              String.format(
-                  "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
-                  linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType)));
+          ValidationError.localized(
+              "error_invalid_link_target_sub_type",
+              linkType,
+              target.getName(),
+              linkDefinition.getTargetSubType(),
+              targetSubType));
     }
     return new ArrayList<>();
   }
@@ -236,37 +237,39 @@ public class DomainSensitiveElementValidator {
         domain
             .getElementTypeDefinition(riskAffected.getType())
             .getControlImplementationDefinition();
-    for (var ci : riskAffected.getControlImplementations()) {
-      var ciCAs = ci.getCustomAspects(domain);
-      if (ciCAs.isEmpty()) {
-        continue;
-      }
-      if (!ci.getControl().getDomains().contains(domain)) {
-        return List.of(
-            new ValidationError.Generic(
-                "Cannot add custom aspects to a control implementation for domain '%s' because the control is not associated with it."
-                    .formatted(domain.getName())));
-      }
-      for (var entry : ciCAs.entrySet()) {
-        String caType = entry.getKey();
-        Map<String, Object> attributes = entry.getValue();
-        if (ciDef == null || !ciDef.getCustomAspects().containsKey(caType)) {
-          return List.of(
-              new ValidationError.Generic(
-                  "Custom aspect type '%s' is not defined for control implementations on element type '%s'."
-                      .formatted(caType, riskAffected.getType().getSingularTerm())));
-        }
-        var caDefinition = ciDef.getCustomAspects().get(caType);
-        try {
-          AttributeValidator.validate(attributes, caDefinition.getAttributeDefinitions());
-        } catch (IllegalArgumentException ex) {
-          return List.of(
-              new ValidationError.Generic(
-                  "Invalid attributes for CI custom aspect type '%s': %s"
-                      .formatted(caType, ex.getMessage())));
-        }
-      }
-    }
-    return List.of();
+    return riskAffected.getControlImplementations().stream()
+        .map(
+            ci -> {
+              var ciCAs = ci.getCustomAspects(domain);
+              if (ciCAs.isEmpty()) {
+                return new ArrayList<ValidationError>();
+              }
+              if (!ci.getControl().getDomains().contains(domain)) {
+                return List.of(
+                    ValidationError.localized(
+                        "error_ci_custom_aspect_domain_not_associated_with_control",
+                        domain.getName()));
+              }
+              return ciCAs.entrySet().stream()
+                  .map(
+                      entry -> {
+                        String caType = entry.getKey();
+                        Map<String, Object> attributes = entry.getValue();
+                        if (ciDef == null || !ciDef.getCustomAspects().containsKey(caType)) {
+                          return List.of(
+                              ValidationError.localized(
+                                  "error_ci_custom_aspect_not_defined",
+                                  caType,
+                                  riskAffected.getType().getSingularTerm()));
+                        }
+                        var caDefinition = ciDef.getCustomAspects().get(caType);
+                        return AttributeValidator.getErrors(
+                            attributes, caDefinition.getAttributeDefinitions());
+                      })
+                  .flatMap(Collection::stream)
+                  .toList();
+            })
+        .flatMap(Collection::stream)
+        .toList();
   }
 }

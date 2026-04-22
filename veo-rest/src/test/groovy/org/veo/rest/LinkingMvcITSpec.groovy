@@ -300,7 +300,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         UnprocessableDataException ex = thrown()
-        ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
+        ex.message == "Invalid target object type 'scope' for link type 'linkToNormalPerson'"
 
         when: "posting a scope with an invalid link"
         post("/domains/$domainId/scopes", [
@@ -323,7 +323,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         ex = thrown()
-        ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
+        ex.message == "Invalid target object type 'scope' for link type 'linkToNormalPerson'"
     }
 
     def "link target sub type is validated"() {
@@ -414,7 +414,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         UnprocessableDataException ex = thrown()
-        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
+        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have subtype 'Nice' but found 'Normal'"
 
         when: "posting a scope with an invalid link"
         post("/domains/$domainId/scopes", [
@@ -437,6 +437,6 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         ex = thrown()
-        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
+        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have subtype 'Nice' but found 'Normal'"
     }
 }

@@ -292,7 +292,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def ex = thrown(Exception)
-        ex.message == "Cannot set impact reason for category 'I' (user-defined impact value absent)"
+        ex.message == "Cannot set impact reason for category 'I' (user-defined impact value missing)"
     }
 
     def "can't specify an explanation without a user-defined impact"() {
@@ -319,7 +319,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
         then:
         def ex = thrown(Exception)
-        ex.message == "Cannot set impact explanation for category 'I' (user-defined impact value absent)"
+        ex.message == "Cannot set impact explanation for category 'I' (user-defined impact value missing)"
     }
 
     // TODO #2585 remove (automatism is only needed until the frontend can manage the impact maps correctly)

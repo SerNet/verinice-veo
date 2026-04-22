@@ -53,17 +53,15 @@ public class AttributeValidator {
       String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
     var attrDefinition = definitions.get(attrKey);
     if (attrDefinition == null) {
-      return List.of(
-          new ValidationError.Generic(String.format("Attribute '%s' is not defined", attrKey)));
+      return List.of(ValidationError.localized("error_attribute_not_defined", attrKey));
     }
+
     try {
       attrDefinition.validate(attrValue);
     } catch (InvalidAttributeException e) {
       return List.of(
-          new ValidationError.Generic(
-              String.format(
-                  "Invalid value '%s' for attribute '%s': %s",
-                  attrValue, attrKey, e.getMessage())));
+          ValidationError.localized(
+              "error_invalid_attribute_value", attrValue, attrKey, e.getMessage()));
     }
     return Collections.emptyList();
   }

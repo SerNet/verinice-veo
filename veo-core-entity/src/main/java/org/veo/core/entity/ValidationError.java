@@ -18,132 +18,121 @@
 package org.veo.core.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.veo.core.entity.exception.UnprocessableDataException;
-import org.veo.core.entity.inspection.Finding;
-import org.veo.core.entity.inspection.Severity;
+import org.slf4j.LoggerFactory;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 public interface ValidationError {
-  String message();
+  String getMessage(Locale locale);
 
-  Finding toDomainUpdateFinding(Domain domain);
+  static ValidationError localized(String messageKey, Object... messageArgs) {
+    return localized(
+        messageKey,
+        Arrays.stream(messageArgs)
+            .map(s -> (Function<Locale, Object>) (_) -> s == null ? "-" : s.toString())
+            .toList());
+  }
+
+  static ValidationError localized(String messageKey, List<Function<Locale, Object>> messageArgs) {
+    return locale -> {
+      ResourceBundle messages = ResourceBundle.getBundle("validation", locale);
+      try {
+        var template = messages.getString(messageKey);
+        return template.formatted(messageArgs.stream().map(a -> a.apply(locale)).toArray());
+      } catch (Exception ex) {
+        LoggerFactory.getLogger(ValidationError.class)
+            .warn(
+                "Failed building error message '{}' for locale {} with {} args",
+                messageKey,
+                locale,
+                messageArgs.size(),
+                ex);
+        return messageKey;
+      }
+    };
+  }
+
+  static ValidationError customAspectConflict(
+      String caType, Domain domain, List<Domain> conflictingDomains, Element element) {
+    return localized(
+        "error_custom_aspect_conflict",
+        List.of(
+            l -> domain.getTranslations(l).getName(),
+            _ -> domain.getTemplateVersion(),
+            l -> formatConflictingDomains(conflictingDomains, l),
+            l -> formatConflictingAttributes(element, caType, domain, conflictingDomains, l)));
+  }
 
   static void throwOnErrors(Collection<ValidationError> errors) {
     if (!errors.isEmpty()) {
       throw new UnprocessableDataException(
-          errors.stream().map(ValidationError::message).collect(Collectors.joining(", ")));
+          errors.stream().map(e -> e.getMessage(Locale.ENGLISH)).collect(Collectors.joining(", ")));
     }
   }
 
   static List<ValidationError> mergeIfAny(
-      String wrapperMessage, Collection<ValidationError> innerErrors) {
+      ValidationError summary, Collection<ValidationError> innerErrors) {
     if (innerErrors.isEmpty()) {
       return new ArrayList<>();
     }
-    return List.of(
-        new ValidationError.Generic(
-            wrapperMessage
-                + ": "
-                + innerErrors.stream()
-                    .map(ValidationError::message)
-                    .collect(Collectors.joining(", "))));
+    return List.of(concat(List.of(summary, concat(innerErrors, ", ")), ": "));
   }
 
-  // TODO replace this fallback type with specific errors with multilingual and more helpful
-  // messages
-  record Generic(String message) implements ValidationError {
-    @Override
-    public Finding toDomainUpdateFinding(Domain domain) {
-      return new Finding(
-          Severity.WARNING,
-          TranslatedText.of(
-              Map.of(
-                  "en",
-                  "The object cannot be migrated to the new domain version %s: %s"
-                      .formatted(domain.getTemplateVersion(), message))),
-          Collections.emptyList());
-    }
+  static ValidationError concat(Collection<ValidationError> errors, String glue) {
+    return locale ->
+        errors.stream().map(e -> e.getMessage(locale)).collect(Collectors.joining(glue));
   }
 
-  record CustomAspectConflict(String caType, List<Domain> conflictingDomains, Element element)
-      implements ValidationError {
-    @Override
-    public String message() {
-      return "Custom aspect '%s' is shared with the domains %s, but element has conflicting values for the custom aspect in those domains."
-          .formatted(
-              caType,
-              conflictingDomains.stream()
-                  .map(d -> "%s %s".formatted(d.getName(), d.getTemplateVersion()))
-                  .collect(Collectors.joining(", ")));
-    }
+  private static String formatConflictingDomains(
+      Collection<Domain> conflictingDomains, Locale locale) {
+    return String.join(
+        ", ", conflictingDomains.stream().map(d -> d.getTranslations(locale).getName()).toList());
+  }
 
-    @Override
-    public Finding toDomainUpdateFinding(Domain domain) {
-      return new Finding(Severity.WARNING, getDescription(domain), Collections.emptyList());
-    }
-
-    @NonNull
-    private TranslatedText getDescription(Domain domain) {
-      return TranslatedText.of(
-          Map.of(
-              "en",
-              "The object cannot be migrated to the new domain version %s. In the new version, some attributes are shared with other domains (%s), but the object has deviating values in those domains:%n%n%s%n%nPlease edit this object here or in the other domains to align the deviating values."
-                  .formatted(
-                      domain.getTemplateVersion(),
-                      formatConflictingDomains(Locale.ENGLISH),
-                      formatConflictingAttributes(domain, Locale.ENGLISH)),
-              "de",
-              "Das Objekt ist nicht migrierbar auf die neue Domänen-Version %s. In der neuen Version werden einige Attribute gemeinsam genutzt mit anderen Domänen (%s). Dieses Objekt hat jedoch dort abweichende Werte:%n%n%s%n%nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
-                  .formatted(
-                      domain.getTemplateVersion(),
-                      formatConflictingDomains(Locale.GERMAN),
-                      formatConflictingAttributes(domain, Locale.GERMAN))));
-    }
-
-    private String formatConflictingDomains(Locale locale) {
-      return String.join(
-          ", ", conflictingDomains.stream().map(d -> d.getTranslations(locale).getName()).toList());
-    }
-
-    private String formatConflictingAttributes(Domain domain, Locale locale) {
-      // All conflicting domains should have the same values, so any of them will do for the
-      // comparison.
-      var otherDomain = conflictingDomains.getFirst();
-      var ourAttributes =
-          element
-              .findCustomAspect(domain, caType)
-              .map(CustomAspect::getAttributes)
-              .orElse(Collections.emptyMap());
-      var otherAttributes =
-          element
-              .findCustomAspect(otherDomain, caType)
-              .map(CustomAspect::getAttributes)
-              .orElse(Collections.emptyMap());
-      var etd = otherDomain.getElementTypeDefinition(element.getType());
-      return Stream.concat(ourAttributes.keySet().stream(), otherAttributes.keySet().stream())
-          .distinct()
-          .filter(
-              attrKey -> !Objects.equals(ourAttributes.get(attrKey), otherAttributes.get(attrKey)))
-          .map(
-              attrKey ->
-                  "* %s: %s"
-                      .formatted(
-                          otherDomain
-                              .getElementTypeDefinition(element.getType())
-                              .findTranslation(locale, attrKey),
-                          etd.localizeCustomAspectAttributeValue(
-                              caType, attrKey, otherAttributes.get(attrKey), locale)))
-          .collect(Collectors.joining("\n"));
-    }
+  private static String formatConflictingAttributes(
+      Element element,
+      String caType,
+      Domain domain,
+      List<Domain> conflictingDomains,
+      Locale locale) {
+    // All conflicting domains should have the same values, so any of them will do for the
+    // comparison.
+    var otherDomain = conflictingDomains.getFirst();
+    var ourAttributes =
+        element
+            .findCustomAspect(domain, caType)
+            .map(CustomAspect::getAttributes)
+            .orElse(Collections.emptyMap());
+    var otherAttributes =
+        element
+            .findCustomAspect(otherDomain, caType)
+            .map(CustomAspect::getAttributes)
+            .orElse(Collections.emptyMap());
+    var etd = otherDomain.getElementTypeDefinition(element.getType());
+    return Stream.concat(ourAttributes.keySet().stream(), otherAttributes.keySet().stream())
+        .distinct()
+        .filter(
+            attrKey -> !Objects.equals(ourAttributes.get(attrKey), otherAttributes.get(attrKey)))
+        .map(
+            attrKey ->
+                "* %s: %s"
+                    .formatted(
+                        otherDomain
+                            .getElementTypeDefinition(element.getType())
+                            .findTranslation(locale, attrKey),
+                        etd.localizeCustomAspectAttributeValue(
+                            caType, attrKey, otherAttributes.get(attrKey), locale)))
+        .collect(Collectors.joining("\n"));
   }
 }

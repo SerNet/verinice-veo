@@ -20,6 +20,8 @@ package org.veo.core.usecase.inspection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +31,10 @@ import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.TranslatedText;
+import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.inspection.Severity;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.TemplateItems;
@@ -73,7 +78,24 @@ public class Inspector {
               domainChangeService.transferCustomization(domain, tempDomain);
               tempDomain.migrate(List.of(element), domain);
               return DomainSensitiveElementValidator.getErrors(element, tempDomain).stream()
-                  .map(e -> e.toDomainUpdateFinding(tempDomain))
+                  .map(
+                      e ->
+                          ValidationError.concat(
+                              List.of(
+                                  ValidationError.localized(
+                                      "warning_element_not_migratable_to_new_domain",
+                                      tempDomain.getTemplateVersion()),
+                                  e),
+                              ": "))
+                  .map(
+                      e ->
+                          new Finding(
+                              Severity.WARNING,
+                              TranslatedText.of(
+                                  Map.of(
+                                      "en", e.getMessage(Locale.ENGLISH),
+                                      "de", e.getMessage(Locale.GERMAN))),
+                              List.of()))
                   .toList();
             })
         .orElse(Collections.emptyList());

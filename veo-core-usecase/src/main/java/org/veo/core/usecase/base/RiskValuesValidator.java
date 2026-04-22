@@ -55,7 +55,7 @@ class RiskValuesValidator {
           try {
             validator.validate(probability.potentialProbability());
           } catch (RiskConsistencyException ex) {
-            errors.add(new ValidationError.Generic(ex.getMessage()));
+            errors.add(ValidationError.localized(ex.getMessage()));
           }
         });
     return errors;
@@ -74,7 +74,7 @@ class RiskValuesValidator {
                     try {
                       validator.validate(category, impactRef);
                     } catch (RiskConsistencyException ex) {
-                      errors.add(new ValidationError.Generic(ex.getMessage()));
+                      errors.add(ValidationError.localized(ex.getMessage()));
                     }
                   });
           // TODO #2663 Add a test for this. This validation becomes relevant when the automatism
@@ -86,9 +86,8 @@ class RiskValuesValidator {
                   cat -> {
                     if (!impact.potentialImpactReasons().containsKey(cat)) {
                       errors.add(
-                          new ValidationError.Generic(
-                              "Reason missing for user-defined impact value in category '%s'"
-                                  .formatted(cat.getIdRef())));
+                          ValidationError.localized(
+                              "error_user_defined_impact_without_reason", cat.getIdRef()));
                     }
                   });
           impact
@@ -98,9 +97,8 @@ class RiskValuesValidator {
                   cat -> {
                     if (!impact.potentialImpacts().containsKey(cat)) {
                       errors.add(
-                          new ValidationError.Generic(
-                              "Cannot set impact reason for category '%s' (user-defined impact value absent)"
-                                  .formatted(cat.getIdRef())));
+                          ValidationError.localized(
+                              "error_impact_reason_without_user_defined_impact", cat.getIdRef()));
                     }
                   });
           impact
@@ -110,9 +108,9 @@ class RiskValuesValidator {
                   cat -> {
                     if (!impact.potentialImpacts().containsKey(cat)) {
                       errors.add(
-                          new ValidationError.Generic(
-                              "Cannot set impact explanation for category '%s' (user-defined impact value absent)"
-                                  .formatted(cat.getIdRef())));
+                          ValidationError.localized(
+                              "error_impact_explanation_without_user_defined_impact",
+                              cat.getIdRef()));
                     }
                   });
         });

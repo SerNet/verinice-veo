@@ -244,7 +244,7 @@ class UnitImportRestTest extends VeoRestTest {
 
         then: "the exported unit cannot be imported"
         with(post("/units/import", exportedUnit, 422).body) {
-            message == "Status 'NEW' is not allowed for sub type 'Ctl'"
+            message == "Status 'NEW' is not allowed for subtype 'Ctl'"
         }
 
         when: "fixing the control's status in the exported unit"

@@ -125,7 +125,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         UnprocessableDataException ex = thrown()
 
         and: "the reason is given"
-        ex.message == "Sub type 'CTL_Foo' is not defined for element type control"
+        ex.message == "Subtype 'CTL_Foo' is not defined for element type control"
     }
 
     def "status is validated"() {
@@ -155,7 +155,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         then: "an exception is thrown"
         ex = thrown(UnprocessableDataException)
-        ex.message == "Status 'CRAZY' is not allowed for sub type 'CTL_TOM'"
+        ex.message == "Status 'CRAZY' is not allowed for subtype 'CTL_TOM'"
 
         when: "posting a control with a valid status"
         post("/domains/$domainId/controls", [
