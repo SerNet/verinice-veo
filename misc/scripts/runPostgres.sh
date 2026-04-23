@@ -10,5 +10,5 @@ docker run\
   -e POSTGRES_DB=veo\
   -d\
   -p 5434:5432\
-  postgres:13.14-alpine
+  postgres:13.23-alpine
   

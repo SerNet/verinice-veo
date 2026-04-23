@@ -71,7 +71,7 @@ test:
   script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   interruptible: true
   services:
-  - name: postgres:13.14-alpine
+  - name: postgres:13.23-alpine
     alias: db
     variables:
       POSTGRES_USER: test
@@ -122,7 +122,7 @@ http_rest_tests:
   rules:
     - !reference [ .verification, rules ]
   services:
-  - name: postgres:13.14-alpine
+  - name: postgres:13.23-alpine
     alias: db
     variables:
       POSTGRES_PASSWORD: test
