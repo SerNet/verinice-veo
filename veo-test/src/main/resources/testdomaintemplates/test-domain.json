@@ -4,6 +4,11 @@
   "abbreviation": "td",
   "authority": "SERNET",
   "templateVersion": "1.0.0",
+  "translations": {
+    "en": {
+      "name": "test-domain"
+    }
+  },
   "catalogItems": [
     {
       "name": "Control-2",
@@ -173,6 +178,29 @@
             }
           }
         }
+      },
+      "translations": {
+        "en": {
+          "rdp": "link_rdp",
+          "ssh": "link_ssh",
+          "admin": "link_name_admin",
+          "howBadly": "test",
+          "musthave": "link_musthave",
+          "physical": "link_physical",
+          "requires": "link_name_requires",
+          "wouldbenice": "link_wouldbenice",
+          "accessProtocol": "test",
+          "totalCapacityInTb": "totalCapacityInTb",
+          "asset_Server_plural": "Server",
+          "asset_Server_singular": "Server",
+          "asset_Information_plural": "Information",
+          "asset_Server_status_DOWN": "DOWN",
+          "ifnothingelseisavailable": "link_ifnothingelseisavailable",
+          "asset_Information_singular": "Information",
+          "asset_Server_status_RUNNING": "RUNNING",
+          "asset_Information_status_CURRENT": "CURRENT",
+          "asset_Information_status_OUTDATED": "OUTDATED"
+        }
       }
     },
     "control": {
@@ -210,6 +238,18 @@
             "OLD"
           ]
         }
+      },
+      "translations": {
+        "en": {
+          "chapters": "test",
+          "literature": "link_name_literature",
+          "explanation": "explanation",
+          "control_TOM_plural": "TOM",
+          "control_TOM_singular": "TOM",
+          "control_TOM_status_NEW": "NEW",
+          "control_TOM_status_OLD": "OLD",
+          "Control_details_Control": "link_name_Control_details_Control"
+        }
       }
     },
     "document": {
@@ -240,6 +280,17 @@
             "OUTDATED"
           ]
         }
+      },
+      "translations": {
+        "en": {
+          "author": "link_name_author",
+          "numberOfPages": "numberOfPages",
+          "writingFinished": "test",
+          "document_Manual_plural": "Manual",
+          "document_Manual_singular": "Manual",
+          "document_Manual_status_CURRENT": "CURRENT",
+          "document_Manual_status_OUTDATED": "OUTDATED"
+        }
       }
     },
     "incident": {
@@ -269,6 +320,17 @@
               "type": "boolean"
             }
           }
+        }
+      },
+      "translations": {
+        "en": {
+          "takesAllTheBlame": "test",
+          "timeOfOccurrence": "timeOfOccurrence",
+          "responsiblePerson": "link_name_responsiblePerson",
+          "incident_DISASTER_plural": "DISASTER",
+          "incident_DISASTER_singular": "DISASTER",
+          "incident_DISASTER_status_DETECTED": "DETECTED",
+          "incident_DISASTER_status_INVESTIGATED": "INVESTIGATED"
         }
       }
     },
@@ -305,6 +367,21 @@
               "type": "date"
             }
           }
+        }
+      },
+      "translations": {
+        "en": {
+          "employer": "link_name_employer",
+          "dateOfBirth": "dateOfBirth",
+          "employedSince": "test",
+          "person_Programmer_plural": "Programmer",
+          "person_Programmer_singular": "Programmer",
+          "person_MasterOfDisaster_plural": "MasterOfDisaster",
+          "person_Programmer_status_CODING": "CODING",
+          "person_MasterOfDisaster_singular": "MasterOfDisaster",
+          "person_Programmer_status_REVIEWING": "REVIEWING",
+          "person_MasterOfDisaster_status_CAUSING_REAL_DISASTERS": "CAUSING_REAL_DISASTERS",
+          "person_MasterOfDisaster_status_WATCHING_DISASTER_MOVIES": "WATCHING_DISASTER_MOVIES"
         }
       }
     },
@@ -393,6 +470,16 @@
             }
           }
         }
+      },
+      "translations": {
+        "en": {
+          "expert": "link_name_expert",
+          "experienceSince": "test",
+          "technicalArticle": "technicalArticle",
+          "scenario_Attack_plural": "Attack",
+          "scenario_Attack_singular": "Attack",
+          "scenario_Attack_status_NEW": "NEW"
+        }
       }
     },
     "scope": {
@@ -421,6 +508,16 @@
               "type": "date"
             }
           }
+        }
+      },
+      "translations": {
+        "en": {
+          "experienceSince": "test",
+          "numberOfEmployees": "numberOfEmployees",
+          "scope_Company_plural": "Company",
+          "dataProtectionOfficer": "link_name_dataProtectionOfficer",
+          "scope_Company_singular": "Company",
+          "scope_Company_status_NEW": "NEW"
         }
       }
     }

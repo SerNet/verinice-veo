@@ -4,6 +4,13 @@
   "description": "The DS-GVO DomainTemplate.",
   "authority": "SERNET",
   "templateVersion": "1.4.0",
+  "translations": {
+    "en": {
+      "name": "DS-GVO",
+      "abbreviation": "DS-GVO",
+      "description": "The DS-GVO DomainTemplate."
+    }
+  },
   "catalogItems": [
     {
       "name": "TOM zur Verschlüsselung",

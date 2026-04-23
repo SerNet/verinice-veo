@@ -4,6 +4,11 @@
   "abbreviation": "td-612",
   "authority": "SERNET",
   "templateVersion": "1.0.0",
+  "translations": {
+    "en": {
+      "name": "td-612"
+    }
+  },
   "catalogItems": [
     {
       "name": "All controls",
@@ -77,6 +82,13 @@
           "statuses": [
             "NEW"
           ]
+        }
+      },
+      "translations": {
+        "en": {
+          "control_CTL_Control_plural": "CTL_Control",
+          "control_CTL_Control_singular": "CTL_Control",
+          "control_CTL_Control_status_NEW": "NEW"
         }
       }
     }

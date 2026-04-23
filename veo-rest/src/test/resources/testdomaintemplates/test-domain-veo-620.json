@@ -4,6 +4,11 @@
   "abbreviation": "td-620",
   "authority": "SERNET",
   "templateVersion": "1.0.0",
+  "translations": {
+    "en": {
+      "name": "td-620"
+    }
+  },
   "catalogItems": [
     {
       "name": "Asset 2",
@@ -78,6 +83,13 @@
             "NEW"
           ]
         }
+      },
+      "translations": {
+        "en": {
+          "asset_default_plural": "default",
+          "asset_default_singular": "default",
+          "asset_default_status_NEW": "NEW"
+        }
       }
     },
     "scope": {
@@ -86,6 +98,13 @@
           "statuses": [
             "NEW"
           ]
+        }
+      },
+      "translations": {
+        "en": {
+          "scope_default_plural": "default",
+          "scope_default_singular": "default",
+          "scope_default_status_NEW": "NEW"
         }
       }
     }
