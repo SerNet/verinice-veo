@@ -91,7 +91,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -142,7 +142,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -194,7 +194,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -211,6 +211,59 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 'My control',
                 'My control part'
             ]
+        }
+    }
+
+    def "Import an element exported from another client (domain IDs are remapped by metadata)"() {
+        given: "a domain ID that came from another client (different UUID, same name/authority/version as testDomain3)"
+        def domainMetadataId = UUID.randomUUID()
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'Cross-client unit'
+            domains = [
+                IdRef.fromUri("/domains/${domainMetadataId}", referenceAssembler)
+            ]
+        }
+        def controlId = UUID.randomUUID()
+        def elements = [
+            new FullControlDto().tap {
+                id = controlId
+                name = 'Cross-client control'
+                domains = [
+                    (domainMetadataId): new DomainAssociationDto().tap {
+                        subType = 'TOM'
+                        status = 'NEW'
+                    }
+                ]
+            }
+        ]
+
+        when:
+        executeInTransaction {
+            useCase.execute(
+                    new UnitImportUseCase.InputData(
+                    unitDto, elements as Set, [] as Set,
+                    [
+                        new UnitImportUseCase.DomainMetadata(
+                        domainMetadataId,
+                        testDomain3.name,
+                        testDomain3.authority,
+                        testDomain3.templateVersion.toString()
+                        )
+                    ] as Set
+                    ),
+                    NoRestrictionAccessRight.from(client.idAsString, 2, 2)
+                    )
+        }
+        def controls = executeInTransaction {
+            controlDataRepository.findAll().tap { it*.domainAssociations*.domain*.id }
+        }
+
+        then: "the control is associated with the client's domain — the exported domain ID was remapped by name/authority/version"
+        controls.size() == 1
+        with(controls.first()) {
+            domainAssociations.size() == 1
+            domainAssociations.first().domain.id == testDomain3.id
         }
     }
 
@@ -239,7 +292,9 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
 
         when:
         def result = executeInTransaction{
-            useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+            useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [
+                new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString())
+            ] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         }
         def unit = result.unit
         def controls = executeInTransaction{
@@ -357,7 +412,13 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = executeInTransaction { useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2)) }
+        def result = executeInTransaction {
+            useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [
+                new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString()),
+                new UnitImportUseCase.DomainMetadata(testDomain2.id, testDomain2.name, testDomain2.authority, testDomain2.templateVersion.toString()),
+                new UnitImportUseCase.DomainMetadata(testDomain3.id, testDomain3.name, testDomain3.authority, testDomain3.templateVersion.toString())
+            ] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        }
         def unit = result.unit
         def processes = executeInTransaction {
             processDataRepository.findAll().tap {
@@ -466,7 +527,11 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        executeInTransaction { useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2)) }
+        executeInTransaction {
+            useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [
+                new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString())
+            ] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        }
         def processes = executeInTransaction {
             processDataRepository.findAll().tap {
                 it.controlImplementations*.control

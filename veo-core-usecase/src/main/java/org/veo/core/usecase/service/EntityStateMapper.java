@@ -58,6 +58,7 @@ import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialImpactValues;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
 import org.veo.core.entity.state.ControlImplementationState;
@@ -137,6 +138,11 @@ public class EntityStateMapper {
 
   public <R extends AbstractRisk<T, R>, T extends RiskAffected<T, R>> R mapState(
       RiskState<R, T> source, DbIdRefResolver resolver) {
+    return mapState(source, resolver, Map.of());
+  }
+
+  public <R extends AbstractRisk<T, R>, T extends RiskAffected<T, R>> R mapState(
+      RiskState<R, T> source, IdRefResolver resolver, Map<UUID, UUID> domainIdMapping) {
     var element = resolver.resolve(source.getOwnerRef());
     var scenario = resolver.resolve(source.getScenarioRef());
     var target = element.obtainRisk(scenario);
@@ -144,7 +150,25 @@ public class EntityStateMapper {
         Optional.ofNullable(source.getRiskOwnerRef()).map(resolver::resolve).orElse(null));
     target.mitigate(
         Optional.ofNullable(source.getMitigationRef()).map(resolver::resolve).orElse(null));
-    target.defineRiskValues(source.getRiskValues());
+    if (domainIdMapping.isEmpty()) {
+      target.defineRiskValues(source.getRiskValues());
+    } else {
+      var riskValues =
+          source.getRiskValues().stream()
+              .map(
+                  rv ->
+                      RiskValues.builder()
+                          .domainId(
+                              domainIdMapping.getOrDefault(rv.getDomainId(), rv.getDomainId()))
+                          .riskDefinitionId(rv.getRiskDefinitionId())
+                          .probability(rv.getProbability())
+                          .impactCategories(rv.getImpactCategories())
+                          .categorizedRisks(rv.getCategorizedRisks())
+                          .build())
+              .collect(Collectors.toSet());
+
+      target.defineRiskValues(riskValues);
+    }
     return target;
   }
 

@@ -161,6 +161,142 @@ class UnitImportRestTest extends VeoRestTest {
         }
     }
 
+    def "export a unit from the default client and import it for the secondary client"() {
+        given: "a unit in the default client with a scenario"
+        def unitUri = post("/units", [
+            name: "Cross client unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"],
+                [targetUri: "/domains/$dsgvoDomainId"],
+            ]
+        ]).location
+        def scenarioId = post("/domains/$testDomainId/scenarios", [
+            name: "Cross client scenario",
+            abbreviation: "CCS",
+            description: "A scenario created in the default client",
+            owner: [targetUri: unitUri],
+            subType: "Attack",
+            status: "NEW",
+        ]).body.resourceId
+
+        when: "exporting the unit from the default client"
+        def exportedUnit = get("$unitUri/export").body
+
+        and: "importing the unit into the secondary client"
+        def secondaryDomains = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body
+        def secondaryTestDomainId = secondaryDomains.find { it.name == "test-domain" }.id
+        def secondaryDsgvoDomainId = secondaryDomains.find { it.name == "DS-GVO" }.id
+        def importedUnitUri = post("/units/import", exportedUnit, 201, UserType.SECONDARY_CLIENT_USER).location
+        def importedUnitId = (importedUnitUri =~ /\/units\/(.+)/)[0][1]
+
+        then: "the imported unit is created in the secondary client"
+        with(get("/units/$importedUnitId", 200, UserType.SECONDARY_CLIENT_USER).body) {
+            name == "Cross client unit"
+            domains.size() == 2
+            domains.any { it.targetUri.endsWith("/domains/$secondaryTestDomainId") }
+            domains.any { it.targetUri.endsWith("/domains/$secondaryDsgvoDomainId") }
+        }
+
+        and: "the scenario is restored in the secondary client"
+        def importedScenario = get("/domains/$secondaryTestDomainId/scenarios?unit=$importedUnitId", 200, UserType.SECONDARY_CLIENT_USER).body.items[0]
+        with(get("/domains/$secondaryTestDomainId/scenarios/${importedScenario.id}", 200, UserType.SECONDARY_CLIENT_USER).body) {
+            name == "Cross client scenario"
+            abbreviation == "CCS"
+            status == "NEW"
+            subType == "Attack"
+        }
+    }
+
+    def "import fails if domain version does not match"() {
+        given: "a unit exported with a specific domain version"
+        def unitUri = post("/units", [
+            name: "Version mismatch unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).location
+
+        def exportedUnit = get("$unitUri/export").body
+        exportedUnit.domains[0].templateVersion = "9999.0.0"
+
+        when: "importing into the secondary client"
+        def response = post("/units/import", exportedUnit, 422, UserType.SECONDARY_CLIENT_USER)
+
+        then: "a helpful version mismatch error is returned"
+        '''Domain 'test-domain' (authority: SERNET) exists in the target client but not in version 9999.0.0. Available versions: [1.0.0].'''
+    }
+
+    def "export a unit from the default client and import it with risks for the secondary client"() {
+        given: "a unit with a process risk in the default client"
+        def unitUri = post("/units", [
+            name: "Cross client risk unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"],
+            ]
+        ]).location
+        def scenarioId = post("/domains/$testDomainId/scenarios", [
+            name: "Cross client scenario",
+            owner: [targetUri: unitUri],
+            subType: "Attack",
+            status: "NEW",
+        ]).body.resourceId
+        def processId = post("/domains/$testDomainId/processes", [
+            name: "Cross client process",
+            owner: [targetUri: unitUri],
+            subType: "BusinessProcess",
+            status: "NEW"
+        ]).body.resourceId
+        post("/processes/$processId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains: [
+                (testDomainId): [
+                    reference: [targetUri: "/domains/$testDomainId"],
+                    riskDefinitions: [
+                        riskyDef: [
+                            probability: [
+                                specificProbability: 2
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ])
+
+        when: "exporting from the default client and importing into the secondary client"
+        def exportedUnit = get("$unitUri/export").body
+        def secondaryTestDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find { it.name == "test-domain" }.id
+        def importedUnitUri = post("/units/import", exportedUnit, 201, UserType.SECONDARY_CLIENT_USER).location
+        def importedUnitId = (importedUnitUri =~ /\/units\/(.+)/)[0][1]
+
+        then: "the risk is imported with its domain correctly remapped to the secondary client's domain"
+        def importedProcessId = get("/domains/$secondaryTestDomainId/processes?unit=$importedUnitId", 200, UserType.SECONDARY_CLIENT_USER).body.items[0].id
+        def importedScenarioId = get("/domains/$secondaryTestDomainId/scenarios?unit=$importedUnitId", 200, UserType.SECONDARY_CLIENT_USER).body.items[0].id
+        with(get("/processes/$importedProcessId/risks/$importedScenarioId", 200, UserType.SECONDARY_CLIENT_USER).body) {
+            domains[secondaryTestDomainId] != null
+            domains[secondaryTestDomainId].riskDefinitions.riskyDef.probability.specificProbability == 2
+        }
+    }
+
+    def "import fails if domain is missing in target client"() {
+        given: "a unit exported with a domain"
+        def unitUri = post("/units", [
+            name: "Missing domain unit",
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
+            ]
+        ]).location
+
+        def exportedUnit = get("$unitUri/export").body
+        exportedUnit.domains[0].name = "missing-domain"
+        exportedUnit.domains[0].authority = "missing-authority"
+
+        when: "importing into the secondary client"
+        def response = post("/units/import", exportedUnit, 422, UserType.SECONDARY_CLIENT_USER)
+
+        then: "a helpful error is returned"
+        response.body.message == "Domain 'missing-domain' (authority: missing-authority) is not available in the target client."
+    }
+
     def "existing resources are not modified"() {
         given: "a unit with a document"
         def oldUnitUri = post("/units", [

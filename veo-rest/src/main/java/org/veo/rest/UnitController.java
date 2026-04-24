@@ -298,12 +298,20 @@ public class UnitController extends AbstractEntityController {
   }
 
   private CompletableFuture<ResponseEntity<ApiResponseBody>> doImportUnit(UnitDumpDto dto) {
+    var domainMetadatas =
+        dto.getDomains().stream()
+            .map(
+                d ->
+                    new UnitImportUseCase.DomainMetadata(
+                        d.getId(), d.getName(), d.getAuthority(), d.getTemplateVersionAsString()))
+            .collect(Collectors.toSet());
     return useCaseInteractor.execute(
         unitImportUseCase,
         new UnitImportUseCase.InputData(
             dto.getUnit(),
             dto.getElements().stream().map(e -> (ElementState<?>) e).collect(Collectors.toSet()),
-            dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet())),
+            dto.getRisks().stream().map(e -> (RiskState<?, ?>) e).collect(Collectors.toSet()),
+            domainMetadatas),
         out ->
             RestApiResponse.created(
                 referenceAssembler.targetReferenceOf(out.unit()),

@@ -880,6 +880,8 @@ public class ModuleConfiguration {
   public UnitImportUseCase unitImportUseCase(
       ClientRepository clientRepository,
       UnitRepository unitRepository,
+      DomainRepository domainRepository,
+      CatalogItemRepository catalogItemRepository,
       ElementBatchCreator elementBatchCreator,
       EntityStateMapper entityStateMapper,
       RefResolverFactory refResolverFactory,
@@ -887,6 +889,8 @@ public class ModuleConfiguration {
     return new UnitImportUseCase(
         clientRepository,
         unitRepository,
+        domainRepository,
+        catalogItemRepository,
         refResolverFactory,
         entityStateMapper,
         elementBatchCreator,
