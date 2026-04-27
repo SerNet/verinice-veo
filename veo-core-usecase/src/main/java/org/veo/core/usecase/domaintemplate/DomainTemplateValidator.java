@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.domaintemplate;
 
-import com.github.zafarkhaja.semver.ParseException;
 import com.github.zafarkhaja.semver.Version;
 
 import lombok.AccessLevel;
@@ -25,14 +24,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainTemplateValidator {
-  static void validateVersion(String version) {
-    try {
-      validateVersion(Version.valueOf(version));
-    } catch (ParseException parseEx) {
-      throw new IllegalArgumentException(
-          "Version %s does not conform to Semantic Versioning 2.0.0".formatted(version), parseEx);
-    }
-  }
 
   static void validateVersion(Version version) {
     if (!version.getPreReleaseVersion().isEmpty() || !version.getBuildMetadata().isEmpty()) {
