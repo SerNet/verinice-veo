@@ -399,10 +399,6 @@ public final class EntityToDtoTransformer {
         .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
         .ifPresent(target::setNextRevisionDate);
     target.setNextRevisionBy(IdRef.from(source.getNextRevisionBy(), referenceAssembler));
-    Optional.ofNullable(source.getAssessmentDate())
-        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
-        .ifPresent(target::setAssessmentDate);
-    target.setAssessmentBy(IdRef.from(source.getAssessmentBy(), referenceAssembler));
     return target;
   }
 

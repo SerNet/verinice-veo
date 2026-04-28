@@ -159,9 +159,7 @@ public interface TemplateItem<
       @Nullable LocalDate lastRevisionDate,
       @Nullable T lastRevisionBy,
       @Nullable LocalDate nextRevisionDate,
-      @Nullable T nextRevisionBy,
-      @Nullable LocalDate assessmentDate,
-      @Nullable T assessmentBy);
+      @Nullable T nextRevisionBy);
 
   default boolean isAppliedTo(Element element) {
     return findCatalogItem()

@@ -120,11 +120,6 @@ public abstract class AbstractTemplateItemDto<
       Optional.ofNullable(riSource.getNextRevisionBy())
           .map(r -> SymIdRef.from(r, uriAssembler))
           .ifPresent(riRefDto::setNextRevisionBy);
-      riRefDto.setAssessmentDate(riSource.getAssessmentDate());
-      Optional.ofNullable(riSource.getAssessmentBy())
-          .map(r -> SymIdRef.from(r, uriAssembler))
-          .ifPresent(riRefDto::setAssessmentBy);
-
       return riRefDto;
     }
     return new TailoringReferenceDto<>();

@@ -194,9 +194,7 @@ public abstract class TemplateItemData<
           @Nullable LocalDate lastRevisionDate,
           @Nullable T lastRevisionBy,
           @Nullable LocalDate nextRevisionDate,
-          @Nullable T nextRevisionBy,
-          @Nullable LocalDate assessmentDate,
-          @Nullable T assessmentBy) {
+          @Nullable T nextRevisionBy) {
     var ref = createRequirementImplementationTailoringReference();
     add(ref, TailoringReferenceType.REQUIREMENT_IMPLEMENTATION, control);
     ref.setStatus(status);
@@ -212,8 +210,6 @@ public abstract class TemplateItemData<
     ref.setLastRevisionBy(lastRevisionBy);
     ref.setNextRevisionDate(nextRevisionDate);
     ref.setNextRevisionBy(nextRevisionBy);
-    ref.setAssessmentDate(assessmentDate);
-    ref.setAssessmentBy(assessmentBy);
 
     return ref;
   }
