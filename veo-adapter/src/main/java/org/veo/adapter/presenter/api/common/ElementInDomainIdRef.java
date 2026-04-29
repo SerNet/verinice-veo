@@ -33,14 +33,14 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ref.TypedId;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 /** Reference to an element within a specific domain, based on element ID & domain ID. */
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@SuppressFBWarnings("EQ_DOESNT_OVERRIDE_EQUALS") // TODO #4785 reevaluate
 public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TElement> {
   private final TElement element;
   private final Domain domain;

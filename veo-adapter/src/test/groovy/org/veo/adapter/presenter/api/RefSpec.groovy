@@ -20,12 +20,14 @@ package org.veo.adapter.presenter.api
 import static java.util.UUID.randomUUID
 
 import org.veo.adapter.presenter.api.common.CompoundIdRef
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
@@ -100,6 +102,64 @@ class RefSpec extends Specification {
         IdRef.from(assetWithSameId, referenceAssembler) != TypedId.from(unit1)
         TypedId.from(unit1) != IdRef.from(assetWithSameId, referenceAssembler)
         TypedId.from(unit1).hashCode() != IdRef.from(assetWithSameId, referenceAssembler).hashCode()
+    }
+
+    // TODO #4785 reevaluate this behavior
+    def "element in domain ref equals & hashcode is implemented correctly"() {
+        given:
+        def domain = Spy(Domain) {
+            id >> randomUUID()
+        }
+        def asset1 = Spy(Asset) {
+            id >> randomUUID()
+            findSubType(domain) >> Optional.of("whatever")
+            displayName >> ""
+        }
+        def asset1Doppelganger = Spy(Asset) {
+            id >> asset1.id
+            findSubType(domain) >> Optional.of("whatever")
+            displayName >> ""
+        }
+        def asset2 = Spy(Asset) {
+            id >> randomUUID()
+            findSubType(domain) >> Optional.of("whatever")
+            displayName >> ""
+        }
+        def control = Spy(Control) {
+            id >> asset1.id
+            findSubType(domain) >> Optional.of("whatever")
+            displayName >> ""
+        }
+
+        expect:
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler) == ElementInDomainIdRef.from(asset1, domain, referenceAssembler)
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode() == ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(asset1Doppelganger, domain, referenceAssembler) == ElementInDomainIdRef.from(asset1, domain, referenceAssembler)
+        ElementInDomainIdRef.from(asset1Doppelganger, domain, referenceAssembler).hashCode() == ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler) != ElementInDomainIdRef.from(asset2, domain, referenceAssembler)
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode() != ElementInDomainIdRef.from(asset2, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler) != ElementInDomainIdRef.from(control, domain, referenceAssembler)
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode() != ElementInDomainIdRef.from(control, domain, referenceAssembler).hashCode()
+
+        and:
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler) == TypedId.from(asset1)
+        TypedId.from(asset1) == ElementInDomainIdRef.from(asset1, domain, referenceAssembler)
+        TypedId.from(asset1).hashCode() == ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(asset1, domain, referenceAssembler) == TypedId.from(asset1Doppelganger)
+        TypedId.from(asset1Doppelganger) == ElementInDomainIdRef.from(asset1, domain, referenceAssembler)
+        TypedId.from(asset1Doppelganger).hashCode() == ElementInDomainIdRef.from(asset1, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(asset2, domain, referenceAssembler) != TypedId.from(asset1)
+        TypedId.from(asset1) != ElementInDomainIdRef.from(asset2, domain, referenceAssembler)
+        TypedId.from(asset1).hashCode() != ElementInDomainIdRef.from(asset2, domain, referenceAssembler).hashCode()
+
+        ElementInDomainIdRef.from(control, domain, referenceAssembler) != TypedId.from(asset1)
+        TypedId.from(asset1) != ElementInDomainIdRef.from(control, domain, referenceAssembler)
+        TypedId.from(asset1).hashCode() != ElementInDomainIdRef.from(control, domain, referenceAssembler).hashCode()
     }
 
     def "sym ref equals & hashcode is implemented correctly"() {
