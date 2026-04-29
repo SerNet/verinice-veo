@@ -24,6 +24,8 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
@@ -56,6 +58,7 @@ public class DomainAssociationDto {
       requiredMode = REQUIRED)
   String status;
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   @Schema(
       description =
           "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
