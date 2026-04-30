@@ -485,14 +485,17 @@ export function createElement(path, body, subType, domainId, unitId) {
   });
   if (result.status != 201) {
     console.error("Create element status: " + result.status);
-    console.error("Create element path: " + path);
+    console.error("Create element path: " + url);
+    console.error("Create element response body:");
+    console.error(result.body);
     console.error("Create element body:");
     console.error(JSON.stringify(body));
+  } else {
+    var elementId = result.json().resourceId;
+    check(elementId, {
+      "Element ID is returned": (r) => elementId.length == 36,
+    });
   }
-  var elementId = result.json().resourceId;
-  check(elementId, {
-    "Element ID is returned": (r) => elementId.length == 36,
-  });
   return elementId;
 }
 
