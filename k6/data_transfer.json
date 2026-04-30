@@ -3,7 +3,7 @@
   "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungsprüfung weitergeleitet ",
   "domains": {},
   "owner": {
-    "targetUri": "https://api.develop.verinice.com/veo/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+    "targetUri": "/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
   "links": {
     "process_dataType": [
@@ -11,7 +11,7 @@
         "domains": [],
         "attributes": {},
         "target": {
-          "targetUri": "https://api.develop.verinice.com/veo/assets/fd6493d6-350f-412f-be93-333d5af5e579"
+          "targetUri": "/assets/fd6493d6-350f-412f-be93-333d5af5e579"
         }
       }
     ]
