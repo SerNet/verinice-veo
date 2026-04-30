@@ -286,14 +286,14 @@ export function loadDashboard() {
   loadElementAndSleep("/domains/", domainId, 0);
   loadForms();
   loadForms();
-  loadSchema("asset");
-  loadSchema("control");
-  loadSchema("document");
-  loadSchema("incident");
-  loadSchema("person");
-  loadSchema("process");
-  loadSchema("scenario");
-  loadSchema("scope");
+  loadSchema("assets");
+  loadSchema("controls");
+  loadSchema("documents");
+  loadSchema("incidents");
+  loadSchema("persons");
+  loadSchema("processes");
+  loadSchema("scenarios");
+  loadSchema("scopes");
   loadHistory(unitId);
 }
 
@@ -335,7 +335,7 @@ export function createDataProcessing() {
   console.info("Creating data processing...");
   loadForms();
   loadProcesses(unitId, "PRO_DataProcessing");
-  loadSchema("process");
+  loadSchema("processes");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_PROCESSING, "PRO_DataProcessing",domainId,unitId);
 }
@@ -344,7 +344,7 @@ export function createApplication() {
   console.info("Creating application...");
   loadForms();
   loadAssets(unitId, "AST_Application");
-  loadSchema("asset");
+  loadSchema("assets");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", APPLICATION, "AST_Application",domainId,unitId);
 }
@@ -353,7 +353,7 @@ export function createItSystem() {
   console.info("Creating it system...");
   loadForms();
   loadAssets(unitId, "AST_IT-System");
-  loadSchema("asset");
+  loadSchema("assets");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", IT_SYSTEM, "AST_IT-System",domainId,unitId);
 }
@@ -362,7 +362,7 @@ export function createScenario() {
   console.info("Creating scenario...");
   loadForms();
   loadScenarios(unitId, "SCN_Scenario");
-  loadSchema("scenario");
+  loadSchema("scenarios");
   let scenarioString = JSON.stringify(scenario);
   scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
   scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
@@ -375,7 +375,7 @@ export function createDataTransfer() {
   console.info("Creating data transfer...");
   loadForms();
   loadScopes(unitId, "PRO_DataTransfer");
-  loadSchema("process");
+  loadSchema("processes");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_TRANSFER, "PRO_DataTransfer",domainId,unitId);
 }
@@ -384,7 +384,7 @@ export function createDataType() {
   console.info("Creating data type...");
   loadForms();
   loadAssets(unitId, "AST_Datatype");
-  loadSchema("asset");
+  loadSchema("assets");
   loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", DATA_TYPE, "AST_Datatype",domainId,unitId);
@@ -394,7 +394,7 @@ export function createTOM() {
   console.info("Creating TOM...");
   loadForms();
   loadControls(unitId, "CTL_TOM");
-  loadSchema("control");
+  loadSchema("controls");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/controls", TOM, "CTL_TOM",domainId,unitId);
 }
@@ -410,7 +410,7 @@ export function createPerson() {
   console.info("Creating person...");
   loadForms();
   loadPersons(unitId, "PER_Person");
-  loadSchema("person");
+  loadSchema("persons");
   loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/persons", PERSON, "PER_Person",domainId,unitId);
@@ -420,7 +420,7 @@ export function createResponsibleBody() {
   console.info("Creating responsible body...");
   loadForms();
   loadScopes(unitId, "SCP_ResponsibleBody");
-  loadSchema("scope");
+  loadSchema("scopes");
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
   loadPersons(unitId, "PER_Person");
@@ -436,7 +436,7 @@ export function createJointController() {
   console.info("Creating joint controller...");
   loadForms();
   loadScopes(unitId, "SCP_JointController");
-  loadSchema("scope");
+  loadSchema("scopes");
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
   loadPersons(unitId, "PER_Person");
@@ -457,6 +457,7 @@ export function createElement(path, body, subType, domainId, unitId) {
     body.domains[domainId] = {"subType":subType,"status":"NEW"};
   }
   var url = VEO_BASE_URL + path;
+
   var tag = path;
   if(tag.includes("risk")) {
     tag = "/processes/ID/risks"
@@ -638,7 +639,7 @@ export function loadHistory(unitId) {
 }
 
 export function loadSchema(type) {
-  var url = new URL(VEO_BASE_URL + "/schemas/" + type);
+  var url = new URL(VEO_BASE_URL + "/domains/" + domainId + "/"+ type + "/json-schema");
   var params = {
     headers: {
       Authorization: TOKEN,
