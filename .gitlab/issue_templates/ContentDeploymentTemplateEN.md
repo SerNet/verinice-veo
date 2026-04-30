@@ -75,13 +75,10 @@ Mark items as DONE during acceptance test. Acceptance test must be performed in 
 - [ ] Form template bundle successfully deployed
 	- [ ] STAGE
 	- [ ] DEV
-- [ ] Domains were created in __all__ clients specified above - check log files for proof or errors
-- [ ] __All__ clients' data was migrated to new domain as expected - check log files for proof or errors
 - [ ] All relevant artifacts (domain template, form template bundle, ...) are committed to GIT repository
 
 ## CC
-- [ ] Domains were created in the relevant clients as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
-- [ ] The clients' data was migrated to new domain as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
+- [ ] Domain update is offered in the relevant clients as expected (sample at least one client in each env. - this should __not__ be the content-creators' client)
 
 ## DEV
 - [ ] Ticket for `SANDBOX-/PROD-/TALOS-/...` deployments as specified above was created for Ops-Team (when all previous checks have passed)
