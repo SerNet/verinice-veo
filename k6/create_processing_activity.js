@@ -364,8 +364,9 @@ export function createScenario() {
   loadScenarios(unitId, "SCN_Scenario");
   loadSchema("scenarios");
   let scenarioString = JSON.stringify(scenario);
-  scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
-  scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
+  scenarioString = scenarioString.replaceAll("DOMAIN_ID", domainId);
+  scenarioString = scenarioString.replaceAll("VEO_BASE_URL", VEO_BASE_URL);
+  scenarioString = scenarioString.replaceAll("\"PROBABILITY\"", getRandomInt(3));
   scenario = JSON.parse(scenarioString);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scenarios", scenario, undefined, domainId,unitId);
