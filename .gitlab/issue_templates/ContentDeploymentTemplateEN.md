@@ -58,15 +58,6 @@ __DEV__: After successful AT on develop/stage, give this list of environments to
 - [ ] `TALOS-ONPREM-REFERENCE` deployment was handed over to Ops-Team
 - [ ] `...`
 
-
-## __DEV: Create domains from domain template in develop/staging environments:__
-
-1. __Limit to these clients:__ `ALL WITH PREVIOUS DOMAIN FROM SAME TEMPLATE` (default)
-1. [ ] DEV: Upload DT into specified environments
-1. [ ] DEV: Upload FTB into specified environments
-1. [ ] DEV: Create domains in specified environments
-1. [ ] DEV: Migrate clients in specified environments
-
 # Created Artifacts after successful creation
 
 - Domain template: `URL-TO-GIT-RESOURCE`
