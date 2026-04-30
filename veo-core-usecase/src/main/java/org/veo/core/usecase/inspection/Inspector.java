@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import com.github.zafarkhaja.semver.Version;
 
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
@@ -77,6 +78,19 @@ public class Inspector {
                       element.getOwner().getClient(), majorUpdate.getId(), TemplateItems.NONE);
               domainChangeService.transferCustomization(domain, tempDomain);
               tempDomain.migrate(List.of(element), domain);
+              element.getLinks(tempDomain).stream()
+                  .map(CustomLink::getTarget)
+                  .distinct()
+                  .filter(linkTarget -> !linkTarget.equals(element))
+                  .forEach(
+                      linkTarget -> {
+                        // Also associate link targets with the new domain to satisfy link target
+                        // validation.
+                        linkTarget.associateWithDomain(
+                            tempDomain,
+                            tempDomain.mapOldSubType(linkTarget.getSubType(domain)),
+                            tempDomain.mapOldStatus(linkTarget.getStatus(domain)));
+                      });
               return DomainSensitiveElementValidator.getErrors(element, tempDomain).stream()
                   .map(
                       e ->

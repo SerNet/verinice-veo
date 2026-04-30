@@ -28,6 +28,7 @@ import org.veo.core.entity.NameAbbreviationAndDescription
 import org.veo.core.entity.Translated
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -445,6 +446,63 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
             it.customAspects.basics.location = "https://something.example"
+            parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.empty
+    }
+
+    def "no false update warnings are generated for links"() {
+        given: "a domain template with a link"
+        def template = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Secure webhosting"
+            templateVersion = Version.parse("1.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Website = newSubTypeDefinition {}
+                links.hyperlinkedWebsite = newLinkDefinition(ElementType.ASSET, "Website")
+            })
+        })
+
+        and: "an asset with a link"
+        def domain = createTestDomain(client, template.id)
+        def unit = unitDataRepository.save(newUnit(client) {
+            addToDomains([domain] as Set)
+        })
+        def linkedAsset = assetDataRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "Website", "NEW")
+        })
+        def mainAssetId = assetDataRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "Website", "NEW")
+            applyLink(newCustomLink(linkedAsset, "hyperlinkedWebsite", domain))
+        }).id
+
+        and: "a major update for a DT (actual changes don't matter)"
+        domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Secure webhosting"
+            templateVersion = Version.parse("2.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Website = newSubTypeDefinition {}
+                links.hyperlinkedWebsite = newLinkDefinition(ElementType.ASSET, "Website")
+                translations = [
+                    (Locale.ENGLISH): [
+                        asset_Website_singular: "Website",
+                        asset_Website_plural: "Websites",
+                        asset_Website_status_NEW: "New",
+                        hyperlinkedWebsite: "Hyperlinked website",
+                    ],
+                    (Locale.GERMAN) : [
+                        asset_Website_singular: "Website",
+                        asset_Website_plural: "Websites",
+                        asset_Website_status_NEW: "Neu",
+                        hyperlinkedWebsite: "Verlinkte Webseite",
+                    ],
+                ]
+            })
+        })
+
+        when: "evaluating the asset"
+        def findings = parseJson(get("/domains/${domain.id}/assets/$mainAssetId")).with {
             parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
         }
 
