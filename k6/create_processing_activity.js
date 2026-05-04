@@ -256,7 +256,7 @@ export function loadUnitSelection() {
   loadElementsAndSleep("/units", 0);
   loadElementsAndSleep("/domains", 0);
   loadElementsAndSleep("/units", 0);
-  loadElementsAndSleep("/types", 0);
+  loadDomain(domainId);
 
   var unitName = "Unit 1";
 
@@ -280,7 +280,7 @@ export function loadDashboard() {
   loadTranslations();
   loadElementAndSleep("/domains/", domainId, 0);
   loadElementStatusCount(unitId);
-  loadElementsAndSleep("/types", 0);
+  loadDomain(domainId);
   loadReports();
   loadElementAndSleep("/units/", unitId, 0);
   loadElementAndSleep("/domains/", domainId, 0);
@@ -645,6 +645,31 @@ export function loadHistory(unitId) {
     "Get history returned an entry": (r) => json.length > 0
   });
 
+  return result;
+}
+
+export function loadDomain(domainId) {
+  var url = new URL(VEO_BASE_URL + "/domains/" + domainId);
+  var params = {
+    headers: {
+      Authorization: TOKEN,
+    },
+    tags: {
+      name: 'GET /domains/' + domainId
+    },
+    timeout: REQUEST_TIMEOUT
+  };
+  url.searchParams.append('id', domainId);
+  var result = http.get(url.toString(), params);
+
+  check(result, {
+    "Get domain is status 200": (r) => r.status === 200
+  });
+
+  if (result.status != 200) {
+    console.error("GET domain status: " + result.status);
+    console.error("GET domain URL: " + url);
+  }
   return result;
 }
 
