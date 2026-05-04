@@ -110,24 +110,26 @@ let jointControllerId;
 
 export let options = {
   thresholds: {
-    http_req_duration: ["p(99)<3000"], // 99% of requests must complete below 3s
-    http_req_duration: ["p(95)<1000"], // 95% of requests must complete below 1s
-    http_req_duration: ["p(80)<200"] // 80% of requests must complete below 200ms
+    http_req_duration: [
+      "p(99)<3000", // 99% < 3s
+      "p(95)<1000", // 95% < 1s
+      "p(80)<200",  // 80% < 200ms
+    ],
   },
   stages: [
-    { duration: "2m", target: 50 }, // Scale up
-    { duration: "8m", target: 50 }, 
+    // execute as many iterations as possible in that time
+    { duration: "2m", target: 100 }, // Scale up
+    { duration: "8m", target: 100 },
     { duration: "2m", target: 0 } // Scale down
   ],
-  ext: {
-    loadimpact: {
-      projectID: 3621988,
-      // Test runs with the same name groups test runs together
-      name: "Create Processing Activity",distribution: {
-        distributionLabel1: { loadZone: 'amazon:de:frankfurt', percent: 100 }
-      }
-    }
-  }
+  cloud: {
+    projectID: 3621893,
+    distribution: {
+      frankfurt: { loadZone: "amazon:de:frankfurt", percent: 80 },
+      dublin: { loadZone: "amazon:ie:dublin", percent: 10 },
+      ashburn: { loadZone: "amazon:us:ashburn", percent: 10 },
+    },
+  },
 };
 
 export function setup() {
