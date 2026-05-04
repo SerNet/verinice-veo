@@ -13,7 +13,6 @@
   "links": {
     "process_dataType": [
       {
-        "domains": [],
         "attributes": {
           "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
           "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
@@ -26,7 +25,6 @@
     ],
     "process_requiredApplications": [
       {
-        "domains": [],
         "attributes": {},
         "target": {
           "targetUri": "/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
@@ -35,7 +33,6 @@
     ],
     "process_tom": [
       {
-        "domains": [],
         "attributes": {},
         "target": {
           "targetUri": "/controls/2ec217e3-6792-4f7c-8f46-0e4c82d6fb95"
@@ -44,7 +41,6 @@
     ],
     "process_requiredITSystems": [
       {
-        "domains": [],
         "attributes": {},
         "target": {
           "targetUri": "/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
@@ -53,7 +49,6 @@
     ],
     "process_dataTransmission": [
       {
-        "domains": [],
         "attributes": {},
         "target": {
           "targetUri": "/processes/4a55ed91-7652-4522-9db7-27ee010438b6"

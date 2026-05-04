@@ -316,16 +316,10 @@ export function createRisk(processId) {
   let riskString = JSON.stringify(risk);
   riskString = riskString.replace("DOMAIN_ID", domainId);
   riskString = riskString.replace("DOMAIN_ID", domainId);
-  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
   riskString = riskString.replace("\"SPECIFIC_IMPACT_I\"", getRandomInt(3));
   riskString = riskString.replace("\"SPECIFIC_IMPACT_A\"", getRandomInt(3));
   riskString = riskString.replace("\"SPECIFIC_IMPACT_R\"", getRandomInt(3));
   riskString = riskString.replace("\"SPECIFIC_IMPACT_C\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_I\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_A\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_R\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_C\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
   risk = JSON.parse(riskString);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
