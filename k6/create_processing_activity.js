@@ -292,10 +292,13 @@ export function loadUnitSelection() {
 
   var unit = searchUnit(unitName);
 
-  check(unit, {
+  var checkResult = check(unit, {
     "Unit found": (r) => typeof unit != "undefined",
     "Unit has correct name": (r) => unit.name == unitName,
   });
+  if (!checkResult) {
+    console.error("Unit with name '" + unitName + "' not found");
+  }
 
   unitId = unit.id;
   loadElement("/units/", unitId);
@@ -493,10 +496,10 @@ export function createElement(path, body, subType, domainId, unitId) {
   };
   var result = http.post(url, JSON.stringify(body), params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Create element result is status 201": (result) => result.status === 201,
   });
-  if (result.status != 201) {
+  if (!checkRes) {
     console.error("Create element status: " + result.status);
     console.error("Create element path: " + url);
     console.error("Create element response body:");
@@ -505,9 +508,12 @@ export function createElement(path, body, subType, domainId, unitId) {
     console.error(JSON.stringify(body));
   } else {
     var elementId = result.json().resourceId;
-    check(elementId, {
+    var checkRes = check(elementId, {
       "Element ID is returned": (r) => elementId.length == 36,
     });
+    if (!checkRes) {
+      console.error("Element ID is not valid: " + elementId);
+    }
   }
   return elementId;
 }
@@ -524,9 +530,12 @@ export function loadFirstDomain() {
       break;
     }
   }
-  check(domain, {
+  var checkRes = check(domain, {
     "Domain found": (r) => typeof domain != "undefined",
   });
+  if (!checkRes) {
+    console.error("Domain with name 'DS-GVO' not found");
+  }
   return domain;
 }
 
@@ -589,10 +598,10 @@ export function loadElementsPaged(typeUrl, unitId, size, page, subType, status) 
   url.searchParams.append("page", page );
   var result = http.get(url.toString(), params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get processes is status 200": (r) => r.status === 200
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET processes status: " + result.status);
     console.error("GET processes URL: " + url);
   }
@@ -608,9 +617,23 @@ export function loadForms() {
   var result = loadFormElementsAndSleep("/?domainId=" + domainId, 0);
 
   var json = result.json();
-  check(result, {
-    "Get forms returned a form": (r) => json.length > 0
+  var checkRes = check(result, {
+    "Get translations returned an translation": (r) => json.length > 0
   });
+  if (!checkRes) {
+    console.error("GET translations status: " + result.status);
+    console.error("GET translations URL: " + url);
+  }
+
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get forms returned an entry": (r) => json.length > 0
+  });
+  if (!checkRes) {
+    console.error("GET forms did not return any entry");
+    console.error("GET forms status: " + result.status);
+    console.error("GET forms URL: " + url);
+  }
 
   return result;
 }
@@ -625,12 +648,23 @@ export function loadReports() {
   };
   var result = http.get(url.toString(), params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get reports result is status 200": (r) => r.status === 200
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET reports status: " + result.status);
     console.error("GET reports URL: " + url);
+  }
+
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get reports returned an entry": (r) => json != undefined &&
+        ("name" in json || "name" in json[Object.keys(json)[0]])
+  });
+  if (!checkRes) {
+    console.error("GET reports did not return any entry");
+    console.error("GET reports URL: " + url);
+    console.error("GET reports beginning of json: " + JSON.stringify(json).slice(0, 2000));
   }
 
   return result;
@@ -651,18 +685,15 @@ export function loadHistory(unitId) {
   url.searchParams.append("owner", "/units/" + unitId);
   var result = http.get(url.toString(), params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get history result is status 200": (r) => r.status === 200
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET history status: " + result.status);
     console.error("GET history URL: " + url);
   }
 
-  var json = result.json();
-  check(result, {
-    "Get history returned an entry": (r) => json.length > 0
-  });
+  // no check for "returned an entry" because at the beginning there is no history of the unit
 
   return result;
 }
@@ -678,16 +709,26 @@ export function loadDomain(domainId) {
     },
     timeout: REQUEST_TIMEOUT
   };
-  url.searchParams.append('id', domainId);
   var result = http.get(url.toString(), params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get domain is status 200": (r) => r.status === 200
   });
-
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET domain status: " + result.status);
     console.error("GET domain URL: " + url);
+  }
+
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get domain returned an entry": (r) => json != undefined &&
+        "description" in json &&
+        typeof json["description"] == "string"
+    });
+  if (!checkRes) {
+    console.error("GET domain did not return any entry");
+    console.error("GET domain URL: " + url);
+    console.error("GET domain beginning of json: " + JSON.stringify(json).slice(0, 2000));
   }
   return result;
 }
@@ -703,14 +744,24 @@ export function loadSchema(type) {
     },
     timeout: REQUEST_TIMEOUT
   };
-  url.searchParams.append('domains', domainId);
   var result = http.get(url.toString(), params);
-  check(result, {
+  var checkRes = check(result, {
     "Get schema is status 200": (r) => r.status === 200
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET schema status: " + result.status);
     console.error("GET schema URL: " + url);
+  }
+
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get schema returned an entry": (r) => json != undefined &&
+        "type" in json
+  });
+  if (!checkRes) {
+    console.error("GET schema did not return any entry");
+    console.error("GET schema URL: " + url);
+    console.error("GET schema beginning of json: " + JSON.stringify(json).slice(0, 2000));
   }
   return result;
 }
@@ -760,13 +811,25 @@ export function loadElementsWithBaseUrlAndSleep(baseUrl, path, tag, sleepSeconds
   };
   var result = http.get(url, params);
 
-  check(result, {
-    "Get forms result is status 200": (r) => r.status === 200,
+  var checkRes = check(result, {
+    "Get element result is status 200": (r) => r.status === 200,
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET status: " + result.status);
     console.error("GET URL: " + url);
   }
+  
+  // json can be a list of json or a single json
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get element returned an entry": (r) => json != undefined
+  });
+  if (!checkRes) {
+    console.error("GET elements did not return any entry");
+    console.error("GET elements URL: " + url);
+    console.error("GET elements beginning of json: " + JSON.stringify(json).slice(0, 2000));
+  }
+
   if (sleepSeconds > 0) {
     sleep(sleepSeconds);
   }
@@ -794,10 +857,10 @@ export function loadFormElementAndSleep(path, uuid, sleepSeconds) {
 }
 
 export function loadElementWithBaseUrlAndSleep(baseUrl, path, uuid, sleepSeconds) {
-  check(uuid, {
+  var checkRes = check(uuid, {
     "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
   });
-  if(!checkIfValidUUID(uuid)) {
+  if (!checkRes) {
     console.error("Not a valid UUID: " + uuid);
   }
 
@@ -813,19 +876,32 @@ export function loadElementWithBaseUrlAndSleep(baseUrl, path, uuid, sleepSeconds
   };
   var result = http.get(url, params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get unit result is status 200": (r) => r.status === 200
   });
-
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("GET element status: " + result.status);
     console.error("GET element URL: " + url);
   }
+  
+  var json = result.json();
+  var checkRes = check(result, {
+    "Get element returned an entry": (r) => json != undefined
+  });
+  if (!checkRes) {
+    console.error("GET element did not return any entry");
+    console.error("GET element URL: " + url);
+    console.error("GET elements beginning of json: " + JSON.stringify(json).slice(0, 2000));
+  }
+
 
   if(path != "/domains") {
-    check(result, {
+    var checkRes = check(result, {
       "Etag is returned": (r) => r.headers["Etag"].length > 0,
     });
+    if (!checkRes) {
+      console.error("Etag header is not returned for element " + path + uuid);
+    }
   }
   
   if (sleepSeconds > 0) {
@@ -854,10 +930,10 @@ function deleteElement(path, uuid) {
   var result = http.del(url, "", params);
 
   console.info("DEL element " + path + uuid);
-  check(result, {
+  var checkRes = check(result, {
     "Delete element result is status 204": (result) => result.status === 204,
   });
-  if (result.status != 204) {
+  if (!checkRes) {
     console.error("DEL element status: " + result.status);
     console.error("DEL element URL: " + url);
   }
@@ -883,10 +959,10 @@ export function getToken() {
   };
   var result = http.post(url, body, params);
 
-  check(result, {
+  var checkRes = check(result, {
     "Get token result is status 200": (r) => r.status === 200,
   });
-  if (result.status != 200) {
+  if (!checkRes) {
     console.error("POST auth token status: " + result.status_text);
     console.error("POST auth token URL: " + url);
   }
