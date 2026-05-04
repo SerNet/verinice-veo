@@ -19,7 +19,7 @@
   "status": "IN_PROGRESS",
   "riskValues": {
     "DSRA": {
-      "potentialProbability": "PROBABILITY"
+      "potentialProbability": "will-be-set-dynamically"
     }
   }
 }

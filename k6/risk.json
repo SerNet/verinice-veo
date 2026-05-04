@@ -17,10 +17,10 @@
   "riskValues": {
     "DSRA": {
       "potentialImpact": {
-        "C": "SPECIFIC_IMPACT_R",
-        "I": "SPECIFIC_IMPACT_I",
-        "A": "SPECIFIC_IMPACT_A",
-        "R": "SPECIFIC_IMPACT_R"
+        "C": "will-be-set-dynamically",
+        "I": "will-be-set-dynamically",
+        "A": "will-be-set-dynamically",
+        "R": "will-be-set-dynamically"
       }
     }
   }

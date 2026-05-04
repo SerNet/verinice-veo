@@ -313,14 +313,11 @@ export function createRisk(processId) {
   risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + getRandom(tomIds);
   risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
   risk.process.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataProcessingId;
-  let riskString = JSON.stringify(risk);
-  riskString = riskString.replace("DOMAIN_ID", domainId);
-  riskString = riskString.replace("DOMAIN_ID", domainId);
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_I\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_A\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_R\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_C\"", getRandomInt(3));
-  risk = JSON.parse(riskString);
+  risk.riskValues.DSRA.potentialImpact.R = getRandomInt(3);
+  risk.riskValues.DSRA.potentialImpact.I = getRandomInt(3);
+  risk.riskValues.DSRA.potentialImpact.A = getRandomInt(3);
+  risk.riskValues.DSRA.potentialImpact.C = getRandomInt(3);
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
 }
@@ -357,11 +354,9 @@ export function createScenario() {
   loadForms();
   loadScenarios(unitId, "SCN_Scenario");
   loadSchema("scenarios");
-  let scenarioString = JSON.stringify(scenario);
-  scenarioString = scenarioString.replaceAll("DOMAIN_ID", domainId);
-  scenarioString = scenarioString.replaceAll("VEO_BASE_URL", VEO_BASE_URL);
-  scenarioString = scenarioString.replaceAll("\"PROBABILITY\"", getRandomInt(3));
-  scenario = JSON.parse(scenarioString);
+
+  scenario.riskValues.DSRA.potentialProbability = getRandomInt(3);
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scenarios", scenario, undefined, domainId,unitId);
 }
