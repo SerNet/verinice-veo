@@ -7,30 +7,19 @@
   "links": {},
   "customAspects": {
     "scenario_generalInformation": {
-      "domains": [],
-      "attributes": {
-        "scenario_generalInformation_document": "https://en.wikipedia.org/wiki/Special:Random"
-      }
+      "scenario_generalInformation_document": "https://en.wikipedia.org/wiki/Special:Random"
     },
     "scenario_cause": {
-      "domains": [],
-      "attributes": {
-        "scenario_cause_threat": "Threat to the scenario",
-        "scenario_cause_vulnerability": "Vulnerability of the scenario"
-      }
+      "scenario_cause_threat": "Threat to the scenario",
+      "scenario_cause_vulnerability": "Vulnerability of the scenario"
     }
   },
-  "type": "scenario",
   "parts": [],
-  "domains": {
-    "DOMAIN_ID": {
-      "subType": "SCN_Scenario",
-      "status": "IN_PROGRESS",
-      "riskValues": {
-        "DSRA": {
-          "potentialProbability": "PROBABILITY"
-        }
-      }
+  "subType": "SCN_Scenario",
+  "status": "IN_PROGRESS",
+  "riskValues": {
+    "DSRA": {
+      "potentialProbability": "PROBABILITY"
     }
   }
 }
