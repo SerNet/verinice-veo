@@ -2,7 +2,7 @@
   "name": "Scenario (created for k6 load test)",
   "abbreviation": "DS-G.33",
   "owner": {
-    "targetUri": "/veo/units/UNIT_ID"
+    "targetUri": "will-be-set-dynamically"
   },
   "links": {},
   "customAspects": {

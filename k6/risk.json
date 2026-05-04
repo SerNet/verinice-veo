@@ -1,15 +1,18 @@
 {
+  "owner": {
+    "targetUri": "will-be-set-dynamically"
+  },
   "scenario": {
-    "targetUri": "/scenarios/SCENARIO_ID"
+    "targetUri": "will-be-set-dynamically"
   },
   "mitigation": {
-    "targetUri": "/controls/MITIGATION_ID"
+    "targetUri": "will-be-set-dynamically"
   },
   "riskOwner": {
-    "targetUri": "/persons/RISK_OWNER"
+    "targetUri": "will-be-set-dynamically"
   },
   "process": {
-    "targetUri": "/processes/PROCESS_ID"
+    "targetUri": "will-be-set-dynamically"
   },
   "domains": {
     "DOMAIN_ID": {
