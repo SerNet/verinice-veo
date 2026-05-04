@@ -6,20 +6,14 @@
   "name": "Joint controller (created for k6 load test)",
   "customAspects": {
     "scope_address": {
-      "attributes": {
-        "scope_address_address1": "Musterstr. 1",
-        "scope_address_postcode": "12345",
-        "scope_address_city": "Berlin",
-        "scope_address_country": "Deutschland"
-      },
-      "id": "00000000-0000-0000-0000-000000000000"
+      "scope_address_address1": "Musterstr. 1",
+      "scope_address_postcode": "12345",
+      "scope_address_city": "Berlin",
+      "scope_address_country": "Deutschland"
     },
     "scope_contactInformation": {
-      "attributes": {
-        "scope_contactInformation_phone": "0151123456789",
-        "scope_contactInformation_email": "no-real-email@email.invalid"
-      },
-      "id": "00000000-0000-0000-0000-000000000000"
+      "scope_contactInformation_phone": "0151123456789",
+      "scope_contactInformation_email": "no-real-email@email.invalid"
     }
   }
 }
