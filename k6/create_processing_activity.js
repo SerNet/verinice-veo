@@ -451,12 +451,17 @@ export function createJointController() {
 
 export function createElement(path, body, subType, domainId, unitId) {
   if(!(unitId===undefined)) {
+    body.owner = {};
     body.owner.targetUri = VEO_BASE_URL + "/units/" + unitId;
   }
   if(!(subType===undefined)) {
-    body.domains[domainId] = {"subType":subType,"status":"NEW"};
+    body["subType"] = subType;
+    body["status"] = "NEW";
   }
   var url = VEO_BASE_URL + path;
+  if(!(unitId===undefined)) {
+    var url = VEO_BASE_URL + "/domains/" + domainId + path;
+  }
 
   var tag = path;
   if(tag.includes("risk")) {
