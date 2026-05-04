@@ -8,11 +8,8 @@
   "links": {},
   "customAspects": {
     "asset_details": {
-      "domains": [],
-      "attributes": {
-        "asset_details_number": 1,
-        "asset_details_operatingStage": "asset_details_operatingStage_rollout"
-      }
+      "asset_details_number": 1,
+      "asset_details_operatingStage": "asset_details_operatingStage_rollout"
     }
   },
   "type": "asset",

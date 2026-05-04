@@ -8,10 +8,7 @@
   "links": {},
   "customAspects": {
     "asset_details": {
-      "domains": [],
-      "attributes": {
-        "asset_details_operatingStage": "asset_details_operatingStage_operation"
-      }
+      "asset_details_operatingStage": "asset_details_operatingStage_operation"
     }
   },
   "type": "asset",
