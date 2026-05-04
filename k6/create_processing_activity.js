@@ -29,16 +29,16 @@ Parameters to run the script:
  -e password=<PASSWORD> Password of an account for veo (required)
  -e host=<HOSTNAME> Hostname of the veo services (e.g. verinice.com)
  -e keycloak_url=<KEYCLOAK_BASE_URL> Keycloak base URL (e.g. https://auth.verinice.com)
- -e keycloak_client=<KEYCLOAK_CLIENT_ID> Keycloak Client ID (e.g. veo-prod)
+ -e keycloak_client=<KEYCLOAK_CLIENT_ID> Keycloak Client ID (e.g. verinice-prod, do not mistake it for the Realm)
  -e unit=<UNIT_ID> The ID of the unit that will be used for the test.
 
 After installing k6, this script is started with:
 
- k6 run create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=veo-prod -e name=foo -e password=bar
+ k6 run create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=verinice-prod -e name=foo -e password=bar
 
 To run a load test with 10 virtual user (vus) for 30s, type:
 
- k6 run --vus 10 --duration 30s create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=veo-prod -e name=foo -e password=bar
+ k6 run --vus 10 --duration 30s create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=verinice-prod -e name=foo -e password=bar
 
 See k6 documentation for more options: 
 https://k6.io/docs/getting-started/running-k6
