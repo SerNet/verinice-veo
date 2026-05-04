@@ -83,10 +83,10 @@ const DATA_TYPE = JSON.parse(open("./data_type.json"));
 const DATA_TRANSFER = JSON.parse(open("./data_transfer.json"));
 const IT_SYSTEM = JSON.parse(open("./it_system.json"));
 const APPLICATION = JSON.parse(open("./application.json"));
-let scenario = JSON.parse(open("./scenario.json"));
+const SCENARIO = JSON.parse(open("./scenario.json"));
 const DATA_PROCESSING = JSON.parse(open("./data_processing.json"));
-let risk = JSON.parse(open("./risk.json"));
-let UNIT = JSON.parse(open("./unit.json"));
+const RISK = JSON.parse(open("./risk.json"));
+const UNIT = JSON.parse(open("./unit.json"));
 
 // Token for Authorization "Bearer <TOKEN>"
 let TOKEN;
@@ -164,48 +164,78 @@ export default function (data) {
   if(unitId===undefined) {
     loadUnitSelection();
   }
+
+  // create Scenario
+  SCENARIO.riskValues.DSRA.potentialProbability = getRandomInt(3);
   loadDashboard();
   let numberOfScenarios = getRandomInt(10) + 1;
   for (let i = 0; i < numberOfScenarios; i++) {
     scenarioIds.push(createScenario());
   }
 
-  scenarioRiskIds = [...scenarioIds];
+  // create responsible body
   responsibleBodyId = createResponsibleBody();
+
+  // create joint controller
   jointControllerId = createJointController();
+
+  // create persons
   loadDashboardFromCache();
   let numberOfPersons = getRandomInt(5) + 1;
   for (let i = 0; i < numberOfPersons; i++) {
     personIds.push(createPerson());
   }
+
+  // create toms
   let numberOfToms = getRandomInt(8) + 1;
   for (let i = 0; i < numberOfToms; i++) {
     tomIds.push(createTOM());
   }
+
+  // create data type
   dataTypeId = createDataType();
-  DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
+
+  // create data transfer
+  DATA_TRANSFER.links.process_dataType[0].target.targetUri = "/assets/" + dataTypeId;
   dataTransferId = createDataTransfer();
   loadDashboardFromCache();
   getToken();
+
+  // create it systems
   let numberOfItSystems = getRandomInt(4) + 1;
   for (let i = 0; i < numberOfItSystems; i++) {
     itSystemIds.push(createItSystem());
   }
+
+  // create applications
   let numberOfApplications = getRandomInt(6) + 1;
   for (let i = 0; i < numberOfApplications; i++) {
     applicationIds.push(createApplication());
   }
   loadDashboardFromCache();
-  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
-  DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + responsibleBodyId;
-  DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + jointControllerId;
-  DATA_PROCESSING.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
-  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + getRandom(applicationIds);
-  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + getRandom(itSystemIds);
-  DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataTransferId;
+
+  // create data processing
+  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri =  "/persons/" + getRandom(personIds);
+  DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "/scopes/" + responsibleBodyId;
+  DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "/scopes/" + jointControllerId;
+  DATA_PROCESSING.links.process_dataType[0].target.targetUri = "/assets/" + dataTypeId;
+  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "/assets/" + getRandom(applicationIds);
+  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "/assets/" + getRandom(itSystemIds);
+  DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "/processes/" + dataTransferId;
   dataProcessingId = createDataProcessing();
+
+  // create risks
+  scenarioRiskIds = [...scenarioIds];
   let numberOfRisks = getRandomInt(scenarioIds.length);
   for (let i = 0; i < numberOfRisks; i++) {
+    RISK.scenario.targetUri = "/scenarios/" + scenarioRiskIds.pop();
+    RISK.mitigation.targetUri = "/controls/" + getRandom(tomIds);
+    RISK.riskOwner.targetUri = "/persons/" + getRandom(personIds);
+    RISK.process.targetUri = "/processes/" + dataProcessingId;
+    RISK.riskValues.DSRA.potentialImpact.R = getRandomInt(3);
+    RISK.riskValues.DSRA.potentialImpact.I = getRandomInt(3);
+    RISK.riskValues.DSRA.potentialImpact.A = getRandomInt(3);
+    RISK.riskValues.DSRA.potentialImpact.C = getRandomInt(3);
     createRisk(dataProcessingId);
   }
   cleanUp();
@@ -260,7 +290,6 @@ export function loadUnitSelection() {
 
   var unitName = "Unit 1";
 
-
   var unit = searchUnit(unitName);
 
   check(unit, {
@@ -309,17 +338,9 @@ export function loadElementStatusCount(unitId) {
 
 export function createRisk(processId) {
   console.info("Creating risk...");
-  risk.scenario.targetUri = "https://api." + HOSTNAME + "/veo/scenarios/" + scenarioRiskIds.pop();
-  risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + getRandom(tomIds);
-  risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
-  risk.process.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataProcessingId;
-  risk.riskValues.DSRA.potentialImpact.R = getRandomInt(3);
-  risk.riskValues.DSRA.potentialImpact.I = getRandomInt(3);
-  risk.riskValues.DSRA.potentialImpact.A = getRandomInt(3);
-  risk.riskValues.DSRA.potentialImpact.C = getRandomInt(3);
 
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
+  return createElement("/processes/" + processId + "/risks", RISK, undefined, domainId, undefined);
 }
 
 export function createDataProcessing() {
@@ -328,7 +349,7 @@ export function createDataProcessing() {
   loadProcesses(unitId, "PRO_DataProcessing");
   loadSchema("processes");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/processes", DATA_PROCESSING, "PRO_DataProcessing",domainId,unitId);
+  return createElement("/processes", DATA_PROCESSING, "PRO_DataProcessing", domainId, unitId);
 }
 
 export function createApplication() {
@@ -337,7 +358,7 @@ export function createApplication() {
   loadAssets(unitId, "AST_Application");
   loadSchema("assets");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/assets", APPLICATION, "AST_Application",domainId,unitId);
+  return createElement("/assets", APPLICATION, "AST_Application", domainId, unitId);
 }
 
 export function createItSystem() {
@@ -345,8 +366,9 @@ export function createItSystem() {
   loadForms();
   loadAssets(unitId, "AST_IT-System");
   loadSchema("assets");
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/assets", IT_SYSTEM, "AST_IT-System",domainId,unitId);
+  return createElement("/assets", IT_SYSTEM, "AST_IT-System", domainId, unitId);
 }
 
 export function createScenario() {
@@ -355,10 +377,8 @@ export function createScenario() {
   loadScenarios(unitId, "SCN_Scenario");
   loadSchema("scenarios");
 
-  scenario.riskValues.DSRA.potentialProbability = getRandomInt(3);
-
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/scenarios", scenario, undefined, domainId,unitId);
+  return createElement("/scenarios", SCENARIO, undefined, domainId, unitId);
 }
 
 export function createDataTransfer() {
@@ -366,8 +386,9 @@ export function createDataTransfer() {
   loadForms();
   loadScopes(unitId, "PRO_DataTransfer");
   loadSchema("processes");
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/processes", DATA_TRANSFER, "PRO_DataTransfer",domainId,unitId);
+  return createElement("/processes", DATA_TRANSFER, "PRO_DataTransfer", domainId, unitId);
 }
 
 export function createDataType() {
@@ -377,7 +398,7 @@ export function createDataType() {
   loadSchema("assets");
   loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/assets", DATA_TYPE, "AST_Datatype",domainId,unitId);
+  return createElement("/assets", DATA_TYPE, "AST_Datatype", domainId, unitId);
 }
 
 export function createTOM() {
@@ -386,7 +407,7 @@ export function createTOM() {
   loadControls(unitId, "CTL_TOM");
   loadSchema("controls");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
-  return createElement("/controls", TOM, "CTL_TOM",domainId,unitId);
+  return createElement("/controls", TOM, "CTL_TOM", domainId, unitId);
 }
 
 export function createUnit() {
@@ -402,6 +423,7 @@ export function createPerson() {
   loadPersons(unitId, "PER_Person");
   loadSchema("persons");
   loadHistory(unitId);
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/persons", PERSON, "PER_Person",domainId,unitId);
 }
@@ -418,6 +440,7 @@ export function createResponsibleBody() {
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
   loadForms();
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", RESPONSIBLE_BODY, "SCP_ResponsibleBody",domainId,unitId);
 }
@@ -435,6 +458,7 @@ export function createJointController() {
   loadPersons(unitId, "PER_Person");
   loadHistory(unitId);
   loadForms();
+
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", JOINT_CONTROLLER, "SCP_JointController",domainId,unitId);
 }
