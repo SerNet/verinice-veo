@@ -497,7 +497,14 @@ export function createElement(path, body, subType, domainId, unitId) {
 export function loadFirstDomain() {
   var result = loadElements("/domains");
   var json = result.json();
-  var domain = json[0];
+  var domain = undefined;
+  for(var i = 0; i < json.length; i++) {
+    var domain_i = json[i];
+    if(domain_i.name == "DS-GVO") {
+      domain = domain_i;
+      break;
+    }
+  }
   check(domain, {
     "Domain found": (r) => typeof domain != "undefined",
   });
