@@ -20,6 +20,7 @@ stages:
   - build
   - check
   - integration_test
+  - coverage
   - deployment
 
 workflow:
@@ -88,6 +89,9 @@ test:
 
   artifacts:
     when: always
+    paths:
+      - '*/build/jacoco/*.exec'
+    expire_in: 1 day
     reports:
       junit: '*/build/test-results/test/**/TEST-*.xml'
   cache:
@@ -166,6 +170,9 @@ http_rest_tests:
   interruptible: true
   artifacts:
     when: always
+    paths:
+      - '*/build/jacoco/*.exec'
+    expire_in: 1 day
     reports:
       junit: veo-rest/build/test-results/restTest/*.xml
   cache:
@@ -176,6 +183,21 @@ http_rest_tests:
       paths:
         - build
       policy: pull
+
+coverage:
+  stage: coverage
+  script:
+    - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME jacocoTestReport
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: jacoco
+        path: '*/build/reports/jacoco/*/jacocoTestReport.xml'
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
 
 trigger_deployment:
   stage: deployment

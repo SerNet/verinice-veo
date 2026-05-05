@@ -173,4 +173,10 @@ subprojects {
             ])
         }
     }
+
+    jacocoTestReport {
+        reports {
+            xml.required = true
+        }
+    }
 }

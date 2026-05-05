@@ -182,6 +182,10 @@ testing {
     }
 }
 
+jacocoTestReport {
+    executionData(test, restTest)
+}
+
 spotbugsRestTest.enabled = false
 
 configurations{
