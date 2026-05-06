@@ -5,6 +5,7 @@ plugins {
     id "com.github.spotbugs" version '6.5.4'
     id "com.diffplug.spotless" version "8.4.0" apply false
     id "io.freefair.lombok" version "9.5.0"
+    id 'jacoco'
 }
 
 def continuousIntegrationBuild = rootProject.hasProperty('ci')
@@ -178,5 +179,21 @@ subprojects {
         reports {
             xml.required = true
         }
+    }
+}
+tasks.register('jacocoMergedReport', JacocoReport) {
+
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each { subproject ->
+        dependsOn(subproject.tasks.withType(JacocoReport))
+
+        if (subproject.plugins.hasPlugin('java')) {
+            sourceSets subproject.sourceSets.main
+        }
+    }
+
+    reports {
+        xml.required = true
     }
 }
