@@ -63,6 +63,26 @@ public interface ValidationError {
     };
   }
 
+  static ValidationError attributeManualRemove(
+      String caType, String attribute, Domain domain, Element element) {
+
+    var etd = domain.getElementTypeDefinition(element.getType());
+    var attributes =
+        element
+            .findCustomAspect(domain, caType)
+            .map(CustomAspect::getAttributes)
+            .orElse(Collections.emptyMap());
+    return localized(
+        "error_attribute_needs_manual_removal",
+        List.of(
+            l -> domain.getTranslations(l).getName(),
+            _ -> domain.getTemplateVersion(),
+            _ -> attribute,
+            l ->
+                etd.localizeCustomAspectAttributeValue(
+                    caType, attribute, attributes.get(attribute), l)));
+  }
+
   static ValidationError customAspectConflict(
       String caType, Domain domain, List<Domain> conflictingDomains, Element element) {
     return localized(

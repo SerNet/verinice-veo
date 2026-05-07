@@ -76,22 +76,29 @@ public class Inspector {
               var tempDomain =
                   domainTemplateService.createDomain(
                       element.getOwner().getClient(), majorUpdate.getId(), TemplateItems.NONE);
-              domainChangeService.transferCustomization(domain, tempDomain);
-              tempDomain.migrate(List.of(element), domain);
-              element.getLinks(tempDomain).stream()
-                  .map(CustomLink::getTarget)
-                  .distinct()
-                  .filter(linkTarget -> !linkTarget.equals(element))
-                  .forEach(
-                      linkTarget -> {
-                        // Also associate link targets with the new domain to satisfy link target
-                        // validation.
-                        linkTarget.associateWithDomain(
-                            tempDomain,
-                            tempDomain.mapOldSubType(linkTarget.getSubType(domain)),
-                            tempDomain.mapOldStatus(linkTarget.getStatus(domain)));
-                      });
-              return DomainSensitiveElementValidator.getErrors(element, tempDomain).stream()
+
+              List<ValidationError> errors =
+                  DomainSensitiveElementValidator.getPreUpdateErrors(
+                      List.of(element), domain, tempDomain);
+              if (errors.isEmpty()) {
+                domainChangeService.transferCustomization(domain, tempDomain);
+                tempDomain.migrate(List.of(element), domain);
+                element.getLinks(tempDomain).stream()
+                    .map(CustomLink::getTarget)
+                    .distinct()
+                    .filter(linkTarget -> !linkTarget.equals(element))
+                    .forEach(
+                        linkTarget -> {
+                          // Also associate link targets with the new domain to satisfy link target
+                          // validation.
+                          linkTarget.associateWithDomain(
+                              tempDomain,
+                              tempDomain.mapOldSubType(linkTarget.getSubType(domain)),
+                              tempDomain.mapOldStatus(linkTarget.getStatus(domain)));
+                        });
+                errors = DomainSensitiveElementValidator.getErrors(element, tempDomain);
+              }
+              return errors.stream()
                   .map(
                       e ->
                           ValidationError.concat(

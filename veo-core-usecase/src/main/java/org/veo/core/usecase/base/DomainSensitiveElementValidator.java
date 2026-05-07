@@ -32,8 +32,11 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.condition.CustomAspectAttributeValueExpression;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.domainmigration.CustomAspectAttribute;
+import org.veo.core.entity.domainmigration.DomainMigrationStep;
 import org.veo.core.entity.exception.CrossUnitReferenceException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
@@ -85,8 +88,62 @@ public class DomainSensitiveElementValidator {
             });
   }
 
+  public static boolean isValidForUpdate(Element element, Domain oldDomain, Domain newDomain) {
+    var errors = getPreUpdateErrors(List.of(element), oldDomain, newDomain);
+    if (!errors.isEmpty()) {
+      log.warn(
+          "element {} ({}) is invalid: {}", element.getName(), element.getIdAsString(), errors);
+      return false;
+    }
+    return true;
+  }
+
   public static void validate(Element element, Domain domain) {
     ValidationError.throwOnErrors(getErrors(element, domain));
+  }
+
+  public static List<ValidationError> getPreUpdateErrors(
+      List<Element> elements, Domain oldDomain, Domain newDomain) {
+    var errors = new ArrayList<ValidationError>();
+    newDomain.getDomainMigrationDefinition().migrations().stream()
+        .filter(DomainMigrationStep::interactive)
+        .forEach(
+            step -> {
+              var newDefinitions = step.newDefinitions();
+              if (!newDefinitions.isEmpty()) {
+                throw new IllegalStateException(
+                    "Invalid migration step "
+                        + step.id()
+                        + ", interactive steps must not have new definitions");
+              }
+              step.oldDefinitions()
+                  .forEach(
+                      oldDefinition -> {
+                        if (oldDefinition instanceof CustomAspectAttribute caa) {
+                          var ex =
+                              new CustomAspectAttributeValueExpression(
+                                  caa.customAspect(), caa.attribute());
+
+                          for (Element element : elements) {
+
+                            var value = ex.getValue(element, oldDomain);
+                            if (value != null) {
+                              errors.add(
+                                  ValidationError.attributeManualRemove(
+                                      caa.customAspect(), caa.attribute(), oldDomain, element));
+                            }
+                          }
+
+                        } else {
+                          throw new IllegalStateException(
+                              "Invalid migration step "
+                                  + step.id()
+                                  + ", unsupported old definition "
+                                  + oldDefinition);
+                        }
+                      });
+            });
+    return errors;
   }
 
   public static List<ValidationError> getErrors(Element element, Domain domain) {

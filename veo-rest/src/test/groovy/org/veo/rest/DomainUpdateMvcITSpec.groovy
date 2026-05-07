@@ -28,7 +28,6 @@ import org.veo.core.entity.NameAbbreviationAndDescription
 import org.veo.core.entity.Translated
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
-import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -347,7 +346,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
                 ], [
                     new CustomAspectMigrationTransformDefinition(new CustomAspectAttributeValueExpression("nodles", "hasNodles"),
                     new CustomAspectAttribute(ElementType.ASSET, "noodles", "hasNoodles"))
-                ])
+                ], false)
             ])
         })
 
@@ -428,7 +427,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
                 ], [
                     new CustomAspectMigrationTransformDefinition(new CustomAspectAttributeValueExpression("basics", "location"),
                     new CustomAspectAttribute(ElementType.ASSET, "basics", "location"))
-                ])
+                ], false)
             ])
         })
 
@@ -446,6 +445,94 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
             it.customAspects.basics.location = "https://something.example"
+            parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.empty
+    }
+
+    def "warnings are generated for update conflicts due to attributes that need to be manually removed"() {
+        given: "a domain template defining a URL as a free text"
+        def template = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Job applications"
+            translations.translations[Locale.ENGLISH] = new NameAbbreviationAndDescription("Job applications", null, null)
+            translations.translations[Locale.GERMAN] = new NameAbbreviationAndDescription("Bewerbungen", null, null)
+            templateVersion = Version.parse("1.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, it) {
+                subTypes.Applicant = newSubTypeDefinition {}
+                customAspects.physique = newCustomAspectDefinition {
+                    attributeDefinitions.weight = new IntegerAttributeDefinition()
+                }
+                translations = [
+                    (Locale.ENGLISH): [
+                        person_Applicant_singular: "Applicant",
+                        person_Applicant_plural: "Applicants",
+                        person_Applicant_status_NEW: "New",
+                        weight: 'Weight'
+
+                    ],
+                    (Locale.GERMAN) : [
+                        person_Applicant_singular: "Bewerber:in",
+                        person_Applicant_plural: "Bewerber:innen",
+                        person_Applicant_status_NEW: "New",
+                        weight: 'Gewicht'
+                    ]
+                ]
+            })
+        })
+
+        and: "a person with an obsolete attribute"
+        def domain = createTestDomain(client, template.id)
+        def unit = unitDataRepository.save(newUnit(client) {
+            addToDomains([domain] as Set)
+        })
+        def personId = personDataRepository.save(newPerson(unit) {
+            associateWithDomain(domain, "Applicant", "NEW")
+            applyCustomAspectAttribute(domain, "physique", "weight", 120)
+        }).id
+
+        and: "a major update for a DT, setting the attribute to be manually removed"
+        domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Job applications"
+            templateVersion = Version.parse("2.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.PERSON, it) {
+                subTypes.Applicant = newSubTypeDefinition {}
+                translations = [
+                    (Locale.ENGLISH): [
+                        person_Applicant_singular: "Applicant",
+                        person_Applicant_plural: "Applicants",
+                        person_Applicant_status_NEW: "New"
+
+                    ],
+                    (Locale.GERMAN) : [
+                        person_Applicant_singular: "Bewerber:in",
+                        person_Applicant_plural: "Bewerber:innen",
+                        person_Applicant_status_NEW: "New"
+                    ]
+                ]
+            })
+            domainMigrationDefinition = new DomainMigrationDefinition([
+                new DomainMigrationStep("remove-inappropriate-data", TranslatedText.empty(), [
+                    new CustomAspectAttribute(ElementType.PERSON, "physique", "weight")
+                ], null, true)
+            ])
+        })
+
+        when: "evaluating the person"
+        def findings = parseJson(get("/domains/${domain.id}/persons/$personId")).with {
+            parseJson(post("/domains/${domain.id}/persons/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.size() == 1
+        // TODO #919 expect translated CA name
+        findings[0].description.en == 'The object cannot be migrated to the new domain version 2.0.0: In Job applications 1.0.0, the attribute \'weight\' does no longer exist. The value \'120\' needs to be manually removed.'
+        findings[0].description.de == 'Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: In Bewerbungen 1.0.0, gibt es das Attribut \'weight\' nicht mehr. Der Wert \'120\' muss manuell entfernt werden.'
+
+        when: "removing the values and reevaluating"
+        findings = parseJson(get("/domains/${domain.id}/persons/$personId")).with {
+            it.customAspects.remove('physique')
             parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
         }
 

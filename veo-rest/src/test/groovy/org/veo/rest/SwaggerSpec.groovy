@@ -1008,7 +1008,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 'id',
                 'description',
                 'oldDefinitions',
-                'newDefinitions'
+                'newDefinitions',
+                'interactive'
             ]
             it.required ==~ [
                 'id',
@@ -1029,6 +1030,11 @@ class SwaggerSpec extends VeoSpringSpec {
                         [$ref:'#/components/schemas/CustomAspectMigrationTransformDefinition']
                     ]
                 ]
+            }
+            with(it.properties.interactive) {
+                it.type == 'boolean'
+                it.description == 'Whether this migration step needs user interaction'
+                it.default == false
             }
         }
 

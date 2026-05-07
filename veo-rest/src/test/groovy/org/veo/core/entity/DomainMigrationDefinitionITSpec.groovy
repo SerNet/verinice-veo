@@ -19,6 +19,8 @@ package org.veo.core.entity
 
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationStep
+import org.veo.core.entity.domainmigration.MigrationTransformDefinition
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.test.VeoSpec
 
 class DomainMigrationDefinitionITSpec extends VeoSpec {
@@ -46,7 +48,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
     def "New definitions are optional for a migration step"() {
         given:
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([
-            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], null)
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], null, false)
         ])
 
         when:
@@ -54,5 +56,34 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
 
         then:
         noExceptionThrown()
+    }
+
+    def "Interactive migration step without newDefinitions"() {
+        given:
+        DomainMigrationDefinition dmd = new DomainMigrationDefinition([
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], null, true)
+        ])
+
+        when:
+        dmd.validate(domain, domain.domainTemplate)
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "Interactive migration step must not have newDefinitions"() {
+        given:
+        DomainMigrationDefinition dmd = new DomainMigrationDefinition([
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], [
+                Mock(MigrationTransformDefinition)
+            ], true)
+        ])
+
+        when:
+        dmd.validate(domain, domain.domainTemplate)
+
+        then:
+        UnprocessableDataException e = thrown()
+        e.message == 'Interactive step step-1 does not support new definitions.'
     }
 }

@@ -17,10 +17,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -51,16 +54,26 @@ public class UnitMigrationService {
     elementQuery.whereUnitIn(Set.of(unit));
     elementQuery.whereDomainsContain(oldDomain);
     var elements = elementQuery.execute(PagingConfiguration.UNPAGED).resultPage();
+    List<Element> invalidElements = new ArrayList<>();
+    List<Element> validElements = new ArrayList<>();
+
+    for (Element element : elements) {
+      if (!DomainSensitiveElementValidator.isValidForUpdate(element, oldDomain, newDomain)) {
+        invalidElements.add(element);
+      } else {
+        validElements.add(element);
+      }
+    }
     unit.addToDomains(newDomain);
 
-    newDomain.migrate(elements, oldDomain);
+    newDomain.migrate(validElements, oldDomain);
 
-    elements.forEach(
+    validElements.forEach(
         element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
-    var invalidElements =
-        elements.stream()
+    invalidElements.addAll(
+        validElements.stream()
             .filter(e -> !DomainSensitiveElementValidator.isValid(e, newDomain))
-            .toList();
+            .toList());
 
     if (!invalidElements.isEmpty()) {
       // Conflicted elements are left associated with the old domain to allow for nicer error

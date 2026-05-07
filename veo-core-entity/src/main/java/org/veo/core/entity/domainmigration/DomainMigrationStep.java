@@ -23,6 +23,9 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
 import org.veo.core.entity.BreakingChange;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslatedText;
@@ -47,7 +50,12 @@ public record DomainMigrationStep(
     @Schema(
             description =
                 "An optional list of attributes in the new domain that this step will create. If this is omitted, the values will not be transferred into the new domain.")
-        List<MigrationTransformDefinition> newDefinitions) {
+        List<MigrationTransformDefinition> newDefinitions,
+    @Schema(
+            description = "Whether this migration step needs user interaction",
+            defaultValue = "false")
+        @JsonSetter(nulls = Nulls.AS_EMPTY)
+        boolean interactive) {
   public DomainMigrationStep {
     if (newDefinitions == null) {
       newDefinitions = Collections.emptyList();

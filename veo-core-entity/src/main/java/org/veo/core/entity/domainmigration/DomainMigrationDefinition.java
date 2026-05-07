@@ -42,6 +42,10 @@ public record DomainMigrationDefinition(@NotNull List<DomainMigrationStep> migra
                 throw new UnprocessableDataException("Id '%s' not unique.".formatted(step.id()));
               }
               ids.add(step.id());
+              if (step.interactive() && !step.newDefinitions().isEmpty()) {
+                throw new UnprocessableDataException(
+                    "Interactive step %s does not support new definitions.".formatted(step.id()));
+              }
               try {
                 step.newDefinitions().forEach(nd -> nd.validate(domain, domainTemplate));
               } catch (IllegalArgumentException e) {

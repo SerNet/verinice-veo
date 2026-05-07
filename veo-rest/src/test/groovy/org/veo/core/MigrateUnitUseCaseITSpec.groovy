@@ -48,7 +48,6 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.DomainUpdateFailedException
-import org.veo.core.usecase.MigrationFailedException
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.core.usecase.unit.MigrateUnitUseCase
@@ -440,7 +439,7 @@ class MigrateUnitUseCaseITSpec extends VeoSpringSpec {
                         new CustomAspectAttributeValueExpression("performance", "isFast"),
                         new CustomAspectAttribute(ElementType.PROCESS, "performance", "isVeryFast"),
                         )
-                    ]))
+                    ], false))
                 ])
             })
         })
