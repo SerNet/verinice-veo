@@ -206,7 +206,7 @@ coverage:
     reports:
       coverage_report:
         coverage_format: jacoco
-        path: '*/build/reports/jacoco/*/jacocoTestReport.xml'
+        path: 'build/reports/jacoco/jacocoMergedReport/jacocoMergedReport.xml'
   cache:
     - key: gradle
       paths:
