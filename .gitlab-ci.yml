@@ -6,9 +6,16 @@ variables:
   PROXY: $HTTPS_PROXY_HOST
   AUTH_URL: $OIDC_URL_DEV/realms/$OIDC_REALM_DEV
 
-# Verification (tests and code analysis) is unnecessary on 'develop' &
+# Verification (code analysis) is unnecessary on 'develop' &
 # 'master', because only verified MRs can be merged into those branches.
-.verification:
+# For the test coverage, we do need to run tests on develop though
+.tests:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - when: on_success
+
+.other_checks:
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -68,7 +75,7 @@ build:
 test:
   stage: check
   rules:
-    - !reference [.verification, rules]
+    - !reference [.tests, rules]
   script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   interruptible: true
   services:
@@ -106,7 +113,7 @@ test:
 check:
   stage: check
   rules:
-    - !reference [ .verification, rules ]
+    - !reference [ .other_checks, rules ]
   script:
     - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i check -x test
   interruptible: true
@@ -124,7 +131,7 @@ http_rest_tests:
   - build
   stage: integration_test
   rules:
-    - !reference [ .verification, rules ]
+    - !reference [ .tests, rules ]
   services:
   - name: postgres:13.23-alpine
     alias: db
@@ -186,6 +193,8 @@ http_rest_tests:
 
 coverage:
   stage: coverage
+  rules:
+    - !reference [.tests, rules]
   script:
     - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME jacocoTestReport jacocoMergedReport
     - |
