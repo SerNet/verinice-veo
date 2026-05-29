@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-public class Constraints {
+public final class Constraints {
   public static final int DEFAULT_STRING_MAX_LENGTH = 255;
   public static final int DEFAULT_CONSTANT_MAX_LENGTH = 120;
   public static final int DEFAULT_DESCRIPTION_MAX_LENGTH = 65535;
+
+  private Constraints() {}
 }

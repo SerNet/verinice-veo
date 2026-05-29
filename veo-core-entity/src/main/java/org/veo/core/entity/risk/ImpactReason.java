@@ -56,9 +56,11 @@ public enum ImpactReason {
     throw new IllegalArgumentException("No impact reason with name %s found".formatted(name));
   }
 
-  public static class Constants {
+  public static final class Constants {
     public static final String CUMULATIVE = "impact_reason_cumulative";
     public static final String DISTRIBUTIVE = "impact_reason_distributive";
     public static final String MANUAL = "impact_reason_manual";
+
+    private Constants() {}
   }
 }

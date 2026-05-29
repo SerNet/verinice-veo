@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.core;
 
-public class VeoConstants {
+public final class VeoConstants {
 
   public static final int DB_QUERY_CHUNK_SIZE = 10000;
+
+  private VeoConstants() {}
 }

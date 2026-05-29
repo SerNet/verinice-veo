@@ -170,7 +170,6 @@ public class ObjectSchemaParser {
     Set<Entry<String, JsonNode>> linkIt = linksProperties.properties();
     Map<String, LinkDefinition> links = new HashMap<>(linksProperties.size());
     for (Entry<String, JsonNode> entry : linkIt) {
-      String linkName = entry.getKey();
       JsonNode linkProperties = entry.getValue().required("items").required(PROPERTIES);
       LinkDefinition linkDefinition = new LinkDefinition();
       JsonNode attributeProperties = linkProperties.required("attributes").required(PROPERTIES);
@@ -190,7 +189,7 @@ public class ObjectSchemaParser {
               targetProperties.required("type").required("enum").required(0).asText()));
       linkDefinition.setTargetSubType(
           targetProperties.required("subType").required("enum").required(0).asText());
-      links.put(linkName, linkDefinition);
+      links.put(entry.getKey(), linkDefinition);
     }
     return links;
   }

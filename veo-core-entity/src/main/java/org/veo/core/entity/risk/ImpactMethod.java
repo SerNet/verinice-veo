@@ -39,7 +39,9 @@ public enum ImpactMethod {
 
   private final String translationKey;
 
-  public static class Constants {
+  public static final class Constants {
     public static final String HIGH_WATER_MARK = "impact_method_high_water_mark";
+
+    private Constants() {}
   }
 }
