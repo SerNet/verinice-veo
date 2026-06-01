@@ -25,9 +25,9 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.TemplateItemAspects
-import org.veo.core.entity.condition.Condition
-import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
+import org.veo.core.entity.decision.firsthitpolicy.Condition
+import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.risk.RiskDefinitionRef
@@ -70,7 +70,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                         },
                     ]
                 })
-                applyDecision('isBigTeam', newDecision(ElementType.PERSON, 'Team') {
+                applyDecision('isBigTeam', newFirstHitPolicyDecision(ElementType.PERSON, 'Team') {
                     it.name = newTranslatedText("Big team")
                     it.rules.add(newRule(true) {
                         description = newTranslatedText("Team has more than 10 members")

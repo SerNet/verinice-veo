@@ -24,10 +24,10 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
-import org.veo.core.entity.condition.Condition
-import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.decision.DecisionRef
+import org.veo.core.entity.decision.firsthitpolicy.Condition
+import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
 import org.veo.core.entity.event.ControlPartsChangedEvent
 import org.veo.core.repository.ControlRepository
 import org.veo.core.usecase.decision.Decider
@@ -49,7 +49,7 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
     def setup() {
         client = createTestClient()
         domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-        domain.decisions.put("isGroup", newDecision(ElementType.CONTROL, "CTL_TOM") {
+        domain.decisions.put("isGroup", newFirstHitPolicyDecision(ElementType.CONTROL, "CTL_TOM") {
             rules.add(newRule(true) {
                 conditions.add(new Condition(new PartCountExpression("CTL_TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
             })

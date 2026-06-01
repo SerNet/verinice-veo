@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import org.veo.core.entity.Element;
+import org.veo.core.entity.decision.firsthitpolicy.DecisionRuleRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;

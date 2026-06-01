@@ -20,9 +20,9 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.condition.Condition
-import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
+import org.veo.core.entity.decision.firsthitpolicy.Condition
+import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -121,7 +121,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
                 ]
             ]
             riskDefinitions = ["rd": createRiskDefinition("rd")]
-            decisions.put("isGroup", newDecision(org.veo.core.entity.ElementType.CONTROL, "CTL_TOM") {
+            decisions.put("isGroup", newFirstHitPolicyDecision(org.veo.core.entity.ElementType.CONTROL, "CTL_TOM") {
                 rules.add(newRule(true) {
                     conditions.add(new Condition(new PartCountExpression("CTL_TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
                 })

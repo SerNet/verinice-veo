@@ -1704,11 +1704,10 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('Decision')) {
             it.properties.keySet() ==~ [
+                'type',
                 'name',
                 'elementType',
                 'elementSubType',
-                'rules',
-                'defaultResultValue'
             ]
             it.properties.elementType == [
                 type: 'string',
@@ -1723,15 +1722,41 @@ class SwaggerSpec extends VeoSpringSpec {
                     'scope'
                 ]
             ]
-            it.properties.rules == [
-                type: 'array',
-                items: [
-                    $ref:'#/components/schemas/Rule'
+            it.required ==~ [
+                'type',
+                'elementSubType',
+                'elementType',
+                'name',
+            ]
+            it.discriminator == [
+                propertyName: 'type',
+                mapping     : [
+                    firstHitPolicy: '#/components/schemas/FirstHitPolicyDecision',
                 ]
             ]
-            it.properties.defaultResultValue == [
-                type: 'boolean'
-            ]
+        }
+    }
+
+    def "FirstHitPolicyDecision is well-documented"() {
+        expect:
+        with(getSchema('FirstHitPolicyDecision')) {
+            it.allOf.size() == 2
+            it.allOf[0] == [$ref: "#/components/schemas/Decision"]
+            with(it.allOf[1]) {
+                it.properties.keySet() ==~ [
+                    'rules',
+                    'defaultResultValue'
+                ]
+                it.properties.rules == [
+                    type : 'array',
+                    items: [
+                        $ref: '#/components/schemas/Rule'
+                    ]
+                ]
+                it.properties.defaultResultValue == [
+                    type: 'boolean'
+                ]
+            }
             it.required ==~ [
                 'elementSubType',
                 'elementType',

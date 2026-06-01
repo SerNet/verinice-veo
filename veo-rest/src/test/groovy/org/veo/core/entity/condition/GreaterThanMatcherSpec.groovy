@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.condition
 
+import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
+
 import spock.lang.Specification
 
 class GreaterThanMatcherSpec extends Specification{

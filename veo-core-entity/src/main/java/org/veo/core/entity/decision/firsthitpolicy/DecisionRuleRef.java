@@ -15,34 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.core.entity.decision.firsthitpolicy;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-import jakarta.validation.constraints.NotNull;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-/** Matches if the value matches an injectable comparison value. */
-@Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
-public class EqualsMatcher implements InputMatcher {
-  private @NotNull(
-      message =
-          "Comparison value for 'equals' matcher cannot be null, use 'isNull' matcher instead.")
-  Object comparisonValue;
+/**
+ * References a {@link Rule} on a {@link FirstHitPolicyDecision} using the index the rule has in the
+ * decision's list of rules.
+ */
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@Value
+@Schema(description = "Index of a rule in a decision's rules list", type = "integer")
+public class DecisionRuleRef {
+  @Getter @JsonValue private final int index;
 
-  @Override
-  public boolean matches(Object value) {
-    return comparisonValue.equals(value);
-  }
-
-  @Override
-  public Set<Class<?>> getSupportedTypes() {
-    return Set.of(comparisonValue.getClass());
+  public DecisionRuleRef(int index, FirstHitPolicyDecision decision) {
+    this(index);
+    if (decision.getRules().size() <= index) {
+      throw new IllegalArgumentException();
+    }
   }
 }

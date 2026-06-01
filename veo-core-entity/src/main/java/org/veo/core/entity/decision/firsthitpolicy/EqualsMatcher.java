@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.core.entity.decision.firsthitpolicy;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
@@ -27,36 +26,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Matches if the value is a greater number than an injectable comparison value. Only supports int,
- * long & decimal.
- */
+/** Matches if the value matches an injectable comparison value. */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class GreaterThanMatcher implements InputMatcher {
-  @NotNull private BigDecimal comparisonValue;
+public class EqualsMatcher implements InputMatcher {
+  private @NotNull(
+      message =
+          "Comparison value for 'equals' matcher cannot be null, use 'isNull' matcher instead.")
+  Object comparisonValue;
 
   @Override
   public boolean matches(Object value) {
-    if (value == null) {
-      return false;
-    }
-    if (value instanceof BigDecimal bd) {
-      return comparisonValue.compareTo(bd) < 0;
-    }
-    if (value instanceof Integer i) {
-      return comparisonValue.compareTo(new BigDecimal(i)) < 0;
-    }
-    if (value instanceof Long l) {
-      return comparisonValue.compareTo(new BigDecimal(l)) < 0;
-    }
-    throw new IllegalArgumentException(
-        "Cannot compare BigDecimal to " + value.getClass().getSimpleName());
+    return comparisonValue.equals(value);
   }
 
   @Override
   public Set<Class<?>> getSupportedTypes() {
-    return Set.of(BigDecimal.class, Integer.class, Long.class);
+    return Set.of(comparisonValue.getClass());
   }
 }

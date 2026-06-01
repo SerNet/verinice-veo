@@ -57,7 +57,8 @@ import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.decision.Decision
-import org.veo.core.entity.decision.Rule
+import org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision
+import org.veo.core.entity.decision.firsthitpolicy.Rule
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -70,7 +71,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskValues
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
-import org.veo.core.entity.riskdefinition.DiscreteValue
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
@@ -474,9 +474,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static Decision newDecision(ElementType elementType, String elementSubType, @DelegatesTo(value = Decision.class)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.Decision") Closure init = null) {
-        return new Decision(new TranslatedText(Map.of()), elementType, elementSubType, [], null).tap {
+    static Decision newFirstHitPolicyDecision(ElementType elementType, String elementSubType, @DelegatesTo(value = Decision.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision") Closure init = null) {
+        return new FirstHitPolicyDecision(new TranslatedText(Map.of()), elementType, elementSubType, [], null).tap {
             VeoSpec.execute(it, init)
         }
     }
@@ -486,7 +486,7 @@ abstract class VeoSpec extends Specification {
     }
 
     static Rule newRule(Boolean output, @DelegatesTo(value = Rule.class)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.Rule") Closure init = null) {
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.firsthitpolicy.Rule") Closure init = null) {
         return new Rule(output, new TranslatedText(Map.of())).tap {
             VeoSpec.execute(it, init)
         }

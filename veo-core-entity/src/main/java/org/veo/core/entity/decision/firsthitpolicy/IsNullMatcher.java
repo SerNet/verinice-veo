@@ -15,32 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.decision.firsthitpolicy;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Set;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
-/**
- * References a {@link Rule} on a {@link Decision} using the index the rule has in the decision's
- * list of rules.
- */
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-@Value
-@Schema(description = "Index of a rule in a decision's rules list", type = "integer")
-public class DecisionRuleRef {
-  @Getter @JsonValue private final int index;
+/** Matches value if it is null. */
+@Data
+public class IsNullMatcher implements InputMatcher {
+  @Override
+  public boolean matches(Object value) {
+    return value == null;
+  }
 
-  public DecisionRuleRef(int index, Decision decision) {
-    this(index);
-    if (decision.getRules().size() <= index) {
-      throw new IllegalArgumentException();
-    }
+  @Override
+  public Set<Class<?>> getSupportedTypes() {
+    return Set.of(Object.class);
   }
 }

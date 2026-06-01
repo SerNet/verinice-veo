@@ -23,14 +23,13 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.TranslatedText
-import org.veo.core.entity.condition.Condition
-import org.veo.core.entity.condition.EqualsExpression
-import org.veo.core.entity.condition.GreaterThanMatcher
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.decision.DecisionRef
 import org.veo.core.entity.decision.DecisionResult
-import org.veo.core.entity.decision.DecisionRuleRef
-import org.veo.core.entity.decision.Rule
+import org.veo.core.entity.decision.firsthitpolicy.Condition
+import org.veo.core.entity.decision.firsthitpolicy.DecisionRuleRef
+import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
+import org.veo.core.entity.decision.firsthitpolicy.Rule
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -67,7 +66,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
                     statuses = ["RUNNING"]
                 }
             })
-            applyDecision("hasParts", newDecision(ElementType.ASSET, "Server") {
+            applyDecision("hasParts", newFirstHitPolicyDecision(ElementType.ASSET, "Server") {
                 it.defaultResultValue = false
                 it.rules.add(new Rule(true, new TranslatedText([:])).tap {
                     conditions.add(new Condition(new PartCountExpression("Server"), new GreaterThanMatcher(BigDecimal.ZERO)))

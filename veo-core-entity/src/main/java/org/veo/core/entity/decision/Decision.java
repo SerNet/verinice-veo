@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2026  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
@@ -30,24 +29,31 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
+import org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision;
 import org.veo.core.entity.event.ElementEvent;
-import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
-import org.veo.core.entity.exception.NotFoundException;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Configurable logic for a specific decision on a type of element. Accepts an element and checks it
- * against a list of rules to determine a boolean result value. The first rule (i.e. with the
- * highest priority) that matches determines the result (first hit policy).
- */
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    property = "type",
+    defaultImpl = FirstHitPolicyDecision.class)
+@JsonSubTypes({
+  @JsonSubTypes.Type(name = "firstHitPolicy", value = FirstHitPolicyDecision.class),
+})
+@Schema(
+    discriminatorMapping = {
+      @DiscriminatorMapping(value = "firstHitPolicy", schema = FirstHitPolicyDecision.class)
+    })
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Decision {
+public abstract class Decision {
   @NotNull private TranslatedText name;
 
   @NotNull private ElementType elementType;
@@ -56,62 +62,14 @@ public class Decision {
   @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
   private String elementSubType;
 
-  /** Rules ordered by priority (descending). */
-  @NotNull private List<Rule> rules = new LinkedList<>();
-
-  /** The decision result value in the case that none of the rules apply (can be null) */
-  private Boolean defaultResultValue;
-
-  public DecisionResult evaluate(Element element, Domain domain) {
-    // Find all matching rules
-    var matchingRules = new ArrayList<DecisionRuleRef>();
-    for (var i = 0; i < rules.size(); i++) {
-      var rule = rules.get(i);
-      if (rule.matches(element, domain)) {
-        matchingRules.add(new DecisionRuleRef(i, this));
-      }
-    }
-
-    // The first matching rule determines the result.
-    return matchingRules.stream()
-        .findFirst()
-        .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
-        .orElse(new DecisionResult(defaultResultValue));
-  }
-
-  public Rule getRule(DecisionRuleRef ref) {
-    return rules.get(ref.getIndex());
-  }
-
-  private DecisionResult buildResult(
-      DecisionRuleRef decisiveRuleRef, List<DecisionRuleRef> matchingRules) {
-    var value = getRule(decisiveRuleRef).getOutput();
-    var agreeingRules =
-        matchingRules.stream().filter(ref -> getRule(ref).outputEquals(value)).toList();
-    return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
-  }
-
   public boolean isApplicableToElement(Element element, Domain domain) {
     return getElementType() == element.getType()
         && getElementSubType().equals(element.findSubType(domain).orElse(null));
   }
 
-  /** Determines whether this decision may yield a different result after given event. */
-  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
-    if (event instanceof RiskAffectingElementChangeEvent e
-        && e.getDomain() != null
-        && !e.getDomain().equals(domain)) {
-      return false;
-    }
-    return rules.stream().anyMatch(r -> r.isAffectedByEvent(event, domain));
-  }
+  public abstract DecisionResult evaluate(Element element, Domain domain);
 
-  /**
-   * @throws NotFoundException if a reference inside this decision cannot be resolved
-   * @throws IllegalArgumentException for other validation errors
-   */
-  public void selfValidate(DomainBase domain) {
-    domain.getElementTypeDefinition(getElementType()).getSubTypeDefinition(getElementSubType());
-    rules.forEach(r -> r.selfValidate(domain, getElementType()));
-  }
+  public abstract boolean isAffectedByEvent(ElementEvent event, Domain domain);
+
+  public abstract void selfValidate(DomainBase domain);
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.core.entity.decision.firsthitpolicy;
 
 import static java.util.stream.Collectors.joining;
 
@@ -26,6 +26,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 

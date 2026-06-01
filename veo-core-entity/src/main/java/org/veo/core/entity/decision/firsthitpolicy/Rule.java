@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.decision.firsthitpolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,6 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
-import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -39,9 +38,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Configurable rule for a {@link Decision} with a list of conditions and an output value that
- * should become the decision's result value if the rule matches the element (unless another rule
- * takes precedence). An element only matches the rule if any of the rule conditions match.
+ * Configurable rule for a {@link FirstHitPolicyDecision} with a list of conditions and an output
+ * value that should become the decision's result value if the rule matches the element (unless
+ * another rule takes precedence). An element only matches the rule if any of the rule conditions
+ * match.
  */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -25,6 +25,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.GenericElementRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -54,8 +55,12 @@ public class Decider {
         .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
         .ifPresent(
             element ->
-                element
-                    .getDomains()
+                element.getDomains().stream()
+                    .filter(
+                        d ->
+                            !(event instanceof RiskAffectingElementChangeEvent riskEvent)
+                                || riskEvent.getDomain() == null
+                                || riskEvent.getDomain().equals(d))
                     .forEach(
                         domain -> {
                           if (element.evaluateDecisions(domain, event)) {

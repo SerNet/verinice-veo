@@ -34,8 +34,8 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
-import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.VeoExpression;
+import org.veo.core.entity.decision.firsthitpolicy.Condition;
 import org.veo.core.entity.exception.NotFoundException;
 
 import io.swagger.v3.oas.annotations.media.Schema;
