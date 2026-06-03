@@ -105,10 +105,10 @@ public class RiskService {
     }
   }
 
-  private void calculateValuesForObject(RiskAffected<?, ?> process) {
-    var entityEvent = new RiskAffectingElementChangeEvent(process, this);
-    for (AbstractRisk<?, ?> risk : process.getRisks()) {
-      var events = calculateValuesForRisk(process, risk);
+  private void calculateValuesForObject(RiskAffected<?, ?> ra) {
+    var entityEvent = new RiskAffectingElementChangeEvent(ra, this);
+    for (AbstractRisk<?, ?> risk : ra.getRisks()) {
+      var events = calculateValuesForRisk(ra, risk);
       events.forEach(entityEvent::addChangedRisk);
     }
     if (entityEvent.hasChangedRisks()) {
