@@ -50,6 +50,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),
   @Type(value = RemoveExpression.class, name = "remove"),
+  @Type(value = TernaryExpression.class, name = "ternary"),
 })
 @Schema(
     description = "Extract a value from an element in the context of a given domain",
@@ -76,7 +77,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(value = "map", schema = MapExpression.class),
       @DiscriminatorMapping(value = "maxRisk", schema = MaxRiskExpression.class),
       @DiscriminatorMapping(value = "partCount", schema = PartCountExpression.class),
-      @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class)
+      @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class),
+      @DiscriminatorMapping(value = "ternary", schema = TernaryExpression.class)
     },
     oneOf = {
       AndExpression.class,
@@ -92,7 +94,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
       MapExpression.class,
       MaxRiskExpression.class,
       PartCountExpression.class,
-      RemoveExpression.class
+      RemoveExpression.class,
+      TernaryExpression.class
     })
 public interface VeoExpression {
   Object getValue(Element element, Domain domain);
