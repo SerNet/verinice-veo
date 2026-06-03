@@ -31,6 +31,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AccessLevel;
@@ -97,6 +98,11 @@ public class Decision {
 
   /** Determines whether this decision may yield a different result after given event. */
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    if (event instanceof RiskAffectingElementChangeEvent e
+        && e.getDomain() != null
+        && !e.getDomain().equals(domain)) {
+      return false;
+    }
     return rules.stream().anyMatch(r -> r.isAffectedByEvent(event, domain));
   }
 
