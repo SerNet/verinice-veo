@@ -163,6 +163,23 @@ subprojects {
         spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     }
 
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.apache.tomcat.embed' && details.requested.version == '11.0.21') {
+                details.useVersion '11.0.22'
+                details.because('Security fixes')
+            }
+            if (details.requested.name == 'postgresql' && details.requested.version == '42.7.10') {
+                details.useVersion '42.7.11'
+                details.because('Security fixes')
+            }
+            if (details.requested.group == 'io.netty' && details.requested.version == '4.2.12.Final') {
+                details.useVersion '4.2.13.Final'
+                details.because('Security fixes')
+            }
+        }
+    }
+
     tasks.withType(JavaCompile) {
         configure(options){
             debugOptions.debugLevel = "source,lines,vars"
