@@ -29,13 +29,12 @@ import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.DeterminedRiskImpl
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
-import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.usecase.decision.Decider
 
 class DeciderITSpec extends VeoSpringSpec {
     def piaMandatoryRef = new DecisionRef("piaMandatory")
-    Decider decider = new Decider(Mock(ClientRepository), Mock(GenericElementRepository))
+    Decider decider = new Decider(Mock(GenericElementRepository))
 
     Unit unit
     Domain domain

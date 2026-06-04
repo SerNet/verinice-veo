@@ -1130,9 +1130,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Decider decider(
-      ClientRepository clientRepository, GenericElementRepository genericElementRepository) {
-    return new Decider(clientRepository, genericElementRepository);
+  public Decider decider(GenericElementRepository genericElementRepository) {
+    return new Decider(genericElementRepository);
   }
 
   @Bean
