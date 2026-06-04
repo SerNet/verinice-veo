@@ -18,7 +18,6 @@
 package org.veo.core.usecase.decision;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.veo.core.entity.Domain;
@@ -35,18 +34,15 @@ import lombok.RequiredArgsConstructor;
 public class Decider {
   private final GenericElementRepository elementRepository;
 
-  /** Transiently evaluates decisions on given element and returns the results. */
+  /**
+   * Updates all decisions on given element.
+   *
+   * @return new decision results
+   */
   public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
-    var results = new HashMap<DecisionRef, DecisionResult>();
-    domain
-        .getDecisions()
-        .forEach(
-            (key, decision) -> {
-              if (decision.isApplicableToElement(element, domain)) {
-                results.put(new DecisionRef(key, domain), decision.evaluate(element, domain));
-              }
-            });
-    return results;
+    // TODO #4837 provide repo access to the evaluation
+    element.evaluateDecisions(domain, null);
+    return element.getDecisionResults(domain);
   }
 
   /**
@@ -61,19 +57,10 @@ public class Decider {
                 element
                     .getDomains()
                     .forEach(
-                        domain ->
-                            domain
-                                .getDecisions()
-                                .forEach(
-                                    (key, decision) -> {
-                                      if (decision.isApplicableToElement(element, domain)
-                                          && decision.isAffectedByEvent(event, domain)
-                                          && element.setDecisionResult(
-                                              new DecisionRef(key, domain),
-                                              decision.evaluate(element, domain),
-                                              domain)) {
-                                        element.setUpdatedAt(Instant.now());
-                                      }
-                                    })));
+                        domain -> {
+                          if (element.evaluateDecisions(domain, event)) {
+                            element.setUpdatedAt(Instant.now());
+                          }
+                        }));
   }
 }

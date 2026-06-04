@@ -39,7 +39,7 @@ public class DecisionResultValueExpression implements VeoExpression {
 
   @Override
   public Object getValue(Element element, Domain domain) {
-    var result = element.getDecisionResults(domain).get(decision);
+    var result = element.evaluateDecision(decision, domain);
     if (result == null) {
       return null;
     }

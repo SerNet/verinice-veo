@@ -20,7 +20,6 @@ package org.veo.core.entity;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,10 +29,13 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 /**
@@ -64,6 +66,11 @@ public interface Element
         .map(ElementDomainAssociation::getDomain)
         .collect(Collectors.toSet());
   }
+
+  /**
+   * @return existing results for given decision if any exist, otherwise freshly evaluated results
+   */
+  DecisionResult evaluateDecision(DecisionRef decisionRef, Domain domain);
 
   /**
    * Removes given {@link CustomLink} from this element.
@@ -173,22 +180,12 @@ public interface Element
   Map<DecisionRef, DecisionResult> getDecisionResults(Domain domain);
 
   /**
-   * Update all decision results in given domain.
+   * Update decision results in given domain.
    *
+   * @param event if {@code null), update all decision results, otherwise only those affected by the event
    * @return {@code true} if new results differ from previous values, otherwise {@code false}
    */
-  boolean setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
-
-  /**
-   * Update the result of given decision in given domain.
-   *
-   * @return {@code true} if new result differs from previous value, otherwise {@code false}
-   */
-  default boolean setDecisionResult(DecisionRef decisionRef, DecisionResult result, Domain domain) {
-    var domainResults = new HashMap<>(getDecisionResults(domain));
-    domainResults.put(decisionRef, result);
-    return setDecisionResults(domainResults, domain);
-  }
+  boolean evaluateDecisions(@NotNull Domain domain, @Nullable ElementEvent event);
 
   default Set<CustomAspect> getCustomAspects(Domain domain) {
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());

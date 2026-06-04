@@ -68,8 +68,7 @@ public class UnitMigrationService {
 
     newDomain.migrate(validElements, oldDomain);
 
-    validElements.forEach(
-        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
+    validElements.forEach(element -> decider.decide(element, newDomain));
     invalidElements.addAll(
         validElements.stream()
             .filter(e -> !DomainSensitiveElementValidator.isValid(e, newDomain))

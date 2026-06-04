@@ -65,7 +65,7 @@ public class EvaluateElementUseCase
         domainRepository.getByIdWithDecisionsAndInspections(
             input.domainId, userAccessRights.getClientId());
     var element = fetchOrCreateElement(input.element, userAccessRights, domain.getOwner());
-    element.setDecisionResults(decider.decide(element, domain), domain);
+    decider.decide(element, domain);
     var findings = inspector.inspect(element, domain);
     return new OutputData(element.getDecisionResults(domain), findings);
   }

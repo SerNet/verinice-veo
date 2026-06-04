@@ -64,7 +64,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     ETag.validate(input.eTag, storedElement);
     entityStateMapper.mapState(inputElement, storedElement, false, true, idRefResolver);
     storedElement.setUpdatedAt(Instant.now());
-    storedElement.setDecisionResults(decider.decide(storedElement, domain), domain);
+    decider.decide(storedElement, domain);
     DomainSensitiveElementValidator.validate(storedElement);
     repo.save(storedElement);
     // re-fetch element to make sure it is returned with updated versioning information

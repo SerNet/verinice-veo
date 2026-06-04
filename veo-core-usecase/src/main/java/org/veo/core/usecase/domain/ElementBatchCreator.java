@@ -133,11 +133,7 @@ public class ElementBatchCreator {
           composite.addParts((Set) parts);
         });
 
-    elements.forEach(
-        element ->
-            element
-                .getDomains()
-                .forEach(d -> element.setDecisionResults(decider.decide(element, d), d)));
+    elements.forEach(element -> element.getDomains().forEach(d -> decider.decide(element, d)));
 
     elements.stream()
         .filter(r -> r instanceof RiskAffected)

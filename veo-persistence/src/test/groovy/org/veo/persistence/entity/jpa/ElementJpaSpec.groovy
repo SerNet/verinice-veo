@@ -21,9 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
+import org.veo.core.entity.TranslatedText
+import org.veo.core.entity.condition.Condition
+import org.veo.core.entity.condition.EqualsExpression
+import org.veo.core.entity.condition.GreaterThanMatcher
+import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.decision.DecisionRef
 import org.veo.core.entity.decision.DecisionResult
 import org.veo.core.entity.decision.DecisionRuleRef
+import org.veo.core.entity.decision.Rule
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -54,7 +61,19 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientRepository.save(newClient())
-        newDomain(client)
+        newDomain(client) {
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Server = newSubTypeDefinition {
+                    statuses = ["RUNNING"]
+                }
+            })
+            applyDecision("hasParts", newDecision(ElementType.ASSET, "Server") {
+                it.defaultResultValue = false
+                it.rules.add(new Rule(true, new TranslatedText([:])).tap {
+                    conditions.add(new Condition(new PartCountExpression("Server"), new GreaterThanMatcher(BigDecimal.ZERO)))
+                })
+            })
+        }
         client = clientRepository.save(client)
         domain = client.domains.first()
         owner0 = unitRepository.save(newUnit(client))
@@ -164,30 +183,42 @@ class ElementJpaSpec extends AbstractJpaSpec {
     }
 
     def 'updates decision results'() {
-        given: "anasset with a decision result"
+        given: "an asset with a decision result"
         def rule0 = new DecisionRuleRef(0)
-        def rule1 = new DecisionRuleRef(1)
-        def decision = new DecisionRef("overclock")
+        def decision = new DecisionRef("hasParts")
         def asset = newAsset(owner0) {
             it.associateWithDomain(domain, "Server", "RUNNING")
-            setDecisionResult(decision, new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+            evaluateDecisions(domain, null)
         }
 
         expect: "results to be retrievable"
-        asset.getDecisionResults(domain).get(decision).decisiveRule == rule0
+        with(asset.getDecisionResults(domain).get(decision)) {
+            value == false
+            decisiveRule == null
+            matchingRules == []
+            agreeingRules == []
+        }
 
         when: "setting the same decision result again"
-        def changed = asset.setDecisionResult(decision, new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+        def changed = asset.evaluateDecisions(domain, null)
 
         then: "no change is reported"
         !changed
 
         when: "saving a slightly different result"
-        changed = asset.setDecisionResult(decision, new DecisionResult(true, rule0, [rule0, rule1], [rule0]), domain)
+        asset.parts.add(newAsset(owner0) {
+            associateWithDomain(domain, "Server", "Running")
+        })
+        changed = asset.evaluateDecisions(domain, null)
 
         then: "the results have been changed"
         changed
-        asset.getDecisionResults(domain).get(decision).matchingRules == [rule0, rule1]
+        with(asset.getDecisionResults(domain).get(decision)) {
+            value == true
+            decisiveRule == rule0
+            matchingRules == [rule0]
+            agreeingRules == [rule0]
+        }
     }
 
     def 'retrieved decision results are immutable'() {
@@ -195,11 +226,11 @@ class ElementJpaSpec extends AbstractJpaSpec {
         def rule0 = new DecisionRuleRef(0)
         def asset = newAsset(owner0) {
             it.associateWithDomain(domain, "Server", "RUNNING")
-            setDecisionResult(new DecisionRef("overclock"), new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+            evaluateDecisions(domain, null)
         }
 
         when: "trying to mutate the results"
-        asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])
+        asset.getDecisionResults(domain)[new DecisionRef("hasParts")] = new DecisionResult(false, rule0, [rule0], [rule0])
 
         then:
         thrown(UnsupportedOperationException)
@@ -211,7 +242,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         asset = assetRepository.findById(asset.id).get()
 
         and: "trying to mutate the results again"
-        asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])
+        asset.getDecisionResults(domain)[new DecisionRef("hasParts")] = new DecisionResult(false, rule0, [rule0], [rule0])
 
         then:
         thrown(UnsupportedOperationException)

@@ -46,6 +46,8 @@ import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -70,6 +72,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.domainmigration.CustomAspectAttribute;
 import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
@@ -337,7 +340,50 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public boolean setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
+  public boolean evaluateDecisions(@NotNull Domain domain, @Nullable ElementEvent event) {
+    requireAssociationWithDomain(domain);
+    var relevantDecisionRefs =
+        domain.getDecisions().entrySet().stream()
+            .filter(e -> e.getValue().isApplicableToElement(this, domain))
+            .filter(e -> event == null || e.getValue().isAffectedByEvent(event, domain))
+            .map(e -> new DecisionRef(e.getKey(), domain))
+            .toList();
+    return evaluateDecisions(relevantDecisionRefs, domain);
+  }
+
+  private boolean evaluateDecisions(Collection<DecisionRef> decisionRefs, Domain domain) {
+    var oldResults = new HashMap<>(getDecisionResults(domain));
+    // invalidate old results
+    setDecisionResults(
+        oldResults.entrySet().stream()
+            .filter(e -> !decisionRefs.contains(e.getKey()))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue)),
+        domain);
+    // add new results
+    decisionRefs.forEach(d -> evaluateDecision(d, domain));
+    return !getDecisionResults(domain).equals(oldResults);
+  }
+
+  @Override
+  public DecisionResult evaluateDecision(DecisionRef decisionRef, Domain domain) {
+    requireAssociationWithDomain(domain);
+    var decision = domain.getDecision(decisionRef.getKeyRef());
+    if (!decision.isApplicableToElement(this, domain)) {
+      throw new IllegalArgumentException(
+          "Decision %s not applicable to element %s".formatted(decisionRef, getId()));
+    }
+    var oldResults = getDecisionResults(domain);
+    if (oldResults.containsKey(decisionRef)) {
+      return oldResults.get(decisionRef);
+    }
+    var newResult = decision.evaluate(this, domain);
+    var newResults = new HashMap<>(oldResults);
+    newResults.put(decisionRef, newResult);
+    setDecisionResults(newResults, domain);
+    return newResult;
+  }
+
+  private boolean setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
     if (!results.equals(getDecisionResults(domain))) {
       removeAspect(decisionResultsAspects, domain);
       decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));

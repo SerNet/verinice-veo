@@ -109,6 +109,68 @@ class DecisionCreationRestTest extends VeoRestTest {
         }
     }
 
+    def "interdependent decisions are evaluated correctly"() {
+        given: "a chain of decisions (a -> b -> c)"
+        def unitId = postNewUnit("u", [domainId]).resourceId
+        put("/content-creation/domains/$domainId/decisions/a", [
+            name: [en: "A"],
+            elementType: "document",
+            elementSubType: "Article",
+            defaultResultValue: true,
+        ], null, 201, CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/decisions/b", [
+            name: [en: "B"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    output: true,
+                    conditions: [
+                        [
+                            inputProvider : [
+                                type    : "decisionResultValue",
+                                decision: "a",
+                            ],
+                            inputMatcher: [type: "equals", comparisonValue: true]]
+                    ]
+                ]
+            ]
+        ], null, 201, CONTENT_CREATOR)
+        put("/content-creation/domains/$domainId/decisions/c", [
+            name: [en: "C"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    output: true,
+                    conditions: [
+                        [
+                            inputProvider : [
+                                type    : "decisionResultValue",
+                                decision: "b",
+                            ],
+                            inputMatcher: [type: "equals",comparisonValue: true]]
+                    ]
+                ]
+            ]
+        ], null, 201, CONTENT_CREATOR)
+
+        when:
+        def evaluationResult = post("/domains/$domainId/documents/evaluation", [
+            name: "I need a document doctor",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+        ], 200).body
+
+        then:
+        with(evaluationResult.decisionResults) {
+            a.value == true
+            b.value == true
+            c.value == true
+        }
+    }
+
     def "invalid element type is detected"() {
         when: "trying to create a decision with an invalid element type"
         def response = put("/content-creation/domains/$domainId/decisions/elephantInTheRoom", [
