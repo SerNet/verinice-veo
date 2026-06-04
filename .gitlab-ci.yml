@@ -216,6 +216,27 @@ coverage:
       paths:
         - .gradle
 
+update-values:
+  stage: deployment
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      variables:
+        VALUES_FILE: 'dev-values.yaml'
+        IMAGE_TAG: 'gitlab-git-${CI_COMMIT_SHA}'
+    - if: '$CI_COMMIT_TAG'
+      variables:
+        VALUES_FILE: 'stage-values.yaml'
+        IMAGE_TAG: '${CI_COMMIT_TAG}'
+    - when: never
+  trigger:
+    project: veo/verinice-veo-argocd
+    branch: main
+    strategy: mirror
+    inputs:
+      valuesFile: $VALUES_FILE
+      imageTag: $IMAGE_TAG
+      serviceName: 'veo'
+
 trigger_deployment:
   stage: deployment
   only:
