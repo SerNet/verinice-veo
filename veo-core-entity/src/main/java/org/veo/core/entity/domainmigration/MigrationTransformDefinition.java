@@ -87,7 +87,7 @@ public interface MigrationTransformDefinition {
       migrationExpression().selfValidate(domainTemplate, target().elementType());
       Class<?> actualType =
           migrationExpression().getValueType(domainTemplate, target().elementType());
-      if (!actualType.isAssignableFrom(expectedType)) {
+      if (actualType != null && !expectedType.isAssignableFrom(actualType)) {
         throw new IllegalArgumentException(
             "Values for %s must be of type %s, but given expression produces %s."
                 .formatted(

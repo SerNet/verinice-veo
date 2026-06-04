@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.veo.core.entity.condition.ConstantExpression
+import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.condition.EqualsExpression
+import org.veo.core.entity.condition.TernaryExpression
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
+import org.veo.core.entity.domainmigration.CustomAspectAttribute
+import org.veo.core.entity.domainmigration.CustomAspectMigrationTransformDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition
 import org.veo.core.entity.domainmigration.DomainMigrationStep
 import org.veo.core.entity.domainmigration.MigrationTransformDefinition
@@ -29,8 +36,22 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
 
     def setup() {
         def client = newClient {}
+        def caDefinition = [
+            scope_details: newCustomAspectDefinition {
+                attributeDefinitions = [
+                    very_detailed_attribute: new EnumAttributeDefinition(['foo'])
+                ]
+            }
+        ]
         domain = newDomain(client).tap {
-            domainTemplate = newDomainTemplate()
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
+                customAspects = caDefinition
+            })
+            domainTemplate = newDomainTemplate{
+                applyElementTypeDefinition(newElementTypeDefinition(ElementType.SCOPE, it) {
+                    customAspects = caDefinition
+                })
+            }
         }
     }
 
@@ -85,5 +106,34 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
         then:
         UnprocessableDataException e = thrown()
         e.message == 'Interactive step step-1 does not support new definitions.'
+    }
+
+    def "Ternary expression"() {
+        given:
+        DomainMigrationDefinition dmd = new DomainMigrationDefinition([
+            new DomainMigrationStep("step-1",
+            new TranslatedText([(Locale.US):'A ternary expression step']),
+            [],
+            [
+                new CustomAspectMigrationTransformDefinition(
+                new TernaryExpression(
+                new EqualsExpression(
+                new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
+                new ConstantExpression("old")
+                ),
+                new ConstantExpression(null),
+                new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
+                ),
+                new CustomAspectAttribute(ElementType.SCOPE, "scope_details", "very_detailed_attribute")
+                )
+            ],
+            false)
+        ])
+
+        when:
+        dmd.validate(domain, domain.domainTemplate)
+
+        then:
+        noExceptionThrown()
     }
 }

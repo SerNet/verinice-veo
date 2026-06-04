@@ -49,6 +49,35 @@ class VeoExpressionITSpec extends Specification {
         ['f', 'o', 'o'] | 'o' | ['f']
     }
 
+    def "Ternary expression returns expected result"() {
+        given:
+        Domain domain = Mock()
+        Element element = Mock()
+
+        ConstantExpression conditionExpression = Stub{
+            getValue(element, domain) >> conditionValue
+        }
+        CustomAspectAttributeValueExpression thenExpression = Stub{
+            getValue(element, domain) >> thenValue
+        }
+        ConstantExpression elseExpression = Stub{
+            getValue(element, domain) >> elseValue
+        }
+        TernaryExpression expression = new TernaryExpression(conditionExpression, thenExpression, elseExpression)
+
+        expect:
+        expression.getValue(element, domain) == result
+
+        where:
+        conditionValue | thenValue | elseValue| result
+        true | 3 | 4 | 3
+        false | 3 | 4 | 4
+        Boolean.TRUE | 3 | 4 | 3
+        Boolean.FALSE | 3 | 4 | 4
+        null | 3 | 4 | 4
+        "true" | 3 | 4 | 4
+    }
+
     def "Map a list using a map"() {
         given:
         Domain domain = Mock()
