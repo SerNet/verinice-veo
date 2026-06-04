@@ -20,6 +20,7 @@ package org.veo.core.entity.condition
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
+import org.veo.core.entity.ElementType
 
 import spock.lang.Specification
 
@@ -76,6 +77,68 @@ class VeoExpressionITSpec extends Specification {
         Boolean.FALSE | 3 | 4 | 4
         null | 3 | 4 | 4
         "true" | 3 | 4 | 4
+    }
+
+    def "Ternary validates correctly with different value types"() {
+        given:
+        Domain domain = Mock()
+        ElementType elementType = Mock()
+
+        ConstantExpression conditionExpression = Stub{
+            getValueType(domain, elementType) >> Boolean.class
+        }
+        CustomAspectAttributeValueExpression thenExpression = Stub {
+            getValueType(domain, elementType) >> thenValueType
+        }
+
+        ConstantExpression elseExpression = Stub {
+            getValueType(domain, elementType) >> elseValueType
+        }
+
+        TernaryExpression expression = new TernaryExpression(conditionExpression, thenExpression, elseExpression)
+
+        when:
+        expression.selfValidate(domain, elementType)
+
+        then:
+        noExceptionThrown()
+
+        where:
+        thenValueType | elseValueType
+        String.class | String.class
+        String.class | null
+        null | String.class
+    }
+
+    def "Ternary does not validate if types are incompatible"() {
+        given:
+        Domain domain = Mock()
+        ElementType elementType = Mock()
+
+        ConstantExpression conditionExpression = Stub{
+            getValueType(domain, elementType) >> Boolean.class
+        }
+        CustomAspectAttributeValueExpression thenExpression = Stub {
+            getValueType(domain, elementType) >> thenValueType
+        }
+
+        ConstantExpression elseExpression = Stub {
+            getValueType(domain, elementType) >> elseValueType
+        }
+
+        TernaryExpression expression = new TernaryExpression(conditionExpression, thenExpression, elseExpression)
+
+        when:
+        expression.selfValidate(domain, elementType)
+
+        then:
+        IllegalArgumentException e = thrown()
+        e.message == "Cannot use differently typed values for 'then' (${thenValueType.simpleName}) and 'else' (${elseValueType.simpleName})"
+
+        where:
+        thenValueType | elseValueType
+        Integer.class | String.class
+        String.class | List.class
     }
 
     def "Map a list using a map"() {

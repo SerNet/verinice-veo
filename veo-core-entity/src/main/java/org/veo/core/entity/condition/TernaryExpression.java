@@ -67,7 +67,9 @@ public class TernaryExpression implements VeoExpression {
     }
     var thenValueType = thenValue.getValueType(domain, elementType);
     var elseValueType = elseValue.getValueType(domain, elementType);
-    if (Objects.equals(thenValueType, elseValueType)) {
+    if (thenValueType != null
+        && elseValueType != null
+        && !Objects.equals(thenValueType, elseValueType)) {
       throw new IllegalArgumentException(
           "Cannot use differently typed values for 'then' (%s) and 'else' (%s)"
               .formatted(thenValueType.getSimpleName(), elseValueType.getSimpleName()));
