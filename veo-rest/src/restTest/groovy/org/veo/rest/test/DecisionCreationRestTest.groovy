@@ -192,6 +192,12 @@ class DecisionCreationRestTest extends VeoRestTest {
 
         then:
         circularDependencyError == "Validation error in decision 'a': Circular decision dependency detected: 'c' requires 'b' requires 'a' requires 'c' requires ..."
+
+        when: "trying to delete a decision required by another decision"
+        def deletionError = delete("/content-creation/domains/$domainId/decisions/a", 422, CONTENT_CREATOR).body.message
+
+        then:
+        deletionError == "Validation error in decision 'b': Decision 'a' not found in domain $domainId"
     }
 
     def "invalid element type is detected"() {

@@ -32,7 +32,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.decision.Decision;
-import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +54,6 @@ public class DecisionSetData {
   public void setDecisions(Map<String, Decision> decisions) {
     this.decisions.clear();
     this.decisions.putAll(decisions);
-  }
-
-  public void removeDecision(String decisionKey) {
-    if (!decisions.containsKey(decisionKey)) {
-      throw new NotFoundException("Decision '%s' not found", decisionKey);
-    }
-    decisions.remove(decisionKey);
   }
 
   @Override

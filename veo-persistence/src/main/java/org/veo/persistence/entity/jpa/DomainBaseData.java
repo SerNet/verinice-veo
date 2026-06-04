@@ -163,7 +163,11 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public void removeDecision(String decisionKey) {
-    decisionSet.removeDecision(decisionKey);
+    var decisions = new HashMap<>(getDecisions());
+    if (decisions.remove(decisionKey) == null) {
+      throw new NotFoundException("Decision '%s' not found".formatted(decisionKey));
+    }
+    setDecisions(decisions);
   }
 
   @Override
