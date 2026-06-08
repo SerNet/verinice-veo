@@ -57,15 +57,6 @@ public class DecisionSetData {
     this.decisions.putAll(decisions);
   }
 
-  /**
-   * @return {@code true} if new decision was added, {@code false} if existing decision was updated
-   */
-  public boolean applyDecision(String key, Decision value) {
-    var created = !decisions.containsKey(key);
-    decisions.put(key, value);
-    return created;
-  }
-
   public void removeDecision(String decisionKey) {
     if (!decisions.containsKey(decisionKey)) {
       throw new NotFoundException("Decision '%s' not found", decisionKey);

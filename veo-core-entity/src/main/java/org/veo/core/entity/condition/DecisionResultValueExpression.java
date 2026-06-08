@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
@@ -24,6 +29,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.DecisionRef;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,6 +43,8 @@ import lombok.NoArgsConstructor;
 public class DecisionResultValueExpression implements VeoExpression {
   @NotNull DecisionRef decision;
 
+  private static final ScopedValue<List<DecisionRef>> DECISION_REFS = ScopedValue.newInstance();
+
   @Override
   public Object getValue(Element element, Domain domain) {
     var result = element.evaluateDecision(decision, domain);
@@ -44,6 +52,35 @@ public class DecisionResultValueExpression implements VeoExpression {
       return null;
     }
     return result.getValue();
+  }
+
+  @Override
+  public void selfValidate(DomainBase domain, ElementType elementType) {
+    List<DecisionRef> previouslyVisitedDecisions = DECISION_REFS.orElse(Collections.emptyList());
+    var circularDependency = previouslyVisitedDecisions.contains(decision);
+    var visitedDecisions =
+        Stream.concat(previouslyVisitedDecisions.stream(), Stream.of(decision)).toList();
+    if (circularDependency) {
+      throw new IllegalArgumentException(
+          "Circular decision dependency detected: %s requires ..."
+              .formatted(
+                  visitedDecisions.stream()
+                      .map(DecisionRef::getKeyRef)
+                      .map("'%s'"::formatted)
+                      .collect(Collectors.joining(" requires "))));
+    }
+    var decisionObject = domain.getDecision(decision.getKeyRef());
+    if (decisionObject.getElementType() != elementType) {
+      throw new UnprocessableDataException(
+          "Decision '%s' is defined for %s and cannot be evaluated for %s."
+              .formatted(
+                  decision,
+                  decisionObject.getElementType().getPluralTerm(),
+                  elementType.getPluralTerm()));
+    }
+    // This will detect circular decision dependencies.
+    ScopedValue.where(DECISION_REFS, visitedDecisions)
+        .run(() -> decisionObject.selfValidate(domain));
   }
 
   @Override

@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -154,8 +155,10 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public boolean applyDecision(String key, Decision decision) {
-    validate(key, decision);
-    return decisionSet.applyDecision(key, decision);
+    var decisions = new HashMap<>(getDecisions());
+    var isNewDecision = decisions.put(key, decision) == null;
+    setDecisions(decisions);
+    return isNewDecision;
   }
 
   @Override
@@ -165,8 +168,27 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public void setDecisions(Map<String, Decision> decisions) {
-    decisions.forEach(this::validate);
+    var oldDecisions = getDecisions();
     this.decisionSet.setDecisions(decisions);
+    // A decision cannot be validated in isolation, because it may depend on other decisions and
+    // other decisions may depend on it. Because the decisions access other decisions on the domain
+    // object, they must be assigned to the domain before they can be validated. If the validation
+    // fails, the domain's previous set of decisions must be restored.
+    try {
+      decisions.forEach(
+          (key, decision) -> {
+            try {
+              decision.selfValidate(this);
+            } catch (IllegalArgumentException | NotFoundException ex) {
+              throw new UnprocessableDataException(
+                  "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
+            }
+          });
+    } catch (Exception ex) {
+      // rollback
+      decisionSet.setDecisions(oldDecisions);
+      throw ex;
+    }
   }
 
   @Override
@@ -197,15 +219,6 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     } catch (IllegalArgumentException | NotFoundException ex) {
       throw new UnprocessableDataException(
           "Validation error in inspection '%s': %s".formatted(id, ex.getMessage()));
-    }
-  }
-
-  private void validate(String key, Decision decision) {
-    try {
-      decision.selfValidate(this);
-    } catch (IllegalArgumentException | NotFoundException ex) {
-      throw new UnprocessableDataException(
-          "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
     }
   }
 

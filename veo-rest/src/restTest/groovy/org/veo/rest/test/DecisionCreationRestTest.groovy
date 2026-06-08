@@ -169,6 +169,29 @@ class DecisionCreationRestTest extends VeoRestTest {
             b.value == true
             c.value == true
         }
+
+        when: "trying to close the circle (a -> c -> b -> a ...)"
+        def circularDependencyError = put("/content-creation/domains/$domainId/decisions/a", [
+            name: [en: "A"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    output: true,
+                    conditions: [
+                        [
+                            inputProvider : [
+                                type    : "decisionResultValue",
+                                decision: "c",
+                            ],
+                            inputMatcher: [type: "equals",comparisonValue: true]]
+                    ]
+                ]
+            ]
+        ], null, 422, CONTENT_CREATOR).body.message
+
+        then:
+        circularDependencyError == "Validation error in decision 'a': Circular decision dependency detected: 'c' requires 'b' requires 'a' requires 'c' requires ..."
     }
 
     def "invalid element type is detected"() {
