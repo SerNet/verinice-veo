@@ -110,7 +110,7 @@ class DecisionCreationRestTest extends VeoRestTest {
     }
 
     def "interdependent decisions are evaluated correctly"() {
-        given: "a chain of decisions (a -> b -> c)"
+        given: "a chain of decisions (c -> b -> a)"
         def unitId = postNewUnit("u", [domainId]).resourceId
         put("/content-creation/domains/$domainId/decisions/a", [
             name: [en: "A"],
