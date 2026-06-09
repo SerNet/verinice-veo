@@ -22,7 +22,7 @@ dependencies {
     implementation 'tools.jackson.module:jackson-module-blackbird'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springdoc:springdoc-openapi-starter-common:3.0.3'
-    implementation 'org.springframework.retry:spring-retry:2.0.12'
+    implementation 'org.springframework.retry:spring-retry:2.0.13'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
