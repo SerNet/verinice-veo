@@ -1731,8 +1731,33 @@ class SwaggerSpec extends VeoSpringSpec {
             it.discriminator == [
                 propertyName: 'type',
                 mapping     : [
+                    expressive: '#/components/schemas/ExpressiveDecision',
                     firstHitPolicy: '#/components/schemas/FirstHitPolicyDecision',
                 ]
+            ]
+        }
+    }
+
+    def "ExpressiveDecision is well-documented"() {
+        expect:
+        with(getSchema('ExpressiveDecision')) {
+            it.description.contains "expression"
+            it.allOf.size() == 2
+            it.allOf[0] == [$ref: "#/components/schemas/Decision"]
+            with(it.allOf[1]) {
+                it.properties.keySet() ==~ [
+                    'expression',
+                ]
+                it.properties.expression == [
+                    description: "Determines the result value of the decision - must yield a primitive value. Must not reference the containing decision (no circles allowed).",
+                    $ref: '#/components/schemas/VeoExpression',
+                ]
+            }
+            it.required ==~ [
+                'elementSubType',
+                'elementType',
+                'name',
+                'expression',
             ]
         }
     }

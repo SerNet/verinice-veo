@@ -42,6 +42,16 @@ class DecisionCreationRestTest extends VeoRestTest {
                             type: "integer"
                         ]
                     ]
+                ],
+                content: [
+                    attributeDefinitions: [
+                        themes: [
+                            type: "list",
+                            itemDefinition: [
+                                type: "text"
+                            ]
+                        ]
+                    ]
                 ]
             ],
             translations : [
@@ -49,7 +59,8 @@ class DecisionCreationRestTest extends VeoRestTest {
                     "document_Article_singular": "document_Article_singular",
                     "document_Article_status_Online":"document_Article_status_Online",
                     "mostCommonWord":"mostCommonWord",
-                    "numberOfWords":"numberOfWords"
+                    "numberOfWords":"numberOfWords",
+                    "themes":"themes"
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
@@ -107,6 +118,42 @@ class DecisionCreationRestTest extends VeoRestTest {
         with(get("/domains/$domainId").body) {
             it.decisions.TLDR == null
         }
+    }
+
+    def "use expressive decision"() {
+        given:
+        put("/content-creation/domains/$domainId/decisions/numberOfThemes", [
+            type: "expressive",
+            name: [en: "Number of themes"],
+            elementType: "document",
+            elementSubType: "Article",
+            expression: [
+                type: "customAspectAttributeSize",
+                customAspectType: "content",
+                attributeType: "themes",
+            ],
+        ], null, 201, CONTENT_CREATOR)
+
+        when:
+        def unitId = postNewUnit("u", [domainId]).resourceId
+        def evaluationResult = post("/domains/$domainId/documents/evaluation", [
+            name: "Doc Docker's Dodgy Docs",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+            customAspects: [
+                content: [
+                    themes: [
+                        "health",
+                        "computers",
+                        "entertainment"
+                    ]
+                ]
+            ]
+        ], 200)
+
+        then:
+        evaluationResult.body.decisionResults.numberOfThemes.value == 3
     }
 
     def "interdependent decisions are evaluated correctly"() {
@@ -377,5 +424,21 @@ class DecisionCreationRestTest extends VeoRestTest {
 
         then: "there is an error"
         response.body.message == "Validation error in decision 'sillySize': Cannot get size of Integer attribute 'numberOfWords', expected list attribute"
+    }
+
+    def "unsupported expression is detected"() {
+        when: "trying to define a decision that yields an element"
+        def response = put("/content-creation/domains/$domainId/decisions/self", [
+            type: "expressive",
+            name: [en: "Just the element itself"],
+            elementType: "document",
+            elementSubType: "Article",
+            expression: [
+                type: "currentElement",
+            ],
+        ], null, 422, CONTENT_CREATOR).body
+
+        then:
+        response.message == "Validation error in decision 'self': Expressive decisions must yield a primitive result type, but given expression yields Document."
     }
 }

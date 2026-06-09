@@ -42,8 +42,8 @@ import lombok.RequiredArgsConstructor;
     description = "Result of a decision that was evaluated on an element",
     accessMode = Schema.AccessMode.READ_ONLY)
 public class DecisionResult {
-  public DecisionResult(Boolean defaultValue) {
-    this(defaultValue, null, List.of(), List.of());
+  public DecisionResult(Object value) {
+    this(value, null, List.of(), List.of());
   }
 
   private DecisionResult() {
@@ -54,7 +54,7 @@ public class DecisionResult {
   @Schema(
       description = "Final result value of the decision. Can be null if result is undetermined.",
       nullable = true)
-  final Boolean value;
+  final Object value;
 
   /**
    * Index of the rule on the decision that caused this decision result (i.e. the matching rule with

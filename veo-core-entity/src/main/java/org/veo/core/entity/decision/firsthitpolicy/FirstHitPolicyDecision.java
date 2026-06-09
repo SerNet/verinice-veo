@@ -111,4 +111,9 @@ public class FirstHitPolicyDecision extends Decision {
     domain.getElementTypeDefinition(getElementType()).getSubTypeDefinition(getElementSubType());
     rules.forEach(r -> r.selfValidate(domain, getElementType()));
   }
+
+  @Override
+  public Class<?> getResultType(DomainBase domain) {
+    return Boolean.class;
+  }
 }

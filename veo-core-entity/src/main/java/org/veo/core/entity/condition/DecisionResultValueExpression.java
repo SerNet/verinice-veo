@@ -85,6 +85,6 @@ public class DecisionResultValueExpression implements VeoExpression {
 
   @Override
   public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Boolean.class;
+    return domain.getDecision(decision.getKeyRef()).getResultType(domain);
   }
 }

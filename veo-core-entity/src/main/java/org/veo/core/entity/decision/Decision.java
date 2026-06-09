@@ -20,6 +20,7 @@ package org.veo.core.entity.decision;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -45,10 +46,12 @@ import lombok.NoArgsConstructor;
     property = "type",
     defaultImpl = FirstHitPolicyDecision.class)
 @JsonSubTypes({
+  @JsonSubTypes.Type(name = "expressive", value = ExpressiveDecision.class),
   @JsonSubTypes.Type(name = "firstHitPolicy", value = FirstHitPolicyDecision.class),
 })
 @Schema(
     discriminatorMapping = {
+      @DiscriminatorMapping(value = "expressive", schema = ExpressiveDecision.class),
       @DiscriminatorMapping(value = "firstHitPolicy", schema = FirstHitPolicyDecision.class)
     })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -72,4 +75,7 @@ public abstract class Decision {
   public abstract boolean isAffectedByEvent(ElementEvent event, Domain domain);
 
   public abstract void selfValidate(DomainBase domain);
+
+  @JsonIgnore
+  public abstract Class<?> getResultType(DomainBase domain);
 }
