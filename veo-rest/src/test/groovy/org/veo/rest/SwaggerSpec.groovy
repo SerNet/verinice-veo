@@ -1700,6 +1700,101 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "Decision is well-documented"() {
+        expect:
+        with(getSchema('Decision')) {
+            it.properties.keySet() ==~ [
+                'name',
+                'elementType',
+                'elementSubType',
+                'rules',
+                'defaultResultValue'
+            ]
+            it.properties.elementType == [
+                type: 'string',
+                enum : [
+                    'asset',
+                    'control',
+                    'document',
+                    'incident',
+                    'person',
+                    'process',
+                    'scenario',
+                    'scope'
+                ]
+            ]
+            it.properties.rules == [
+                type: 'array',
+                items: [
+                    $ref:'#/components/schemas/Rule'
+                ]
+            ]
+            it.properties.defaultResultValue == [
+                type: 'boolean'
+            ]
+            it.required ==~ [
+                'elementSubType',
+                'elementType',
+                'name',
+                'rules'
+            ]
+        }
+    }
+
+    def "Rule is well-documented"() {
+        expect:
+        with(getSchema('Rule')) {
+            it.properties.keySet() ==~ [
+                'output',
+                'description',
+                'conditions'
+            ]
+            it.properties.output == [
+                type: 'boolean'
+            ]
+            it.properties.description == [
+                type:'object',
+                additionalProperties:[
+                    type:'string'
+                ]
+            ]
+            it.properties.conditions == [
+                type: 'array',
+                items:[
+                    $ref:'#/components/schemas/Condition'
+                ]
+            ]
+            it.required ==~ [
+                'conditions',
+                'description'
+            ]
+        }
+    }
+
+    def "Condition is well-documented"() {
+        expect:
+        with(getSchema('Condition')) {
+            it.properties.keySet() ==~ [
+                'inputProvider',
+                'inputMatcher'
+            ]
+            it.properties.inputProvider == [
+                $ref:'#/components/schemas/VeoExpression'
+            ]
+            it.properties.inputMatcher == [
+                oneOf:[
+                    [$ref:'#/components/schemas/EqualsMatcher'],
+                    [$ref:'#/components/schemas/GreaterThanMatcher'],
+                    [$ref:'#/components/schemas/IsNullMatcher']
+                ]
+            ]
+            it.required ==~ [
+                'inputProvider',
+                'inputMatcher'
+            ]
+        }
+    }
+
     def "DecisionResult is well-documented"() {
         expect:
         with(getSchema('DecisionResult')) {
