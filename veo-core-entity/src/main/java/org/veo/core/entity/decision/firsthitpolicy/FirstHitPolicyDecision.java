@@ -33,16 +33,15 @@ import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * Configurable logic for a specific decision on a type of element. Accepts an element and checks it
- * against a list of rules to determine a boolean result value. The first rule (i.e. with the
- * highest priority) that matches determines the result (first hit policy).
- */
+@Schema(
+    description =
+        "Configurable logic for a specific decision on a type of element. Accepts an element and checks it against a list of rules to determine a boolean result value. The first rule (i.e. with the highest priority) that matches determines the result (first hit policy).")
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = true)
@@ -58,10 +57,13 @@ public class FirstHitPolicyDecision extends Decision {
     this.defaultResultValue = defaultResultValue;
   }
 
-  /** Rules ordered by priority (descending). */
-  @NotNull private List<Rule> rules = new LinkedList<>();
+  @Schema(description = "Rules ordered by priority (descending)")
+  @NotNull
+  private List<Rule> rules = new LinkedList<>();
 
-  /** The decision result value in the case that none of the rules apply (can be null) */
+  @Schema(
+      description =
+          "The decision result value in the case that none of the rules apply (can be null)")
   private Boolean defaultResultValue;
 
   @Override

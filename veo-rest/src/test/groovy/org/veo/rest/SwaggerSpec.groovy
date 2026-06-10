@@ -1740,6 +1740,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "FirstHitPolicyDecision is well-documented"() {
         expect:
         with(getSchema('FirstHitPolicyDecision')) {
+            it.description.contains "first hit policy"
             it.allOf.size() == 2
             it.allOf[0] == [$ref: "#/components/schemas/Decision"]
             with(it.allOf[1]) {
@@ -1749,12 +1750,14 @@ class SwaggerSpec extends VeoSpringSpec {
                 ]
                 it.properties.rules == [
                     type : 'array',
+                    description: "Rules ordered by priority (descending)",
                     items: [
                         $ref: '#/components/schemas/Rule'
                     ]
                 ]
                 it.properties.defaultResultValue == [
-                    type: 'boolean'
+                    type: 'boolean',
+                    description: "The decision result value in the case that none of the rules apply (can be null)",
                 ]
             }
             it.required ==~ [
