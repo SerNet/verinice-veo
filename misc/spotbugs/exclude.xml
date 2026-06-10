@@ -14,4 +14,7 @@
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,CT_CONSTRUCTOR_THROW" />
     </Match>
+    <Match>
+        <Bug pattern="USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION,USO_UNSAFE_METHOD_SYNCHRONIZATION" />
+    </Match>
 </FindBugsFilter>

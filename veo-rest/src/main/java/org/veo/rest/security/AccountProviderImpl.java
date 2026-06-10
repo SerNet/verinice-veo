@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +39,10 @@ public class AccountProviderImpl implements AccountProvider {
   public Account getCurrentUserAccount() {
     var user =
         ApplicationUser.authenticatedUser(
-            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            Objects.requireNonNull(
+                    SecurityContextHolder.getContext().getAuthentication(),
+                    "No authentication found in security context")
+                .getPrincipal());
     var client =
         Optional.ofNullable(user.getClientId()).flatMap(clientRepository::findById).orElse(null);
 

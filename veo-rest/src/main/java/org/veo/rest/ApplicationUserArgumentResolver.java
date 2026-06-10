@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.util.Optional;
+
 import org.springframework.core.MethodParameter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -40,6 +43,9 @@ public class ApplicationUserArgumentResolver implements HandlerMethodArgumentRes
       NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory) {
     var auth = SecurityContextHolder.getContext().getAuthentication();
-    return ApplicationUser.findAuthenticatedUser(auth.getPrincipal());
+    return Optional.ofNullable(auth)
+        .map(Authentication::getPrincipal)
+        .map(ApplicationUser::findAuthenticatedUser)
+        .orElse(null);
   }
 }

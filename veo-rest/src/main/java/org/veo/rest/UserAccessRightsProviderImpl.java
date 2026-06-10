@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.util.Optional;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.veo.core.UserAccessRights;
@@ -27,7 +30,9 @@ public class UserAccessRightsProviderImpl implements UserAccessRightsProvider {
   @Override
   public UserAccessRights getAccessRights() {
     var auth = SecurityContextHolder.getContext().getAuthentication();
-    Object principal = auth.getPrincipal();
-    return ApplicationUser.findAuthenticatedUser(principal);
+    return Optional.ofNullable(auth)
+        .map(Authentication::getPrincipal)
+        .map(ApplicationUser::findAuthenticatedUser)
+        .orElse(null);
   }
 }
