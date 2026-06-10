@@ -23,6 +23,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /** Checks a value in the context of a {@link Condition}. */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -30,6 +33,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
   @JsonSubTypes.Type(value = GreaterThanMatcher.class, name = "greaterThan"),
   @JsonSubTypes.Type(value = IsNullMatcher.class, name = "isNull"),
 })
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = {
+      @DiscriminatorMapping(value = "equals", schema = EqualsMatcher.class),
+      @DiscriminatorMapping(value = "greaterThan", schema = GreaterThanMatcher.class),
+      @DiscriminatorMapping(value = "isNull", schema = IsNullMatcher.class)
+    },
+    oneOf = {EqualsMatcher.class, GreaterThanMatcher.class, IsNullMatcher.class})
 public interface InputMatcher {
   boolean matches(Object value);
 

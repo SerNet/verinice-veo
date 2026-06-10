@@ -1781,16 +1781,32 @@ class SwaggerSpec extends VeoSpringSpec {
             it.properties.inputProvider == [
                 $ref:'#/components/schemas/VeoExpression'
             ]
-            it.properties.inputMatcher == [
-                oneOf:[
-                    [$ref:'#/components/schemas/EqualsMatcher'],
-                    [$ref:'#/components/schemas/GreaterThanMatcher'],
-                    [$ref:'#/components/schemas/IsNullMatcher']
-                ]
-            ]
+            it.properties.inputMatcher == [$ref:'#/components/schemas/InputMatcher']
             it.required ==~ [
                 'inputProvider',
                 'inputMatcher'
+            ]
+        }
+    }
+
+    def "InputMatcher is well-documented"() {
+        expect:
+        with(getSchema('InputMatcher')) {
+            it.properties.keySet() ==~ [
+                'type'
+            ]
+            it.discriminator == [
+                propertyName:'type',
+                mapping:[
+                    equals:'#/components/schemas/EqualsMatcher',
+                    greaterThan:'#/components/schemas/GreaterThanMatcher',
+                    isNull:'#/components/schemas/IsNullMatcher'
+                ]
+            ]
+            it.oneOf == [
+                [$ref:'#/components/schemas/EqualsMatcher'],
+                [$ref:'#/components/schemas/GreaterThanMatcher'],
+                [$ref:'#/components/schemas/IsNullMatcher']
             ]
         }
     }
