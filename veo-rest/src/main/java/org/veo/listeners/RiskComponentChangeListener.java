@@ -37,7 +37,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ElementEvent;
-import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
+import org.veo.core.entity.event.InboundLinkEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
 import org.veo.core.entity.event.RiskEvent.ChangedValues;
@@ -98,13 +98,22 @@ public class RiskComponentChangeListener {
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void handle(RiskAffectedLinkDeletedEvent event) {
+  public void handle(InboundLinkEvent event) {
+    if (event.getOperation() != InboundLinkEvent.Operation.DELETION
+        || !RiskAffected.class.isAssignableFrom(event.getEntityType())) {
+      return;
+    }
     Element element =
         elementRepository.getById(event.getEntityId(), event.getEntityType(), event.getClientId());
 
     if (element instanceof RiskAffected<?, ?> ra) {
       impactInheritanceCalculator.calculateImpactInheritance(
-          ra, event.getDomain(), event.getLinkType());
+          ra,
+          element.getDomains().stream()
+              .filter(d -> d.getId().equals(event.getDomainId()))
+              .findFirst()
+              .get(),
+          event.getLinkType());
     }
   }
 

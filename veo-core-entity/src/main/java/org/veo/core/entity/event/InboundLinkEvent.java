@@ -17,55 +17,48 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
-import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED;
-
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
-import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
-/** An event that is triggered for the target entity when a risk-relevant link is deleted. */
-@Value
+/** An event that is triggered for the target entity when a link is created, updated or deleted. */
+@EqualsAndHashCode
 @RequiredArgsConstructor
-public class RiskAffectedLinkDeletedEvent implements DomainEvent, RiskEvent {
-  @Getter(AccessLevel.NONE)
-  Element entity;
+public class InboundLinkEvent implements ElementEvent {
+  private final Element entity;
+  private final Domain domain;
+  @Getter private final String linkType;
+  @Getter private final Operation operation;
+  @Getter private final Object source;
 
-  Domain domain;
-  UUID clientId;
-  Object source;
-  String linkType;
-  Set<ChangedValues> changes = EnumSet.noneOf(ChangedValues.class);
-
-  public RiskAffectedLinkDeletedEvent(
-      Element entity, Domain domain, String linkType, Object source) {
-    this.entity = entity;
-    this.source = source;
-    this.domain = domain;
-    this.linkType = linkType;
-    this.changes.add(IMPACT_VALUES_CHANGED);
-
-    this.clientId = entity.getOwningClient().orElseThrow().getId();
-  }
-
+  @Override
   public UUID getEntityId() {
     return entity.getId();
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public Class<? extends Element> getEntityType() {
     return (Class<? extends Element>) entity.getModelInterface();
   }
 
   @Override
-  public Set<ChangedValues> getChanges() {
-    return changes;
+  public UUID getClientId() {
+    return entity.getOwningClient().get().getId();
+  }
+
+  @Override
+  public UUID getDomainId() {
+    return domain.getId();
+  }
+
+  public enum Operation {
+    CREATION_OR_UPDATE,
+    DELETION
   }
 }

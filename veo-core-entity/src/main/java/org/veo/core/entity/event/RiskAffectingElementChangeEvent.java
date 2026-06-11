@@ -23,11 +23,13 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHAN
 
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -101,5 +103,10 @@ public class RiskAffectingElementChangeEvent implements RiskEvent, ElementEvent 
   @Override
   public Object getSource() {
     return source;
+  }
+
+  @Override
+  public UUID getDomainId() {
+    return Optional.ofNullable(domain).map(Identifiable::getId).orElse(null);
   }
 }

@@ -20,10 +20,15 @@ package org.veo.core.usecase.base
 import org.veo.core.UserAccessRights
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
+import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
+import org.veo.core.entity.Element
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.core.entity.event.DomainEvent
+import org.veo.core.entity.event.InboundLinkEvent
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
@@ -59,6 +64,10 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
 
     def "Delete a process" () {
         def id = UUID.randomUUID()
+        def linkTarget = Mock(Element) {
+            modelInterface >> Scenario.class
+            it.id >> UUID.randomUUID()
+        }
         Process process = Mock() {
             getOwner() >> existingUnit
             getId() >> id
@@ -66,6 +75,13 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
             getOwningClient() >> Optional.of(existingClient)
             getRequirementImplementations() >> []
             getControlImplementations() >> []
+            links >> [
+                Mock(CustomLink) {
+                    type >> "notMyType"
+                    target >> linkTarget
+                    domain >> existingDomain
+                }
+            ]
         }
 
         when:
@@ -74,9 +90,18 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         then:
         1 * processRepository.getById(id, user) >> process
         1 * processRepository.deleteById(id)
-        1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
+        1 * eventPublisher.publish({ DomainEvent event->
+            event instanceof RiskAffectingElementChangeEvent
             event.entityType == Process
             event.entityId == id
+        })
+        1 * eventPublisher.publish({ DomainEvent event ->
+            event instanceof InboundLinkEvent
+            event.entityType == Scenario.class
+            event.entityId == linkTarget.id
+            event.domainId == existingDomain.id
+            event.linkType == "notMyType"
+            event.operation == InboundLinkEvent.Operation.DELETION
         })
     }
 
@@ -85,6 +110,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
+            links >> []
         }
 
         when:
@@ -105,6 +131,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
             getModelInterface() >> Scope
             getRequirementImplementations() >> []
             getControlImplementations() >> []
+            links >> []
         }
 
         when:

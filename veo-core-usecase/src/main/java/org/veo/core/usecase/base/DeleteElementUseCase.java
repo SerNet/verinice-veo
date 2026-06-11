@@ -27,7 +27,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
+import org.veo.core.entity.event.InboundLinkEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
@@ -45,9 +45,6 @@ public class DeleteElementUseCase
   private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK =
       Set.of(Process.class, Asset.class, Scope.class, Scenario.class, Control.class);
 
-  private static final Set<Class<?>> RISK_AFFECTED_CLASSES =
-      Set.of(Process.class, Asset.class, Scope.class);
-
   public DeleteElementUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
     this.repositoryProvider = repositoryProvider;
@@ -64,17 +61,19 @@ public class DeleteElementUseCase
     repository.deleteById(entity.getId());
     if (RELEVANT_CLASSES_FOR_RISK.contains(input.entityClass)) {
       eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
-      if (RISK_AFFECTED_CLASSES.contains(input.entityClass) && entity.getLinks() != null) {
-        // notify link targets
-        entity
-            .getLinks()
-            .forEach(
-                l ->
-                    eventPublisher.publish(
-                        new RiskAffectedLinkDeletedEvent(
-                            l.getTarget(), l.getDomain(), l.getType(), this)));
-      }
     }
+    // notify link targets
+    entity
+        .getLinks()
+        .forEach(
+            l ->
+                eventPublisher.publish(
+                    new InboundLinkEvent(
+                        l.getTarget(),
+                        l.getDomain(),
+                        l.getType(),
+                        InboundLinkEvent.Operation.DELETION,
+                        this)));
     return EmptyOutput.INSTANCE;
   }
 

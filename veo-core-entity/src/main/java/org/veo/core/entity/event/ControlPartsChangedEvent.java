@@ -57,6 +57,11 @@ public class ControlPartsChangedEvent implements ElementEvent {
     return entity;
   }
 
+  @Override
+  public UUID getDomainId() {
+    return null;
+  }
+
   public Set<Element> getNewRecursiveParts() {
     return unmodifiableSet(entity.getPartsRecursively());
   }

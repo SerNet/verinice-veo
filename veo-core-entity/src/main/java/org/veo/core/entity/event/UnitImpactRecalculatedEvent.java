@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Unit;
 
 import lombok.Value;
@@ -58,5 +60,10 @@ public class UnitImpactRecalculatedEvent implements DomainEvent {
   @Override
   public UUID getClientId() {
     return client.getId();
+  }
+
+  @Override
+  public UUID getDomainId() {
+    return Optional.ofNullable(domain).map(Identifiable::getId).orElse(null);
   }
 }

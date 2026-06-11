@@ -20,9 +20,6 @@ package org.veo.core.entity.event;
 import java.util.UUID;
 
 public interface DomainEvent {
-
-  Object UNKNOWN_SOURCE = RiskEvent.class;
-
   /**
    * The publisher of the event. Can be used to prevent read-your-own-writes during recursive
    * calculations.
@@ -31,4 +28,9 @@ public interface DomainEvent {
 
   /** The client in which the event occured. */
   UUID getClientId();
+
+  /**
+   * @return ID of affected domain or {@code null} if no specific domain is affected
+   */
+  UUID getDomainId();
 }

@@ -18,7 +18,6 @@
 package org.veo.core.usecase.service;
 
 import static java.util.HashMap.newHashMap;
-import static org.veo.core.entity.ElementType.RISK_AFFECTED_TYPES;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.time.LocalDate;
@@ -50,7 +49,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.event.ControlPartsChangedEvent;
-import org.veo.core.entity.event.RiskAffectedLinkDeletedEvent;
+import org.veo.core.entity.event.InboundLinkEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
@@ -231,9 +230,11 @@ public class EntityStateMapper {
     }
   }
 
-  private void publishLinkRemoved(Domain domain, Element target, String type) {
-    if (target.getOwningClient().isPresent() && RISK_AFFECTED_TYPES.contains(target.getType())) {
-      eventPublisher.publish(new RiskAffectedLinkDeletedEvent(target, domain, type, this));
+  private void publishLinkEvent(CustomLink link, InboundLinkEvent.Operation operation) {
+    if (link.getTarget().getOwningClient().isPresent()) {
+      eventPublisher.publish(
+          new InboundLinkEvent(
+              link.getTarget(), link.getDomain(), link.getType(), operation, this));
     }
   }
 
@@ -353,10 +354,12 @@ public class EntityStateMapper {
     newLinks.forEach(
         link -> {
           CustomLink newLink = mapLink(link, target, domain, idRefResolver);
-          target.applyLink(newLink);
+          if (target.applyLink(newLink)) {
+            publishLinkEvent(newLink, InboundLinkEvent.Operation.CREATION_OR_UPDATE);
+          }
         });
 
-    removedLinks.forEach(rl -> publishLinkRemoved(domain, rl.getTarget(), rl.getType()));
+    removedLinks.forEach(rl -> publishLinkEvent(rl, InboundLinkEvent.Operation.DELETION));
   }
 
   private <T extends Element> void applyCustomAspects(
