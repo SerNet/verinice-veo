@@ -35,6 +35,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -49,7 +50,9 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
@@ -172,6 +175,8 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Setter(value = AccessLevel.NONE)
   @Formula("dtype")
+  @Enumerated
+  @JdbcType(PostgreSQLEnumJdbcType.class)
   private ElementType elementType;
 
   protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
