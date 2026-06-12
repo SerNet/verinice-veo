@@ -306,7 +306,7 @@ public class ContentCreationController extends AbstractVeoController {
               description = "Decision identifier - unique within this domain")
           @PathVariable
           String decisionKey,
-      @RequestBody Decision decision) {
+      @RequestBody @NotNull @Valid Decision decision) {
     return useCaseInteractor.execute(
         saveDecisionUseCase,
         new SaveDecisionUseCase.InputData(domainId, decisionKey, decision),

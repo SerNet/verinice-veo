@@ -30,6 +30,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -2259,6 +2260,32 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then:
         def ex = thrown(UnprocessableDataException)
         ex.message == "Migrations must be empty, because the domain is not based on a template."
+    }
+
+    @WithUserDetails("content-creator")
+    def "decisions are validated"() {
+        given:
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: "decision validation test domain",
+            authority: "yours truly",
+        ])).resourceId
+
+        when:
+        put("/content-creation/domains/$domainId/decisions/kaputt", [
+            type: "expressive"
+        ], [:], 400)
+
+        then:
+        def ex = thrown(HandlerMethodValidationException)
+        with(ex.parameterValidationResults.first()  ) {
+            resolvableErrors*.field ==~ [
+                "name",
+                "expression",
+                "elementType",
+                "elementSubType"
+            ]
+            resolvableErrors*.defaultMessage ==~ ["must not be null"].repeat(4)
+        }
     }
 
     private List<Map> migrationDefinitionChangeKey() {
