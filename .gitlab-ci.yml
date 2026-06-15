@@ -9,7 +9,7 @@ variables:
 # Verification (code analysis) is unnecessary on 'develop' &
 # 'master', because only verified MRs can be merged into those branches.
 # For the test coverage, we do need to run tests on develop though
-.tests:
+.test_coverage:
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -76,7 +76,7 @@ build:
 test:
   stage: check
   rules:
-    - !reference [.tests, rules]
+    - !reference [.test_coverage, rules]
   script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   interruptible: true
   services:
@@ -134,7 +134,7 @@ http_rest_tests:
   - build
   stage: integration_test
   rules:
-    - !reference [ .tests, rules ]
+    - !reference [ .other_checks, rules ]
   services:
   - name: postgres:16.8-alpine
     alias: db
@@ -180,9 +180,6 @@ http_rest_tests:
   interruptible: true
   artifacts:
     when: always
-    paths:
-      - '*/build/jacoco/*.exec'
-    expire_in: 1 day
     reports:
       junit: veo-rest/build/test-results/restTest/*.xml
   cache:
@@ -197,8 +194,10 @@ http_rest_tests:
 
 coverage:
   stage: coverage
+  needs:
+    - test
   rules:
-    - !reference [.tests, rules]
+    - !reference [.test_coverage, rules]
   script:
     - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME jacocoTestReport jacocoMergedReport
     - |
