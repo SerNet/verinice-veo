@@ -41,6 +41,7 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.DateAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition;
@@ -390,6 +391,10 @@ public class SchemaExtender {
         schema.set("items", buildAttributeJsonSchema(listDefinition.getItemDefinition()));
       }
       case TextAttributeDefinition _ -> schema.put("type", "string");
+      case DurationAttributeDefinition _ -> {
+        schema.put("type", "string");
+        schema.put("format", "duration");
+      }
     }
     return schema;
   }

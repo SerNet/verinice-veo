@@ -52,6 +52,9 @@ import lombok.Data;
       name = IntegerAttributeDefinition.TYPE),
   @JsonSubTypes.Type(value = ListAttributeDefinition.class, name = ListAttributeDefinition.TYPE),
   @JsonSubTypes.Type(value = TextAttributeDefinition.class, name = TextAttributeDefinition.TYPE),
+  @JsonSubTypes.Type(
+      value = DurationAttributeDefinition.class,
+      name = DurationAttributeDefinition.TYPE),
 })
 @Schema(
     description = "Defines validation rules for an attribute in a custom aspect or link",
@@ -81,6 +84,9 @@ import lombok.Data;
       @DiscriminatorMapping(
           schema = TextAttributeDefinition.class,
           value = TextAttributeDefinition.TYPE),
+      @DiscriminatorMapping(
+          schema = DurationAttributeDefinition.class,
+          value = DurationAttributeDefinition.TYPE),
     })
 @Data
 public abstract sealed class AttributeDefinition
@@ -91,7 +97,8 @@ public abstract sealed class AttributeDefinition
         ExternalDocumentAttributeDefinition,
         IntegerAttributeDefinition,
         ListAttributeDefinition,
-        TextAttributeDefinition {
+        TextAttributeDefinition,
+        DurationAttributeDefinition {
 
   public void validate(Object value) throws UnprocessableDataException {
     ValidationError.throwOnErrors(getErrors(value));

@@ -26,6 +26,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.veo.categories.MapGetProperties
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.common.ETag
@@ -453,6 +454,58 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         and: 'there is one link of the expected type'
         def linksOfExpectedType = links.'necessaryData'
         linksOfExpectedType.size() == 1
+    }
+
+    def "Create process with duration attribute"() {
+        given:
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
+            name: "Some process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW",
+            customAspects:
+            [
+                'general' :
+                [
+                    interval: 'P3D'
+                ]
+            ]
+        ])).resourceId
+
+        when:
+        def entity = txTemplate.execute {
+            processRepository.findById(UUID.fromString(processId)).get().tap {
+                // make sure that the proxy is resolved
+                customAspects.first()
+            }
+        }
+
+        then:
+        entity.name == 'Some process'
+        with(entity.customAspects.first()) {
+            type == 'general'
+            attributes["interval"] == 'P3D'
+        }
+    }
+    def "Cannot create process with invalid duration attribute"() {
+        when:
+        post("/domains/$testDomainId/processes", [
+            name: "Some process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "BusinessProcess",
+            status: "NEW",
+            customAspects:
+            [
+                'general' :
+                [
+                    interval: 'banana'
+                ]
+            ]
+        ], 422)
+
+        then:
+        UnprocessableDataException e =thrown()
+        e.message == '''Invalid value 'banana' for attribute 'interval': must be a duration in ISO-8601 format'''
     }
 
     @Use(MapGetProperties)

@@ -20,6 +20,7 @@ package org.veo.core.entity
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
 import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -251,5 +252,51 @@ class AttributeDefinitionSpec extends Specification{
 
         then:
         thrown(UnprocessableDataException)
+    }
+
+    def "#value is a valid duration attribute"(value) {
+        given:
+        def definition = new DurationAttributeDefinition()
+
+        when: "validating strings"
+        definition.validate(value)
+
+        then:
+        noExceptionThrown()
+
+        where:
+        value << [
+            'P1Y',
+            'P7Y2M19D',
+            'PT1H',
+            'PT60M',
+            'P7M3DT12H10M5S'
+        ]
+    }
+
+    def "invalid duration attributes do not pass validation"() {
+        given:
+        def definition = new DurationAttributeDefinition()
+
+        when: "validating strings"
+        definition.validate(value)
+
+        then:
+        thrown(UnprocessableDataException)
+
+        where:
+        value << [
+            'abc',
+            'P1D2D',
+            'P1H',
+            'P',
+            'T',
+            'PT',
+            'PT1HT',
+            'P2B',
+            'PT9Y',
+            'PT3G',
+            5
+        ]
     }
 }

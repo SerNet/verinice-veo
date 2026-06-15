@@ -981,10 +981,21 @@ class SwaggerSpec extends VeoSpringSpec {
                     externalDocument:'#/components/schemas/ExternalDocumentAttributeDefinition',
                     integer:'#/components/schemas/IntegerAttributeDefinition',
                     list:'#/components/schemas/ListAttributeDefinition',
-                    text:'#/components/schemas/TextAttributeDefinition'
+                    text:'#/components/schemas/TextAttributeDefinition',
+                    duration:'#/components/schemas/DurationAttributeDefinition'
                 ]
             ]
         }
+    }
+
+    def "DurationAttributeDefinition is well-documented"() {
+        expect:
+        getSchema('DurationAttributeDefinition') == [
+            description : 'An attribute that represents a duration, coded as an ISO 8601 duration string, e.g. P3D or PT1H',
+            allOf: [
+                [$ref:'#/components/schemas/AttributeDefinition']
+            ]
+        ]
     }
 
     def "VeoExpression is well-documented"() {

@@ -45,6 +45,10 @@
                   "format": "date-time",
                   "type": "string"
                 },
+                "process_accessAuthorization_reviewInterval": {
+                  "format": "duration",
+                  "type": "string"
+                },
                 "process_accessAuthorization_document": {
                   "format": "uri",
                   "pattern": "^(https?|ftp)://",

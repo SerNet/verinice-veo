@@ -22,6 +22,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
 import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
@@ -103,6 +104,9 @@ class ObjectSchemaParserITSpec extends Specification {
                 }
                 with(process_accessAuthorization_reviewTime) {
                     it instanceof DateTimeAttributeDefinition
+                }
+                with(process_accessAuthorization_reviewInterval) {
+                    it instanceof DurationAttributeDefinition
                 }
             }
         })

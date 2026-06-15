@@ -403,6 +403,9 @@
                 "medium",
                 "high"
               ]
+            },
+            "interval": {
+              "type": "duration"
             }
           }
         }
@@ -426,6 +429,7 @@
           "high": "hoch",
           "low": "niedrig",
           "medium": "mittel",
+          "interval": "Intervall",
           "process_BusinessProcess_plural": "Geschäftsprozesse",
           "process_BusinessProcess_singular": "Geschäftsprozess",
           "process_BusinessProcess_status_NEW": "neu"
@@ -437,6 +441,7 @@
           "high": "high",
           "low": "low",
           "medium": "medium",
+          "interval": "interval",
           "process_BusinessProcess_plural": "business processes",
           "process_BusinessProcess_singular": "business process",
           "process_BusinessProcess_status_NEW": "new"

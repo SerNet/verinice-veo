@@ -32,6 +32,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.riskdefinition.CategoryDefinition
@@ -217,6 +218,25 @@ class EntitySchemaServiceITSpec extends Specification {
         !controlSchema.get(p).has("controlImplementations")
     }
 
+    def "JSON schema with duration attribute"() {
+        given:
+        def processSchema = getSchema(testDomain, ElementType.PROCESS)
+        // we cannot access the constant from within the `with` https://issues.apache.org/jira/browse/GROOVY-10604
+        def p = PROPS
+
+        expect:
+        with(processSchema.get(p).get("customAspects")) {
+            it.get(p).has('test')
+            with(it.get(p).get('test')) {
+                it.get(p).has('testAttr')
+                with(it.get(p).get('testAttr')) {
+                    get('type').asString() == 'string'
+                    get('format').asString() == 'duration'
+                }
+            }
+        }
+    }
+
     private static Schema getMetaSchemaV2019_09() throws IOException {
         SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2019_09)
                 .getSchema(SchemaLocation.of(DialectId.DRAFT_2019_09))
@@ -308,7 +328,13 @@ class EntitySchemaServiceITSpec extends Specification {
                 }
             }
             getElementTypeDefinition(ElementType.PROCESS) >> Mock(ElementTypeDefinition) {
-                customAspects >> [:]
+                customAspects >> [
+                    test: Mock(CustomAspectDefinition) {
+                        attributeDefinitions >> [
+                            testAttr: new DurationAttributeDefinition()
+                        ]
+                    }
+                ]
                 links >> [:]
                 subTypes >> [
                     subControl: Mock(SubTypeDefinition) {

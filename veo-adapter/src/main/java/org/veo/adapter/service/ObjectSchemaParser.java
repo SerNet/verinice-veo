@@ -36,6 +36,7 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.DateAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition;
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition;
@@ -151,6 +152,7 @@ public class ObjectSchemaParser {
         case "date" -> new DateAttributeDefinition();
         case "date-time" -> new DateTimeAttributeDefinition();
         case "uri" -> new ExternalDocumentAttributeDefinition();
+        case "duration" -> new DurationAttributeDefinition();
         default -> throw new IllegalArgumentException("Unsupported format");
       };
     }

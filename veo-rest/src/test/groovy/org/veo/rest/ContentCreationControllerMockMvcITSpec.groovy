@@ -38,6 +38,7 @@ import org.veo.core.entity.ElementType
 import org.veo.core.entity.IncarnationLookup
 import org.veo.core.entity.IncarnationRequestModeType
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.exception.NotFoundException
@@ -337,6 +338,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     attributeDefinitions: [
                         container_lid_present : [type: 'boolean']
                     ]
+                ],
+                revisit:[
+                    attributeDefinitions: [
+                        revisit_interval : [type: 'duration']
+                    ]
                 ]
             ],
             links:[
@@ -356,7 +362,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     scope_SCP_Location_status_Hidden: 'Hidden',
                     scope_SCP_Location_status_Revealed: 'Revealed',
                     container_lid_present: 'Lid present?',
-                    container_owner: 'Owner'
+                    container_owner: 'Owner',
+                    'revisit_interval': 'Revisit interval'
                 ]
             ],
         ]
@@ -391,6 +398,12 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 it.size() == 1
                 with (it[Locale.ENGLISH]) {
                     it.scope_SCP_Container_status_Empty == 'Empty'
+                }
+            }
+            with(it.customAspects) {
+                it.size() == 2
+                with(it.revisit) {
+                    it.attributeDefinitions == ['revisit_interval': new DurationAttributeDefinition()]
                 }
             }
         }
