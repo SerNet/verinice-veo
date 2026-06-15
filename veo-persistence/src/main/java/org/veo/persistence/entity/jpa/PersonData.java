@@ -47,12 +47,11 @@ public class PersonData extends ElementData implements Person {
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
   @Getter
-  @Valid
-  private final Set<Person> parts = new HashSet<>();
+  private final Set<@Valid Person> parts = new HashSet<>();
 
   @ManyToMany(targetEntity = PersonData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Person> composites = new HashSet<>();
+  private final Set<@Valid Person> composites = new HashSet<>();
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {

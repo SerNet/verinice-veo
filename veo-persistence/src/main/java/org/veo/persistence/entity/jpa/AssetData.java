@@ -48,9 +48,8 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
       name = "asset_parts",
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
-  @Valid
   @Getter
-  private final Set<Asset> parts = new HashSet<>();
+  private final Set<@Valid Asset> parts = new HashSet<>();
 
   @Override
   AssetRisk createRisk(Scenario scenario) {
@@ -59,7 +58,7 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
 
   @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Asset> composites = new HashSet<>();
+  private final Set<@Valid Asset> composites = new HashSet<>();
 
   @Override
   public boolean equals(Object obj) {

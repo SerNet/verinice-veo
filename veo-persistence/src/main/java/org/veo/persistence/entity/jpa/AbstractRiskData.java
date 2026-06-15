@@ -233,8 +233,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
       targetEntity = RiskValuesAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private Set<RiskValuesAspectData> riskAspects = new HashSet<>();
+  private Set<@Valid RiskValuesAspectData> riskAspects = new HashSet<>();
 
   @Override
   public ProbabilityValueProvider getProbabilityProvider(

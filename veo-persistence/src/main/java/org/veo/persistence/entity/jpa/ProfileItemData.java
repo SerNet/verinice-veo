@@ -68,8 +68,8 @@ public class ProfileItemData extends TemplateItemData<ProfileItem, Profile> impl
       targetEntity = ProfileTailoringReferenceData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private Set<TailoringReference<ProfileItem, Profile>> tailoringReferences = new HashSet<>();
+  private Set<@Valid TailoringReference<ProfileItem, Profile>> tailoringReferences =
+      new HashSet<>();
 
   /** create an instance of the described element* */
   @Override

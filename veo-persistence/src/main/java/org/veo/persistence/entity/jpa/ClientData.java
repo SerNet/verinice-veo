@@ -88,8 +88,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
       orphanRemoval = true,
       targetEntity = DomainData.class)
   @SQLRestriction("active = true")
-  @Valid
-  private final Set<Domain> domains = new HashSet<>();
+  private final Set<@Valid Domain> domains = new HashSet<>();
 
   @Override
   public boolean updateState(ClientChangeType changeType) {

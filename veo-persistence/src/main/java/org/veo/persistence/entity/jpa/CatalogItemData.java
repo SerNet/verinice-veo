@@ -79,8 +79,8 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
       targetEntity = CatalogTailoringReferenceData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private Set<TailoringReference<CatalogItem, DomainBase>> tailoringReferences = new HashSet<>();
+  private Set<@Valid TailoringReference<CatalogItem, DomainBase>> tailoringReferences =
+      new HashSet<>();
 
   @Column(name = "updatereferences")
   @OneToMany(
@@ -89,8 +89,7 @@ public class CatalogItemData extends TemplateItemData<CatalogItem, DomainBase>
       targetEntity = UpdateReferenceData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private Set<UpdateReference> updateReferences = new HashSet<>();
+  private Set<@Valid UpdateReference> updateReferences = new HashSet<>();
 
   @Override
   public DomainBase getDomainBase() {

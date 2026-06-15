@@ -57,8 +57,7 @@ public class DomainData extends DomainBaseData implements Domain {
       orphanRemoval = true,
       targetEntity = CatalogItemData.class,
       mappedBy = "domain")
-  @Valid
-  private Set<CatalogItem> catalogItems = new HashSet<>();
+  private Set<@Valid CatalogItem> catalogItems = new HashSet<>();
 
   @Override
   public void setProfiles(Set<Profile> profiles) {
@@ -71,8 +70,7 @@ public class DomainData extends DomainBaseData implements Domain {
       orphanRemoval = true,
       targetEntity = ProfileData.class,
       mappedBy = "domain")
-  @Valid
-  private Set<Profile> profiles = new HashSet<>();
+  private Set<@Valid Profile> profiles = new HashSet<>();
 
   @ManyToOne(targetEntity = DomainTemplateData.class, fetch = FetchType.LAZY)
   @Valid

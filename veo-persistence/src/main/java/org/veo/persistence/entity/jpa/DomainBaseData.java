@@ -101,8 +101,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       orphanRemoval = true,
       targetEntity = ElementTypeDefinitionData.class,
       mappedBy = "owner")
-  @Valid
-  private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
+  private Set<@Valid ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
   @Valid
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

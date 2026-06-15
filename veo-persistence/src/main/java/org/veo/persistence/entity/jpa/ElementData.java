@@ -120,8 +120,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       targetEntity = CustomLinkData.class,
       mappedBy = "source",
       fetch = FetchType.LAZY)
-  @Valid
-  private final Set<CustomLink> links = new HashSet<>();
+  private final Set<@Valid CustomLink> links = new HashSet<>();
 
   @Column(name = "customaspects")
   @OneToMany(
@@ -130,8 +129,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       targetEntity = CustomAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private final Set<CustomAspect> customAspects = new HashSet<>();
+  private final Set<@Valid CustomAspect> customAspects = new HashSet<>();
 
   @ManyToMany(targetEntity = ScopeData.class, mappedBy = "members", fetch = FetchType.LAZY)
   private final Set<Scope> scopes = new HashSet<>();
@@ -143,8 +141,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       targetEntity = ElementDomainAssociationData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private Set<ElementDomainAssociation> domainAssociations = new HashSet<>();
+  private Set<@Valid ElementDomainAssociation> domainAssociations = new HashSet<>();
 
   @Column(name = "decision_results_aspect")
   @OneToMany(
@@ -153,8 +150,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       targetEntity = DecisionResultsAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private final Set<DecisionResultsAspectData> decisionResultsAspects = new HashSet<>();
+  private final Set<@Valid DecisionResultsAspectData> decisionResultsAspects = new HashSet<>();
 
   @Override
   public void setOwner(Unit owner) {

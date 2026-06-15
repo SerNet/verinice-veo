@@ -54,8 +54,7 @@ public class RiskDefinitionSetData {
   @NotNull
   @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)
-  @Valid
-  Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+  Map<String, @Valid RiskDefinition> riskDefinitions = new HashMap<>();
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitions.clear();

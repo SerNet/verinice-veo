@@ -57,9 +57,8 @@ public class ScenarioData extends ElementData implements Scenario {
       name = "scenario_parts",
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
-  @Valid
   @Getter
-  private final Set<Scenario> parts = new HashSet<>();
+  private final Set<@Valid Scenario> parts = new HashSet<>();
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
@@ -78,13 +77,11 @@ public class ScenarioData extends ElementData implements Scenario {
       targetEntity = ScenarioRiskValuesAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private final Set<ScenarioRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+  private final Set<@Valid ScenarioRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
   @ManyToMany(targetEntity = ScenarioData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-  @Valid
   @Getter
-  private final Set<Scenario> composites = new HashSet<>();
+  private final Set<@Valid Scenario> composites = new HashSet<>();
 
   @Override
   public void copyDomainData(

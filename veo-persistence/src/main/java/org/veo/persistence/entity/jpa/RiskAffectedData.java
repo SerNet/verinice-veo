@@ -81,8 +81,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       targetEntity = ImpactValuesAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  protected final Set<ImpactValuesAspectData> riskValuesAspects = new HashSet<>();
+  protected final Set<@Valid ImpactValuesAspectData> riskValuesAspects = new HashSet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -90,8 +89,8 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       targetEntity = RequirementImplementationData.class,
       mappedBy = "origin",
       fetch = FetchType.LAZY)
-  @Valid
-  protected final Set<RequirementImplementation> requirementImplementations = new HashSet<>();
+  protected final Set<@Valid RequirementImplementation> requirementImplementations =
+      new HashSet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -99,8 +98,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       targetEntity = ControlImplementationData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  protected final Set<ControlImplementation> controlImplementations = new HashSet<>();
+  protected final Set<@Valid ControlImplementation> controlImplementations = new HashSet<>();
 
   @Override
   public void setImpactValues(Domain domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {

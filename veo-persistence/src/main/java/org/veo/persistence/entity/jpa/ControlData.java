@@ -48,13 +48,12 @@ public class ControlData extends ElementData implements Control {
       name = "control_parts",
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
-  @Valid
   @Getter
-  private final Set<Control> parts = new HashSet<>();
+  private final Set<@Valid Control> parts = new HashSet<>();
 
   @ManyToMany(targetEntity = ControlData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Control> composites = new HashSet<>();
+  private final Set<@Valid Control> composites = new HashSet<>();
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {}

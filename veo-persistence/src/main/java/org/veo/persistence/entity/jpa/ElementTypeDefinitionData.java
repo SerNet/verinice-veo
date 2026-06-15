@@ -75,18 +75,15 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
   @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)
-  @Valid
-  private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
+  private Map<String, @Valid SubTypeDefinition> subTypes = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)
-  @Valid
-  private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
+  private Map<String, @Valid CustomAspectDefinition> customAspects = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)
-  @Valid
-  private Map<String, LinkDefinition> links = new HashMap<>();
+  private Map<String, @Valid LinkDefinition> links = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)

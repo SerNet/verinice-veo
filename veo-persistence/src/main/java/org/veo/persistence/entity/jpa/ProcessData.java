@@ -46,13 +46,12 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
       name = "process_parts",
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
-  @Valid
   @Getter
-  private final Set<Process> parts = new HashSet<>();
+  private final Set<@Valid Process> parts = new HashSet<>();
 
   @ManyToMany(targetEntity = ProcessData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Process> composites = new HashSet<>();
+  private final Set<@Valid Process> composites = new HashSet<>();
 
   @Override
   ProcessRisk createRisk(Scenario scenario) {

@@ -26,6 +26,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Incident;
@@ -46,11 +47,11 @@ public class IncidentData extends ElementData implements Incident {
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
   @Getter
-  private final Set<Incident> parts = new HashSet<>();
+  private final Set<@Valid Incident> parts = new HashSet<>();
 
   @ManyToMany(targetEntity = IncidentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Incident> composites = new HashSet<>();
+  private final Set<@Valid Incident> composites = new HashSet<>();
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {

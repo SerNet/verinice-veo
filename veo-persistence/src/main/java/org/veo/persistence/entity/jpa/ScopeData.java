@@ -58,9 +58,8 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
       name = "scope_members",
       joinColumns = @JoinColumn(name = "scope_id"),
       inverseJoinColumns = @JoinColumn(name = "member_id"))
-  @Valid
   @Getter
-  private final Set<Element> members = new HashSet<>();
+  private final Set<@Valid Element> members = new HashSet<>();
 
   @Override
   public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
@@ -113,8 +112,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
       targetEntity = ScopeRiskValuesAspectData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
-  @Valid
-  private final Set<ScopeRiskValuesAspectData> scopeRiskValuesAspects = new HashSet<>();
+  private final Set<@Valid ScopeRiskValuesAspectData> scopeRiskValuesAspects = new HashSet<>();
 
   @Override
   public void copyDomainData(

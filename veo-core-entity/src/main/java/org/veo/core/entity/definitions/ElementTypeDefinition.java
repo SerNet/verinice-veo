@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
@@ -39,15 +40,15 @@ public interface ElementTypeDefinition extends ElementTypeDefinitionState {
   @NotNull
   ElementType getElementType();
 
-  void setSubTypes(Map<String, SubTypeDefinition> definitions);
+  void setSubTypes(Map<String, @Valid SubTypeDefinition> definitions);
 
-  void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
+  void setCustomAspects(Map<String, @Valid CustomAspectDefinition> definitions);
 
   default Optional<LinkDefinition> findLink(String type) {
     return Optional.ofNullable(getLinks().get(type));
   }
 
-  void setLinks(Map<String, LinkDefinition> definitions);
+  void setLinks(Map<String, @Valid LinkDefinition> definitions);
 
   void setTranslations(Map<Locale, Map<String, String>> translations);
 

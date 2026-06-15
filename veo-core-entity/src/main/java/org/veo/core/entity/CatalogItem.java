@@ -20,6 +20,8 @@ package org.veo.core.entity;
 import java.util.Optional;
 import java.util.Set;
 
+import jakarta.validation.Valid;
+
 import org.veo.core.entity.exception.UnprocessableDataException;
 
 /**
@@ -53,7 +55,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   }
 
   default void setTailoringReferences(
-      Set<TailoringReference<CatalogItem, DomainBase>> tailoringReferences) {
+      Set<@Valid TailoringReference<CatalogItem, DomainBase>> tailoringReferences) {
     clearTailoringReferences();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);
@@ -62,7 +64,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem, Doma
   /** All the update refreneces for this catalog item. */
   Set<UpdateReference> getUpdateReferences();
 
-  default void setUpdateReferences(Set<UpdateReference> updateReferences) {
+  default void setUpdateReferences(Set<@Valid UpdateReference> updateReferences) {
     getUpdateReferences().clear();
     updateReferences.forEach(updateReference -> updateReference.setOwner(this));
     getUpdateReferences().addAll(updateReferences);

@@ -46,13 +46,12 @@ public class DocumentData extends ElementData implements Document {
       name = "document_parts",
       joinColumns = @JoinColumn(name = "composite_id"),
       inverseJoinColumns = @JoinColumn(name = "part_id"))
-  @Valid
   @Getter
-  private final Set<Document> parts = new HashSet<>();
+  private final Set<@Valid Document> parts = new HashSet<>();
 
   @ManyToMany(targetEntity = DocumentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
-  private final Set<Document> composites = new HashSet<>();
+  private final Set<@Valid Document> composites = new HashSet<>();
 
   @Override
   protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
