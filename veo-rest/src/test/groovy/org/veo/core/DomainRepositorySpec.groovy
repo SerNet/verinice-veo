@@ -34,7 +34,7 @@ import jakarta.validation.ConstraintViolationException
 class DomainRepositorySpec extends VeoSpringSpec {
 
     @Autowired
-    private EntityManager em;
+    private EntityManager em
 
     @Autowired
     private DomainRepositoryImpl domainRepository
@@ -136,8 +136,8 @@ class DomainRepositorySpec extends VeoSpringSpec {
         def inSetId = domain.inspectionSet.id
 
         when: "the domain is deleted"
-        client.removeFromDomains(domain);
-        domainRepository.deleteById(domain.getId());
+        client.removeFromDomains(domain)
+        domainRepository.deleteById(domain.getId())
 
         then: "no exception is raised"
         noExceptionThrown()

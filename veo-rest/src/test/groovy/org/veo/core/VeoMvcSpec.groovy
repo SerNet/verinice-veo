@@ -195,6 +195,6 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
 
     MockMultipartFile toFile(Map json) {
         def jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(json))
-        return new MockMultipartFile("file", "", "application/json", jsonString.getBytes(StandardCharsets.UTF_8));
+        return new MockMultipartFile("file", "", "application/json", jsonString.getBytes(StandardCharsets.UTF_8))
     }
 }
