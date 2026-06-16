@@ -57,12 +57,12 @@ class V75__persist_inspections extends BaseJavaMigration {
                      inner join decision_set ds on ds.id = d.decision_set_id;
          """.toString()) { domain ->
                     def inspectionSetId = sql
-                            .executeInsert(
-                            [inspections: domain.name == "DS-GVO" && domain.has_decisions ? dsgvoInspections : "{}"],
-                            "INSERT INTO inspection_set (id, inspections) VALUES (nextval('seq_inspection_sets'), :inspections::jsonb)"
-                            )
-                            .first()
-                            .first()
+                    .executeInsert(
+                    [inspections: domain.name == "DS-GVO" && domain.has_decisions ? dsgvoInspections : "{}"],
+                    "INSERT INTO inspection_set (id, inspections) VALUES (nextval('seq_inspection_sets'), :inspections::jsonb)"
+                    )
+                    .first()
+                    .first()
                     sql.execute([
                         id: domain.db_id,
                         inspectionSetId: inspectionSetId,

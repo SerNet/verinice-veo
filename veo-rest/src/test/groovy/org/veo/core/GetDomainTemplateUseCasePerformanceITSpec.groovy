@@ -53,7 +53,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
             CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-                    outputMapper, userAccessRightsProvider.accessRights))
+            outputMapper, userAccessRightsProvider.accessRights))
         }
     ] as UseCaseInteractor
 
@@ -111,11 +111,11 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
         new UserSwitcher().runAsUser("user", client.id) {
             executeInTransaction {
                 synchronousUseCaseInteractor.execute(
-                        useCase,
-                        new UseCase.EntityId(domainTemplateId), {
-                            entityToDtoTransformer.transformDomainTemplate2Dto(it.domainTemplate)
-                        }
-                        ).get()
+                useCase,
+                new UseCase.EntityId(domainTemplateId), {
+                    entityToDtoTransformer.transformDomainTemplate2Dto(it.domainTemplate)
+                }
+                ).get()
             }
         }
         def queryCounts = QueryCountHolder.grandTotal

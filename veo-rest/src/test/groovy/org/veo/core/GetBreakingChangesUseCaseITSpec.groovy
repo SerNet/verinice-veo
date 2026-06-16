@@ -56,8 +56,8 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         when:
         def result = executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(client.idAsString)
-                    ).breakingChanges
+            new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(client.idAsString)
+            ).breakingChanges
         }
 
         then:
@@ -266,8 +266,8 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         domainDataRepository.save(domain)
         return executeInTransaction {
             getBreakingChangesUseCase.execute(
-                    new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
-                    ).breakingChanges
+            new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
+            ).breakingChanges
         }
     }
 }

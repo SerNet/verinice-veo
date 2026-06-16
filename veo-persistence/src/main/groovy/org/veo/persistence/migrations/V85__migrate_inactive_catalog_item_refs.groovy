@@ -73,7 +73,7 @@ class V85__migrate_inactive_catalog_item_refs extends BaseJavaMigration {
         // Redirect outdated references to new item
         activeItemIdByAbbreviation.forEach { abbreviation, activeItemId ->
             def inactiveItemIds =
-                    inactiveItemIdsByAbbreviation.getOrDefault(abbreviation, []).collect { "'$it'" }.join(',')
+            inactiveItemIdsByAbbreviation.getOrDefault(abbreviation, []).collect { "'$it'" }.join(',')
             if (!inactiveItemIds.empty) {
                 statements += "update element_applied_catalog_items set applied_catalog_items_db_id = '$activeItemId' where applied_catalog_items_db_id in ($inactiveItemIds);"
                 inactiveItemIdsByAbbreviation.remove(abbreviation)

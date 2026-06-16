@@ -476,23 +476,23 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(parsedApiDocs.paths["/content-creation/domain-templates"].post) {
             with(
-                    it.requestBody) {
-                        required == true
-                        content.keySet() ==~ [
-                            'multipart/form-data',
-                            'application/json'
-                        ]
-                        content['application/json'] == [schema:[$ref:'#/components/schemas/ExportDomainTemplateDto']]
-                        content['multipart/form-data'] == [
-                            schema:[
-                                type:'object',
-                                properties:[
-                                    file:[type:'string', format:'binary']
-                                ],
-                                required:['file']
-                            ]
-                        ]
-                    }
+            it.requestBody) {
+                required == true
+                content.keySet() ==~ [
+                    'multipart/form-data',
+                    'application/json'
+                ]
+                content['application/json'] == [schema:[$ref:'#/components/schemas/ExportDomainTemplateDto']]
+                content['multipart/form-data'] == [
+                    schema:[
+                        type:'object',
+                        properties:[
+                            file:[type:'string', format:'binary']
+                        ],
+                        required:['file']
+                    ]
+                ]
+            }
             it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
         }
     }
@@ -769,7 +769,7 @@ class SwaggerSpec extends VeoSpringSpec {
         }.tap {
             removeIf {
                 (it.path == '/domains/{domainId}/update' && it.method == 'post' // uses specific schema and has a separate test
-                        )
+                )
             }
         }
     }
@@ -828,14 +828,14 @@ class SwaggerSpec extends VeoSpringSpec {
                 }.tap {
                     removeIf {
                         (it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
-                                || it.path == '/messages' && it.method == 'get' // has API key auth
-                                ||  it.path.startsWith('/admin/messages') && it.method in [
-                                    'post',
-                                    'put',
-                                    'delete'
-                                ] // has API key auth
-                                || it.path == '/content-creation/domain-templates' && it.method == 'post' // has API key auth
-                                )
+                        || it.path == '/messages' && it.method == 'get' // has API key auth
+                        ||  it.path.startsWith('/admin/messages') && it.method in [
+                            'post',
+                            'put',
+                            'delete'
+                        ] // has API key auth
+                        || it.path == '/content-creation/domain-templates' && it.method == 'post' // has API key auth
+                        )
                     }
                 }
     }

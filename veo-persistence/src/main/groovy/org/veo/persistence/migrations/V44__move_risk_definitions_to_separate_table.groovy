@@ -53,12 +53,12 @@ class V44__move_risk_definitions_to_separate_table extends BaseJavaMigration{
 
         sql.eachRow("SELECT db_id, risk_definitions FROM $domainTable;".toString()) { domain ->
             def riskDefinitionSetId = sql
-                    .executeInsert(
-                    [riskDefinitions: domain.risk_definitions],
-                    "INSERT INTO risk_definition_set (id, risk_definitions) VALUES (nextval('seq_risk_definition_sets'), :riskDefinitions)"
-                    )
-                    .first()
-                    .first()
+            .executeInsert(
+            [riskDefinitions: domain.risk_definitions],
+            "INSERT INTO risk_definition_set (id, risk_definitions) VALUES (nextval('seq_risk_definition_sets'), :riskDefinitions)"
+            )
+            .first()
+            .first()
             sql.execute([
                 id: domain.db_id,
                 riskDefinitionSetId: riskDefinitionSetId,

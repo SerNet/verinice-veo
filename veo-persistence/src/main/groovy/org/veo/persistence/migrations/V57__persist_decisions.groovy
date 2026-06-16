@@ -53,12 +53,12 @@ class V57__persist_decisions extends BaseJavaMigration {
 
         sql.eachRow("SELECT db_id, name, templateversion FROM $domainTable;".toString()) { domain ->
             def decisionSetId = sql
-                    .executeInsert(
-                    [decisions: domain.name == "DS-GVO" && domain.templateversion == "1.9.12" ? dsgvoDecisions : "{}"],
-                    "INSERT INTO decision_set (id, decisions) VALUES (nextval('seq_decision_sets'), :decisions::jsonb)"
-                    )
-                    .first()
-                    .first()
+            .executeInsert(
+            [decisions: domain.name == "DS-GVO" && domain.templateversion == "1.9.12" ? dsgvoDecisions : "{}"],
+            "INSERT INTO decision_set (id, decisions) VALUES (nextval('seq_decision_sets'), :decisions::jsonb)"
+            )
+            .first()
+            .first()
             sql.execute([
                 id: domain.db_id,
                 decisionSetId: decisionSetId,

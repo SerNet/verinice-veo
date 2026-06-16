@@ -241,19 +241,19 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         when:
         executeInTransaction {
             useCase.execute(
-                    new UnitImportUseCase.InputData(
-                    unitDto, elements as Set, [] as Set,
-                    [
-                        new UnitImportUseCase.DomainMetadata(
-                        domainMetadataId,
-                        testDomain3.name,
-                        testDomain3.authority,
-                        testDomain3.templateVersion.toString()
-                        )
-                    ] as Set
-                    ),
-                    NoRestrictionAccessRight.from(client.idAsString, 2, 2)
-                    )
+            new UnitImportUseCase.InputData(
+            unitDto, elements as Set, [] as Set,
+            [
+                new UnitImportUseCase.DomainMetadata(
+                domainMetadataId,
+                testDomain3.name,
+                testDomain3.authority,
+                testDomain3.templateVersion.toString()
+                )
+            ] as Set
+            ),
+            NoRestrictionAccessRight.from(client.idAsString, 2, 2)
+            )
         }
         def controls = executeInTransaction {
             controlDataRepository.findAll().tap { it*.domainAssociations*.domain*.id }

@@ -164,7 +164,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             processes = selectProcesses(process.id, true)
             processes.first().risks.forEach{
                 it.getRiskProvider(rd, domain)
-                        .getCategorizedRisks().size() == 4
+                .getCategorizedRisks().size() == 4
                 it.getProbabilityProvider(rd, domain).effectiveProbability
                 def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
                 it.getRiskProvider(rd, domain).getInherentRisk(cat)
@@ -187,7 +187,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             processes = selectProcesses(process.id, false)
             processes.first().risks.forEach{
                 it.getRiskProvider(rd, domain)
-                        .getCategorizedRisks().size() == 4
+                .getCategorizedRisks().size() == 4
                 it.getProbabilityProvider(rd, domain).effectiveProbability
                 def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
                 it.getRiskProvider(rd, domain).getInherentRisk(cat)
