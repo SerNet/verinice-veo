@@ -148,15 +148,15 @@ class DomainRepositorySpec extends VeoSpringSpec {
         when: "checking the parts"
         def riskDefinitions = txTemplate.execute {
             em.createNativeQuery("select * from risk_definition_set where id=?1")
-            .setParameter(1, rdSetId).getResultList()
+                    .setParameter(1, rdSetId).getResultList()
         }
         def decisions = txTemplate.execute {
             em.createNativeQuery("select * from decision_set where id=?1")
-            .setParameter(1, deSetId).getResultList()
+                    .setParameter(1, deSetId).getResultList()
         }
         def inspections = txTemplate.execute {
             em.createNativeQuery("select * from inspection_set where id=?1")
-            .setParameter(1, inSetId).getResultList()
+                    .setParameter(1, inSetId).getResultList()
         }
 
         then: "they are all gone"

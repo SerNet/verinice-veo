@@ -35,14 +35,14 @@ class V55__assign_custom_aspects_to_a_domain extends BaseJavaMigration {
                       from element as e) as query
                 where query.ca_count > 0 and query.domain_count != 1;
             """) {
-                def errors = []
-                while (it.next()) {
-                    errors.add("Element ${it.getString("element_id")} has ${it.getInt("ca_count")} custom aspects / links, but is associated with ${it.getInt("domain_count")} domains")
-                }
-                if (!errors.empty) {
-                    throw new RuntimeException("This migration requires all elements with custom aspects / links to be associated with exactly one domain\n\n${errors.join("\n")}")
-                }
-            }
+                        def errors = []
+                        while (it.next()) {
+                            errors.add("Element ${it.getString("element_id")} has ${it.getInt("ca_count")} custom aspects / links, but is associated with ${it.getInt("domain_count")} domains")
+                        }
+                        if (!errors.empty) {
+                            throw new RuntimeException("This migration requires all elements with custom aspects / links to be associated with exactly one domain\n\n${errors.join("\n")}")
+                        }
+                    }
 
             // Assign every custom aspect / link to the domain that its owner / source is associated with
             execute("""

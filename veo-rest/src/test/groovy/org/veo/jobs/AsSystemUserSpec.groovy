@@ -43,8 +43,8 @@ class AsSystemUserSpec extends VeoSpringSpec {
         [client1, client2, client3].each { currentClient ->
             AsSystemUser.runInClient( currentClient, {
                 def currentUser = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal())
+                        .getAuthentication()
+                        .getPrincipal())
                 assert currentUser.getClientId() == currentClient.getId()
             })
         }

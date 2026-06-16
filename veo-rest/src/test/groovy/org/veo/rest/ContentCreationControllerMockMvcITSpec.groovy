@@ -679,10 +679,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
         def newScenario1 = txTemplate.execute {
             def q = scenarioDataRepository.findById(UUID.fromString(elementList[0].targetUri.split('/' ).last())).get()
-            .tap {
-                parts.collect { it.parts.size() }
-                composites.collect { it.composites.size() }
-            }
+                    .tap {
+                        parts.collect { it.parts.size() }
+                        composites.collect { it.composites.size() }
+                    }
         }
 
         then: "the existing scenario has the new as part and the new scenario a composite"
@@ -1694,10 +1694,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
-            .find{ it.name == domain.name && it.templateVersion.toString() == "1.1.0"}
-            .tap{
-                it.profiles*.items*.tailoringReferences*.id
-            } // init proxy
+                    .find{ it.name == domain.name && it.templateVersion.toString() == "1.1.0"}
+                    .tap{
+                        it.profiles*.items*.tailoringReferences*.id
+                    } // init proxy
         }
 
         then: "the template is found, the version is set"

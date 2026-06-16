@@ -67,7 +67,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
             CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-            outputMapper, NoRestrictionAccessRight.from(client.getId().toString())))
+                    outputMapper, NoRestrictionAccessRight.from(client.getId().toString())))
         }
     ] as UseCaseInteractor
 
@@ -97,11 +97,11 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         when: "simulating the GET"
         def dto = executeInTransaction {
             def out = synchronousUseCaseInteractor.execute(
-            getIncarnationDescriptionUseCase,
-            new GetCatalogIncarnationDescriptionUseCase.InputData(
-            unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
-            Function.identity()
-            ).get()
+                    getIncarnationDescriptionUseCase,
+                    new GetCatalogIncarnationDescriptionUseCase.InputData(
+                    unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
+                    Function.identity()
+                    ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)
         }
         def queryCounts = QueryCountHolder.grandTotal

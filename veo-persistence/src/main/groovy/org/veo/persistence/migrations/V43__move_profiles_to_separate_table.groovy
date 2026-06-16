@@ -54,12 +54,12 @@ class V43__move_profiles_to_separate_table extends BaseJavaMigration{
 
         sql.eachRow("SELECT db_id, profiles FROM $domainTable;".toString()) { domain ->
             def profileSetId = sql
-            .executeInsert(
-            [profiles: domain.profiles,],
-            "INSERT INTO profile_set (id, profiles) VALUES (nextval('seq_profile_sets'), :profiles)"
-            )
-            .first()
-            .first()
+                    .executeInsert(
+                    [profiles: domain.profiles,],
+                    "INSERT INTO profile_set (id, profiles) VALUES (nextval('seq_profile_sets'), :profiles)"
+                    )
+                    .first()
+                    .first()
             sql.execute([
                 id: domain.db_id,
                 profileSetId: profileSetId,

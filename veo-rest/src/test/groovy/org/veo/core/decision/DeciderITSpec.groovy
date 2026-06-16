@@ -422,9 +422,9 @@ class DeciderITSpec extends VeoSpringSpec {
             getRiskProvider(riskDefinitionRef, domain).tap { CategorizedRiskValueProvider riskValueProvider ->
                 inherentRisks.forEach{category, riskValue ->
                     riskValueProvider.categorizedRisks
-                    .find { it.category == category }
-                    .with { it as DeterminedRiskImpl }
-                    .setInherentRisk(riskValue)
+                            .find { it.category == category }
+                            .with { it as DeterminedRiskImpl }
+                            .setInherentRisk(riskValue)
                 }
             }
         }

@@ -29,9 +29,9 @@ class OpenApiRestTestITSpec extends VeoRestTest {
                 .findAll { k, v -> !v.readOnly }
                 .collectMany({schemaName, schemaDefinition ->
                     schemaDefinition.properties
-                    ?.findAll { propName, propDefinition -> !hasSufficientValidationRules(propName, propDefinition) }
-                    ?.collect { propName, propDefinition -> "$schemaName.$propName" }
-                    ?: []
+                            ?.findAll { propName, propDefinition -> !hasSufficientValidationRules(propName, propDefinition) }
+                            ?.collect { propName, propDefinition -> "$schemaName.$propName" }
+                            ?: []
                 })
         invalidProperties.size() == 0
     }

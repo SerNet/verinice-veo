@@ -736,8 +736,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         and:"create the control without scenario"
         3.times {
             postIncarnationDescriptions(
-            parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
-            )
+                    parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=$controlImpactExample.symbolicIdAsString&exclude=LINK"))
+                    )
         }
 
         and: "fetching the process"

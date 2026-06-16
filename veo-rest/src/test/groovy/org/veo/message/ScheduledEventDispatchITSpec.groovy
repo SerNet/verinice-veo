@@ -155,9 +155,9 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         // run in transaction so that all events are in the database when the first dispatcher gets scheduled:
         def events = executeInTransaction {
             (1..NUM_EVENTS)
-            .collect { new StoredEventData() }
-            .each { it.routingKey = routingKeyPrefix + "veo.testmessage" }
-            .each { storedEventRepository.save(it) }
+                    .collect { new StoredEventData() }
+                    .each { it.routingKey = routingKeyPrefix + "veo.testmessage" }
+                    .each { storedEventRepository.save(it) }
         }
 
         then: "the table should have been cleared by the deletion job"

@@ -148,7 +148,7 @@ begin
     where id = any(risk_definition_set_ids);
 
 ''' + dropDesignatorSequencesSnippet()+
-            '''
+                    '''
 end;
 $$;''')
         }
