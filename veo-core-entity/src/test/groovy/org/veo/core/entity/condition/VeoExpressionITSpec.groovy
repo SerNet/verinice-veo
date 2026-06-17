@@ -17,6 +17,11 @@
  */
 package org.veo.core.entity.condition
 
+import java.time.Duration
+
+import org.codehaus.groovy.ast.expr.ListExpression
+
+import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
@@ -36,6 +41,7 @@ import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.type.VeoType
 import org.veo.core.entity.type.VeoType as T
 
 import spock.lang.Specification
@@ -925,5 +931,37 @@ class VeoExpressionITSpec extends Specification {
         then:
         def e = thrown(IllegalArgumentException)
         e.message == "cannot compare values with different types (Integer|String)"
+    }
+
+    def "list expression builds list"() {
+        given:
+        def domain = Mock(Domain) {
+            getCustomAspectAttributeDefinition(ElementType.ASSET, "nothingSpecial", "foo") >> new TextAttributeDefinition()
+            getCustomAspectAttributeDefinition(ElementType.ASSET, "nothingSpecial", "bar") >> new IntegerAttributeDefinition()
+        }
+
+        and:
+        def asset = Spy(Asset) {
+            getCustomAspects(domain) >> [
+                Mock(CustomAspect) {
+                    type >> "nothingSpecial"
+                    attributes >> [
+                        foo: "ok",
+                        bar: 42,
+                    ]
+                },
+            ]
+        }
+
+        and:
+        def exp = new ListOfExpression([
+            new CustomAspectAttributeValueExpression("nothingSpecial", "foo"),
+            new CustomAspectAttributeValueExpression("nothingSpecial", "bar"),
+        ])
+
+        expect:
+        exp.selfValidate(domain,ElementType.ASSET)
+        exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(T.integer(),T.string()).orNothing())
+        exp.getValue(asset, domain) == ["ok", 42]
     }
 }
