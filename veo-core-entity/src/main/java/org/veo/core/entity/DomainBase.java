@@ -33,6 +33,7 @@ import com.github.zafarkhaja.semver.Version;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
@@ -146,6 +147,13 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   default boolean containsCustomAspectDefinition(
       ElementType elementType, String caType, CustomAspectDefinition definition) {
     return findCustomAspectDefinition(elementType, caType).map(definition::equals).orElse(false);
+  }
+
+  default AttributeDefinition getCustomAspectAttributeDefinition(
+      ElementType elementType, String caType, String attribute) {
+    return getElementTypeDefinition(elementType)
+        .getCustomAspectDefinition(caType)
+        .getAttributeDefinition(attribute);
   }
 
   default CustomAspectDefinition getCustomAspectDefinition(ElementType elementType, String caType) {

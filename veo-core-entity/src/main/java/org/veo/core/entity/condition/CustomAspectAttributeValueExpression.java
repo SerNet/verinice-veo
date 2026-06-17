@@ -23,7 +23,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -49,18 +48,13 @@ public class CustomAspectAttributeValueExpression implements VeoExpression {
 
   @Override
   public void selfValidate(DomainBase domain, ElementType elementType) {
-    getAttributeDefinition(domain, elementType);
+    domain.getCustomAspectAttributeDefinition(elementType, customAspect, attribute);
   }
 
   @Override
   public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return getAttributeDefinition(domain, elementType).getValueType();
-  }
-
-  private AttributeDefinition getAttributeDefinition(DomainBase domain, ElementType elementType) {
     return domain
-        .getElementTypeDefinition(elementType)
-        .getCustomAspectDefinition(customAspect)
-        .getAttributeDefinition(attribute);
+        .getCustomAspectAttributeDefinition(elementType, customAspect, attribute)
+        .getValueType();
   }
 }

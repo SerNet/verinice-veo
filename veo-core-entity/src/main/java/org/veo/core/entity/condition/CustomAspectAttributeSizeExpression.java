@@ -64,9 +64,7 @@ public class CustomAspectAttributeSizeExpression implements VeoExpression {
   public void selfValidate(DomainBase domain, ElementType elementType) {
     var type =
         domain
-            .getElementTypeDefinition(elementType)
-            .getCustomAspectDefinition(customAspectType)
-            .getAttributeDefinition(attributeType)
+            .getCustomAspectAttributeDefinition(elementType, customAspectType, attributeType)
             .getValueType();
     if (!Collection.class.isAssignableFrom(type)) {
       throw new IllegalArgumentException(
