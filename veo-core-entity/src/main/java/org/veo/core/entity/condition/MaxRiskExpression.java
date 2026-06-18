@@ -29,6 +29,7 @@ import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.RiskRef;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 
@@ -56,8 +57,8 @@ public class MaxRiskExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return BigDecimal.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.decimal().orNothing();
   }
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {

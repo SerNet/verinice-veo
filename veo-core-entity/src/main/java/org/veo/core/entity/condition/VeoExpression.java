@@ -27,6 +27,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.firsthitpolicy.Condition;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -114,5 +115,5 @@ public interface VeoExpression {
   /**
    * @return type of the values that this provider will yield in given domain for given element type
    */
-  Class<?> getValueType(DomainBase domain, ElementType elementType);
+  VeoType getValueType(DomainBase domain, ElementType elementType);
 }

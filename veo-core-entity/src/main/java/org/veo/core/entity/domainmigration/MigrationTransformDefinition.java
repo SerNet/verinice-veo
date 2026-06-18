@@ -35,6 +35,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.condition.VeoExpression;
+import org.veo.core.entity.type.VeoType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
@@ -83,19 +84,12 @@ public interface MigrationTransformDefinition {
   }
 
   default void validate(Domain domain, DomainTemplate domainTemplate) {
-    Class<?> expectedType = target().getValueType(domain);
+    VeoType expectedType = target().getValueType(domain);
     try {
       migrationExpression().selfValidate(domainTemplate, target().elementType());
-      Class<?> actualType =
-          migrationExpression().getValueType(domainTemplate, target().elementType());
-      if (actualType != null && !expectedType.isAssignableFrom(actualType)) {
-        throw new IllegalArgumentException(
-            "Values for %s must be of type %s, but given expression produces %s."
-                .formatted(
-                    target().getLocationString(),
-                    expectedType.getSimpleName(),
-                    actualType.getSimpleName()));
-      }
+      migrationExpression()
+          .getValueType(domainTemplate, target().elementType())
+          .mustBeIncludedIn(expectedType, "invalid migrationExpression");
     } catch (Exception e) {
       throw new IllegalArgumentException(
           "MigrationExpression is invalid: %s.".formatted(e.getMessage()));

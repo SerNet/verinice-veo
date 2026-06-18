@@ -32,6 +32,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -50,7 +51,7 @@ public record CustomAspectAttribute(
     implements DomainSpecificValueLocation {
 
   @Override
-  public Class<?> getValueType(DomainBase domain) {
+  public VeoType getValueType(DomainBase domain) {
     ElementTypeDefinition elementTypeDefinition = domain.getElementTypeDefinition(elementType());
     CustomAspectDefinition customAspectDefinition =
         elementTypeDefinition.getCustomAspects().get(customAspect());

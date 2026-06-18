@@ -1,6 +1,6 @@
 /*
  * verinice.veo
- * Copyright (C) 2023  Jonas Jordan
+ * Copyright (C) 2026  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,32 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.veo.core.entity.definitions.attribute;
+package org.veo.core.entity.type;
 
-import java.util.Collections;
-import java.util.List;
+import javax.annotation.Nonnull;
 
-import org.veo.core.entity.ValidationError;
-import org.veo.core.entity.type.VeoType;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(callSuper = true)
-public final class BooleanAttributeDefinition extends AttributeDefinition {
-  public static final String TYPE = "boolean";
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+final class NothingType implements VeoType {
+  static final NothingType INSTANCE = new NothingType();
 
   @Override
-  public List<ValidationError> getErrors(Object value) {
-    if (!(value instanceof Boolean)) {
-      return List.of(ValidationError.localized("error_no_boolean"));
-    }
-    return Collections.emptyList();
+  public boolean includes(VeoType other) {
+    return other instanceof NothingType;
   }
 
   @Override
-  public VeoType getValueType() {
-    return VeoType.bool().orNothing();
+  @Nonnull
+  public String toHumanReadable() {
+    return "Null";
+  }
+
+  @Override
+  @Nonnull
+  public String toString() {
+    return toHumanReadable();
   }
 }

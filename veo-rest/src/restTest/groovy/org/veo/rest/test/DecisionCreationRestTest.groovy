@@ -361,7 +361,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR)
 
         then: "there is an error"
-        response.body.message == "Validation error in decision 'unfairComparison': Provider yields BigDecimal, but matcher only supports [Boolean]"
+        response.body.message == "Validation error in decision 'unfairComparison': given values cannot be equal: BigDecimal|Null does not intersect with Boolean"
     }
 
     def "greater-than comparison between text and number is detected"() {
@@ -392,7 +392,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR)
 
         then: "there is an error"
-        response.body.message == "Validation error in decision 'unfairComparison': Provider yields String, but matcher only supports [BigDecimal,Integer,Long]"
+        response.body.message == "Validation error in decision 'unfairComparison': invalid input for comparison: expected BigDecimal|Integer|Long|Null, got String|Null"
     }
 
     def "size check on non-list attribute is detected"() {
@@ -423,7 +423,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR)
 
         then: "there is an error"
-        response.body.message == "Validation error in decision 'sillySize': Cannot get size of Integer attribute 'numberOfWords', expected list attribute"
+        response.body.message == "Validation error in decision 'sillySize': Cannot determine size for attribute 'numberOfWords': expected List<*|Null>|Null, got Integer"
     }
 
     def "unsupported expression is detected"() {
@@ -439,6 +439,6 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 422, CONTENT_CREATOR).body
 
         then:
-        response.message == "Validation error in decision 'self': Expressive decisions must yield a primitive result type, but given expression yields Document."
+        response.message == "Validation error in decision 'self': Expressive decisions must yield a primitive result: expected BigDecimal|Boolean|Integer|Long|String|Null, got Document"
     }
 }

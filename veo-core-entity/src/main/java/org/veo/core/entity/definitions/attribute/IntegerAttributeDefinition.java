@@ -20,6 +20,7 @@ package org.veo.core.entity.definitions.attribute;
 import java.util.List;
 
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,7 +39,7 @@ public final class IntegerAttributeDefinition extends AttributeDefinition {
   }
 
   @Override
-  public Class<?> getValueType() {
-    return Integer.class;
+  public VeoType getValueType() {
+    return VeoType.integer();
   }
 }

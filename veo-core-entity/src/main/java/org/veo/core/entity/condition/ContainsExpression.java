@@ -24,6 +24,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -50,15 +51,18 @@ public class ContainsExpression implements VeoExpression {
   public void selfValidate(DomainBase domain, ElementType elementType) {
     needle.selfValidate(domain, elementType);
     haystack.selfValidate(domain, elementType);
-    var hayStackType = haystack.getValueType(domain, elementType);
-    if (!Collection.class.isAssignableFrom(hayStackType)) {
-      throw new IllegalArgumentException(
-          "Cannot use %s as haystack type.".formatted(hayStackType.getSimpleName()));
-    }
+    var haystackType = haystack.getValueType(domain, elementType);
+    haystackType.mustBeListOrNothing("invalid haystack");
+    haystackType
+        .findListItemType()
+        .ifPresent(
+            haystackItemType ->
+                haystackItemType.mustIntersectWith(
+                    needle.getValueType(domain, elementType), "haystack cannot contain needle"));
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Boolean.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.bool();
   }
 }

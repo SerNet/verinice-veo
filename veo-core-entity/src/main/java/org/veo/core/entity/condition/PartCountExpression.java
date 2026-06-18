@@ -29,6 +29,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,7 +75,7 @@ public class PartCountExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Integer.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.integer();
   }
 }

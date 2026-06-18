@@ -181,7 +181,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message == "Validation error in inspection 'conceptWithoutDescription': Only boolean values can be used in an AND expression"
+        response.message == "Validation error in inspection 'conceptWithoutDescription': invalid operand for 'and': expected Boolean|Null, got String|Null"
     }
 
     def "cannot import template with invalid catalog item attribute"() {

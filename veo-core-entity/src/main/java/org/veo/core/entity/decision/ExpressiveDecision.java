@@ -17,9 +17,6 @@
  */
 package org.veo.core.entity.decision;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
@@ -27,6 +24,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -58,18 +56,13 @@ public class ExpressiveDecision extends Decision {
   @Override
   public void selfValidate(DomainBase domain) {
     expression.selfValidate(domain, getElementType());
-    Class<?> resultType = expression.getValueType(domain, getElementType());
-    if (resultType != null
-        && !List.of(Boolean.class, Integer.class, BigDecimal.class, String.class)
-            .contains(resultType)) {
-      throw new IllegalArgumentException(
-          "Expressive decisions must yield a primitive result type, but given expression yields %s."
-              .formatted(resultType.getSimpleName()));
-    }
+    VeoType resultType = expression.getValueType(domain, getElementType());
+    resultType.mustBeIncludedIn(
+        VeoType.primitive(), "Expressive decisions must yield a primitive result");
   }
 
   @Override
-  public Class<?> getResultType(DomainBase domain) {
+  public VeoType getResultType(DomainBase domain) {
     return expression.getValueType(domain, getElementType());
   }
 }

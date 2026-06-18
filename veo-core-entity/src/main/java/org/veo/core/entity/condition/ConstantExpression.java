@@ -17,14 +17,11 @@
  */
 package org.veo.core.entity.condition;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -44,16 +41,7 @@ public class ConstantExpression implements VeoExpression {
   }
 
   @Override
-  public void selfValidate(DomainBase domain, ElementType elementType) {
-    if (value != null
-        && Stream.of(String.class, Boolean.class, Number.class, Map.class)
-            .noneMatch(t -> t.isInstance(value))) {
-      throw new IllegalArgumentException("Constant value must be a string, boolean, number or map");
-    }
-  }
-
-  @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Optional.ofNullable(value).map(Object::getClass).orElse(null);
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.fromValue(value);
   }
 }

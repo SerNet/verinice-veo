@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.condition.VeoExpression;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,8 +62,10 @@ public final class AddRisksStep extends ActionStep {
       throw new UnprocessableDataException("Cannot create risks for %s".formatted(elementType));
     }
     scenarios.selfValidate(domain, elementType);
-    if (Collection.class.isAssignableFrom(scenarios.getValueType(domain, elementType))) {
-      throw new UnprocessableDataException("Invalid expression, must return a collection");
-    }
+    scenarios
+        .getValueType(domain, elementType)
+        .mustBeIncludedIn(
+            VeoType.listOf(VeoType.element(ElementType.SCENARIO)),
+            "scenarios are required for risk creation");
   }
 }

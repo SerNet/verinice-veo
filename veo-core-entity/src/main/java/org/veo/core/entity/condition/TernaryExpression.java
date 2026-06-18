@@ -17,14 +17,13 @@
  */
 package org.veo.core.entity.condition;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -60,24 +59,14 @@ public class TernaryExpression implements VeoExpression {
     condition.selfValidate(domain, elementType);
     thenValue.selfValidate(domain, elementType);
     elseValue.selfValidate(domain, elementType);
-    var conditionType = condition.getValueType(domain, elementType);
-    if (!Boolean.class.isAssignableFrom(conditionType)) {
-      throw new IllegalArgumentException(
-          "Cannot use %s as 'condition' type.".formatted(conditionType.getSimpleName()));
-    }
-    var thenValueType = thenValue.getValueType(domain, elementType);
-    var elseValueType = elseValue.getValueType(domain, elementType);
-    if (thenValueType != null
-        && elseValueType != null
-        && !Objects.equals(thenValueType, elseValueType)) {
-      throw new IllegalArgumentException(
-          "Cannot use differently typed values for 'then' (%s) and 'else' (%s)"
-              .formatted(thenValueType.getSimpleName(), elseValueType.getSimpleName()));
-    }
+    condition
+        .getValueType(domain, elementType)
+        .mustBeIncludedIn(VeoType.bool().orNothing(), "invalid condition for ternary");
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return thenValue.getValueType(domain, elementType);
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.sumOf(
+        thenValue.getValueType(domain, elementType), elseValue.getValueType(domain, elementType));
   }
 }

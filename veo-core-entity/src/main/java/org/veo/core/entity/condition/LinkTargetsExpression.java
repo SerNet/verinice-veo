@@ -17,8 +17,11 @@
  */
 package org.veo.core.entity.condition;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.state.ElementTypeDefinitionState;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,20 +70,42 @@ public class LinkTargetsExpression implements VeoExpression {
   @Override
   public void selfValidate(DomainBase domain, ElementType elementType) {
     var sourcesType = sources.getValueType(domain, elementType);
-    if (Collection.class.isAssignableFrom(sourcesType)) {
-      throw new UnprocessableDataException(
-          "Cannot get link targets from %s, expected a collection of elements"
-              .formatted(sourcesType));
-    }
-    if (linkType != null
-        && domain.getElementTypeDefinition(elementType).findLink(linkType).isEmpty()) {
-      throw new UnprocessableDataException(
-          "Link type %s not defined for %s in domain %s".formatted(linkType, elementType, domain));
-    }
+    sourcesType.mustBeListOrNothing("invalid link sources");
+    getValueType(domain, elementType);
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Boolean.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    var sourcesType = sources.getValueType(domain, elementType);
+    return sourcesType
+        .findListItemType()
+        .map(
+            linkSourceType -> {
+              var possibleLinkTypes =
+                  Arrays.stream(ElementType.values())
+                      .filter(t -> linkSourceType.includes(VeoType.element(t)))
+                      .map(domain::getElementTypeDefinition)
+                      .map(ElementTypeDefinitionState::getLinks)
+                      .map(Map::entrySet)
+                      .flatMap(Collection::stream)
+                      .filter(linkEntry -> linkType == null || linkEntry.getKey().equals(linkType))
+                      .map(Map.Entry::getValue);
+              var possibleLinkTargetTypes =
+                  possibleLinkTypes
+                      .map(LinkDefinition::getTargetType)
+                      .map(VeoType::element)
+                      .toList();
+              if (possibleLinkTargetTypes.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "No links defined for element type %s and %s"
+                        .formatted(
+                            linkSourceType,
+                            Optional.ofNullable(linkType)
+                                .map("link type '%s'"::formatted)
+                                .orElse("any link type")));
+              }
+              return VeoType.listOf(VeoType.sumOf(possibleLinkTargetTypes));
+            })
+        .orElse(VeoType.listOf(VeoType.nothing()));
   }
 }

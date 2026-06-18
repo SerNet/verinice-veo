@@ -17,9 +17,9 @@
  */
 package org.veo.core.entity.decision.firsthitpolicy;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.NotNull;
+
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class EqualsMatcher implements InputMatcher {
   }
 
   @Override
-  public Set<Class<?>> getSupportedTypes() {
-    return Set.of(comparisonValue.getClass());
+  public void validateInputType(VeoType inputType) {
+    inputType.mustIntersectWith(VeoType.fromValue(comparisonValue), "given values cannot be equal");
   }
 }

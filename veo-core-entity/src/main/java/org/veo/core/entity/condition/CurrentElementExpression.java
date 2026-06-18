@@ -21,6 +21,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 
@@ -41,7 +42,7 @@ public class CurrentElementExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return elementType.getType();
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.element(elementType);
   }
 }

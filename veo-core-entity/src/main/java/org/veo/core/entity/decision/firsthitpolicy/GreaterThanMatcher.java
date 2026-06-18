@@ -18,9 +18,10 @@
 package org.veo.core.entity.decision.firsthitpolicy;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
+
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -56,7 +57,7 @@ public class GreaterThanMatcher implements InputMatcher {
   }
 
   @Override
-  public Set<Class<?>> getSupportedTypes() {
-    return Set.of(BigDecimal.class, Integer.class, Long.class);
+  public void validateInputType(VeoType inputType) {
+    inputType.mustBeIncludedIn(VeoType.number().orNothing(), "invalid input for comparison");
   }
 }

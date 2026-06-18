@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -73,7 +74,7 @@ public final class DurationAttributeDefinition extends AttributeDefinition {
   }
 
   @Override
-  public Class<?> getValueType() {
-    return String.class;
+  public VeoType getValueType() {
+    return VeoType.string().orNothing();
   }
 }

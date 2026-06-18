@@ -24,6 +24,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -47,15 +48,16 @@ public class AndExpression implements VeoExpression {
 
   @Override
   public void selfValidate(DomainBase domain, ElementType elementType) {
-    operands.forEach(o -> o.selfValidate(domain, elementType));
-    if (!operands.stream()
-        .allMatch(o -> o.getValueType(domain, elementType).equals(Boolean.class))) {
-      throw new IllegalArgumentException("Only boolean values can be used in an AND expression");
-    }
+    operands.forEach(
+        o -> {
+          o.selfValidate(domain, elementType);
+          o.getValueType(domain, elementType)
+              .mustBeIncludedIn(VeoType.bool().orNothing(), "invalid operand for 'and'");
+        });
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Boolean.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.bool();
   }
 }

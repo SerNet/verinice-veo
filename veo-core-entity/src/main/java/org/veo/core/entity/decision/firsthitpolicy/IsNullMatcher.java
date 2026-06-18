@@ -17,7 +17,7 @@
  */
 package org.veo.core.entity.decision.firsthitpolicy;
 
-import java.util.Set;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 
@@ -30,7 +30,7 @@ public class IsNullMatcher implements InputMatcher {
   }
 
   @Override
-  public Set<Class<?>> getSupportedTypes() {
-    return Set.of(Object.class);
+  public void validateInputType(VeoType inputType) {
+    inputType.mustInclude(VeoType.nothing(), "value cannot be null");
   }
 }

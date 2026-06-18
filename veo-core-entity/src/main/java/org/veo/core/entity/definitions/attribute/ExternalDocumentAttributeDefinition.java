@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,7 +55,7 @@ public non-sealed class ExternalDocumentAttributeDefinition extends AttributeDef
   }
 
   @Override
-  public Class<?> getValueType() {
-    return String.class;
+  public VeoType getValueType() {
+    return VeoType.string().orNothing();
   }
 }
