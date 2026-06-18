@@ -51,7 +51,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
     discriminatorMapping =
         @DiscriminatorMapping(
             value = "customAspectAttribute",
-            schema = CustomAspectMigrationTransformDefinition.class))
+            schema = CustomAspectMigrationTransformDefinition.class),
+    oneOf = {CustomAspectMigrationTransformDefinition.class})
 public interface MigrationTransformDefinition {
 
   @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")

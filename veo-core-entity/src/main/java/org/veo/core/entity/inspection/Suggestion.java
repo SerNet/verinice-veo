@@ -32,5 +32,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
     description = "Suggests an action to the user that would fix an inspection finding",
     discriminatorProperty = "type",
     discriminatorMapping =
-        @DiscriminatorMapping(value = AddPartSuggestion.NAME, schema = AddPartSuggestion.class))
+        @DiscriminatorMapping(value = AddPartSuggestion.NAME, schema = AddPartSuggestion.class),
+    oneOf = {AddPartSuggestion.class})
 public interface Suggestion {}

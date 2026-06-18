@@ -920,11 +920,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.condition == [$ref:'#/components/schemas/VeoExpression']
                 with(it.suggestions) {
                     it.type == 'array'
-                    it.items == [
-                        oneOf: [
-                            [$ref:'#/components/schemas/AddPartSuggestion']
-                        ]
-                    ]
+                    it.items == [$ref:'#/components/schemas/Suggestion']
                 }
             }
         }
@@ -1036,11 +1032,7 @@ class SwaggerSpec extends VeoSpringSpec {
             with(it.properties.newDefinitions) {
                 it.type == 'array'
                 it.description == 'An optional list of attributes in the new domain that this step will create. If this is omitted, the values will not be transferred into the new domain.'
-                it.items == [
-                    oneOf:[
-                        [$ref:'#/components/schemas/CustomAspectMigrationTransformDefinition']
-                    ]
-                ]
+                it.items == [$ref:'#/components/schemas/MigrationTransformDefinition']
             }
             with(it.properties.interactive) {
                 it.type == 'boolean'
@@ -2554,6 +2546,18 @@ class SwaggerSpec extends VeoSpringSpec {
         where:
         entry << parsedApiDocs.components.schemas.entrySet().findAll {
             it.value.properties?.containsKey('elementType')
+        }
+    }
+
+    def "discriminator & oneOf are consistent for #entry.key"() {
+        expect:
+        def oneOfEntries = (entry.value.oneOf ?: [])*.$ref
+        def discriminatorMappings = entry.value.discriminator?.mapping?.values() ?: []
+        discriminatorMappings ==~ oneOfEntries
+
+        where:
+        entry << parsedApiDocs.components.schemas.entrySet().findAll {
+            it.value.containsKey('discriminator') || it.value.containsKey("oneOf")
         }
     }
 

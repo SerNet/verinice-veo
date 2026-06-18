@@ -53,7 +53,8 @@ import lombok.NoArgsConstructor;
     discriminatorMapping = {
       @DiscriminatorMapping(value = "expressive", schema = ExpressiveDecision.class),
       @DiscriminatorMapping(value = "firstHitPolicy", schema = FirstHitPolicyDecision.class)
-    })
+    },
+    oneOf = {ExpressiveDecision.class, FirstHitPolicyDecision.class})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public abstract class Decision {

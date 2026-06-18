@@ -87,6 +87,17 @@ import lombok.Data;
       @DiscriminatorMapping(
           schema = DurationAttributeDefinition.class,
           value = DurationAttributeDefinition.TYPE),
+    },
+    oneOf = {
+      BooleanAttributeDefinition.class,
+      DateAttributeDefinition.class,
+      DateTimeAttributeDefinition.class,
+      EnumAttributeDefinition.class,
+      ExternalDocumentAttributeDefinition.class,
+      IntegerAttributeDefinition.class,
+      ListAttributeDefinition.class,
+      TextAttributeDefinition.class,
+      DurationAttributeDefinition.class,
     })
 @Data
 public abstract sealed class AttributeDefinition
