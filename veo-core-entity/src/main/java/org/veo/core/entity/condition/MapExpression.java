@@ -18,7 +18,6 @@
 package org.veo.core.entity.condition;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +26,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,19 +55,31 @@ public class MapExpression implements VeoExpression {
     source.selfValidate(domain, elementType);
     mapping.selfValidate(domain, elementType);
     var sourceType = source.getValueType(domain, elementType);
-    if (!Collection.class.isAssignableFrom(sourceType)) {
-      throw new IllegalArgumentException(
-          "Cannot use %s as source type.".formatted(sourceType.getSimpleName()));
-    }
     var mappingType = mapping.getValueType(domain, elementType);
-    if (!Map.class.isAssignableFrom(mappingType)) {
-      throw new IllegalArgumentException(
-          "Cannot use %s as source type.".formatted(sourceType.getSimpleName()));
-    }
+    sourceType.mustBeListOrNothing("invalid source");
+    var mapKeyType = mappingType.mustBeMapAndGetKeyType("invalid mapping");
+    sourceType
+        .findListItemType()
+        .ifPresent(
+            sourceItemType -> {
+              sourceItemType.mustIntersectWith(mapKeyType, "source does not match mapping");
+            });
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return List.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    VeoType sourceType = source.getValueType(domain, elementType);
+    return sourceType
+        .findListItemType()
+        .map(
+            _ -> {
+              VeoType mappingValueType =
+                  mapping.getValueType(domain, elementType).mustBeMapAndGetValueType();
+              var outputListType = VeoType.listOf(mappingValueType.orNothing());
+              return sourceType.includes(VeoType.nothing())
+                  ? outputListType.orNothing()
+                  : outputListType;
+            })
+        .orElse(VeoType.nothing());
   }
 }

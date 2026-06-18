@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2026  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision.firsthitpolicy;
+package org.veo.core.entity.type;
 
-import org.veo.core.entity.type.VeoType;
+import java.util.Optional;
 
-import lombok.Data;
+import javax.annotation.Nonnull;
 
-/** Matches value if it is null. */
-@Data
-public class IsNullMatcher implements InputMatcher {
+record ListType(VeoType itemType) implements VeoType {
   @Override
-  public boolean matches(Object value) {
-    return value == null;
+  public boolean includes(VeoType other) {
+    return other.findListItemType().map(itemType::includes).orElse(false);
   }
 
   @Override
-  public void validateInputType(VeoType inputType) {
-    inputType.mustInclude(VeoType.nothing(), "value cannot be null");
+  public boolean intersectsWith(VeoType other) {
+    return other.findListItemType().map(itemType::intersectsWith).orElse(false);
+  }
+
+  @Override
+  public Optional<VeoType> findListItemType() {
+    return Optional.of(itemType);
+  }
+
+  @Override
+  public String toHumanReadable() {
+    return "List<%s>".formatted(itemType);
+  }
+
+  @Override
+  @Nonnull
+  public String toString() {
+    return toHumanReadable();
   }
 }

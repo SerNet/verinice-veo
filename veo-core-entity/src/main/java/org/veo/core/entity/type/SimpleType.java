@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2024  Jonas Jordan
+ * Copyright (C) 2026  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.core.entity.type;
 
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnull;
+
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementType;
-import org.veo.core.entity.type.VeoType;
 
-import lombok.Data;
+record SimpleType(Class<?> clazz) implements VeoType {
+  static final SimpleType STRING = new SimpleType(String.class);
+  static final SimpleType INTEGER = new SimpleType(Integer.class);
+  static final SimpleType LONG = new SimpleType(Long.class);
+  static final SimpleType DECIMAL = new SimpleType(BigDecimal.class);
+  static final SimpleType BOOLEAN = new SimpleType(Boolean.class);
+  static final SimpleType ELEMENT = new SimpleType(Element.class);
 
-/**
- * Provides the root element that is being viewed by the expression context (e.g., the element that
- * is being inspected or on which an action is performed).
- */
-@Data
-public class CurrentElementExpression implements VeoExpression {
   @Override
-  public Object getValue(Element element, Domain domain) {
-    return element;
+  public boolean includes(VeoType other) {
+    return other instanceof SimpleType(Class<?> otherClazz) && clazz.isAssignableFrom(otherClazz);
   }
 
   @Override
-  public void selfValidate(DomainBase domain, ElementType elementType) {
-    // It's fine
+  @Nonnull
+  public String toHumanReadable() {
+    return clazz.getSimpleName();
   }
 
   @Override
-  public VeoType getValueType(DomainBase domain, ElementType elementType) {
-    return VeoType.element(elementType);
+  @Nonnull
+  public String toString() {
+    return toHumanReadable();
   }
 }

@@ -23,6 +23,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -51,14 +52,11 @@ public class EqualsExpression implements VeoExpression {
     right.selfValidate(domain, elementType);
     var leftType = left.getValueType(domain, elementType);
     var rightType = right.getValueType(domain, elementType);
-    if (leftType != null && rightType != null && !leftType.equals(rightType)) {
-      throw new IllegalArgumentException(
-          "Cannot compare %s to %s".formatted(leftType.getSimpleName(), rightType.getSimpleName()));
-    }
+    leftType.mustIntersectWith(rightType, "given values cannot be equal");
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Boolean.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.bool();
   }
 }

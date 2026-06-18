@@ -30,6 +30,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -84,7 +85,7 @@ public class DecisionResultValueExpression implements VeoExpression {
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
     return domain.getDecision(decision.getKeyRef()).getResultType(domain);
   }
 }

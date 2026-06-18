@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -130,5 +131,5 @@ public abstract sealed class AttributeDefinition
    * @return expected type for values of this attribute
    */
   @JsonIgnore
-  public abstract Class<?> getValueType();
+  public abstract VeoType getValueType();
 }

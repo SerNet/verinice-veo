@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +40,7 @@ public final class BooleanAttributeDefinition extends AttributeDefinition {
   }
 
   @Override
-  public Class<?> getValueType() {
-    return Boolean.class;
+  public VeoType getValueType() {
+    return VeoType.bool().orNothing();
   }
 }

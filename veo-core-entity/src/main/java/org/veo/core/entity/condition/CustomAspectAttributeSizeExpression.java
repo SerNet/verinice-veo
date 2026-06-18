@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -62,19 +63,14 @@ public class CustomAspectAttributeSizeExpression implements VeoExpression {
 
   @Override
   public void selfValidate(DomainBase domain, ElementType elementType) {
-    var type =
-        domain
-            .getCustomAspectAttributeDefinition(elementType, customAspectType, attributeType)
-            .getValueType();
-    if (!Collection.class.isAssignableFrom(type)) {
-      throw new IllegalArgumentException(
-          "Cannot get size of %s attribute '%s', expected list attribute"
-              .formatted(type.getSimpleName(), attributeType));
-    }
+    domain
+        .getCustomAspectAttributeDefinition(elementType, customAspectType, attributeType)
+        .getValueType()
+        .mustBeListOrNothing("Cannot determine size for attribute '%s'".formatted(attributeType));
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Integer.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.integer();
   }
 }

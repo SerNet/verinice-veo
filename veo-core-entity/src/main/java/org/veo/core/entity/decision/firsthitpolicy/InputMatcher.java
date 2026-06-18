@@ -17,11 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity.decision.firsthitpolicy;
 
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,9 +44,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface InputMatcher {
   boolean matches(Object value);
 
-  /**
-   * @return all value types that this matcher can match
-   */
   @JsonIgnore
-  Set<Class<?>> getSupportedTypes();
+  void validateInputType(VeoType inputType);
 }

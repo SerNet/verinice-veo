@@ -30,6 +30,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +60,7 @@ public interface DomainSpecificValueLocation {
   String getLocationString();
 
   @JsonIgnore
-  Class<?> getValueType(DomainBase domain);
+  VeoType getValueType(DomainBase domain);
 
   void applyValue(Element element, Domain domain, Object value);
 }

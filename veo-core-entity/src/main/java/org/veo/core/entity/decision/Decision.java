@@ -32,6 +32,7 @@ import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.ElementDomainAssociation;
 import org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -78,5 +79,5 @@ public abstract class Decision {
   public abstract void selfValidate(DomainBase domain);
 
   @JsonIgnore
-  public abstract Class<?> getResultType(DomainBase domain);
+  public abstract VeoType getResultType(DomainBase domain);
 }

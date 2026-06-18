@@ -25,6 +25,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,7 +61,7 @@ public final class ListAttributeDefinition extends AttributeDefinition {
   }
 
   @Override
-  public Class<?> getValueType() {
-    return List.class;
+  public VeoType getValueType() {
+    return VeoType.listOf(itemDefinition.getValueType()).orNothing();
   }
 }

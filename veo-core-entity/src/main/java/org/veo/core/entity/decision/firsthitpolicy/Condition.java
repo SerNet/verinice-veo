@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.decision.firsthitpolicy;
 
-import static java.util.stream.Collectors.joining;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
@@ -62,17 +60,6 @@ public class Condition {
    */
   public void selfValidate(DomainBase domain, ElementType elementType) {
     inputProvider.selfValidate(domain, elementType);
-    var supportedTypes = inputMatcher.getSupportedTypes();
-    var inputType = inputProvider.getValueType(domain, elementType);
-    if (supportedTypes.stream().noneMatch(t -> t.isAssignableFrom(inputType))) {
-      throw new IllegalArgumentException(
-          "Provider yields %s, but matcher only supports [%s]"
-              .formatted(
-                  inputType.getSimpleName(),
-                  supportedTypes.stream()
-                      .map(Class::getSimpleName)
-                      .sorted()
-                      .collect(joining(","))));
-    }
+    inputMatcher.validateInputType(inputProvider.getValueType(domain, elementType));
   }
 }

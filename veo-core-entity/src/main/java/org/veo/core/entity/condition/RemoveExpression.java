@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,15 +53,19 @@ public class RemoveExpression implements VeoExpression {
   public void selfValidate(DomainBase domain, ElementType elementType) {
     value.selfValidate(domain, elementType);
     from.selfValidate(domain, elementType);
-    var fromType = from.getValueType(domain, elementType);
-    if (!List.class.isAssignableFrom(fromType)) {
-      throw new IllegalArgumentException(
-          "Cannot use %s as 'from' type.".formatted(fromType.getSimpleName()));
-    }
+    VeoType sourceType = from.getValueType(domain, elementType);
+    sourceType.mustBeListOrNothing("invalid source ('from') for removal");
+    sourceType
+        .findListItemType()
+        .ifPresent(
+            sourceItemType ->
+                sourceItemType.mustIntersectWith(
+                    value.getValueType(domain, elementType),
+                    "source ('from') cannot contain value"));
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return List.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return from.getValueType(domain, elementType);
   }
 }

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.type.VeoType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,14 +54,11 @@ public class ImplementedRequirementsExpression implements VeoExpression {
   public void selfValidate(DomainBase domain, ElementType elementType) {
     riskAffected.selfValidate(domain, elementType);
     var valueType = riskAffected.getValueType(domain, elementType);
-    if (!RiskAffected.class.isAssignableFrom(valueType)) {
-      throw new IllegalArgumentException(
-          "Cannot get implemented requirements of %s".formatted(valueType));
-    }
+    valueType.mustBeIncludedIn(VeoType.riskAffected(), "cannot determine implemented controls");
   }
 
   @Override
-  public Class<?> getValueType(DomainBase domain, ElementType elementType) {
-    return Collection.class;
+  public VeoType getValueType(DomainBase domain, ElementType elementType) {
+    return VeoType.listOf(VeoType.element(ElementType.CONTROL));
   }
 }

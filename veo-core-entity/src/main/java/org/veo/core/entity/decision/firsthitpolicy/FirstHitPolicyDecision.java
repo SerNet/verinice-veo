@@ -32,6 +32,7 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.type.VeoType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -113,7 +114,7 @@ public class FirstHitPolicyDecision extends Decision {
   }
 
   @Override
-  public Class<?> getResultType(DomainBase domain) {
-    return Boolean.class;
+  public VeoType getResultType(DomainBase domain) {
+    return VeoType.bool().orNothing();
   }
 }
