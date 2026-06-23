@@ -122,6 +122,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       fetch = FetchType.LAZY)
   private final Set<@Valid CustomLink> links = new HashSet<>();
 
+  @OneToMany(fetch = FetchType.LAZY, targetEntity = CustomLinkData.class, mappedBy = "target")
+  private final Set<CustomLink> inboundLinks = new HashSet<>();
+
   @Column(name = "customaspects")
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -214,6 +217,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
               .formatted(customLink.getType(), customLink.getTarget().getIdAsString()));
     }
     addToLinks(customLink);
+  }
+
+  @Override
+  public Set<CustomLink> getInboundLinks(Domain domain) {
+    return inboundLinks.stream()
+        .filter(l -> l.getDomain().equals(domain))
+        .collect(Collectors.toSet());
   }
 
   protected void removeAspectByDomain(Set<? extends AspectData> aspects, Domain domain) {

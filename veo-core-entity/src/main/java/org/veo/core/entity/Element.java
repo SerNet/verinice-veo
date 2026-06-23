@@ -264,4 +264,6 @@ public interface Element
   default ElementType getType() {
     return ElementType.fromModelInterface(getModelInterface());
   }
+
+  Set<CustomLink> getInboundLinks(Domain domain);
 }

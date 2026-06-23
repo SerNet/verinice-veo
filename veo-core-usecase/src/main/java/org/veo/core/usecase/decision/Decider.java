@@ -40,7 +40,6 @@ public class Decider {
    * @return new decision results
    */
   public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
-    // TODO #4837 provide repo access to the evaluation
     element.evaluateDecisions(domain, null);
     return element.getDecisionResults(domain);
   }
