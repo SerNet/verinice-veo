@@ -11,9 +11,6 @@
     "uz"
   ],
   "assignAutomerge": true,
-  "ignoreDeps": [
-    "postgres"
-  ],
   "packageRules": [
     {
       "groupName": "Spotless",
