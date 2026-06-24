@@ -62,5 +62,29 @@
         "/^org.jgrapht:/"
       ]
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)src/test/resources/.*\\.properties$"
+      ],
+      "matchStrings": [
+        "jdbc:tc:postgresql:(?<currentValue>[a-zA-Z0-9.-]+):"
+      ],
+      "depNameTemplate": "postgres",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "misc/scripts/runPostgres\\.sh"
+      ],
+      "matchStrings": [
+        "^\\s*postgresql:(?<currentValue>[a-zA-Z0-9.-]+)\\s*$"
+      ],
+      "depNameTemplate": "postgres",
+      "datasourceTemplate": "docker"
+    }
   ]
 }
