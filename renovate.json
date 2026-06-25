@@ -67,7 +67,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/(^|/)src/test/resources/.*\\.properties$/"
+        "**/src/*/resources/application*.*"
       ],
       "matchStrings": [
         "jdbc:tc:postgresql:(?<currentValue>[a-zA-Z0-9.-]+):"
@@ -78,10 +78,10 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/misc/scripts/runPostgres\\.sh/"
+        "misc/scripts/runPostgres.sh"
       ],
       "matchStrings": [
-        "^\\s*postgresql:(?<currentValue>[a-zA-Z0-9.-]+)\\s*$"
+        "\\n\\s*postgresql:(?<currentValue>[a-zA-Z0-9.-]+)\\s*\\n"
       ],
       "depNameTemplate": "postgres",
       "datasourceTemplate": "docker"
