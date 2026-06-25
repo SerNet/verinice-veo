@@ -8,6 +8,7 @@ veo:
       autoDelete: 'true'
     dispatch:
       routing-key-prefix: 'veo.resttestmessage.'
+      ignore-entity-events: true
   resttest:
     baseUrl: '' # i.e. "https://veo.develop.verinice.com". Leave empty for local tests.
     oidcUrl: 'https://keycloak.staging.verinice.com/auth'

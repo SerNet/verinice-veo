@@ -28,6 +28,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.event.StoredEvent;
+import org.veo.core.events.MessageCreatorImpl;
 import org.veo.message.EventDispatcher;
 import org.veo.rest.VeoRestConfiguration;
 
@@ -43,6 +44,12 @@ public class MessagingJob {
 
   @Value("${veo.message.exchanges.veo}")
   private String exchange;
+
+  // If this flag is enabled, no entity versioning events will be sent to the RabbitMQ. This is
+  // mainly used to improve performance in testing scenarios and should not be enabled in a regular
+  // environment.
+  @Value("${veo.message.dispatch.ignore-entity-events:false}")
+  private boolean ignoreEntityEvents;
 
   private final VeoRestConfiguration config;
 
@@ -62,6 +69,13 @@ public class MessagingJob {
     List<StoredEvent> pendingEvents =
         retriever.retrievePendingEvents(
             config.getMessagePublishingLockExpiration(), processingChunkSize);
+    if (ignoreEntityEvents) {
+      pendingEvents =
+          pendingEvents.stream()
+              .filter(
+                  it -> !it.getContent().contains(MessageCreatorImpl.EVENT_TYPE_ENTITY_REVISION))
+              .toList();
+    }
     if (pendingEvents.isEmpty()) return;
     log.info("Dispatching messages for {} stored events.", pendingEvents.size());
     eventDispatcher.send(exchange, messagesFrom(pendingEvents));
