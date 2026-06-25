@@ -81,7 +81,7 @@
         "misc/scripts/runPostgres.sh"
       ],
       "matchStrings": [
-        "\\n\\s*postgresql:(?<currentValue>[a-zA-Z0-9.-]+)\\s*\\n"
+        "\\n\\s*postgres:(?<currentValue>[a-zA-Z0-9.-]+)\\s*\\n"
       ],
       "depNameTemplate": "postgres",
       "datasourceTemplate": "docker"
