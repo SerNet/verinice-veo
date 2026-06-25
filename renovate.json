@@ -82,7 +82,8 @@
         "jdbc:tc:postgresql:(?<currentValue>[a-zA-Z0-9.-]+):"
       ],
       "depNameTemplate": "postgres",
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     },
     {
       "customType": "regex",
@@ -93,7 +94,8 @@
         "\\n\\s*postgres:(?<currentValue>[a-zA-Z0-9.-]+)\\s*\\n"
       ],
       "depNameTemplate": "postgres",
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     },
     {
       "customType": "regex",
