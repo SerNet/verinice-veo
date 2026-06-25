@@ -235,11 +235,3 @@ update-values:
       valuesFile: $VALUES_FILE
       imageTag: $IMAGE_TAG
       serviceName: 'veo'
-
-trigger_deployment:
-  stage: deployment
-  only:
-    - develop
-    - tags
-  trigger:
-    project: veo/verinice-veo-deployment
