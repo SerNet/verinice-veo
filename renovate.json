@@ -64,6 +64,12 @@
       "matchPackageNames": [
         "/^org.jgrapht:/"
       ]
+    },
+    {
+      "matchFileNames": [
+        "misc/scripts/*.sh"
+      ],
+      "pinDigests": false
     }
   ],
   "customManagers": [
