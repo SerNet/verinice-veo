@@ -88,6 +88,18 @@
       ],
       "depNameTemplate": "postgres",
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "**/build.gradle",
+        "**/build.gradle.kts"
+      ],
+      "matchStrings": [
+        "\\bimage\\s*=\\s*['\"](?<depName>[^:'\"]+):(?<currentValue>[^'\"]+)['\"]"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ]
 }
