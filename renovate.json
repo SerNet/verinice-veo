@@ -5,6 +5,9 @@
     ":automergeAll",
     ":automergePr"
   ],
+  "ignorePresets": [
+    ":ignoreModulesAndTests"
+  ],
   "reviewers": [
     "jj",
     "jk",
