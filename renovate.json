@@ -105,7 +105,7 @@
         "**/build.gradle.kts"
       ],
       "matchStrings": [
-        "\\bimage\\s*=\\s*['\"](?<depName>[^:'\"]+):(?<currentValue>[^'\"]+)['\"]"
+        "\\bimage\\s*=\\s*['\"](?<depName>[^:'\"]+):(?<currentValue>[^'\"@]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?['\"]"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
