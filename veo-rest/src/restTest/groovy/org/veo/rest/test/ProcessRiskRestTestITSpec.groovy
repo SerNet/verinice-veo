@@ -76,6 +76,17 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
             status: "NEW",
         ], 200)
 
+        then: "the risk is still assigned to only the shared domain"
+        with(get("/processes/$processId/risks/$scenarioId").body) {
+            domains[owner.dsgvoDomainId] != null
+        }
+
+        when: "also assigning the scenario to the other domain"
+        post("/domains/$testDomainId/scenarios/$scenarioId", [
+            subType: "Attack",
+            status: "NEW",
+        ], 200)
+
         then: "the risk is also assigned to both domains"
         with(get("/processes/$processId/risks/$scenarioId").body) {
             domains[owner.dsgvoDomainId] != null

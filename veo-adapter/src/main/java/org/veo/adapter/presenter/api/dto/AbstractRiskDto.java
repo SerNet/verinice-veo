@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toMap;
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +47,7 @@ import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.ref.ITypedId;
@@ -136,17 +136,15 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   protected static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(
       AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
-    Map<String, RiskDomainAssociationDto> result = new HashMap<>();
-    risk.getEntity()
-        .getDomains()
-        .forEach(
-            d ->
-                result.put(
-                    d.getIdAsString(),
+    return risk.getEntity().getDomains().stream()
+        .filter(d -> risk.getScenario().getDomains().contains(d))
+        .collect(
+            Collectors.toMap(
+                Identifiable::getIdAsString,
+                d ->
                     new RiskDomainAssociationDto(
                         IdRef.from(d, referenceAssembler),
                         valuesGroupedByRiskDefinition(risk, d))));
-    return result;
   }
 
   private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(

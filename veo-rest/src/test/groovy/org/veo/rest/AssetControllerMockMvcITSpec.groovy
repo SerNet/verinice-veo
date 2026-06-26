@@ -30,6 +30,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
@@ -75,13 +76,14 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     TransactionTemplate txTemplate
 
+    private Client client
     private Unit unit
     private Unit unit2
     private Domain dsgvoDomain
 
     def setup() {
         txTemplate.execute {
-            def client = createTestClient()
+            client = createTestClient()
             dsgvoDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
 
             unit = unitRepository.save(newUnit(client) {
@@ -379,6 +381,43 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             resourceId.length() == 36
             success
             message == "Asset risk created successfully."
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "Create risk for multi-domain asset and single-domain scenario"() {
+        given:
+        def dsgvoDomain2 = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit) {
+                name = 'New asset-2'
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
+                associateWithDomain(dsgvoDomain2, "AST_Datatype", "NEW")
+            })
+        }
+        def scenario = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
+            })
+        }
+
+        when:
+        def domainId = dsgvoDomain.getIdAsString()
+        post("/assets/"+asset.idAsString+"/risks", [
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.idAsString ],
+            domains: [
+                (domainId) : [
+                    reference: [ targetUri: 'http://localhost/domains/'+ domainId]
+                ]
+            ]
+        ])
+        def risk = parseJson(
+                get("/assets/" + asset.idAsString + "/risks/" + scenario.idAsString))
+
+        then:
+        with(risk) {
+            it.domains.keySet() ==~ [domainId]
         }
     }
 
