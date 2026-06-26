@@ -67,7 +67,8 @@
     },
     {
       "matchFileNames": [
-        "misc/scripts/*.sh"
+        "misc/scripts/*.sh",
+        "**/src/*/resources/application*.*"
       ],
       "pinDigests": false
     }
