@@ -20,6 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.RiskAffected;
@@ -30,7 +32,8 @@ public interface RiskAffectedInDomainDto<T extends RiskAffected<T, ?>>
     extends RiskAffectedState<T> {
   Set<ControlImplementationInDomainDto> getControlImplementations();
 
-  void setControlImplementations(Set<ControlImplementationInDomainDto> controlImplementations);
+  void setControlImplementations(
+      Set<@Valid ControlImplementationInDomainDto> controlImplementations);
 
   @Override
   @JsonIgnore

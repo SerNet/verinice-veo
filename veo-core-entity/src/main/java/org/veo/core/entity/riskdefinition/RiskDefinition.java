@@ -67,9 +67,9 @@ public class RiskDefinition {
   private ImplementationStateDefinition implementationStateDefinition =
       new ImplementationStateDefinition();
 
-  @Valid @NotNull @NotEmpty private List<CategoryDefinition> categories = new ArrayList<>();
+  @NotNull @NotEmpty private List<@Valid CategoryDefinition> categories = new ArrayList<>();
 
-  @Valid @NotNull private List<RiskValue> riskValues = new ArrayList<>();
+  @NotNull private List<@Valid RiskValue> riskValues = new ArrayList<>();
   @Valid @NotNull private RiskMethod riskMethod;
 
   /**
@@ -79,8 +79,9 @@ public class RiskDefinition {
    * <p>In the entries of this map, the key is the element type (singular term) and the value is a
    * list of link types.
    */
-  @With @Valid @NotNull
-  private Map<ElementType, List<String>> impactInheritingLinks = new EnumMap<>(ElementType.class);
+  @With @NotNull
+  private Map<@Valid ElementType, List<String>> impactInheritingLinks =
+      new EnumMap<>(ElementType.class);
 
   public Optional<CategoryDefinition> getCategory(String categoryId) {
     return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();

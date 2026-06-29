@@ -77,12 +77,10 @@ public interface ControlImplementationDataRepository
       value =
           """
          select ci.db_id from control_implementation ci
-         where ci.requirement_implementations @> CONCAT('"', ?1, '"')::::jsonb
+         where ci.requirement_implementations @> CONCAT('"', ?1, '"')::jsonb
          """,
       nativeQuery = true)
   // NOTES:
-  // - In Hibernate the colon is reserved for ":parameters". The escape for ":" is "::". So
-  //   the cast "::jsonb" becomes "::::jsonb".
   // - The CONCAT is necessary to make the replacement for ?1 work inside the JSON string.
   Set<Long> findIdsByRequirement(UUID reqImplRef);
 }

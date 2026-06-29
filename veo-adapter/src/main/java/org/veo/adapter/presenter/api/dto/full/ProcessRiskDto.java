@@ -68,7 +68,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
       CompoundIdRef<ProcessRisk, Process, Scenario> selfRef,
       long version,
       String designator,
-      @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
+      Map<String, @Valid RiskDomainAssociationDto> domainsWithRiskValues) {
     super(
         designator,
         Collections.emptySet(),

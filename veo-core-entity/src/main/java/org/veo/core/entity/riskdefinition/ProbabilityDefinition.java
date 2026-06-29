@@ -59,7 +59,7 @@ public class ProbabilityDefinition extends DimensionDefinition<ProbabilityLevel>
     Optional.ofNullable(levels).ifPresent(ProbabilityDefinition::initLevel);
   }
 
-  @NotNull @Valid private List<ProbabilityLevel> levels = new ArrayList<>();
+  @NotNull private List<@Valid ProbabilityLevel> levels = new ArrayList<>();
 
   public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
     return levels.stream().filter(l -> l.getOrdinalValue() == ordinalValue).findFirst();

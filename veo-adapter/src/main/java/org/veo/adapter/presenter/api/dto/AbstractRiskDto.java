@@ -87,7 +87,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   @ToString.Include
   private String designator;
 
-  @Valid @JsonIgnore private Set<IdRef<Domain>> domains = Collections.emptySet();
+  @JsonIgnore private Set<@Valid IdRef<Domain>> domains = Collections.emptySet();
 
   @JsonGetter(value = "domains")
   @Schema(
@@ -124,8 +124,9 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   @Schema(description = "The accountable point-of-contact for this risk.")
   private IdRef<Person> riskOwner;
 
-  @Valid @JsonIgnore
-  protected Map<String, RiskDomainAssociationDto> domainsWithRiskValues = Collections.emptyMap();
+  @JsonIgnore
+  protected Map<String, @Valid RiskDomainAssociationDto> domainsWithRiskValues =
+      Collections.emptyMap();
 
   public void transferToDomain(String sourceDomainId, String targetDomainId) {
     var domainAssociations = getDomains();
