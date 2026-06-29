@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * verinice.veo
  * Copyright (C) 2025  Jonas Jordan
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ */
 package org.veo.core
 
 record TestUserRights(boolean restrictUnitAccess, boolean accessAllUnits = false, boolean testUnitReadable = false, boolean testUnitWritable = false) {

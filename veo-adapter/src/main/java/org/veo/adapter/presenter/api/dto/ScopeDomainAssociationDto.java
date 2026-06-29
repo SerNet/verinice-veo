@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * verinice.veo
  * Copyright (C) 2022  Daniel Murygin
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ */
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;

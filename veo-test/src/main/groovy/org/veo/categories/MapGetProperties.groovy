@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * verinice.veo
  * Copyright (C) 2025  Jochen Kemnade
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ */
 package org.veo.categories
 
 // use this as a Groovy category to be able to retrieve an entry named 'properties' from a map using `map.properties`

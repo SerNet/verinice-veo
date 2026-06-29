@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * verinice.veo
  * Copyright (C) 2018  Jochen Kemnade
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ */
 package org.veo;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public final class LicenseHeaderStep implements Serializable {
           "package-info.java", "package-info.groovy", "module-info.java");
 
   private static final String licenseHeaderTemplate =
-      "/*******************************************************************************\n"
+      "/*\n"
           + " * verinice.veo\n"
           + " * Copyright (C) $YEAR  $AUTHOR\n"
           + " *\n"
@@ -58,7 +58,7 @@ public final class LicenseHeaderStep implements Serializable {
           + " *\n"
           + " * You should have received a copy of the GNU Affero General Public License\n"
           + " * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-          + " ******************************************************************************/\n";
+          + " */\n";
 
   private final String author;
   private final Pattern delimiterPattern;
