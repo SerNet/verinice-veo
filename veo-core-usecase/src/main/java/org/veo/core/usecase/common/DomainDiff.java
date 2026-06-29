@@ -69,13 +69,11 @@ public class DomainDiff {
                       // attribute was removed
                       result.add(
                           BreakingChange.removal(elementType, customAspectId, id, defTemplate));
-                    } else {
-                      if (!isCompatibleChange(defTemplate, defDomain)) {
-                        // definition was changed in an incompatible way
-                        result.add(
-                            BreakingChange.modification(
-                                elementType, customAspectId, id, defTemplate, defDomain));
-                      }
+                    } else if (!isCompatibleChange(defTemplate, defDomain)) {
+                      // definition was changed in an incompatible way
+                      result.add(
+                          BreakingChange.modification(
+                              elementType, customAspectId, id, defTemplate, defDomain));
                     }
                   });
         }
