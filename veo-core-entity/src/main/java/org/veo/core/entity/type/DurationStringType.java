@@ -17,39 +17,24 @@
  */
 package org.veo.core.entity.type;
 
-import java.math.BigDecimal;
+final class DurationStringType extends SimpleType {
+  static final DurationStringType INSTANCE = new DurationStringType();
 
-import javax.annotation.Nonnull;
-
-import org.veo.core.entity.Element;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-
-@AllArgsConstructor
-@EqualsAndHashCode
-sealed class SimpleType implements VeoType permits DurationStringType {
-  private Class<?> clazz;
-  static final SimpleType STRING = new SimpleType(String.class);
-  static final SimpleType INTEGER = new SimpleType(Integer.class);
-  static final SimpleType LONG = new SimpleType(Long.class);
-  static final SimpleType DECIMAL = new SimpleType(BigDecimal.class);
-  static final SimpleType BOOLEAN = new SimpleType(Boolean.class);
-  static final SimpleType ELEMENT = new SimpleType(Element.class);
+  private DurationStringType() {
+    super(String.class);
+  }
 
   @Override
   public boolean includes(VeoType other) {
-    return other instanceof SimpleType st && clazz.isAssignableFrom(st.clazz);
+    return other instanceof DurationStringType;
   }
 
   @Override
-  @Nonnull
   public String toHumanReadable() {
-    return clazz.getSimpleName();
+    return "DurationString";
   }
 
   @Override
-  @Nonnull
   public String toString() {
     return toHumanReadable();
   }

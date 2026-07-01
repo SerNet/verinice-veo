@@ -86,6 +86,6 @@ public final class DurationAttributeDefinition extends AttributeDefinition {
 
   @Override
   public VeoType getValueType() {
-    return VeoType.string().orNothing();
+    return VeoType.durationString().orNothing();
   }
 }
