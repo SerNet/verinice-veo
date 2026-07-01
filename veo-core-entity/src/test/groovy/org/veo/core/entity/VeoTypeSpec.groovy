@@ -35,6 +35,7 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.string().orNothing())                       | T.mapOf(T.string(), T.string())
         T.mapOf(T.string(), T.string()).orNothing()                       | T.mapOf(T.string(), T.string())
         T.mapOf(T.sumOf(T.string(), T.integer()), T.string()).orNothing() | T.mapOf(T.string(), T.string()).orNothing()
+        T.string()                                                        | T.durationString()
     }
 
     def '#typeA does not include #typeB'() {
@@ -50,6 +51,7 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.string())                       | T.mapOf(T.string(), T.string().orNothing())
         T.mapOf(T.string(), T.string())                       | T.mapOf(T.string(), T.string()).orNothing()
         T.mapOf(T.sumOf(T.string(), T.integer()), T.string()) | T.mapOf(T.string(), T.string()).orNothing()
+        T.durationString()                                    | T.string()
     }
 
     def '#typeA and #typeB intersect'() {
@@ -67,6 +69,7 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.sumOf(T.bool(), T.integer()))             | T.mapOf(T.string(), T.sumOf(T.bool(), T.string())).orNothing()
         T.mapOf(T.string(), T.sumOf(T.bool(), T.integer()).orNothing()) | T.mapOf(T.string(), T.sumOf(T.bool(), T.string()))
         T.mapOf(T.string(), T.sumOf(T.bool(), T.integer()).orNothing()) | T.mapOf(T.string(), T.sumOf(T.bool(), T.string())).orNothing()
+        T.durationString()                                              | T.string()
     }
 
     def '#typeA and #typeB do not intersect'() {

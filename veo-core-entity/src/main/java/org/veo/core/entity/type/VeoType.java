@@ -39,7 +39,7 @@ import org.veo.core.entity.ElementType;
  * </ul>
  */
 public sealed interface VeoType
-    permits SimpleType, AnythingType, ListType, MapType, NothingType, SumType {
+    permits AnythingType, ListType, MapType, NothingType, SimpleType, SumType {
 
   /**
    * @throws IllegalArgumentException if a value could match the other type but not this type
@@ -152,6 +152,10 @@ public sealed interface VeoType
 
   static VeoType bool() {
     return SimpleType.BOOLEAN;
+  }
+
+  static VeoType durationString() {
+    return DurationStringType.INSTANCE;
   }
 
   static VeoType listOf(VeoType itemType) {
