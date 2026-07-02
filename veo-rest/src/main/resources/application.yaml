@@ -43,6 +43,8 @@ veo:
     virtualThreads: true
   graph:
     max-neighbors: 30
+  attribute-values:
+    max-results: 100
 
 spring:
   data:

@@ -137,6 +137,7 @@ import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
@@ -1176,6 +1177,16 @@ public class ModuleConfiguration {
       ProfileItemRepository profileItemRepository) {
     return new TemplateItemMigrationService(
         elementMigrationService, catalogItemRepository, profileItemRepository);
+  }
+
+  @Bean
+  GetAttributeValuesUseCase getAttributeValuesUseCase(
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      GenericElementRepository genericElementRepository,
+      @Value("${veo.attribute-values.max-results:100}") int maxResults) {
+    return new GetAttributeValuesUseCase(
+        domainRepository, unitRepository, genericElementRepository, maxResults);
   }
 
   @Bean
