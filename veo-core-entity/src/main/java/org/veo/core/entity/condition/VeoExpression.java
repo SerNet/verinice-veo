@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
   @Type(value = AndExpression.class, name = "and"),
+  @Type(value = AttributeExpression.class, name = "attribute"),
   @Type(value = CurrentElementExpression.class, name = "currentElement"),
   @Type(value = ConstantExpression.class, name = "constant"),
   @Type(value = ContainsExpression.class, name = "contains"),
@@ -47,7 +48,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = EqualsExpression.class, name = "equals"),
   @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
   @Type(value = ImplementedRequirementsExpression.class, name = "implementedRequirements"),
+  @Type(value = LinksExpression.class, name = "links"),
   @Type(value = LinkTargetsExpression.class, name = "linkTargets"),
+  @Type(value = MinExpression.class, name = "min"),
   @Type(value = MapExpression.class, name = "map"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),
@@ -59,6 +62,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
     discriminatorProperty = "type",
     discriminatorMapping = {
       @DiscriminatorMapping(value = "and", schema = AndExpression.class),
+      @DiscriminatorMapping(value = "attribute", schema = AttributeExpression.class),
       @DiscriminatorMapping(value = "currentElement", schema = CurrentElementExpression.class),
       @DiscriminatorMapping(value = "constant", schema = ConstantExpression.class),
       @DiscriminatorMapping(value = "contains", schema = ContainsExpression.class),
@@ -75,15 +79,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(
           value = "implementedRequirements",
           schema = ImplementedRequirementsExpression.class),
+      @DiscriminatorMapping(value = "links", schema = LinksExpression.class),
       @DiscriminatorMapping(value = "linkTargets", schema = LinkTargetsExpression.class),
       @DiscriminatorMapping(value = "map", schema = MapExpression.class),
       @DiscriminatorMapping(value = "maxRisk", schema = MaxRiskExpression.class),
+      @DiscriminatorMapping(value = "min", schema = MinExpression.class),
       @DiscriminatorMapping(value = "partCount", schema = PartCountExpression.class),
       @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class),
       @DiscriminatorMapping(value = "ternary", schema = TernaryExpression.class)
     },
     oneOf = {
       AndExpression.class,
+      AttributeExpression.class,
       CurrentElementExpression.class,
       ConstantExpression.class,
       ContainsExpression.class,
@@ -92,9 +99,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
       EqualsExpression.class,
       DecisionResultValueExpression.class,
       ImplementedRequirementsExpression.class,
+      LinksExpression.class,
       LinkTargetsExpression.class,
       MapExpression.class,
       MaxRiskExpression.class,
+      MinExpression.class,
       PartCountExpression.class,
       RemoveExpression.class,
       TernaryExpression.class

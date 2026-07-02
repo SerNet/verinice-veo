@@ -24,12 +24,15 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Incident
+import org.veo.core.entity.LinkDirection
 import org.veo.core.entity.Person
+import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
@@ -742,5 +745,185 @@ class VeoExpressionITSpec extends Specification {
         expect:
         e.getValue(element, domain1) == 'v1'
         e.getValue(element, domain2) == 'v2'
+    }
+
+    def "minimum inbound link attribute value is determined"() {
+        given:
+        def domain = Mock(Domain) {
+            getLinkDefinition(ElementType.PERSON, "workedOn") >> Mock(LinkDefinition) {
+                attributeDefinitions >> [
+                    time: new DurationAttributeDefinition()
+                ]
+            }
+        }
+
+        and:
+        def process = Spy(Process) {
+            getInboundLinks(domain) >> [
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    source >> Spy(Person)
+                    attributes >> [
+                        time: "P1D"
+                    ]
+                },
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    source >> Spy(Person)
+                    attributes >> [
+                        time: "PT20H"
+                    ]
+                },
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    source >> Spy(Person)
+                    attributes >> [:]
+                },
+            ]
+        }
+
+        and:
+        def exp = new MinExpression(
+                new AttributeExpression(
+                new LinksExpression(
+                LinkDirection.INBOUND,
+                "workedOn",
+                ElementType.PERSON,
+                ),
+                "time",
+                )
+                )
+
+        expect:
+        exp.selfValidate(domain, ElementType.PROCESS)
+        exp.getValueType(domain, ElementType.PROCESS) == T.durationString().orNothing()
+        exp.getValue(process, domain) == "PT20H"
+    }
+
+    def "minimum outbound link attribute is determined"() {
+        given:
+        def domain = Mock(Domain) {
+            getLinkDefinition(ElementType.PERSON, "workedOn") >> Mock(LinkDefinition) {
+                attributeDefinitions >> [
+                    time: new DurationAttributeDefinition()
+                ]
+            }
+        }
+
+        and:
+        def person = Spy(Person) {
+            getLinks(domain) >> [
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    target >> Spy(Process)
+                    attributes >> [
+                        time: "P4D"
+                    ]
+                },
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    target >> Spy(Process)
+                    attributes >> [
+                        time: "PT8M"
+                    ]
+                },
+                Mock(CustomLink) {
+                    type >> "workedOn"
+                    target >> Spy(Process)
+                    attributes >> [:]
+                },
+            ]
+        }
+
+        and:
+        def exp = new MinExpression(
+                new AttributeExpression(
+                new LinksExpression(
+                LinkDirection.OUTBOUND,
+                "workedOn",
+                null
+                ),
+                "time",
+                )
+                )
+
+        expect:
+        exp.selfValidate(domain, ElementType.PERSON)
+        exp.getValueType(domain, ElementType.PERSON) == T.durationString().orNothing()
+        exp.getValue(person, domain) == "PT8M"
+    }
+
+    def "attribute foo can be extracted from #sourceType"(T sourceType, T outType) {
+        given:
+        def domain = Mock(Domain)
+        def exp = new AttributeExpression(Mock(VeoExpression) {
+            getValueType(domain, ElementType.PERSON) >> sourceType
+        }, "foo")
+
+        expect:
+        exp.selfValidate(domain, ElementType.PERSON)
+        exp.getValueType(domain, ElementType.PERSON) == outType
+
+        where:
+        sourceType                                                                               | outType
+        T.attributeContainer([foo: T.integer()])                                                 | T.integer()
+        T.attributeContainer([foo: T.string(), bar: T.bool()])                                   | T.string()
+        T.attributeContainer([foo: T.bool().orNothing()])                                        | T.bool().orNothing()
+        T.listOf(T.attributeContainer([foo: T.string()]))                                        | T.listOf(T.string())
+        T.listOf(T.attributeContainer([foo: T.string().orNothing()]))                            | T.listOf(T.string().orNothing())
+        T.sumOf(T.attributeContainer([foo: T.integer()]), T.attributeContainer([foo: T.bool()])) | T.sumOf(T.integer(), T.bool())
+    }
+
+    def "attribute foo cannot be extracted from #data.sourceType"(data) {
+        given:
+        def domain = Mock(Domain)
+        def exp = new AttributeExpression(Mock(VeoExpression) {
+            getValueType(domain, ElementType.PERSON) >> data.sourceType
+        }, "foo")
+
+        when:
+        exp.selfValidate(domain, ElementType.PERSON)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == data.expectedError
+
+        where:
+        data << [
+            [
+                sourceType: T.attributeContainer([goo: T.string(), star: T.integer()]),
+                expectedError: "invalid source: AttributeContainer<goo:String,star:Integer> does not contain attribute foo"
+            ],
+            [
+                sourceType: T.attributeContainer([foo: T.string()]).orNothing(),
+                expectedError: "invalid source: AttributeContainer<foo:String>|Null does not match: Null is not an attribute container"
+            ],
+            [
+                sourceType: T.sumOf(T.attributeContainer([foo: T.string()]), T.attributeContainer([goo: T.string()])),
+                expectedError: "invalid source: AttributeContainer<foo:String>|AttributeContainer<goo:String> does not match: " +
+                "AttributeContainer<goo:String> does not contain attribute foo"
+            ],
+            [
+                sourceType: T.listOf(T.attributeContainer([blue: T.string()])),
+                expectedError: "invalid source items: AttributeContainer<blue:String> does not contain attribute foo"
+            ],
+        ]
+    }
+
+    def "cannot compare different value types"() {
+        given:
+        def domain = Mock(Domain)
+        def exp = new MinExpression(
+                Mock(VeoExpression) {
+                    getValueType(domain, ElementType.ASSET) >> T.listOf(T.sumOf(T.integer(), T.string()))
+                }
+                )
+
+        when:
+        exp.selfValidate(domain,ElementType.ASSET)
+
+        then:
+        def e = thrown(IllegalArgumentException)
+        e.message == "cannot compare values with different types (Integer|String)"
     }
 }

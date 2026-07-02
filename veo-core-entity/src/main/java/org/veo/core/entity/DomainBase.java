@@ -33,6 +33,7 @@ import com.github.zafarkhaja.semver.Version;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
 import org.veo.core.entity.exception.NotFoundException;
@@ -89,6 +90,16 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   default Optional<ElementTypeDefinition> findElementTypeDefinition(ElementType type) {
     return getElementTypeDefinitions().stream().filter(d -> d.getElementType() == type).findFirst();
+  }
+
+  default LinkDefinition getLinkDefinition(ElementType sourceType, String linkType) {
+    return getElementTypeDefinition(sourceType)
+        .findLink(linkType)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Link type '%s' not found for %s in domain %s"
+                        .formatted(linkType, sourceType.getPluralTerm(), getId())));
   }
 
   default ElementTypeDefinition getElementTypeDefinition(ElementType type) {
