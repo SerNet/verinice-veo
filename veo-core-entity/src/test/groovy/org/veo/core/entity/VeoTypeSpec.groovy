@@ -36,6 +36,8 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.string()).orNothing()                       | T.mapOf(T.string(), T.string())
         T.mapOf(T.sumOf(T.string(), T.integer()), T.string()).orNothing() | T.mapOf(T.string(), T.string()).orNothing()
         T.string()                                                        | T.durationString()
+        T.attributeContainer([foo: T.string(), bar: T.integer()])         | T.attributeContainer([foo: T.string()])
+        T.attributeContainer([foo: T.string().orNothing()])               | T.attributeContainer([foo: T.string()])
     }
 
     def '#typeA does not include #typeB'() {
@@ -52,6 +54,8 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.string())                       | T.mapOf(T.string(), T.string()).orNothing()
         T.mapOf(T.sumOf(T.string(), T.integer()), T.string()) | T.mapOf(T.string(), T.string()).orNothing()
         T.durationString()                                    | T.string()
+        T.attributeContainer([foo: T.string()])               | T.attributeContainer([foo: T.integer()])
+        T.attributeContainer([foo: T.string()])               | T.attributeContainer([foo: T.integer(), bar: T.bool()])
     }
 
     def '#typeA and #typeB intersect'() {
@@ -70,6 +74,8 @@ class VeoTypeSpec extends Specification {
         T.mapOf(T.string(), T.sumOf(T.bool(), T.integer()).orNothing()) | T.mapOf(T.string(), T.sumOf(T.bool(), T.string()))
         T.mapOf(T.string(), T.sumOf(T.bool(), T.integer()).orNothing()) | T.mapOf(T.string(), T.sumOf(T.bool(), T.string())).orNothing()
         T.durationString()                                              | T.string()
+        T.attributeContainer([foo: T.sumOf(T.string(), T.bool())])      | T.attributeContainer([foo: T.sumOf(T.string(), T.decimal())])
+        T.attributeContainer([foo: T.bool(), bar: T.string()])          | T.attributeContainer([foo: T.bool(), tar: T.decimal()])
     }
 
     def '#typeA and #typeB do not intersect'() {
@@ -141,5 +147,6 @@ class VeoTypeSpec extends Specification {
         T.element()                     | "comparison is not supported for Element"
         T.element().orNothing()         | "comparison is not supported for Element"
         T.element(ElementType.INCIDENT) | "comparison is not supported for Incident"
+        T.attributeContainer([:])       | "comparison is not supported for AttributeContainer<>"
     }
 }

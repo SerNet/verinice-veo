@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.validation.constraints.NotNull;
+
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.definitions.CustomAspectDefinition;
 
 /**
  * Represents data types at runtime. Types are described in terms of set theory, i.e. each type
@@ -40,7 +43,13 @@ import org.veo.core.entity.ElementType;
  * </ul>
  */
 public sealed interface VeoType
-    permits AnythingType, ListType, MapType, NothingType, SimpleType, SumType {
+    permits AnythingType,
+        AttributeContainerType,
+        ListType,
+        MapType,
+        NothingType,
+        SimpleType,
+        SumType {
 
   /**
    * @throws IllegalArgumentException if a value could match the other type but not this type
@@ -70,6 +79,14 @@ public sealed interface VeoType
       throw new IllegalArgumentException(
           "%s: %s does not intersect with %s".formatted(errorContext, this, other));
     }
+  }
+
+  static VeoType attributeContainer(CustomAspectDefinition definition) {
+    return new AttributeContainerType(definition);
+  }
+
+  static VeoType attributeContainer(Map<String, VeoType> attributeTypes) {
+    return new AttributeContainerType(attributeTypes);
   }
 
   /**
@@ -114,6 +131,11 @@ public sealed interface VeoType
    */
   default VeoType mustBeMapAndGetValueType() {
     throw new IllegalArgumentException("expected Map, got %s".formatted(this));
+  }
+
+  default VeoType getAttributeType(@NotNull String attribute, String errorContext) {
+    throw new IllegalArgumentException(
+        "%s: %s is not an attribute container".formatted(errorContext, this));
   }
 
   String toHumanReadable();

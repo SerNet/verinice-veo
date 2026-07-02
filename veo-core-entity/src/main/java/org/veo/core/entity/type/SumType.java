@@ -56,6 +56,17 @@ record SumType(@Nonnull Collection<VeoType> possibleTypes) implements VeoType {
   }
 
   @Override
+  public VeoType getAttributeType(String attribute, String errorContext) {
+    return VeoType.sumOf(
+        possibleTypes.stream()
+            .map(
+                p ->
+                    p.getAttributeType(
+                        attribute, "%s: %s does not match".formatted(errorContext, this)))
+            .toList());
+  }
+
+  @Override
   public <T> Comparator<T> getComparator() {
     var nonNullTypes = possibleTypes.stream().filter(e -> !(e instanceof NothingType)).toList();
     if (nonNullTypes.isEmpty()) {
