@@ -38,6 +38,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public final class ListAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "list";
+
+  @Override
+  public String getType() {
+    return TYPE;
+  }
+
   @NotNull private AttributeDefinition itemDefinition;
 
   @Override

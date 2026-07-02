@@ -34,6 +34,11 @@ public final class DateAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "date";
 
   @Override
+  public String getType() {
+    return TYPE;
+  }
+
+  @Override
   public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       try {

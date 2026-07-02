@@ -41,6 +41,11 @@ import lombok.EqualsAndHashCode;
 public final class DurationAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "duration";
 
+  @Override
+  public String getType() {
+    return TYPE;
+  }
+
   private static final Pattern ISO_STRUCTURE_PATTERN = Pattern.compile("^P([^T]*)(?:T(.*))?$");
   public static final List<ValidationError> ERROR_NO_ISO_DURATION =
       List.of(ValidationError.localized("error_no_iso_duration"));

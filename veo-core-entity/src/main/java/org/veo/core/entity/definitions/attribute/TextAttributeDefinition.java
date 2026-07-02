@@ -31,6 +31,11 @@ public final class TextAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "text";
 
   @Override
+  public String getType() {
+    return TYPE;
+  }
+
+  @Override
   public List<ValidationError> getErrors(Object value) {
     if (!(value instanceof String)) {
       return List.of(ValidationError.localized("error_no_string"));

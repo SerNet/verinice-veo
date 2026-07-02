@@ -1,6 +1,6 @@
 /*
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2026  Aziz Khalledi.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,23 +25,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.persistence.entity.jpa.CustomLinkData;
+import org.veo.persistence.entity.jpa.CustomAspectData;
 
-public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, String> {
-  @Query(
-      "SELECT l FROM customlink l "
-          + "join fetch l.source as s "
-          + "join fetch s.links "
-          + "where l.target.id IN ?1 "
-          + "and s.id not in ?1")
-  @Transactional(readOnly = true)
-  Set<CustomLinkData> findLinksFromOtherElementsByTargetIds(Set<UUID> targetIDs);
+public interface CustomAspectDataRepository extends JpaRepository<CustomAspectData, UUID> {
 
   @Query(
-      "select l from customlink l "
-          + "where l.source.owner.id = ?1 "
-          + "and l.domain.id = ?2 "
-          + "and l.type in ?3")
+      "select ca from custom_aspect ca "
+          + "where ca.owner.owner.id = ?1 "
+          + "and ca.domain.id = ?2 "
+          + "and ca.type in ?3")
   @Transactional(readOnly = true)
-  List<CustomLinkData> findByUnitDomainAndTypes(UUID unitId, UUID domainId, Set<String> types);
+  List<CustomAspectData> findByUnitDomainAndTypes(UUID unitId, UUID domainId, Set<String> types);
 }

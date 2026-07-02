@@ -22,6 +22,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -111,6 +112,31 @@ public abstract sealed class AttributeDefinition
         ListAttributeDefinition,
         TextAttributeDefinition,
         DurationAttributeDefinition {
+
+  private static final Set<String> TYPES =
+      Set.of(
+          BooleanAttributeDefinition.TYPE,
+          DateAttributeDefinition.TYPE,
+          DateTimeAttributeDefinition.TYPE,
+          DurationAttributeDefinition.TYPE,
+          EnumAttributeDefinition.TYPE,
+          ExternalDocumentAttributeDefinition.TYPE,
+          IntegerAttributeDefinition.TYPE,
+          ListAttributeDefinition.TYPE,
+          TextAttributeDefinition.TYPE);
+
+  /**
+   * @return the type identifier used as the JSON discriminator for this attribute definition
+   */
+  @JsonIgnore
+  public abstract String getType();
+
+  /**
+   * @return all valid attribute type identifiers, i.e. every value {@link #getType()} can return
+   */
+  public static Set<String> getValidTypes() {
+    return TYPES;
+  }
 
   public void validate(Object value) throws UnprocessableDataException {
     ValidationError.throwOnErrors(getErrors(value));

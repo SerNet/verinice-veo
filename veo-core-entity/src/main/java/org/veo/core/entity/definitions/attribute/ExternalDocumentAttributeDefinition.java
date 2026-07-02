@@ -34,6 +34,12 @@ public non-sealed class ExternalDocumentAttributeDefinition extends AttributeDef
   public static final String PROTOCOL_PATTERN =
       "^(" + String.join("|", SUPPORTED_PROTOCOLS) + ")://";
   public static final String TYPE = "externalDocument";
+
+  @Override
+  public String getType() {
+    return TYPE;
+  }
+
   private static final Pattern PROTOCOL_PATTERN_COMPILED = Pattern.compile(PROTOCOL_PATTERN);
 
   @Override

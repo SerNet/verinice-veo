@@ -117,4 +117,48 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
             count == 1
         }
     }
+
+    def "finds custom aspects filtered by type"() {
+        given:
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        executeInTransaction {
+            personRepository.save(newPerson(unit) {
+                associateWithDomain(domain, 'PER_Person', 'NEW')
+                customAspects = [
+                    newCustomAspect('person_duration', domain) {
+                        attributes['estimatedDuration'] = 'PT8H'
+                    }
+                ]
+            })
+        }
+
+        when:
+        def cas = genericElementRepository.findCustomAspects(unit.id, domain.id, ['person_duration'] as Set)
+
+        then:
+        cas.size() == 1
+        cas[0].attributes['estimatedDuration'] == 'PT8H'
+
+        and: "an unrelated type yields nothing"
+        genericElementRepository.findCustomAspects(unit.id, domain.id, ['nope'] as Set).isEmpty()
+    }
+
+    def "finds custom links filtered by type"() {
+        given:
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def target = personRepository.save(newPerson(unit) { associateWithDomain(domain, 'PER_Person', 'NEW') })
+        executeInTransaction {
+            personRepository.save(newPerson(unit) {
+                associateWithDomain(domain, 'PER_Person', 'NEW')
+                applyLink(newCustomLink(target, 'person_link', domain) { attributes['recoveryTime'] = 'P3D' })
+            })
+        }
+
+        when:
+        def links = genericElementRepository.findCustomLinks(unit.id, domain.id, ['person_link'] as Set)
+
+        then:
+        links.size() == 1
+        links[0].attributes['recoveryTime'] == 'P3D'
+    }
 }

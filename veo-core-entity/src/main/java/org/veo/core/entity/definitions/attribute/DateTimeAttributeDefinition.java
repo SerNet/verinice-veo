@@ -33,6 +33,11 @@ public final class DateTimeAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "dateTime";
 
   @Override
+  public String getType() {
+    return TYPE;
+  }
+
+  @Override
   public List<ValidationError> getErrors(Object value) {
     if (value instanceof String str) {
       try {

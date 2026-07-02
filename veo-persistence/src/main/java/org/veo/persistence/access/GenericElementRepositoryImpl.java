@@ -17,6 +17,7 @@
  */
 package org.veo.persistence.access;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -61,6 +63,7 @@ import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
+import org.veo.persistence.access.jpa.CustomAspectDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
@@ -87,6 +90,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   private final ProcessDataRepository processDataRepository;
   private final ScopeDataRepository scopeDataRepository;
   private final CustomLinkDataRepository linkDataRepository;
+  private final CustomAspectDataRepository customAspectDataRepository;
 
   private final ControlImplementationDataRepository ciRepository;
 
@@ -311,6 +315,24 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
         scopeData ->
             scenarios.forEach(
                 scenario -> scopeData.getRisk(scenario).ifPresent(ScopeRisk::remove)));
+  }
+
+  @Override
+  public List<CustomAspect> findCustomAspects(UUID unitId, UUID domainId, Set<String> caTypes) {
+    if (caTypes.isEmpty()) {
+      return List.of();
+    }
+    return new ArrayList<>(
+        customAspectDataRepository.findByUnitDomainAndTypes(unitId, domainId, caTypes));
+  }
+
+  @Override
+  public List<CustomLink> findCustomLinks(UUID unitId, UUID domainId, Set<String> linkTypes) {
+    if (linkTypes.isEmpty()) {
+      return List.of();
+    }
+    return new ArrayList<>(
+        linkDataRepository.findByUnitDomainAndTypes(unitId, domainId, linkTypes));
   }
 
   private void deleteLinksByTargets(Set<UUID> targetElementIds) {

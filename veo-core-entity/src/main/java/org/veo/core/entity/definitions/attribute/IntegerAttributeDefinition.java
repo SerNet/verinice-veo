@@ -31,6 +31,11 @@ public final class IntegerAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "integer";
 
   @Override
+  public String getType() {
+    return TYPE;
+  }
+
+  @Override
   public List<ValidationError> getErrors(Object value) {
     if (!(value instanceof Integer)) {
       return List.of(ValidationError.localized("error_no_int"));

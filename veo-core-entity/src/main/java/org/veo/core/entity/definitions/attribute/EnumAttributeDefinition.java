@@ -38,6 +38,12 @@ import lombok.NoArgsConstructor;
 @Data
 public final class EnumAttributeDefinition extends AttributeDefinition {
   public static final String TYPE = "enum";
+
+  @Override
+  public String getType() {
+    return TYPE;
+  }
+
   @NotNull private List<String> allowedValues;
 
   @Override

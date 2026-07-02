@@ -18,12 +18,15 @@
 package org.veo.core.repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CustomAspect;
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
@@ -72,4 +75,10 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
    * entity references will become stale.
    */
   void deleteByUnit(Unit unit);
+
+  /** Reads custom aspects of the given types already in use within a unit. */
+  List<CustomAspect> findCustomAspects(UUID unitId, UUID domainId, Set<String> caTypes);
+
+  /** Reads custom links of the given types already in use within a unit. */
+  List<CustomLink> findCustomLinks(UUID unitId, UUID domainId, Set<String> linkTypes);
 }
