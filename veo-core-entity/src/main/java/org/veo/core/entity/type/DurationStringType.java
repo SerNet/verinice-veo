@@ -17,11 +17,20 @@
  */
 package org.veo.core.entity.type;
 
+import java.util.Comparator;
+
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition;
+
 final class DurationStringType extends SimpleType {
   static final DurationStringType INSTANCE = new DurationStringType();
 
   private DurationStringType() {
     super(String.class);
+  }
+
+  @Override
+  public <T> Comparator<T> getComparator() {
+    return Comparator.comparing(d -> DurationAttributeDefinition.parse((String) d));
   }
 
   @Override
