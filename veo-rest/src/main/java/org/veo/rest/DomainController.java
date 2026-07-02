@@ -60,6 +60,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.DomainUpdateFailedResponseBody;
+import org.veo.adapter.presenter.api.dto.AttributeValuesDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortInspectionDto;
@@ -94,6 +95,7 @@ import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUpdatesUseCase;
@@ -143,6 +145,7 @@ public class DomainController extends AbstractEntityController {
   private final ExportDomainUseCase exportDomainUseCase;
   private final UpdateDomainUseCase updateDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
+  private final GetAttributeValuesUseCase getAttributeValuesUseCase;
   private final GetCatalogItemUseCase getCatalogItemUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
@@ -414,6 +417,31 @@ public class DomainController extends AbstractEntityController {
             new GetElementStatusCountUseCase.InputData(UUID.fromString(unitId), id),
             GetElementStatusCountUseCase.OutputData::result)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
+  }
+
+  @GetMapping(value = "/{id}/attribute-values")
+  @Operation(
+      summary =
+          "Retrieve distinct attribute values already used in a unit for a given attribute type")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Values retrieved",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = AttributeValuesDto.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public @Valid CompletableFuture<ResponseEntity<AttributeValuesDto>> getAttributeValues(
+      @PathVariable UUID id,
+      @RequestParam(value = "type") String type,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId) {
+
+    return useCaseInteractor
+        .execute(
+            getAttributeValuesUseCase,
+            new GetAttributeValuesUseCase.InputData(id, UUID.fromString(unitId), type),
+            out -> new AttributeValuesDto(out.values(), out.truncated()))
+        .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
   @GetMapping(value = "/{domainId}/inspections")
