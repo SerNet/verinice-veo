@@ -18,6 +18,7 @@
 package org.veo.core.entity.type;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 
 import javax.annotation.Nonnull;
 
@@ -40,6 +41,14 @@ sealed class SimpleType implements VeoType permits DurationStringType {
   @Override
   public boolean includes(VeoType other) {
     return other instanceof SimpleType st && clazz.isAssignableFrom(st.clazz);
+  }
+
+  @Override
+  public <T> Comparator<T> getComparator() {
+    if (!Comparable.class.isAssignableFrom(clazz)) {
+      throw new IllegalArgumentException("comparison is not supported for %s".formatted(this));
+    }
+    return (a, b) -> ((Comparable) a).compareTo(b);
   }
 
   @Override

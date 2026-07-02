@@ -18,6 +18,7 @@
 package org.veo.core.entity.type;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -172,6 +173,10 @@ public sealed interface VeoType
 
   default void mustBeListOrNothing(String errorContext) {
     mustBeIncludedIn(sumOf(listOf(anything().orNothing()).orNothing()), errorContext);
+  }
+
+  default <T> Comparator<T> getComparator() {
+    throw new IllegalArgumentException("comparison is not supported for %s".formatted(this));
   }
 
   static VeoType sumOf(VeoType... possibleTypes) {

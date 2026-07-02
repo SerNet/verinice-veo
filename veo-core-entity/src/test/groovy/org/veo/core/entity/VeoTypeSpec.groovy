@@ -102,4 +102,44 @@ class VeoTypeSpec extends Specification {
         ex = thrown(IllegalArgumentException)
         ex.message == "map keys cannot be null: expected *, got String|Null"
     }
+
+    def "#type values #inValues are compared correctly"() {
+        expect:
+        inValues.toSorted(type.comparator) == outValues
+
+        where:
+        type                           | inValues                           | outValues
+        T.integer()                    | [15, 7000, 459, 12, 57]            | [12, 15, 57, 459, 7000]
+        T.string()                     | ["b", "c", "a"]                    | ["a", "b", "c"]
+        T.durationString()             | ["PT12H", "PT30s", "PT45S"]        | ["PT30s", "PT45S", "PT12H"]
+        T.durationString().orNothing() | [
+            "P100M",
+            "P100MT2S",
+            null,
+            "P2Y"
+        ] | [
+            "P2Y",
+            "P100M",
+            "P100MT2S",
+            null
+        ]
+        T.integer().orNothing()        | [16, null, 12, null]               | [12, 16, null, null]
+        T.nothing()                    | [null, null, null]                 | [null, null, null]
+    }
+
+    def "#type values cannot be compared"() {
+        when:
+        type.comparator
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == expectedError
+
+        where:
+        type                            | expectedError
+        T.sumOf(T.integer(), T.bool())  | "cannot compare values with different types (Boolean|Integer)"
+        T.element()                     | "comparison is not supported for Element"
+        T.element().orNothing()         | "comparison is not supported for Element"
+        T.element(ElementType.INCIDENT) | "comparison is not supported for Incident"
+    }
 }

@@ -56,6 +56,19 @@ record SumType(@Nonnull Collection<VeoType> possibleTypes) implements VeoType {
   }
 
   @Override
+  public <T> Comparator<T> getComparator() {
+    var nonNullTypes = possibleTypes.stream().filter(e -> !(e instanceof NothingType)).toList();
+    if (nonNullTypes.isEmpty()) {
+      return (_, _) -> 0;
+    }
+    if (nonNullTypes.size() > 1) {
+      throw new IllegalArgumentException(
+          "cannot compare values with different types (%s)".formatted(this));
+    }
+    return Comparator.nullsLast(nonNullTypes.getFirst().getComparator());
+  }
+
+  @Override
   public boolean intersectsWith(VeoType other) {
     return unpackTypes(other).stream()
         .anyMatch(otherType -> possibleTypes.stream().anyMatch(p -> p.intersectsWith(otherType)));

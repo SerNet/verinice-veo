@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.type;
 
+import java.util.Comparator;
+
 import javax.annotation.Nonnull;
 
 import lombok.AccessLevel;
@@ -29,6 +31,11 @@ final class NothingType implements VeoType {
   @Override
   public boolean includes(VeoType other) {
     return other instanceof NothingType;
+  }
+
+  @Override
+  public <T> Comparator<T> getComparator() {
+    return (_, _) -> 0;
   }
 
   @Override
