@@ -32,6 +32,15 @@ class DecisionCreationRestTest extends VeoRestTest {
             subTypes: [
                 Article: [statuses: ["Online"]]
             ],
+            links: [
+                relatedArticle: [
+                    targetType: "document",
+                    targetSubType: "Article",
+                    attributeDefinitions: [
+                        "relevance": [type: "integer"]
+                    ],
+                ]
+            ],
             customAspects: [
                 metrics: [
                     attributeDefinitions: [
@@ -60,6 +69,8 @@ class DecisionCreationRestTest extends VeoRestTest {
                     "document_Article_status_Online":"document_Article_status_Online",
                     "mostCommonWord":"mostCommonWord",
                     "numberOfWords":"numberOfWords",
+                    "relatedArticle":"related article",
+                    "relevance":"relevance",
                     "themes":"themes"
                 ]
             ]
@@ -154,6 +165,108 @@ class DecisionCreationRestTest extends VeoRestTest {
 
         then:
         evaluationResult.body.decisionResults.numberOfThemes.value == 3
+    }
+
+    def "evaluate inbound links"() {
+        given:
+        put("/content-creation/domains/$domainId/decisions/minRelevance", [
+            type: "expressive",
+            name: [en: "Minimum relevance"],
+            elementType: "document",
+            elementSubType: "Article",
+            expression: [
+                type: "min",
+                values: [
+                    type: "attribute",
+                    attribute: "relevance",
+                    source: [
+                        type: "links",
+                        direction: "INBOUND",
+                        sourceType: "document",
+                        linkType: "relatedArticle",
+                    ],
+                ]
+            ],
+        ], null, 201, CONTENT_CREATOR)
+
+        and:
+        def unitId = postNewUnit("u", [domainId]).resourceId
+        def targetDocumentId = post("/domains/$domainId/documents", [
+            name: "Center piece",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+        ]).body.resourceId
+        def linkingDoc1Id = post("/domains/$domainId/documents", [
+            name: "linking document 1",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+            links: [
+                relatedArticle: [
+                    [
+                        target: [
+                            targetUri: "/documents/$targetDocumentId"
+                        ],
+                        attributes: [
+                            relevance: 12
+                        ]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+        post("/domains/$domainId/documents", [
+            name: "linking document",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+            links: [
+                relatedArticle: [
+                    [
+                        target: [
+                            targetUri: "/documents/$targetDocumentId"
+                        ],
+                        attributes: [:]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+        post("/domains/$domainId/documents", [
+            name: "linking document",
+            subType: "Article",
+            status: "Online",
+            owner: [targetUri:"/units/$unitId"],
+            links: [
+                relatedArticle: [
+                    [
+                        target: [
+                            targetUri: "/documents/$targetDocumentId"
+                        ],
+                        attributes: [
+                            relevance: 5
+                        ]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        expect:
+        get("/domains/$domainId/documents/$targetDocumentId").body.decisionResults.minRelevance.value == 5
+
+        when:
+        get("/domains/$domainId/documents/$linkingDoc1Id").with{
+            body.links.relatedArticle[0].attributes.relevance = 3
+            put(body._self,body,it.getETag())
+        }
+
+        then:
+        get("/domains/$domainId/documents/$targetDocumentId").body.decisionResults.minRelevance.value == 3
+
+        when:
+        delete("/documents/$linkingDoc1Id")
+
+        then:
+        get("/domains/$domainId/documents/$targetDocumentId").body.decisionResults.minRelevance.value == 5
     }
 
     def "interdependent decisions are evaluated correctly"() {

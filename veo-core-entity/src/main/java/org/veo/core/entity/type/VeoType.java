@@ -197,6 +197,11 @@ public sealed interface VeoType
     mustBeIncludedIn(sumOf(listOf(anything().orNothing()).orNothing()), errorContext);
   }
 
+  default VeoType mustBeListAndGetValueType(String errorContext) {
+    mustBeIncludedIn(listOf(anything().orNothing()), errorContext);
+    return findListItemType().get();
+  }
+
   default <T> Comparator<T> getComparator() {
     throw new IllegalArgumentException("comparison is not supported for %s".formatted(this));
   }
