@@ -32,7 +32,6 @@ veo:
       veo-subscriptions: 'veo/subscriptions'
     consume:
       dlx: 'veo_dlx'
-      autoDelete: 'false'
   messages:
     deletion:
       delayMs: 500

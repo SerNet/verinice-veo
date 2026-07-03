@@ -4,8 +4,6 @@ veo:
   etag:
     salt: rl2xo5fVE3$rf
   message:
-    consume:
-      autoDelete: 'true'
     dispatch:
       routing-key-prefix: 'veo.resttestmessage.'
       ignore-entity-events: true
