@@ -18,7 +18,10 @@
 package org.veo.core.entity.type;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.annotation.Nonnull;
 
@@ -49,6 +52,17 @@ sealed class SimpleType implements VeoType permits DurationStringType {
       throw new IllegalArgumentException("comparison is not supported for %s".formatted(this));
     }
     return (a, b) -> ((Comparable) a).compareTo(b);
+  }
+
+  @Override
+  public String format(Object value, Locale locale) {
+    return switch (value) {
+      case String s -> s;
+      case Number n -> NumberFormat.getNumberInstance(locale).format(n);
+      case Boolean b -> ResourceBundle.getBundle("messages", locale).getString(b ? "yes" : "no");
+      default ->
+          throw new UnsupportedOperationException("Cannot format %s".formatted(value.getClass()));
+    };
   }
 
   @Override

@@ -18,6 +18,8 @@
 package org.veo.core.entity.type;
 
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.annotation.Nonnull;
 
@@ -31,6 +33,11 @@ final class NothingType implements VeoType {
   @Override
   public boolean includes(VeoType other) {
     return other instanceof NothingType;
+  }
+
+  @Override
+  public String format(Object value, Locale locale) {
+    return ResourceBundle.getBundle("messages", locale).getString("undefined");
   }
 
   @Override

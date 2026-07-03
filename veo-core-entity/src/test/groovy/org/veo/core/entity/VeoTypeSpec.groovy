@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import static java.util.Locale.ENGLISH
+import static java.util.Locale.GERMAN
+
 import org.veo.core.entity.type.VeoType
 import org.veo.core.entity.type.VeoType as T
 
@@ -148,5 +151,28 @@ class VeoTypeSpec extends Specification {
         T.element().orNothing()         | "comparison is not supported for Element"
         T.element(ElementType.INCIDENT) | "comparison is not supported for Incident"
         T.attributeContainer([:])       | "comparison is not supported for AttributeContainer<>"
+    }
+
+    def "#type value #value is formatted correctly in #locale"(VeoType type, Object value, Locale locale, String out) {
+        expect:
+        type.format(value,locale) == out
+
+        where:
+        type                          | value       | locale  | out
+        VeoType.nothing()             | null        | ENGLISH | "undefined"
+        VeoType.string()              | "foot"      | ENGLISH | "foot"
+        VeoType.integer()             | 56          | ENGLISH | "56"
+        VeoType.bool()                | false       | ENGLISH | "no"
+        VeoType.bool()                | true        | ENGLISH | "yes"
+        VeoType.bool()                | true        | GERMAN  | "ja"
+        VeoType.decimal()             | 5.6         | ENGLISH | "5.6"
+        VeoType.decimal()             | 5.6         | GERMAN  | "5,6"
+        VeoType.decimal().orNothing() | 5.6         | GERMAN  | "5,6"
+        VeoType.decimal().orNothing() | null        | GERMAN  | "unbestimmt"
+        VeoType.durationString()      | "P2W4DT5M"  | ENGLISH | "18 days, 5 minutes"
+        VeoType.durationString()      | "P2DT4H12M" | ENGLISH | "2 days, 4 hours, 12 minutes"
+        VeoType.durationString()      | "P2DT4H12M" | GERMAN  | "2 Tage, 4 Stunden, 12 Minuten"
+        VeoType.durationString()      | "PT10H0M2S" | GERMAN  | "10 Stunden, 2 Sekunden"
+        VeoType.durationString()      | "P0D"       | GERMAN  | "0 Sekunden"
     }
 }
