@@ -20,6 +20,7 @@ package org.veo.core.entity.definitions.attribute;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
 import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.type.VeoType;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,33 +46,42 @@ public final class DurationAttributeDefinition extends AttributeDefinition {
       List.of(ValidationError.localized("error_no_iso_duration"));
 
   @Override
-  @SuppressWarnings("PMD.UselessPureMethodCall")
   public List<ValidationError> getErrors(Object value) {
     if (!(value instanceof String str)) {
       return List.of(ValidationError.localized("error_no_string"));
     }
-    Matcher matcher = ISO_STRUCTURE_PATTERN.matcher(str);
-    if (!matcher.matches()) {
+    try {
+      parse(str);
+      return List.of();
+
+    } catch (DateTimeParseException | IllegalArgumentException ex) {
       return ERROR_NO_ISO_DURATION;
+    }
+  }
+
+  @NonNull
+  public static Duration parse(String value) {
+    Matcher matcher = ISO_STRUCTURE_PATTERN.matcher(value);
+    if (!matcher.matches()) {
+      throw new IllegalArgumentException("Invalid ISO duration structure");
     }
 
     String periodPart = matcher.group(1);
     String durationPart = matcher.group(2);
 
     if (periodPart.isEmpty() && durationPart == null) {
-      return ERROR_NO_ISO_DURATION;
+      throw new IllegalArgumentException("Duration is empty");
     }
-    try {
-      if (!periodPart.isEmpty()) {
-        Period.parse("P" + periodPart);
-      }
-      if (durationPart != null) {
-        Duration.parse("PT" + durationPart);
-      }
-      return List.of();
-    } catch (DateTimeParseException ex) {
-      return ERROR_NO_ISO_DURATION;
+    var duration = durationPart != null ? Duration.parse("PT" + durationPart) : Duration.ZERO;
+    if (!periodPart.isEmpty()) {
+      var p = Period.parse("P" + periodPart);
+      duration =
+          duration
+              .plus(ChronoUnit.DAYS.getDuration().multipliedBy(p.getDays()))
+              .plus(ChronoUnit.MONTHS.getDuration().multipliedBy(p.getMonths()))
+              .plus(ChronoUnit.YEARS.getDuration().multipliedBy(p.getYears()));
     }
+    return duration;
   }
 
   @Override
