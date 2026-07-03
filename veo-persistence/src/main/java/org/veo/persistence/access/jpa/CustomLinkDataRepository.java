@@ -17,7 +17,6 @@
  */
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,12 +35,4 @@ public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, 
           + "and s.id not in ?1")
   @Transactional(readOnly = true)
   Set<CustomLinkData> findLinksFromOtherElementsByTargetIds(Set<UUID> targetIDs);
-
-  @Query(
-      "select l from customlink l "
-          + "where l.source.owner.id = ?1 "
-          + "and l.domain.id = ?2 "
-          + "and l.type in ?3")
-  @Transactional(readOnly = true)
-  List<CustomLinkData> findByUnitDomainAndTypes(UUID unitId, UUID domainId, Set<String> types);
 }

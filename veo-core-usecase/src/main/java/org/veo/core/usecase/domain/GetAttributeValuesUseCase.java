@@ -17,7 +17,6 @@
  */
 package org.veo.core.usecase.domain;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +27,6 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
-import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -72,26 +69,16 @@ public class GetAttributeValuesUseCase
       collectKeysByType(etd.getLinks(), wantedType, linkTypeToKeys);
     }
 
-    Set<Object> values = new HashSet<>();
-    for (CustomAspect ca :
-        genericElementRepository.findCustomAspects(
-            unit.getId(), domain.getId(), caTypeToKeys.keySet())) {
-      collectValues(values, caTypeToKeys.get(ca.getType()), ca.getAttributes());
-    }
-    for (CustomLink link :
-        genericElementRepository.findCustomLinks(
-            unit.getId(), domain.getId(), linkTypeToKeys.keySet())) {
-      collectValues(values, linkTypeToKeys.get(link.getType()), link.getAttributes());
-    }
-
-    // Sort is by the values string representation (descending).
-    List<Object> sorted =
-        values.stream().sorted(Comparator.comparing(String::valueOf).reversed()).toList();
-    boolean truncated = sorted.size() > maxResults;
+    // Values are extracted, deduplicated and ordered (descending) in the database. One extra value
+    // beyond the limit is fetched so we can detect truncation.
+    List<Object> values =
+        genericElementRepository.findUsedAttributeValues(
+            unit.getId(), domain.getId(), caTypeToKeys, linkTypeToKeys, maxResults + 1);
+    boolean truncated = values.size() > maxResults;
     if (truncated) {
-      sorted = sorted.subList(0, maxResults);
+      values = values.subList(0, maxResults);
     }
-    return new OutputData(sorted, truncated);
+    return new OutputData(values, truncated);
   }
 
   private static void collectKeysByType(
@@ -107,19 +94,6 @@ public class GetAttributeValuesUseCase
                         typeToKeys.computeIfAbsent(type, k -> new HashSet<>()).add(key);
                       }
                     }));
-  }
-
-  private static void collectValues(
-      Set<Object> values, Set<String> keys, Map<String, Object> attributes) {
-    if (keys == null) {
-      return;
-    }
-    for (String key : keys) {
-      Object value = attributes.get(key);
-      if (value != null) {
-        values.add(value);
-      }
-    }
   }
 
   @Valid

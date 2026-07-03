@@ -17,10 +17,10 @@
  */
 package org.veo.persistence.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -33,13 +33,15 @@ import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.veo.core.UserAccessRights;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -63,7 +65,6 @@ import org.veo.core.repository.ParentElementQuery;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
-import org.veo.persistence.access.jpa.CustomAspectDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
@@ -84,13 +85,59 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class GenericElementRepositoryImpl implements GenericElementRepository {
+  private static final ObjectMapper JSON = new ObjectMapper();
+
+  /**
+   * Extracts the distinct attribute values used within a unit for the requested attribute keys
+   * (grouped by type).
+   */
+  private static final String USED_ATTRIBUTE_VALUES_QUERY =
+      """
+      select value from (
+        select distinct elem::text as value
+        from (
+          select (select jsonb_agg(entry.value)
+                  from jsonb_each(ca.attributes) as entry
+                  where entry.key in (
+                      select jsonb_array_elements_text(cast(:caKeys as jsonb) -> ca.type))
+                    and jsonb_typeof(entry.value) <> 'null'
+                 ) as vals
+          from custom_aspect ca
+          join element e on e.db_id = ca.owner_db_id
+          where ca.domain_id = cast(:domainId as uuid)
+            and e.owner_id = cast(:unitId as uuid)
+            and ca.type in (select jsonb_object_keys(cast(:caKeys as jsonb)))
+        ) ca_matches
+        cross join lateral jsonb_array_elements(vals) as elem
+        where vals is not null
+        union
+        select distinct elem::text as value
+        from (
+          select (select jsonb_agg(entry.value)
+                  from jsonb_each(l.attributes) as entry
+                  where entry.key in (
+                      select jsonb_array_elements_text(cast(:linkKeys as jsonb) -> l.type))
+                    and jsonb_typeof(entry.value) <> 'null'
+                 ) as vals
+          from customlink l
+          join element e on e.db_id = l.source_id
+          where l.domain_id = cast(:domainId as uuid)
+            and e.owner_id = cast(:unitId as uuid)
+            and l.type in (select jsonb_object_keys(cast(:linkKeys as jsonb)))
+        ) link_matches
+        cross join lateral jsonb_array_elements(vals) as elem
+        where vals is not null
+      ) all_values
+      order by value desc
+      limit :limit
+      """;
+
   private final ElementQueryFactory elementQueryFactory;
   private final ElementDataRepository<ElementData> dataRepository;
   private final AssetDataRepository assetDataRepository;
   private final ProcessDataRepository processDataRepository;
   private final ScopeDataRepository scopeDataRepository;
   private final CustomLinkDataRepository linkDataRepository;
-  private final CustomAspectDataRepository customAspectDataRepository;
 
   private final ControlImplementationDataRepository ciRepository;
 
@@ -318,21 +365,42 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   }
 
   @Override
-  public List<CustomAspect> findCustomAspects(UUID unitId, UUID domainId, Set<String> caTypes) {
-    if (caTypes.isEmpty()) {
+  @Transactional(readOnly = true)
+  public List<Object> findUsedAttributeValues(
+      UUID unitId,
+      UUID domainId,
+      Map<String, Set<String>> caKeysByType,
+      Map<String, Set<String>> linkKeysByType,
+      int limit) {
+    if (caKeysByType.isEmpty() && linkKeysByType.isEmpty()) {
       return List.of();
     }
-    return new ArrayList<>(
-        customAspectDataRepository.findByUnitDomainAndTypes(unitId, domainId, caTypes));
+    @SuppressWarnings("unchecked")
+    List<String> rows =
+        em.createNativeQuery(USED_ATTRIBUTE_VALUES_QUERY)
+            .setParameter("caKeys", toJson(caKeysByType))
+            .setParameter("linkKeys", toJson(linkKeysByType))
+            .setParameter("unitId", unitId.toString())
+            .setParameter("domainId", domainId.toString())
+            .setParameter("limit", limit)
+            .getResultList();
+    return rows.stream().map(GenericElementRepositoryImpl::fromJson).toList();
   }
 
-  @Override
-  public List<CustomLink> findCustomLinks(UUID unitId, UUID domainId, Set<String> linkTypes) {
-    if (linkTypes.isEmpty()) {
-      return List.of();
+  private static String toJson(Object value) {
+    try {
+      return JSON.writeValueAsString(value);
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException("Cannot serialize attribute key filter", e);
     }
-    return new ArrayList<>(
-        linkDataRepository.findByUnitDomainAndTypes(unitId, domainId, linkTypes));
+  }
+
+  private static Object fromJson(String json) {
+    try {
+      return JSON.readValue(json, Object.class);
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException("Cannot deserialize attribute value", e);
+    }
   }
 
   private void deleteLinksByTargets(Set<UUID> targetElementIds) {

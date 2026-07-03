@@ -118,7 +118,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
         }
     }
 
-    def "finds custom aspects filtered by type"() {
+    def "finds custom aspect attribute values filtered by type and key"() {
         given:
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         executeInTransaction {
@@ -133,17 +133,18 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
         }
 
         when:
-        def cas = genericElementRepository.findCustomAspects(unit.id, domain.id, ['person_duration'] as Set)
+        def values = genericElementRepository.findUsedAttributeValues(
+                unit.id, domain.id, ['person_duration': ['estimatedDuration'] as Set], [:], 100)
 
         then:
-        cas.size() == 1
-        cas[0].attributes['estimatedDuration'] == 'PT8H'
+        values == ['PT8H']
 
         and: "an unrelated type yields nothing"
-        genericElementRepository.findCustomAspects(unit.id, domain.id, ['nope'] as Set).isEmpty()
+        genericElementRepository.findUsedAttributeValues(
+                unit.id, domain.id, ['nope': ['x'] as Set], [:], 100).isEmpty()
     }
 
-    def "finds custom links filtered by type"() {
+    def "finds custom link attribute values filtered by type and key"() {
         given:
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         def target = personRepository.save(newPerson(unit) { associateWithDomain(domain, 'PER_Person', 'NEW') })
@@ -155,10 +156,10 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
         }
 
         when:
-        def links = genericElementRepository.findCustomLinks(unit.id, domain.id, ['person_link'] as Set)
+        def values = genericElementRepository.findUsedAttributeValues(
+                unit.id, domain.id, [:], ['person_link': ['recoveryTime'] as Set], 100)
 
         then:
-        links.size() == 1
-        links[0].attributes['recoveryTime'] == 'P3D'
+        values == ['P3D']
     }
 }
