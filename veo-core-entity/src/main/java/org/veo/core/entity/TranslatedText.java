@@ -20,6 +20,9 @@ package org.veo.core.entity;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -47,8 +50,9 @@ public class TranslatedText {
     this.translations = themap;
   }
 
-  /** Convert a map of language tags and translations. */
-  public static TranslatedText of(Map<String, String> description) {
-    return new TranslatedText(TranslationProvider.convertLocales(description));
+  public static TranslatedText of(Function<Locale, String> formatter) {
+    return new TranslatedText(
+        Stream.of(Locale.ENGLISH, Locale.GERMAN)
+            .collect(Collectors.toMap(Function.identity(), formatter)));
   }
 }

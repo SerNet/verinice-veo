@@ -20,8 +20,6 @@ package org.veo.core.usecase.inspection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -111,12 +109,7 @@ public class Inspector {
                   .map(
                       e ->
                           new Finding(
-                              Severity.WARNING,
-                              TranslatedText.of(
-                                  Map.of(
-                                      "en", e.getMessage(Locale.ENGLISH),
-                                      "de", e.getMessage(Locale.GERMAN))),
-                              List.of()))
+                              Severity.WARNING, TranslatedText.of(e::getMessage), List.of()))
                   .toList();
             })
         .orElse(Collections.emptyList());
