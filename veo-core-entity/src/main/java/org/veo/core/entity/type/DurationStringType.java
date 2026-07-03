@@ -17,7 +17,12 @@
  */
 package org.veo.core.entity.type;
 
+import java.time.Duration;
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition;
 
@@ -47,4 +52,30 @@ final class DurationStringType extends SimpleType {
   public String toString() {
     return toHumanReadable();
   }
+
+  @Override
+  public String format(Object value, Locale locale) {
+    return split(DurationAttributeDefinition.parse((String) value))
+        .map(
+            e ->
+                "%s %s"
+                    .formatted(
+                        e.amount,
+                        ResourceBundle.getBundle("messages", locale).getString(e.unitKey())))
+        .collect(Collectors.joining(", "));
+  }
+
+  private Stream<UnitComponent> split(Duration d) {
+    if (d.isZero()) {
+      return Stream.of(new UnitComponent("seconds", 0));
+    }
+    return Stream.of(
+            new UnitComponent("days", d.toDays()),
+            new UnitComponent("hours", d.toHoursPart()),
+            new UnitComponent("minutes", d.toMinutesPart()),
+            new UnitComponent("seconds", d.toSecondsPart()))
+        .filter(e -> e.amount > 0);
+  }
+
+  private record UnitComponent(String unitKey, long amount) {}
 }

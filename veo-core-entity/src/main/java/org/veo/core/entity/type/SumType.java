@@ -20,6 +20,7 @@ package org.veo.core.entity.type;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -53,6 +54,19 @@ record SumType(@Nonnull Collection<VeoType> possibleTypes) implements VeoType {
   public boolean includes(VeoType other) {
     return unpackTypes(other).stream()
         .allMatch(otherType -> possibleTypes.stream().anyMatch(p -> p.includes(otherType)));
+  }
+
+  @Override
+  public String format(Object value, Locale locale) {
+    if (value == null) {
+      return VeoType.nothing().format(null, locale);
+    }
+    var nonNullTypes = possibleTypes.stream().filter(e -> !(e instanceof NothingType)).toList();
+    if (nonNullTypes.size() > 1) {
+      throw new IllegalArgumentException(
+          "cannot format values with different types (%s)".formatted(this));
+    }
+    return nonNullTypes.getFirst().format(value, locale);
   }
 
   @Override

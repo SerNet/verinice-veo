@@ -20,6 +20,7 @@ package org.veo.core.entity.type;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -139,6 +140,10 @@ public sealed interface VeoType
   }
 
   String toHumanReadable();
+
+  default String format(Object value, Locale locale) {
+    throw new UnsupportedOperationException("Formatting not supported for %s".formatted(this));
+  }
 
   /**
    * @return {@code true} if all values that match the other type also match this type
