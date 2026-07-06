@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import java.util.Locale;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -73,6 +75,8 @@ public abstract class Decision {
   }
 
   public abstract DecisionResult evaluate(Element element, Domain domain);
+
+  public abstract String format(DecisionResult result, Locale locale, DomainBase domain);
 
   public abstract boolean isAffectedByEvent(ElementEvent event, Domain domain);
 

@@ -101,9 +101,10 @@ class EvaluationRestTest extends VeoRestTest {
             status: "NEW",
             owner: [targetUri: unitUri]
         ], get("/domains/$dsgvoDomainId/processes/$processId").getETag())
+        def process = get("/domains/$dsgvoDomainId/processes/$processId").body
 
         then: "added attribute is taken into consideration"
-        with(get("/domains/$dsgvoDomainId/processes/$processId").body.decisionResults.piaMandatory) {
+        with(process.decisionResults.piaMandatory) {
             value == true
             decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
@@ -117,12 +118,15 @@ class EvaluationRestTest extends VeoRestTest {
             ]
         }
 
-        and: "inspection suggests creating a DPIA part"
-        with(get("/processes/$processId/inspection?domain=$dsgvoDomainId").body) {
-            size() == 1
-            with(it[0]) {
+        and: "evaluation displays the result and suggests creating a DPIA part"
+        with(post("/domains/$dsgvoDomainId/processes/evaluation", process, 200).body) {
+            size() == 2
+            inspectionFindings*.severity ==~ ["HINT", "WARNING"]
+            with(inspectionFindings.find { it.severity == "HINT" }) {
+                description.en == "Data Protection Impact Assessment mandatory: yes (Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment)"
+            }
+            with(inspectionFindings.find { it.severity == "WARNING" }) {
                 description.en == "Data Protection Impact Assessment was not carried out, but it is mandatory."
-                severity == "WARNING"
                 suggestions.size() == 1
                 with(suggestions[0]) {
                     type == "addPart"
@@ -162,7 +166,9 @@ class EvaluationRestTest extends VeoRestTest {
                     "DPIA-relevant attributes incomplete",
                 ]
             }
-            inspectionFindings.empty
+            inspectionFindings*.description*.en == [
+                "Data Protection Impact Assessment mandatory: undefined (Missing risk analysis)"
+            ]
         }
 
         and: "no process has been persisted"
@@ -186,8 +192,12 @@ class EvaluationRestTest extends VeoRestTest {
                     "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
                 ]
             }
-            inspectionFindings.size() == 1
-            with(inspectionFindings[0]) {
+            inspectionFindings.size() == 2
+            with(inspectionFindings.find { it.severity == "HINT" }) {
+                description.en == "Data Protection Impact Assessment mandatory: yes (Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment)"
+                suggestions.empty
+            }
+            with(inspectionFindings.find { it.severity == "WARNING" }) {
                 description.en == "Data Protection Impact Assessment was not carried out, but it is mandatory."
                 severity == "WARNING"
                 suggestions.size() == 1
@@ -216,7 +226,9 @@ class EvaluationRestTest extends VeoRestTest {
                     "Other exclusions"
                 ]
             }
-            inspectionFindings.empty
+            inspectionFindings*.description*.en == [
+                "Data Protection Impact Assessment mandatory: no (Other exclusions)"
+            ]
         }
 
         and: "changes to the process have not been persisted"
@@ -263,7 +275,9 @@ class EvaluationRestTest extends VeoRestTest {
             with(decisionResults.piaMandatory) {
                 value == true
             }
-            inspectionFindings.empty
+            inspectionFindings*.description*.en == [
+                "Data Protection Impact Assessment mandatory: yes (Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment)"
+            ]
         }
     }
 

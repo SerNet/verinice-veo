@@ -165,6 +165,7 @@ class DecisionCreationRestTest extends VeoRestTest {
 
         then:
         evaluationResult.body.decisionResults.numberOfThemes.value == 3
+        evaluationResult.body.inspectionFindings[0].description.en == "Number of themes: 3"
     }
 
     def "evaluate inbound links"() {

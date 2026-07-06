@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import java.util.Locale;
+
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
@@ -46,6 +48,11 @@ public class ExpressiveDecision extends Decision {
   @Override
   public DecisionResult evaluate(Element element, Domain domain) {
     return new DecisionResult(expression.getValue(element, domain));
+  }
+
+  @Override
+  public String format(DecisionResult result, Locale locale, DomainBase domain) {
+    return getResultType(domain).format(result.getValue(), locale);
   }
 
   @Override
