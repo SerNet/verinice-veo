@@ -20,6 +20,8 @@ package org.veo.core.entity.decision.firsthitpolicy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -83,6 +85,18 @@ public class FirstHitPolicyDecision extends Decision {
         .findFirst()
         .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
         .orElse(new DecisionResult(defaultResultValue));
+  }
+
+  @Override
+  public String format(DecisionResult result, Locale locale, DomainBase domain) {
+    return VeoType.bool().orNothing().format(result.getValue(), locale)
+        + Optional.ofNullable(result.getDecisiveRule())
+            .map(this::getRule)
+            .map(Rule::getDescription)
+            .map(TranslatedText::getTranslations)
+            .map(t -> t.get(locale))
+            .map(" (%s)"::formatted)
+            .orElse("");
   }
 
   public Rule getRule(DecisionRuleRef ref) {

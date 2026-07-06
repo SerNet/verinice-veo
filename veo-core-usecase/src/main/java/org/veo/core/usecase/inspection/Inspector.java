@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,13 +51,36 @@ public class Inspector {
   private final DomainChangeService domainChangeService;
 
   public Set<Finding> inspect(Element element, Domain domain) {
-    return Stream.concat(
+    return Stream.of(
+            formatDecisionResults(element, domain),
             domain.getInspections().values().stream()
                 .map(inspection -> inspection.run(element, domain))
                 .filter(Optional::isPresent)
                 .map(Optional::get),
             getMigrationFindings(element, domain).stream())
+        .flatMap(Function.identity())
         .collect(Collectors.toSet());
+  }
+
+  private Stream<Finding> formatDecisionResults(Element element, Domain domain) {
+    return element.getDecisionResults(domain).entrySet().stream()
+        .map(
+            e ->
+                new Finding(
+                    Severity.HINT,
+                    TranslatedText.of(
+                        locale ->
+                            "%s: %s"
+                                .formatted(
+                                    domain
+                                        .getDecision(e.getKey().getKeyRef())
+                                        .getName()
+                                        .getTranslations()
+                                        .get(locale),
+                                    domain
+                                        .getDecision(e.getKey().getKeyRef())
+                                        .format(e.getValue(), locale, domain))),
+                    Collections.emptyList()));
   }
 
   private Collection<Finding> getMigrationFindings(Element element, Domain domain) {
