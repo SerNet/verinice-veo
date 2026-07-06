@@ -19,10 +19,12 @@ package org.veo.core.entity.type;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -212,14 +214,14 @@ public sealed interface VeoType
   }
 
   static VeoType sumOf(VeoType... possibleTypes) {
-    return sumOf(List.of(possibleTypes));
+    return sumOf(Set.of(possibleTypes));
   }
 
   /**
    * @return a type describing values that can match any of the given types
    */
   static VeoType sumOf(Collection<VeoType> possibleTypes) {
-    return new SumType(possibleTypes);
+    return new SumType(new HashSet<>(possibleTypes));
   }
 
   private static VeoType anything() {

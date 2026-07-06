@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,9 +32,12 @@ import org.veo.core.entity.ElementType;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-record SumType(@Nonnull Collection<VeoType> possibleTypes) implements VeoType {
+record SumType(@Nonnull Set<VeoType> possibleTypes) implements VeoType {
   static final SumType RISK_AFFECTED =
-      new SumType(ElementType.RISK_AFFECTED_TYPES.stream().map(VeoType::element).toList());
+      new SumType(
+          ElementType.RISK_AFFECTED_TYPES.stream()
+              .map(VeoType::element)
+              .collect(Collectors.toSet()));
 
   SumType {
     if (possibleTypes.isEmpty()) {
@@ -47,7 +51,7 @@ record SumType(@Nonnull Collection<VeoType> possibleTypes) implements VeoType {
         flatTypes.stream()
             .filter(t -> flatTypes.stream().noneMatch(o -> !o.equals(t) && o.includes(t)))
             .distinct()
-            .toList();
+            .collect(Collectors.toSet());
   }
 
   @Override

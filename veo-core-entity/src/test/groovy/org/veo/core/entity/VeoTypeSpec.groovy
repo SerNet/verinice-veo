@@ -153,6 +153,35 @@ class VeoTypeSpec extends Specification {
         T.attributeContainer([:])       | "comparison is not supported for AttributeContainer<>"
     }
 
+    def '#typeA == #typeB'() {
+        expect:
+        typeA == typeB
+        typeB == typeA
+        typeA.includes(typeB)
+        typeB.includes(typeA)
+        typeA.intersectsWith(typeB)
+        typeB.intersectsWith(typeA)
+
+        where:
+        typeA                         | typeB
+        T.string()                    | T.string()
+        T.string().orNothing()        | T.string().orNothing()
+        T.sumOf(T.string(), T.bool()) | T.sumOf(T.string(), T.bool())
+        T.sumOf(T.string(), T.bool()) | T.sumOf(T.bool(), T.string())
+    }
+
+    def '#typeA != #typeB'() {
+        expect:
+        typeA != typeB
+        typeB != typeA
+
+        where:
+        typeA                         | typeB
+        T.bool()                      | T.integer()
+        T.string().orNothing()        | T.string()
+        T.sumOf(T.string(), T.bool()) | T.sumOf(T.string(), T.decimal())
+    }
+
     def "#type value #value is formatted correctly in #locale"(VeoType type, Object value, Locale locale, String out) {
         expect:
         type.format(value,locale) == out
