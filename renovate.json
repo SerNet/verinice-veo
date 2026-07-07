@@ -105,9 +105,9 @@
         "**/build.gradle.kts"
       ],
       "matchStrings": [
-        "(?<prefix>\\bimage\\s*=\\s*['\"])(?<depName>[^:'\"]+):(?<currentValue>[^'\"@]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?(?<suffix>['\"])"
+        "(?<depName>gcr\\.io\\/distroless\\/java[0-9]+-debian[0-9]+):(?<currentValue>[^'\"@\\s]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?"
       ],
-      "autoReplaceStringTemplate": "{{{prefix}}}{{{depName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}{{{suffix}}}",
+      "autoReplaceStringTemplate": "{{{depName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}",
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
     }
