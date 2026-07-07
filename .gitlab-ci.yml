@@ -80,12 +80,12 @@ test:
   script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   interruptible: true
   services:
-  - name: postgres:16.8-alpine
+  - name: postgres:16.8-alpine@sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c
     alias: db
     variables:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
-  - name: rabbitmq:4.0.5-management-alpine
+  - name: rabbitmq:4.0.5-management-alpine@sha256:54759523c0b09074814b1233e6985babe9fd34e3462d2fea522361cb83b2fd76
     alias: rabbitmq
   variables:
     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
@@ -133,7 +133,7 @@ http_rest_tests:
   rules:
     - !reference [ .other_checks, rules ]
   services:
-  - name: postgres:16.8-alpine
+  - name: postgres:16.8-alpine@sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c
     alias: db
     variables:
       POSTGRES_PASSWORD: test
@@ -157,7 +157,7 @@ http_rest_tests:
       VEO_APIKEYS_UNITCOUNT: "dracula"
       VEO_APIKEYS_SYSTEMMESSAGES: "hello"
       VEO_APIKEYS_DOMAINTEMPLATEUPLOAD: "temp"
-  - name: rabbitmq:4.0.5-management-alpine
+  - name: rabbitmq:4.0.5-management-alpine@sha256:54759523c0b09074814b1233e6985babe9fd34e3462d2fea522361cb83b2fd76
     alias: rabbitmq
   variables:
     FF_NETWORK_PER_BUILD: 1
