@@ -107,7 +107,7 @@
       "matchStrings": [
         "(?<prefix>\\bimage\\s*=\\s*['\"])(?<depName>[^:'\"]+):(?<currentValue>[^'\"@]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?(?<suffix>['\"])"
       ],
-      "autoReplaceStringTemplate": "{{{prefix}}}{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}{{{suffix}}}",
+      "autoReplaceStringTemplate": "{{{prefix}}}{{{depName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}{{{suffix}}}",
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
     }
