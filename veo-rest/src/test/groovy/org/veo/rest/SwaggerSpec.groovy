@@ -1711,6 +1711,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'name',
                 'elementType',
                 'elementSubType',
+                'sortKey'
             ]
             it.properties.elementType == [
                 type: 'string',
