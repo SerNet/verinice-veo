@@ -25,6 +25,8 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -53,9 +55,10 @@ public class FirstHitPolicyDecision extends Decision {
       @NotNull TranslatedText name,
       @NotNull ElementType elementType,
       @NotNull String elementSubType,
+      @Nullable String sortKey,
       @NotNull List<Rule> rules,
       Boolean defaultResultValue) {
-    super(name, elementType, elementSubType);
+    super(name, elementType, elementSubType, sortKey);
     this.rules = rules;
     this.defaultResultValue = defaultResultValue;
   }

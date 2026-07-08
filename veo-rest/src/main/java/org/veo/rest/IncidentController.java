@@ -45,7 +45,6 @@ import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -254,7 +253,7 @@ public class IncidentController
               array = @ArraySchema(schema = @Schema(implementation = Finding.class))))
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
-  public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+  public @Valid CompletableFuture<ResponseEntity<List<Finding>>> inspect(
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID uuid,

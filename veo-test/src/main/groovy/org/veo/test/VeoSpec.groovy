@@ -476,7 +476,7 @@ abstract class VeoSpec extends Specification {
 
     static Decision newFirstHitPolicyDecision(ElementType elementType, String elementSubType, @DelegatesTo(value = Decision.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision") Closure init = null) {
-        return new FirstHitPolicyDecision(new TranslatedText(Map.of()), elementType, elementSubType, [], null).tap {
+        return new FirstHitPolicyDecision(new TranslatedText(Map.of()), elementType, elementSubType, null, [], null).tap {
             VeoSpec.execute(it, init)
         }
     }

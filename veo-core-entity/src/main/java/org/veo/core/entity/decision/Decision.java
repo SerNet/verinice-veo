@@ -22,10 +22,13 @@ import java.util.Locale;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import javax.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -68,6 +71,13 @@ public abstract class Decision {
   @NotNull
   @Size(max = ElementDomainAssociation.SUB_TYPE_MAX_LENGTH)
   private String elementSubType;
+
+  @Nullable
+  @Schema(
+      description =
+          "Used when sorting decision results - results for decisions with low sort keys are shown first")
+  @Size(min = 1, max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+  private String sortKey;
 
   public boolean isApplicableToElement(Element element, Domain domain) {
     return getElementType() == element.getType()

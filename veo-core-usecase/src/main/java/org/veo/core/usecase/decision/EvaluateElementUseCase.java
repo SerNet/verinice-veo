@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.decision;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -86,6 +86,6 @@ public class EvaluateElementUseCase
 
   @Valid
   public record OutputData(
-      Map<DecisionRef, DecisionResult> decisionResults, Set<Finding> inspectionFindings)
+      Map<DecisionRef, DecisionResult> decisionResults, List<Finding> inspectionFindings)
       implements UseCase.OutputData {}
 }
