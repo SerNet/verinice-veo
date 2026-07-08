@@ -17,7 +17,7 @@
  */
 package org.veo.core.usecase;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
@@ -61,5 +61,5 @@ public class InspectElementUseCase
   public record InputData(Class<? extends Element> elementType, UUID elementId, UUID domainId)
       implements UseCase.InputData {}
 
-  public record OutputData(Set<Finding> findings) implements UseCase.OutputData {}
+  public record OutputData(List<Finding> findings) implements UseCase.OutputData {}
 }

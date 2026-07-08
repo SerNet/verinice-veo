@@ -19,11 +19,10 @@ package org.veo.core.usecase.inspection;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.zafarkhaja.semver.Version;
@@ -50,7 +49,7 @@ public class Inspector {
   private final DomainTemplateService domainTemplateService;
   private final DomainChangeService domainChangeService;
 
-  public Set<Finding> inspect(Element element, Domain domain) {
+  public List<Finding> inspect(Element element, Domain domain) {
     return Stream.of(
             formatDecisionResults(element, domain),
             domain.getInspections().values().stream()
@@ -59,11 +58,16 @@ public class Inspector {
                 .map(Optional::get),
             getMigrationFindings(element, domain).stream())
         .flatMap(Function.identity())
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   private Stream<Finding> formatDecisionResults(Element element, Domain domain) {
     return element.getDecisionResults(domain).entrySet().stream()
+        .sorted(Comparator.comparing(a -> a.getKey().getKeyRef())) // make order deterministic
+        .sorted(
+            Comparator.comparing(
+                a -> domain.getDecision(a.getKey().getKeyRef()).getSortKey(),
+                Comparator.nullsLast(Comparator.naturalOrder())))
         .map(
             e ->
                 new Finding(

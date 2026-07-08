@@ -17,6 +17,7 @@
  */
 package org.veo.rest;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -94,7 +95,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
         output -> ResponseEntity.ok().body(output));
   }
 
-  public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+  public CompletableFuture<ResponseEntity<List<Finding>>> inspect(
       UUID elementId, UUID domainId, Class<T> elementType) {
     return useCaseInteractor.execute(
         inspectElementUseCase,
