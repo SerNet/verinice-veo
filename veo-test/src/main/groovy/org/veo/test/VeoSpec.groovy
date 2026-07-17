@@ -59,6 +59,7 @@ import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.decision.Decision
 import org.veo.core.entity.decision.firsthitpolicy.FirstHitPolicyDecision
 import org.veo.core.entity.decision.firsthitpolicy.Rule
+import org.veo.core.entity.definitions.ControlImplementationDefinition
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -181,6 +182,13 @@ abstract class VeoSpec extends Specification {
     static ElementTypeDefinition newElementTypeDefinition(ElementType type, DomainBase it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
         return newElementTypeDefinition(type, it, true, init)
+    }
+
+    static ControlImplementationDefinition newControlImplementationDefinition(@DelegatesTo(value = ControlImplementationDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ControlImplementationDefinition") Closure init = null) {
+        return new ControlImplementationDefinition().tap{
+            VeoSpec.execute(it, init)
+        }
     }
 
     static ElementTypeDefinition newElementTypeDefinition(ElementType type, DomainBase it, boolean createTranslations, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)

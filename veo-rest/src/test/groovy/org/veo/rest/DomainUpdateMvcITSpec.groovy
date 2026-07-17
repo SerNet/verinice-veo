@@ -28,7 +28,10 @@ import org.veo.core.entity.NameAbbreviationAndDescription
 import org.veo.core.entity.Translated
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.condition.CustomAspectAttributeValueExpression
+import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
@@ -595,5 +598,71 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.empty
+    }
+
+    def "CI custom aspects are transferred"() {
+        given:
+        def template = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Boringer"
+            templateVersion = Version.parse("1.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
+                subTypes.Trol = newSubTypeDefinition {}
+            })
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.FunFact = newSubTypeDefinition {}
+                controlImplementationDefinition = newControlImplementationDefinition {
+                    customAspects.foo = newCustomAspectDefinition {
+                        attributeDefinitions.bar = new IntegerAttributeDefinition()
+                    }
+                }
+            })
+        })
+
+        and: "an asset with ca CI CA"
+        def domain = createTestDomain(client, template.id)
+        def unit = unitDataRepository.save(newUnit(client) {
+            addToDomains([domain] as Set)
+        })
+        def control = controlDataRepository.save(newControl(unit) {
+            associateWithDomain(domain, "Trol", "NEW")
+        })
+        def assetId = assetDataRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "FunFact", "NEW")
+            implementControl(control).tap {
+                it.setCustomAspects(domain, [
+                    foo: [bar: 55]
+                ])
+            }
+        }).id
+
+        and: "a minor update"
+        def newTemplate = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Boringer"
+            templateVersion = Version.parse("1.1.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
+                subTypes.Trol = newSubTypeDefinition {}
+            })
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.FunFact = newSubTypeDefinition {}
+                subTypes.NoFunFact = newSubTypeDefinition {}
+                controlImplementationDefinition = newControlImplementationDefinition {
+                    customAspects.foo = newCustomAspectDefinition {
+                        attributeDefinitions.bar = new IntegerAttributeDefinition()
+                    }
+                }
+            })
+        })
+
+        when: "performing the update"
+        def newDomainId = parseJson(post("/domains/${domain.id}/update?template=${newTemplate.id}",null,201)).resourceId
+
+        then:
+        with(parseJson(get("/assets/$assetId")).controlImplementations.first()) {
+            domains.size() == 1
+            domains[newDomainId].customAspects.foo.bar == 55
+        }
+        with(parseJson(get("/domains/$newDomainId/assets/$assetId")).controlImplementations.first()) {
+            customAspects.foo.bar == 55
+        }
     }
 }

@@ -17,6 +17,7 @@
  */
 package org.veo.core.entity.compliance;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 
 public interface ControlImplementation {
 
@@ -59,4 +61,11 @@ public interface ControlImplementation {
   Map<String, Map<String, Object>> getCustomAspects(Domain domain);
 
   void setCustomAspects(Domain domain, Map<String, Map<String, Object>> customAspects);
+
+  void copyDomainData(
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions);
+
+  void removeFromDomains(Domain domain);
 }

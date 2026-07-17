@@ -290,6 +290,39 @@ class ControlImplementationSpec extends VeoSpec {
         thrown(UnsupportedOperationException)
     }
 
+    def "domain-specific data is copied"() {
+        given:
+        def d1 = newDomain(unit.client)
+        def d2 = newDomain(unit.client)
+
+        and:
+        def elmt = newProcess(unit)
+        def ci = elmt.implementControl(control)
+        ci.setCustomAspects(d1,[
+            ca1: [
+                attr1: 9000
+            ]
+        ])
+
+        when:
+        ci.copyDomainData(d1,d2,[])
+
+        then:
+        ci.getCustomAspects(d1).ca1.attr1 == 9000
+        ci.getCustomAspects(d2).ca1.attr1 == 9000
+
+        when:
+        ci.setCustomAspects(d1,[
+            ca1: [
+                attr1: 123
+            ]
+        ])
+
+        then:
+        ci.getCustomAspects(d1).ca1.attr1 == 123
+        ci.getCustomAspects(d2).ca1.attr1 == 9000
+    }
+
     RiskAffected makeType(String type) {
         return "new${type.capitalize()}"(unit)
     }
