@@ -18,6 +18,7 @@
 package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithUserDetails
 
 import com.github.zafarkhaja.semver.Version
 
@@ -33,6 +34,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.RepositoryProvider
+import org.veo.core.usecase.UpdateDomainUseCase
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
@@ -40,6 +43,7 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.rest.security.NoRestrictionAccessRight
 
 import spock.lang.Issue
 
@@ -65,6 +69,12 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private StoredEventDataRepository storedEventRepository
+
+    @Autowired
+    private RepositoryProvider repositoryProvider
+
+    @Autowired
+    private UpdateDomainUseCase updateDomainUseCase
 
     private Client client
     private Unit unit
@@ -484,6 +494,44 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.update == 1
         queryCounts.select == 3
         queryCounts.time < 500
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "SQL performance for a domain update"() {
+        given: "given 10 assets and all catalog items applied"
+        def oldDomainId = executeInTransaction {
+            createClient()
+            def oldDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            unit.addToDomains(oldDomain)
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+            client = clientRepository.save(client)
+            (1..10).each {
+                assetRepository.save(newAsset(unit) {
+                    name = "asset $it"
+                    it.associateWithDomain(oldDomain, "AST_Datatype", "NEW")
+                })
+            }
+            oldDomain.catalogItems
+                    .collect { it.incarnate(unit) }
+                    .each{it.setDesignator("AST-333")}
+                    .each { repositoryProvider.getElementRepositoryFor(it.modelInterface).save(it) }
+            oldDomain.id
+        }
+
+        when: "updating to the new domain template"
+        def queryCounts = trackQueryCounts{
+            updateDomainUseCase.execute(
+                    new UpdateDomainUseCase.InputData(oldDomainId, DSGVO_DOMAINTEMPLATE_V2_UUID),
+                    new NoRestrictionAccessRight(client.id, 10, 10)
+                    )
+        }
+
+        then:
+        queryCounts.select == 112
+        queryCounts.insert == 15
+        queryCounts.update == 3
+        queryCounts.delete == 19
+        queryCounts.time < 1000
     }
 
     void createClient() {
