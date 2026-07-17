@@ -72,11 +72,13 @@ public interface ValidationError {
             .findCustomAspect(domain, caType)
             .map(CustomAspect::getAttributes)
             .orElse(Collections.emptyMap());
+    // TODO #919 In many cases, the translated attribute name is not unique. We should include the
+    // translated CA name later (which currently does not exist). For now, we include the
+    // untranslated attribute key to avoid confusion.
     return localized(
         "error_attribute_needs_manual_removal",
         List.of(
-            l -> domain.getTranslations(l).getName(),
-            _ -> domain.getTemplateVersion(),
+            l -> etd.findTranslation(l, attribute),
             _ -> attribute,
             l ->
                 etd.localizeCustomAspectAttributeValue(
