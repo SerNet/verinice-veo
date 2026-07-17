@@ -1,0 +1,18 @@
+.registry-copy-image:
+  stage: copy
+  image:
+    name: quay.io/skopeo/stable:v1.22.2
+    entrypoint: [""]
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - when: never
+  variables:
+    IMAGE_REPO: ""
+    IMAGE_TAG: ""
+
+  script:
+    - skopeo login --username _json_key --password "$(cat "$GCR_ACCESS_TOKEN")" "eu.gcr.io"
+    - skopeo login --username "$REGISTRY_USERNAME" --password "$REGISTRY_PASSWORD" "registry.verinice.com"
+    - skopeo copy --all \
+      docker://eu.gcr.io/veo-projekt/$IMAGE_REPO:$IMAGE_TAG \
+      docker://registry.verinice.com/verinice/$IMAGE_REPO:$IMAGE_TAG
