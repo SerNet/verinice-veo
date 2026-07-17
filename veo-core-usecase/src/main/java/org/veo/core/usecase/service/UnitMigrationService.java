@@ -53,6 +53,11 @@ public class UnitMigrationService {
     var elementQuery = genericElementRepository.query(unit.getClient());
     elementQuery.whereUnitIn(Set.of(unit));
     elementQuery.whereDomainsContain(oldDomain);
+    elementQuery.fetchAppliedCatalogItems();
+    elementQuery.fetchRisks();
+    elementQuery.fetchRiskValuesAspects();
+    elementQuery.fetchControlImplementations();
+
     var elements = elementQuery.execute(PagingConfiguration.UNPAGED).resultPage();
     List<Element> invalidElements = new ArrayList<>();
     List<Element> validElements = new ArrayList<>();
