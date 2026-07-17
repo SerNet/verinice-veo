@@ -527,8 +527,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         then:
         findings.size() == 1
         // TODO #919 expect translated CA name
-        findings[0].description.en == 'The object cannot be migrated to the new domain version 2.0.0: In Job applications 1.0.0, the attribute \'weight\' does no longer exist. The value \'120\' needs to be manually removed.'
-        findings[0].description.de == 'Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: In Bewerbungen 1.0.0, gibt es das Attribut \'weight\' nicht mehr. Der Wert \'120\' muss manuell entfernt werden.'
+        findings[0].description.en == 'The object cannot be migrated to the new domain version 2.0.0: The attribute \'Weight\' (\'weight\') is no longer used. The value \'120\' needs to be manually removed.'
+        findings[0].description.de == 'Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: Das Attribut \'Gewicht\' (\'weight\') wird nicht mehr verwendet. Der Wert \'120\' muss manuell entfernt werden.'
 
         when: "removing the values and reevaluating"
         findings = parseJson(get("/domains/${domain.id}/persons/$personId")).with {
