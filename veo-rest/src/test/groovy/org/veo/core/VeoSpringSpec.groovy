@@ -181,8 +181,11 @@ abstract class VeoSpringSpec extends VeoSpec {
                 clientRepository.delete(clientRepository.getById(client.id))
             }
             domainTemplateDataRepository.deleteAll()
-            eventStoreDataRepository.deleteAll()
             systemMessageDataRepository.deleteAll()
+        }
+        // above deletions may produce new deletion events, so we must delete events in a separate transaction
+        txTemplate.execute {
+            eventStoreDataRepository.deleteAll()
         }
     }
 
