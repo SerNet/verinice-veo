@@ -73,6 +73,8 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     impactValues.entrySet().removeIf(e -> !newRiskDefinition.contains(e.getKey()));
     setImpactValues(newDomain, impactValues);
     getRisks().forEach(r -> r.copyAspectData(oldDomain, newDomain));
+    getControlImplementations()
+        .forEach(ci -> ci.copyDomainData(oldDomain, newDomain, excludedDefinitions));
   }
 
   @OneToMany(
@@ -233,6 +235,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     if (removed) {
       Set.copyOf(getRisks()).stream().forEach(risk -> risk.removeFromDomains(domain));
       setImpactValues(domain, Collections.emptyMap());
+      getControlImplementations().forEach(ci -> ci.removeFromDomains(domain));
     }
     return removed;
   }

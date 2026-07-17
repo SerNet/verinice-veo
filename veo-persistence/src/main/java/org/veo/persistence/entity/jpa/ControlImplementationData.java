@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.domainmigration.DomainSpecificValueLocation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
@@ -186,6 +188,19 @@ public class ControlImplementationData implements ControlImplementation {
               .collect(
                   Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> Map.copyOf(e.getValue()))));
     }
+  }
+
+  @Override
+  public void copyDomainData(
+      Domain oldDomain,
+      Domain newDomain,
+      Collection<DomainSpecificValueLocation> excludedDefinitions) {
+    setCustomAspects(newDomain, getCustomAspects(oldDomain));
+  }
+
+  @Override
+  public void removeFromDomains(Domain domain) {
+    customAspects.remove(domain.getId());
   }
 
   @Override
