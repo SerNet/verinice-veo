@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -179,7 +180,11 @@ public class ControlImplementationData implements ControlImplementation {
     if (customAspects == null || customAspects.isEmpty()) {
       this.customAspects.remove(domain.getId());
     } else {
-      this.customAspects.put(domain.getId(), Map.copyOf(customAspects));
+      this.customAspects.put(
+          domain.getId(),
+          customAspects.entrySet().stream()
+              .collect(
+                  Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> Map.copyOf(e.getValue()))));
     }
   }
 

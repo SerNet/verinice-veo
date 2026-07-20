@@ -267,6 +267,29 @@ class ControlImplementationSpec extends VeoSpec {
         ]
     }
 
+    def "CAs are immutable"() {
+        given:
+        def d1 = newDomain(unit.client)
+        def ci = newProcess(unit).implementControl(control)
+        ci.setCustomAspects(d1,[
+            ca1: [
+                attr1: 9000
+            ]
+        ])
+
+        when:
+        ci.getCustomAspects(d1).ca1 = [attr1: 500]
+
+        then:
+        thrown(UnsupportedOperationException)
+
+        when:
+        ci.getCustomAspects(d1).ca1.attr1 = 500
+
+        then:
+        thrown(UnsupportedOperationException)
+    }
+
     RiskAffected makeType(String type) {
         return "new${type.capitalize()}"(unit)
     }
