@@ -1052,13 +1052,15 @@ public class ModuleConfiguration {
       UnitRepository unitRepository,
       DomainTemplateService domainTemplateService,
       DomainChangeService domainChangeService,
-      UnitMigrationService unitMigrationService) {
+      UnitMigrationService unitMigrationService,
+      MessageCreator messageCreator) {
     return new UpdateDomainUseCase(
         domainRepository,
         unitRepository,
         domainTemplateService,
         domainChangeService,
-        unitMigrationService);
+        unitMigrationService,
+        messageCreator);
   }
 
   @Bean

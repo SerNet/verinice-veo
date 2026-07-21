@@ -74,7 +74,6 @@ public class DomainTemplateService {
 
     var domain = domainStateMapper.toDomain(domainTemplate, templateItems);
     domain.setDomainTemplate(domainTemplate);
-    client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);
     return domain;
   }

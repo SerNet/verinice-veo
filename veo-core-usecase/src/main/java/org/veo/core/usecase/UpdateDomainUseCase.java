@@ -40,6 +40,7 @@ public class UpdateDomainUseCase
   private final DomainTemplateService domainTemplateService;
   private final DomainChangeService domainChangeService;
   private final UnitMigrationService unitMigrationService;
+  private final MessageCreator messageCreator;
 
   @Override
   public boolean isReadOnly() {
@@ -54,6 +55,13 @@ public class UpdateDomainUseCase
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
     migrateUnits(oldDomain, newDomain, userAccessRights.getUsername());
+    // Adding the domain to the client triggers many inserts and updates.
+    // If this was done before the units are migrated and the migration failed, all these inserts
+    // and updates would slow down the request, only to be ultimately rolled back anyway due to the
+    // exception.
+    oldDomain.getOwner().addToDomains(newDomain);
+    // TODO #5017 rethink event creation
+    messageCreator.createDomainCreationMessage(newDomain);
     oldDomain.setActive(false);
     return new OutputData(newDomain);
   }
