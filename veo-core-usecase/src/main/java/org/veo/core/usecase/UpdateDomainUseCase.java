@@ -17,16 +17,14 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.service.DomainTemplateService;
-import org.veo.core.usecase.service.UnitMigrationService;
+import org.veo.core.usecase.service.MigrationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +37,7 @@ public class UpdateDomainUseCase
   private final UnitRepository unitRepository;
   private final DomainTemplateService domainTemplateService;
   private final DomainChangeService domainChangeService;
-  private final UnitMigrationService unitMigrationService;
+  private final MigrationService unitMigrationService;
   private final MessageCreator messageCreator;
 
   @Override
@@ -54,7 +52,13 @@ public class UpdateDomainUseCase
     var newDomain =
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
-    migrateUnits(oldDomain, newDomain, userAccessRights.getUsername());
+    var units = unitRepository.findByDomain(oldDomain.getId());
+    unitMigrationService.updateElements(oldDomain, newDomain, userAccessRights.getUsername());
+    units.forEach(
+        u -> {
+          u.addToDomains(newDomain);
+          u.removeFromDomains(oldDomain);
+        });
     // Adding the domain to the client triggers many inserts and updates.
     // If this was done before the units are migrated and the migration failed, all these inserts
     // and updates would slow down the request, only to be ultimately rolled back anyway due to the
@@ -64,23 +68,6 @@ public class UpdateDomainUseCase
     messageCreator.createDomainCreationMessage(newDomain);
     oldDomain.setActive(false);
     return new OutputData(newDomain);
-  }
-
-  private void migrateUnits(Domain oldDomain, Domain newDomain, String username)
-      throws DomainUpdateFailedException {
-    var conflictedElements = new HashSet<Element>();
-    var units = unitRepository.findByDomain(oldDomain.getId());
-    units.forEach(
-        u -> {
-          try {
-            unitMigrationService.update(u, oldDomain, newDomain, username);
-          } catch (DomainUpdateFailedException ex) {
-            conflictedElements.addAll(ex.getConflictedElements());
-          }
-        });
-    if (!conflictedElements.isEmpty()) {
-      throw new DomainUpdateFailedException(oldDomain, conflictedElements);
-    }
   }
 
   public record InputData(UUID domainId, UUID domainTemplateId) implements UseCase.InputData {}
