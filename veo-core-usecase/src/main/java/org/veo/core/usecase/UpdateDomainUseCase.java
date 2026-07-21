@@ -53,18 +53,19 @@ public class UpdateDomainUseCase
     var newDomain =
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
-    migrateUnits(oldDomain, newDomain);
+    migrateUnits(oldDomain, newDomain, userAccessRights.getUsername());
     oldDomain.setActive(false);
     return new OutputData(newDomain);
   }
 
-  private void migrateUnits(Domain oldDomain, Domain newDomain) throws DomainUpdateFailedException {
+  private void migrateUnits(Domain oldDomain, Domain newDomain, String username)
+      throws DomainUpdateFailedException {
     var conflictedElements = new HashSet<Element>();
     var units = unitRepository.findByDomain(oldDomain.getId());
     units.forEach(
         u -> {
           try {
-            unitMigrationService.update(u, oldDomain, newDomain);
+            unitMigrationService.update(u, oldDomain, newDomain, username);
           } catch (DomainUpdateFailedException ex) {
             conflictedElements.addAll(ex.getConflictedElements());
           }

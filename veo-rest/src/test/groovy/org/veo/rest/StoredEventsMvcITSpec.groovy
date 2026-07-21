@@ -242,6 +242,64 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "events are generated for domain update"() {
+        given:
+        def oldDomainId = executeInTransaction {
+            def oldDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            unit.addToDomains(oldDomain)
+            unit = unitRepository.save(unit)
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+            client = clientRepository.save(client)
+            oldDomain.id.toString()
+        }
+        post("/domains/$oldDomainId/assets", [
+            name: "my asset",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "/units/${unit.id}"]
+        ])
+
+        when: "updating to the new domain template"
+        def newDomainId = executeInTransaction {
+            parseJson(post("/domains/$oldDomainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null)).resourceId
+        }
+
+        then:
+        with(getNthStoredEventContent(-2,"entity_revision")) {
+            type == "CREATION"
+            uri.startsWith("/assets/")
+            author == "user@domain.example"
+            changeNumber == 0
+            with(content) {
+                name == "my asset"
+                domains.keySet() ==~ [oldDomainId]
+                domains[oldDomainId].subType == "AST_Datatype"
+            }
+        }
+        with(getLatestStoredEventContent("entity_revision")) {
+            type == "MODIFICATION"
+            uri.startsWith("/assets/")
+            author == "user@domain.example"
+            changeNumber == 1
+            with(content) {
+                name == "my asset"
+                domains.keySet() ==~ [newDomainId]
+                domains[newDomainId].subType == "AST_Datatype"
+            }
+        }
+        with(getNthStoredEventContent(-2, "domain_creation")) {
+            domainId == oldDomainId
+            clientId == owner.client.id.toString()
+            domainTemplateId == owner.DSGVO_DOMAINTEMPLATE_UUID.toString()
+        }
+        with(getLatestStoredEventContent("domain_creation")) {
+            domainId == newDomainId
+            clientId == owner.client.id.toString()
+            domainTemplateId == owner.DSGVO_DOMAINTEMPLATE_V2_UUID.toString()
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
     def "events are generated for domain associations"() {
         given: "a second domain"
         def domainId = domain.idAsString

@@ -1110,8 +1110,10 @@ public class ModuleConfiguration {
 
   @Bean
   public UnitMigrationService unitMigrationService(
-      GenericElementRepository genericElementRepository, Decider decider) {
-    return new UnitMigrationService(genericElementRepository, decider);
+      GenericElementRepository genericElementRepository,
+      Decider decider,
+      MessageCreator messageCreator) {
+    return new UnitMigrationService(genericElementRepository, decider, messageCreator);
   }
 
   @Bean
