@@ -17,17 +17,19 @@
  */
 package org.veo.core.usecase.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
+import org.veo.core.entity.event.VersioningEvent;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.DomainUpdateFailedException;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
 import org.veo.core.usecase.decision.Decider;
 
@@ -36,27 +38,28 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class UnitMigrationService {
+public class MigrationService {
   private final GenericElementRepository genericElementRepository;
   private final Decider decider;
+  private final MessageCreator messageCreator;
 
-  public void update(Unit unit, Domain oldDomain, Domain newDomain)
+  public void updateElements(Domain oldDomain, Domain newDomain, String username)
       throws DomainUpdateFailedException {
 
     log.info(
-        "Performing migration for domain {}::{}->{} (unit {})",
+        "Performing migration for domain {}::{}->{}",
         newDomain.getName(),
         oldDomain.getTemplateVersion(),
-        newDomain.getTemplateVersion(),
-        unit.getId());
+        newDomain.getTemplateVersion());
 
-    var elementQuery = genericElementRepository.query(unit.getClient());
-    elementQuery.whereUnitIn(Set.of(unit));
+    var elementQuery = genericElementRepository.query(oldDomain.getOwner());
     elementQuery.whereDomainsContain(oldDomain);
     elementQuery.fetchAppliedCatalogItems();
     elementQuery.fetchRisks();
     elementQuery.fetchRiskValuesAspects();
     elementQuery.fetchControlImplementations();
+    elementQuery.fetchChildren();
+    elementQuery.fetchRequirementImplementations();
 
     var elements = elementQuery.execute(PagingConfiguration.UNPAGED).resultPage();
     List<Element> invalidElements = new ArrayList<>();
@@ -69,7 +72,6 @@ public class UnitMigrationService {
         validElements.add(element);
       }
     }
-    unit.addToDomains(newDomain);
 
     newDomain.migrate(validElements, oldDomain);
 
@@ -85,7 +87,19 @@ public class UnitMigrationService {
       throw new DomainUpdateFailedException(oldDomain, new HashSet<>(invalidElements));
     }
     log.debug("removing elements from old domain: {}", oldDomain);
-    elements.forEach(e -> e.removeFromDomains(oldDomain));
-    unit.removeFromDomains(oldDomain);
+    elements.forEach(
+        e -> {
+          e.removeFromDomains(oldDomain);
+          e.setUpdatedAt(Instant.now());
+          e.setUpdatedBy(username);
+          // TODO #5017 rethink event creation
+          messageCreator.createEntityRevisionMessage(
+              new ClientOwnedEntityVersioningEvent<>(
+                  e,
+                  VersioningEvent.ModificationType.UPDATE,
+                  e.getUpdatedBy(),
+                  e.getUpdatedAt(),
+                  e.nextChangeNumberForUpdate()));
+        });
   }
 }

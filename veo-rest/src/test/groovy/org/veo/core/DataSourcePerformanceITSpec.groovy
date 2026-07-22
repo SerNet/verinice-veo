@@ -30,11 +30,16 @@ import org.veo.core.entity.ElementType
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.domainmigration.CustomAspectAttribute
+import org.veo.core.entity.domainmigration.DomainMigrationDefinition
+import org.veo.core.entity.domainmigration.DomainMigrationStep
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.RepositoryProvider
+import org.veo.core.usecase.DomainUpdateFailedException
 import org.veo.core.usecase.UpdateDomainUseCase
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -45,6 +50,7 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.rest.security.NoRestrictionAccessRight
 
+import net.ttddyy.dsproxy.QueryCountHolder
 import spock.lang.Issue
 
 class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
@@ -527,11 +533,61 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.select == 27
-        queryCounts.insert == 15
-        queryCounts.update == 3
+        queryCounts.select == 35
+        queryCounts.insert == 17
+        queryCounts.update == 12
         queryCounts.delete == 19
         queryCounts.time < 1000
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "SQL performance for a conflicted domain update"() {
+        given: "given a process that will encounter conflicts"
+        def oldDomainId = executeInTransaction {
+            createClient()
+            def oldDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            unit.addToDomains(oldDomain)
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+            domainTemplateDataRepository.findById(DSGVO_DOMAINTEMPLATE_V2_UUID).get().domainMigrationDefinition = new DomainMigrationDefinition([
+                new DomainMigrationStep("gotta remove", new TranslatedText([:]), [
+                    new CustomAspectAttribute(ElementType.PROCESS, "process_opinionDPO", "process_opinionDPO_consultationConducted")
+                ], [], true)
+            ])
+            client = clientRepository.save(client)
+            processRepository.save(newProcess(unit) {
+                name = "grocess"
+                it.associateWithDomain(oldDomain, "PRO_DataProcessing", "NEW")
+                it.applyCustomAspect(newCustomAspect("process_opinionDPO", oldDomain) {
+                    attributes = [
+                        process_opinionDPO_consultationConducted: true
+                    ]
+                })
+            })
+            oldDomain.id
+        }
+
+        when: "trying to update"
+        QueryCountHolder.clear()
+        executeInTransaction {
+            updateDomainUseCase.execute(
+                    new UpdateDomainUseCase.InputData(oldDomainId, DSGVO_DOMAINTEMPLATE_V2_UUID),
+                    new NoRestrictionAccessRight(client.id, 10, 10)
+                    )
+        }
+
+        then:
+        def dufEx = thrown(DomainUpdateFailedException)
+        dufEx.conflictedElements.size() == 1
+
+        when:
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then:
+        queryCounts.select == 23
+        queryCounts.insert == 0
+        queryCounts.update == 0
+        queryCounts.delete == 0
+        queryCounts.time < 500
     }
 
     void createClient() {

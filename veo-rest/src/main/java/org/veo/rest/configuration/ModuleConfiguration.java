@@ -190,8 +190,8 @@ import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
 import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.core.usecase.service.EntityStateMapper;
+import org.veo.core.usecase.service.MigrationService;
 import org.veo.core.usecase.service.RefResolverFactory;
-import org.veo.core.usecase.service.UnitMigrationService;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitCountUseCase;
@@ -1053,13 +1053,15 @@ public class ModuleConfiguration {
       UnitRepository unitRepository,
       DomainTemplateService domainTemplateService,
       DomainChangeService domainChangeService,
-      UnitMigrationService unitMigrationService) {
+      MigrationService migrationService,
+      MessageCreator messageCreator) {
     return new UpdateDomainUseCase(
         domainRepository,
         unitRepository,
         domainTemplateService,
         domainChangeService,
-        unitMigrationService);
+        migrationService,
+        messageCreator);
   }
 
   @Bean
@@ -1110,9 +1112,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UnitMigrationService unitMigrationService(
-      GenericElementRepository genericElementRepository, Decider decider) {
-    return new UnitMigrationService(genericElementRepository, decider);
+  public MigrationService migrationservice(
+      GenericElementRepository genericElementRepository,
+      Decider decider,
+      MessageCreator messageCreator) {
+    return new MigrationService(genericElementRepository, decider, messageCreator);
   }
 
   @Bean

@@ -181,10 +181,8 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
         when: "The profile is applied to a unit"
         def dsgvoTestDomain = executeInTransaction {
-            client = newClient()
-            domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID).tap{
-                client = clientRepository.save(client)
-            }
+            client = createTestClient()
+            createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client.domains.find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
         }
         executeInTransaction {

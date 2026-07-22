@@ -115,7 +115,7 @@ public class TemplateItemMigrationService {
       Domain domain, RiskDefinition rd, Set<RiskDefinitionChange> detectedChanges) {
     var items =
         Stream.concat(
-                catalogItemRepository.findAllByDomain(domain).stream(),
+                domain.getCatalogItems().stream(),
                 domain.getProfiles().stream().map(Profile::getItems).flatMap(Collection::stream))
             .filter(catalogItem -> RISK_RELATED_ELEMENTS.contains(catalogItem.getElementType()))
             .collect(Collectors.toSet());

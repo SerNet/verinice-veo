@@ -47,7 +47,9 @@ public class CreateDomainFromTemplateUseCase
       throw new MissingAdminPrivilegesException();
     }
     var client = clientRepository.getActiveById(input.clientId);
-    domainTemplateService.createDomain(client, input.domainTemplateId, input.templateItems);
+    client.addToDomains(
+        domainTemplateService.createDomain(client, input.domainTemplateId, input.templateItems));
+
     clientRepository.save(client);
     return EmptyOutput.INSTANCE;
   }

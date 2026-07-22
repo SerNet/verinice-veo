@@ -68,6 +68,7 @@ class DomainUpdateRestTest extends VeoRestTest {
             ]
         ]
         put("/domains/$oldDomainId/scopes/$scopeId", scope, scopeResponse.getETag())
+        def oldScopeETag = get("/scopes/$scopeId").ETag
 
         and: "an incarnated catalog item"
         def c1SymId = get("/domains/$oldDomainId/catalog-items").body.items.first().id
@@ -78,7 +79,13 @@ class DomainUpdateRestTest extends VeoRestTest {
         def newDomainId = createNewTemplateAndMigrate {
             it.templateVersion = "1.0.1"
         }.resourceId
-        def migratedScope = get("/scopes/$scopeId").body
+        def migratedScopeResponse = get("/scopes/$scopeId")
+
+        then:
+        migratedScopeResponse.ETag != oldScopeETag
+
+        when:
+        def migratedScope = migratedScopeResponse.body
 
         then: "the sub type and link are still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
