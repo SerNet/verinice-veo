@@ -56,6 +56,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.GraphQuery;
@@ -87,50 +88,68 @@ import lombok.RequiredArgsConstructor;
 public class GenericElementRepositoryImpl implements GenericElementRepository {
   private static final ObjectMapper JSON = new ObjectMapper();
 
+  /** Placeholder for the SQL expression that makes an attribute value sortable. */
+  private static final String SORTABLE_VALUE_EXPRESSION_PLACEHOLDER = "${sortableValueExpression}";
+
+  private static final String USED_ATTRIBUTE_VALUES_QUERY_TEMPLATE =
+      """
+    select value from (
+      select distinct
+             elem::text as value,
+             ${sortableValueExpression} as sortable_value
+      from (
+        select (select jsonb_agg(entry.value)
+                from jsonb_each(ca.attributes) as entry
+                where entry.key in (
+                    select jsonb_array_elements_text(cast(:caKeys as jsonb) -> ca.type))
+                  and jsonb_typeof(entry.value) <> 'null'
+               ) as vals
+        from custom_aspect ca
+        join element e on e.db_id = ca.owner_db_id
+        where ca.domain_id = cast(:domainId as uuid)
+          and e.owner_id = cast(:unitId as uuid)
+          and ca.type in (select jsonb_object_keys(cast(:caKeys as jsonb)))
+      ) ca_matches
+      cross join lateral jsonb_array_elements(vals) as elem
+      where vals is not null
+
+      union
+
+      select distinct
+             elem::text as value,
+             ${sortableValueExpression} as sortable_value
+      from (
+        select (select jsonb_agg(entry.value)
+                from jsonb_each(l.attributes) as entry
+                where entry.key in (
+                    select jsonb_array_elements_text(cast(:linkKeys as jsonb) -> l.type))
+                  and jsonb_typeof(entry.value) <> 'null'
+               ) as vals
+        from customlink l
+        join element e on e.db_id = l.source_id
+        where l.domain_id = cast(:domainId as uuid)
+          and e.owner_id = cast(:unitId as uuid)
+          and l.type in (select jsonb_object_keys(cast(:linkKeys as jsonb)))
+      ) link_matches
+      cross join lateral jsonb_array_elements(vals) as elem
+      where vals is not null
+    ) all_values
+    where sortable_value is not null
+    order by sortable_value asc
+    limit :limit
+    """;
+
   /**
    * Extracts the distinct attribute values used within a unit for the requested attribute keys
    * (grouped by type).
    */
-  private static final String USED_ATTRIBUTE_VALUES_QUERY =
-      """
-      select value from (
-        select distinct elem::text as value
-        from (
-          select (select jsonb_agg(entry.value)
-                  from jsonb_each(ca.attributes) as entry
-                  where entry.key in (
-                      select jsonb_array_elements_text(cast(:caKeys as jsonb) -> ca.type))
-                    and jsonb_typeof(entry.value) <> 'null'
-                 ) as vals
-          from custom_aspect ca
-          join element e on e.db_id = ca.owner_db_id
-          where ca.domain_id = cast(:domainId as uuid)
-            and e.owner_id = cast(:unitId as uuid)
-            and ca.type in (select jsonb_object_keys(cast(:caKeys as jsonb)))
-        ) ca_matches
-        cross join lateral jsonb_array_elements(vals) as elem
-        where vals is not null
-        union
-        select distinct elem::text as value
-        from (
-          select (select jsonb_agg(entry.value)
-                  from jsonb_each(l.attributes) as entry
-                  where entry.key in (
-                      select jsonb_array_elements_text(cast(:linkKeys as jsonb) -> l.type))
-                    and jsonb_typeof(entry.value) <> 'null'
-                 ) as vals
-          from customlink l
-          join element e on e.db_id = l.source_id
-          where l.domain_id = cast(:domainId as uuid)
-            and e.owner_id = cast(:unitId as uuid)
-            and l.type in (select jsonb_object_keys(cast(:linkKeys as jsonb)))
-        ) link_matches
-        cross join lateral jsonb_array_elements(vals) as elem
-        where vals is not null
-      ) all_values
-      order by value desc
-      limit :limit
-      """;
+  private static final String USED_GENERIC_ATTRIBUTE_VALUES_QUERY =
+      USED_ATTRIBUTE_VALUES_QUERY_TEMPLATE.replace(
+          SORTABLE_VALUE_EXPRESSION_PLACEHOLDER, "elem::text");
+
+  private static final String USED_DURATION_ATTRIBUTE_VALUES_QUERY =
+      USED_ATTRIBUTE_VALUES_QUERY_TEMPLATE.replace(
+          SORTABLE_VALUE_EXPRESSION_PLACEHOLDER, "(elem #>> '{}')::interval ");
 
   private final ElementQueryFactory elementQueryFactory;
   private final ElementDataRepository<ElementData> dataRepository;
@@ -371,13 +390,15 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
       UUID domainId,
       Map<String, Set<String>> caKeysByType,
       Map<String, Set<String>> linkKeysByType,
+      String attributeType,
       int limit) {
     if (caKeysByType.isEmpty() && linkKeysByType.isEmpty()) {
       return List.of();
     }
+    String query = resolveQuery(attributeType);
     @SuppressWarnings("unchecked")
     List<String> rows =
-        em.createNativeQuery(USED_ATTRIBUTE_VALUES_QUERY)
+        em.createNativeQuery(query)
             .setParameter("caKeys", toJson(caKeysByType))
             .setParameter("linkKeys", toJson(linkKeysByType))
             .setParameter("unitId", unitId.toString())
@@ -385,6 +406,14 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             .setParameter("limit", limit)
             .getResultList();
     return rows.stream().map(GenericElementRepositoryImpl::fromJson).toList();
+  }
+
+  private static String resolveQuery(String attributeType) {
+    if (DurationAttributeDefinition.TYPE.equals(attributeType)) {
+      return USED_DURATION_ATTRIBUTE_VALUES_QUERY;
+    }
+
+    return USED_GENERIC_ATTRIBUTE_VALUES_QUERY;
   }
 
   private static String toJson(Object value) {

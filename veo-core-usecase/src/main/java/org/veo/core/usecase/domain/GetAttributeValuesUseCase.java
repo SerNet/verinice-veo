@@ -73,7 +73,7 @@ public class GetAttributeValuesUseCase
     // beyond the limit is fetched so we can detect truncation.
     List<Object> values =
         genericElementRepository.findUsedAttributeValues(
-            unit.getId(), domain.getId(), caTypeToKeys, linkTypeToKeys, maxResults + 1);
+            unit.getId(), domain.getId(), caTypeToKeys, linkTypeToKeys, wantedType, maxResults + 1);
     boolean truncated = values.size() > maxResults;
     if (truncated) {
       values = values.subList(0, maxResults);

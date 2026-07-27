@@ -122,7 +122,7 @@ class GetAttributeValuesUseCaseITSpec extends VeoSpringSpec {
                 new GetAttributeValuesUseCase.InputData(domain.id, unit.id, 'duration'), user)
 
         then:
-        output.values() == ['PT8H', 'P3D', 'P1D']
+        output.values() == ['PT8H', 'P1D', 'P3D']
         !output.truncated()
     }
 
@@ -137,7 +137,7 @@ class GetAttributeValuesUseCaseITSpec extends VeoSpringSpec {
                 new GetAttributeValuesUseCase.InputData(domain.id, unit.id, 'duration'), user)
 
         then:
-        output.values() == ['PT8H', 'P3D']
+        output.values() == ['PT8H', 'P1D']
         output.truncated()
     }
 
