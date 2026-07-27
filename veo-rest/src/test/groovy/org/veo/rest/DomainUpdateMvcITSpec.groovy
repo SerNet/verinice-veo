@@ -600,6 +600,64 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         findings.empty
     }
 
+    def "no false update warnings are generated for CIs"() {
+        given: "a domain template"
+        def template = domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Insecure ghosting"
+            templateVersion = Version.parse("1.0.0")
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.ASSET, it) {
+                subTypes.Website = newSubTypeDefinition {}
+                controlImplementationDefinition = newControlImplementationDefinition {
+                    customAspects.suspect = newCustomAspectDefinition {
+                        attributeDefinitions.suspicious = new BooleanAttributeDefinition()
+                    }
+                }
+            })
+            applyElementTypeDefinition(newElementTypeDefinition(ElementType.CONTROL, it) {
+                subTypes.ThingToDo = newSubTypeDefinition {}
+            })
+        })
+
+        and: "an asset with a CI and two RIs"
+        def domain = createTestDomain(client, template.id)
+        def unit = unitDataRepository.save(newUnit(client) {
+            addToDomains([domain] as Set)
+        })
+        def superControl = controlDataRepository.save(newControl(unit) {
+            associateWithDomain(domain, "ThingToDo", "NEW")
+            parts = [
+                newControl(unit) {
+                    associateWithDomain(domain, "ThingToDo", "NEW")
+                }
+            ]
+        })
+        def assetId = assetDataRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "Website", "NEW")
+            implementControl(superControl).tap {
+                setCustomAspects(domain, [
+                    suspect: [
+                        suspicious: true
+                    ]
+                ])
+            }
+        }).id
+
+        and: "a major update for a DT (doesn't actually change anything)"
+        domainTemplateDataRepository.save(newDomainTemplate {
+            name = "Insecure ghosting"
+            templateVersion = Version.parse("2.0.0")
+            elementTypeDefinitions = template.elementTypeDefinitions
+        })
+
+        when: "evaluating the asset"
+        def findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
+            parseJson(post("/domains/${domain.id}/assets/evaluation", it, 200)).inspectionFindings
+        }
+
+        then:
+        findings.empty
+    }
+
     def "CI custom aspects are transferred"() {
         given:
         def template = domainTemplateDataRepository.save(newDomainTemplate {

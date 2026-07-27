@@ -25,13 +25,17 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import jakarta.validation.constraints.NotNull;
+
 import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.ValidationError;
+import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.inspection.Severity;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -109,18 +113,18 @@ public class Inspector {
               if (errors.isEmpty()) {
                 domainChangeService.transferCustomization(domain, tempDomain);
                 tempDomain.migrate(List.of(element), domain);
-                element.getLinks(tempDomain).stream()
-                    .map(CustomLink::getTarget)
+                findRelatedElements(element, tempDomain)
                     .distinct()
-                    .filter(linkTarget -> !linkTarget.equals(element))
+                    .filter(related -> !related.equals(element))
+                    .filter(related -> related.isAssociatedWithDomain(domain))
                     .forEach(
-                        linkTarget -> {
-                          // Also associate link targets with the new domain to satisfy link target
+                        related -> {
+                          // Also associate related elements with the new domain to satisfy relation
                           // validation.
-                          linkTarget.associateWithDomain(
+                          related.associateWithDomain(
                               tempDomain,
-                              tempDomain.mapOldSubType(linkTarget.getSubType(domain)),
-                              tempDomain.mapOldStatus(linkTarget.getStatus(domain)));
+                              tempDomain.mapOldSubType(related.getSubType(domain)),
+                              tempDomain.mapOldStatus(related.getStatus(domain)));
                         });
                 errors = DomainSensitiveElementValidator.getErrors(element, tempDomain);
               }
@@ -141,5 +145,14 @@ public class Inspector {
                   .toList();
             })
         .orElse(Collections.emptyList());
+  }
+
+  @NotNull
+  private static Stream<Element> findRelatedElements(Element element, Domain tempDomain) {
+    return Stream.concat(
+        element.getLinks(tempDomain).stream().map(CustomLink::getTarget),
+        element instanceof RiskAffected<?, ?> ra
+            ? ra.getControlImplementations().stream().map(ControlImplementation::getControl)
+            : Stream.empty());
   }
 }
