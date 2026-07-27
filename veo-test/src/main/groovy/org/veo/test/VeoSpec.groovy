@@ -565,14 +565,7 @@ abstract class VeoSpec extends Specification {
                     tranlationMap.put(etd.elementType.getSingularTerm()+"_"+it.key+"_status_"+s, s)
                 }
             }
-            etd.customAspects.values().forEach{
-                it.getAttributeDefinitions().entrySet().forEach{ attDef->
-                    tranlationMap.put(attDef.getKey() , attDef.getKey())
-                    attDef.getValue().getTranslationKeys().forEach{tk->
-                        tranlationMap.put(tk , tk)
-                    }
-                }
-            }
+            generateDummyTranslations(etd.customAspects, tranlationMap)
             etd.links.entrySet().forEach{
                 tranlationMap.put(it.getKey() , "link_name_"+it.getKey())
                 it.getValue().getAttributeDefinitions().entrySet().forEach{ attDef->
@@ -584,6 +577,17 @@ abstract class VeoSpec extends Specification {
             }
 
             etd.translations = Map.of(EN, tranlationMap)
+        }
+    }
+
+    private static generateDummyTranslations(Map<String, CustomAspectDefinition> cas, translationMap) {
+        cas.values().forEach {
+            it.getAttributeDefinitions().entrySet().forEach { attDef ->
+                translationMap.put(attDef.getKey(), attDef.getKey())
+                attDef.getValue().getTranslationKeys().forEach { tk ->
+                    translationMap.put(tk, tk)
+                }
+            }
         }
     }
 
