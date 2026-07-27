@@ -188,6 +188,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ControlImplementationDefinition") Closure init = null) {
         return new ControlImplementationDefinition().tap{
             VeoSpec.execute(it, init)
+            generateDummyTranslations(it)
         }
     }
 
@@ -577,6 +578,14 @@ abstract class VeoSpec extends Specification {
             }
 
             etd.translations = Map.of(EN, tranlationMap)
+        }
+    }
+
+    private static def generateDummyTranslations(ControlImplementationDefinition cid) {
+        if (cid.translations == null || cid.translations.isEmpty()) {
+            def tranlationMap = new HashMap()
+            generateDummyTranslations(cid.customAspects, tranlationMap)
+            cid.translations = Map.of(EN, tranlationMap)
         }
     }
 
