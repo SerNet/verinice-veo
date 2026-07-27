@@ -84,5 +84,6 @@ public interface GenericElementRepository extends ElementQueryProvider<Element> 
       UUID domainId,
       Map<String, Set<String>> caKeysByType,
       Map<String, Set<String>> linkKeysByType,
+      String attributeType,
       int limit);
 }
