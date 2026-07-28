@@ -39,10 +39,12 @@ jar {
 bootRun {
     def activeSpringProfiles = 'psql'
     findProperty('springProfiles')?.with { activeSpringProfiles = it }
-    System.properties.'spring.profiles.active'?.with { activeSpringProfiles = it }
+    System.properties.'spring.profiles.active'?.with {
+        activeSpringProfiles = it
+    }
     systemProperty 'spring.profiles.active', activeSpringProfiles
     systemProperty 'veo.etag.salt', "zu#4Q8JKdy"
-    if ( project.hasProperty('jvmArgs') ) {
+    if (project.hasProperty('jvmArgs')) {
         jvmArgs = (project.jvmArgs.split("\\s+") as List)
     }
 }
@@ -97,18 +99,18 @@ jib {
     container {
         labels = project.provider {
             [
-                'org.opencontainers.image.title':"vernice.veo backend",
-                'org.opencontainers.image.description':"Backend of the verinice.veo web application.",
-                'org.opencontainers.image.ref.name':'verinice.veo',
-                'org.opencontainers.image.vendor':"SerNet GmbH",
-                'org.opencontainers.image.authors':'verinice@sernet.de',
-                'org.opencontainers.image.licenses':'AGPL-3.0',
-                'org.opencontainers.image.source':'https://github.com/verinice/verinice-veo',
+                'org.opencontainers.image.title': "vernice.veo backend",
+                'org.opencontainers.image.description': "Backend of the verinice.veo web application.",
+                'org.opencontainers.image.ref.name': 'verinice.veo',
+                'org.opencontainers.image.vendor': "SerNet GmbH",
+                'org.opencontainers.image.authors': 'verinice@sernet.de',
+                'org.opencontainers.image.licenses': 'AGPL-3.0',
+                'org.opencontainers.image.source': 'https://github.com/verinice/verinice-veo',
                 'org.opencontainers.image.version': project.version,
                 'org.opencontainers.image.revision': rootProject.getProperty('ciCommitId')
             ]
         }
-        environment = ['JDK_JAVA_OPTIONS':'-Djdk.serialFilter=maxbytes=0']
+        environment = ['JDK_JAVA_OPTIONS': '-Djdk.serialFilter=maxbytes=0']
         user = 'nonroot'
         ports = ['8070']
         mainClass = 'org.veo.rest.RestApplication'

@@ -3,14 +3,14 @@ import org.veo.SpockBlockFormatterStep
 plugins {
     id 'org.springframework.boot' version '4.1.0' apply false
     id "com.github.spotbugs" version '6.5.9'
-    id "com.diffplug.spotless" version "8.8.0" apply false
+    id "com.diffplug.spotless" version "8.9.0" apply false
     id "io.freefair.lombok" version "9.5.0"
     id 'jacoco'
 }
 
 def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
-allprojects  {
+allprojects {
     group = 'org.veo'
     version = '0.81.0-SNAPSHOT'
 
