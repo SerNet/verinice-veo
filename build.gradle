@@ -171,8 +171,8 @@ subprojects {
                 details.useVersion '11.0.22'
                 details.because('Security fixes')
             }
-            if (details.requested.name == 'postgresql' && details.requested.version == '42.7.10') {
-                details.useVersion '42.7.11'
+            if (details.requested.name == 'postgresql' && details.requested.version == '42.7.11') {
+                details.useVersion '42.7.12'
                 details.because('Security fixes')
             }
             if (details.requested.group == 'io.netty' && details.requested.version == '4.2.12.Final') {
