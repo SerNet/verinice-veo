@@ -55,8 +55,7 @@ public class TestEventSubscriber {
               value =
                   @Queue(
                       value = "${veo.message.queues.veo}_TestEventSubscriber",
-                      exclusive = "false",
-                      durable = "false"),
+                      exclusive = "false"),
               exchange = @Exchange(value = "${veo.message.exchanges.veo}", type = "topic"),
               key = {
                 "${veo.message.routing-key-prefix}" + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
@@ -74,8 +73,7 @@ public class TestEventSubscriber {
               value =
                   @Queue(
                       value = "${veo.message.queues.veo-subscriptions}_TestEventSubscriber",
-                      exclusive = "false",
-                      durable = "false"),
+                      exclusive = "false"),
               exchange =
                   @Exchange(value = "${veo.message.exchanges.veo-subscriptions}", type = "topic"),
               key = {"${veo.message.routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE}))
