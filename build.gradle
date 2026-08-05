@@ -175,9 +175,9 @@ subprojects {
                 details.useVersion '42.7.12'
                 details.because('Security fixes')
             }
-            if (details.requested.group == 'io.netty' && details.requested.version == '4.2.12.Final') {
-                details.useVersion '4.2.13.Final'
-                details.because('Security fixes')
+            if (details.requested.group == 'io.netty' && details.requested.version == '4.2.15.Final') {
+                details.useVersion '4.2.16.Final'
+                details.because('CVE-2026-59901')
             }
         }
     }
