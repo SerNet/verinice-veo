@@ -97,7 +97,7 @@ test:
     variables:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
-  - name: rabbitmq:4.0.5-management-alpine@sha256:54759523c0b09074814b1233e6985babe9fd34e3462d2fea522361cb83b2fd76
+  - name: rabbitmq:4.1.3-management-alpine@sha256:7be3e8a1cf96af968cda654d7a80fd6e9faf036da6acb3927b784944c6502f58
     alias: rabbitmq
   variables:
     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
@@ -169,7 +169,7 @@ http_rest_tests:
       VEO_APIKEYS_UNITCOUNT: "dracula"
       VEO_APIKEYS_SYSTEMMESSAGES: "hello"
       VEO_APIKEYS_DOMAINTEMPLATEUPLOAD: "temp"
-  - name: rabbitmq:4.0.5-management-alpine@sha256:54759523c0b09074814b1233e6985babe9fd34e3462d2fea522361cb83b2fd76
+  - name: rabbitmq:4.1.3-management-alpine@sha256:7be3e8a1cf96af968cda654d7a80fd6e9faf036da6acb3927b784944c6502f58
     alias: rabbitmq
   variables:
     FF_NETWORK_PER_BUILD: 1
