@@ -13,6 +13,6 @@
   script:
     - skopeo login --username _json_key --password "$(cat "$GCR_ACCESS_TOKEN")" "eu.gcr.io"
     - skopeo login --username "$REGISTRY_USERNAME" --password "$REGISTRY_PASSWORD" "registry.verinice.com"
-    - skopeo copy --all \
-      docker://eu.gcr.io/veo-projekt/$IMAGE_REPO:$IMAGE_TAG \
-      docker://registry.verinice.com/verinice/$IMAGE_REPO:$IMAGE_TAG
+    - skopeo copy --all 
+      "docker://eu.gcr.io/veo-projekt/$IMAGE_REPO:$IMAGE_TAG"
+      "docker://registry.verinice.com/verinice/$IMAGE_REPO:$IMAGE_TAG"
