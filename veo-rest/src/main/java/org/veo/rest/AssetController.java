@@ -442,8 +442,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
             ResponseEntity.ok()
                 .eTag(out.eTag())
                 .body(
-                    entityToDtoTransformer.transformRequirementImplementation2Dto(
-                        out.requirementImplementation())));
+                    RequirementImplementationDto.from(
+                        out.requirementImplementation(), referenceAssembler)));
   }
 
   @Override
@@ -473,7 +473,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
             Asset.class, riskAffectedId, controlId, pageSize, pageNumber, sortColumn, sortOrder),
         out ->
             PagingMapper.toPage(
-                out.result(), entityToDtoTransformer::transformRequirementImplementation2Dto));
+                out.result(), ri -> RequirementImplementationDto.from(ri, referenceAssembler)));
   }
 
   @Override

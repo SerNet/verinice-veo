@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,6 @@ import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -134,7 +132,6 @@ import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.compliance.ControlImplementation;
-import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.ref.TypedId;
@@ -361,47 +358,6 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public RequirementImplementationDto transformRequirementImplementation2Dto(
-      RequirementImplementation source, Domain domain, List<String> customAspectKeys) {
-    var target = transformRequirementImplementation2Dto(source);
-    target.setControl(
-        ElementInDomainIdRef.from(
-            source.getControl(), domain, referenceAssembler, customAspectKeys));
-    return target;
-  }
-
-  public RequirementImplementationDto transformRequirementImplementation2Dto(
-      RequirementImplementation source) {
-    var target = new RequirementImplementationDto();
-    target.setSelfRef(RequirementImplementationRef.from(source, referenceAssembler));
-    target.setControl(IdRef.from(source.getControl(), referenceAssembler));
-    target.setStatus(source.getStatus());
-    target.setOrigin(IdRef.from(source.getOrigin(), referenceAssembler));
-    Optional.ofNullable(source.getResponsible())
-        .map(r -> IdRef.from(r, referenceAssembler))
-        .ifPresent(target::setResponsible);
-    target.setImplementationStatement(source.getImplementationStatement());
-    target.setOrigination(source.getOrigination());
-    Optional.ofNullable(source.getImplementationUntil())
-        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
-        .ifPresent(target::setImplementationUntil);
-    target.setCost(source.getCost());
-    Optional.ofNullable(source.getImplementationDate())
-        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
-        .ifPresent(target::setImplementationDate);
-    target.setImplementedBy(IdRef.from(source.getImplementedBy(), referenceAssembler));
-    target.setDocument(IdRef.from(source.getDocument(), referenceAssembler));
-    Optional.ofNullable(source.getLastRevisionDate())
-        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
-        .ifPresent(target::setLastRevisionDate);
-    target.setLastRevisionBy(IdRef.from(source.getLastRevisionBy(), referenceAssembler));
-    Optional.ofNullable(source.getNextRevisionDate())
-        .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
-        .ifPresent(target::setNextRevisionDate);
-    target.setNextRevisionBy(IdRef.from(source.getNextRevisionBy(), referenceAssembler));
-    return target;
-  }
-
   public FullDomainDto transformDomain2Dto(Domain source) {
     return transformDomain2Dto(source, false);
   }
@@ -588,7 +544,7 @@ public final class EntityToDtoTransformer {
       T source, RiskAffectedDtoWithRIs<T> target) {
     target.setRequirementImplementations(
         source.getRequirementImplementations().stream()
-            .map(this::transformRequirementImplementation2Dto)
+            .map(ri -> RequirementImplementationDto.from(ri, referenceAssembler))
             .collect(toSet()));
     mapRiskAffectedProperties(source, target, source.getDomains());
   }

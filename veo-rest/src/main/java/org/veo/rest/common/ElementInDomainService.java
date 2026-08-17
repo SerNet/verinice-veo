@@ -328,8 +328,8 @@ public class ElementInDomainService {
                           invalidCas, availableCAs);
                     }
                   }
-                  return entityToDtoTransformer.transformRequirementImplementation2Dto(
-                      o, domain, controlCustomAspectKeys);
+                  return RequirementImplementationDto.from(
+                      o, domain, controlCustomAspectKeys, referenceAssembler);
                 }));
   }
 
