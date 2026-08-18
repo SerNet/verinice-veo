@@ -26,6 +26,9 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 
 public interface RequirementImplementation {
+  String SINGULAR_TERM = "requirement-implementation";
+  String PLURAL_TERM = "requirement-implementations";
+
   UUID getId();
 
   void setOrigin(RiskAffected<?, ?> origin);

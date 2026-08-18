@@ -15,15 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.veo.core.entity;
+package org.veo.core.repository;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.veo.core.UserAccessRights;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
-import org.veo.core.entity.compliance.RequirementImplementation;
-
-public enum TaskType {
-  @JsonProperty(RequirementImplementation.SINGULAR_TERM)
-  REQUIREMENT_IMPLEMENTATION,
-  @JsonProperty(RequirementImplementation.SINGULAR_TERM + "-revision")
-  REQUIREMENT_IMPLEMENTATION_REVISION,
+public interface TaskRepository {
+  TaskQuery queryTasks(Domain domain, Unit unit, UserAccessRights accessRights);
 }

@@ -117,6 +117,12 @@ class UnitAccessITSpec extends VeoMvcSpec{
         then:
         noExceptionThrown()
 
+        when: "trying to request tasks"
+        get("/domains/$domainId/tasks?unit=$unitId")
+
+        then:
+        noExceptionThrown()
+
         where:
         rights << [
             new TestUserRights(restrictUnitAccess: false),
@@ -195,6 +201,12 @@ class UnitAccessITSpec extends VeoMvcSpec{
 
         when: "not allowed to delete"
         delete("/units/$unitId", 404)
+
+        then:
+        thrown(NotFoundException)
+
+        when: "trying to request tasks"
+        get("/domains/$domainId/tasks?unit=$unitId", 404)
 
         then:
         thrown(NotFoundException)

@@ -74,6 +74,7 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.SystemMessageRepository;
+import org.veo.core.repository.TaskRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -84,6 +85,7 @@ import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.GetAvailableActionsUseCase;
 import org.veo.core.usecase.GetLinksByElementUseCase;
+import org.veo.core.usecase.GetTasksUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
@@ -427,6 +429,14 @@ public class ModuleConfiguration {
   public GetLinksByElementUseCase getLinksByElementUseCase(
       DomainRepository domainRepository, GenericElementRepository elementRepository) {
     return new GetLinksByElementUseCase(domainRepository, elementRepository);
+  }
+
+  @Bean
+  public GetTasksUseCase getTasksUseCase(
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      TaskRepository taskRepository) {
+    return new GetTasksUseCase(domainRepository, unitRepository, taskRepository);
   }
 
   @Bean

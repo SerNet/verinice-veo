@@ -43,6 +43,7 @@ import org.veo.core.repository.ClientReadOnlyRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.LinkQuery;
 import org.veo.core.repository.ParentElementQuery;
+import org.veo.core.repository.TaskQuery;
 import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.security.ApplicationUser;
 
@@ -82,6 +83,8 @@ class WebMvcContext implements WebMvcConfigurer {
         ParentElementQuery.SortCriterion::fromString);
     registry.addConverter(
         String.class, LinkQuery.SortCriterion.class, LinkQuery.SortCriterion::fromString);
+    registry.addConverter(
+        String.class, TaskQuery.SortCriterion.class, TaskQuery.SortCriterion::fromString);
   }
 
   @Override
