@@ -79,7 +79,7 @@ public class TaskQueryImpl implements TaskQuery {
                           where ris.status in ('UNKNOWN', 'NO', 'PARTIAL'))
                          union
                          (select 'REQUIREMENT_IMPLEMENTATION_REVISION' as type,
-                                 ris.person_id                         as assignee_id,
+                                 ris.next_revision_by_db_id            as assignee_id,
                                  ris.next_revision_date                as deadline,
                                  ris.id                                as ri_id
                           from ris

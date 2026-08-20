@@ -128,18 +128,21 @@ class TaskQuerySpec extends AbstractJpaSpec {
                     status = ImplementationStatus.NO
                     implementationUntil = LocalDate.parse("2027-01-01")
                     nextRevisionDate = LocalDate.parse("2028-01-01")
+                    nextRevisionBy = personB
                     responsible = personA
                 }
                 getRequirementImplementation(controlB).tap {
                     status = ImplementationStatus.PARTIAL
                     implementationUntil = LocalDate.parse("2027-01-02")
                     nextRevisionDate = LocalDate.parse("2028-01-02")
+                    nextRevisionBy = personB
                 }
                 getRequirementImplementation(controlC).tap {
                     status = ImplementationStatus.YES
                     implementationUntil = LocalDate.parse("2027-01-03")
                     nextRevisionDate = LocalDate.parse("2028-01-03")
-                    responsible = personB
+                    nextRevisionBy = personB
+                    responsible = personA
                 }
                 getRequirementImplementation(controlD).tap {
                     status = ImplementationStatus.YES
