@@ -26,7 +26,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -74,26 +73,15 @@ class WebMvcContext implements WebMvcConfigurer {
   @Override
   public void addFormatters(FormatterRegistry registry) {
     registry.addConverter(
-        new Converter<String, ElementType>() {
-          @Override
-          public ElementType convert(String source) {
-            return ElementType.valueOf(source.toUpperCase(Locale.US));
-          }
-        });
+        String.class,
+        ElementType.class,
+        source -> ElementType.valueOf(source.toUpperCase(Locale.US)));
     registry.addConverter(
-        new Converter<String, ParentElementQuery.SortCriterion>() {
-          @Override
-          public ParentElementQuery.SortCriterion convert(String source) {
-            return ParentElementQuery.SortCriterion.fromString(source);
-          }
-        });
+        String.class,
+        ParentElementQuery.SortCriterion.class,
+        ParentElementQuery.SortCriterion::fromString);
     registry.addConverter(
-        new Converter<String, LinkQuery.SortCriterion>() {
-          @Override
-          public LinkQuery.SortCriterion convert(String source) {
-            return LinkQuery.SortCriterion.fromString(source);
-          }
-        });
+        String.class, LinkQuery.SortCriterion.class, LinkQuery.SortCriterion::fromString);
   }
 
   @Override
