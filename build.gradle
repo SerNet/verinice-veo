@@ -179,6 +179,10 @@ subprojects {
                 details.useVersion '4.2.16.Final'
                 details.because('CVE-2026-59901')
             }
+            if (requested.group == "com.rabbitmq" && requested.version == "5.31.0") {
+                useVersion("5.33.1")
+                because(" CWE-295")
+            }
         }
     }
 
