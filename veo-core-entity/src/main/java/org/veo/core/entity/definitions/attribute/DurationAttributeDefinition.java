@@ -46,7 +46,9 @@ public final class DurationAttributeDefinition extends AttributeDefinition {
     return TYPE;
   }
 
-  private static final Pattern ISO_STRUCTURE_PATTERN = Pattern.compile("^P([^T]*)(?:T(.*))?$");
+  private static final Pattern ISO_STRUCTURE_PATTERN =
+      Pattern.compile("^P([\\dYMWD]{0,50})(?:T([\\dHMS]{0,50}))?$");
+
   public static final List<ValidationError> ERROR_NO_ISO_DURATION =
       List.of(ValidationError.localized("error_no_iso_duration"));
 

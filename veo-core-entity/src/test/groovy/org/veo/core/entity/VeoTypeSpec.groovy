@@ -120,7 +120,7 @@ class VeoTypeSpec extends Specification {
         type                           | inValues                           | outValues
         T.integer()                    | [15, 7000, 459, 12, 57]            | [12, 15, 57, 459, 7000]
         T.string()                     | ["b", "c", "a"]                    | ["a", "b", "c"]
-        T.durationString()             | ["PT12H", "PT30s", "PT45S"]        | ["PT30s", "PT45S", "PT12H"]
+        T.durationString()             | ["PT12H", "PT30S", "PT45S"]        | ["PT30S", "PT45S", "PT12H"]
         T.durationString().orNothing() | [
             "P100M",
             "P100MT2S",

@@ -286,6 +286,18 @@ class AttributeDefinitionSpec extends Specification{
 
         where:
         value << [
+            'PT1H1H',
+            'PT60m',
+            'P7M3Dt12H10M5S',
+            'P7m3DT12H10M5S',
+            'p7M3DT12H10M5S',
+            'P7M3DT12h10M5S',
+            'P7M3DT12H10M5',
+            'P7M3DT12H10M5s',
+            'P7M3DT12H10m5S',
+            'P7Y2M19d',
+            'P7Y2m19D',
+            'PT8h',
             'abc',
             'P1D2D',
             'P1H',
