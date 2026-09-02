@@ -20,6 +20,15 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
+import org.veo.core.entity.IncarnationConfiguration
+import org.veo.core.entity.IncarnationLookup
+import org.veo.core.entity.IncarnationRequestModeType
+import org.veo.core.entity.Profile
+import org.veo.core.entity.ProfileItem
+import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -43,27 +52,82 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         client = clientRepository.getById(client.id)
         def unit = unitRepository.save(newUnit(client))
+        def profile = domain.profiles.first()
 
         when:
-        def result = executeInTransaction {
-            def profileId = domain.profiles.first().id
-            getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
-        }
+        def result = getIncarnationDescriptions(unit, domain, null, profile, false).references
 
         then: 'all tailoring references are returned'
         result.collectMany{it.references}.size() == 23
 
         when: "we get only the distinct tailoring references"
-        result = executeInTransaction {
-            def profileId = domain.profiles.first().id
-            getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, true), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
-        }
+        result = getIncarnationDescriptions(unit, domain, null, profile, true).references
 
         then: 'less tailoring references are returned'
         result.collectMany{it.references}.size() == 12
+    }
+
+    def "references types can be excluded"() {
+        given: 'a domain with linked profile items, but with links excluded from incarnation'
+        def client = createTestClient()
+        def domain = domainDataRepository.save(newDomain(client) { Domain d ->
+            incarnationConfiguration = new IncarnationConfiguration(IncarnationRequestModeType.DEFAULT, IncarnationLookup.ALWAYS, null, [TailoringReferenceType.LINK] as Set)
+            profiles = [
+                newProfile(d) { Profile p ->
+                    def target = newProfileItem(p) {
+                        name = "target"
+                        elementType = ElementType.CONTROL
+                        subType = "c"
+                        status = "BLUE"
+                    }
+                    def source = newProfileItem(p) {
+                        name = "source"
+                        elementType = ElementType.SCENARIO
+                        subType = "s"
+                        status = "RED"
+                        addLinkTailoringReference(TailoringReferenceType.LINK, target, "someLink", [:])
+                    }
+                    items = [source, target]
+                }
+            ]
+        })
+        client = clientRepository.getById(client.id)
+        def unit = unitRepository.save(newUnit(client))
+        def profile = domain.profiles.first()
+        def linkSourceProfileItem = profile.items.find { it.name == "source" }
+
+        when: 'planning to incarnate only the link source'
+        def result = getIncarnationDescriptions(unit, domain, [linkSourceProfileItem], profile, false).references
+
+        then: 'the link is excluded'
+        result*.item*.name == ["source"]
+        result.collectMany { it.references }.size() == 0
+
+        when: 'planning to incarnate the entire profile'
+        result = executeInTransaction {
+            getIncarnationDescriptions(unit, domain, null, profile, false).references
+        }
+
+        then: 'the link is included'
+        result*.item*.name ==~ ["source", "target"]
+        result.collectMany { it.references }.size() == 1
+    }
+
+    private GetProfileIncarnationDescriptionUseCase.OutputData getIncarnationDescriptions(
+            Unit unit,
+            Domain domain,
+            List<ProfileItem> profileItems,
+            Profile profile,
+            Boolean mergeBidirectionalReferences) {
+        executeInTransaction {
+            getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(
+                    unit.id,
+                    domain.id,
+                    profileItems?.collect { it.symbolicId },
+                    profile.id,
+                    mergeBidirectionalReferences),
+                    NoRestrictionAccessRight.from(domain.owner.idAsString))
+        }
     }
 }
