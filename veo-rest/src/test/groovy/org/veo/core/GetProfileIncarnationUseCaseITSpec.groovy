@@ -20,6 +20,15 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
+import org.veo.core.entity.IncarnationConfiguration
+import org.veo.core.entity.IncarnationLookup
+import org.veo.core.entity.IncarnationRequestModeType
+import org.veo.core.entity.Profile
+import org.veo.core.entity.ProfileItem
+import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -43,27 +52,36 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         client = clientRepository.getById(client.id)
         def unit = unitRepository.save(newUnit(client))
+        def profile = domain.profiles.first()
 
         when:
-        def result = executeInTransaction {
-            def profileId = domain.profiles.first().id
-            getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
-        }
+        def result = getIncarnationDescriptions(unit, domain, null, profile, false).references
 
         then: 'all tailoring references are returned'
         result.collectMany{it.references}.size() == 23
 
         when: "we get only the distinct tailoring references"
-        result = executeInTransaction {
-            def profileId = domain.profiles.first().id
-            getProfileIncarnationDescriptionUseCase.execute(
-                    new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, true), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
-        }
+        result = getIncarnationDescriptions(unit, domain, null, profile, true).references
 
         then: 'less tailoring references are returned'
         result.collectMany{it.references}.size() == 12
+    }
+
+    private GetProfileIncarnationDescriptionUseCase.OutputData getIncarnationDescriptions(
+            Unit unit,
+            Domain domain,
+            List<ProfileItem> profileItems,
+            Profile profile,
+            Boolean mergeBidirectionalReferences) {
+        executeInTransaction {
+            getProfileIncarnationDescriptionUseCase.execute(
+                    new GetProfileIncarnationDescriptionUseCase.InputData(
+                    unit.id,
+                    domain.id,
+                    profileItems?.collect { it.symbolicId },
+                    profile.id,
+                    mergeBidirectionalReferences),
+                    NoRestrictionAccessRight.from(domain.owner.idAsString))
+        }
     }
 }
