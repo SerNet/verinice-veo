@@ -18,6 +18,7 @@
 package org.veo.core.usecase.catalogitem;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,7 +105,8 @@ public class GetProfileIncarnationDescriptionUseCase
             null,
             null,
             null,
-            null,
+            // if the entire profile should be applied, include all references
+            input.profileItemIds == null ? Collections.emptySet() : null,
             input.mergeBidirectionalReferences),
         unit);
   }

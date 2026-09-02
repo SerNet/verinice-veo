@@ -108,9 +108,9 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
             getIncarnationDescriptions(unit, domain, null, profile, false).references
         }
 
-        then: 'the link is excluded'
+        then: 'the link is included'
         result*.item*.name ==~ ["source", "target"]
-        result.collectMany { it.references }.size() == 0
+        result.collectMany { it.references }.size() == 1
     }
 
     private GetProfileIncarnationDescriptionUseCase.OutputData getIncarnationDescriptions(
