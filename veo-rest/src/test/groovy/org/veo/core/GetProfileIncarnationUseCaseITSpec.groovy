@@ -67,6 +67,52 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         result.collectMany{it.references}.size() == 12
     }
 
+    def "references types can be excluded"() {
+        given: 'a domain with linked profile items, but with links excluded from incarnation'
+        def client = createTestClient()
+        def domain = domainDataRepository.save(newDomain(client) { Domain d ->
+            incarnationConfiguration = new IncarnationConfiguration(IncarnationRequestModeType.DEFAULT, IncarnationLookup.ALWAYS, null, [TailoringReferenceType.LINK] as Set)
+            profiles = [
+                newProfile(d) { Profile p ->
+                    def target = newProfileItem(p) {
+                        name = "target"
+                        elementType = ElementType.CONTROL
+                        subType = "c"
+                        status = "BLUE"
+                    }
+                    def source = newProfileItem(p) {
+                        name = "source"
+                        elementType = ElementType.SCENARIO
+                        subType = "s"
+                        status = "RED"
+                        addLinkTailoringReference(TailoringReferenceType.LINK, target, "someLink", [:])
+                    }
+                    items = [source, target]
+                }
+            ]
+        })
+        client = clientRepository.getById(client.id)
+        def unit = unitRepository.save(newUnit(client))
+        def profile = domain.profiles.first()
+        def linkSourceProfileItem = profile.items.find { it.name == "source" }
+
+        when: 'planning to incarnate only the link source'
+        def result = getIncarnationDescriptions(unit, domain, [linkSourceProfileItem], profile, false).references
+
+        then: 'the link is excluded'
+        result*.item*.name == ["source"]
+        result.collectMany { it.references }.size() == 0
+
+        when: 'planning to incarnate the entire profile'
+        result = executeInTransaction {
+            getIncarnationDescriptions(unit, domain, null, profile, false).references
+        }
+
+        then: 'the link is excluded'
+        result*.item*.name ==~ ["source", "target"]
+        result.collectMany { it.references }.size() == 0
+    }
+
     private GetProfileIncarnationDescriptionUseCase.OutputData getIncarnationDescriptions(
             Unit unit,
             Domain domain,
