@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import org.veo.core.entity.Task;
 import org.veo.core.entity.TaskType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
@@ -94,6 +96,7 @@ public class TaskQueryImpl implements TaskQuery {
   private final Domain domain;
   private final Unit unit;
   private String username;
+  private List<UUID> assignees = null;
 
   @Override
   @Transactional(readOnly = true)
@@ -124,6 +127,11 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public void whereUsernameIs(String username) {
     this.username = username;
+  }
+
+  @Override
+  public void whereAssigneeIn(@NonNull Set<TypedId<Person>> persons) {
+    this.assignees = persons.stream().map(TypedId::getId).toList();
   }
 
   private @NonNull Map<UUID, RequirementImplementation> getRiMap(List<Object[]> resultList) {
@@ -175,6 +183,14 @@ public class TaskQueryImpl implements TaskQuery {
     if (username != null) {
       params.put("username", username);
       query += "inner join element as p on p.db_id = t.assignee_id and p.username = :username\n";
+    }
+    if (assignees != null) {
+      if (assignees.isEmpty()) {
+        query += "where t.assignee_id is null\n";
+      } else {
+        params.put("assignees", assignees);
+        query += "where t.assignee_id in (:assignees)\n";
+      }
     }
 
     // ORDER & LIMIT

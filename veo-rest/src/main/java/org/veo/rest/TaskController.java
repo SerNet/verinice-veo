@@ -28,8 +28,11 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -46,6 +49,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.TaskDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.TaskQuery;
@@ -68,8 +72,7 @@ public class TaskController {
   private final UseCaseInteractor useCaseInteractor;
 
   @Operation(
-      summary =
-          "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit that are assigned to the authenticated user")
+      summary = "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit")
   @GetMapping
   @ApiResponse(responseCode = "200", description = "Tasks loaded")
   @ApiResponse(
@@ -95,13 +98,25 @@ public class TaskController {
           TaskQuery.SortCriterion sortCriterion,
       @RequestParam(value = SORT_ORDER_PARAM, required = false, defaultValue = "asc")
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @Parameter(
+              description =
+                  "IDs of persons assigned to tasks - pass empty list to fetch unassigned tasks.")
+          @RequestParam(name = "assignees", required = false)
+          List<UUID> personIds) {
     return useCaseInteractor
         .execute(
             getTasksUseCase,
             new GetTasksUseCase.InputData(
                 TypedId.from(domainId, Domain.class),
                 TypedId.from(unitId, Unit.class),
+                Optional.ofNullable(personIds)
+                    .map(
+                        ids ->
+                            ids.stream()
+                                .map(id -> TypedId.from(id, Person.class))
+                                .collect(Collectors.toSet()))
+                    .orElse(null),
                 PagingMapper.toConfig(pageSize, pageNumber, sortCriterion, sortOrder)),
             output ->
                 PagingMapper.toPage(

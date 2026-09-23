@@ -27,6 +27,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
 import org.veo.core.entity.exception.NotFoundException
@@ -79,13 +80,15 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "fetch tasks for RIs"() {
         given:
+        Person personA
+        Person personB
         txTemplate.execute {
-            def personA = personRepository.save(newPerson(unit) {
+            personA = personRepository.save(newPerson(unit) {
                 name = 'person a'
                 username = "user@domain.example"
                 associateWithDomain(testDomain, "Programmer", "CODING")
             })
-            def personB = personRepository.save(newPerson(unit) {
+            personB = personRepository.save(newPerson(unit) {
                 name = 'person b'
                 username = "boozer@domain.example"
                 associateWithDomain(testDomain, "Programmer", "CODING")
@@ -137,6 +140,44 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect:
         with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 4
+            page == 0
+            pageCount == 1
+            items*.deadline == [
+                "2027-01-01",
+                "2027-02-01",
+                "2027-02-02",
+                "2028-01-02",
+            ]
+
+            with(items[0]) {
+                type == "requirement-implementation"
+                requirementImplementation.origin.name == "big machine"
+                requirementImplementation.control.name == "control a"
+                assignee.name == "person a"
+            }
+            with(items[1]) {
+                type == "requirement-implementation"
+                requirementImplementation.origin.name == "little help"
+                requirementImplementation.control.name == "control a"
+                assignee.name == "person a"
+            }
+            with(items[2]) {
+                type == "requirement-implementation"
+                requirementImplementation.origin.name == "little help"
+                requirementImplementation.control.name == "control b"
+                assignee.name == "person b"
+            }
+            with(items[3]) {
+                type == "requirement-implementation-revision"
+                requirementImplementation.origin.name == "big machine"
+                requirementImplementation.control.name == "control b"
+                assignee.name == "person a"
+            }
+        }
+
+        and:
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}&assignees=${personA.id}"))) {
             totalItemCount == 3
             page == 0
             pageCount == 1
@@ -163,6 +204,68 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
                 requirementImplementation.origin.name == "big machine"
                 requirementImplementation.control.name == "control b"
                 assignee.name == "person a"
+            }
+        }
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}&assignees=${personB.id}"))) {
+            totalItemCount == 1
+            page == 0
+            pageCount == 1
+            items*.deadline == [
+                "2027-02-02",
+            ]
+            with(items[0]) {
+                type == "requirement-implementation"
+                requirementImplementation.origin.name == "little help"
+                requirementImplementation.control.name == "control b"
+                assignee.name == "person b"
+            }
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "fetch unassigned tasks"() {
+        given:
+        Person personA
+        txTemplate.execute {
+            personA = personRepository.save(newPerson(unit) {
+                name = 'persona'
+                username = "my@persona.example"
+                associateWithDomain(testDomain, "Programmer", "CODING")
+            })
+            def controlA = controlRepository.save(newControl(unit) {
+                name = 'control a'
+                associateWithDomain(testDomain, "TOM", "NEW")
+            })
+            def controlB = controlRepository.save(newControl(unit) {
+                name = 'control b'
+                associateWithDomain(testDomain, "TOM", "NEW")
+            })
+
+            assetRepository.save(newAsset(unit) {
+                name = "way big machine"
+                associateWithDomain(testDomain, "Server", "NEW")
+                implementControl(controlA)
+                getRequirementImplementation(controlA).tap{
+                    responsible = personA
+                }
+                implementControl(controlB)
+            })
+        }
+
+        expect:
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}&assignees="))) {
+            totalItemCount == 1
+            page == 0
+            pageCount == 1
+            items*.deadline == [
+                null
+            ]
+
+            with(items[0]) {
+                type == "requirement-implementation"
+                requirementImplementation.origin.name == "way big machine"
+                requirementImplementation.control.name == "control b"
+                assignee == null
             }
         }
     }

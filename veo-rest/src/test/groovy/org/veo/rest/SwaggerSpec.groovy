@@ -2631,7 +2631,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/tasks"].get
 
         expect:
-        endPointInfo.summary == "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit that are assigned to the authenticated user"
+        endPointInfo.summary == "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit"
         endPointInfo.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/PageDtoTaskDto']
 
         and:
@@ -2643,7 +2643,13 @@ class SwaggerSpec extends VeoSpringSpec {
                 'page',
                 'sortBy',
                 'sortOrder',
+                'assignees',
             ]
+            with(it.find{it.name == 'assignees'}) {
+                it.description == 'IDs of persons assigned to tasks - pass empty list to fetch unassigned tasks.'
+                it.required == false
+                it.schema == [type: 'array', items: [type: 'string', format: 'uuid']]
+            }
         }
     }
 

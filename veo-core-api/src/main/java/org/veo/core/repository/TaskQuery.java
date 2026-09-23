@@ -20,13 +20,20 @@ package org.veo.core.repository;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
+import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
+import org.veo.core.entity.ref.TypedId;
 
 public interface TaskQuery extends Query<Task, TaskQuery.SortCriterion> {
   void whereUsernameIs(String username);
+
+  void whereAssigneeIn(@Nonnull Set<TypedId<Person>> persons);
 
   enum SortCriterion {
     DEADLINE;

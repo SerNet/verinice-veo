@@ -17,11 +17,17 @@
  */
 package org.veo.core.usecase;
 
+import java.util.Optional;
+import java.util.Set;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import javax.annotation.Nullable;
+
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -51,7 +57,7 @@ public class GetTasksUseCase
       throw new NotFoundException("Unit is not associated with domain.");
     }
     var query = taskRepository.queryTasks(domain, unit, userAccessRights);
-    query.whereUsernameIs(userAccessRights.getUsername());
+    Optional.ofNullable(input.assignees).ifPresent(query::whereAssigneeIn);
     return new OutputData(query.execute(input.pagingConfiguration), domain);
   }
 
@@ -59,6 +65,7 @@ public class GetTasksUseCase
   public record InputData(
       @NotNull TypedId<Domain> domainRef,
       @NotNull TypedId<Unit> unitRef,
+      @Nullable Set<TypedId<Person>> assignees,
       @NotNull PagingConfiguration<TaskQuery.SortCriterion> pagingConfiguration)
       implements UseCase.InputData {}
 
