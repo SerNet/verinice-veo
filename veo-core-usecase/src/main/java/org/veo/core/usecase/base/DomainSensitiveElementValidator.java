@@ -125,15 +125,17 @@ public class DomainSensitiveElementValidator {
                                   caa.customAspect(), caa.attribute());
 
                           for (Element element : elements) {
-
                             var value = ex.getValue(element, oldDomain);
                             if (value != null) {
                               errors.add(
                                   ValidationError.attributeManualRemove(
-                                      caa.customAspect(), caa.attribute(), oldDomain, element));
+                                      caa.customAspect(),
+                                      caa.attribute(),
+                                      oldDomain,
+                                      element,
+                                      step.description()));
                             }
                           }
-
                         } else {
                           throw new IllegalStateException(
                               "Invalid migration step "

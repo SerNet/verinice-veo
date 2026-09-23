@@ -276,8 +276,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.size() == 1
-        findings[0].description.en == "The object cannot be migrated to the new domain version 1.1.0: In Environment protection 1.1.0, some attributes are shared with other domains (Animal protection), but the object has deviating values in those domains:\n\n* Number of legs: 2\n\nPlease edit this object here or in the other domains to align the deviating values."
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 1.1.0: In Umweltschutz 1.1.0 werden einige Attribute gemeinsam genutzt mit anderen Domänen (Tierschutz). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* Anzahl der Beine: 2\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+        findings[0].description.en == "To migrate to the new domain version 1.1.0, please manually adjust this object afterward: Environment protection 1.1.0 shares attributes with other domains (Animal protection). To ensure data consistency, please adjust the following values here or in the other domains:\n\n* Number of legs: 2"
+        findings[0].description.de == "Für die Migration auf die neue Domänen-Version 1.1.0 passen Sie dieses Objekt bitte abschließend manuell an: Umweltschutz 1.1.0 teilt sich Attribute mit anderen Domänen (Tierschutz). Für eine einheitliche Datenbasis gleichen Sie bitte folgende Werte hier oder in den anderen Domänen an:\n\n* Anzahl der Beine: 2"
 
         when: "reevaluating with aligned values"
         findings = parseJson(get("/domains/${domainB.id}/assets/$assetId")).with {
@@ -360,8 +360,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
 
         then:
         findings.size() == 1
-        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0: In The MISO 27000 2.0.0, some attributes are shared with other domains (The MISO 27000), but the object has deviating values in those domains:\n\n* contains noodles: no\n\nPlease edit this object here or in the other domains to align the deviating values."
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: In Die MISO 27000 2.0.0 werden einige Attribute gemeinsam genutzt mit anderen Domänen (Die MISO 27000). Dieses Objekt hat jedoch dort abweichende Werte:\n\n* enthält Nudeln: nein\n\nBitte bearbeiten Sie das Objekt hier oder in den anderen Domänen, um die abweichenden Werte aneinander anzugleichen."
+        findings[0].description.en == "To migrate to the new domain version 2.0.0, please manually adjust this object afterward: The MISO 27000 2.0.0 shares attributes with other domains (The MISO 27000). To ensure data consistency, please adjust the following values here or in the other domains:\n\n* contains noodles: no"
+        findings[0].description.de == "Für die Migration auf die neue Domänen-Version 2.0.0 passen Sie dieses Objekt bitte abschließend manuell an: Die MISO 27000 2.0.0 teilt sich Attribute mit anderen Domänen (Die MISO 27000). Für eine einheitliche Datenbasis gleichen Sie bitte folgende Werte hier oder in den anderen Domänen an:\n\n* enthält Nudeln: nein"
 
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domainB.id}/assets/$assetId")).with {
@@ -442,8 +442,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         then:
         findings.size() == 1
         // TODO #919 expect translated CA name
-        findings[0].description.en == "The object cannot be migrated to the new domain version 2.0.0: Invalid value 'something-example' for attribute 'Address': URL does not contain a valid protocol - the following protocols are supported: http, https, ftp, ftps, smb"
-        findings[0].description.de == "Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: Ungültiger Wert 'something-example' für Attribut 'Adresse': URL enthält kein gültiges Protokoll - die folgenden Protokolle werden unterstützt: http, https, ftp, ftps, smb"
+        findings[0].description.en == "To migrate to the new domain version 2.0.0, please manually adjust this object afterward: Invalid value 'something-example' for attribute 'Address': URL does not contain a valid protocol - the following protocols are supported: http, https, ftp, ftps, smb"
+        findings[0].description.de == "Für die Migration auf die neue Domänen-Version 2.0.0 passen Sie dieses Objekt bitte abschließend manuell an: Ungültiger Wert 'something-example' für Attribut 'Adresse': URL enthält kein gültiges Protokoll - die folgenden Protokolle werden unterstützt: http, https, ftp, ftps, smb"
 
         when: "aligning the values and reevaluating"
         findings = parseJson(get("/domains/${domain.id}/assets/$assetId")).with {
@@ -515,10 +515,11 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             })
+            def m = [(Locale.ENGLISH):"remove", (Locale.GERMAN): "entfernen" ]
             domainMigrationDefinition = new DomainMigrationDefinition([
-                new DomainMigrationStep("remove-inappropriate-data", TranslatedText.empty(), [
+                new DomainMigrationStep("remove-inappropriate-data", new TranslatedText(m), [
                     new CustomAspectAttribute(ElementType.PERSON, "physique", "weight")
-                ], null, true)
+                ],null, true)
             ])
         })
 
@@ -530,8 +531,8 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
         then:
         findings.size() == 1
         // TODO #919 expect translated CA name
-        findings[0].description.en == 'The object cannot be migrated to the new domain version 2.0.0: The attribute \'Weight\' (\'weight\') is no longer used. The value \'120\' needs to be manually removed.'
-        findings[0].description.de == 'Das Objekt ist nicht migrierbar auf die neue Domänen-Version 2.0.0: Das Attribut \'Gewicht\' (\'weight\') wird nicht mehr verwendet. Der Wert \'120\' muss manuell entfernt werden.'
+        findings[0].description.en == 'To migrate to the new domain version 2.0.0, please manually adjust this object afterward: remove\nThe attribute ‘Weight’ (‘weight’) has been removed in the new domain version. Please manually remove the value ‘120’.'
+        findings[0].description.de == 'Für die Migration auf die neue Domänen-Version 2.0.0 passen Sie dieses Objekt bitte abschließend manuell an: entfernen\nDas Attribut \'Gewicht\' (\'weight\') wird in der neuen Domänenversion abgelöst. Bitte entfernen Sie den Wert \'120\' manuell.'
 
         when: "removing the values and reevaluating"
         findings = parseJson(get("/domains/${domain.id}/persons/$personId")).with {

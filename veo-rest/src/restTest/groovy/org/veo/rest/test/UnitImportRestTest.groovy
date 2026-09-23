@@ -538,7 +538,7 @@ class UnitImportRestTest extends VeoRestTest {
         then: "import is rejected with a conflict message"
         response.body.message.contains("Import conflict domain A")
         response.body.message.contains("Import conflict domain B")
-        response.body.message.contains("the object has deviating values in those domains")
+        response.body.message.contains("shares attributes with other domains")
     }
 
     def "unit import supports new structure for element custom aspects and links"() {

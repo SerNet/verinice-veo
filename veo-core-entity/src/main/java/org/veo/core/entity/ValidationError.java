@@ -29,6 +29,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.validation.constraints.NotNull;
+
 import org.slf4j.LoggerFactory;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -64,7 +66,11 @@ public interface ValidationError {
   }
 
   static ValidationError attributeManualRemove(
-      String caType, String attribute, Domain domain, Element element) {
+      String caType,
+      String attribute,
+      Domain domain,
+      Element element,
+      @NotNull TranslatedText translatedText) {
 
     var etd = domain.getElementTypeDefinition(element.getType());
     var attributes =
@@ -78,6 +84,7 @@ public interface ValidationError {
     return localized(
         "error_attribute_needs_manual_removal",
         List.of(
+            l -> translatedText.getTranslations().get(l),
             l -> etd.findTranslation(l, attribute),
             _ -> attribute,
             l ->
