@@ -224,6 +224,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
                 name,
                 abbreviation,
                 updatedBy,
+                null,
                 PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
             .withEmbedRisks(embedRisks),
         e -> entity2Dto(e, embedRisks));

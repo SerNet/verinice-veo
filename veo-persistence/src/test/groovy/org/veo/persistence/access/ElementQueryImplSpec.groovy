@@ -901,4 +901,43 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         then:
         result.totalResults == 1
     }
+
+    def 'queries by username'() {
+        given:
+        personDataRepository.saveAll([
+            newPerson(unit) {
+                name = "Person One"
+                username = "user@example.org"
+            },
+            newPerson(unit) {
+                name = "Person Two"
+                username = "user@example.org"
+            },
+            newPerson(unit) {
+                name = "Whoever"
+                username = "admin@example.org"
+            },
+            newPerson(unit) {
+                name = "No User"
+            }
+        ])
+
+        when:
+        def query = elementQueryFactory.queryPersons(client).tap {
+            whereUsernameMatches(new QueryCondition<String>(["user@example.org"] as Set))
+        }
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.toSorted{it.name}*.name == ["Person One", "Person Two"]
+
+        when:
+        query = elementQueryFactory.queryPersons(client).tap{
+            whereUsernameMatches(new QueryCondition<String>([null] as Set))
+        }
+        result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage*.name == ["No User"]
+    }
 }

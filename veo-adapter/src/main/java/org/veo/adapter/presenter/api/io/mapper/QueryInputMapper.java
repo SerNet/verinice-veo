@@ -55,6 +55,7 @@ public class QueryInputMapper {
       String name,
       String abbreviation,
       String updatedBy,
+      String username,
       PagingConfiguration<String> pagingConfiguration) {
     return GetElementsUseCase.InputData.builder()
         .abbreviation(whereIn(abbreviation))
@@ -73,6 +74,7 @@ public class QueryInputMapper {
         .subType(whereEqualsOrNull(subType))
         .unitUuid(whereUuidIn(unitUuid))
         .updatedBy(whereIn(updatedBy))
+        .username(whereEqualsOrNull(username))
         .build();
   }
 

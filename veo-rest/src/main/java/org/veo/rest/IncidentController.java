@@ -170,6 +170,7 @@ public class IncidentController
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 

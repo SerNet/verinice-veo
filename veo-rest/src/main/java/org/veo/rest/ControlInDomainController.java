@@ -217,6 +217,7 @@ public class ControlInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformControl2Dto,
         ElementType.CONTROL);
@@ -393,6 +394,7 @@ public class ControlInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

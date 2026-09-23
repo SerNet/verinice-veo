@@ -228,6 +228,7 @@ public class ScopeInDomainController
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScope2Dto,
         ElementType.SCOPE);

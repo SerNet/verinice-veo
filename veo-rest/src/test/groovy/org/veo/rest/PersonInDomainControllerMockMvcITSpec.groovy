@@ -26,6 +26,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("user@domain.example")
 class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
@@ -212,5 +213,47 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "domain $randomDomainId not found"
+    }
+
+    def "query persons by username"() {
+        setup:
+        executeInTransaction {
+            def domain = domainDataRepository.findById(UUID.fromString(testDomainId)).get()
+            def client = domain.owner
+            def unit = unitRepository.findById(UUID.fromString(unitId), NoRestrictionAccessRight.from(client.getIdAsString())).get()
+            personRepository.saveAll([
+                newPerson(unit) {
+                    name = 'User 1'
+                    username = 'user'
+                },
+                newPerson(unit) {
+                    name = 'User 2'
+                    username = 'user'
+                },
+                newPerson(unit) {
+                    name = 'User 3'
+                    username = 'admin'
+                },
+                newPerson(unit) {
+                    name = 'User 4'
+                }
+            ].each {
+                it.associateWithDomain(domain, 'PER_Person', 'NEW')
+            } as Set)
+        }
+
+        when:
+        def persons = parseJson(get("/domains/$testDomainId/persons?username=user")).items
+
+        then:
+        persons.size() == 2
+        persons*.name ==~ ['User 1', 'User 2']
+
+        when:
+        persons = parseJson(get("/domains/$testDomainId/persons?username=")).items
+
+        then:
+        persons.size() == 1
+        persons*.name ==~ ['User 4']
     }
 }

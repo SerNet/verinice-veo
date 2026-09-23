@@ -140,6 +140,19 @@ public class GetElementsUseCase
               }
             });
     Optional.ofNullable(input.scopeId).ifPresent(query::whereScopesContain);
+    Optional.ofNullable(input.username)
+        .ifPresent(
+            userName -> {
+              var elementTypes = input.elementTypes;
+              if (elementTypes == null
+                  || elementTypes.values().size() != 1
+                  || elementTypes.values().stream().findFirst().get() != ElementType.PERSON) {
+                throw new IllegalArgumentException(
+                    "Username filter can only be used with persons.");
+              }
+              query.whereUsernameMatches(userName);
+            });
+
     query.fetchChildren();
     if (input.embedRisks) {
       query.fetchRisks();
@@ -169,6 +182,7 @@ public class GetElementsUseCase
       QueryCondition<String> name,
       QueryCondition<String> abbreviation,
       QueryCondition<String> updatedBy,
+      QueryCondition<String> username,
       PagingConfiguration<String> pagingConfiguration,
       boolean embedRisks)
       implements UseCase.InputData {}

@@ -17,6 +17,7 @@
  */
 package org.veo.persistence.access.query;
 
+import static org.veo.persistence.access.query.QueryFunctions.andIn;
 import static org.veo.persistence.access.query.QueryFunctions.andInIgnoringCase;
 import static org.veo.persistence.access.query.QueryFunctions.in;
 
@@ -298,6 +299,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
                     root.join("scopes", JoinType.LEFT).get("id"), condition.value()));
+  }
+
+  @Override
+  public void whereUsernameMatches(QueryCondition<String> condition) {
+    mySpec = andIn(mySpec, "username", condition);
   }
 
   @Override

@@ -211,6 +211,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto,
         ElementType.SCENARIO);
@@ -318,6 +319,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

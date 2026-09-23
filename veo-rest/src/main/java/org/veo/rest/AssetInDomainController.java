@@ -225,6 +225,7 @@ public class AssetInDomainController
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformAsset2Dto,
         ElementType.ASSET);
@@ -331,6 +332,7 @@ public class AssetInDomainController
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

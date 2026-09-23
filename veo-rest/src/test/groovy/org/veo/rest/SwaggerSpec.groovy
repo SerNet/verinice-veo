@@ -801,6 +801,43 @@ class SwaggerSpec extends VeoSpringSpec {
         endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/FullElementInDomainDto']]
     }
 
+    def "endpoint documentation is correct for GET /domains/{domainId}/persons"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/persons"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/PageDtoFullPersonInDomainDto']
+
+        and: 'that the parameters are properly documented'
+        with(endPointInfo.parameters) {
+            it*.name ==~ [
+                'domainId',
+                'unit',
+                'displayName',
+                'abbreviation',
+                'subType',
+                'status',
+                'childElementIds',
+                'hasParentElements',
+                'hasChildElements',
+                'description',
+                'designator',
+                'name',
+                'updatedBy',
+                'username',
+                'size',
+                'page',
+                'sortBy',
+                'sortOrder'
+            ]
+            with(it.find{it.name == 'username'}) {
+                it.description == 'filter persons by associated username - pass empty string to fetch persons with no username'
+                it.required == false
+                it.schema == [type: 'string']
+            }
+        }
+    }
+
     def "security is configured globally"() {
         expect:
         with(parsedApiDocs.security) {

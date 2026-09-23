@@ -292,6 +292,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
                 name,
                 abbreviation,
                 updatedBy,
+                null,
                 PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
             .withEmbedRisks(embedRisks),
         e -> entity2Dto(e, embedRisks));

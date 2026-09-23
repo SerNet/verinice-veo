@@ -169,6 +169,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 

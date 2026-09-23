@@ -107,4 +107,6 @@ public interface ElementQuery<T extends Element> extends Query<T, String> {
   void whereIdIn(QueryCondition<UUID> ids);
 
   void whereElementTypeMatches(QueryCondition<ElementType> elementType);
+
+  void whereUsernameMatches(QueryCondition<String> userName);
 }

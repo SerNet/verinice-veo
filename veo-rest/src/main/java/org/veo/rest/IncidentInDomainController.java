@@ -214,6 +214,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformIncident2Dto,
         ElementType.INCIDENT);
@@ -321,6 +322,7 @@ public class IncidentInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

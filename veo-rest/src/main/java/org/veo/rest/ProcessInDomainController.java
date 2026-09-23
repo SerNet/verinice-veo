@@ -224,6 +224,7 @@ public class ProcessInDomainController
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformProcess2Dto,
         ElementType.PROCESS);
@@ -331,6 +332,7 @@ public class ProcessInDomainController
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

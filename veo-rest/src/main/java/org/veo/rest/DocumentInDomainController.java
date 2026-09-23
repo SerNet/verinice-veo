@@ -212,6 +212,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformDocument2Dto,
         ElementType.DOCUMENT);
@@ -319,6 +320,7 @@ public class DocumentInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

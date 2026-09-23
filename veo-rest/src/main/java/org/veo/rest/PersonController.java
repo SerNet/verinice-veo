@@ -169,6 +169,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
             name,
             abbreviation,
             updatedBy,
+            null,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 

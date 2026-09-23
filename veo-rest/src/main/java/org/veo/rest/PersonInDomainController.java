@@ -172,6 +172,11 @@ public class PersonInDomainController implements ElementInDomainResource {
       @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
       @RequestParam(value = NAME_PARAM, required = false) String name,
       @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @Parameter(
+              description =
+                  "filter persons by associated username - pass empty string to fetch persons with no username")
+          @RequestParam(value = "username", required = false)
+          String username,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
               required = false,
@@ -212,6 +217,7 @@ public class PersonInDomainController implements ElementInDomainResource {
             name,
             abbreviation,
             updatedBy,
+            username,
             PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformPerson2Dto,
         ElementType.PERSON);
@@ -318,6 +324,7 @@ public class PersonInDomainController implements ElementInDomainResource {
             null,
             null,
             uuid,
+            null,
             null,
             null,
             null,

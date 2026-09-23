@@ -224,6 +224,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
                 name,
                 abbreviation,
                 updatedBy,
+                null,
                 PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder))
             .withEmbedRisks(embedRisks),
         e -> entity2Dto(e, embedRisks));
