@@ -24,14 +24,18 @@ import org.veo.adapter.presenter.api.common.DomainBaseIdRef
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.common.SymIdRef
+import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ControlImplementationDto
 import org.veo.adapter.presenter.api.dto.CustomAspectDto
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Client
@@ -545,6 +549,78 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
             it.controlImplementations.size() == 1
             with(it.controlImplementations.first()) {
                 it.getCustomAspects(testDomain) == [:]
+            }
+        }
+    }
+    def "Import multiple risks for scenario"() {
+        given:
+        def domainRef = DomainBaseIdRef.fromTargetUri("/domains/${testDomain.id}", referenceAssembler)
+
+        UnitState unitDto = new FullUnitDto().tap {
+            id = UUID.randomUUID()
+            name = 'Super unit'
+            domains = [
+                domainRef
+            ]
+        }
+        def scenarioId = UUID.randomUUID()
+        def asset1Id = UUID.randomUUID()
+        def asset2Id = UUID.randomUUID()
+        def elements = [
+            new FullScenarioDto().tap {
+                id = scenarioId
+                name = 'Crash'
+            },
+            new FullAssetDto().tap {
+                id = asset1Id
+                name = 'Server 1'
+                domains = [
+                    (testDomain.id): new AssetDomainAssociationDto().tap {
+                        subType = 'AST_IT-System'
+                        status = 'NEW'
+                    }
+                ]
+            },
+            new FullAssetDto().tap {
+                id = asset2Id
+                name = 'Server 2'
+                domains = [
+                    (testDomain.id): new AssetDomainAssociationDto().tap {
+                        subType = 'AST_IT-System'
+                        status = 'NEW'
+                    }
+                ]
+            }
+        ]
+        def risks = [
+            new AssetRiskDto().tap {
+                asset = IdRef.fromUri("/assets/${asset1Id}", referenceAssembler)
+                scenario = IdRef.fromUri("/scenarios/${scenarioId}", referenceAssembler)
+            },
+            new AssetRiskDto().tap {
+                asset = IdRef.fromUri("/assets/${asset2Id}", referenceAssembler)
+                scenario = IdRef.fromUri("/scenarios/${scenarioId}", referenceAssembler)
+            },
+        ]
+
+        when:
+        executeInTransaction {
+            useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [
+                new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString())
+            ] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        }
+        def assetsDB = executeInTransaction{
+            assetDataRepository.findAll().each {
+                it.risks*.scenario*.name
+            }
+        }
+
+        then:
+        assetsDB.size() == 2
+        assetsDB.each {
+            with(it) {
+                it.risks.size() == 1
+                it.risks.first().scenario.name == 'Crash'
             }
         }
     }

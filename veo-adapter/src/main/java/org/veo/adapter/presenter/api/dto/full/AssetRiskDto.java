@@ -53,6 +53,7 @@ public class AssetRiskDto extends AbstractRiskDto {
 
   @Valid
   @Schema(accessMode = Schema.AccessMode.READ_ONLY, requiredMode = Schema.RequiredMode.REQUIRED)
+  @EqualsAndHashCode.Include
   private IdRef<Asset> asset = null;
 
   @Builder

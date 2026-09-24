@@ -64,7 +64,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
@@ -76,6 +75,7 @@ import lombok.experimental.Accessors;
   @JsonSubTypes.Type(value = ProcessRiskDto.class),
   @JsonSubTypes.Type(value = ScopeRiskDto.class),
 })
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto
     implements RiskState, ModelDto {
 
@@ -114,6 +114,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   @Valid
   @NotNull(message = "A scenario must be present.")
+  @EqualsAndHashCode.Include
   private IdRef<Scenario> scenario;
 
   @Valid

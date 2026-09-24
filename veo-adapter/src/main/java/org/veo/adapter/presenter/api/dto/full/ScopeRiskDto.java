@@ -53,6 +53,7 @@ public class ScopeRiskDto extends AbstractRiskDto {
 
   @Valid
   @Schema(accessMode = Schema.AccessMode.READ_ONLY, requiredMode = Schema.RequiredMode.REQUIRED)
+  @EqualsAndHashCode.Include
   private IdRef<Scope> scope;
 
   @Builder
