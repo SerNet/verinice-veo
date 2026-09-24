@@ -95,7 +95,6 @@ public class TaskQueryImpl implements TaskQuery {
   private final UserAccessRights accessRights;
   private final Domain domain;
   private final Unit unit;
-  private String username;
   private List<UUID> assignees = null;
 
   @Override
@@ -122,11 +121,6 @@ public class TaskQueryImpl implements TaskQuery {
                             .orElse(null)))
             .toList();
     return new PagedResult<>(pagingConfig, pageItems, totalResultCount, totalPages);
-  }
-
-  @Override
-  public void whereUsernameIs(String username) {
-    this.username = username;
   }
 
   @Override
@@ -180,10 +174,6 @@ public class TaskQueryImpl implements TaskQuery {
                 : "select t.type, t.assignee_id, t.deadline, t.ri_id from t\n");
 
     // WHERE / JOIN (optional filters)
-    if (username != null) {
-      params.put("username", username);
-      query += "inner join element as p on p.db_id = t.assignee_id and p.username = :username\n";
-    }
     if (assignees != null) {
       if (assignees.isEmpty()) {
         query += "where t.assignee_id is null\n";

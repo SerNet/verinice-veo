@@ -31,8 +31,6 @@ import org.veo.core.entity.Task;
 import org.veo.core.entity.ref.TypedId;
 
 public interface TaskQuery extends Query<Task, TaskQuery.SortCriterion> {
-  void whereUsernameIs(String username);
-
   void whereAssigneeIn(@Nonnull Set<TypedId<Person>> persons);
 
   enum SortCriterion {

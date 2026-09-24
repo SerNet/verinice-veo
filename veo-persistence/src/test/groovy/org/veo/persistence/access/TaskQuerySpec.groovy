@@ -83,12 +83,10 @@ class TaskQuerySpec extends AbstractJpaSpec {
         txTemplate.execute {
             def personA = personDataRepository.save(newPerson(unit) {
                 name = 'person a'
-                username = 'pa'
                 associateWithDomain(domain, "Programmer", "CODING")
             })
             def personB = personDataRepository.save(newPerson(unit) {
                 name = 'person b'
-                username = 'pb'
                 associateWithDomain(domain, "Programmer", "CODING")
             })
             def controlA = controlDataRepository.save(newControl(unit) {
@@ -203,31 +201,6 @@ class TaskQuerySpec extends AbstractJpaSpec {
                     assignee().name == "person b"
                 }
                 with(resultPage()[4]) {
-                    type() == TaskType.REQUIREMENT_IMPLEMENTATION
-                    requirementImplementation().origin.name == "servicable"
-                    requirementImplementation().control.name == "control e"
-                    assignee().name == "person b"
-                }
-            }
-
-            and: "tasks can be filtered by username"
-            with(query(unit,domain) {
-                it.whereUsernameIs('pb')
-            }) {
-                totalResults() == 2
-                totalPages() == 1
-                resultPage()*.deadline() == [
-                    LocalDate.parse("2028-01-03"),
-                    null,
-                ]
-
-                with(resultPage()[0]) {
-                    type() == TaskType.REQUIREMENT_IMPLEMENTATION_REVISION
-                    requirementImplementation().origin.name == "servicable"
-                    requirementImplementation().control.name == "control c"
-                    assignee().name == "person b"
-                }
-                with(resultPage()[1]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION
                     requirementImplementation().origin.name == "servicable"
                     requirementImplementation().control.name == "control e"
