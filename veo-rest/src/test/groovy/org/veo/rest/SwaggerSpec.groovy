@@ -2626,6 +2626,27 @@ class SwaggerSpec extends VeoSpringSpec {
         item << parsedApiDocs.paths.entrySet().collectMany { pathEntry-> pathEntry.value.entrySet().collect{[path: pathEntry.key, method: it.key, spec: it.value ]}}.findAll {it.spec.parameters.find{it.name == 'elementType'} != null }
     }
 
+    def "endpoint documentation is correct for GET /domains/{domainId}/tasks"() {
+        given:
+        def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/tasks"].get
+
+        expect:
+        endPointInfo.summary == "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit that are assigned to the authenticated user"
+        endPointInfo.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/PageDtoTaskDto']
+
+        and:
+        with(endPointInfo.parameters) {
+            it*.name ==~ [
+                'domainId',
+                'unit',
+                'size',
+                'page',
+                'sortBy',
+                'sortOrder',
+            ]
+        }
+    }
+
     def getSchema(String name) {
         def schemas = parsedApiDocs.components.schemas
         schemas[name].tap {
