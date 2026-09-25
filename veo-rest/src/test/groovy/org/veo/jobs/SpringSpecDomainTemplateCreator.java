@@ -19,7 +19,6 @@ package org.veo.jobs;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,14 +32,15 @@ import org.springframework.stereotype.Component;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.TemplateItems;
-import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.rest.security.NoRestrictionAccessRight;
 
+import groovy.lang.Closure;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -57,8 +57,9 @@ public class SpringSpecDomainTemplateCreator {
   private final DomainTemplateRepository domainTemplateRepository;
   private Map<UUID, ExportDomainTemplateDto> domainTemplateDtos;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
-  private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
+  private final DomainTemplateService domainTemplateService;
   private final DomainRepository domainRepository;
+  private final ClientRepository clientRepository;
 
   /**
    * Creates a new domain from given domain template ID. If the domain template does not exist, it
@@ -70,23 +71,21 @@ public class SpringSpecDomainTemplateCreator {
     if (!domainTemplateRepository.exists(templateId)) {
       createTestTemplate(templateId);
     }
-    AsSystemUser.runAsAdmin(
-        () -> {
-          createDomainFromTemplateUseCase.execute(
-              new CreateDomainFromTemplateUseCase.InputData(
-                  templateId, client.getId(), templateItems),
-              NoRestrictionAccessRight.from(client.getIdAsString()));
-        });
-    return domainRepository.findAllActiveByClient(client.getId()).stream()
-        .filter(
-            d ->
-                Optional.ofNullable(d.getDomainTemplate())
-                    .map(DomainTemplate::getId)
-                    .map(templateId::equals)
-                    .orElse(false))
-        .sorted(Comparator.comparing(Domain::getCreatedAt).reversed())
-        .findFirst()
-        .orElseThrow();
+    return new UserSwitcher()
+        .runAsAdmin(
+            new Closure<>(this) {
+              @Override
+              public Domain call() {
+                var c = clientRepository.getActiveById(client.getId());
+                var domain = domainTemplateService.createDomain(c, templateId, templateItems);
+                c.addToDomains(domain);
+                c = clientRepository.save(c);
+                return c.getDomains().stream()
+                    .filter(t -> t.getId().equals(domain.getId()))
+                    .findFirst()
+                    .get();
+              }
+            });
   }
 
   /**

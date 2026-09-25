@@ -47,7 +47,7 @@ class UserSwitcher {
         }
     }
 
-    def runAsAdmin(final Closure closure) {
+    public <V> V runAsAdmin(final Closure<V> closure) {
         runAsUser('admin', true, null, closure)
     }
 }
