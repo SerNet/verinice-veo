@@ -91,7 +91,7 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
       retryTemplate.setRetryPolicy(retryPolicy);
 
       BackOffPolicy backOffPolicy =
-          BackOffPolicyBuilder.newBuilder().delay(30l).maxDelay(500l).build();
+          BackOffPolicyBuilder.newBuilder().delay(30L).maxDelay(500L).build();
       retryTemplate.setBackOffPolicy(backOffPolicy);
 
       return retryTemplate.execute(ctx -> doExecuteWithIsolation(useCase, resultSupplier));
