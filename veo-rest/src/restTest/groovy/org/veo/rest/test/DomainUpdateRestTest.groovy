@@ -32,7 +32,7 @@ class DomainUpdateRestTest extends VeoRestTest {
     def setup() {
         templateName = "domain update test template ${UUID.randomUUID()}"
         currentDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
-        post("/domain-templates/$currentDomainTemplateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
+        post("/admin/domain-templates/$currentDomainTemplateId/create-domains-in-all-clients", null, 200, ADMIN)
         oldDomainId = domains.find { it.name == templateName }.id
         unitId = postNewUnit("U1", [oldDomainId, testDomainId]).resourceId
     }

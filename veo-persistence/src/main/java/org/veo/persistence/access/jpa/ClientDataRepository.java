@@ -38,18 +38,8 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
   @Query(
       """
                    select c from client c
+                   left join fetch c.domains
                    where c.state = org.veo.core.entity.ClientState.ACTIVATED
-                   and not exists (select d from domain d where d.owner = c and d.domainTemplate.id = ?1)
           """)
-  Set<ClientData> findAllActiveWhereDomainTemplateNotApplied(UUID uuid);
-
-  @Query(
-      """
-                       select c from client c
-                       where c.state = org.veo.core.entity.ClientState.ACTIVATED
-                       and not exists (select d from domain d where d.owner = c and d.domainTemplate.id = ?1)
-                       and exists (select d from domain d where d.owner = c and d.domainTemplate.name = ?2)
-              """)
-  Set<ClientData> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
-      UUID uuid, String name);
+  Set<ClientData> findAllActiveWithDomains();
 }

@@ -36,6 +36,7 @@ veo:
     unit-count: dracula
     system-messages: hello
     domain-template-upload: temp
+    create-domains: dom
 
 spring:
   datasource:

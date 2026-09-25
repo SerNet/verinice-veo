@@ -129,8 +129,8 @@ import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
-import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateDomainsInAllClientsUseCase;
 import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
@@ -143,7 +143,6 @@ import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
 import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
-import org.veo.core.usecase.domain.GetClientIdsWhereDomainTemplateNotAppliedUseCase;
 import org.veo.core.usecase.domain.GetDomainUpdatesUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -991,22 +990,12 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetClientIdsWhereDomainTemplateNotAppliedUseCase
-      getClientIdsWhereDomainTemplateNotAppliedUseCase(
-          AccountProvider accountProvider,
-          ClientRepository clientRepository,
-          DomainTemplateRepository domainTemplateRepository) {
-    return new GetClientIdsWhereDomainTemplateNotAppliedUseCase(
-        accountProvider, clientRepository, domainTemplateRepository);
-  }
-
-  @Bean
-  public CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase(
-      AccountProvider accountProvider,
+  public CreateDomainsInAllClientsUseCase getClientIdsWhereDomainTemplateNotAppliedUseCase(
       ClientRepository clientRepository,
+      DomainTemplateRepository domainTemplateRepository,
       DomainTemplateService domainTemplateService) {
-    return new CreateDomainFromTemplateUseCase(
-        accountProvider, clientRepository, domainTemplateService);
+    return new CreateDomainsInAllClientsUseCase(
+        clientRepository, domainTemplateRepository, domainTemplateService);
   }
 
   @Bean

@@ -168,6 +168,7 @@ http_rest_tests:
       VEO_APIKEYS_UNITCOUNT: "dracula"
       VEO_APIKEYS_SYSTEMMESSAGES: "hello"
       VEO_APIKEYS_DOMAINTEMPLATEUPLOAD: "temp"
+      VEO_APIKEYS_CREATEDOMAINS: "dom"
   - name: rabbitmq:4.1.3-management-alpine@sha256:7be3e8a1cf96af968cda654d7a80fd6e9faf036da6acb3927b784944c6502f58
     alias: rabbitmq
   variables:

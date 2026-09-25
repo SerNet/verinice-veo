@@ -47,8 +47,5 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
     return client;
   }
 
-  Set<Client> findAllActiveWhereDomainTemplateNotApplied(UUID domainTemplateId);
-
-  Set<Client> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
-      UUID uuid, String name);
+  Set<Client> findAllActiveWithDomains();
 }

@@ -19,9 +19,11 @@ package org.veo.rest
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.http.HttpStatus
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.Client
 import org.veo.core.entity.specification.NotAllowedException
 import org.veo.jobs.UserSwitcher
 
@@ -236,5 +238,78 @@ class AdminControllerMvcITSpec extends ContentSpec {
 
         then:
         thrown(NotAllowedException)
+    }
+
+    def "create DSGVO domain for all clients"() {
+        given: "three clients"
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        def client1 = clientRepository.save(newClient {})
+        def client2 = clientRepository.save(newClient {})
+        def client3 = clientRepository.save(newClient {})
+
+        when: "creating the DSGVO domain for the client"
+        def response = parseJson(post("/admin/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/create-domains-in-all-clients", [:], HttpStatus.SC_OK))
+
+        then:
+        response.clientIdsNoDomainCreated.empty
+        response.clientIdsDomainCreated ==~ [
+            client1.idAsString,
+            client2.idAsString,
+            client3.idAsString
+        ]
+
+        when:
+        client1 = loadClientAndInitializeDomains(client1.id)
+        client2 = loadClientAndInitializeDomains(client2.id)
+        client3 = loadClientAndInitializeDomains(client3.id)
+
+        then: "the clients get the new domain"
+        client1.domains.size() == 1
+        client2.domains.size() == 1
+        client3.domains.size() == 1
+    }
+
+    def "create DSGVO domain for all clients with no previous domain"() {
+        given: "three clients"
+        executeInTransaction {
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+        }
+        def client1 = clientRepository.save(newClient {})
+        def client2 = clientRepository.save(newClient {})
+        def client3 = clientRepository.save(newClient {})
+        createTestDomain(client1, DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomain(client2, DSGVO_DOMAINTEMPLATE_V2_UUID)
+
+        when: "creating the DSGVO_V2 domain for all clients with no previous DSGVO"
+        def response = parseJson(post("/admin/domain-templates/$DSGVO_DOMAINTEMPLATE_V2_UUID/create-domains-in-all-clients", [:], HttpStatus.SC_OK))
+
+        then:
+        response.clientIdsNoDomainCreated ==~ [
+            client1.idAsString,
+            client2.idAsString
+        ]
+        response.clientIdsDomainCreated == [client3.idAsString]
+
+        when:
+        client1 = loadClientAndInitializeDomains(client1.id)
+        client2 = loadClientAndInitializeDomains(client2.id)
+        client3 = loadClientAndInitializeDomains(client3.id)
+
+        then: "the clients get the new domain except for the client without previous version"
+        client1.domains.size() == 1
+        client2.domains.size() == 1
+        client3.domains.size() == 1
+    }
+
+    Client loadClientAndInitializeDomains(UUID clientId) {
+        txTemplate.execute{
+            clientRepository.findById(clientId).get().tap {
+                //initialize lazy associations
+                domains.each {
+                    it.name
+                }
+            }
+        }
     }
 }

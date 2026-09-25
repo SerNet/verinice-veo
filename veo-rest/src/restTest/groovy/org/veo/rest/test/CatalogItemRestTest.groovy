@@ -145,7 +145,7 @@ class CatalogItemRestTest extends VeoRestTest {
         def newDomainTemplateId = post("/content-creation/domain-templates", exportedDomainTemplate, 201, CONTENT_CREATOR).body.resourceId
 
         and: "applying the template in another client"
-        post("/domain-templates/$newDomainTemplateId/createdomains?clientids=$veoSecondaryClientId", null, 204, ADMIN)
+        post("/admin/domain-templates/$newDomainTemplateId/create-domains-in-all-clients", null, 200, ADMIN)
         def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
 
         then: "the catalog item can be found in the new domain under the original symbolic ID"

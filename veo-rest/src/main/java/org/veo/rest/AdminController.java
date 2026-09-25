@@ -20,6 +20,7 @@ package org.veo.rest;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.specification.NotAllowedException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.domain.CreateDomainsInAllClientsUseCase;
 import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
 import org.veo.core.usecase.message.SaveSystemMessageUseCase;
 import org.veo.core.usecase.unit.GetUnitCountUseCase;
@@ -53,6 +55,8 @@ import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +73,7 @@ public class AdminController {
   private final SaveSystemMessageUseCase saveSystemMessageUseCase;
   private final DeleteSystemMessageUseCase deleteSystemMessageUseCase;
   private final GetUnitCountUseCase getUnitCountUseCase;
+  private final CreateDomainsInAllClientsUseCase createDomainsInAllClientsUseCase;
 
   public static final String URL_BASE_PATH = "/admin";
 
@@ -157,6 +162,26 @@ public class AdminController {
         getUnitCountUseCase,
         UseCase.EmptyInput.INSTANCE,
         GetUnitCountUseCase.OutputData::numberOfUnits);
+  }
+
+  @PostMapping(value = "/domain-templates/{templateId}/create-domains-in-all-clients")
+  @Operation(
+      summary = "Creates domains from a domain template",
+      description =
+          "Creates domains from a domain template in all clients that do not use that domain in any version",
+      parameters = {@Parameter(name = "templateId", description = "The id of the domain template")})
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Domain(s) created")})
+  @SecurityRequirements({
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH),
+    @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_APIKEY)
+  })
+  public CompletableFuture<ResponseEntity<UseCase.OutputData>> createDomainFromTemplate(
+      @PathVariable UUID templateId) {
+    return (useCaseInteractor.execute(
+            createDomainsInAllClientsUseCase,
+            new UseCase.EntityId(templateId),
+            Function.identity()))
+        .thenApply(ResponseEntity::ok);
   }
 
   private void ensureEditMessagesPermission(WebRequest request, ApplicationUser applicationUser) {

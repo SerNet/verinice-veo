@@ -1,0 +1,91 @@
+/*
+ * verinice.veo
+ * Copyright (C) 2026  Jochen Kemnade
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.veo.core.usecase.domain;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import jakarta.validation.Valid;
+
+import org.veo.core.UserAccessRights;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.MissingAdminPrivilegesException;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.TemplateItems;
+import org.veo.core.usecase.TransactionalUseCase;
+import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.service.DomainTemplateService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RequiredArgsConstructor
+@Slf4j
+public class CreateDomainsInAllClientsUseCase
+    implements TransactionalUseCase<UseCase.EntityId, CreateDomainsInAllClientsUseCase.OutputData> {
+
+  private final ClientRepository clientRepository;
+  private final DomainTemplateRepository domainTemplateRepository;
+  private final DomainTemplateService domainTemplateService;
+
+  @Override
+  public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
+    if (!userAccessRights.isAdmin()) {
+      throw new MissingAdminPrivilegesException();
+    }
+
+    var dt =
+        domainTemplateRepository
+            .findById(input.id())
+            .orElseThrow(() -> new NotFoundException(input.id(), DomainTemplate.class));
+
+    Set<UUID> clientsWithDomain = new HashSet<>();
+    Set<UUID> clientsWithoutDomain = new HashSet<>();
+    var clients = clientRepository.findAllActiveWithDomains();
+    log.info("Loaded {} clients", clients.size());
+
+    for (Client client : clients) {
+      if (client.getDomains().stream().anyMatch(domain -> domain.getName().equals(dt.getName()))) {
+        clientsWithDomain.add(client.getId());
+      } else {
+        client.addToDomains(
+            domainTemplateService.createDomain(
+                client, input.id(), TemplateItems.CATALOG_AND_PROFILES));
+        clientsWithoutDomain.add(client.getId());
+      }
+    }
+
+    log.info("Created domain in {} / {} clients", clientsWithoutDomain.size(), clients.size());
+
+    return new OutputData(clientsWithDomain, clientsWithoutDomain);
+  }
+
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
+  @Valid
+  public record OutputData(
+      @Valid Set<UUID> clientIdsNoDomainCreated, @Valid Set<UUID> clientIdsDomainCreated)
+      implements UseCase.OutputData {}
+}

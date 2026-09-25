@@ -376,7 +376,7 @@ class VeoRestTest extends Specification {
         removeReadOnlyFields(domain)
         domain.name = "copy of $domain.name $domain.templateVersion ${randomUUID().toString().subSequence(0, 5)}"
         def templateId = post("/content-creation/domain-templates", domain, 201, CONTENT_CREATOR).body.resourceId
-        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
+        post("/admin/domain-templates/$templateId/create-domains-in-all-clients", null, 200, ADMIN)
         return get("/domains").body.find { it.name == domain.name }.id
     }
 

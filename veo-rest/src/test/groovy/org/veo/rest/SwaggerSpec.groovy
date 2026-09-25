@@ -515,9 +515,9 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-    def "endpoint documentation is correct for CreateDomainUseCase"() {
+    def "endpoint documentation is correct for POST /admin/domain-templates/{templateId}/create-domains-in-all-clients"() {
         when: "retrieving the information about the endpoint"
-        def endPointInfo = parsedApiDocs.paths["/domain-templates/{id}/createdomains"]
+        def endPointInfo = parsedApiDocs.paths["/admin/domain-templates/{templateId}/create-domains-in-all-clients"]
 
         then: "the information is found"
         endPointInfo != null
@@ -529,24 +529,11 @@ class SwaggerSpec extends VeoSpringSpec {
         endPointInfo.post.summary == 'Creates domains from a domain template'
 
         and: 'it contains information about the query parameters'
-        with(endPointInfo.post.parameters[0]) {
-            name == 'restrictToClientsWithExistingDomain'
-            it.in == 'query'
-            required == false
-            schema.type == 'boolean'
-            schema.default == true
-        }
-        with(endPointInfo.post.parameters[1]) {
-            name == 'clientids'
-            it.in == 'query'
-            required == false
-            with(schema) {
-                type == 'array'
-                items == ['type': 'string', 'format': 'uuid']
-            }
-        }
-        with(endPointInfo.post.parameters[2]) {
-            name == 'id'
+        def params = endPointInfo.post.parameters
+        params.size() == 1
+
+        with(params.first()) {
+            name == 'templateId'
             it.in == 'path'
             required == true
             with(schema) {
@@ -872,6 +859,7 @@ class SwaggerSpec extends VeoSpringSpec {
                                     'delete'
                                 ] // has API key auth
                                 || it.path == '/content-creation/domain-templates' && it.method == 'post' // has API key auth
+                                || it.path == '/admin/domain-templates/{templateId}/create-domains-in-all-clients' && it.method == 'post' // has API key auth
                                 )
                     }
                 }

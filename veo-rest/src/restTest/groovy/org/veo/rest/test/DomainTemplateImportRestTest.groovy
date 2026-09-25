@@ -36,7 +36,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def templateId = post("/content-creation/domain-templates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
 
         and: "creating and fetching a new domain based on the template"
-        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, UserType.ADMIN)
+        post("/admin/domain-templates/$templateId/create-domains-in-all-clients", null, 200, UserType.ADMIN)
         def domain = get("/domains").body.find { it.name == template.name }
 
         then: "the domain contains metadata from the template"
@@ -77,7 +77,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def templateId = postMultipart("/content-creation/domain-templates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
 
         and: "creating and fetching a new domain based on the template"
-        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, UserType.ADMIN)
+        post("/admin/domain-templates/$templateId/create-domains-in-all-clients", null, 200, UserType.ADMIN)
         def domain = get("/domains").body.find { it.name == template.name }
 
         then: "the domain contains metadata from the template"

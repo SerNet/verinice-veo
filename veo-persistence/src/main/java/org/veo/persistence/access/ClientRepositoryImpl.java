@@ -18,7 +18,6 @@
 package org.veo.persistence.access;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -51,21 +50,8 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Set<Client> findAllActiveWhereDomainTemplateNotApplied(UUID domainTemplateId) {
-    return clientDataRepository
-        .findAllActiveWhereDomainTemplateNotApplied(domainTemplateId)
-        .stream()
-        .map(Client.class::cast)
-        .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Set<Client> findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
-      UUID domainTemplateId, String name) {
-    return clientDataRepository
-        .findAllActiveWhereDomainTemplateNotAppliedAndWithDomainTemplateOfName(
-            domainTemplateId, name)
-        .stream()
+  public Set<Client> findAllActiveWithDomains() {
+    return clientDataRepository.findAllActiveWithDomains().stream()
         .map(Client.class::cast)
         .collect(Collectors.toSet());
   }

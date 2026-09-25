@@ -333,7 +333,7 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         def newDomainTemplateId = post("/content-creation/domain-templates", exportedDomainTemplate, 201, CONTENT_CREATOR).body.resourceId
 
         // apply the imported profile to the target unit in another client
-        post("/domain-templates/$newDomainTemplateId/createdomains?restrictToClientsWithExistingDomain=false", null, 204, ADMIN)
+        post("/admin/domain-templates/$newDomainTemplateId/create-domains-in-all-clients", null, 200, ADMIN)
         def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
         def profileInOtherClientId = get("/domains/$newDomainInOtherClientId/profiles", 200, SECONDARY_CLIENT_USER).body.find {
             it.name == "test profile"

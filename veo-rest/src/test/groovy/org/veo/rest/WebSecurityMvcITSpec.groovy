@@ -74,7 +74,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
 
         and: "domain creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/domain-templates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/createdomains"))
+                .post("/admin/domain-templates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/create-domains-in-all-clients"))
                 .andReturn().response.status == 403
     }
 
@@ -279,5 +279,13 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .post("/content-creation/domain-templates").header('X-API-KEY', 'invalid')).andReturn().response.status == 401
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domain-templates").header('X-API-KEY', 'temp')).andReturn().response.status == 415
+    }
+
+    def "API key authentication works for domain creation"() {
+        expect:
+        mvc.perform(MockMvcRequestBuilders
+                .post("/admin/domain-templates/d52f4fcd-f4a6-44bd-a44d-d25d079daac5/create-domains-in-all-clients").header('X-API-KEY', 'invalid')).andReturn().response.status == 401
+        mvc.perform(MockMvcRequestBuilders
+                .post("/admin/domain-templates/d52f4fcd-f4a6-44bd-a44d-d25d079daac5/create-domains-in-all-clients").header('X-API-KEY', 'dom')).andReturn().response.status == 200
     }
 }

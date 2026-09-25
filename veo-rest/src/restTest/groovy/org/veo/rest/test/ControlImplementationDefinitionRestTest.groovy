@@ -192,7 +192,7 @@ class ControlImplementationDefinitionRestTest extends VeoRestTest {
         ], 201, CONTENT_CREATOR).body.id
 
         and: "creating domains from the template in all clients"
-        post("/domain-templates/$templateId/createdomains?restrictToClientsWithExistingDomain=false", [:], 204, UserType.ADMIN)
+        post("/admin/domain-templates/$templateId/create-domains-in-all-clients", [:], 200, UserType.ADMIN)
 
         then: "wait for domain creation to complete"
         defaultPolling.within(10) {

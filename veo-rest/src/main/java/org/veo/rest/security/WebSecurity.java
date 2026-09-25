@@ -64,6 +64,9 @@ public class WebSecurity {
   @Value("${veo.api-keys.domain-template-upload}")
   private String dtUplpoadApiKey;
 
+  @Value("${veo.api-keys.create-domains}")
+  private String createDomainsApiKey;
+
   private static final String ROOT_PATH = "/";
 
   private static final String[] DOMAINTEMPLATE_PATHS = {
@@ -121,11 +124,13 @@ public class WebSecurity {
   private static final String SYSTEM_MESSAGES_PATH = "/messages";
   private static final String ADMIN_SYSTEM_MESSAGES_PATH = "/admin/messages";
   private static final String ADMIN_SYSTEM_MESSAGE_PATH = "/admin/messages/*";
+  private static final String CREATE_DOMAINS_PATH =
+      "/admin/domain-templates/*/create-domains-in-all-clients";
 
   private static final String CC_DOMAIN_TEMPLATE_PATH = "/content-creation/domain-templates";
 
   // Paths that must only be accessible by the admin role:
-  private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
+  private static final String[] ADMIN_PATHS = {"/admin/**"};
 
   // Paths that never change state on the server:
   // Inspections are transient and may be POSTed by regular users.
@@ -208,6 +213,21 @@ public class WebSecurity {
                         return new AuthorizationDecision(false);
                       },
                       AuthorityAuthorizationManager.hasRole("veo-content-creator")));
+
+          auth.requestMatchers(HttpMethod.POST, CREATE_DOMAINS_PATH)
+              .access(
+                  AuthorizationManagers.anyOf(
+                      (_, object) -> {
+                        if (createDomainsApiKey.equals(
+                            object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
+                          SecurityContextHolder.getContext()
+                              .setAuthentication(
+                                  new PreAuthenticatedAuthenticationToken("API client", null));
+                          return new AuthorizationDecision(true);
+                        }
+                        return new AuthorizationDecision(false);
+                      },
+                      AuthorityAuthorizationManager.hasRole("veo-admin")));
 
           // admin access:
           auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");

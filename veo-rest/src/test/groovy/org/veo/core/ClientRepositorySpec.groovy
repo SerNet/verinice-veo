@@ -20,7 +20,6 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.ClientState
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
@@ -270,57 +269,5 @@ class ClientRepositorySpec extends VeoSpringSpec {
         ConstraintViolationException ex = thrown(ConstraintViolationException)
         ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogItems\[].elementType/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
-    }
-
-    def "finds clients where domain template not applied"() {
-        given:
-        def domainTemplateA = domainTemplateRepository.save(newDomainTemplate {})
-        def domainTemplateB = domainTemplateRepository.save(newDomainTemplate {})
-        clientRepository.saveAll ([
-            newClient {
-                name = "c0"
-                domains = []
-            },
-            newClient {
-                name = "c1"
-                domains = [
-                    newDomain(it),
-                    newDomain(it) {
-                        domainTemplate = domainTemplateB
-                    },
-                ]
-            },
-            newClient {
-                name = "c2"
-                domains = [
-                    newDomain(it) {
-                        domainTemplate = domainTemplateB
-                    },
-                    newDomain(it) {
-                        domainTemplate = domainTemplateA
-                    },
-                ]
-            },
-            newClient {
-                name = "c3"
-                domains = [
-                    newDomain(it) {
-                        domainTemplate = domainTemplateA
-                    },
-                    newDomain(it),
-                    newDomain(it),
-                ]
-            },
-            newClient {
-                name = "c4"
-                state = ClientState.DEACTIVATED
-            }
-        ].toSet())
-
-        when:
-        def results = clientRepository.findAllActiveWhereDomainTemplateNotApplied(domainTemplateA.id)
-
-        then:
-        results*.name ==~ ["c0", "c1"]
     }
 }
