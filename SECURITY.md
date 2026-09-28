@@ -17,7 +17,7 @@ And of course you can use the open source code in our and other repositories:
 - [github.com/SerNet/verinice-veo](https://github.com/SerNet/verinice-veo)
 - [github.com/SerNet/verinice-veo-accounts](https://github.com/SerNet/verinice-veo-accounts)
 - [github.com/SerNet/verinice-veo-reporting](https://github.com/SerNet/verinice-veo-reporting)
-- [github.com/SerNet/verincie-veo-history](https://github.com/SerNet/verincie-veo-history)
+- [github.com/SerNet/verinice-veo-history](https://github.com/SerNet/verinice-veo-history)
 - [github.com/SerNet/verinice-veo-forms](https://github.com/SerNet/verinice-veo-forms)
 
 ## Reporting a vulnerability
