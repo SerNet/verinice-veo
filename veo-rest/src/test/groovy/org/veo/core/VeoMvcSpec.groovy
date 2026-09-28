@@ -80,11 +80,11 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 expectedStatusCode)
     }
 
-    ResultActions post(String url, Map content, int expectedStatusCode = 201) {
-        post(url, content, null, expectedStatusCode)
+    ResultActions post(String url, Map content, int expectedStatusCode = 201, boolean throwBackendException = true) {
+        post(url, content, null, expectedStatusCode, throwBackendException)
     }
 
-    ResultActions post(String url, Map content, Map headers, int expectedStatusCode = 201) {
+    ResultActions post(String url, Map content, Map headers, int expectedStatusCode = 201, boolean throwBackendException = true) {
         doRequest(MockMvcRequestBuilders.post(url).tap{b->
             contentType(APPLICATION_JSON)
             b.content(toJson(content))
@@ -92,7 +92,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             headers?.each {k,v->
                 b.header(k, v)
             }
-        },expectedStatusCode)
+        },expectedStatusCode, throwBackendException)
     }
 
     ResultActions get(URI uri, int expectedStatusCode = 200) {
@@ -147,13 +147,15 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         , expectedStatusCode)
     }
 
-    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode) throws Exception {
+    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode, boolean throwBackendException = true) throws Exception {
         boolean expectSuccessfulRequest = HttpStatus.resolve(expectedStatusCode).is2xxSuccessful()
         def asyncActions = mvc.perform(requestBuilder)
         def asyncResult = asyncActions.andReturn()
         if (asyncResult.resolvedException != null) {
             asyncActions.andExpect(status().is(expectedStatusCode))
-            throw asyncResult.resolvedException
+            if (throwBackendException) {
+                throw asyncResult.resolvedException
+            }
         }
         if (expectSuccessfulRequest) {
             asyncResult.request.with {
@@ -174,7 +176,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             actions.andExpect(status().is(expectedStatusCode))
         } else {
             actions.andExpect(status().is(expectedStatusCode))
-            if(result.resolvedException != null) {
+            if(throwBackendException && result.resolvedException != null) {
                 throw result.resolvedException
             }
         }
