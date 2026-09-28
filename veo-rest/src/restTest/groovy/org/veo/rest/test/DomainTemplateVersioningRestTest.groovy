@@ -17,7 +17,6 @@
  */
 package org.veo.rest.test
 
-import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 class DomainTemplateVersioningRestTest extends DomainRestTest {
@@ -61,58 +60,6 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
             assert post("/content-creation/domains/$domainId/template", [version: it], 422, CONTENT_CREATOR)
             .body.message == "Unexpected version - expected next patch (1.1.1), minor (1.2.0) or major (2.0.0)."
         }
-    }
-
-    def "hotfix can be created from old minor version"() {
-        when: "creating a new minor version template"
-        post("/content-creation/domains/$domainId/template", [version: "1.1.0"], 201, CONTENT_CREATOR).body.id
-
-        and: "creating a hotfix domain from the original template version"
-        post("/domain-templates/$templateId_1_0_0/createdomains", [:], 204, ADMIN)
-        def oldMinorDomainId = get("/domains").body.find { it.name == domainName && it.templateVersion == "1.0.0" }.id
-
-        then: "the outdated domain cannot be used to create a new minor or major version"
-        post("/content-creation/domains/$oldMinorDomainId/template", [version: "2.0.0"], 422, CONTENT_CREATOR)
-        .body.message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 1.1.0."
-        post("/content-creation/domains/$oldMinorDomainId/template", [version: "1.1.0"], 409, CONTENT_CREATOR)
-        .body.message == "Domain template $domainName 1.1.0 already exists"
-
-        when: "creating a patch version from the old minor"
-        post("/content-creation/domains/$oldMinorDomainId/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
-
-        then: "all three templates exist"
-        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
-
-        when: "creating yet another domain from the original version"
-        post("/domain-templates/$templateId_1_0_0/createdomains", [:], 204, ADMIN)
-        def anotherOldMinorDomainId = get("/domains").body.find { it.name == domainName && it.templateVersion == "1.0.0" }.id
-
-        then: "that outdated domain cannot be used to create yet another patch"
-        post("/content-creation/domains/$anotherOldMinorDomainId/template", [version: "1.0.1"], 409, CONTENT_CREATOR)
-        .body.message == "Domain template $domainName 1.0.1 already exists"
-        post("/content-creation/domains/$anotherOldMinorDomainId/template", [version: "1.0.2"], 422, CONTENT_CREATOR)
-        .body.message == "Unexpected version - expected next patch (1.0.1), minor (1.1.0) or major (2.0.0)."
-    }
-
-    def "hotfix can be created from old major version"() {
-        when: "creating a new major version template"
-        post("/content-creation/domains/$domainId/template", [version: "2.0.0"], 201, CONTENT_CREATOR).body.id
-
-        and: "creating a hotfix domain from the original template version"
-        post("/domain-templates/$templateId_1_0_0/createdomains", [:], 204, ADMIN)
-        def oldMajorDomainId = get("/domains").body.find { it.name == domainName && it.templateVersion == "1.0.0" }.id
-
-        then: "the outdated domain cannot be used to create a new minor or major version"
-        post("/content-creation/domains/$oldMajorDomainId/template", [version: "1.1.0"], 422, CONTENT_CREATOR)
-        .body.message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 2.0.0."
-        post("/content-creation/domains/$oldMajorDomainId/template", [version: "2.0.0"], 409, CONTENT_CREATOR)
-        .body.message == "Domain template $domainName 2.0.0 already exists"
-
-        when: "creating a patch version from the old major"
-        post("/content-creation/domains/$oldMajorDomainId/template", [version: "1.0.1"], 201, CONTENT_CREATOR).body.id
-
-        then: "all three templates exist"
-        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
     }
 
     def "breaking changes can only be released as a major"() {

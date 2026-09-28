@@ -46,6 +46,7 @@ import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.domain.DomainInUseException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -2573,6 +2574,75 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         noExceptionThrown()
+    }
+
+    @WithUserDetails("content-creator")
+    def "hotfix can be created from old minor version"() {
+        given:
+        def domainName = "domain template versioning test ${UUID.randomUUID()}"
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: domainName,
+            authority: "me",
+        ], 201)).resourceId
+
+        def templateId_1_0_0 = UUID.fromString(parseJson(post("/content-creation/domains/$domainId/template", [version: "1.0.0"], 201)).id)
+
+        when: "creating a new minor version template"
+        post("/content-creation/domains/$domainId/template", [version: "1.1.0"], 201)
+
+        and: "creating a hotfix domain from the original template version"
+        def oldMinorDomainId = createTestDomain(client, templateId_1_0_0, TemplateItems.NONE).idAsString
+
+        then: "the outdated domain cannot be used to create a new minor or major version"
+        parseJson(post("/content-creation/domains/$oldMinorDomainId/template", [version: "2.0.0"], 422, false))
+        .message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 1.1.0."
+        parseJson(post("/content-creation/domains/$oldMinorDomainId/template", [version: "1.1.0"], 409, false))
+        .message == "Domain template $domainName 1.1.0 already exists"
+
+        when: "creating a patch version from the old minor"
+        post("/content-creation/domains/$oldMinorDomainId/template", [version: "1.0.1"], 201)
+
+        then: "all three templates exist"
+        parseJson(get("/domain-templates")).findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
+
+        when: "creating yet another domain from the original version"
+        def anotherOldMinorDomainId = createTestDomain(client, templateId_1_0_0, TemplateItems.NONE).idAsString
+
+        then: "that outdated domain cannot be used to create yet another patch"
+        parseJson(post("/content-creation/domains/$anotherOldMinorDomainId/template", [version: "1.0.1"], 409, false))
+        .message == "Domain template $domainName 1.0.1 already exists"
+        parseJson(post("/content-creation/domains/$anotherOldMinorDomainId/template", [version: "1.0.2"], 422, false))
+        .message == "Unexpected version - expected next patch (1.0.1), minor (1.1.0) or major (2.0.0)."
+    }
+
+    @WithUserDetails("content-creator")
+    def "hotfix can be created from old major version"() {
+        given:
+        def domainName = "domain template versioning test ${UUID.randomUUID()}"
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: domainName,
+            authority: "me",
+        ], 201)).resourceId
+
+        def templateId_1_0_0 = UUID.fromString(parseJson(post("/content-creation/domains/$domainId/template", [version: "1.0.0"], 201)).id)
+
+        when: "creating a new major version template"
+        post("/content-creation/domains/$domainId/template", [version: "2.0.0"], 201)
+
+        and: "creating a hotfix domain from the original template version"
+        def oldMajorDomainId = createTestDomain(client, templateId_1_0_0, TemplateItems.NONE).idAsString
+
+        then: "the outdated domain cannot be used to create a new minor or major version"
+        parseJson(post("/content-creation/domains/$oldMajorDomainId/template", [version: "1.1.0"], 422, false))
+        .message == "Given domain is based on version 1.0.0, but a new minor or major version can only be created from the latest template 2.0.0."
+        parseJson(post("/content-creation/domains/$oldMajorDomainId/template", [version: "2.0.0"], 409, false))
+        .message == "Domain template $domainName 2.0.0 already exists"
+
+        when: "creating a patch version from the old major"
+        post("/content-creation/domains/$oldMajorDomainId/template", [version: "1.0.1"], 201)
+
+        then: "all three templates exist"
+        parseJson(get("/domain-templates")).findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
     }
 
     private List<Map> migrationDefinitionChangeKey() {
