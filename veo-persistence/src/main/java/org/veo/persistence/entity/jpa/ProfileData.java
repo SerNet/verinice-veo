@@ -47,7 +47,6 @@ import org.veo.core.entity.ProfileState;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -69,7 +68,6 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  @EqualsAndHashCode.Include
   @Column(name = "db_id")
   private UUID id;
 
