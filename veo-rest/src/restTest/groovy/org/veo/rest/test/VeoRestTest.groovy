@@ -48,11 +48,9 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 
 import org.veo.core.entity.event.ClientEvent.ClientChangeType
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.jobs.RestTestDomainTemplateCreator
 import org.veo.message.EventDispatcher
 import org.veo.message.EventMessage
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.RestApplication
 import org.veo.rest.security.WebSecurity
 
@@ -84,9 +82,6 @@ class VeoRestTest extends Specification {
     JsonSlurper jsonSlurper
 
     static AuthzClient authzClient
-
-    @Shared
-    EntityFactory factory = new EntityDataFactory()
 
     @Value('${veo.resttest.baseUrl}')
     private String configuredBaseUrl
