@@ -348,7 +348,7 @@ class VeoRestTest extends Specification {
             user = secondaryClientUserName
             pass = secondaryClientUserPass
         }
-        if (userTokenCache.hasProperty(user)) {
+        if (userTokenCache.containsKey(user)) {
             return userTokenCache[user]
         }
         def newToken = HttpClientBuilder.create().with {
