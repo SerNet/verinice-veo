@@ -57,7 +57,6 @@ import org.veo.rest.security.WebSecurity
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
-import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -78,8 +77,7 @@ class VeoRestTest extends Specification {
     @Autowired
     EventDispatcher eventDispatcher
 
-    @Shared
-    JsonSlurper jsonSlurper
+    static JsonSlurper jsonSlurper = new JsonSlurper()
 
     static AuthzClient authzClient
 
@@ -164,10 +162,6 @@ class VeoRestTest extends Specification {
         String getLocation() {
             return headers.getLocation()?.toString()
         }
-    }
-
-    def setupSpec() {
-        jsonSlurper = new JsonSlurper()
     }
 
     def setup() {
