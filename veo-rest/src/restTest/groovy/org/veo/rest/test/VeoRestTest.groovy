@@ -83,6 +83,8 @@ class VeoRestTest extends Specification {
     @Shared
     JsonSlurper jsonSlurper
 
+    static AuthzClient authzClient
+
     @Shared
     EntityFactory factory = new EntityDataFactory()
 
@@ -351,17 +353,18 @@ class VeoRestTest extends Specification {
         if (userTokenCache.containsKey(user)) {
             return userTokenCache[user]
         }
-        def newToken = HttpClientBuilder.create().with {
-            if (proxyHost) {
-                it.proxy = new HttpHost(proxyHost, proxyPort)
+        if (authzClient == null) {
+            authzClient = HttpClientBuilder.create().with {
+                if (proxyHost) {
+                    it.proxy = new HttpHost(proxyHost, proxyPort)
+                }
+                build()
+            }.with {
+                Configuration configuration = new Configuration(oidcUrl, realm, clientId, ['secret': ''], it)
+                AuthzClient.create(configuration)
             }
-            build()
-        }.withCloseable {
-            Configuration configuration = new Configuration(oidcUrl, realm, clientId, ['secret': ''], it)
-            AuthzClient authzClient = AuthzClient.create(configuration)
-            def accessTokenResponse = authzClient.obtainAccessToken(user, pass)
-            accessTokenResponse.token
         }
+        def newToken = authzClient.obtainAccessToken(user, pass).token
         userTokenCache[user] = newToken
         return newToken
     }
