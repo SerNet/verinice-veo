@@ -22,7 +22,7 @@ allprojects {
 
     spotless {
         groovyGradle {
-            greclipse().configProperties '''
+            greclipse('4.41').configProperties '''
                 org.eclipse.jdt.core.formatter.tabulation.char=space
                 groovy.formatter.remove.unnecessary.semicolons=true
             '''
@@ -48,14 +48,13 @@ allprojects {
             addStep org.veo.LicenseHeaderStep.create(project.rootDir)
             addStep org.veo.NoWildcardImportsStep.create()
             addStep SpockBlockFormatterStep.create()
-            greclipse('4.36').configProperties '''
+            greclipse('4.41').configProperties '''
                 org.eclipse.jdt.core.formatter.tabulation.char=space
                 groovy.formatter.remove.unnecessary.semicolons=true
             '''
             importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
-            replaceRegex('Extra space around equals sign', /(  += )|( =  +)/, ' = ')
-            replaceRegex('Not one space between right round and left curly bracket', /\) *\{/, ') {')
+            replaceRegex('No space between right round and left curly bracket', /\)\{/, ') {')
         }
         format 'xml', {
             target 'src/**/*.xml', 'misc/eclipse/java-format.xml'
