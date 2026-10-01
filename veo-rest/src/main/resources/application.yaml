@@ -91,6 +91,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       auto-commit: false
+      data-source-properties:
+        reWriteBatchedInserts: true
   rabbitmq:
     publisher-confirm-type: correlated
     publisher-returns: false
