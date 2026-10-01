@@ -53,9 +53,18 @@ public class DeleteRiskUseCase
         repositoryProvider
             .getElementRepositoryFor(input.entityClass)
             .findById(input.riskAffectedRef, userAccessRights)
-            .orElseThrow(() -> new NotFoundException(input.scenarioRef(), input.entityClass));
+            .orElseThrow(() -> new NotFoundException(input.riskAffectedRef(), input.entityClass));
     userAccessRights.checkElementWriteAccess(riskAffected);
-    var risk = riskAffected.getRisk(input.scenarioRef).orElseThrow();
+    var risk =
+        riskAffected
+            .getRisk(input.scenarioRef)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "No risk found for %s '%s' and scenario '%s'.",
+                        riskAffected.getType().getSingularTerm(),
+                        riskAffected.getName(),
+                        input.scenarioRef));
     risk.remove();
     publishEvents(riskAffected, risk);
     return EmptyOutput.INSTANCE;

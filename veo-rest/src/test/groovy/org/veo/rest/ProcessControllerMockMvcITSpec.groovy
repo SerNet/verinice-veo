@@ -344,6 +344,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a process risk"
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
 
+        when: "not existing risk is deleted"
+        delete("/processes/${process.idAsString}/risks/${UUID.randomUUID().toString()}", 404)
+
+        then:
+
+        then: "the risk was not found"
+        thrown(NotFoundException)
+
         when: "the risk is deleted"
         delete("/processes/${process.idAsString}/risks/${scenario.idAsString}")
 
