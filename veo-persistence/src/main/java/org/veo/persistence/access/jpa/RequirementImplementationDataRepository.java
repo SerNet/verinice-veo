@@ -46,7 +46,7 @@ public interface RequirementImplementationDataRepository
 
   @Query(
       """
-                      select distinct ri from requirement_implementation ri
+                      select ri from requirement_implementation ri
                       join fetch ri.control
                       join fetch ri.origin
                       left join fetch ri.document
@@ -59,7 +59,7 @@ public interface RequirementImplementationDataRepository
 
   @Query(
       """
-                      select distinct ri from requirement_implementation ri
+                      select ri from requirement_implementation ri
                       join fetch ri.origin
                       join fetch ri.responsible
                       where ri.responsible in ?1

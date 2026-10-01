@@ -33,14 +33,14 @@ import org.veo.persistence.entity.jpa.ScopeData;
 public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeData> {
 
   @Query(
-      "select distinct s from #{#entityName} s "
+      "select s from #{#entityName} s "
           + "left join fetch s.risks risks "
           + "left join fetch risks.riskAspects "
           + "where risks.scenario in ?1")
   Set<ScopeData> findRisksWithValue(Collection<ScenarioData> causes);
 
   @Query(
-      "select distinct e from #{#entityName} e "
+      "select e from #{#entityName} e "
           + "left join fetch e.owner unit "
           + "left join fetch e.risks risks "
           + "left join fetch risks.riskAspects ra "
@@ -51,7 +51,7 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
 
   @Query(
       """
-                   select distinct e from #{#entityName} e
+                   select e from #{#entityName} e
                    inner join fetch e.riskValuesAspects
                    inner join fetch e.risks r
                    left join fetch r.riskAspects a
@@ -76,7 +76,7 @@ public interface ScopeDataRepository extends RiskAffectedDataRepository<ScopeDat
   List<ScopeData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 
   @Query(
-      "select distinct s from #{#entityName} s "
+      "select s from #{#entityName} s "
           + "inner join fetch s.risks risks "
           + "left join fetch risks.riskAspects "
           + "where risks.scenario in ?1")

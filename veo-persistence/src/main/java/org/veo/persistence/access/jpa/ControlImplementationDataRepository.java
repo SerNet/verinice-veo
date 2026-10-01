@@ -53,7 +53,7 @@ public interface ControlImplementationDataRepository
 
   @Query(
       """
-          select distinct ci from control_implementation  ci
+          select ci from control_implementation  ci
           join fetch ci.owner
           where ci.control.id in ?1
          """)
@@ -66,7 +66,7 @@ public interface ControlImplementationDataRepository
 
   @Query(
       """
-                  select distinct ci from control_implementation  ci
+                  select ci from control_implementation  ci
                   join fetch ci.owner
                   join fetch ci.responsible
                   where ci.responsible in ?1

@@ -31,14 +31,14 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
   @Query(
-      "select distinct p from #{#entityName} p "
+      "select p from #{#entityName} p "
           + "left join fetch p.risks risks "
           + "left join fetch risks.riskAspects "
           + "where risks.scenario in ?1")
   Set<ProcessData> findRisksWithValue(Collection<ScenarioData> causes);
 
   @Query(
-      "select distinct p from #{#entityName} p "
+      "select p from #{#entityName} p "
           + "left join fetch p.risks risks "
           + "left join fetch risks.riskAspects ra "
           + "left join fetch ra.domain "
@@ -47,7 +47,7 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
 
   @Query(
       """
-         select distinct e from #{#entityName} e
+         select e from #{#entityName} e
          inner join fetch e.riskValuesAspects
          inner join fetch e.risks r
          left join fetch r.riskAspects a

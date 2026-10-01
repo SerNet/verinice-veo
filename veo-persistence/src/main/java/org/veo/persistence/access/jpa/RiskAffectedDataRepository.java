@@ -48,7 +48,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
   @Nonnull
   @Query(
       """
-         select distinct e from #{#entityName} e
+         select e from #{#entityName} e
          left join fetch e.risks r
          left join fetch r.scenario
          left join fetch r.mitigation
@@ -61,7 +61,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
   @Nonnull
   @Query(
       """
-        select distinct e from #{#entityName} e
+        select e from #{#entityName} e
         left join fetch e.controlImplementations
         where e.id in ?1
         """)
@@ -70,7 +70,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
   @Nonnull
   @Query(
       """
-        select distinct e from #{#entityName} e
+        select e from #{#entityName} e
         left join fetch e.requirementImplementations
         where e.id in ?1
         """)
