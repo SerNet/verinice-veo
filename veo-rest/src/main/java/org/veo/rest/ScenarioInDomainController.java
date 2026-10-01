@@ -82,6 +82,7 @@ import org.veo.adapter.presenter.api.dto.GraphResultDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.create.CreateScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
@@ -342,7 +343,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @Valid @NotNull @RequestBody FullScenarioInDomainDto dto,
+      @Valid @NotNull @RequestBody CreateScenarioInDomainDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<UUID> scopeIds) {
