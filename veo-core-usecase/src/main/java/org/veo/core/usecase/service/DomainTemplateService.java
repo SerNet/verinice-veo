@@ -17,8 +17,6 @@
  */
 package org.veo.core.usecase.service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
@@ -42,10 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DomainTemplateService {
   private final DomainTemplateRepository domainTemplateRepository;
   private final DomainStateMapper domainStateMapper;
-
-  public List<DomainTemplate> getTemplates(Client client) {
-    return Collections.emptyList();
-  }
 
   public DomainTemplate getTemplate(Client client, UUID key) {
     checkClientAccess(client, key);
