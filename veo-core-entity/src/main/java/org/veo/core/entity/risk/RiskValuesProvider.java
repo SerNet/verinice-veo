@@ -176,15 +176,18 @@ public interface RiskValuesProvider
 
   @Override
   default List<CategoryRef> getAvailableCategories() {
+    if (getImpactCategories() == null) return List.of();
     return getImpactCategories().stream().map(Impact::getCategory).toList();
   }
 
   @Override
   default List<Impact> getCategorizedImpacts() {
+    if (getImpactCategories() == null) return List.of();
     return getImpactCategories().stream().map(Impact.class::cast).toList();
   }
 
   default boolean categoryExists(CategoryRef category) {
+    if (getImpactCategories() == null) return false;
     return getImpactCategories().stream().anyMatch(c -> c.getCategory().equals(category));
   }
 }

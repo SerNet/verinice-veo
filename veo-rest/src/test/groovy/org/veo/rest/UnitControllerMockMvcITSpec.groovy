@@ -201,6 +201,87 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "Import a unit with a risk without impactValues"() {
+        given:
+        def testDomain = executeInTransaction {
+            createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
+        }
+
+        def unitId = UUID.randomUUID().toString()
+        def compositeId = UUID.randomUUID().toString()
+        def partId = UUID.randomUUID().toString()
+        def assetId = UUID.randomUUID().toString()
+        def scenarioId = UUID.randomUUID().toString()
+        def domain = parseJson(get("/domains/${testDomain.idAsString}"))
+        Map request = [
+            unit:[
+                name: 'New unit',
+                id: unitId,
+                domains:[
+                    [targetUri:"/domains/${testDomain.idAsString}"]
+                ]
+
+            ],
+            elements: [
+                [
+                    id: assetId,
+                    name: 'Asset',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'asset',
+                    domains: [
+                        (testDomain.idAsString): [
+                            subType : 'AST_IT-System',
+                            status :'NEW'
+                        ]
+                    ]
+                ],
+                [
+                    id: scenarioId,
+                    name: 'Scenario',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'scenario',
+                    domains: [
+                        (testDomain.idAsString): [
+                            subType : 'SCN_Scenario',
+                            status :'NEW'
+                        ]
+                    ]
+                ]
+            ],
+            domains: [
+                domain
+            ],
+            risks: [
+                [
+                    asset: [ targetUri: "/assets/${assetId}" ],
+                    scenario:[ targetUri: "/scenarios/${scenarioId}"],
+                    domains: [ (testDomain.id.toString()): [
+                            reference: [ targetUri: "/domains/${testDomain.idAsString}" ],
+                            riskDefinitions: [
+                                DSRA : [
+                                    probability : [:],
+                                    riskValues: [
+                                        [
+                                            category: "I",
+                                            riskTreatments: []
+                                        ]
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        when:
+        def result = post('/units/import', request)
+
+        then:
+        result != null
+    }
+
+    @WithUserDetails("user@domain.example")
     def "Sensible error is returned for structurally broken CI"() {
         given:
         def unitId = UUID.randomUUID().toString()
