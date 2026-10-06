@@ -27,7 +27,6 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.TemplateItems;
@@ -49,10 +48,6 @@ public class CreateDomainsInAllClientsUseCase
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
-    if (!userAccessRights.isAdmin()) {
-      throw new MissingAdminPrivilegesException();
-    }
-
     var dt =
         domainTemplateRepository
             .findById(input.id())
