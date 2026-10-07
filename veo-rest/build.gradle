@@ -138,7 +138,7 @@ testing {
             dependencies {
                 implementation 'com.networknt:json-schema-validator:3.0.8'
                 implementation "org.testcontainers:testcontainers"
-                implementation 'org.spockframework:spock-spring:2.4-groovy-5.0'
+                implementation 'org.spockframework:spock-spring:2.5-groovy-6.0'
 
                 runtimeOnly "org.testcontainers:testcontainers-spock"
                 runtimeOnly 'org.testcontainers:testcontainers-postgresql'
@@ -149,7 +149,7 @@ testing {
                 implementation project()
                 implementation 'org.springframework.boot:spring-boot-resttestclient'
 
-                runtimeOnly 'org.spockframework:spock-spring:2.4-groovy-5.0'
+                runtimeOnly 'org.spockframework:spock-spring:2.5-groovy-6.0'
                 runtimeOnly 'org.springframework.boot:spring-boot-restclient'
             }
             // https://github.com/gradle/gradle/issues/19684
