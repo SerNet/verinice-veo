@@ -248,6 +248,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client3 = clientRepository.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
+        eventStoreDataRepository.deleteAll()
         def response = parseJson(post("/admin/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/create-domains-in-all-clients", [:], HttpStatus.SC_OK))
 
         then:
@@ -267,6 +268,9 @@ class AdminControllerMvcITSpec extends ContentSpec {
         client1.domains.size() == 1
         client2.domains.size() == 1
         client3.domains.size() == 1
+
+        and:
+        eventStoreDataRepository.findAll().size() == 3
     }
 
     def "create DSGVO domain for all clients with no previous domain"() {
@@ -282,6 +286,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         createTestDomain(client2, DSGVO_DOMAINTEMPLATE_V2_UUID)
 
         when: "creating the DSGVO_V2 domain for all clients with no previous DSGVO"
+        eventStoreDataRepository.deleteAll()
         def response = parseJson(post("/admin/domain-templates/$DSGVO_DOMAINTEMPLATE_V2_UUID/create-domains-in-all-clients", [:], HttpStatus.SC_OK))
 
         then:
@@ -300,6 +305,9 @@ class AdminControllerMvcITSpec extends ContentSpec {
         client1.domains.size() == 1
         client2.domains.size() == 1
         client3.domains.size() == 1
+
+        and:
+        eventStoreDataRepository.findAll().size() == 1
     }
 
     Client loadClientAndInitializeDomains(UUID clientId) {

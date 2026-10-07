@@ -65,6 +65,7 @@ public class CreateDomainsInAllClientsUseCase
         client.addToDomains(
             domainTemplateService.createDomain(
                 client, input.id(), TemplateItems.CATALOG_AND_PROFILES));
+        clientRepository.save(client);
         clientsWithoutDomain.add(client.getId());
       }
     }
