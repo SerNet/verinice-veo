@@ -19,7 +19,6 @@ package org.veo.listeners;
 
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 import static org.veo.core.entity.ClientState.DELETED;
-import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.ClientOwned;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
@@ -58,11 +56,6 @@ public class VersioningEventListener {
         event.changeNumber(),
         event.entity().getClass());
     var entity = event.entity();
-
-    if (entity instanceof Domain domain && event.type() == PERSIST) {
-      log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
-      messageCreator.createDomainCreationMessage(domain);
-    }
 
     if (entity instanceof Element || entity instanceof AbstractRisk<?, ?>) {
       entity

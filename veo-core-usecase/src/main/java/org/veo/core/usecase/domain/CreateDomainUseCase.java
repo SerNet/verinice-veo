@@ -33,6 +33,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -46,6 +47,7 @@ public class CreateDomainUseCase
   private final DomainRepository domainRepository;
   private final DomainTemplateRepository domainTemplateRepository;
   private final ClientRepository clientRepository;
+  private final MessageCreator messageCreator;
 
   @Override
   public CreateDomainUseCase.OutputData execute(
@@ -75,7 +77,11 @@ public class CreateDomainUseCase
     }
     // TODO VEO-1812: Remove assignment because domains should not have a template version
     domain.setTemplateVersion(Version.of(0, 1, 0));
-    return new OutputData(domainRepository.save(domain));
+
+    var newDomain = domainRepository.save(domain);
+    // TODO #5017 rethink event creation
+    messageCreator.createDomainCreationMessage(newDomain);
+    return new OutputData(newDomain);
   }
 
   @Override

@@ -121,17 +121,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "domain creation event is generated"() {
-        when:
-        def event = getLatestStoredEventContent("domain_creation")
-
-        then:
-        event.clientId == client.idAsString
-        event.domainId == domain.idAsString
-        event.domainTemplateId == domain.domainTemplate.idAsString
-    }
-
-    @WithUserDetails("user@domain.example")
     def "document events are generated"() {
         when: "creating a document linked with an asset"
         def domainId = domain.idAsString
@@ -286,11 +275,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 domains.keySet() ==~ [newDomainId]
                 domains[newDomainId].subType == "AST_Datatype"
             }
-        }
-        with(getNthStoredEventContent(-2, "domain_creation")) {
-            domainId == oldDomainId
-            clientId == owner.client.id.toString()
-            domainTemplateId == owner.DSGVO_DOMAINTEMPLATE_UUID.toString()
         }
         with(getLatestStoredEventContent("domain_creation")) {
             domainId == newDomainId

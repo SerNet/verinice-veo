@@ -29,6 +29,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -45,6 +46,7 @@ public class CreateDomainsInAllClientsUseCase
   private final ClientRepository clientRepository;
   private final DomainTemplateRepository domainTemplateRepository;
   private final DomainTemplateService domainTemplateService;
+  private final MessageCreator messageCreator;
 
   @Override
   public OutputData execute(EntityId input, UserAccessRights userAccessRights) {
@@ -62,10 +64,12 @@ public class CreateDomainsInAllClientsUseCase
       if (client.getDomains().stream().anyMatch(domain -> domain.getName().equals(dt.getName()))) {
         clientsWithDomain.add(client.getId());
       } else {
-        client.addToDomains(
+        var domain =
             domainTemplateService.createDomain(
-                client, input.id(), TemplateItems.CATALOG_AND_PROFILES));
-        clientRepository.save(client);
+                client, input.id(), TemplateItems.CATALOG_AND_PROFILES);
+        client.addToDomains(domain);
+        // TODO #5017 rethink event creation
+        messageCreator.createDomainCreationMessage(domain);
         clientsWithoutDomain.add(client.getId());
       }
     }

@@ -702,9 +702,14 @@ public class ModuleConfiguration {
       EntityFactory entityFactory,
       DomainRepository domainRepository,
       DomainTemplateRepository domainTemplateRepository,
-      ClientRepository clientRepository) {
+      ClientRepository clientRepository,
+      MessageCreator messageCreator) {
     return new CreateDomainUseCase(
-        entityFactory, domainRepository, domainTemplateRepository, clientRepository);
+        entityFactory,
+        domainRepository,
+        domainTemplateRepository,
+        clientRepository,
+        messageCreator);
   }
 
   @Bean
@@ -993,9 +998,10 @@ public class ModuleConfiguration {
   public CreateDomainsInAllClientsUseCase getClientIdsWhereDomainTemplateNotAppliedUseCase(
       ClientRepository clientRepository,
       DomainTemplateRepository domainTemplateRepository,
-      DomainTemplateService domainTemplateService) {
+      DomainTemplateService domainTemplateService,
+      MessageCreator messageCreator) {
     return new CreateDomainsInAllClientsUseCase(
-        clientRepository, domainTemplateRepository, domainTemplateService);
+        clientRepository, domainTemplateRepository, domainTemplateService, messageCreator);
   }
 
   @Bean

@@ -33,6 +33,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.ClientVersioningEvent;
@@ -56,6 +57,10 @@ public class VersionedEntityListener<T extends Versioned & ClientOwned> {
 
   @PrePersist
   public void prePersist(Versioned entity) {
+    if (entity instanceof Domain) {
+      // TODO #5017 rethink event creation
+      return;
+    }
     // we need to capture the change number for this event NOW since - because
     // of the delayed publishing before-commit other change numbers may have
     // already been produced for updates before we get to store it:

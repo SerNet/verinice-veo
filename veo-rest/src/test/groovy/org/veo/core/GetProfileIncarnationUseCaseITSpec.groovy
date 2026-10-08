@@ -58,13 +58,13 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         def result = getIncarnationDescriptions(unit, domain, null, profile, false).references
 
         then: 'all tailoring references are returned'
-        result.collectMany{it.references}.size() == 23
+        result.collectMany { it.references }.size() == 23
 
         when: "we get only the distinct tailoring references"
         result = getIncarnationDescriptions(unit, domain, null, profile, true).references
 
         then: 'less tailoring references are returned'
-        result.collectMany{it.references}.size() == 12
+        result.collectMany { it.references }.size() == 12
     }
 
     def "references types can be excluded"() {
@@ -127,7 +127,7 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
                             profileItems?.collect { it.symbolicId },
                             profile.id,
                             mergeBidirectionalReferences),
-                    NoRestrictionAccessRight.from(domain.owner.idAsString))
+                    NoRestrictionAccessRight.from(unit.client.idAsString))
         }
     }
 }

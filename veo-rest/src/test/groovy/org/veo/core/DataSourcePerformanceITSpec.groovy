@@ -94,7 +94,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 9
+        queryCounts.insert == 8
         queryCounts.update == 0
         queryCounts.select in 2l..4l
         queryCounts.time < 500
@@ -113,7 +113,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 2
         queryCounts.update == 0
-        queryCounts.select == 1
+        queryCounts.select == 0
         queryCounts.time < 500
     }
 
@@ -147,7 +147,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 2
+        queryCounts.select == 1
         queryCounts.time < 500
     }
 
@@ -164,7 +164,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 2
+        queryCounts.select == 1
         queryCounts.time < 500
     }
 
@@ -295,7 +295,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 13
         queryCounts.update == 0
-        queryCounts.select == 3
+        queryCounts.select == 2
         queryCounts.time < 500
     }
 
@@ -319,7 +319,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 33
         queryCounts.update == 0
-        queryCounts.select == 7
+        queryCounts.select == 6
         queryCounts.time < 500
     }
 
@@ -535,7 +535,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.select == 35
+        queryCounts.select == 34
         queryCounts.insert == 17
         queryCounts.update == 12
         queryCounts.delete == 19

@@ -28,7 +28,7 @@ import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.rest.security.NoRestrictionAccessRight
 
 @WithUserDetails("content-creator")
-class CreateDomainUseCaseITSpec extends VeoSpringSpec{
+class CreateDomainUseCaseITSpec extends VeoSpringSpec {
     @Autowired
     DomainDataRepository domainRepository
 
@@ -54,7 +54,9 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "creating a domain"
-        useCase.execute(new CreateDomainUseCase.InputData("do-main", "st. nic", null), NoRestrictionAccessRight.from(client.idAsString))
+        executeInTransaction {
+            useCase.execute(new CreateDomainUseCase.InputData("do-main", "st. nic", null), NoRestrictionAccessRight.from(client.idAsString))
+        }
 
         then: "it has been persisted"
         def domain = domainRepository
