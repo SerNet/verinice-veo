@@ -26,6 +26,7 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import java.nio.charset.StandardCharsets
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 import org.apache.http.HttpHost
 import org.apache.http.impl.client.HttpClientBuilder
@@ -146,7 +147,7 @@ class VeoRestTest extends Specification {
     static String dsgvoDomainId
     static String testDomainId
 
-    private userTokenCache = [:]
+    private static Map<String, Tuple2<String, Instant>> userTokenCache = [:]
 
     static boolean clientsCreated = false
 
@@ -345,8 +346,9 @@ class VeoRestTest extends Specification {
             user = secondaryClientUserName
             pass = secondaryClientUserPass
         }
-        if (userTokenCache.containsKey(user)) {
-            return userTokenCache[user]
+        def entry = userTokenCache[user]
+        if (entry && entry.v2.isAfter(Instant.now().plus(30, ChronoUnit.SECONDS))) {
+            return entry.v1
         }
         if (authzClient == null) {
             authzClient = HttpClientBuilder.create().with {
@@ -359,9 +361,9 @@ class VeoRestTest extends Specification {
                 AuthzClient.create(configuration)
             }
         }
-        def newToken = authzClient.obtainAccessToken(user, pass).token
-        userTokenCache[user] = newToken
-        return newToken
+        def newToken = authzClient.obtainAccessToken(user, pass)
+        userTokenCache[user] = new Tuple2<>(newToken.token, Instant.now().plus(newToken.expiresIn, ChronoUnit.SECONDS))
+        return newToken.token
     }
 
     /**
