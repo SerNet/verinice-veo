@@ -146,7 +146,7 @@ class ControlImplementationSpec extends VeoSpec {
         and: "all unmodified requirementImplementations were removed"
         elmt.requirementImplementations.size() == 3
         def remainingRIs = elmt.requirementImplementations.findAll {
-            it.control in  [
+            it.control in [
                 changedControl,
                 control2,
                 control3
@@ -201,7 +201,7 @@ class ControlImplementationSpec extends VeoSpec {
 
         then: "all remaining requirementImplementations were added"
         def reqImpls = elmt.requirementImplementations.findAll {
-            it.control in  [
+            it.control in [
                 control,
                 controlStatement1,
                 controlStatement2
@@ -305,7 +305,7 @@ class ControlImplementationSpec extends VeoSpec {
         ])
 
         when:
-        ci.copyDomainData(d1,d2,[])
+        ci.copyDomainData(d1, d2,[])
 
         then:
         ci.getCustomAspects(d1).ca1.attr1 == 9000

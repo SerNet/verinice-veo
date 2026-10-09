@@ -227,7 +227,9 @@ class VeoRestTest extends Specification {
     }
 
     Response post(String uri, HttpHeaders headers, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
-        def resp = exchange(uri, HttpMethod.POST, headers, requestBody?.with { toJson(it) }, userType)
+        def resp = exchange(uri, HttpMethod.POST, headers, requestBody?.with {
+            toJson(it)
+        }, userType)
         assertStatusCode?.tap{
             assert resp.statusCode.value() == it
         }
@@ -242,7 +244,9 @@ class VeoRestTest extends Specification {
         etag?.with { headers.setIfMatch(it) }
         headers.setContentType(MediaType.APPLICATION_JSON)
 
-        def resp = exchange(uri, HttpMethod.PUT, headers, requestBody?.with { toJson(it) }, userType)
+        def resp = exchange(uri, HttpMethod.PUT, headers, requestBody?.with {
+            toJson(it)
+        }, userType)
         assertStatusCode?.tap{
             assert resp.statusCode.value() == it
         }
@@ -318,7 +322,9 @@ class VeoRestTest extends Specification {
         headers.put("Authorization", [
             "Bearer " + getToken(userType)
         ])
-        return restTemplate.exchange(uri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
+        return restTemplate.exchange(uri, httpMethod, new HttpEntity(requestBody?.with {
+            toJson(it)
+        }, headers), String.class)
     }
 
     protected String getToken(UserType userType) {

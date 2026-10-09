@@ -156,7 +156,9 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         def events = executeInTransaction {
             (1..NUM_EVENTS)
                     .collect { new StoredEventData() }
-                    .each { it.routingKey = routingKeyPrefix + "veo.testmessage" }
+                    .each {
+                        it.routingKey = routingKeyPrefix + "veo.testmessage"
+                    }
                     .each { storedEventRepository.save(it) }
         }
 
@@ -170,7 +172,9 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
         and: "all messages should have been received with no duplicates"
         eventSubscriber.receivedEvents.size() == NUM_EVENTS
-        eventSubscriber.receivedEvents ==~ events.collect { EventMessage.from(it) }
+        eventSubscriber.receivedEvents ==~ events.collect {
+            EventMessage.from(it)
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -183,7 +187,9 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         def dsgvoTestDomain = executeInTransaction {
             client = createTestClient()
             createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            client.domains.find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
+            client.domains.find {
+                it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID
+            }
         }
         executeInTransaction {
             def unit = unitRepository.save(newUnit(client))
@@ -191,10 +197,10 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
             def profileId = dsgvoTestDomain.profiles.first().id
             def incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
                     new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvoTestDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
+            ).references
             applyProfileIncarnationDescriptionUseCase.execute(new ApplyProfileIncarnationDescriptionUseCase.InputData(
-                    unit.id,
-                    incarnationDescriptions
+                            unit.id,
+                            incarnationDescriptions
                     ), NoRestrictionAccessRight.from(client.idAsString))
         }
 
@@ -213,7 +219,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)
-        if (purgeCount > 0)
+        if (purgeCount> 0)
             log.info("Test cleanup: purged {} remaining messages in test queue.", purgeCount)
         eventStoreDataRepository.deleteAll()
     }

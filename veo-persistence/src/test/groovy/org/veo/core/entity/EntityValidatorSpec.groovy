@@ -225,7 +225,7 @@ class EntityValidatorSpec extends VeoSpec {
         Control control = newControl(unit) {
             associateWithDomain(domain, "NormalControl", "NEW")
         }
-        process.applyLink( newCustomLink(control, "a", otherDomain))
+        process.applyLink(newCustomLink(control, "a", otherDomain))
 
         when : "it is validated"
         validator.validate(process)

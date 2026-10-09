@@ -74,7 +74,7 @@ class GraphTestRestTest extends VeoRestTest {
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON,
                 ["Accept-Language": lang]
-                )
+        )
 
         def nodes = response.body.nodes
         def links = response.body.links
@@ -98,11 +98,17 @@ class GraphTestRestTest extends VeoRestTest {
         }
 
         and: "all nodes have valid required fields"
-        nodes.every { it.id && it.displayName && it.elementType && it.elementSubType }
+        nodes.every {
+            it.id && it.displayName && it.elementType && it.elementSubType
+        }
 
         and: "nodes have correct subTypeName"
-        nodes.find { it.elementId == processId }.elementSubType == "BusinessProcess"
-        nodes.find { it.elementId == processSubId }.elementSubType == "BusinessProcess"
+        nodes.find {
+            it.elementId == processId
+        }.elementSubType == "BusinessProcess"
+        nodes.find {
+            it.elementId == processSubId
+        }.elementSubType == "BusinessProcess"
         nodes.find { it.elementId == assetId }.elementSubType == "Information"
         nodes.find { it.elementId == scopeId }.elementSubType == "Company"
 
@@ -139,7 +145,7 @@ class GraphTestRestTest extends VeoRestTest {
                 404,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON,
-                )
+        )
 
         then:
         response.statusCode == 404
@@ -161,14 +167,14 @@ class GraphTestRestTest extends VeoRestTest {
                     subType: "Information",
                     status: "CURRENT"
                 ]
-                ).body.resourceId
+        ).body.resourceId
 
         when: "the secondary client tries to fetch relations of that asset"
         def response = get(
                 "/domains/$testDomainId/assets/$assetId/relations",
                 404,
                 UserType.SECONDARY_CLIENT_USER
-                )
+        )
 
         then: "the domain is hidden as if it does not exist"
         response.body.message == "domain $testDomainId not found"
@@ -216,10 +222,12 @@ class GraphTestRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
-                )
+        )
 
         then: "process A only appears once in nodes"
-        def processNode = response.body.nodes.findAll { it.elementId == processId }
+        def processNode = response.body.nodes.findAll {
+            it.elementId == processId
+        }
         processNode.size() == 1
 
         and: "process A has two links (customlink + scope-member)"
@@ -261,7 +269,7 @@ class GraphTestRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
-                )
+        )
 
         then: "the response is valid"
         response.body.nodes instanceof List
@@ -315,7 +323,7 @@ class GraphTestRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
-                )
+        )
 
         then: "the default limit of 25 neighbors is applied"
         response.body.totalCount == 30
@@ -362,7 +370,7 @@ class GraphTestRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
-                )
+        )
 
         then: "only 10 neighbors plus the center node are returned"
         response.body.totalCount == 30
@@ -409,7 +417,7 @@ class GraphTestRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.APPLICATION_JSON
-                )
+        )
 
         then: "only 25 neighbors plus the center node are returned"
         response.body.totalCount == 30

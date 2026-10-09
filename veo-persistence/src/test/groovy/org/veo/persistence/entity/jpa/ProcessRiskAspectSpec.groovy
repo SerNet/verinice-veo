@@ -40,7 +40,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
         this.unit = newUnit(client)
         this.riskDefinition = createRiskDefinition(RISK_DEF_ID)
         this.domain = newDomain(client) {
-            it.riskDefinitions = [ "r2d2":
+            it.riskDefinitions = ["r2d2":
                 createRiskDefinition(RISK_DEF_ID)
             ] as Map
         }

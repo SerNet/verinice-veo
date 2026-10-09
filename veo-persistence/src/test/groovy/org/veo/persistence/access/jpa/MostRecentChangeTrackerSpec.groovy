@@ -51,7 +51,9 @@ class MostRecentChangeTrackerSpec extends Specification {
         sut = new MostRecentChangeTracker(publisher)
 
         when:
-        def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
+        def toSend = events.collect {e ->
+            values2Event(asset, e[0], e[1])
+        } as List
         toSend.forEach {
             sut.put(it)
         }
@@ -121,7 +123,9 @@ class MostRecentChangeTrackerSpec extends Specification {
         sut = new MostRecentChangeTracker(publisher)
 
         when:
-        def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
+        def toSend = events.collect {e ->
+            values2Event(asset, e[0], e[1])
+        } as List
         toSend.forEach {
             sut.put(it)
         }
@@ -179,7 +183,9 @@ class MostRecentChangeTrackerSpec extends Specification {
         sut = new MostRecentChangeTracker(publisher)
 
         when:
-        def toSend = events.collect {e -> values2Event(asset, e[0], e[1]) } as List
+        def toSend = events.collect {e ->
+            values2Event(asset, e[0], e[1])
+        } as List
         toSend.forEach {
             sut.put(it)
         }

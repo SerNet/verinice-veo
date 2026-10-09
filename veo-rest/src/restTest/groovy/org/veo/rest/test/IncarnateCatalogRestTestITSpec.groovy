@@ -66,7 +66,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         pass2Elements*.name ==~ ['Control-3']
 
         and: "the new c-3 is linked with the old c-1"
-        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
+        pass2Elements.find {
+            it.abbreviation == 'c-3'
+        }.links.Control_details_Control[0].target.id == pass1Element1Id
     }
 
     def "requested items are always created as new elements by default"() {
@@ -89,7 +91,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         pass2Elements.find { it.abbreviation == 'c-1' }.id != pass1Element1Id
 
         and: "the new c-3 is linked with the new c-1"
-        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id != pass1Element1Id
+        pass2Elements.find {
+            it.abbreviation == 'c-3'
+        }.links.Control_details_Control[0].target.id != pass1Element1Id
     }
 
     def "existing incarnations can be used for requested items"() {
@@ -113,7 +117,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         get("/controls?abbreviation=c-1&unit=$unitId").body.totalItemCount == 1
 
         and: "the new c-3 is linked with the old c-1"
-        pass2Elements.find { it.abbreviation == 'c-3' }.links.Control_details_Control[0].target.id == pass1Element1Id
+        pass2Elements.find {
+            it.abbreviation == 'c-3'
+        }.links.Control_details_Control[0].target.id == pass1Element1Id
     }
 
     def "Create elements with reversed links from catalog"() {
@@ -181,7 +187,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create linked elements from the dsgvo catalog"() {
-        when:"we create a process"
+        when: "we create a process"
         def sourceProcessId = post("/domains/$dsgvoDomainId/processes", [
             name: "process",
             subType: "PRO_DataProcessing",
@@ -214,13 +220,13 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         when: "incarnating the referenced process catalog item"
         def processVVT = postIncarnationDescriptions(getIncarnationDescriptions(dsgvoDomainId, ["VVT"])).first()
 
-        then:"The process is linked with the controls"
+        then: "The process is linked with the controls"
         processVVT.links.size() == 1
         processVVT.links.process_tom.size() == 8
     }
 
     def "Create all linked elements from the dsgvo catalog in one step"() {
-        when:"we create all controls"
+        when: "we create all controls"
         def elementResults = postIncarnationDescriptions(getIncarnationDescriptions(dsgvoDomainId))
 
         then: "all elements are created"
@@ -261,7 +267,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     private String getCatalogItemIdsByNames(String domainId, List<String> selectedItemNames) {
         getCatalogItems(domainId)
-                .findAll { selectedItemNames == null || selectedItemNames.contains(it.name) }
+                .findAll {
+                    selectedItemNames == null || selectedItemNames.contains(it.name)
+                }
                 *.id
                 .join(",")
     }
@@ -270,6 +278,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         log.info("postIncarnationDescriptions before: {}", incarnationDescriptions)
         def response = post("/units/${unitId}/incarnations", incarnationDescriptions, expectSuccess ? 201 : 400).body
         log.info("postIncarnationDescriptions after: {}", response.body)
-        return expectSuccess ? response.collect { get(it.targetUri).body } : response
+        return expectSuccess ? response.collect {
+            get(it.targetUri).body
+        } : response
     }
 }

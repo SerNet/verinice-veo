@@ -60,7 +60,7 @@ class RiskServiceSpec extends VeoSpec {
     ClientData client
 
     def setup() {
-        sut = new RiskService(repo,arepo, srepo, publisher)
+        sut = new RiskService(repo, arepo, srepo, publisher)
         this.client = newClient()
         this.unit = newUnit(client) {
             it.setClient(client)
@@ -92,7 +92,9 @@ class RiskServiceSpec extends VeoSpec {
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability =
                 previousProb?.with { new ProbabilityRef(it) }
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with {
+                new ProbabilityRef(it)
+            })
         ])
         def categoryRef = new CategoryRef("D")
         risk.getRiskProvider(riskDefRef, domain)
@@ -123,7 +125,9 @@ class RiskServiceSpec extends VeoSpec {
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability =
                 previousProb?.with { new ProbabilityRef(it) }
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with {
+                new ProbabilityRef(it)
+            })
         ])
 
         sut.evaluateChangedRiskComponent(this.process)
@@ -168,7 +172,9 @@ class RiskServiceSpec extends VeoSpec {
                 previousProb?.with { new ProbabilityRef(it) }
         risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, new ImpactRef(1))
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with {
+                new ProbabilityRef(it)
+            })
         ])
         risk.getRiskProvider(riskDefRef, domain)
                 .getCategorizedRisks()
@@ -180,7 +186,9 @@ class RiskServiceSpec extends VeoSpec {
         then:
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability ==
                 (prob?.with { new ProbabilityRef(it) })
-        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
+        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with {
+            new RiskRef(it)
+        })
         1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         1 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
@@ -222,13 +230,19 @@ class RiskServiceSpec extends VeoSpec {
                 .getCategorizedRisks()
                 .find({ it.category == categoryRef })
                 .setInherentRisk(previousRiskVal?.with { new RiskRef(it) })
-        risk.getProbabilityProvider(riskDefRef, domain).setSpecificProbability(prob?.with { new ProbabilityRef(it) })
-        risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, imp?.with { new ImpactRef(it) })
+        risk.getProbabilityProvider(riskDefRef, domain).setSpecificProbability(prob?.with {
+            new ProbabilityRef(it)
+        })
+        risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, imp?.with {
+            new ImpactRef(it)
+        })
 
         sut.evaluateChangedRiskComponent(this.process)
 
         then:
-        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
+        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with {
+            new RiskRef(it)
+        })
         1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         1 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
@@ -276,13 +290,19 @@ class RiskServiceSpec extends VeoSpec {
                 .getCategorizedRisks()
                 .find({ it.category == categoryRef })
                 .setInherentRisk(previousRiskVal?.with { new RiskRef(it) })
-        risk.getProbabilityProvider(riskDefRef, domain).setSpecificProbability(prob?.with { new ProbabilityRef(it) })
-        risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, imp?.with { new ImpactRef(it) })
+        risk.getProbabilityProvider(riskDefRef, domain).setSpecificProbability(prob?.with {
+            new ProbabilityRef(it)
+        })
+        risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, imp?.with {
+            new ImpactRef(it)
+        })
 
         sut.evaluateChangedRiskComponent(this.process)
 
         then:
-        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
+        risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with {
+            new RiskRef(it)
+        })
         1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         0 * publisher.publish(*_)
 

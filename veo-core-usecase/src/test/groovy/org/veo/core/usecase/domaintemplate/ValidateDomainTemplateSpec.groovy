@@ -46,15 +46,15 @@ class ValidateDomainTemplateSpec extends UseCaseSpec {
         (Locale.of("EN")): new NameAbbreviationAndDescription("a","name","desc")
     ]
     )
-    static final Map MINIMAL_TRANSLATION_MAP = [(Locale.of("EN")):[
+    static final Map MINIMAL_TRANSLATION_MAP = [(Locale.of("EN")): [
             "asset_sub_plural": "assets",
-            "asset_sub_singular": "asset" ,
+            "asset_sub_singular": "asset",
             "asset_sub_status_one": "one"
         ]]
-    static final Map INCOMPLETE_TRANSLATION_MAP = [(Locale.of("EN")):["some Value": "some"]]
-    static final Map SUPERFLUOUS_MAP = [(Locale.of("EN")):["some Value": "some",
+    static final Map INCOMPLETE_TRANSLATION_MAP = [(Locale.of("EN")): ["some Value": "some"]]
+    static final Map SUPERFLUOUS_MAP = [(Locale.of("EN")): ["some Value": "some",
             "asset_sub_plural": "assets",
-            "asset_sub_singular": "asset" ,
+            "asset_sub_singular": "asset",
             "asset_sub_status_one": "one"
         ]]
 
@@ -114,7 +114,7 @@ class ValidateDomainTemplateSpec extends UseCaseSpec {
         st.setStatuses(["one"])
         ElementTypeDefinition testType = Mock()
         testType.getElementType() >> ElementType.ASSET
-        testType.getSubTypes() >> ["sub": st ]
+        testType.getSubTypes() >> ["sub": st]
         testType.getCustomAspects() >> ["testAspect" : ca]
         testType.getLinks() >> [:]
         testType.getTranslations() >> translations
@@ -176,14 +176,14 @@ class ValidateDomainTemplateSpec extends UseCaseSpec {
         where:
         steps | errorMessage
         [
-            new DomainMigrationStep("1",new TranslatedText([:]) ,[],null,false)
+            new DomainMigrationStep("1",new TranslatedText([:]),[],null,false)
         ] | "No description provided for step '1'."
         [
-            new DomainMigrationStep("1",new TranslatedText(["en":[:]]) ,[],null,false),
-            new DomainMigrationStep("1",new TranslatedText(["en":[:]]) ,[],null,false)
+            new DomainMigrationStep("1",new TranslatedText(["en": [:]]),[],null,false),
+            new DomainMigrationStep("1",new TranslatedText(["en": [:]]),[],null,false)
         ] | "Id '1' not unique."
         [
-            new DomainMigrationStep("1",new TranslatedText(["en":[:]]) ,[],
+            new DomainMigrationStep("1",new TranslatedText(["en": [:]]),[],
             [
                 new CustomAspectMigrationTransformDefinition(null,null)
             ],true)

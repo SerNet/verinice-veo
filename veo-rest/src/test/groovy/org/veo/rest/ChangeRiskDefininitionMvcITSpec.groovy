@@ -40,7 +40,7 @@ import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
-class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
+class ChangeRiskDefininitionMvcITSpec extends VeoMvcSpec {
     @Autowired
     private ClientRepositoryImpl clientRepository
 
@@ -80,7 +80,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                     elementType = ra
                     subType = ra.singularTerm
                     status = "NEW"
-                    aspects = new TemplateItemAspects([(rdRef):(impactValues())],null, null)
+                    aspects = new TemplateItemAspects([(rdRef): (impactValues())],null, null)
                 })
             }
             newCatalogItem(it, {
@@ -89,7 +89,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                 subType = "scenario"
                 status = "NEW"
                 aspects = new TemplateItemAspects(null,
-                        [(rdRef):(new PotentialProbability(new ProbabilityRef(new BigDecimal(2)), unitId))]
+                        [(rdRef): (new PotentialProbability(new ProbabilityRef(new BigDecimal(2)), unitId))]
                         , null)
             })
 
@@ -104,7 +104,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                     subType = "scenario"
                     status = "NEW"
                     aspects = new TemplateItemAspects(null,
-                            [(rdRef):(new PotentialProbability(new ProbabilityRef(new BigDecimal(2)), unitId))]
+                            [(rdRef): (new PotentialProbability(new ProbabilityRef(new BigDecimal(2)), unitId))]
                             , null)
                 })
 
@@ -116,7 +116,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
                         subType = ra.singularTerm
                         status = "NEW"
                         aspects = new TemplateItemAspects([
-                            (rdRef):(impactValues())
+                            (rdRef): (impactValues())
                         ],null, null)
                         addRiskTailoringReference(TailoringReferenceType.RISK, npi, null, null, [
                             (rdRef): new RiskTailoringReferenceValues(ProbabilityRef.from(rd.getProbability().getLevels().getFirst()), "explanation", [
@@ -145,7 +145,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         then: "the risk is calculated"
         with(parseJson(get("/$type.pluralTerm/$raId/risks/$scenarioId")).domains.(domainId).riskDefinitions.r1d1) {
             riskValues.size() == 1
-            riskValues[0].category=='D'
+            riskValues[0].category == 'D'
             riskValues[0].inherentRisk == 0
             riskValues[0].residualRisk == 0
         }
@@ -153,14 +153,16 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         when: "we change a risk matrix value"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
             categories.find{ it.id == "D" }.valueMatrix[1][1].ordinalValue = 3
-            categories.find{ it.id == "D" }.valueMatrix[1][1].symbolicRisk = "symbolic_risk_4"
+            categories.find{
+                it.id == "D"
+            }.valueMatrix[1][1].symbolicRisk = "symbolic_risk_4"
             put("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1", it, [:],200)
         }
 
         then: "the risk was recalculated"
         with(parseJson(get("/$type.pluralTerm/$raId/risks/$scenarioId")).domains.(domainId).riskDefinitions.r1d1) {
             riskValues.size() == 1
-            riskValues[0].category=='D'
+            riskValues[0].category == 'D'
             riskValues[0].inherentRisk == 3
             riskValues[0].residualRisk == 3
         }
@@ -168,17 +170,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         and: "The scenario's potentialProbability is unchanged"
         parseJson(get("/scenarios/$scenarioId")).domains.(domainId).riskValues.r1d1.potentialProbability == 2
 
-        and:"the catalogItems and profileItems are unchanged"
+        and: "the catalogItems and profileItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories.D != null
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
         where:
@@ -258,7 +268,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
         }
 
-        and:"the impacts are unchanged"
+        and: "the impacts are unchanged"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == 2
             C == 2
@@ -267,32 +277,44 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             R == 2
         }
 
-        and:"the catalogItems are unchanged"
+        and: "the catalogItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories.D != null
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
-        when:"we remove the riskmatix for D"
+        when: "we remove the riskmatix for D"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with{
             categories.find{ it.id == "D" }.valueMatrix = null
             put("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1", it, [:],200)
         }
 
-        then:"the catalogItems are unchanged but the category D is removed in the tailoringRef"
+        then: "the catalogItems are unchanged but the category D is removed in the tailoringRef"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
 
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories.D == null
                 }
             }
@@ -312,12 +334,12 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         when: "we add a category"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
             categories.add(["id": "NEW",
-                "translations":["EN": ["name": "new kid on the block"]],
-                "potentialImpacts":[
-                    ["ordinalValue":0,"htmlColor": "#101010"],
-                    ["ordinalValue":1,"htmlColor": "#111111"]
+                "translations": ["EN": ["name": "new kid on the block"]],
+                "potentialImpacts": [
+                    ["ordinalValue": 0,"htmlColor": "#101010"],
+                    ["ordinalValue": 1,"htmlColor": "#111111"]
                 ],
-                "valueMatrix":[
+                "valueMatrix": [
                     [
                         riskValues[0],
                         riskValues[0],
@@ -339,21 +361,21 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         with(parseJson(get("/$type.pluralTerm/$raId/risks/$scenarioId")).domains.(domainId).riskDefinitions.r1d1) {
             riskValues.size() == 2
             with(riskValues[0]) {
-                category=='D'
+                category == 'D'
                 inherentRisk == 0
                 residualRisk == 0
             }
             with(riskValues[1]) {
-                category=='NEW'
+                category == 'NEW'
                 inherentRisk == null
                 residualRisk == null
             }
         }
 
-        when:"we set the impact"
+        when: "we set the impact"
         get("/domains/$domainId/$type.pluralTerm/$raId").with {
             def ra = parseJson(it)
-            ra.riskValues.r1d1.potentialImpacts = [C:2,I:2,A:2,R:2,NEW:1]
+            ra.riskValues.r1d1.potentialImpacts = [C: 2, I: 2, A: 2, R: 2, NEW: 1]
             put(ra._self, ra, ['If-Match': getETag(it)])
         }
 
@@ -382,17 +404,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             NEW == 1
         }
 
-        and:"the impacts C, I, A, R, D are also gone in the catalogItems and the profileItems"
+        and: "the impacts C, I, A, R, D are also gone in the catalogItems and the profileItems"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [:]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [:]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
                     aspects.impactValues.r1d1.potentialImpacts == [:]
                     tailoringReferences[0].riskDefinitions.r1d1.categories == [:]
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
         where:
@@ -490,7 +520,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
         }
 
-        and:"the impacts are unchanged"
+        and: "the impacts are unchanged"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == 2
             C == 2
@@ -499,17 +529,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             R == 2
         }
 
-        and:"the catalogItems are unchanged"
+        and: "the catalogItems are unchanged"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories.D != null
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
         where:
@@ -564,7 +602,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             riskDefinitions == [:]
         }
 
-        and:"the impacts are unchanged"
+        and: "the impacts are unchanged"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == 2
             C == 2
@@ -576,17 +614,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         and: "The scenario's potentialProbability is cleared"
         parseJson(get("/scenarios/$scenarioId")).domains.(domainId).riskValues.r1d1 ==[:]
 
-        and:"the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
+        and: "the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories == [:]
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1 == [:]
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1 == [:]
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1 == [:]
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1 == [:]
         }
 
         where:
@@ -633,7 +679,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             riskDefinitions == [:]
         }
 
-        and:"the impacts are unchanged"
+        and: "the impacts are unchanged"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == 2
             C == 2
@@ -645,17 +691,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         and: "The scenario's potentialProbability is cleared"
         parseJson(get("/scenarios/$scenarioId")).domains.(domainId).riskValues.r1d1 == [:]
 
-        and:"the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
+        and: "the catalogItem impacts are unchanged, the risk tailoringReferences is cleared, the potentialProbability is also cleared"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories == [:]
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1 == [:]
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1 == [:]
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1 == [:]
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1 == [:]
         }
 
         where:
@@ -763,7 +817,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
         }
 
-        and:"the impact D is removed"
+        and: "the impact D is removed"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == null
             C == 2
@@ -772,17 +826,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             R == 2
         }
 
-        and:"the value for D is cleared in the catalogItems and profiles"
+        and: "the value for D is cleared in the catalogItems and profiles"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, D:2, I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, D: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories == [:]
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
         where:
@@ -827,7 +889,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             riskDefinitions == [:]
         }
 
-        and:"the impact D is removed"
+        and: "the impact D is removed"
         with(parseJson(get("/$type.pluralTerm/$raId")).domains.(domainId).riskValues.r1d1.potentialImpacts) {
             D == null
             C == 2
@@ -836,17 +898,25 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             R == 2
         }
 
-        and:"the category D in the catalogItems and profiles is removed"
+        and: "the category D in the catalogItems and profiles is removed"
         with(parseJson(get("/domains/${domainId}/export"))) {
             ElementType.RISK_AFFECTED_TYPES.forEach{ra ->
-                catalogItems.find{ it.elementType == ra.singularTerm}.aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2,I:2, R:2]
-                with(profiles_v2[0].items.find{ it.elementType == ra.singularTerm}) {
-                    aspects.impactValues.r1d1.potentialImpacts == [A:2, C:2, I:2, R:2]
+                catalogItems.find{
+                    it.elementType == ra.singularTerm
+                }.aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, I: 2, R: 2]
+                with(profiles_v2[0].items.find{
+                    it.elementType == ra.singularTerm
+                }) {
+                    aspects.impactValues.r1d1.potentialImpacts == [A: 2, C: 2, I: 2, R: 2]
                     tailoringReferences[0].riskDefinitions.r1d1.categories == [:]
                 }
             }
-            profiles_v2[0].items.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
-            catalogItems.find{ it.elementType == "scenario"}.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            profiles_v2[0].items.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
+            catalogItems.find{
+                it.elementType == "scenario"
+            }.aspects.scenarioRiskValues.r1d1.potentialProbability == 2
         }
 
         where:
@@ -1007,7 +1077,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
         when: "we add a matrix to all categories and clean existing"
         parseJson(get("/domains/${domainId}/risk-definitions/r1d1")).with {
-            categories.each {  it.valueMatrix = [] }
+            categories.each { it.valueMatrix = [] }
             ret = parseJson(post("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1/evaluation", it, 200))
         }
 
@@ -1016,7 +1086,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             valueMatrix.size() == 4
             valueMatrix*.size() as Set == [4] as Set
         }
-        ret.changes*.changeType.toSorted()  ==~ [
+        ret.changes*.changeType.toSorted() ==~ [
             "RiskMatrixDiff",
             "RiskMatrixAdd",
             "RiskMatrixAdd",
@@ -1086,7 +1156,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         with(ret) {
             validationMessages.size() == 0
             effects.size() == 5
-            effects.toSorted{it.category}*.description*.en== [
+            effects.toSorted{it.category}*.description*.en == [
                 "Risk values for the criterion 'A' are removed from all risks.",
                 "Risk values for the criterion 'C' are removed from all risks.",
                 "Risk values for the criterion 'D' are removed from all risks.",
@@ -1095,7 +1165,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             ]
         }
 
-        when:"we test the returned riskdefinition"
+        when: "we test the returned riskdefinition"
         ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, [:],200))
 
         then:
@@ -1192,9 +1262,9 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             validationMessages[0].changedCategories ==~ ["D"]
         }
 
-        when:"we use an undefined risk value"
-        ret.riskDefinition.categories.first().valueMatrix[1][1] = [ordinalValue:100,
-            htmlColor:"#noColor",
+        when: "we use an undefined risk value"
+        ret.riskDefinition.categories.first().valueMatrix[1][1] = [ordinalValue: 100,
+            htmlColor: "#noColor",
             translations: (ret.riskDefinition.riskValues[1].translations)
         ]
         ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, 200))
@@ -1202,7 +1272,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         then: "the value is replaced by the current maximum"
         ret.riskDefinition.categories.first().valueMatrix[1][1].ordinalValue == 1
 
-        when:"we make the riskvalues inconsitent"
+        when: "we make the riskvalues inconsitent"
         ret.riskDefinition.categories.first().valueMatrix[0][0] = ret.riskDefinition.riskValues[1]
         ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/r1d1/evaluation", ret.riskDefinition, 200))
 
@@ -1224,10 +1294,10 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
             }
         }
 
-        when:"we use the riskdef as new"
+        when: "we use the riskdef as new"
         ret = parseJson(post("/content-customizing/domains/$domainId/risk-definitions/new/evaluation", ret.riskDefinition, 200))
 
-        then:"new riskdefinition is the change"
+        then: "new riskdefinition is the change"
         with(ret) {
             changes.size() == 1
             changes*.changeType as Set ==~ ["NewRiskDefinition"]
@@ -1245,7 +1315,7 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
         when: "we use the riskdef to update the active riskdef"
         put("/content-customizing/domains/$domainId/risk-definitions/r1d1", ret.riskDefinition, [:],200)
 
-        then:"this riskdefinition is active"
+        then: "this riskdefinition is active"
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
             categories.size() == 1
         }
@@ -1352,13 +1422,17 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
     def "change a category translation"() {
         when:
         parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1.with {
-            categories.find{ it.id == "D" }.translations.en = [name: 'Extent of damage', abbreviation: 'd']
+            categories.find{
+                it.id == "D"
+            }.translations.en = [name: 'Extent of damage', abbreviation: 'd']
             put("/content-customizing/domains/$owner.domainId/risk-definitions/r1d1", it, [:],200)
         }
 
         then:
         with(parseJson(get("/domains/${domainId}")).riskDefinitions.r1d1) {
-            categories.find{ it.id == "D" }.translations.en.name == 'Extent of damage'
+            categories.find{
+                it.id == "D"
+            }.translations.en.name == 'Extent of damage'
         }
     }
 
@@ -1368,11 +1442,11 @@ class ChangeRiskDefininitionMvcITSpec  extends VeoMvcSpec {
 
     private ImpactValues impactValues() {
         return new ImpactValues([
-            (new CategoryRef("C")):(createImpactRef()),
-            (new CategoryRef("I")):(createImpactRef()),
-            (new CategoryRef("A")):(createImpactRef()),
-            (new CategoryRef("R")):(createImpactRef()),
-            (new CategoryRef("D")):(createImpactRef())
+            (new CategoryRef("C")): (createImpactRef()),
+            (new CategoryRef("I")): (createImpactRef()),
+            (new CategoryRef("A")): (createImpactRef()),
+            (new CategoryRef("R")): (createImpactRef()),
+            (new CategoryRef("D")): (createImpactRef())
         ])
     }
 

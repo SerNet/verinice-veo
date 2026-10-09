@@ -35,7 +35,9 @@ class ClientSeparationRestTest extends VeoRestTest {
             ],
         ], 201, UserType.DEFAULT).location
 
-        secondaryClientDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{it.name == "test-domain"}.id
+        secondaryClientDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{
+            it.name == "test-domain"
+        }.id
         secondaryClientUnitUrl = post("/units", [
             name: "secondary client's unit",
             domains: [

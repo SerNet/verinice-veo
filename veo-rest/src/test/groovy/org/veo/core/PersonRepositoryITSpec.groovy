@@ -65,7 +65,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
 
         then:
         compositePerson != null
-        compositePerson.parts  == [john, jane] as Set
+        compositePerson.parts == [john, jane] as Set
 
         when:
         compositePerson = personRepository.findById(compositePerson.id)

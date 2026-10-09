@@ -88,7 +88,7 @@ abstract class AbstractJpaSpec extends VeoSpec {
                 processDataRepository,
                 scenarioDataRepository,
                 scopeDataRepository,
-                )
+        )
     }
 
     List<Asset> findAssetsByUnit(Unit unit) {

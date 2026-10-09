@@ -83,7 +83,9 @@ class GetAttributeValuesUseCaseITSpec extends VeoSpringSpec {
     }
 
     private void saveDurationData() {
-        def target = personRepository.save(newPerson(unit) { associateWithDomain(domain, 'PER_Person', 'NEW') })
+        def target = personRepository.save(newPerson(unit) {
+            associateWithDomain(domain, 'PER_Person', 'NEW')
+        })
         executeInTransaction {
             personRepository.save(newPerson(unit) {
                 associateWithDomain(domain, 'PER_Person', 'NEW')
@@ -108,7 +110,9 @@ class GetAttributeValuesUseCaseITSpec extends VeoSpringSpec {
                         attributes['estimatedDuration'] = 'P3D'
                     }
                 ]
-                applyLink(newCustomLink(target, 'person_link', domain) { attributes['recoveryTime'] = 'P1D' })
+                applyLink(newCustomLink(target, 'person_link', domain) {
+                    attributes['recoveryTime'] = 'P1D'
+                })
             })
         }
     }

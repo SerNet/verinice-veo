@@ -146,7 +146,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "the asset is requested from the server again"
         results =
                 mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.idAsString}").accept(MediaType.APPLICATION_JSON).header(
-                HttpHeaders.IF_NONE_MATCH, eTag
+                        HttpHeaders.IF_NONE_MATCH, eTag
                 ))
 
         then: "the server returns not-modified"
@@ -350,7 +350,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def     "A risk can be created for an asset"() {
+    def "A risk can be created for an asset"() {
         given: "saved elements"
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -367,10 +367,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "a new risk can be created successfully"
         def domainId = dsgvoDomain.getIdAsString()
         def json = parseJson(post("/assets/"+asset.idAsString+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.idAsString ],
+            scenario: [targetUri: 'http://localhost/scenarios/'+ scenario.idAsString],
             domains: [
                 (domainId) : [
-                    reference: [ targetUri: 'http://localhost/domains/'+ domainId]
+                    reference: [targetUri: 'http://localhost/domains/'+ domainId]
                 ]
             ]
         ]))
@@ -405,10 +405,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when:
         def domainId = dsgvoDomain.getIdAsString()
         post("/assets/"+asset.idAsString+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.idAsString ],
+            scenario: [targetUri: 'http://localhost/scenarios/'+ scenario.idAsString],
             domains: [
                 (domainId) : [
-                    reference: [ targetUri: 'http://localhost/domains/'+ domainId]
+                    reference: [targetUri: 'http://localhost/domains/'+ domainId]
                 ]
             ]
         ])
@@ -462,21 +462,21 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         post("/assets/"+asset.idAsString+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario2.idAsString ],
+            scenario: [targetUri: 'http://localhost/scenarios/'+ scenario2.idAsString],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
                     reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                        .idAsString ]
+                        .idAsString]
                 ]
 
             ]
         ] as Map)
         post("/assets/"+asset.idAsString+"/risks", [
-            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario3.idAsString ],
+            scenario: [targetUri: 'http://localhost/scenarios/'+ scenario3.idAsString],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
                     reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                        .idAsString ]
+                        .idAsString]
                 ]
             ]
         ] as Map)
@@ -558,7 +558,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     .displayName
             it._self ==~ /.*assets\/${asset.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
-            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.createdAt) <beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
             it.createdBy == "user@domain.example"
             it.updatedBy == "user@domain.example"
@@ -578,7 +578,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             it.mitigation == null
             it.riskOwner == null
             Instant.parse(it.createdAt) > beforeCreation
-            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.createdAt) <beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
             it.createdBy == "user@domain.example"
             it.updatedBy == "user@domain.example"
@@ -610,7 +610,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-        def ri= [
+        def ri = [
             :
         ]
 

@@ -57,7 +57,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         def result = executeInTransaction {
             getBreakingChangesUseCase.execute(
                     new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(client.idAsString)
-                    ).breakingChanges
+            ).breakingChanges
         }
 
         then:
@@ -138,7 +138,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
 
         then:
         result.size() == 1
-        with (result.first()) {
+        with(result.first()) {
             change == ChangeType.MODIFICATION
             attribute == 'process_processingDetails_operatingStage'
             customAspect == 'process_processingDetails'
@@ -158,7 +158,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
 
         then:
         result.size() == 1
-        with (result.first()) {
+        with(result.first()) {
             change == ChangeType.MODIFICATION
             attribute == 'control_dataProtection_objectives'
             customAspect == 'control_dataProtection'
@@ -206,7 +206,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
 
         then:
         result.size() == 1
-        with (result.first()) {
+        with(result.first()) {
             change == ChangeType.REMOVAL
             attribute == 'scenario_vulnerability_otherType'
             customAspect == 'scenario_vulnerability'
@@ -226,7 +226,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
 
         then:
         result.size() == 1
-        with (result.first()) {
+        with(result.first()) {
             change == ChangeType.MODIFICATION
             attribute == 'person_address_postcode'
             customAspect == 'person_address'
@@ -248,7 +248,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
 
         then:
         result.size() == 1
-        with (result.first()) {
+        with(result.first()) {
             change == ChangeType.MODIFICATION
             attribute == 'control_dataProtection_objectives'
             customAspect == 'control_dataProtection'
@@ -258,7 +258,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
-    List<BreakingChange> getBreakingChanges( @DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
+    List<BreakingChange> getBreakingChanges(@DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure<Domain> domainModification) {
         domainModification.delegate = domain
         domainModification.resolveStrategy = Closure.DELEGATE_FIRST
@@ -267,7 +267,7 @@ class GetBreakingChangesUseCaseITSpec extends VeoSpringSpec {
         return executeInTransaction {
             getBreakingChangesUseCase.execute(
                     new UseCase.EntityId(domain.id), NoRestrictionAccessRight.from(domain.owner.idAsString)
-                    ).breakingChanges
+            ).breakingChanges
         }
     }
 }

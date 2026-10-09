@@ -47,7 +47,7 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
     }
 
     def "circular composites are supported"() {
-        when:"saving a circular asset composite structure"
+        when: "saving a circular asset composite structure"
         def assetIds = txTemplate.execute {
             def leaf = assetDataRepository.save(newAsset(unit) {
                 name = "leaf"

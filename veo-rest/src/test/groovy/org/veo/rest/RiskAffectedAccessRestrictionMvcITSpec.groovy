@@ -96,8 +96,8 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
         [type, rights] << ElementType.RISK_AFFECTED_TYPES.collectMany {
             [
                 [type: it, rights: new TestUserRights(restrictUnitAccess: false)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits: true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable: true)],
             ]
         }
     }
@@ -170,7 +170,7 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
             scenario: [targetUri: "/scenarios/${scenario1.idAsString}"],
             domains: [
                 (domain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ domain.idAsString ]
+                    reference: [targetUri: '/domains/'+ domain.idAsString]
                 ]
             ]
         ]))
@@ -201,8 +201,8 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
         [type, rights] << ElementType.RISK_AFFECTED_TYPES.collectMany {
             [
                 [type: it, rights: new TestUserRights(restrictUnitAccess: false)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits: true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true)],
             ]
         }
     }
@@ -223,10 +223,10 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
 
         when: "trying to add another risk"
         post("/$elementType/$elementId/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario2.idAsString ],
+            scenario: [targetUri: '/scenarios/'+ scenario2.idAsString],
             domains: [
                 (domain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ domain.idAsString ]
+                    reference: [targetUri: '/domains/'+ domain.idAsString]
                 ]
             ]
         ], 403)
@@ -242,7 +242,7 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
 
         when: "trying to update a risk"
         get("/$elementType/$elementId/risks/${scenario1.idAsString}").with{
-            def  risk = parseJson(it)
+            def risk = parseJson(it)
             put(risk._self, risk, ['If-Match': getETag(it)], 403)
         }
 
@@ -251,7 +251,7 @@ class RiskAffectedAccessRestrictionITSpec extends VeoMvcSpec {
 
         when: "trying to update an RI"
         get("/$elementType/${element.idAsString}/requirement-implementations/${control.idAsString}").with{
-            def  ri = parseJson(it)
+            def ri = parseJson(it)
             put(ri._self, ri, ['If-Match': getETag(it)], 403)
         }
 

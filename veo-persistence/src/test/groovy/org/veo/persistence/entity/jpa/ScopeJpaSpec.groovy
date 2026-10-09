@@ -57,7 +57,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     }
 
     def "save and load a scope"() {
-        when:"saving a scope with subcomposites and elements"
+        when: "saving a scope with subcomposites and elements"
         assetComposite = assetDataRepository.save(assetComposite)
         personComposite = personDataRepository.save(personComposite)
 
@@ -80,8 +80,12 @@ class ScopeJpaSpec extends AbstractJpaSpec {
         retrievedScope.members.contains personComposite
 
         and: "the composites contain the elements"
-        def retrievedAssetComposite = retrievedScope.members.findAll {it instanceof Asset}.first()
-        def retrievedPersonComposite = retrievedScope.members.findAll {it instanceof Person}.first()
+        def retrievedAssetComposite = retrievedScope.members.findAll {
+            it instanceof Asset
+        }.first()
+        def retrievedPersonComposite = retrievedScope.members.findAll {
+            it instanceof Person
+        }.first()
         retrievedAssetComposite.parts == [asset] as Set
         retrievedPersonComposite.parts == [person] as Set
     }

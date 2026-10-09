@@ -126,8 +126,8 @@ class UnitAccessITSpec extends VeoMvcSpec{
         where:
         rights << [
             new TestUserRights(restrictUnitAccess: false),
-            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
-            new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true)
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
+            new TestUserRights(restrictUnitAccess: true, testUnitReadable: true)
         ]
     }
 
@@ -224,7 +224,7 @@ class UnitAccessITSpec extends VeoMvcSpec{
         when: "we can incanate in the unit"
         parseJson(post("/units/$unit.idAsString/incarnations",
                 parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=387b0990-10f7-4ef2-8ee5-13579f2cfe84"))
-                ))
+        ))
 
         and: "also a profile"
         post("/domains/$domainId/profiles/${profileId}/incarnation?unit=$unit.idAsString",
@@ -237,8 +237,8 @@ class UnitAccessITSpec extends VeoMvcSpec{
         where:
         rights << [
             new TestUserRights(restrictUnitAccess: false),
-            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
-            new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true)
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
+            new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true)
         ]
     }
 
@@ -256,7 +256,7 @@ class UnitAccessITSpec extends VeoMvcSpec{
         and: "we can incanate in the unit"
         parseJson(post("/units/$unit.idAsString/incarnations",
                 parseJson(get("/units/$unit.idAsString/domains/$domain.idAsString/incarnation-descriptions?itemIds=387b0990-10f7-4ef2-8ee5-13579f2cfe84"))
-                ))
+        ))
 
         and: "also a profile"
         post("/domains/$domainId/profiles/${profileId}/incarnation?unit=$unit.idAsString",
@@ -273,11 +273,11 @@ class UnitAccessITSpec extends VeoMvcSpec{
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+                new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true),
+                new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true),
                 ["unit:update"]
             ]
         ]
@@ -300,11 +300,11 @@ class UnitAccessITSpec extends VeoMvcSpec{
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+                new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true),
+                new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true),
                 ["unit:delete"]
             ]
         ]
@@ -329,11 +329,11 @@ class UnitAccessITSpec extends VeoMvcSpec{
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+                new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true),
+                new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true),
                 ["unit:create"]
             ]
         ]
@@ -374,11 +374,11 @@ class UnitAccessITSpec extends VeoMvcSpec{
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+                new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
                 []
             ],
             [
-                new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true, testUnitWritable: true),
+                new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true),
                 [
                     "unit:create",
                     "unit:delete",
@@ -405,7 +405,7 @@ class UnitAccessITSpec extends VeoMvcSpec{
         where:
         rights << [
             new TestUserRights(restrictUnitAccess: false),
-            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true),
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits: true),
             // Write privileges for individual units only cover writing INSIDE those units, but not editing the units
             // themselves. Domain updates associate the units with the new domain, which counts as editing the units
             // themselves, and not writing inside the units. See test below.
@@ -428,8 +428,8 @@ class UnitAccessITSpec extends VeoMvcSpec{
 
         where:
         rights << [
-            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  false),
-            new TestUserRights(restrictUnitAccess: true, accessAllUnits:  false, testUnitReadable: true, testUnitWritable: true),
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits: false),
+            new TestUserRights(restrictUnitAccess: true, accessAllUnits: false, testUnitReadable: true, testUnitWritable: true),
         ]
     }
 }

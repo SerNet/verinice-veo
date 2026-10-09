@@ -65,7 +65,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         then : "client and domain are valid"
         isPresent
         c.name == "Test Client"
-        c.domains.size()==1
+        c.domains.size()== 1
         c.domains.first().name == "27001"
         c.domains.first().owner == c
 
@@ -80,7 +80,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         then : "the client and domain are valid"
         isPresent
         c.name == "Test Client"
-        c.domains.size()==1
+        c.domains.size()== 1
         c.domains.first().name == "27001"
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
@@ -161,13 +161,13 @@ class ClientRepositorySpec extends VeoSpringSpec {
             associateWithDomain(domain, "NormalDocument", "NEW")
         }
 
-        when:"save and load the client"
+        when: "save and load the client"
         unitRepository.save(unit)
 
         Client newClient = repository.findById(clientId).get()
         def units = unitRepository.findByClient(newClient)
 
-        then:"all data is present"
+        then: "all data is present"
         newClient.name == client.name
         newClient.domains == client.domains
         //        newClient.units == client.units
@@ -228,7 +228,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         then : "client and domain are valid"
         isPresent
         c.name == "Test Client"
-        c.domains.size()==1
+        c.domains.size()== 1
         c.domains.first().name == "27001"
         c.domains.first().owner == c
         c.domains.first().catalogItems.size() == 3
@@ -244,7 +244,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         then : "the client and domain are valid"
         isPresent
         c.name == "Test Client"
-        c.domains.size()==1
+        c.domains.size()== 1
         c.domains.first().name == "27001"
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"

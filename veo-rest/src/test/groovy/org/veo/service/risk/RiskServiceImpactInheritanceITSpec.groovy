@@ -50,7 +50,7 @@ import spock.lang.Unroll
  * There are dot files for the different test scenarios in /verinice veo/doc/testGraphs.
  * Use a dot viewer.
  */
-class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
+class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     ImpactInheritanceCalculator impactInheritanceCalculator
@@ -314,8 +314,8 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             setImpactValues(domain, impactValues0)
         })
         def circle = buildAssetList(startC, unit, domain,"C2", impactValues0)
-        circle = buildAssetList(circle, unit, domain,"C3",impactValues1)
-        circle = buildAssetList(circle, unit, domain,"C4",impactValues2)
+        circle = buildAssetList(circle, unit, domain,"C3", impactValues1)
+        circle = buildAssetList(circle, unit, domain,"C4", impactValues2)
         startC.applyLink(newCustomLink(circle, "asset_asset_app", domain))
         startC = assetDataRepository.save(startC)
 
@@ -350,7 +350,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         def listassetCircle = buildAssetList(listasset2, unit, domain,"l3")
         def listasset4 = buildAssetList(listassetCircle, unit, domain,"l4")
         def listasset5 = buildAssetList(listasset4, unit, domain,"l5")
-        listassetCircle.applyLink(newCustomLink( listasset5, "asset_asset_app", domain))
+        listassetCircle.applyLink(newCustomLink(listasset5, "asset_asset_app", domain))
         listassetCircle = assetDataRepository.save(listassetCircle)
         def listasset6 = buildAssetList(listasset5, unit, domain,"l6")
 
@@ -425,10 +425,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValues0)
         })
-        def a2 = buildAssetListOpposite(a1, unit, domain,"a2",impactValuesEmpty)
-        def a3 = buildAssetListOpposite(a2, unit, domain,"a3",impactValuesEmpty)
-        def a4 = buildAssetListOpposite(a3, unit, domain,"a4",impactValuesEmpty)
-        def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
+        def a2 = buildAssetListOpposite(a1, unit, domain,"a2", impactValuesEmpty)
+        def a3 = buildAssetListOpposite(a2, unit, domain,"a3", impactValuesEmpty)
+        def a4 = buildAssetListOpposite(a3, unit, domain,"a4", impactValuesEmpty)
+        def a5 = buildAssetListOpposite(a4, unit, domain,"a5", impactValuesEmpty)
 
         when: "we calculate from a1"
         log.debug("---------------------------------------------")
@@ -439,7 +439,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"a2 .. a4 impacts are changed in the chain"
+        then: "a2 .. a4 impacts are changed in the chain"
         result.size() == 4
         result[0] == a2
         result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
@@ -464,20 +464,20 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValues0)
         })
-        def b2 = buildAssetListOpposite(b1, unit, domain,"b2",impactValuesEmpty)
-        def b3 = buildAssetListOpposite(b2, unit, domain,"b3",impactValuesEmpty)
-        def b4 = buildAssetListOpposite(b3, unit, domain,"b4",impactValuesEmpty)
-        def b5 = buildAssetListOpposite(b4, unit, domain,"b5",impactValuesEmpty)
+        def b2 = buildAssetListOpposite(b1, unit, domain,"b2", impactValuesEmpty)
+        def b3 = buildAssetListOpposite(b2, unit, domain,"b3", impactValuesEmpty)
+        def b4 = buildAssetListOpposite(b3, unit, domain,"b4", impactValuesEmpty)
+        def b5 = buildAssetListOpposite(b4, unit, domain,"b5", impactValuesEmpty)
 
         def c1 = assetDataRepository.save(newAsset(unit) {
             name = "c1"
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValues0)
         })
-        def c2 = buildAssetListOpposite(c1, unit, domain,"c2",impactValuesEmpty)
-        def c3 = buildAssetListOpposite(c2, unit, domain,"c3",impactValuesEmpty)
-        def c4 = buildAssetListOpposite(c3, unit, domain,"c4",impactValuesEmpty)
-        def c5 = buildAssetListOpposite(c4, unit, domain,"c5",impactValuesEmpty)
+        def c2 = buildAssetListOpposite(c1, unit, domain,"c2", impactValuesEmpty)
+        def c3 = buildAssetListOpposite(c2, unit, domain,"c3", impactValuesEmpty)
+        def c4 = buildAssetListOpposite(c3, unit, domain,"c4", impactValuesEmpty)
+        def c5 = buildAssetListOpposite(c4, unit, domain,"c5", impactValuesEmpty)
 
         b4 = executeInTransaction {
             b4 = assetDataRepository.findById(b4.id).get()
@@ -621,41 +621,41 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValuesEmpty)
         })
-        def a2 = buildAssetListOpposite(a1, unit, domain,"a2",impactValuesEmpty)
-        def a3 = buildAssetListOpposite(a2, unit, domain,"a3",impactValuesEmpty)
-        def a4 = buildAssetListOpposite(a3, unit, domain,"a4",impactValuesEmpty)
-        def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
+        def a2 = buildAssetListOpposite(a1, unit, domain,"a2", impactValuesEmpty)
+        def a3 = buildAssetListOpposite(a2, unit, domain,"a3", impactValuesEmpty)
+        def a4 = buildAssetListOpposite(a3, unit, domain,"a4", impactValuesEmpty)
+        def a5 = buildAssetListOpposite(a4, unit, domain,"a5", impactValuesEmpty)
 
         def b1 = assetDataRepository.save(newAsset(unit) {
             name = "b1"
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValuesEmpty)
         })
-        def b2 = buildAssetListOpposite(b1, unit, domain,"b2",impactValuesEmpty)
-        def b3 = buildAssetListOpposite(b2, unit, domain,"b3",impactValuesEmpty)
-        def b4 = buildAssetListOpposite(b3, unit, domain,"b4",impactValuesEmpty)
-        def b5 = buildAssetListOpposite(b4, unit, domain,"b5",impactValuesEmpty)
+        def b2 = buildAssetListOpposite(b1, unit, domain,"b2", impactValuesEmpty)
+        def b3 = buildAssetListOpposite(b2, unit, domain,"b3", impactValuesEmpty)
+        def b4 = buildAssetListOpposite(b3, unit, domain,"b4", impactValuesEmpty)
+        def b5 = buildAssetListOpposite(b4, unit, domain,"b5", impactValuesEmpty)
 
         def c1 = assetDataRepository.save(newAsset(unit) {
             name = "c1"
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValuesEmpty)
         })
-        def c2 = buildAssetListOpposite(c1, unit, domain,"c2",impactValuesEmpty)
-        def c3 = buildAssetListOpposite(c2, unit, domain,"c3",impactValuesEmpty)
-        def c4 = buildAssetListOpposite(c3, unit, domain,"c4",impactValuesEmpty)
-        def c5 = buildAssetListOpposite(c4, unit, domain,"c5",impactValuesEmpty)
+        def c2 = buildAssetListOpposite(c1, unit, domain,"c2", impactValuesEmpty)
+        def c3 = buildAssetListOpposite(c2, unit, domain,"c3", impactValuesEmpty)
+        def c4 = buildAssetListOpposite(c3, unit, domain,"c4", impactValuesEmpty)
+        def c5 = buildAssetListOpposite(c4, unit, domain,"c5", impactValuesEmpty)
 
         executeInTransaction {
             def a = assetDataRepository.findById(b1.id).get()
             a.applyLink(newCustomLink(assetDataRepository.findById(a1.id).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
-            a= assetDataRepository.findById(b2.id).get()
+            a = assetDataRepository.findById(b2.id).get()
             a.applyLink(newCustomLink(assetDataRepository.findById(a2.id).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
-            a= assetDataRepository.findById(b3.id).get()
+            a = assetDataRepository.findById(b3.id).get()
             a.applyLink(newCustomLink(assetDataRepository.findById(c2.id).get(), "asset_asset_app", domain))
-            assetDataRepository.save(a )
+            assetDataRepository.save(a)
             a = assetDataRepository.findById(a4.id).get()
             a.applyLink(newCustomLink(assetDataRepository.findById(b4.id).get(), "asset_asset_app", domain))
             assetDataRepository.save(a)
@@ -814,7 +814,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         List<Process> processes = new ArrayList<>(100)
         List<Process> processes1 = new ArrayList<>(100)
         (1..100).each { index ->
-            process = processDataRepository.save( newProcess(unit) {
+            process = processDataRepository.save(newProcess(unit) {
                 name = "p-"+index
                 associateWithDomain(domain, "NormalProcess", "NEW")
             })
@@ -1019,8 +1019,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             it.size()
         }))
 
-        def summary = elementByCount.entrySet().stream().collect(Collectors.summarizingInt({ it.getValue() }))
-        log.debug("summary {}",summary)
+        def summary = elementByCount.entrySet().stream().collect(Collectors.summarizingInt({
+            it.getValue()
+        }))
+        log.debug("summary {}", summary)
 
         then: "302 unique assets where changed"
         elementByCount.entrySet().size() == 302
@@ -1085,7 +1087,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             dataDrivenAssets[7].setLinks([
                 newCustomLink(dataDrivenAssets[3], "asset_asset_app", domain)
             ] as Set)
-            dataDrivenAssets = dataDrivenAssets.collect {  assetDataRepository.save(it) }
+            dataDrivenAssets = dataDrivenAssets.collect {
+                assetDataRepository.save(it)
+            }
         }
 
         when:
@@ -1190,7 +1194,9 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             dataDrivenAssets[7].setLinks([
                 newCustomLink(dataDrivenAssets[3], "asset_asset_app", domain)
             ] as Set)
-            dataDrivenAssets = dataDrivenAssets.collect {  assetDataRepository.save(it) }
+            dataDrivenAssets = dataDrivenAssets.collect {
+                assetDataRepository.save(it)
+            }
         }
 
         when:
@@ -1244,10 +1250,10 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
             associateWithDomain(domain, "AST_Application", "NEW")
             setImpactValues(domain, impactValues0)
         })
-        def a2 = buildAssetListOpposite(a1, unit, domain,"a2",impactValuesEmpty)
-        def a3 = buildAssetListOpposite(a2, unit, domain,"a3",impactValuesEmpty)
-        def a4 = buildAssetListOpposite(a3, unit, domain,"a4",impactValuesEmpty)
-        def a5 = buildAssetListOpposite(a4, unit, domain,"a5",impactValuesEmpty)
+        def a2 = buildAssetListOpposite(a1, unit, domain,"a2", impactValuesEmpty)
+        def a3 = buildAssetListOpposite(a2, unit, domain,"a3", impactValuesEmpty)
+        def a4 = buildAssetListOpposite(a3, unit, domain,"a4", impactValuesEmpty)
+        def a5 = buildAssetListOpposite(a4, unit, domain,"a5", impactValuesEmpty)
 
         when: "we calculate for all roots"
         log.debug("---------------------------------------------")
@@ -1257,7 +1263,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"all impacts are changed in the chain"
+        then: "all impacts are changed in the chain"
         result.size() == 4
         !result.contains(a1)
         result[0].getImpactValues(domain, riskDefinitionRef).get().potentialImpactsCalculated == impactValues0.get(riskDefinitionRef).potentialImpacts
@@ -1292,7 +1298,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"no impacts are changed"
+        then: "no impacts are changed"
         result.size() == 0
     }
 
@@ -1335,7 +1341,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"all impacts are changed in the circle"
+        then: "all impacts are changed in the circle"
         result.size() == 3
 
         when: "we add to roots"
@@ -1366,7 +1372,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"only the paths are returned"
+        then: "only the paths are returned"
         result.size() == 2
         !result.contains(r1)
         !result.contains(r2)
@@ -1456,7 +1462,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"no result is returned"
+        then: "no result is returned"
         verifyAll {
             queryCounts.select == 8
             queryCounts.insert == 0
@@ -1473,7 +1479,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"no result is returned"
+        then: "no result is returned"
         verifyAll {
             queryCounts.select == 0
             queryCounts.insert == 0
@@ -1500,7 +1506,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         def queryCounts = QueryCountHolder.grandTotal
 
-        then:"no result is returned"
+        then: "no result is returned"
         result.size() == 0
 
         and:
@@ -1520,7 +1526,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"no result is returned"
+        then: "no result is returned"
         result.size() == 0
 
         and:
@@ -1540,7 +1546,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         }
         queryCounts = QueryCountHolder.grandTotal
 
-        then:"no result is returned"
+        then: "no result is returned"
 
         and:
         verifyAll {
@@ -1554,12 +1560,12 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
 
     private void listLinks(Element a) {
         a.links.forEach{
-            log.debug("{}->{}", it.source.designator,it.target.designator)
+            log.debug("{}->{}", it.source.designator, it.target.designator)
             listLinks(it.target)
         }
     }
 
-    private Asset buildAssetList(Asset source, Unit unit, Domain domain,String elementName, impactValues = null, link = "asset_asset_app") {
+    private Asset buildAssetList(Asset source, Unit unit, Domain domain, String elementName, impactValues = null, link = "asset_asset_app") {
         def target = newAsset(unit) {
             name = elementName
             associateWithDomain(domain, "AST_Application", "NEW")
@@ -1587,7 +1593,7 @@ class RiskServiceImpactInheritanceITSpec extends AbstractPerformanceITSpec  {
         impactValues
     }
 
-    private Asset buildAssetListOpposite(Asset source, Unit unit, Domain domain,String elementName, impactValues = null, link = "asset_asset_app") {
+    private Asset buildAssetListOpposite(Asset source, Unit unit, Domain domain, String elementName, impactValues = null, link = "asset_asset_app") {
         def target = newAsset(unit) {
             name = elementName
             associateWithDomain(domain, "AST_Application", "NEW")

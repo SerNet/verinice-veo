@@ -32,7 +32,7 @@ class ActionITSpec extends Specification {
         })
 
         when:
-        step.selfValidate(domain,raType)
+        step.selfValidate(domain, raType)
 
         then:
         def ex = thrown(Exception)

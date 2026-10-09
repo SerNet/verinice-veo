@@ -152,12 +152,12 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             status: "NEW",
             riskValues: [
                 myFirstRiskDefinition: [
-                    potentialImpacts: [ "C": 1,
+                    potentialImpacts: ["C": 1,
                         "I": 2
                     ]
                 ],
                 myThirdRiskDefinition: [
-                    potentialImpacts: [ "C": 2,
+                    potentialImpacts: ["C": 2,
                         "I": 0
                     ]
                 ]
@@ -219,7 +219,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
         then: "an exception is thrown"
         RiskConsistencyException ex = thrown()
-        ex.message.contains( 'myFirstWrongDefinition' )
+        ex.message.contains('myFirstWrongDefinition')
     }
 
     def "can't create process with wrong impact"() {

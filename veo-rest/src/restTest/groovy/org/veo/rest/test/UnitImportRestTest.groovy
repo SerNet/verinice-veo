@@ -40,7 +40,7 @@ class UnitImportRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
-                ).body
+        ).body
         def processV1 = exportV1.elements.find { it.type == 'process' }
         def processV2 = exportV2.elements.find { it.type == 'process' }
 
@@ -138,8 +138,12 @@ class UnitImportRestTest extends VeoRestTest {
             abbreviation == "LU"
             description =~ /It used to be a .*/
             domains.size() == 2
-            domains.any { it.targetUri.endsWith("/domains/$owner.owner.dsgvoDomainId") }
-            domains.any { it.targetUri.endsWith("/domains/$owner.owner.testDomainId") }
+            domains.any {
+                it.targetUri.endsWith("/domains/$owner.owner.dsgvoDomainId")
+            }
+            domains.any {
+                it.targetUri.endsWith("/domains/$owner.owner.testDomainId")
+            }
         }
 
         when: "looking up the restored elements"
@@ -203,8 +207,12 @@ class UnitImportRestTest extends VeoRestTest {
             abbreviation == "$abbreviation"
             description =~ /It used to be a .*/
             domains.size() == 2
-            domains.any { it.targetUri.endsWith("/domains/$owner.owner.dsgvoDomainId") }
-            domains.any { it.targetUri.endsWith("/domains/$owner.owner.testDomainId") }
+            domains.any {
+                it.targetUri.endsWith("/domains/$owner.owner.dsgvoDomainId")
+            }
+            domains.any {
+                it.targetUri.endsWith("/domains/$owner.owner.testDomainId")
+            }
         }
     }
 
@@ -231,8 +239,12 @@ class UnitImportRestTest extends VeoRestTest {
 
         and: "importing the unit into the secondary client"
         def secondaryDomains = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body
-        def secondaryTestDomainId = secondaryDomains.find { it.name == "test-domain" }.id
-        def secondaryDsgvoDomainId = secondaryDomains.find { it.name == "DS-GVO" }.id
+        def secondaryTestDomainId = secondaryDomains.find {
+            it.name == "test-domain"
+        }.id
+        def secondaryDsgvoDomainId = secondaryDomains.find {
+            it.name == "DS-GVO"
+        }.id
         def importedUnitUri = post("/units/import", exportedUnit, 201, UserType.SECONDARY_CLIENT_USER).location
         def importedUnitId = (importedUnitUri =~ /\/units\/(.+)/)[0][1]
 
@@ -240,8 +252,12 @@ class UnitImportRestTest extends VeoRestTest {
         with(get("/units/$importedUnitId", 200, UserType.SECONDARY_CLIENT_USER).body) {
             name == "Cross client unit"
             domains.size() == 2
-            domains.any { it.targetUri.endsWith("/domains/$secondaryTestDomainId") }
-            domains.any { it.targetUri.endsWith("/domains/$secondaryDsgvoDomainId") }
+            domains.any {
+                it.targetUri.endsWith("/domains/$secondaryTestDomainId")
+            }
+            domains.any {
+                it.targetUri.endsWith("/domains/$secondaryDsgvoDomainId")
+            }
         }
 
         and: "the scenario is restored in the secondary client"
@@ -311,7 +327,9 @@ class UnitImportRestTest extends VeoRestTest {
 
         when: "exporting from the default client and importing into the secondary client"
         def exportedUnit = get("$unitUri/export").body
-        def secondaryTestDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find { it.name == "test-domain" }.id
+        def secondaryTestDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find {
+            it.name == "test-domain"
+        }.id
         def importedUnitUri = post("/units/import", exportedUnit, 201, UserType.SECONDARY_CLIENT_USER).location
         def importedUnitId = (importedUnitUri =~ /\/units\/(.+)/)[0][1]
 
@@ -348,7 +366,7 @@ class UnitImportRestTest extends VeoRestTest {
         given: "a unit with a document"
         def oldUnitUri = post("/units", [
             name: "old unit name",
-            domains:[
+            domains: [
                 [targetUri: "/domains/$testDomainId"]
             ]
         ]).location
@@ -384,7 +402,9 @@ class UnitImportRestTest extends VeoRestTest {
     def "incarnated catalog items are tolerated"() {
         given: "an incarnated catalog item"
         def oldUnitUri = "/units/" + postNewUnit().resourceId
-        def catalogItemId = get("/domains/$dsgvoDomainId/catalog-items?size=100").body.items.find { it.abbreviation == "DS-G.38" }.id
+        def catalogItemId = get("/domains/$dsgvoDomainId/catalog-items?size=100").body.items.find {
+            it.abbreviation == "DS-G.38"
+        }.id
         def incarnationDescriptions = get("$oldUnitUri/domains/$dsgvoDomainId/incarnation-descriptions?itemIds=$catalogItemId").body
         post("$oldUnitUri/incarnations", incarnationDescriptions)
 
@@ -406,9 +426,9 @@ class UnitImportRestTest extends VeoRestTest {
                 ]
             ],
             translations : [(EN):
-                ["control_Ctl_plural":"asset_AST_Application_plural",
-                    "control_Ctl_singular":"asset_AST_Application_singular",
-                    "control_Ctl_status_NEW":"asset_AST_Application_status_NEW",
+                ["control_Ctl_plural": "asset_AST_Application_plural",
+                    "control_Ctl_singular": "asset_AST_Application_singular",
+                    "control_Ctl_status_NEW": "asset_AST_Application_status_NEW",
                 ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
@@ -450,12 +470,12 @@ class UnitImportRestTest extends VeoRestTest {
         def domainIdA = post("/content-creation/domains", [
             name: "import conflict domain A ${UUID.randomUUID()}",
             authority: "jj",
-            translations: [en:[name:"Import conflict domain A"]]
+            translations: [en: [name: "Import conflict domain A"]]
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
         def domainIdB = post("/content-creation/domains", [
             name: "import conflict domain B ${UUID.randomUUID()}",
             authority: "jj",
-            translations: [en:[name:"Import conflict domain B"]]
+            translations: [en: [name: "Import conflict domain B"]]
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
 
         put("/content-creation/domains/$domainIdA/element-type-definitions/process", [
@@ -472,7 +492,7 @@ class UnitImportRestTest extends VeoRestTest {
                 ]
             ],
             translations : [
-                (EN):["process_ProcA_plural":"process_ProcA_plural",
+                (EN): ["process_ProcA_plural": "process_ProcA_plural",
                     "process_ProcA_singular": "process_ProcA_singular",
                     "process_ProcA_status_NEW" : "process_ProcA_status_NEW",
                     "process_ProcA_status_OLD" : "process_ProcA_status_OLD",
@@ -494,7 +514,7 @@ class UnitImportRestTest extends VeoRestTest {
                 ]
             ],
             translations : [
-                (EN):["process_ProcB_plural":"process_ProcA_plural",
+                (EN): ["process_ProcB_plural": "process_ProcA_plural",
                     "process_ProcB_singular": "process_ProcA_singular",
                     "process_ProcB_status_ON" : "process_ProcA_status_NEW",
                     "process_ProcB_status_OFF" : "process_ProcA_status_OLD",
@@ -581,7 +601,7 @@ class UnitImportRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
-                ).body
+        ).body
 
         when: "importing the v2 payload"
         def newUnitId = post("/units/import", exportedUnit).body.resourceId
@@ -638,7 +658,7 @@ class UnitImportRestTest extends VeoRestTest {
                 200,
                 UserType.DEFAULT,
                 MediaType.parseMediaType(UnitController.MEDIA_TYPE_UNIT_DUMP_V2_VALUE)
-                ).body
+        ).body
 
         when: "importing the v2 payload via multipart"
         def newUnitId = postMultipart("/units/import", exportedUnit).body.resourceId

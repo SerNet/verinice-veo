@@ -115,7 +115,7 @@ class GetDomainTemplateUseCasePerformanceITSpec extends AbstractPerformanceITSpe
                         new UseCase.EntityId(domainTemplateId), {
                             entityToDtoTransformer.transformDomainTemplate2Dto(it.domainTemplate)
                         }
-                        ).get()
+                ).get()
             }
         }
         def queryCounts = QueryCountHolder.grandTotal

@@ -104,7 +104,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         and: "the unit is created with the expected domains"
         1 * unitRepository.count() >> 0
-        1 * domainRepository.getByIds([randomDomainId] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
+        1 * domainRepository.getByIds([randomDomainId] as Set, existingClient.id) >> {
+            throw new NotFoundException(randomDomainId, Domain)
+        }
         thrown(ReferenceTargetNotFoundException)
     }
 
@@ -133,7 +135,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         and: "the unit is created with the expected domains"
         1 * unitRepository.count() >> 0
-        1 * domainRepository.getByIds([anotherDomain.id] as Set, existingClient.id) >> { throw new NotFoundException(anotherDomain.id, Domain) }
+        1 * domainRepository.getByIds([anotherDomain.id] as Set, existingClient.id) >> {
+            throw new NotFoundException(anotherDomain.id, Domain)
+        }
         thrown(ReferenceTargetNotFoundException)
     }
 }

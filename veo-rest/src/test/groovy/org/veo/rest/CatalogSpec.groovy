@@ -99,7 +99,7 @@ class CatalogSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = createTestClient()
 
-            domain = newDomain (client) {
+            domain = newDomain(client) {
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "IT-Grundschutz"
@@ -225,7 +225,7 @@ class CatalogSpec extends VeoMvcSpec {
                 name = 'p3-all-features'
                 description = "a process with subtype"
                 customAspects = [
-                    "process_resilience":  [
+                    "process_resilience": [
                         "process_resilience_impact": "process_resilience_impact_low"
                     ],
                     "process_processingDetails":
@@ -269,15 +269,15 @@ class CatalogSpec extends VeoMvcSpec {
             newLinkTailoringReference(zz1, zz2, TailoringReferenceType.LINK) {
                 linkType = "link_to_zz2"
                 attributes = [
-                    "control_comment":"another comment",
-                    "control_operatingStage":"Updated"
+                    "control_comment": "another comment",
+                    "control_operatingStage": "Updated"
                 ]
             }
             newLinkTailoringReference(zz2, zz1, TailoringReferenceType.LINK) {
                 linkType = "link_to_zz1"
                 attributes = [
-                    "control_comment":"comment of the link to zz1",
-                    "control_another_attribute":"test"
+                    "control_comment": "comment of the link to zz1",
+                    "control_another_attribute": "test"
                 ]
             }
 
@@ -289,18 +289,18 @@ class CatalogSpec extends VeoMvcSpec {
                 description = "a process example entry"
 
                 aspects = new TemplateItemAspects(
-                        [
-                            (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
-                            (new ImpactValues([
-                                ( CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
-                                .getCategory("C").get())):
-                                (
-                                ImpactRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
-                                .getCategory("C").get().getLevel(2).get())
-                                )
-                            ])
-                            )]
-                        ,null, null)
+                                [
+                                    (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
+                                    (new ImpactValues([
+                                        (CategoryRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                        .getCategory("C").get())):
+                                        (
+                                                ImpactRef.from(domain.riskDefinitions.get(RISK_DEF_ID)
+                                                .getCategory("C").get().getLevel(2).get())
+                                                )
+                                    ])
+                                    )]
+                                ,null, null)
             })
 
             controlImpactExample = newCatalogItem(domain, {
@@ -336,7 +336,7 @@ class CatalogSpec extends VeoMvcSpec {
                 aspects = new TemplateItemAspects([:],[
                     (RiskDefinitionRef.from(domain.riskDefinitions.get(RISK_DEF_ID))):
                     (new PotentialProbability(
-                    ProbabilityRef.from(domain.riskDefinitions.get(RISK_DEF_ID).getProbability().getLevel(3).get())))
+                            ProbabilityRef.from(domain.riskDefinitions.get(RISK_DEF_ID).getProbability().getLevel(3).get())))
                 ], null)
             })
 
@@ -359,28 +359,28 @@ class CatalogSpec extends VeoMvcSpec {
             newLinkTailoringReference(controlImpactExample, scenarioProbabilityExample, TailoringReferenceType.LINK) {
                 linkType = "control_relevantAppliedThreat"
             }
-            newLinkTailoringReference(scenarioProbabilityExample,controlImpactExample, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(scenarioProbabilityExample, controlImpactExample, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = "control_relevantAppliedThreat"
             }
 
             newLinkTailoringReference(controlImpactExample2, scenarioProbabilityExample1, TailoringReferenceType.LINK) {
                 linkType = "control_relevantAppliedThreat"
             }
-            newLinkTailoringReference(scenarioProbabilityExample1,controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(scenarioProbabilityExample1, controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = "control_relevantAppliedThreat"
             }
 
             newLinkTailoringReference(controlImpactExample2, scenarioProbabilityExample2, TailoringReferenceType.LINK) {
                 linkType = "control_relevantAppliedThreat"
             }
-            newLinkTailoringReference(scenarioProbabilityExample2,controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(scenarioProbabilityExample2, controlImpactExample2, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = "control_relevantAppliedThreat"
             }
 
             newLinkTailoringReference(controlImpactExample1, scenarioProbabilityExample2, TailoringReferenceType.LINK) {
                 linkType = "control_relevantAppliedThreat"
             }
-            newLinkTailoringReference(scenarioProbabilityExample2,controlImpactExample1, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(scenarioProbabilityExample2, controlImpactExample1, TailoringReferenceType.LINK_EXTERNAL) {
                 linkType = "control_relevantAppliedThreat"
             }
 
@@ -425,7 +425,7 @@ class CatalogSpec extends VeoMvcSpec {
             newTailoringReference(itemMember, itemScope, TailoringReferenceType.SCOPE)
             newTailoringReference(itemScope, itemMember, TailoringReferenceType.MEMBER)
 
-            domain1 = newDomain (client) {
+            domain1 = newDomain(client) {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
@@ -454,13 +454,27 @@ class CatalogSpec extends VeoMvcSpec {
             zz2 = domain.catalogItems.find{it.name == "zz2"}
             itemMember = domain.catalogItems.find{it.name == "c1"}
             itemScope = domain.catalogItems.find{it.name == "c1"}
-            processImpactExample = domain.catalogItems.find{it.name == "processImpactExample"}
-            controlImpactExample = domain.catalogItems.find{it.name == "controlImpactExample"}
-            controlImpactExample1 = domain.catalogItems.find{it.name == "controlImpactExample1"}
-            controlImpactExample2 = domain.catalogItems.find{it.name == "controlImpactExample2"}
-            scenarioProbabilityExample = domain.catalogItems.find{it.name == "scenarioProbabilityExample"}
-            scenarioProbabilityExample1 = domain.catalogItems.find{it.name == "scenarioProbabilityExample1"}
-            scenarioProbabilityExample2 = domain.catalogItems.find{it.name == "scenarioProbabilityExample2"}
+            processImpactExample = domain.catalogItems.find{
+                it.name == "processImpactExample"
+            }
+            controlImpactExample = domain.catalogItems.find{
+                it.name == "controlImpactExample"
+            }
+            controlImpactExample1 = domain.catalogItems.find{
+                it.name == "controlImpactExample1"
+            }
+            controlImpactExample2 = domain.catalogItems.find{
+                it.name == "controlImpactExample2"
+            }
+            scenarioProbabilityExample = domain.catalogItems.find{
+                it.name == "scenarioProbabilityExample"
+            }
+            scenarioProbabilityExample1 = domain.catalogItems.find{
+                it.name == "scenarioProbabilityExample1"
+            }
+            scenarioProbabilityExample2 = domain.catalogItems.find{
+                it.name == "scenarioProbabilityExample2"
+            }
             itemComposite = domain.catalogItems.find{it.name == "itemComposite"}
             itemPart = domain.catalogItems.find{it.name == "itemPart"}
             itemScope = domain.catalogItems.find{it.name == "itemScope"}

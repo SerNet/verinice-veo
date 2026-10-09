@@ -41,7 +41,9 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
         post("/content-creation/domains/$domainId/template", [version: "1.1.0"], 201, CONTENT_CREATOR).body.id
 
         then: "both templates exist"
-        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.1.0"]
+        get("/domain-templates").body.findAll {
+            it.name == domainName
+        }*.templateVersion ==~ ["1.0.0", "1.1.0"]
 
         expect: "that new version numbers must be valid semvers without any labels"
         post("/content-creation/domains/$domainId/template", [version: "1.2"], 400, CONTENT_CREATOR)
@@ -256,7 +258,9 @@ class DomainTemplateVersioningRestTest extends DomainRestTest {
 
         then: "a new major can be created"
         post("/content-creation/domains/$domainId/template", [version: "3.0.0"], 201, CONTENT_CREATOR)
-        get("/domain-templates").body.findAll { it.name == domainName }*.templateVersion ==~ [
+        get("/domain-templates").body.findAll {
+            it.name == domainName
+        }*.templateVersion ==~ [
             "1.0.0",
             "2.0.0",
             "2.0.1",

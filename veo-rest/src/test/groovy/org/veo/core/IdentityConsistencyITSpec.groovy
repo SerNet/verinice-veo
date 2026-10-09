@@ -131,7 +131,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         def deletedEntity = entityManager.getReference(
                 clazz,
                 entity.id
-                )
+        )
         entityManager.remove(deletedEntity)
 
         //then: "the entity is found in the set"

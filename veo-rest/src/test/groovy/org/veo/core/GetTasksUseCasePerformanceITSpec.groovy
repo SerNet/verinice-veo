@@ -121,11 +121,11 @@ class GetTasksUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
         def tasks = executeInTransaction {
             getTasksUseCase.execute(
                     new GetTasksUseCase.InputData(
-                    TypedId.from(domain),
-                    TypedId.from(unit),
-                    null,
-                    PagingConfiguration.unpaged(TaskQuery.SortCriterion.DEADLINE)
-                    ),
+                            TypedId.from(domain),
+                            TypedId.from(unit),
+                            null,
+                            PagingConfiguration.unpaged(TaskQuery.SortCriterion.DEADLINE)
+                            ),
                     NoRestrictionAccessRight.from(client.getId().toString()))
                     .page()
                     .resultPage()
@@ -141,8 +141,12 @@ class GetTasksUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
             it*.document*.name =~ (0..<riCount).collect{"document $it"}
             it*.responsible*.name =~ (0..<riCount).collect{"responsible $it"}
             it*.implementedBy*.name =~ (0..<riCount).collect{"implementer $it"}
-            it*.lastRevisionBy*.name =~ (0..<riCount).collect{"last revisionist $it"}
-            it*.nextRevisionBy*.name =~ (0..<riCount).collect{"next revisionist $it"}
+            it*.lastRevisionBy*.name =~ (0..<riCount).collect{
+                "last revisionist $it"
+            }
+            it*.nextRevisionBy*.name =~ (0..<riCount).collect{
+                "next revisionist $it"
+            }
         }
 
         and:

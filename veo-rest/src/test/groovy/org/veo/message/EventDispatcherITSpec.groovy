@@ -124,7 +124,9 @@ class EventDispatcherITSpec extends VeoSpringSpec {
 
         and: "messages should have been received"
         eventSubscriber.receivedEvents.size() == NUM_EVENTS
-        eventSubscriber.receivedEvents ==~ events.collect { EventMessage.from(it) }
+        eventSubscriber.receivedEvents ==~ events.collect {
+            EventMessage.from(it)
+        }
     }
 
     def "deletion job tolerates already deleted message"() {
@@ -166,7 +168,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
 
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)
-        if (purgeCount > 0)
+        if (purgeCount> 0)
             log.info("Test cleanup: purged {} remaining messages in test queue.", purgeCount)
         eventStoreDataRepository.deleteAll()
     }

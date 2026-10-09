@@ -155,7 +155,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             incidentRepository.save(newIncident(unit) {
                 name = 'Test composite incident-1'
-                parts <<  newIncident(unit) {
+                parts << newIncident(unit) {
                     name = 'Test incident-1'
                 }
             })
@@ -188,7 +188,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "deleting composite element leaves parts and containers intact"() {
         given: "Incident a, b, and C where a ∈ b, a ∈ c, b ∈ c"
-        def (a,b,c) = txTemplate.execute {
+        def (a, b, c) = txTemplate.execute {
             def a = incidentRepository.save(newIncident(unit))
             def b = incidentRepository.save(newIncident(unit) {
                 parts << a

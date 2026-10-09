@@ -43,14 +43,14 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         then: "catalog items are present"
         domainDto.catalogItems.size() == 65
-        with (vvt) {
+        with(vvt) {
             name == "VVT"
             tailoringReferences.size() == 8
             description == "VVT-Prozess"
             subType == "PRO_DataProcessing"
             status == "NEW"
         }
-        with (tomi) {
+        with(tomi) {
             customAspects.size() == 1
             customAspects.control_dataProtection.size() == 1
             customAspects.control_dataProtection.control_dataProtection_objectives == [
@@ -112,7 +112,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         given:
         def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
 
-        when:"we select all catalogItems with custom aspects control_dataProtection included"
+        when: "we select all catalogItems with custom aspects control_dataProtection included"
         def result = get("/domains/${dsgvoId}/catalog-items?customAspects=control_dataProtection&size=100").body
 
         then: "we find all items and some have the control_dataProtection customAspect"
@@ -120,7 +120,9 @@ class DomainRestTestITSpec extends DomainRestTest {
         with(result.items.findAll { !it.customAspects.isEmpty() }) {
             size() == 8
             customAspects.control_dataProtection.size() == 8
-            customAspects.control_dataProtection.control_dataProtection_objectives.collect { it.first() }  ==~ [
+            customAspects.control_dataProtection.control_dataProtection_objectives.collect {
+                it.first()
+            } ==~ [
                 'control_dataProtection_objectives_resilience',
                 'control_dataProtection_objectives_integrity',
                 'control_dataProtection_objectives_availability',
@@ -132,7 +134,7 @@ class DomainRestTestITSpec extends DomainRestTest {
             ]
         }
 
-        when:"we select without custom aspects"
+        when: "we select without custom aspects"
         result = get("/domains/${dsgvoId}/catalog-items?size=100").body
 
         then: "we find all items and none have the control_dataProtection customAspect"
@@ -204,13 +206,17 @@ class DomainRestTestITSpec extends DomainRestTest {
         incarnationDescription == incarnationDescriptionManual
 
         and: "the elements are contained"
-        with(incarnationDescription.parameters.find { it.item.displayName == "example person 1" } ) {
-            references.size() ==1
+        with(incarnationDescription.parameters.find {
+            it.item.displayName == "example person 1"
+        }) {
+            references.size() == 1
             references.first().referenceType == "COMPOSITE"
         }
 
-        with(incarnationDescription.parameters.find { it.item.displayName == "example person 2" } ) {
-            references.size() ==1
+        with(incarnationDescription.parameters.find {
+            it.item.displayName == "example person 2"
+        }) {
+            references.size() == 1
             references.first().referenceType == "PART"
         }
 
@@ -291,8 +297,12 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         when: "creating catalog items from the unit"
         put("/content-creation/domains/$domainId/catalog-items?unit=$unitId", null, null, 204)
-        def originalPerson1Item = get("/domains/$domainId/catalog-items").body.items.find { it.name == "person 1" }
-        def originalPerson2Item = get("/domains/$domainId/catalog-items").body.items.find { it.name == "person 2" }
+        def originalPerson1Item = get("/domains/$domainId/catalog-items").body.items.find {
+            it.name == "person 1"
+        }
+        def originalPerson2Item = get("/domains/$domainId/catalog-items").body.items.find {
+            it.name == "person 2"
+        }
 
         and: "adding, updating and deleting source elements"
         get("/domains/$domainId/persons/$person1Id").with {
@@ -315,7 +325,7 @@ class DomainRestTestITSpec extends DomainRestTest {
             it.size() == 2
             with(it.find { it.name == "updated person 1" }) {
                 id == originalPerson1Item.id
-                updatedAt > originalPerson1Item.updatedAt
+                updatedAt> originalPerson1Item.updatedAt
             }
             with(it.find { it.name == "person 3" }) {
                 id != originalPerson1Item.id

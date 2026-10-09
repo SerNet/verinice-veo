@@ -97,7 +97,9 @@ class UpdateDomainUseCaseITSpec extends VeoSpringSpec {
             dsgvoDomain.riskDefinitions.xyz = createRiskDefinition("xyz")
             client.addToDomains(dsgvoDomain)
             client = clientRepository.save(client)
-            dsgvoDomain = client.getDomains().find { it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID }
+            dsgvoDomain = client.getDomains().find {
+                it.domainTemplate.id == DSGVO_DOMAINTEMPLATE_UUID
+            }
         }
     }
 
@@ -129,7 +131,7 @@ class UpdateDomainUseCaseITSpec extends VeoSpringSpec {
                 // init lazy associations
                 ((ScopeData)it).getRiskDefinition(dsgvoDomainV2)
                 ((ScopeData)it).getImpactValues(dsgvoDomainV2)
-                it.scopeRiskValuesAspects.forEach{ a-> a.domain.name  }
+                it.scopeRiskValuesAspects.forEach{ a-> a.domain.name }
             }
         }
 
@@ -282,13 +284,15 @@ class UpdateDomainUseCaseITSpec extends VeoSpringSpec {
         given: 'a profile applied in a unit'
         def unit = executeInTransaction {
             unitRepository.save(newUnit(client)).tap{unit ->
-                def profileId = dsgvoDomain.profiles.find { it.name == "Beispielorganisation" }.id
+                def profileId = dsgvoDomain.profiles.find {
+                    it.name == "Beispielorganisation"
+                }.id
                 def incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
                         new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvoDomain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                        ).references
+                ).references
                 applyProfileIncarnationDescriptionUseCase.execute(
                         new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)
-                        )
+                )
             }
         }
 

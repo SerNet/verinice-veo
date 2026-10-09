@@ -124,7 +124,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def 'finds entity composites by owners'() {
         given: "three asset composites from different owners"
-        def a1 =assetRepository.save(newAsset(owner0) {
+        def a1 = assetRepository.save(newAsset(owner0) {
             name = "composite 0"
         })
         assetRepository.save(newAsset(owner1) {

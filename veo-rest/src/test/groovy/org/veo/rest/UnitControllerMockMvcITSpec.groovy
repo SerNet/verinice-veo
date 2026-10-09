@@ -122,7 +122,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def personId = UUID.randomUUID().toString()
         def domain = parseJson(get("/domains/${domain.idAsString}"))
         Map request = [
-            unit:[
+            unit: [
                 name: 'New unit',
                 id: unitId
             ],
@@ -130,34 +130,34 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     id: controlId,
                     name: 'Control',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'control'
                 ],
                 [
                     id: personId,
                     name: 'Person',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'person',
                     username: 'petterson',
                 ],
                 [
                     id: compositeId,
                     name: 'Composite',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'asset',
-                    parts:[
-                        [targetUri:"/assets/$partId"]
+                    parts: [
+                        [targetUri: "/assets/$partId"]
                     ]
                 ],
                 [
                     id: partId,
                     name: 'Part',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'asset',
                     controlImplementations : [
                         [
-                            control: [targetUri:"/controls/$controlId"],
-                            responsible: [targetUri:"/persons/$personId"],
+                            control: [targetUri: "/controls/$controlId"],
+                            responsible: [targetUri: "/persons/$personId"],
                             description : 'All done'
                         ]
                     ]
@@ -214,11 +214,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def scenarioId = UUID.randomUUID().toString()
         def domain = parseJson(get("/domains/${testDomain.idAsString}"))
         Map request = [
-            unit:[
+            unit: [
                 name: 'New unit',
                 id: unitId,
-                domains:[
-                    [targetUri:"/domains/${testDomain.idAsString}"]
+                domains: [
+                    [targetUri: "/domains/${testDomain.idAsString}"]
                 ]
 
             ],
@@ -226,24 +226,24 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     id: assetId,
                     name: 'Asset',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'asset',
                     domains: [
                         (testDomain.idAsString): [
                             subType : 'AST_IT-System',
-                            status :'NEW'
+                            status : 'NEW'
                         ]
                     ]
                 ],
                 [
                     id: scenarioId,
                     name: 'Scenario',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'scenario',
                     domains: [
                         (testDomain.idAsString): [
                             subType : 'SCN_Scenario',
-                            status :'NEW'
+                            status : 'NEW'
                         ]
                     ]
                 ]
@@ -253,10 +253,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             risks: [
                 [
-                    asset: [ targetUri: "/assets/${assetId}" ],
-                    scenario:[ targetUri: "/scenarios/${scenarioId}"],
-                    domains: [ (testDomain.id.toString()): [
-                            reference: [ targetUri: "/domains/${testDomain.idAsString}" ],
+                    asset: [targetUri: "/assets/${assetId}"],
+                    scenario: [targetUri: "/scenarios/${scenarioId}"],
+                    domains: [(testDomain.id.toString()): [
+                            reference: [targetUri: "/domains/${testDomain.idAsString}"],
                             riskDefinitions: [
                                 DSRA : [
                                     probability : [:],
@@ -289,7 +289,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def controlId = UUID.randomUUID().toString()
         def domain = parseJson(get("/domains/${domain.idAsString}"))
         Map request = [
-            unit:[
+            unit: [
                 name: 'New unit',
                 id: unitId
             ],
@@ -297,16 +297,16 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     id: controlId,
                     name: 'Control',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'control'
                 ],
                 [
                     id: assetId,
                     name: 'Asset',
-                    owner: [targetUri:"/units/$unitId"],
+                    owner: [targetUri: "/units/$unitId"],
                     type: 'asset',
                     controlImplementations : [
-                        [ : ]
+                        [: ]
                     ]
                 ]
             ],
@@ -631,9 +631,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         parseJson(get("/units")).size() == 2
 
         when: "we import another unit"
-        post("/units/import", unitBackup,  HttpStatus.SC_FORBIDDEN)
+        post("/units/import", unitBackup, HttpStatus.SC_FORBIDDEN)
 
-        then:"the action is not performed"
+        then: "the action is not performed"
         thrown(MaxUnitsExceededException)
     }
 
@@ -641,7 +641,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "Total units limit is respected"() {
         given: "another client with the maximum number of units for the realm"
         def otherClient = repository.save(newClient())
-        def otherClientsUnits = urepository.saveAll((1..5).collect {newUnit(otherClient)} as Set)
+        def otherClientsUnits = urepository.saveAll((1..5).collect {
+            newUnit(otherClient)
+        } as Set)
 
         when: "the user tries to create a unit"
         post('/units', [name: 'Unit 1'], HttpStatus.SC_FORBIDDEN)
@@ -758,7 +760,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'New unit',
             domains: [
-                [targetUri:"/domains/$randomUuid"]
+                [targetUri: "/domains/$randomUuid"]
             ]
         ]
 
@@ -778,7 +780,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'New unit',
             domains: [
-                [targetUri:"/domains/${otherClientsDomain.idAsString}"]
+                [targetUri: "/domains/${otherClientsDomain.idAsString}"]
             ]
         ]
 
@@ -795,7 +797,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'New unit',
             domains: [
-                [targetUri:"/domains/NO-UUID"]
+                [targetUri: "/domains/NO-UUID"]
             ]
         ]
 
@@ -810,7 +812,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "Validate unit dump dto in import endpoint"() {
         given:
         Map request = [
-            unit:[name: 'New unit']
+            unit: [name: 'New unit']
         ]
 
         when:
@@ -866,7 +868,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 ],
                 [
                     "type" : "asset",
-                    requirementImplementations:[
+                    requirementImplementations: [
                         [control: [targetUri: '/controls/8dfdf025-a36f-4434-aed5-d3a8dc314ced']]
                     ]
                 ]

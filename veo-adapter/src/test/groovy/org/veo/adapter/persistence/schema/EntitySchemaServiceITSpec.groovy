@@ -62,7 +62,7 @@ class EntitySchemaServiceITSpec extends Specification {
     def "entity schema is a valid schema"() {
         given:
         def schema201909 = getMetaSchemaV2019_09()
-        def schema = getSchema(Set.of(getTestDomain()),  ElementType.ASSET)
+        def schema = getSchema(Set.of(getTestDomain()), ElementType.ASSET)
 
         expect:
         schema201909.validate(schema).empty
@@ -175,10 +175,14 @@ class EntitySchemaServiceITSpec extends Specification {
 
                 with(get("allOf")) { JsonNode allOf ->
                     allOf.size() == 2
-                    with(allOf.find { it.get("if").get(p).get("subType").get("const").asString() == "extraTestSubType" }) {
+                    with(allOf.find {
+                        it.get("if").get(p).get("subType").get("const").asString() == "extraTestSubType"
+                    }) {
                         get("then").get(p).get("status").get("enum")*.asString() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
                     }
-                    with(allOf.find { it.get("if").get(p).get("subType").get("const").asString() == "extraSuperSubType" }) {
+                    with(allOf.find {
+                        it.get("if").get(p).get("subType").get("const").asString() == "extraSuperSubType"
+                    }) {
                         get("then").get(p).get("status").get("enum")*.asString() ==~ ["SUPER_NEW", "SUPER_OLD"]
                     }
                 }

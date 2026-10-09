@@ -50,7 +50,9 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     def setup() {
         // state the obvious
         unitRepo.getByIdFetchClient(existingUnit.id, user) >> existingUnit
-        unitRepo.getByIdFetchClient(_, user) >> { throw new NotFoundException("") }
+        unitRepo.getByIdFetchClient(_, user) >> {
+            throw new NotFoundException("")
+        }
         unitRepo.getById(_) >> { throw new NotFoundException("") }
 
         newControl.getModelInterface() >> Control.class

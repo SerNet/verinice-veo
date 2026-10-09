@@ -87,7 +87,7 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/scenarios/$partId" ]
+                [targetUri: "/scenarios/$partId"]
             ],
             links: [
                 expert: [
@@ -308,7 +308,7 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             subType: "Attack",
             status: "NEW",
             parts: partIds.collect {
-                [ targetUri:"/scenarios/$it" ]
+                [targetUri: "/scenarios/$it"]
             },
         ])).resourceId
 
@@ -333,7 +333,9 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 name = 'DANGER!!'
                 associateWithDomain(testDomain, "Attack", "NEW")
                 associateWithDomain(dsgvo2Domain, "SCN_Scenario", "NEW")
-                setAppliedCatalogItem(dsgvo2Domain, dsgvo2Domain.catalogItems.find {it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'})
+                setAppliedCatalogItem(dsgvo2Domain, dsgvo2Domain.catalogItems.find {
+                    it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'
+                })
             })
         }
 
@@ -360,7 +362,9 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         def catalogItem = executeInTransaction {
             def dsgvo2Domain = domainRepository.getById(UUID.fromString(dsgvo2DomainId))
-            dsgvo2Domain.catalogItems.find {it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'}
+            dsgvo2Domain.catalogItems.find {
+                it.symbolicIdAsString == '22c3f334-9875-450c-81e0-b27366b2a144'
+            }
         }
         def json = parseJson(get("/domains/$testDomainId/scenarios/$scenario.id"))
 

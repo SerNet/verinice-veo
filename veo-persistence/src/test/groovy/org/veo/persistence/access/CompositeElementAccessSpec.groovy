@@ -120,6 +120,10 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
         persistedScope.get().members.empty
 
         where:
-        type << ElementType.values().collect{it.type}.findAll{CompositeElement.isAssignableFrom(it)}
+        type << ElementType.values().collect{
+            it.type
+        }.findAll{
+            CompositeElement.isAssignableFrom(it)
+        }
     }
 }

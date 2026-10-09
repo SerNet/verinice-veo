@@ -29,8 +29,8 @@ class VeoTypeSpec extends Specification {
     def '#typeA includes #typeB'() {
         expect:
         typeA.includes(typeB)
-        typeA.intersectsWith (typeB)
-        typeB.intersectsWith (typeA)
+        typeA.intersectsWith(typeB)
+        typeB.intersectsWith(typeA)
 
         where:
         typeA                                                             | typeB
@@ -184,7 +184,7 @@ class VeoTypeSpec extends Specification {
 
     def "#type value #value is formatted correctly in #locale"(VeoType type, Object value, Locale locale, String out) {
         expect:
-        type.format(value,locale) == out
+        type.format(value, locale) == out
 
         where:
         type                          | value       | locale  | out

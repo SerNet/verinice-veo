@@ -209,7 +209,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "deleting scope leaves members and containers intact"() {
         given: "Scope a, b, and c where a ∈ b, a ∈ c, b ∈ c"
-        def (a,b,c) = txTemplate.execute {
+        def (a, b, c) = txTemplate.execute {
             def a = scopeRepository.save(newScope(unit))
             def b = scopeRepository.save(newScope(unit) {
                 members << a

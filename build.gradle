@@ -22,7 +22,7 @@ allprojects {
 
     spotless {
         groovyGradle {
-            greclipse('4.41').configProperties '''
+            greclipse().configProperties '''
                 org.eclipse.jdt.core.formatter.tabulation.char=space
                 groovy.formatter.remove.unnecessary.semicolons=true
             '''
@@ -48,7 +48,7 @@ allprojects {
             addStep org.veo.LicenseHeaderStep.create(project.rootDir)
             addStep org.veo.NoWildcardImportsStep.create()
             addStep SpockBlockFormatterStep.create()
-            greclipse('4.41').configProperties '''
+            greclipse().configProperties '''
                 org.eclipse.jdt.core.formatter.tabulation.char=space
                 groovy.formatter.remove.unnecessary.semicolons=true
             '''

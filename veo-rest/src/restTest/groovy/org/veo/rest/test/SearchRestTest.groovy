@@ -23,7 +23,7 @@ class SearchRestTest extends VeoRestTest{
     def setup() {
         unitId = post("/units", [
             name: "search test unit",
-            domains:[
+            domains: [
                 [targetUri: "/domains/$dsgvoDomainId"]
             ]
         ]).body.resourceId

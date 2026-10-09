@@ -47,7 +47,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         factory = new EntityDataFactory()
-        domain1 = newDomain(newClient ())
+        domain1 = newDomain(newClient())
     }
 
     def 'domainTemplate is inserted'() {
@@ -55,7 +55,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0 = newDomainTemplate() {
             riskDefinitions = ["id1":
                 createRiskDefinition("id1"),
-                "id2":createRiskDefinition("id2")
+                "id2": createRiskDefinition("id2")
             ]
             profiles = [
                 newProfile(it) {
@@ -198,12 +198,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        with (d.catalogItems.find { it.name == 'p1' }) {
+        with(d.catalogItems.find { it.name == 'p1' }) {
             subType == 'Test'
             status == 'NEW'
             elementType == ElementType.CONTROL
         }
-        with (d.catalogItems.find { it.name == 'p2' }) {
+        with(d.catalogItems.find { it.name == 'p2' }) {
             subType == 'Test1'
             status == 'NOT-NEW'
             elementType == ElementType.CONTROL

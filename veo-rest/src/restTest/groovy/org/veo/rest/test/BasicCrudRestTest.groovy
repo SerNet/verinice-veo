@@ -68,7 +68,7 @@ class BasicCrudRestTest extends VeoRestTest {
         def asset = [name: assetName,
             subType: 'AST_Application',
             status: 'NEW',
-            owner: [ targetUri: targetUri]
+            owner: [targetUri: targetUri]
         ]
 
         and: 'creating an asset inside the unit'
@@ -370,7 +370,7 @@ class BasicCrudRestTest extends VeoRestTest {
     def "Filter elements"() {
         when: 'Creating a unit'
         def unitName = 'CRUD test unit'
-        def unitBody = [name: unitName, domains:[
+        def unitBody = [name: unitName, domains: [
                 [targetUri: "/domains/$dsgvoDomainId"]
             ]]
         def postUnitResponse = post("$baseUrl/units", unitBody, 201, UserType.DEFAULT)

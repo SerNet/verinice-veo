@@ -23,8 +23,8 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
     def setup() {
         unitId = post("/units", [
             name: "process test unit",
-            domains:[
-                [ targetUri: "/domains/$testDomainId" ]
+            domains: [
+                [targetUri: "/domains/$testDomainId"]
             ]
         ]).body.resourceId
     }
@@ -154,7 +154,9 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         ], scopeResponse.getETag())
 
         then: "the retrieved scope points to both composites"
-        with(get("/scopes/$scopeId").body.members.toSorted{it.displayName}*.targetUri) {
+        with(get("/scopes/$scopeId").body.members.toSorted{
+            it.displayName
+        }*.targetUri) {
             get(0) =~ /.*\/assets\/$assetCompositeId/
             get(1) =~ /.*\/persons\/$personCompositeId/
         }

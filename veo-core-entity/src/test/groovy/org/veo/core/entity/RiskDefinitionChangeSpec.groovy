@@ -112,7 +112,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         when: "add risk value"
         rdNew = createRiskDefinition()
-        rdNew.riskValues.add( new RiskValue(2, "#A0CF11", "symbolic_risk_3", new Translated([
+        rdNew.riskValues.add(new RiskValue(2, "#A0CF11", "symbolic_risk_3", new Translated([
             (DE): new NameAbbreviationAndDescription("gering", "1","hh")
         ])))
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
@@ -139,7 +139,9 @@ class RiskDefinitionChangeSpec extends Specification{
         def rdOld = createRiskDefinition()
 
         when: "add risk matrix"
-        rdNew.categories.find { it.id=="5" }.valueMatrix[0][0] = rdNew.riskValues[1]
+        rdNew.categories.find {
+            it.id == "5"
+        }.valueMatrix[0][0] = rdNew.riskValues[1]
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -154,7 +156,9 @@ class RiskDefinitionChangeSpec extends Specification{
         def rdOld = createRiskDefinition()
 
         when: "add risk matrix"
-        rdNew.categories.find { it.id=="6" }.valueMatrix = [rdNew.riskValues[0]]
+        rdNew.categories.find {
+            it.id == "6"
+        }.valueMatrix = [rdNew.riskValues[0]]
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -164,7 +168,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         when: "remove risk matrix"
         rdNew = createRiskDefinition()
-        rdNew.categories.find { it.id=="5" }.valueMatrix = null
+        rdNew.categories.find { it.id == "5" }.valueMatrix = null
         changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -179,7 +183,7 @@ class RiskDefinitionChangeSpec extends Specification{
         def rdOld = createRiskDefinition()
 
         when: "add risk category"
-        rdNew.categories.add(new CategoryDefinition("7", null,  [
+        rdNew.categories.add(new CategoryDefinition("7", null, [
             new CategoryLevel("l1"),
             new CategoryLevel("l2")
         ]))
@@ -207,7 +211,9 @@ class RiskDefinitionChangeSpec extends Specification{
         def rdOld = createRiskDefinition()
 
         when: "add category impact"
-        rdNew.categories.find { it.id=="6" }.potentialImpacts.add(new CategoryLevel("I1"))
+        rdNew.categories.find {
+            it.id == "6"
+        }.potentialImpacts.add(new CategoryLevel("I1"))
         def changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -217,7 +223,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
         when: "remove category impact"
         rdNew = createRiskDefinition()
-        rdNew.categories.find { it.id=="6" }.potentialImpacts.removeLast()
+        rdNew.categories.find { it.id == "6" }.potentialImpacts.removeLast()
         changes = RiskDefinitionChange.detectChanges(rdOld, rdNew)
 
         then: "change is detected"
@@ -228,7 +234,7 @@ class RiskDefinitionChangeSpec extends Specification{
 
     private RiskDefinition createRiskDefinition() {
         RiskDefinition rd = new RiskDefinition()
-        rd.id= "simple-id"
+        rd.id = "simple-id"
         rd.riskMethod = new RiskMethod()
         rd.probability.levels = [
             new ProbabilityLevel("a")

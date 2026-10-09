@@ -69,7 +69,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
     def "New definitions are optional for a migration step"() {
         given:
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([
-            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], null, false)
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US): 'A simple step']), [], null, false)
         ])
 
         when:
@@ -82,7 +82,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
     def "Interactive migration step without newDefinitions"() {
         given:
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([
-            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], null, true)
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US): 'A simple step']), [], null, true)
         ])
 
         when:
@@ -95,7 +95,7 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
     def "Interactive migration step must not have newDefinitions"() {
         given:
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([
-            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US):'A simple step']), [], [
+            new DomainMigrationStep("step-1", new TranslatedText([(Locale.US): 'A simple step']), [], [
                 Mock(MigrationTransformDefinition)
             ], true)
         ])
@@ -112,20 +112,20 @@ class DomainMigrationDefinitionITSpec extends VeoSpec {
         given:
         DomainMigrationDefinition dmd = new DomainMigrationDefinition([
             new DomainMigrationStep("step-1",
-            new TranslatedText([(Locale.US):'A ternary expression step']),
+            new TranslatedText([(Locale.US): 'A ternary expression step']),
             [],
             [
                 new CustomAspectMigrationTransformDefinition(
-                new TernaryExpression(
-                new EqualsExpression(
-                new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
-                new ConstantExpression("old")
-                ),
-                new ConstantExpression(null),
-                new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
-                ),
-                new CustomAspectAttribute(ElementType.SCOPE, "scope_details", "very_detailed_attribute")
-                )
+                        new TernaryExpression(
+                                new EqualsExpression(
+                                        new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
+                                        new ConstantExpression("old")
+                                        ),
+                                new ConstantExpression(null),
+                                new CustomAspectAttributeValueExpression("scope_details", "very_detailed_attribute"),
+                                ),
+                        new CustomAspectAttribute(ElementType.SCOPE, "scope_details", "very_detailed_attribute")
+                        )
             ],
             false)
         ])

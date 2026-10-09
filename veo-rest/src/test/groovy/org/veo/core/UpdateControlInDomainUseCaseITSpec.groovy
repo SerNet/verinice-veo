@@ -86,14 +86,16 @@ class UpdateControlInDomainUseCaseITSpec extends VeoSpringSpec{
                     })
             def scenario1 = scenarioDataRepository.save(
                     newScenario(unit)
-                    )
+            )
             def scenario2 = scenarioDataRepository.save(
                     newScenario(unit)
-                    )
+            )
             def scope = scopeRepository.save(newScope(unit) {
                 associateWithDomain(domain, "SCP_Scope", "NEW")
                 obtainRisk(scenario1).mitigate(part).tap {assignDesignator(it)}
-                obtainRisk(scenario2).mitigate(composite).tap {assignDesignator(it)}
+                obtainRisk(scenario2).mitigate(composite).tap {
+                    assignDesignator(it)
+                }
             })
             [composite, scope]
         }

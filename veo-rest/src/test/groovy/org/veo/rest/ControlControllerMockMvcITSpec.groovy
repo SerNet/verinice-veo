@@ -148,7 +148,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 name = 'Test composite control-1'
-                parts <<  newControl(unit) {
+                parts << newControl(unit) {
                     name = 'Test control-1'
                 }
             })

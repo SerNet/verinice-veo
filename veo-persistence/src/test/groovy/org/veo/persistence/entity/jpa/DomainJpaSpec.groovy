@@ -187,9 +187,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
                         statuses = ["NEW"]
                     }
                 ]
-                translations = [(EN):["control_ctl_plural":"val1",
-                        "control_ctl_singular":"val1",
-                        "control_ctl_status_NEW":"val1"
+                translations = [(EN): ["control_ctl_plural": "val1",
+                        "control_ctl_singular": "val1",
+                        "control_ctl_status_NEW": "val1"
                     ]]
             })
         }

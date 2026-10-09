@@ -68,13 +68,15 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             client = clientRepository.save(client)
             var dsgvo = client.domains.find { it.name == "DS-GVO" }
             def unit = unitDataRepository.save(newUnit(client))
-            def profileId = dsgvo.profiles.find { it.name == "Beispielorganisation" }.id
+            def profileId = dsgvo.profiles.find {
+                it.name == "Beispielorganisation"
+            }.id
             var incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
                     new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, dsgvo.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
+            ).references
             applyProfileIncarnationDescriptionUseCase.execute(
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions),  NoRestrictionAccessRight.from(client.idAsString)
-                    )
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString)
+            )
         }
 
         and: "fetching all messages"
@@ -89,7 +91,9 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         def persons = personRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         persons.size() > 0
         persons.forEach({ person ->
-            def elementMessages = messages.findAll { it.uri?.endsWith("/persons/${person.idAsString}") }
+            def elementMessages = messages.findAll {
+                it.uri?.endsWith("/persons/${person.idAsString}")
+            }
             assert elementMessages.size() == 1
             elementMessages.first().with{
                 assert type == "CREATION"
@@ -102,7 +106,9 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         def processes = processRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         processes.size() > 0
         processes.forEach({ process ->
-            def elementMessages = messages.findAll { it.uri?.endsWith("/processes/${process.idAsString}") }
+            def elementMessages = messages.findAll {
+                it.uri?.endsWith("/processes/${process.idAsString}")
+            }
             assert elementMessages.size() == 1
             with(elementMessages.first()) {
                 type == "CREATION"
@@ -117,7 +123,9 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         def scopes = scopeRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         scopes.size() > 0
         scopes.forEach({ scope ->
-            def elementMessages = messages.findAll { it.uri?.endsWith("/scopes/${scope.idAsString}") }
+            def elementMessages = messages.findAll {
+                it.uri?.endsWith("/scopes/${scope.idAsString}")
+            }
             assert elementMessages.size() == 1
             elementMessages.first().with{
                 eventType == "entity_revision"

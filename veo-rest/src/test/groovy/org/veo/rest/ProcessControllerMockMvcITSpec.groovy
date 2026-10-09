@@ -236,10 +236,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a new risk can be created successfully"
         def json = parseJson(post("/processes/"+process.idAsString+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario.idAsString ],
+            scenario: [targetUri: '/scenarios/'+ scenario.idAsString],
             domains: [
                 (dsgvoDomain.getIdAsString()) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString]
                 ]
             ]
         ] as Map))
@@ -304,18 +304,18 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         post("/processes/"+process.idAsString+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario2.idAsString ],
+            scenario: [targetUri: '/scenarios/'+ scenario2.idAsString],
             domains: [
                 (dsgvoDomain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString]
                 ]
             ]
         ] as Map)
         post("/processes/"+process.idAsString+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario3.idAsString ],
+            scenario: [targetUri: '/scenarios/'+ scenario3.idAsString],
             domains: [
                 (dsgvoDomain.idAsString) : [
-                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString ]
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.idAsString]
                 ]
             ]
         ] as Map)
@@ -335,8 +335,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         response.name == "process null"
         response.risks != null
         response.risks.size() == 3
-        response.risks*.scenario.forEach{assert it.displayName =~ /SCN-.*scenario null/}
-        response.risks*.process.forEach{assert it.displayName =~ /PRO-.*process null/}
+        response.risks*.scenario.forEach{
+            assert it.displayName =~ /SCN-.*scenario null/
+        }
+        response.risks*.process.forEach{
+            assert it.displayName =~ /PRO-.*process null/
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -415,7 +419,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.domains.values().first().reference.displayName == this.dsgvoDomain.displayName
             it._self ==~ /.*processes\/${process.idAsString}\/risks\/${scenario.idAsString}.*/
             Instant.parse(it.createdAt) > beforeCreation
-            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.createdAt) <beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
             it.createdBy == "user@domain.example"
             it.updatedBy == "user@domain.example"
@@ -435,7 +439,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.mitigation == null
             it.riskOwner == null
             Instant.parse(it.createdAt) > beforeCreation
-            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.createdAt) <beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
             it.createdBy == "user@domain.example"
             it.updatedBy == "user@domain.example"

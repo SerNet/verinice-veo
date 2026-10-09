@@ -112,7 +112,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         scopes.size() == 1
         with(scopes.first()) {
             requirementImplementations.size() == 1
-            with (requirementImplementations.first()) {
+            with(requirementImplementations.first()) {
                 it.control.name == 'My control'
                 it.status == ImplementationStatus.YES
             }
@@ -151,7 +151,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -203,7 +203,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         def risks = []
 
         when:
-        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+        def result = useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         def unit = result.unit
         def scopes = executeInTransaction{
             scopeDataRepository.findAll().tap{
@@ -251,21 +251,23 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         executeInTransaction {
             useCase.execute(
                     new UnitImportUseCase.InputData(
-                    unitDto, elements as Set, [] as Set,
-                    [
-                        new UnitImportUseCase.DomainMetadata(
-                        domainMetadataId,
-                        testDomain3.name,
-                        testDomain3.authority,
-                        testDomain3.templateVersion.toString()
-                        )
-                    ] as Set
-                    ),
+                            unitDto, elements as Set, [] as Set,
+                            [
+                                new UnitImportUseCase.DomainMetadata(
+                                        domainMetadataId,
+                                        testDomain3.name,
+                                        testDomain3.authority,
+                                        testDomain3.templateVersion.toString()
+                                        )
+                            ] as Set
+                            ),
                     NoRestrictionAccessRight.from(client.idAsString, 2, 2)
-                    )
+            )
         }
         def controls = executeInTransaction {
-            controlDataRepository.findAll().tap { it*.domainAssociations*.domain*.id }
+            controlDataRepository.findAll().tap {
+                it*.domainAssociations*.domain*.id
+            }
         }
 
         then: "the control is associated with the client's domain — the exported domain ID was remapped by name/authority/version"
@@ -290,7 +292,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
             new FullControlDto().tap {
                 id = controlId
                 name = 'TOM zur Verschlüsselung'
-                domains = [(testDomain.id):new DomainAssociationDto().tap {
+                domains = [(testDomain.id): new DomainAssociationDto().tap {
                         subType = 'CTL_TOM'
                         status = 'NEW'
                         appliedCatalogItem = SymIdRef.fromUri("/domains/${testDomain.id}/catalog-items/7a60f2cc-fb20-4669-9eda-d76863a29602", referenceAssembler)
@@ -426,7 +428,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString()),
                 new UnitImportUseCase.DomainMetadata(testDomain2.id, testDomain2.name, testDomain2.authority, testDomain2.templateVersion.toString()),
                 new UnitImportUseCase.DomainMetadata(testDomain3.id, testDomain3.name, testDomain3.authority, testDomain3.templateVersion.toString())
-            ] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+            ] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         }
         def unit = result.unit
         def processes = executeInTransaction {
@@ -539,7 +541,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
         executeInTransaction {
             useCase.execute(new UnitImportUseCase.InputData(unitDto, elements as Set, risks as Set, [
                 new UnitImportUseCase.DomainMetadata(testDomain.id, testDomain.name, testDomain.authority, testDomain.templateVersion.toString())
-            ] as Set),NoRestrictionAccessRight.from(client.idAsString, 2, 2))
+            ] as Set), NoRestrictionAccessRight.from(client.idAsString, 2, 2))
         }
         def processes = executeInTransaction {
             processDataRepository.findAll().tap {
@@ -667,7 +669,7 @@ class UnitImportUseCaseITSpec extends VeoSpringSpec {
                 domainsWithRiskValues = [(testDomain.id.toString()): new RiskDomainAssociationDto(domainRef, ['DSRA': new RiskValuesDto().tap {
                             probability = new ProbabilityImpl()
                             riskValues = []
-                        }  ])]
+                        }])]
             }
         ]
 

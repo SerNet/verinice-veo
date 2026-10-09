@@ -146,7 +146,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             scenarioRepository.save(newScenario(unit) {
                 name = 'Test composite scenario-1'
-                parts <<  newScenario(unit) {
+                parts << newScenario(unit) {
                     name = 'Test scenario-1'
                 }
             })

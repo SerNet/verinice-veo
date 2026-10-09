@@ -114,9 +114,9 @@ class ScopeRiskSpec extends VeoSpec {
         ] as Set)
 
         then: "the risk values for category C are silently ignored"
-        with (risk as ScopeRiskData) {
+        with(risk as ScopeRiskData) {
             riskAspects.size() == 1
-            with (riskAspects.first()) {
+            with(riskAspects.first()) {
                 impactCategories*.category*.idRef == ['D']
                 riskCategories*.category*.idRef == ['D']
             }

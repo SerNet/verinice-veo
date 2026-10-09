@@ -89,10 +89,10 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             contentType(APPLICATION_JSON)
             b.content(toJson(content))
             accept(APPLICATION_JSON)
-            headers?.each {k,v->
+            headers?.each {k, v->
                 b.header(k, v)
             }
-        },expectedStatusCode, throwBackendException)
+        }, expectedStatusCode, throwBackendException)
     }
 
     ResultActions get(URI uri, int expectedStatusCode = 200) {
@@ -103,14 +103,14 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     ResultActions get(CharSequence url, Map<String, Object> headers, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
         doRequest(MockMvcRequestBuilders.get(url.toString()).tap {b->
             mediaType?.with{b.accept(it)}
-            headers?.each {k,v->
+            headers?.each {k, v->
                 b.header(k, v)
             }
         }, expectedStatusCode)
     }
 
     ResultActions get(CharSequence url, int expectedStatusCode = 200, MediaType mediaType = APPLICATION_JSON) {
-        return get(url, [:], expectedStatusCode,  mediaType)
+        return get(url, [:], expectedStatusCode, mediaType)
     }
 
     ResultActions put(String url, Object content, Map headers, int expectedStatusCode = 200) {
@@ -125,7 +125,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 expectedStatusCode)
     }
 
-    ResultActions put(String url,Object content, int expectedStatusCode = 200) {
+    ResultActions put(String url, Object content, int expectedStatusCode = 200) {
         doRequest(MockMvcRequestBuilders.put(url)
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
@@ -140,7 +140,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     ResultActions delete(String url, Map headers, int expectedStatusCode = 204) {
         doRequest(MockMvcRequestBuilders.delete(url).tap{b->
             accept(APPLICATION_JSON)
-            headers?.each {k,v->
+            headers?.each {k, v->
                 b.header(k, v)
             }
         }

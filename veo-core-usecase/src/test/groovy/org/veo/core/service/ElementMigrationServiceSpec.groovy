@@ -170,7 +170,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete link attribute'() {
         given:
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Spy(LinkDefinition) {
                     attributeDefinitions >> [
@@ -213,7 +213,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes invalid custom aspect attribute'() {
         given:
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeDefinitions >> [
@@ -250,7 +250,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes links with wrong target type or sub type'() {
         given:
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Spy(ElementTypeDefinition) {
             links >> [
                 veryNicePersonLink: Spy(LinkDefinition) {
                     attributeDefinitions >> [:]
@@ -310,7 +310,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes element with obsolete sub type from domain'() {
         given:
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -340,7 +340,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete status'() {
         given:
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -381,7 +381,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -448,7 +448,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -514,7 +514,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -578,7 +578,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition(ElementType.ASSET) >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -640,7 +640,7 @@ class ElementMigrationServiceSpec extends Specification{
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskDefinition.toRef() >> riskDefinitionRef
 
-        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [

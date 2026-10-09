@@ -249,7 +249,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         switch (entity) {
             case ["/domains"]:
                 assert mvc.perform(MockMvcRequestBuilders.post(
-                "/content-creation/domains/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/template"))
+                        "/content-creation/domains/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/template"))
                 .andReturn().response.status == 400
                 break
             case [

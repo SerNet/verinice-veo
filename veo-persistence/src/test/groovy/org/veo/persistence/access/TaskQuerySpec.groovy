@@ -280,12 +280,12 @@ class TaskQuerySpec extends AbstractJpaSpec {
         }
 
         expect:
-        with(query(unit,domain)) {
+        with(query(unit, domain)) {
             totalResults() == 1
             resultPage()*.requirementImplementation()*.origin*.name == ["asset"]
             resultPage()*.requirementImplementation()*.control*.name == ["control 1"]
         }
-        with(query(unit,domain2)) {
+        with(query(unit, domain2)) {
             totalResults() == 1
             resultPage()*.requirementImplementation()*.origin*.name == ["asset"]
             resultPage()*.requirementImplementation()*.control*.name == ["control 2"]

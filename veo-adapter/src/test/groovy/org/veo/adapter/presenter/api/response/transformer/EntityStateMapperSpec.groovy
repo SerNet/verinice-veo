@@ -156,8 +156,8 @@ class EntityStateMapperSpec extends Specification {
             domains = [(domain0.id): new DomainAssociationDto().tap {
                     subType = "contract"
                     status = "CONCLUDED"
-                } ]
-            setLinks('hosting_server':[
+                }]
+            setLinks('hosting_server': [
                 new CustomLinkDto().tap {
                     target = asset1Ref
                     attributes = ['path': '/srv/contract.txt']

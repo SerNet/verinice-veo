@@ -39,7 +39,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def itemCC1Id = itemIdByAbbreviation("cc-1")
 
         incarnationDescriptions = getIncarnationDescriptions([itemCC1Id])
-        incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
+        incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri": createdElementC1])
 
         newElements = incarnate(incarnationDescriptions)
         def controlCC1tResult = get(newElements.first().targetUri).body
@@ -50,9 +50,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
             with(domains[owner.testDomainId]) {
-                subType== "TOM"
-                status== "NEW"
-                decisionResults== [:]
+                subType == "TOM"
+                status == "NEW"
+                decisionResults == [:]
                 with(appliedCatalogItem) {
                     name == 'Control-cc-1'
                 }
@@ -79,8 +79,12 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         newElements.size() == 2
 
         when: "we access the created elements"
-        def controlC1Result = get(newElements.toSorted { it.name }[0].targetUri).body
-        def controlC2Result = get(newElements.toSorted { it.name }[1].targetUri).body
+        def controlC1Result = get(newElements.toSorted {
+            it.name
+        }[0].targetUri).body
+        def controlC2Result = get(newElements.toSorted {
+            it.name
+        }[1].targetUri).body
 
         then: "The data is correct"
         controlC1Result.name == "Control-1"
@@ -118,7 +122,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
         def itemCC1Id = itemIdByAbbreviation("cc-1")
         incarnationDescription = getIncarnationDescriptions([itemCC1Id])
-        incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
+        incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri": createdElementC1])
         newElements = incarnate(incarnationDescription)
         def controlCC1TargetUri = newElements.first().targetUri
 
@@ -139,9 +143,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             description.startsWith("Lorem ipsum")
             it.owner.displayName == owner.UNIT_NAME
             with(domains[owner.testDomainId]) {
-                subType== "TOM"
-                status== "NEW"
-                decisionResults== [:]
+                subType == "TOM"
+                status == "NEW"
+                decisionResults == [:]
                 with(appliedCatalogItem) {
                     name == 'Control-cc-2'
                 }
@@ -162,7 +166,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def itemCC1Id = itemIdByAbbreviation("cc-1")
         incarnationDescriptions = getIncarnationDescriptions([itemCC1Id])
         10.times {
-            incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElement])
+            incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri": createdElement])
             createdElement = incarnate(incarnationDescriptions).first().targetUri
         }
         def lastControl = uriToId(createdElement)
@@ -176,7 +180,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def controlResult = null
         while (lastControl != null) {
             controlResult = getControl(lastControl)
-            lastControl = controlResult.links.Control_details_Control?.with { uriToId(it.target.targetUri[0]) }
+            lastControl = controlResult.links.Control_details_Control?.with {
+                uriToId(it.target.targetUri[0])
+            }
             counter++
         }
 
@@ -205,7 +211,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             with(items[0].domains[owner.testDomainId]) {
                 subType == "TOM"
                 status == "NEW"
-                decisionResults== [:]
+                decisionResults == [:]
                 with(appliedCatalogItem) {
                     name == 'Control-2'
                 }
@@ -229,9 +235,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
             with(domains[owner.testDomainId]) {
-                subType== "TOM"
-                status== "NEW"
-                decisionResults== [:]
+                subType == "TOM"
+                status == "NEW"
+                decisionResults == [:]
                 with(appliedCatalogItem) {
                     name == 'Control-cc-1'
                 }
@@ -248,9 +254,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
             with(domains[owner.testDomainId]) {
-                subType== "TOM"
-                status== "NEW"
-                decisionResults== [:]
+                subType == "TOM"
+                status == "NEW"
+                decisionResults == [:]
                 with(appliedCatalogItem) {
                     name == 'Control-cc-2'
                 }
@@ -327,7 +333,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         and: "the link has been added to the process"
         with(get("/processes/$processId").body) {
             links.process_tom[0].target.targetUri == incarnatedTomUri
-            updatedAt > createdAt
+            updatedAt> createdAt
         }
     }
 
@@ -352,8 +358,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
         then: "we check some basic data"
         toms.size() == 2
-        tom1.abbreviation  == "TOM-I"
-        tom2.abbreviation  == "TOM-P"
+        tom1.abbreviation == "TOM-I"
+        tom2.abbreviation == "TOM-P"
     }
 
     private String itemIdByAbbreviation(String abbreviation, String domainId = testDomainId) {

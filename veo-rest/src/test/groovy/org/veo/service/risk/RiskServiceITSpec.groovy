@@ -44,7 +44,7 @@ import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
 @ContextConfiguration(classes = Config.class)
-class RiskServiceITSpec extends AbstractPerformanceITSpec  {
+class RiskServiceITSpec extends AbstractPerformanceITSpec {
 
     private static final String BETRAECHTLICH = 'beträchtlich'
     private static final String EXISTENZBEDROHEND = 'existenzbedrohend'
@@ -140,11 +140,11 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             effectiveProbability.idRef == 0
         }
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
-            with (getEffectiveImpact(confidentialityRef)) {
+            with(getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
-            with (getEffectiveImpact(availabilityRef)) {
+            with(getEffectiveImpact(availabilityRef)) {
                 it.idRef == 2
                 availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == BETRAECHTLICH
             }
@@ -164,8 +164,10 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         and: "events were published as required"
         listener.receivedEvents.size() == 2
 
-        def riskValueEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
-        with (riskValueEvent) {
+        def riskValueEvent = listener.receivedEvents.find {
+            it instanceof RiskChangedEvent
+        }
+        with(riskValueEvent) {
             def event = it as RiskChangedEvent
             event.source.class == RiskService
             event.riskAffectedId == process.id
@@ -176,7 +178,9 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
         }
 
-        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+        with(listener.receivedEvents.find {
+            it instanceof RiskAffectingElementChangeEvent
+        }) {
             def event = it as RiskAffectingElementChangeEvent
             event.entityType == Process
             event.entityId == process.id
@@ -222,11 +226,11 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             effectiveProbability.idRef == 2
         }
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
-            with (getEffectiveImpact(confidentialityRef)) {
+            with(getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
-            with (getEffectiveImpact(availabilityRef)) {
+            with(getEffectiveImpact(availabilityRef)) {
                 it.idRef == 2
                 availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == BETRAECHTLICH
             }
@@ -245,8 +249,10 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         and: "events were published as required"
         listener.receivedEvents.size() == 2
 
-        def riskProbabilityEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
-        with (riskProbabilityEvent) {
+        def riskProbabilityEvent = listener.receivedEvents.find {
+            it instanceof RiskChangedEvent
+        }
+        with(riskProbabilityEvent) {
             def event = it as RiskChangedEvent
             event.source.class == RiskService
             event.changes ==~ [
@@ -260,7 +266,9 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
         }
 
-        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+        with(listener.receivedEvents.find {
+            it instanceof RiskAffectingElementChangeEvent
+        }) {
             def event = it as RiskAffectingElementChangeEvent
             event.entityType == Process
             event.entityId == process.id
@@ -295,11 +303,11 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             effectiveProbability.idRef == 2
         }
         with(risk.getImpactProvider(riskDefinitionRef, domain)) {
-            with (getEffectiveImpact(confidentialityRef)) {
+            with(getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == VERNACHLAESSIGBAR
             }
-            with (getEffectiveImpact(availabilityRef)) {
+            with(getEffectiveImpact(availabilityRef)) {
                 it.idRef == 3
                 availability.getLevel(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == EXISTENZBEDROHEND
             }
@@ -314,14 +322,16 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().getTranslations(Locale.of("DE")).name == SEHR_HOCH
             }
         }
-        oldRiskVersion < risk.getVersion()
+        oldRiskVersion <risk.getVersion()
         risk.version == 3
 
         and: "events were published as required"
         listener.receivedEvents.size() == 2
 
-        def riskImpactEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
-        with (riskImpactEvent) {
+        def riskImpactEvent = listener.receivedEvents.find {
+            it instanceof RiskChangedEvent
+        }
+        with(riskImpactEvent) {
             def event = it as RiskChangedEvent
             event.source.class == RiskService
             // Note: IMPACT_VALUES_CHANGED is not set here because that wasn't done by the risk service.
@@ -335,7 +345,9 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
         }
 
-        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+        with(listener.receivedEvents.find {
+            it instanceof RiskAffectingElementChangeEvent
+        }) {
             def event = it as RiskAffectingElementChangeEvent
             event.entityType == Process
             event.entityId == process.id

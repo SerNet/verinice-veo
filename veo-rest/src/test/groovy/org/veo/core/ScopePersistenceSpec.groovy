@@ -70,7 +70,7 @@ class ScopePersistenceSpec extends VeoSpringSpec {
 
         then:
         scope != null
-        scope.members  == [john, jane] as Set
+        scope.members == [john, jane] as Set
 
         when:
         scope = scopeRepository.findById(scope.id)

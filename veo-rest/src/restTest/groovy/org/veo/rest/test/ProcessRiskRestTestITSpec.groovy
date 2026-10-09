@@ -113,7 +113,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         when: "trying to create a risk with an invalid domain"
         def error = post("/processes/$processId/risks", [
             domains: [
-                (invalidDomainId) :  [
+                (invalidDomainId) : [
                     reference: [targetUri: "$baseUrl/domains/$invalidDomainId"]
                 ]
             ],

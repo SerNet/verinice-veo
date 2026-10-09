@@ -122,11 +122,11 @@ class GetProfileIncarnationUseCaseITSpec extends VeoSpringSpec {
         executeInTransaction {
             getProfileIncarnationDescriptionUseCase.execute(
                     new GetProfileIncarnationDescriptionUseCase.InputData(
-                    unit.id,
-                    domain.id,
-                    profileItems?.collect { it.symbolicId },
-                    profile.id,
-                    mergeBidirectionalReferences),
+                            unit.id,
+                            domain.id,
+                            profileItems?.collect { it.symbolicId },
+                            profile.id,
+                            mergeBidirectionalReferences),
                     NoRestrictionAccessRight.from(domain.owner.idAsString))
         }
     }

@@ -35,7 +35,7 @@ class VeriniceExceptionHandlerSpec extends Specification{
         then:
         with(response) {
             it.statusCode.value() == 400
-            it.body == [field:'This is bad., This is invalid.']
+            it.body == [field: 'This is bad., This is invalid.']
         }
     }
 }

@@ -109,7 +109,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         // one json object for each category and one for probability was initialized:
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].riskValues.size() == 4
-        probability == [potentialProbability:2, effectiveProbability:2]
+        probability == [potentialProbability: 2, effectiveProbability: 2]
 
         impactI.size() == 3
         impactI.category == "I"
@@ -164,10 +164,18 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         def updatedRiskValues = updatedRisk.domains.(dsgvoDomainId)
                 .riskDefinitions.values()[0]
         def updatedProbability = updatedRiskValues.probability
-        def updatedImpactI = updatedRiskValues.impactValues.find {it.category == "I"}
-        def updatedRiskI = updatedRiskValues.riskValues.find {it.category == "I"}
-        def updatedImpactA = updatedRiskValues.impactValues.find {it.category == "A"}
-        def updatedRiskA = updatedRiskValues.riskValues.find {it.category == "A"}
+        def updatedImpactI = updatedRiskValues.impactValues.find {
+            it.category == "I"
+        }
+        def updatedRiskI = updatedRiskValues.riskValues.find {
+            it.category == "I"
+        }
+        def updatedImpactA = updatedRiskValues.impactValues.find {
+            it.category == "A"
+        }
+        def updatedRiskA = updatedRiskValues.riskValues.find {
+            it.category == "A"
+        }
 
         updatedProbability.specificProbability == 2
         updatedProbability.effectiveProbability == 2
@@ -304,7 +312,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         // one json object for each category and one for probability was initialized:
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].riskValues.size() == 4
-        probability == [potentialProbability:2, effectiveProbability:2]
+        probability == [potentialProbability: 2, effectiveProbability: 2]
 
         impactI.size() == 3
         impactI.category == "I"
@@ -359,10 +367,18 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         def updatedRiskValues = updatedRisk.domains.(dsgvoDomainId)
                 .riskDefinitions.values()[0]
         def updatedProbability = updatedRiskValues.probability
-        def updatedImpactI = updatedRiskValues.impactValues.find {it.category == "I"}
-        def updatedRiskI = updatedRiskValues.riskValues.find {it.category == "I"}
-        def updatedImpactA = updatedRiskValues.impactValues.find {it.category == "A"}
-        def updatedRiskA = updatedRiskValues.riskValues.find {it.category == "A"}
+        def updatedImpactI = updatedRiskValues.impactValues.find {
+            it.category == "I"
+        }
+        def updatedRiskI = updatedRiskValues.riskValues.find {
+            it.category == "I"
+        }
+        def updatedImpactA = updatedRiskValues.impactValues.find {
+            it.category == "A"
+        }
+        def updatedRiskA = updatedRiskValues.riskValues.find {
+            it.category == "A"
+        }
 
         updatedProbability.specificProbability == 2
         updatedProbability.effectiveProbability == 2
@@ -483,7 +499,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         // one json object for each category and one for probability was initialized:
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].riskValues.size() == 4
-        probability == [potentialProbability:2, effectiveProbability:2]
+        probability == [potentialProbability: 2, effectiveProbability: 2]
 
         impactI.size() == 3
         impactI.category == "I"
@@ -538,10 +554,18 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         def updatedRiskValues = updatedRisk.domains.(dsgvoDomainId)
                 .riskDefinitions.values()[0]
         def updatedProbability = updatedRiskValues.probability
-        def updatedImpactI = updatedRiskValues.impactValues.find {it.category == "I"}
-        def updatedRiskI = updatedRiskValues.riskValues.find {it.category == "I"}
-        def updatedImpactA = updatedRiskValues.impactValues.find {it.category == "A"}
-        def updatedRiskA = updatedRiskValues.riskValues.find {it.category == "A"}
+        def updatedImpactI = updatedRiskValues.impactValues.find {
+            it.category == "I"
+        }
+        def updatedRiskI = updatedRiskValues.riskValues.find {
+            it.category == "I"
+        }
+        def updatedImpactA = updatedRiskValues.impactValues.find {
+            it.category == "A"
+        }
+        def updatedRiskA = updatedRiskValues.riskValues.find {
+            it.category == "A"
+        }
 
         updatedProbability.specificProbability == 2
         updatedProbability.effectiveProbability == 2
@@ -678,7 +702,7 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         // one json object for each category and one for probability was initialized:
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(dsgvoDomainId).riskDefinitions.values()[0].riskValues.size() == 4
-        probability == [potentialProbability:2, effectiveProbability:2]
+        probability == [potentialProbability: 2, effectiveProbability: 2]
 
         impactI.size() == 3
         impactI.category == "I"
@@ -733,10 +757,18 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
         def updatedRiskValues = updatedRisk.domains.(dsgvoDomainId)
                 .riskDefinitions.values()[0]
         def updatedProbability = updatedRiskValues.probability
-        def updatedImpactI = updatedRiskValues.impactValues.find {it.category == "I"}
-        def updatedRiskI = updatedRiskValues.riskValues.find {it.category == "I"}
-        def updatedImpactA = updatedRiskValues.impactValues.find {it.category == "A"}
-        def updatedRiskA = updatedRiskValues.riskValues.find {it.category == "A"}
+        def updatedImpactI = updatedRiskValues.impactValues.find {
+            it.category == "I"
+        }
+        def updatedRiskI = updatedRiskValues.riskValues.find {
+            it.category == "I"
+        }
+        def updatedImpactA = updatedRiskValues.impactValues.find {
+            it.category == "A"
+        }
+        def updatedRiskA = updatedRiskValues.riskValues.find {
+            it.category == "A"
+        }
 
         updatedProbability.specificProbability == 2
         updatedProbability.effectiveProbability == 2

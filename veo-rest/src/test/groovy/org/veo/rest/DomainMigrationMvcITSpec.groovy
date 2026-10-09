@@ -190,7 +190,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         when: "retrieving the catalog item"
         def catalogItem = catalogItemRepository.findAllByDomain(domain).first()
 
-        then:"the content of the catalog item that still conforms to the current element type definition is still there"
+        then: "the content of the catalog item that still conforms to the current element type definition is still there"
         catalogItem.customAspects.aspectOne != null
         catalogItem.customAspects.aspectOne.attrOne != null
 
@@ -202,7 +202,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
             profileRepository.findAllByDomainId(domain.owner.id, domain.id).first().getItems().first()
         }
 
-        then:"the content of the profile item that still conforms to the current element type definition is still there"
+        then: "the content of the profile item that still conforms to the current element type definition is still there"
         profileItem.customAspects.aspectOne != null
         profileItem.customAspects.aspectOne.attrOne != null
 

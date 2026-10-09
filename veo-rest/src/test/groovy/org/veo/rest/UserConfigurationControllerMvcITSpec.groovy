@@ -39,7 +39,7 @@ class UserConfigurationControllerMvcITSpec extends VeoMvcSpec {
     Client client
     def setup() {
         executeInTransaction {
-            client= createTestClient()
+            client = createTestClient()
         }
     }
 

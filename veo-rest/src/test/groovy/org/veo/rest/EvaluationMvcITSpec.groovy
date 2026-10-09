@@ -95,7 +95,7 @@ class EvaluationMvcITSpec extends VeoMvcSpec{
             name: "my incident",
             subType: "accident",
             status: "NEW",
-            owner:[targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
         ], 200))
 
         then:

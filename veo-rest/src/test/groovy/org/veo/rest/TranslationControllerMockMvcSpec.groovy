@@ -89,7 +89,9 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
 
         def domain2 =
                 createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).with {
-                    elementTypeDefinitions.find { it.elementType== ElementType.PERSON }.translations.get(Locale.ENGLISH).'person_contactInformation_office' = 'Office phone'
+                    elementTypeDefinitions.find {
+                        it.elementType == ElementType.PERSON
+                    }.translations.get(Locale.ENGLISH).'person_contactInformation_office' = 'Office phone'
                     domainDataRepository.save(it)
                 }
 

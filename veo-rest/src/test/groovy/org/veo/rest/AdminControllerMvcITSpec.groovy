@@ -38,7 +38,9 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client = createTestClient()
         createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def domainId = parseJson(get("/domains")).find { it.name == "DSGVO-test" }.id
+        def domainId = parseJson(get("/domains")).find {
+            it.name == "DSGVO-test"
+        }.id
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(UUID.fromString(domainId), true)
 
         when: "requesting a unit dump"
@@ -67,10 +69,10 @@ class AdminControllerMvcITSpec extends ContentSpec {
 
     def "create system message with tags"() {
         when:
-        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO', tags: ['foo', 'bar']]))
+        def result = parseJson(post("/admin/messages", [message: [DE: "test message"], level: 'INFO', tags: ['foo', 'bar']]))
 
         then:
-        result == [success:true, resourceId:'1', message:'SystemMessage created successfully.']
+        result == [success: true, resourceId: '1', message: 'SystemMessage created successfully.']
 
         when:
         result = parseJson(get("/messages/1"))
@@ -84,14 +86,14 @@ class AdminControllerMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "regular user with correct API key can write system message"() {
         when:
-        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
+        def result = parseJson(post("/admin/messages", [message: [DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
 
         then:
         result.message == 'SystemMessage created successfully.'
         def id = result.resourceId
 
         when:
-        result = parseJson(put("/admin/messages/$id", [message:[DE: "test message"], level: 'WARNING'], ['x-api-key': 'hello']))
+        result = parseJson(put("/admin/messages/$id", [message: [DE: "test message"], level: 'WARNING'], ['x-api-key': 'hello']))
 
         then:
         result.message == 'SystemMessage updated.'
@@ -106,13 +108,13 @@ class AdminControllerMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "regular user with wrong API key cannot write system message"() {
         when:
-        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
+        post("/admin/messages", [message: [DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
 
         then:
         thrown(NotAllowedException)
 
         when:
-        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
+        put("/admin/messages/123", [message: [DE: "test message"], level: 'INFO'], ['x-api-key': 'invalid'], 403)
 
         then:
         thrown(NotAllowedException)
@@ -127,13 +129,13 @@ class AdminControllerMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "regular user without api key cannot write system message"() {
         when:
-        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], 403)
+        post("/admin/messages", [message: [DE: "test message"], level: 'INFO'], 403)
 
         then:
         thrown(NotAllowedException)
 
         when:
-        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], 403)
+        put("/admin/messages/123", [message: [DE: "test message"], level: 'INFO'], 403)
 
         then:
         thrown(NotAllowedException)
@@ -148,7 +150,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
     @WithAnonymousUser
     def "unauthenticated user with correct api key can write system message"() {
         when:
-        def result = parseJson(post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
+        def result = parseJson(post("/admin/messages", [message: [DE: "test message"], level: 'INFO'], ['x-api-key': 'hello']))
 
         then:
         result.success == true
@@ -157,13 +159,13 @@ class AdminControllerMvcITSpec extends ContentSpec {
     @WithAnonymousUser
     def "unauthenticated user without api key cannot write system message"() {
         when:
-        post("/admin/messages", [message:[DE: "test message"], level: 'INFO'], 403)
+        post("/admin/messages", [message: [DE: "test message"], level: 'INFO'], 403)
 
         then:
         thrown(NotAllowedException)
 
         when:
-        put("/admin/messages/123", [message:[DE: "test message"], level: 'INFO'], 403)
+        put("/admin/messages/123", [message: [DE: "test message"], level: 'INFO'], 403)
 
         then:
         thrown(NotAllowedException)

@@ -262,7 +262,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static <T extends TemplateItem<T,TNamespace>,TNamespace extends Identifiable> TailoringReference<T,TNamespace> newTailoringReference(T owner, T target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> TailoringReference<T, TNamespace> newTailoringReference(T owner, T target, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
         return owner.addTailoringReference(type, target).tap {
             VeoSpec.execute(it, init)
@@ -276,7 +276,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static <T extends TemplateItem<T,TNamespace>,TNamespace extends Identifiable> LinkTailoringReference<T,TNamespace> newLinkTailoringReference(
+    static <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable> LinkTailoringReference<T, TNamespace> newLinkTailoringReference(
             T owner,
             T target,
             TailoringReferenceType referenceType,
@@ -461,7 +461,9 @@ abstract class VeoSpec extends Specification {
                 // Initialize value matrix with the lowest risk level for each combination of impact & probability
                 def defaultRiskLevel = rd.riskValues[0]
                 it.potentialImpacts.forEach {impact ->
-                    it.valueMatrix.add(rd.probability.levels.collect { defaultRiskLevel })
+                    it.valueMatrix.add(rd.probability.levels.collect {
+                        defaultRiskLevel
+                    })
                 }
             }
         }
@@ -568,11 +570,11 @@ abstract class VeoSpec extends Specification {
             }
             generateDummyTranslations(etd.customAspects, tranlationMap)
             etd.links.entrySet().forEach{
-                tranlationMap.put(it.getKey() , "link_name_"+it.getKey())
+                tranlationMap.put(it.getKey(), "link_name_"+it.getKey())
                 it.getValue().getAttributeDefinitions().entrySet().forEach{ attDef->
-                    tranlationMap.put(attDef.getKey() , attDef.getKey())
+                    tranlationMap.put(attDef.getKey(), attDef.getKey())
                     attDef.getValue().getTranslationKeys().forEach{tk->
-                        tranlationMap.put(tk , "link_"+tk)
+                        tranlationMap.put(tk, "link_"+tk)
                     }
                 }
             }

@@ -37,8 +37,12 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
                 while (row.next()) {
                     execute([
                         id: row.getString("db_id"),
-                        customAspects: cache.computeIfAbsent(row.getString("custom_aspects")) { migrateCAsOrLinks(it) },
-                        links: cache.computeIfAbsent(row.getString("links")) { migrateCAsOrLinks(it) },
+                        customAspects: cache.computeIfAbsent(row.getString("custom_aspects")) {
+                            migrateCAsOrLinks(it)
+                        },
+                        links: cache.computeIfAbsent(row.getString("links")) {
+                            migrateCAsOrLinks(it)
+                        },
                     ], """
                         update element_type_definition
                             set custom_aspects = :customAspects::jsonb, links = :links::jsonb

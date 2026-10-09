@@ -56,7 +56,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate != null
-        with (domainFromTemplate) {
+        with(domainFromTemplate) {
             domainTemplate.id == DSGVO_TEST_DOMAIN_TEMPLATE_ID
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
@@ -65,8 +65,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             templateVersion == domainTemplate.templateVersion
         }
         domainFromTemplate.catalogItems.size() == 6
-        with (domainFromTemplate.catalogItems.sort { it.name }) {
-            it[0].tailoringReferences.size()==1
+        with(domainFromTemplate.catalogItems.sort { it.name }) {
+            it[0].tailoringReferences.size()== 1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
             it[0].tailoringReferences.first().target == it[5]
             with(it[0]) {
@@ -85,7 +85,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
                 //                getRiskValues(domainFromTemplate).present
             }
 
-            it[2].tailoringReferences.size()==1
+            it[2].tailoringReferences.size()== 1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[2].tailoringReferences.first().target == it[0]
             with(it[2]) {
@@ -135,17 +135,19 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             // initialize lazy association
             client.domains*.domainTemplate*.name
         }
-        domainFromTemplate = client.domains.find { it.domainTemplate.id == domainTemplateFromDomain.id }
+        domainFromTemplate = client.domains.find {
+            it.domainTemplate.id == domainTemplateFromDomain.id
+        }
 
         expect: 'the domain matches'
         domainFromTemplate.domainTemplate.id == domainTemplateFromDomain.id
         domainFromTemplate.templateVersion == Version.parse("1.1.0")
         domainFromTemplate.catalogItems.size() == 6
-        with (domainFromTemplate.catalogItems.sort { it.name }) {
+        with(domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'Control-1'
             it[0].abbreviation == 'c-1'
             it[0].description.startsWith('Lore')
-            it[0].tailoringReferences.size()==1
+            it[0].tailoringReferences.size()== 1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
             it[0].tailoringReferences.first().target == it[5]
 
@@ -155,7 +157,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
             it[2].name == 'Control-3'
             it[2].abbreviation == 'c-3'
-            it[2].tailoringReferences.size()==1
+            it[2].tailoringReferences.size()== 1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[2].tailoringReferences.first().target == it[0]
 
@@ -186,7 +188,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
 
-        when:"created with same name/version"
+        when: "created with same name/version"
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
@@ -211,7 +213,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate != null
-        with (domainFromTemplate) {
+        with(domainFromTemplate) {
             domainTemplate.idAsString == "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
@@ -221,11 +223,13 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         }
         domainFromTemplate.catalogItems.size() == 3
 
-        with (domainFromTemplate.catalogItems.sort { it.name }) {
+        with(domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'All controls'
             it[1].name == 'Control-1'
             it[2].name == 'Control-2'
-            it[0].tailoringReferences.collect {it.target.name}.toSorted() == ['Control-1', 'Control-2']
+            it[0].tailoringReferences.collect {
+                it.target.name
+            }.toSorted() == ['Control-1', 'Control-2']
         }
     }
 
@@ -245,7 +249,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate != null
-        with (domainFromTemplate) {
+        with(domainFromTemplate) {
             domainTemplate.idAsString == "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
@@ -254,7 +258,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             templateVersion == domainTemplate.templateVersion
         }
         domainFromTemplate.catalogItems.size() == 3
-        with (domainFromTemplate.catalogItems.sort { it.name }) {
+        with(domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'Asset 1'
             it[0].tailoringReferences[0].target.name == "Scope 1"
             it[0].tailoringReferences[0].referenceType == TailoringReferenceType.SCOPE
@@ -263,7 +267,9 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[1].tailoringReferences[0].referenceType == TailoringReferenceType.SCOPE
             it[1].tailoringReferences.size() == 1
             it[2].name == 'Scope 1'
-            it[2].tailoringReferences.collect {it.target.name}.toSorted() == ['Asset 1', 'Asset 2']
+            it[2].tailoringReferences.collect {
+                it.target.name
+            }.toSorted() == ['Asset 1', 'Asset 2']
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.MEMBER
             it[2].tailoringReferences[1].referenceType == TailoringReferenceType.MEMBER
         }
@@ -302,7 +308,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         domainTemplateService.copyProfileToDomain(profile, domain)
 
         then:
-        domain.profiles.size() ==1
+        domain.profiles.size() == 1
         domain.catalogItems.size() == 1
         with(domain.profiles.first()) {
             items.size() == 2

@@ -142,7 +142,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'domains',
                 '_self'
             ]
-            it.properties.scenario == [$ref:'#/components/schemas/IdRefScenario']
+            it.properties.scenario == [$ref: '#/components/schemas/IdRefScenario']
             it.properties.mitigation == [
                 $ref: '#/components/schemas/IdRefControl',
                 description: 'This risk is mitigated by this control or control-composite.'
@@ -324,7 +324,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(translationsSchema) {
             it.description == 'Translations for an entity type'
             it.properties.containsKey('lang')
-            with (it.properties.lang) {
+            with(it.properties.lang) {
                 it.description == 'The keys are language codes, the values are the translations'
                 it.additionalProperties.'$ref' == '#/components/schemas/TranslationDto'
             }
@@ -361,7 +361,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         endPointInfo.responses['200'].content['application/json'].schema == [
             type: 'array',
-            items: [$ref:'#/components/schemas/UpdatableDomainDto']
+            items: [$ref: '#/components/schemas/UpdatableDomainDto']
         ]
     }
 
@@ -378,24 +378,24 @@ class SwaggerSpec extends VeoSpringSpec {
                 "latestPossibleUpdate"
             ]
             it.properties.domain == [
-                $ref:'#/components/schemas/DomainBaseIdRefDomain'
+                $ref: '#/components/schemas/DomainBaseIdRefDomain'
             ]
             it.properties.allUpdates == [
                 type: "array",
-                items: [$ref:'#/components/schemas/DomainBaseIdRefDomainTemplate'],
+                items: [$ref: '#/components/schemas/DomainBaseIdRefDomainTemplate'],
                 description: "All available newer versions of the domain",
             ]
             it.properties.possibleUpdates == [
                 type: "array",
-                items: [$ref:'#/components/schemas/DomainBaseIdRefDomainTemplate'],
+                items: [$ref: '#/components/schemas/DomainBaseIdRefDomainTemplate'],
                 description: "All newer versions that the client can be updated to directly",
             ]
             it.properties.latestUpdate == [
-                $ref:'#/components/schemas/DomainBaseIdRefDomainTemplate',
+                $ref: '#/components/schemas/DomainBaseIdRefDomainTemplate',
                 description: "The latest available version of the domain",
             ]
             it.properties.latestPossibleUpdate == [
-                $ref:'#/components/schemas/DomainBaseIdRefDomainTemplate',
+                $ref: '#/components/schemas/DomainBaseIdRefDomainTemplate',
                 description: "The latest version that the client can be updated to directly",
             ]
 
@@ -419,7 +419,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it["in"] == "path"
             it.required
             it.schema == [
-                type:"string",
+                type: "string",
                 format: "uuid"
             ]
         }
@@ -428,7 +428,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it["in"] == "query"
             it.required
             it.schema == [
-                type:"string",
+                type: "string",
                 format: "uuid"
             ]
         }
@@ -462,7 +462,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         endPointInfo.responses['200'].content['application/json'].schema == [
             type: 'array',
-            items: [$ref:'#/components/schemas/DomainTemplateMetadataDto']
+            items: [$ref: '#/components/schemas/DomainTemplateMetadataDto']
         ]
 
         and: "that the schema only contains metadata"
@@ -482,18 +482,21 @@ class SwaggerSpec extends VeoSpringSpec {
                             'multipart/form-data',
                             'application/json'
                         ]
-                        content['application/json'] == [schema:[$ref:'#/components/schemas/ExportDomainTemplateDto']]
+                        content['application/json'] == [schema: [$ref: '#/components/schemas/ExportDomainTemplateDto']]
                         content['multipart/form-data'] == [
-                            schema:[
-                                type:'object',
-                                properties:[
-                                    file:[type:'string', format:'binary']
+                            schema: [
+                                type: 'object',
+                                properties: [
+                                    file: [type: 'string', format: 'binary']
                                 ],
-                                required:['file']
+                                required: ['file']
                             ]
                         ]
                     }
-            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [
+                [ApiKeyAuth: []],
+                [OAuth2: []]
+            ]
         }
     }
 
@@ -637,9 +640,9 @@ class SwaggerSpec extends VeoSpringSpec {
             it.name == 'type'
             it.in == 'path'
             it.required == true
-            it.schema ==  [
-                type:'string',
-                enum:[
+            it.schema == [
+                type: 'string',
+                enum: [
                     'asset',
                     'control',
                     'document',
@@ -658,9 +661,9 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/admin/unit-count"].get
 
         expect: "that the correct schema is used"
-        with (endPointInfo) {
+        with(endPointInfo) {
             it.responses['200'].content['application/json'].schema == [type: 'integer', format: 'int64']
-            it.security == [[ApiKeyAuth:[]]]
+            it.security == [[ApiKeyAuth: []]]
         }
     }
 
@@ -671,7 +674,10 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with(endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [
+                [ApiKeyAuth: []],
+                [OAuth2: []]
+            ]
         }
     }
 
@@ -680,9 +686,12 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/admin/messages/{messageId}"].put
 
         expect: "that the correct schema is used"
-        with (endPointInfo) {
+        with(endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [
+                [ApiKeyAuth: []],
+                [OAuth2: []]
+            ]
         }
     }
 
@@ -691,9 +700,12 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/admin/messages/{messageId}"].delete
 
         expect: "that the correct schema is used"
-        with (endPointInfo) {
+        with(endPointInfo) {
             it.responses['200'].content['application/json'].schema == [$ref: '#/components/schemas/ApiResponseBody']
-            it.security ==~ [[ApiKeyAuth:[]], [OAuth2:[]]]
+            it.security ==~ [
+                [ApiKeyAuth: []],
+                [OAuth2: []]
+            ]
         }
     }
 
@@ -716,7 +728,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/units/{unitId}/incarnations"].post
 
         expect: "that the correct schema is used"
-        with (endPointInfo) {
+        with(endPointInfo) {
             it.responses['201'].content['application/json'].schema == [
                 type: 'array',
                 description: 'A reference list of the created elements',
@@ -727,7 +739,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "Security scheme documentation is complete"() {
         expect:
-        with (parsedApiDocs.components.securitySchemes) {
+        with(parsedApiDocs.components.securitySchemes) {
             it.keySet() ==~ ['OAuth2', 'ApiKeyAuth']
             it.ApiKeyAuth == [type: 'apiKey', in: 'header', name: 'X-API-KEY', description: 'API key authentication']
         }
@@ -735,7 +747,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "Content schema for #method request to #path, response status #status is ApiResponseBody"() {
         expect:
-        statusInfo.content == ['application/json':[schema:[$ref:'#/components/schemas/ApiResponseBody']]]
+        statusInfo.content == ['application/json': [schema: [$ref: '#/components/schemas/ApiResponseBody']]]
 
         where:
         [
@@ -749,14 +761,14 @@ class SwaggerSpec extends VeoSpringSpec {
                     HttpStatus.resolve(it.key as int).is4xxClientError()
                 }.collect{ status, statusInfo->
                     return [
-                        path:path, method:method, status:status, statusInfo:statusInfo
+                        path: path, method: method, status: status, statusInfo: statusInfo
                     ]
                 }
             }
         }.tap {
             removeIf {
                 (it.path == '/domains/{domainId}/update' && it.method == 'post' // uses specific schema and has a separate test
-                        )
+                )
             }
         }
     }
@@ -768,7 +780,7 @@ class SwaggerSpec extends VeoSpringSpec {
         expect: "that the correct schema is used"
         with(endPointInfo.responses['200']) {
             it.description == 'Scopes loaded'
-            it.content['application/json'].schema == [$ref:'#/components/schemas/PageDtoFullScopeDto']
+            it.content['application/json'].schema == [$ref: '#/components/schemas/PageDtoFullScopeDto']
         }
     }
 
@@ -777,7 +789,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/scopes/{uuid}/members"].get
 
         expect: "that the correct schema is used"
-        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto']]
+        endPointInfo.responses['200'].content['application/json'].schema == [type: 'array', items: [$ref: '#/components/schemas/AbstractElementDto']]
     }
 
     def "endpoint documentation is correct for GET /domains/{domainId}/scopes/{uuid}/members"() {
@@ -785,7 +797,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/scopes/{uuid}/members"].get
 
         expect: "that the correct schema is used"
-        endPointInfo.responses['200'].content['application/json'].schema == [type:'array', items:[$ref:'#/components/schemas/FullElementInDomainDto']]
+        endPointInfo.responses['200'].content['application/json'].schema == [type: 'array', items: [$ref: '#/components/schemas/FullElementInDomainDto']]
     }
 
     def "endpoint documentation is correct for GET /domains/{domainId}/persons"() {
@@ -853,14 +865,14 @@ class SwaggerSpec extends VeoSpringSpec {
                     removeIf {
                         (it.path == '/admin/unit-count' && it.method == 'get' // has API key auth
                                 || it.path == '/messages' && it.method == 'get' // has API key auth
-                                ||  it.path.startsWith('/admin/messages') && it.method in [
+                                || it.path.startsWith('/admin/messages') && it.method in [
                                     'post',
                                     'put',
                                     'delete'
                                 ] // has API key auth
                                 || it.path == '/content-creation/domain-templates' && it.method == 'post' // has API key auth
                                 || it.path == '/admin/domain-templates/{templateId}/create-domains-in-all-clients' && it.method == 'post' // has API key auth
-                                )
+                        )
                     }
                 }
     }
@@ -931,7 +943,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('Inspection')) {
             it.description == '''Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.'''
             with(it.properties) {
-                it.keySet() ==~  [
+                it.keySet() ==~ [
                     'severity',
                     'description',
                     'elementType',
@@ -942,10 +954,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 with(it.elementType) {
                     it.description == 'Element type (singular term) that this inspection applies to. If this is null, the inspection applies to all element types.'
                 }
-                it.condition == [$ref:'#/components/schemas/VeoExpression']
+                it.condition == [$ref: '#/components/schemas/VeoExpression']
                 with(it.suggestions) {
                     it.type == 'array'
-                    it.items == [$ref:'#/components/schemas/Suggestion']
+                    it.items == [$ref: '#/components/schemas/Suggestion']
                 }
             }
         }
@@ -957,9 +969,9 @@ class SwaggerSpec extends VeoSpringSpec {
             it.description == 'Suggests an action to the user that would fix an inspection finding'
             it.properties.keySet() ==~ ['type']
             it.discriminator == [
-                propertyName:'type',
-                mapping:[
-                    addPart:'#/components/schemas/AddPartSuggestion']
+                propertyName: 'type',
+                mapping: [
+                    addPart: '#/components/schemas/AddPartSuggestion']
             ]
         }
     }
@@ -983,7 +995,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 }
                 it.find{
                     it.type != 'object'
-                } == [$ref:'#/components/schemas/Suggestion']
+                } == [$ref: '#/components/schemas/Suggestion']
             }
         }
     }
@@ -993,17 +1005,17 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('AttributeDefinition')) {
             it.description == 'Defines validation rules for an attribute in a custom aspect or link'
             it.discriminator == [
-                propertyName:'type',
-                mapping:[
-                    boolean:'#/components/schemas/BooleanAttributeDefinition',
-                    date:'#/components/schemas/DateAttributeDefinition',
-                    dateTime:'#/components/schemas/DateTimeAttributeDefinition',
-                    enum:'#/components/schemas/EnumAttributeDefinition',
-                    externalDocument:'#/components/schemas/ExternalDocumentAttributeDefinition',
-                    integer:'#/components/schemas/IntegerAttributeDefinition',
-                    list:'#/components/schemas/ListAttributeDefinition',
-                    text:'#/components/schemas/TextAttributeDefinition',
-                    duration:'#/components/schemas/DurationAttributeDefinition'
+                propertyName: 'type',
+                mapping: [
+                    boolean: '#/components/schemas/BooleanAttributeDefinition',
+                    date: '#/components/schemas/DateAttributeDefinition',
+                    dateTime: '#/components/schemas/DateTimeAttributeDefinition',
+                    enum: '#/components/schemas/EnumAttributeDefinition',
+                    externalDocument: '#/components/schemas/ExternalDocumentAttributeDefinition',
+                    integer: '#/components/schemas/IntegerAttributeDefinition',
+                    list: '#/components/schemas/ListAttributeDefinition',
+                    text: '#/components/schemas/TextAttributeDefinition',
+                    duration: '#/components/schemas/DurationAttributeDefinition'
                 ]
             ]
         }
@@ -1014,7 +1026,7 @@ class SwaggerSpec extends VeoSpringSpec {
         getSchema('DurationAttributeDefinition') == [
             description : 'An attribute that represents a duration, coded as an ISO 8601 duration string, e.g. P3D or PT1H',
             allOf: [
-                [$ref:'#/components/schemas/AttributeDefinition']
+                [$ref: '#/components/schemas/AttributeDefinition']
             ]
         ]
     }
@@ -1052,12 +1064,12 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.type == 'array'
                 it.description == 'A list of attributes in the old domain that this step handles'
                 it.items ==
-                        [$ref:'#/components/schemas/DomainSpecificValueLocation']
+                        [$ref: '#/components/schemas/DomainSpecificValueLocation']
             }
             with(it.properties.newDefinitions) {
                 it.type == 'array'
                 it.description == 'An optional list of attributes in the new domain that this step will create. If this is omitted, the values will not be transferred into the new domain.'
-                it.items == [$ref:'#/components/schemas/MigrationTransformDefinition']
+                it.items == [$ref: '#/components/schemas/MigrationTransformDefinition']
             }
             with(it.properties.interactive) {
                 it.type == 'boolean'
@@ -1072,7 +1084,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.required ==~ ['type']
             it.discriminator == [
                 propertyName: 'type',
-                mapping:[customAspectAttribute:'#/components/schemas/CustomAspectAttribute']
+                mapping: [customAspectAttribute: '#/components/schemas/CustomAspectAttribute']
             ]
         }
 
@@ -1082,7 +1094,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.required ==~ ['type']
             it.discriminator == [
                 propertyName: 'type',
-                mapping:[customAspectAttribute:'#/components/schemas/CustomAspectMigrationTransformDefinition']
+                mapping: [customAspectAttribute: '#/components/schemas/CustomAspectMigrationTransformDefinition']
             ]
         }
 
@@ -1093,7 +1105,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'attribute',
                 'migrationExpression'
             ]
-            it.allOf.contains( [$ref:'#/components/schemas/MigrationTransformDefinition'])
+            it.allOf.contains([$ref: '#/components/schemas/MigrationTransformDefinition'])
             with(it.allOf.find{
                 it.type == 'object'
             }) {
@@ -1131,7 +1143,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.type == 'array'
                 it.items == [
                     $ref: '#/components/schemas/IdRefIncident',
-                    description:'''A reference to an entity's part'''
+                    description: '''A reference to an entity's part'''
                 ]
             }
         }
@@ -1146,9 +1158,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 'impactValues',
                 'riskValues'
             ]
-            it.properties.probability == [$ref:'#/components/schemas/Probability', description: 'Values describing the probability of this risk occurring']
-            it.properties.impactValues == [type:'array', items:[$ref:'#/components/schemas/Impact'], description:'Values describing the impacts of this risk in different risk categories']
-            it.properties.riskValues == [type:'array', items:[$ref:'#/components/schemas/DeterminedRisk'], description: 'Values describing the evaluated risk in different categories']
+            it.properties.probability == [$ref: '#/components/schemas/Probability', description: 'Values describing the probability of this risk occurring']
+            it.properties.impactValues == [type: 'array', items: [$ref: '#/components/schemas/Impact'], description: 'Values describing the impacts of this risk in different risk categories']
+            it.properties.riskValues == [type: 'array', items: [$ref: '#/components/schemas/DeterminedRisk'], description: 'Values describing the evaluated risk in different categories']
         }
     }
 
@@ -1289,7 +1301,7 @@ class SwaggerSpec extends VeoSpringSpec {
             with(it.properties.references) {
                 it.type == 'array'
                 it.title == 'A list of references this element needs to set.'
-                it.items == [$ref:'#/components/schemas/TailoringReferenceParameterDto']
+                it.items == [$ref: '#/components/schemas/TailoringReferenceParameterDto']
             }
         }
     }
@@ -1325,8 +1337,8 @@ class SwaggerSpec extends VeoSpringSpec {
                     'CONTROL_IMPLEMENTATION',
                     'REQUIREMENT_IMPLEMENTATION'
                 ],
-                example:'LINK or LINK_EXTERNAL',
-                readOnly:true
+                example: 'LINK or LINK_EXTERNAL',
+                readOnly: true
             ]
         }
     }
@@ -1348,7 +1360,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             with(it.properties.domains) {
                 it.type == 'array'
-                it.items == [$ref:'#/components/schemas/DomainBaseIdRefDomain']
+                it.items == [$ref: '#/components/schemas/DomainBaseIdRefDomain']
                 it.uniqueItems == true
             }
         }
@@ -1363,17 +1375,17 @@ class SwaggerSpec extends VeoSpringSpec {
                 'elements',
                 'risks'
             ]
-            it.properties.elements == [type:'array', items:[$ref:'#/components/schemas/AbstractElementDto'], uniqueItems:true]
+            it.properties.elements == [type: 'array', items: [$ref: '#/components/schemas/AbstractElementDto'], uniqueItems: true]
             it.properties.risks == [
-                type:'array',
-                items:[
-                    oneOf:[
+                type: 'array',
+                items: [
+                    oneOf: [
                         [$ref: '#/components/schemas/AssetRiskDto'],
                         [$ref: '#/components/schemas/ProcessRiskDto'],
                         [$ref: '#/components/schemas/ScopeRiskDto']
                     ]
                 ],
-                uniqueItems:true]
+                uniqueItems: true]
         }
     }
 
@@ -1382,14 +1394,14 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('AbstractElementDto')) {
 
             it.oneOf ==~ [
-                [$ref:'#/components/schemas/FullAssetDto'],
-                [$ref:'#/components/schemas/FullControlDto'],
-                [$ref:'#/components/schemas/FullDocumentDto'],
-                [$ref:'#/components/schemas/FullIncidentDto'],
-                [$ref:'#/components/schemas/FullPersonDto'],
-                [$ref:'#/components/schemas/FullProcessDto'],
-                [$ref:'#/components/schemas/FullScenarioDto'],
-                [$ref:'#/components/schemas/FullScopeDto']
+                [$ref: '#/components/schemas/FullAssetDto'],
+                [$ref: '#/components/schemas/FullControlDto'],
+                [$ref: '#/components/schemas/FullDocumentDto'],
+                [$ref: '#/components/schemas/FullIncidentDto'],
+                [$ref: '#/components/schemas/FullPersonDto'],
+                [$ref: '#/components/schemas/FullProcessDto'],
+                [$ref: '#/components/schemas/FullScenarioDto'],
+                [$ref: '#/components/schemas/FullScopeDto']
             ]
         }
     }
@@ -1399,14 +1411,14 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('FullElementInDomainDto')) {
 
             it.oneOf ==~ [
-                [$ref:'#/components/schemas/FullAssetInDomainDto'],
-                [$ref:'#/components/schemas/FullControlInDomainDto'],
-                [$ref:'#/components/schemas/FullDocumentInDomainDto'],
-                [$ref:'#/components/schemas/FullIncidentInDomainDto'],
-                [$ref:'#/components/schemas/FullPersonInDomainDto'],
-                [$ref:'#/components/schemas/FullProcessInDomainDto'],
-                [$ref:'#/components/schemas/FullScenarioInDomainDto'],
-                [$ref:'#/components/schemas/FullScopeInDomainDto']
+                [$ref: '#/components/schemas/FullAssetInDomainDto'],
+                [$ref: '#/components/schemas/FullControlInDomainDto'],
+                [$ref: '#/components/schemas/FullDocumentInDomainDto'],
+                [$ref: '#/components/schemas/FullIncidentInDomainDto'],
+                [$ref: '#/components/schemas/FullPersonInDomainDto'],
+                [$ref: '#/components/schemas/FullProcessInDomainDto'],
+                [$ref: '#/components/schemas/FullScenarioInDomainDto'],
+                [$ref: '#/components/schemas/FullScopeInDomainDto']
             ]
         }
     }
@@ -1421,7 +1433,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'totalItemCount',
                 'pageCount'
             ]
-            it.properties.items == [type:'array', items:[$ref:'#/components/schemas/FullScopeDto']]
+            it.properties.items == [type: 'array', items: [$ref: '#/components/schemas/FullScopeDto']]
         }
     }
 
@@ -1429,15 +1441,15 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('FullAssetDto')) {
             it.properties.domains == [
-                type:'object',
+                type: 'object',
                 additionalProperties: ['$ref' : "#/components/schemas/AssetDomainAssociationDto"],
                 description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             ]
             it.properties.links == [
-                type:'object',
-                additionalProperties:[
-                    type:'array',
-                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                type: 'object',
+                additionalProperties: [
+                    type: 'array',
+                    items: [$ref: '#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the asset.']
         }
@@ -1447,15 +1459,15 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('FullProcessDto')) {
             it.properties.domains == [
-                type:'object',
+                type: 'object',
                 additionalProperties: ['$ref' : "#/components/schemas/ProcessDomainAssociationDto"],
                 description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             ]
             it.properties.links == [
-                type:'object',
-                additionalProperties:[
-                    type:'array',
-                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                type: 'object',
+                additionalProperties: [
+                    type: 'array',
+                    items: [$ref: '#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the process.']
         }
@@ -1465,24 +1477,24 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('FullScopeDto')) {
             it.properties.domains == [
-                type:'object',
+                type: 'object',
                 additionalProperties: ['$ref' : "#/components/schemas/ScopeDomainAssociationDto"],
                 description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             ]
             it.properties.links == [
-                type:'object',
-                additionalProperties:[
-                    type:'array',
-                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                type: 'object',
+                additionalProperties: [
+                    type: 'array',
+                    items: [$ref: '#/components/schemas/CustomLinkDto']
                 ],
                 description: 'Custom relations which do not affect the behavior.',
                 title: 'CustomLink'
             ]
-            it.properties.owner == [$ref:'#/components/schemas/OwnerReference']
+            it.properties.owner == [$ref: '#/components/schemas/OwnerReference']
             it.properties.controlImplementations == [
-                type:'array',
-                items:[ $ref:'#/components/schemas/ControlImplementationDto' ],
-                uniqueItems:true
+                type: 'array',
+                items: [$ref: '#/components/schemas/ControlImplementationDto'],
+                uniqueItems: true
             ]
         }
     }
@@ -1508,20 +1520,20 @@ class SwaggerSpec extends VeoSpringSpec {
         expect:
         with(getSchema('FullScenarioDto')) {
             it.properties.domains == [
-                type:'object',
+                type: 'object',
                 additionalProperties: ['$ref' : "#/components/schemas/ScenarioDomainAssociationDto"],
                 description: '''Details about this element's association with domains. Domain ID is key, association object is value.'''
             ]
             it.properties.links == [
-                type:'object',
-                additionalProperties:[
-                    type:'array',
-                    items: [$ref:'#/components/schemas/CustomLinkDto']
+                type: 'object',
+                additionalProperties: [
+                    type: 'array',
+                    items: [$ref: '#/components/schemas/CustomLinkDto']
                 ],
                 description: 'The links for the scenario.'
             ]
             it.properties.parts == [
-                type:'array',
+                type: 'array',
                 items: [
                     $ref: '#/components/schemas/IdRefScenario',
                     description: '''A reference to an entity's part'''
@@ -1544,8 +1556,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 'target'
             ]
             it.properties.domains == [
-                type:'array',
-                items: [ $ref: '#/components/schemas/DomainBaseIdRefDomain'],
+                type: 'array',
+                items: [$ref: '#/components/schemas/DomainBaseIdRefDomain'],
                 uniqueItems: true
             ]
             it.properties.target == [
@@ -1553,8 +1565,8 @@ class SwaggerSpec extends VeoSpringSpec {
                 description: '''The custom link's target'''
             ]
             it.properties.attributes == [
-                type:'object',
-                additionalProperties:[:],
+                type: 'object',
+                additionalProperties: [:],
                 description: 'The properties of the element described by the schema of the type attribute.']
             it.required == ['target']
         }
@@ -1662,7 +1674,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('AssetDomainAssociationDto')) {
             it.properties.riskValues == [
                 type: 'object',
-                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                additionalProperties : ['$ref' : "#/components/schemas/ImpactValuesDto"],
                 description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
             ]
 
@@ -1675,7 +1687,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'appliedCatalogItem',
                 'riskValues'
             ]
-            it.properties.appliedCatalogItem == [$ref:'#/components/schemas/SymIdRefCatalogItemDomainBase']
+            it.properties.appliedCatalogItem == [$ref: '#/components/schemas/SymIdRefCatalogItemDomainBase']
         }
     }
 
@@ -1684,7 +1696,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('ProcessDomainAssociationDto')) {
             it.properties.riskValues == [
                 type: 'object',
-                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                additionalProperties : ['$ref' : "#/components/schemas/ImpactValuesDto"],
                 description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
             ]
 
@@ -1705,7 +1717,7 @@ class SwaggerSpec extends VeoSpringSpec {
         with(getSchema('ScopeDomainAssociationDto')) {
             it.properties.riskValues == [
                 type: 'object',
-                additionalProperties :['$ref' : "#/components/schemas/ImpactValuesDto"],
+                additionalProperties : ['$ref' : "#/components/schemas/ImpactValuesDto"],
                 description: 'Key is risk definition ID, value contains impact values in the context of that risk definition.'
             ]
             it.properties.decisionResults == [
@@ -1835,15 +1847,15 @@ class SwaggerSpec extends VeoSpringSpec {
                 type: 'boolean'
             ]
             it.properties.description == [
-                type:'object',
-                additionalProperties:[
-                    type:'string'
+                type: 'object',
+                additionalProperties: [
+                    type: 'string'
                 ]
             ]
             it.properties.conditions == [
                 type: 'array',
-                items:[
-                    $ref:'#/components/schemas/Condition'
+                items: [
+                    $ref: '#/components/schemas/Condition'
                 ]
             ]
             it.required ==~ [
@@ -1860,9 +1872,9 @@ class SwaggerSpec extends VeoSpringSpec {
                 'inputMatcher'
             ]
             it.properties.inputProvider == [
-                $ref:'#/components/schemas/VeoExpression'
+                $ref: '#/components/schemas/VeoExpression'
             ]
-            it.properties.inputMatcher == [$ref:'#/components/schemas/InputMatcher']
+            it.properties.inputMatcher == [$ref: '#/components/schemas/InputMatcher']
             it.required ==~ [
                 'inputProvider',
                 'inputMatcher'
@@ -1877,17 +1889,17 @@ class SwaggerSpec extends VeoSpringSpec {
                 'type'
             ]
             it.discriminator == [
-                propertyName:'type',
-                mapping:[
-                    equals:'#/components/schemas/EqualsMatcher',
-                    greaterThan:'#/components/schemas/GreaterThanMatcher',
-                    isNull:'#/components/schemas/IsNullMatcher'
+                propertyName: 'type',
+                mapping: [
+                    equals: '#/components/schemas/EqualsMatcher',
+                    greaterThan: '#/components/schemas/GreaterThanMatcher',
+                    isNull: '#/components/schemas/IsNullMatcher'
                 ]
             ]
             it.oneOf == [
-                [$ref:'#/components/schemas/EqualsMatcher'],
-                [$ref:'#/components/schemas/GreaterThanMatcher'],
-                [$ref:'#/components/schemas/IsNullMatcher']
+                [$ref: '#/components/schemas/EqualsMatcher'],
+                [$ref: '#/components/schemas/GreaterThanMatcher'],
+                [$ref: '#/components/schemas/IsNullMatcher']
             ]
         }
     }
@@ -1921,7 +1933,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 with(potentialImpacts) {
                     type == "object"
                     description == "Potential impacts for a set of risk categories. These are specific values entered by the user directly."
-                    example == [C:2, I:3]
+                    example == [C: 2, I: 3]
                 }
                 with(potentialImpactsCalculated) {
                     type == "object"
@@ -1992,16 +2004,16 @@ class SwaggerSpec extends VeoSpringSpec {
                 '_self'
             ]
             it.properties.appliedCatalogItem == [
-                $ref:'#/components/schemas/SymIdRefCatalogItemDomainBase',
-                description:'A reference to the catalog item that this element was created from, if applicable'
+                $ref: '#/components/schemas/SymIdRefCatalogItemDomainBase',
+                description: 'A reference to the catalog item that this element was created from, if applicable'
             ]
             it.properties.parts == [
-                type:'array',
+                type: 'array',
                 description: 'Elements contained in this composite element',
-                items:[
-                    $ref:'#/components/schemas/ElementInDomainIdRef'
+                items: [
+                    $ref: '#/components/schemas/ElementInDomainIdRef'
                 ],
-                uniqueItems:true
+                uniqueItems: true
             ]
         }
     }
@@ -2059,9 +2071,9 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.required == ['origination']
             it.properties.implementationStatement == [
-                type:'string',
-                minLength:1,
-                maxLength:65535
+                type: 'string',
+                minLength: 1,
+                maxLength: 65535
             ]
             it.properties.cost == [
                 type: 'integer',
@@ -2091,7 +2103,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'symbolicRisk'
             ]
             it.properties.htmlColor == [
-                type:'string',
+                type: 'string',
                 pattern: '#[0-9a-fA-F]{6}'
             ]
         }
@@ -2127,7 +2139,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'translations'
             ]
             it.properties.htmlColor == [
-                type:'string',
+                type: 'string',
                 pattern: '#[0-9a-fA-F]{6}'
             ]
         }
@@ -2172,7 +2184,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -2225,7 +2237,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -2260,7 +2272,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -2298,7 +2310,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -2317,7 +2329,7 @@ class SwaggerSpec extends VeoSpringSpec {
             it.required == ['templateVersion']
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription']
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription']
             ]
         }
     }
@@ -2341,7 +2353,7 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.translations == [
                 type     : 'object',
-                additionalProperties: [$ref:'#/components/schemas/NameAbbreviationAndDescription'],
+                additionalProperties: [$ref: '#/components/schemas/NameAbbreviationAndDescription'],
                 description: 'The translations for the domain.'
             ]
         }
@@ -2360,14 +2372,14 @@ class SwaggerSpec extends VeoSpringSpec {
                 '_requirementImplementations'
             ]
             it.required ==~ ['control']
-            it.properties.control == [$ref:'#/components/schemas/IdRefControl']
+            it.properties.control == [$ref: '#/components/schemas/IdRefControl']
             it.properties.domains == [
-                type:'object',
-                additionalProperties:[$ref:'#/components/schemas/ControlImplementationDomainAssociationDto']
+                type: 'object',
+                additionalProperties: [$ref: '#/components/schemas/ControlImplementationDomainAssociationDto']
             ]
             it.properties._requirementImplementations == [
-                type:'string',
-                readOnly:true
+                type: 'string',
+                readOnly: true
             ]
         }
     }
@@ -2380,10 +2392,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 'customAspects'
             ]
             it.properties.customAspects == [
-                type:'object',
-                additionalProperties:[
-                    type:'object',
-                    additionalProperties:[:]
+                type: 'object',
+                additionalProperties: [
+                    type: 'object',
+                    additionalProperties: [:]
                 ]
             ]
         }
@@ -2417,18 +2429,18 @@ class SwaggerSpec extends VeoSpringSpec {
                 '_self'
             ]
             it.properties.members == [
-                type:'array',
-                items:[
-                    $ref:'#/components/schemas/ElementInDomainIdRef'
+                type: 'array',
+                items: [
+                    $ref: '#/components/schemas/ElementInDomainIdRef'
                 ],
-                uniqueItems:true
+                uniqueItems: true
             ]
             it.properties.controlImplementations == [
-                type:'array',
-                items:[
-                    $ref:'#/components/schemas/ControlImplementationInDomainDto'
+                type: 'array',
+                items: [
+                    $ref: '#/components/schemas/ControlImplementationInDomainDto'
                 ],
-                uniqueItems:true
+                uniqueItems: true
             ]
         }
     }
@@ -2446,17 +2458,17 @@ class SwaggerSpec extends VeoSpringSpec {
                 '_requirementImplementations'
             ]
             it.required ==~ ['control']
-            it.properties.control == [$ref:'#/components/schemas/ElementInDomainIdRef']
+            it.properties.control == [$ref: '#/components/schemas/ElementInDomainIdRef']
             it.properties.customAspects == [
-                type:'object',
-                additionalProperties:[
-                    type:'object',
-                    additionalProperties:[:]
+                type: 'object',
+                additionalProperties: [
+                    type: 'object',
+                    additionalProperties: [:]
                 ],
-                description:'Custom aspects for this control implementation']
+                description: 'Custom aspects for this control implementation']
             it.properties._requirementImplementations == [
-                type:'string',
-                readOnly:true
+                type: 'string',
+                readOnly: true
             ]
         }
     }
@@ -2611,7 +2623,15 @@ class SwaggerSpec extends VeoSpringSpec {
         }
 
         where:
-        item << parsedApiDocs.paths.entrySet().collectMany { pathEntry-> pathEntry.value.entrySet().collect{[path: pathEntry.key, method: it.key, spec: it.value ]}}.findAll {it.spec.parameters.find{it.name == 'elementType'} != null }
+        item << parsedApiDocs.paths.entrySet().collectMany { pathEntry->
+            pathEntry.value.entrySet().collect{
+                [path: pathEntry.key, method: it.key, spec: it.value]
+            }
+        }.findAll {
+            it.spec.parameters.find{
+                it.name == 'elementType'
+            } != null
+        }
     }
 
     def "endpoint documentation is correct for GET /domains/{domainId}/tasks"() {

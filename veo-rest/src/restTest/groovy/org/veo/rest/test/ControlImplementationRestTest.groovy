@@ -59,16 +59,16 @@ class ControlImplementationRestTest extends VeoRestTest {
                     ]
                 ]
             ],
-            translations : [(EN): ["control_ComplCtl_plural":"control_ComplCtl_plural",
+            translations : [(EN): ["control_ComplCtl_plural": "control_ComplCtl_plural",
                     "control_ComplCtl_singular": "control_ComplCtl_singular",
                     "control_ComplCtl_status_NEW" : "control_ComplCtl_status_NEW",
                     "control_MitiCtl_plural": "control_MitiCtl_plural",
-                    "control_MitiCtl_singular":"control_MitiCtl_singular",
-                    "control_MitiCtl_status_NEW":"control_MitiCtl_status_NEW",
+                    "control_MitiCtl_singular": "control_MitiCtl_singular",
+                    "control_MitiCtl_status_NEW": "control_MitiCtl_status_NEW",
                     "control_OtherComplCtl_plural": "control_OtherComplCtl_plural",
                     "control_OtherComplCtl_singular": "control_OtherComplCtl_singular",
                     "control_OtherComplCtl_status_NEW": "control_OtherComplCtl_status_NEW",
-                    "someAttr":"someAttr"
+                    "someAttr": "someAttr"
                 ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
@@ -84,13 +84,13 @@ class ControlImplementationRestTest extends VeoRestTest {
                     ]
                 ]
             ],
-            translations : [(EN): ["control_ComplCtl_plural":"control_ComplCtl_plural",
+            translations : [(EN): ["control_ComplCtl_plural": "control_ComplCtl_plural",
                     "control_ComplCtl_singular": "control_ComplCtl_singular",
                     "control_ComplCtl_status_NEW" : "control_ComplCtl_status_NEW",
                     "control_MitiCtl_plural": "control_MitiCtl_plural",
-                    "control_MitiCtl_singular":"control_MitiCtl_singular",
-                    "control_MitiCtl_status_NEW":"control_MitiCtl_status_NEW",
-                    "someAttr":"someAttr"
+                    "control_MitiCtl_singular": "control_MitiCtl_singular",
+                    "control_MitiCtl_status_NEW": "control_MitiCtl_status_NEW",
+                    "someAttr": "someAttr"
                 ]
             ]
         ], null, 204, UserType.CONTENT_CREATOR)
@@ -103,7 +103,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             subTypes: [
                 A: [statuses: ["NEW"]]
             ],
-            translations : [(EN): ["process_A_plural":"process_A_plural",
+            translations : [(EN): ["process_A_plural": "process_A_plural",
                     "process_A_singular": "process_A_singular",
                     "process_A_status_NEW" : "process_A_status_NEW",
                 ]
@@ -113,7 +113,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             subTypes: [
                 A: [statuses: ["NEW"]]
             ],
-            translations : [(EN): ["scope_A_plural":"process_A_plural",
+            translations : [(EN): ["scope_A_plural": "process_A_plural",
                     "scope_A_singular": "process_A_singular",
                     "scope_A_status_NEW" : "process_A_status_NEW",
                 ]
@@ -123,7 +123,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             subTypes: [
                 A: [statuses: ["NEW"]]
             ],
-            translations : [(EN): ["asset_A_plural":"process_A_plural",
+            translations : [(EN): ["asset_A_plural": "process_A_plural",
                     "asset_A_singular": "process_A_singular",
                     "asset_A_status_NEW" : "process_A_status_NEW",
                 ]
@@ -133,7 +133,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             subTypes: [
                 A: [statuses: ["NEW"]]
             ],
-            translations : [(EN): ["person_A_plural":"process_A_plural",
+            translations : [(EN): ["person_A_plural": "process_A_plural",
                     "person_A_singular": "process_A_singular",
                     "person_A_status_NEW" : "process_A_status_NEW",
                 ]
@@ -144,7 +144,7 @@ class ControlImplementationRestTest extends VeoRestTest {
             subTypes: [
                 A: [statuses: ["NEW"]]
             ],
-            translations : [(EN): ["scenario_A_plural":"process_A_plural",
+            translations : [(EN): ["scenario_A_plural": "process_A_plural",
                     "scenario_A_singular": "process_A_singular",
                     "scenario_A_status_NEW" : "process_A_status_NEW",
                 ]
@@ -292,27 +292,37 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         then: "CIs and RIs for both controls and all of their parts are present"
         retrievedElement.controlImplementations.size() == 2
-        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
+        with(retrievedElement.controlImplementations.find {
+            it.control.displayName.endsWith("root control 1")
+        }) {
             implementationStatus == "UNKNOWN"
             description == "I have my reasons"
             with(owner.get(_requirementImplementations).body) {
                 // TODO #3052 shouldn't the RI for root control 1 be here, too?
                 totalItemCount == 2
-                with(items.find { it.control.displayName.endsWith("sub control 1") }) {
+                with(items.find {
+                    it.control.displayName.endsWith("sub control 1")
+                }) {
                     status == "UNKNOWN"
                 }
-                with(items.find { it.control.displayName.endsWith("sub control 2") }) {
+                with(items.find {
+                    it.control.displayName.endsWith("sub control 2")
+                }) {
                     status == "UNKNOWN"
                 }
             }
         }
-        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 2") }) {
+        with(retrievedElement.controlImplementations.find {
+            it.control.displayName.endsWith("root control 2")
+        }) {
             implementationStatus == "UNKNOWN"
             responsible.displayName.endsWith("person 1")
             with(owner.get(_requirementImplementations).body) {
                 // TODO #3052 shouldn't the RI for root control 2 be here, too?
                 totalItemCount == 1
-                with(items.find { it.control.displayName.endsWith("sub control 3") }) {
+                with(items.find {
+                    it.control.displayName.endsWith("sub control 3")
+                }) {
                     status == "UNKNOWN"
                 }
             }
@@ -368,7 +378,9 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         when: "removing one CI"
         get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {
-            body.controlImplementations.removeIf { it.control.targetUri.endsWith(rootControl1Id) }
+            body.controlImplementations.removeIf {
+                it.control.targetUri.endsWith(rootControl1Id)
+            }
             owner.put(body._self, body, getETag())
         }
 
@@ -392,20 +404,28 @@ class ControlImplementationRestTest extends VeoRestTest {
         then:
         with(unitExport.elements.find { it.name == "lame" }) {
             requirementImplementations.size() == 4
-            with(requirementImplementations.find { it.control.name == "root control 1" }) {
+            with(requirementImplementations.find {
+                it.control.name == "root control 1"
+            }) {
                 status == "PARTIAL"
                 implementationStatement == "It's a start"
                 responsible.name == "person 2"
             }
-            with(requirementImplementations.find { it.control.name == "sub control 2" }) {
+            with(requirementImplementations.find {
+                it.control.name == "sub control 2"
+            }) {
                 status == "YES"
                 implementationStatement == "Done!"
                 responsible.name == "person 2"
             }
-            with(requirementImplementations.find { it.control.name == "root control 2" }) {
+            with(requirementImplementations.find {
+                it.control.name == "root control 2"
+            }) {
                 status == "UNKNOWN"
             }
-            with(requirementImplementations.find { it.control.name == "sub control 3" }) {
+            with(requirementImplementations.find {
+                it.control.name == "sub control 3"
+            }) {
                 status == "UNKNOWN"
             }
         }
@@ -443,17 +463,23 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         then: "CIs for both controls are present"
         retrievedElement.controlImplementations.size() == 3
-        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
+        with(retrievedElement.controlImplementations.find {
+            it.control.displayName.endsWith("root control 1")
+        }) {
             implementationStatus == "UNKNOWN"
             description == "I have my reasons"
             control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl1Id")
         }
-        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 2") }) {
+        with(retrievedElement.controlImplementations.find {
+            it.control.displayName.endsWith("root control 2")
+        }) {
             implementationStatus == "UNKNOWN"
             responsible.displayName.endsWith("person 1")
             control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl2Id")
         }
-        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 3") }) {
+        with(retrievedElement.controlImplementations.find {
+            it.control.displayName.endsWith("root control 3")
+        }) {
             implementationStatus == "UNKNOWN"
             control.targetInDomainUri.endsWith("/domains/$owner.domainId/controls/$owner.rootControl3Id")
             description == "I say so."
@@ -509,7 +535,9 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         when: "modifying CIs"
         get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {
-            body.controlImplementations.removeIf { it.control.targetUri.endsWith(rootControl1Id) }
+            body.controlImplementations.removeIf {
+                it.control.targetUri.endsWith(rootControl1Id)
+            }
             body.controlImplementations
                     .find { it.control.targetUri.endsWith(rootControl2Id) }
                     .description = "I've made changes"
@@ -574,7 +602,9 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         expect: "that the mitigation CI cannot be removed manually"
         with(get("/domains/$domainId/$elementType.pluralTerm/$elementId")) {
-            body.controlImplementations.removeIf { it.control.name == 'root control 2' }
+            body.controlImplementations.removeIf {
+                it.control.name == 'root control 2'
+            }
             put(body._self, body, getETag(), 422).body.message == "Control 'root control 2' ($rootControl2Id) cannot be disassociated, because it mitigates a risk for scenario 'scn' ($scenario1Id)."
         }
 
@@ -1056,16 +1086,22 @@ class ControlImplementationRestTest extends VeoRestTest {
             controlImplementations[0].implementationStatus == "YES"
         }
         with(get("/domains/$testDomainId/assets?unit=$unitId").body) {
-            items.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+            items.find {
+                it.id == assetId
+            }.controlImplementations[0].implementationStatus == "YES"
         }
         with(get("/assets?unit=$unitId").body) {
-            items.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+            items.find {
+                it.id == assetId
+            }.controlImplementations[0].implementationStatus == "YES"
         }
         with(get("/assets/$assetId").body) {
             controlImplementations[0].implementationStatus == "YES"
         }
         with(get("/units/$unitId/export").body) {
-            elements.find { it.id == assetId }.controlImplementations[0].implementationStatus == "YES"
+            elements.find {
+                it.id == assetId
+            }.controlImplementations[0].implementationStatus == "YES"
         }
     }
 
@@ -1274,7 +1310,7 @@ class ControlImplementationRestTest extends VeoRestTest {
                 ]
             ]
             ,
-            translations : [(EN): ["${type.singularTerm}_A_plural":"process_A_plural",
+            translations : [(EN): ["${type.singularTerm}_A_plural": "process_A_plural",
                     "${type.singularTerm}_A_singular": "process_A_singular",
                     "${type.singularTerm}_A_status_living" : "process_A_status_NEW",
                 ]

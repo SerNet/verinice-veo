@@ -99,9 +99,9 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             def out = synchronousUseCaseInteractor.execute(
                     getIncarnationDescriptionUseCase,
                     new GetCatalogIncarnationDescriptionUseCase.InputData(
-                    unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
+                            unit.id, domain.id, itemIds, IncarnationRequestModeType.MANUAL, IncarnationLookup.FOR_REFERENCED_ITEMS, null, null),
                     Function.identity()
-                    ).get()
+            ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)
         }
         def queryCounts = QueryCountHolder.grandTotal
@@ -119,10 +119,10 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             def references = dto.getParameters()
             synchronousUseCaseInteractor.execute(
                     applyIncarnationDescriptionUseCase,
-                    new  ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                    unit.id, references),
+                    new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                            unit.id, references),
                     Function.identity()
-                    ).get()
+            ).get()
         }
         queryCounts = QueryCountHolder.grandTotal
 

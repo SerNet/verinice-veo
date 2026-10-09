@@ -34,7 +34,9 @@ class V34__rename_risk_value_properties extends BaseJavaMigration {
         con.query("select db_id, risk_categories from riskvalues_aspect") { ResultSet aspect ->
             while(aspect.next()) {
                 def id = aspect.getString("db_id")
-                def categories = aspect.getString("risk_categories").with{om.readValue(it, Collection.class)}
+                def categories = aspect.getString("risk_categories").with{
+                    om.readValue(it, Collection.class)
+                }
                 categories.each{
                     it.userDefinedResidualRisk = it.residualRisk
                     it.residualRisk = it.effectiveRisk

@@ -72,7 +72,7 @@ class CompositeElementSpec extends VeoSpec {
         Set assets = Set.of(
                 newAsset(unit),
                 newAsset(unit),
-                )
+        )
 
         when: "a composite is reinstantiated with the assets:"
         def assetComposite = newAsset(unit) {
@@ -269,11 +269,11 @@ class CompositeElementSpec extends VeoSpec {
                 links = [
                     goodLink: new LinkDefinition()
                 ]
-                translations = [(EN):["process_ST_plural":"process_ST_plural",
-                        "process_ST_singular":"process_ST_singular",
-                        "process_ST_status_NEW":"process_ST_status_NEW",
-                        "goodLink":"goodLink",
-                        "val":"val1"
+                translations = [(EN): ["process_ST_plural": "process_ST_plural",
+                        "process_ST_singular": "process_ST_singular",
+                        "process_ST_status_NEW": "process_ST_status_NEW",
+                        "goodLink": "goodLink",
+                        "val": "val1"
                     ]]
             })
         }

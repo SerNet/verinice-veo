@@ -82,10 +82,12 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
         def eTag = ETag.from(existingUnit.idAsString, existingUnit.getVersion())
-        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, eTag), NoRestrictionAccessRight.from(maliciousClient.id.toString()) )
+        updateUseCase.execute(new ChangeUnitUseCase.InputData(existingUnit.id, newUnit, eTag), NoRestrictionAccessRight.from(maliciousClient.id.toString()))
 
         then: "the unit was not found"
-        unitRepository.getById(existingUnit.id, _) >>{ throw new NotFoundException(existingUnit.id, EntityType.UNIT.type) }
+        unitRepository.getById(existingUnit.id, _) >>{
+            throw new NotFoundException(existingUnit.id, EntityType.UNIT.type)
+        }
 
         and: "the security violation was prevented and no information leaked"
         thrown NotFoundException

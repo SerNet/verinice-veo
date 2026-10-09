@@ -73,7 +73,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             def profileId = domain.profiles.first().id
             def incarnationDescriptions = getProfileIncarnationDescriptionUseCase.execute(
                     new GetProfileIncarnationDescriptionUseCase.InputData(unit.id, domain.id, null, profileId, false), NoRestrictionAccessRight.from(client.idAsString)
-                    ).references
+            ).references
             applyProfileIncarnationDescriptionUseCase.execute(
                     new ApplyProfileIncarnationDescriptionUseCase.InputData(unit.id, incarnationDescriptions), NoRestrictionAccessRight.from(client.idAsString))
         }
@@ -103,7 +103,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         def client = createTestClient()
         def testDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         def unit = executeInTransaction {
-            def unit = unitDataRepository.save( newUnit(client).tap { unit->
+            def unit = unitDataRepository.save(newUnit(client).tap { unit->
                 addToDomains(testDomain)
             })
             def documents = documentDataRepository.saveAll((0..99).collect{

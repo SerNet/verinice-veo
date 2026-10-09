@@ -76,7 +76,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/incidents/$partId" ]
+                [targetUri: "/incidents/$partId"]
             ],
             links: [
                 responsiblePerson: [

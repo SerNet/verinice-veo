@@ -41,7 +41,9 @@ class V74__add_sub_type_name_translations extends BaseJavaMigration {
                     def cacheKey = elementType + subTypeDefinitionsJson + translationsJson
                     execute([
                         id: row.getString("db_id"),
-                        translations: translationCache.computeIfAbsent(cacheKey) { addTranslations(elementType, subTypeDefinitionsJson, translationsJson) },
+                        translations: translationCache.computeIfAbsent(cacheKey) {
+                            addTranslations(elementType, subTypeDefinitionsJson, translationsJson)
+                        },
                     ], """
                         update element_type_definition
                             set translations = :translations::jsonb

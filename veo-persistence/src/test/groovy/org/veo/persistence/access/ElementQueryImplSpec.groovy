@@ -721,7 +721,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
 
         when: "querying processes sorted by name descending"
-        result = query.execute( new PagingConfiguration<>(3, 0, 'name', SortOrder.DESCENDING))
+        result = query.execute(new PagingConfiguration<>(3, 0, 'name', SortOrder.DESCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -732,7 +732,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
 
         when: "querying processes sorted by description ascending"
-        result = query.execute( new PagingConfiguration<>(3, 0, 'description', SortOrder.ASCENDING))
+        result = query.execute(new PagingConfiguration<>(3, 0, 'description', SortOrder.ASCENDING))
 
         then: "the sort order is correct"
         with(result.resultPage) {
@@ -928,7 +928,9 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.toSorted{it.name}*.name == ["Person One", "Person Two"]
+        result.resultPage.toSorted{
+            it.name
+        }*.name == ["Person One", "Person Two"]
 
         when:
         query = elementQueryFactory.queryPersons(client).tap{

@@ -53,7 +53,7 @@ class VeoExpressionITSpec extends Specification {
         Domain domain = Mock() {
             getCustomAspectAttributeDefinition(ElementType.DOCUMENT, "myType", "fattribute") >> new ListAttributeDefinition(
                     new TextAttributeDefinition()
-                    )
+            )
             getCustomAspectAttributeDefinition(ElementType.DOCUMENT, "myType", "intribute") >> new IntegerAttributeDefinition()
         }
         Document document = Spy {
@@ -69,17 +69,17 @@ class VeoExpressionITSpec extends Specification {
         def validExp = new CustomAspectAttributeSizeExpression("myType", "fattribute")
 
         when:
-        validExp.selfValidate(domain,ElementType.DOCUMENT)
+        validExp.selfValidate(domain, ElementType.DOCUMENT)
 
         then:
         noExceptionThrown()
 
         expect:
-        validExp.getValueType(domain,ElementType.DOCUMENT) == T.integer()
-        validExp.getValue(document,domain) == 3
+        validExp.getValueType(domain, ElementType.DOCUMENT) == T.integer()
+        validExp.getValue(document, domain) == 3
 
         when:
-        new CustomAspectAttributeSizeExpression("myType", "intribute").selfValidate(domain,ElementType.DOCUMENT)
+        new CustomAspectAttributeSizeExpression("myType", "intribute").selfValidate(domain, ElementType.DOCUMENT)
 
         then:
         def ex = thrown(IllegalArgumentException)
@@ -125,7 +125,7 @@ class VeoExpressionITSpec extends Specification {
         def exp = new LinkTargetsExpression(sources, "myLink")
 
         expect:
-        exp.getValue(element,domain) ==~ [targetA, targetB, targetC]
+        exp.getValue(element, domain) ==~ [targetA, targetB, targetC]
     }
 
     def "link target expression is validated"() {
@@ -152,39 +152,39 @@ class VeoExpressionITSpec extends Specification {
         def sources = Mock(VeoExpression) {
             getValueType(domain, ElementType.ASSET) >> T.listOf(
                     T.sumOf(T.element(ElementType.DOCUMENT), T.element(ElementType.PERSON))
-                    ).orNothing()
+            ).orNothing()
         }
         def exp = new LinkTargetsExpression(sources, null)
 
         when:
-        exp.selfValidate(domain,ElementType.ASSET)
+        exp.selfValidate(domain, ElementType.ASSET)
 
         then:
         noExceptionThrown()
 
         expect:
         exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(
-                T.element(ElementType.INCIDENT),
-                T.element(ElementType.PROCESS),
-                T.element(ElementType.SCOPE),
+                        T.element(ElementType.INCIDENT),
+                        T.element(ElementType.PROCESS),
+                        T.element(ElementType.SCOPE),
                 ))
 
         when: "filtering by a certain type"
         exp = new LinkTargetsExpression(sources, "myLink")
-        exp.selfValidate(domain,ElementType.ASSET)
+        exp.selfValidate(domain, ElementType.ASSET)
 
         then:
         noExceptionThrown()
 
         expect:
         exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(
-                T.element(ElementType.INCIDENT),
-                T.element(ElementType.SCOPE),
+                        T.element(ElementType.INCIDENT),
+                        T.element(ElementType.SCOPE),
                 ))
 
         when: "filtering by a missing type"
         exp = new LinkTargetsExpression(sources, "fantasyLink")
-        exp.selfValidate(domain,ElementType.ASSET)
+        exp.selfValidate(domain, ElementType.ASSET)
 
         then:
         def ex = thrown(IllegalArgumentException)
@@ -198,8 +198,8 @@ class VeoExpressionITSpec extends Specification {
         def exp = new ConstantExpression(value)
 
         expect:
-        exp.selfValidate(domain,ElementType.INCIDENT)
-        exp.getValueType(domain,ElementType.INCIDENT).toString() == expectedType
+        exp.selfValidate(domain, ElementType.INCIDENT)
+        exp.getValueType(domain, ElementType.INCIDENT).toString() == expectedType
         exp.getValue(element, domain) == value
 
         where:
@@ -320,7 +320,7 @@ class VeoExpressionITSpec extends Specification {
 
         then:
         noExceptionThrown()
-        expression.getValueType(domain,elementType) == T.sumOf([thenValueType, elseValueType])
+        expression.getValueType(domain, elementType) == T.sumOf([thenValueType, elseValueType])
 
         where:
         thenValueType | elseValueType
@@ -347,7 +347,7 @@ class VeoExpressionITSpec extends Specification {
         list | map | result
         null | [:] | null
         [] | [:] | []
-        [1, 2, 3] | [1:2 , 3:2] | [2, null, 2]
+        [1, 2, 3] | [1: 2, 3: 2] | [2, null, 2]
         ['foo', 'bar'] | [bar: 'baz'] | [null, 'baz']
     }
 
@@ -359,7 +359,7 @@ class VeoExpressionITSpec extends Specification {
         def exp = new RemoveExpression(
                 new CustomAspectAttributeValueExpression("aspect1", "attr1"),
                 new ConstantExpression(5)
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -379,7 +379,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> needleType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -411,7 +411,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> needleType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -439,7 +439,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> rightType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -483,7 +483,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> rightType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -520,7 +520,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> needleType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -554,7 +554,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> needleType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -582,7 +582,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> mappingType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -612,7 +612,7 @@ class VeoExpressionITSpec extends Specification {
                 Mock(ConstantExpression) {
                     getValueType(domain, ElementType.ASSET) >> mappingType
                 },
-                )
+        )
 
         when:
         exp.selfValidate(domain, ElementType.ASSET)
@@ -639,14 +639,14 @@ class VeoExpressionITSpec extends Specification {
         CurrentElementExpression exp = new CurrentElementExpression()
 
         when:
-        exp.selfValidate(domain,ElementType.CONTROL)
+        exp.selfValidate(domain, ElementType.CONTROL)
 
         then:
         noExceptionThrown()
 
         expect:
-        exp.getValueType(domain,ElementType.CONTROL) == T.element(ElementType.CONTROL)
-        exp.getValue(element,domain) == element
+        exp.getValueType(domain, ElementType.CONTROL) == T.element(ElementType.CONTROL)
+        exp.getValue(element, domain) == element
     }
 
     def "read attribute"() {
@@ -667,14 +667,14 @@ class VeoExpressionITSpec extends Specification {
         def validExp = new CustomAspectAttributeValueExpression("myType", "attribool")
 
         when:
-        validExp.selfValidate(domain,ElementType.PERSON)
+        validExp.selfValidate(domain, ElementType.PERSON)
 
         then:
         noExceptionThrown()
 
         expect:
-        validExp.getValueType(domain,ElementType.PERSON) == T.bool().orNothing()
-        validExp.getValue(person,domain) == true
+        validExp.getValueType(domain, ElementType.PERSON) == T.bool().orNothing()
+        validExp.getValue(person, domain) == true
     }
 
     def "count parts"() {
@@ -711,7 +711,7 @@ class VeoExpressionITSpec extends Specification {
 
         expect:
         exp.getValueType(domain, ElementType.PERSON) == T.integer()
-        exp.getValue(person,domain) == 2
+        exp.getValue(person, domain) == 2
     }
 
     def "can only find CI controls for risk-affected element"() {
@@ -722,7 +722,7 @@ class VeoExpressionITSpec extends Specification {
         })
 
         when:
-        exp.selfValidate(domain,ElementType.ASSET)
+        exp.selfValidate(domain, ElementType.ASSET)
 
         then:
         def ex = thrown(IllegalArgumentException)
@@ -746,7 +746,7 @@ class VeoExpressionITSpec extends Specification {
             getCustomAspects(domain2)>> [ca2]
         }
 
-        CustomAspectAttributeValueExpression e = new CustomAspectAttributeValueExpression('ca', 'attr' )
+        CustomAspectAttributeValueExpression e = new CustomAspectAttributeValueExpression('ca', 'attr')
 
         expect:
         e.getValue(element, domain1) == 'v1'
@@ -791,14 +791,14 @@ class VeoExpressionITSpec extends Specification {
         and:
         def exp = new MinExpression(
                 new AttributeExpression(
-                new LinksExpression(
-                LinkDirection.INBOUND,
-                "workedOn",
-                ElementType.PERSON,
-                ),
-                "time",
-                )
-                )
+                        new LinksExpression(
+                                LinkDirection.INBOUND,
+                                "workedOn",
+                                ElementType.PERSON,
+                                ),
+                        "time",
+                        )
+        )
 
         expect:
         exp.selfValidate(domain, ElementType.PROCESS)
@@ -844,14 +844,14 @@ class VeoExpressionITSpec extends Specification {
         and:
         def exp = new MinExpression(
                 new AttributeExpression(
-                new LinksExpression(
-                LinkDirection.OUTBOUND,
-                "workedOn",
-                null
-                ),
-                "time",
-                )
-                )
+                        new LinksExpression(
+                                LinkDirection.OUTBOUND,
+                                "workedOn",
+                                null
+                                ),
+                        "time",
+                        )
+        )
 
         expect:
         exp.selfValidate(domain, ElementType.PERSON)
@@ -923,10 +923,10 @@ class VeoExpressionITSpec extends Specification {
                 Mock(VeoExpression) {
                     getValueType(domain, ElementType.ASSET) >> T.listOf(T.sumOf(T.integer(), T.string()))
                 }
-                )
+        )
 
         when:
-        exp.selfValidate(domain,ElementType.ASSET)
+        exp.selfValidate(domain, ElementType.ASSET)
 
         then:
         def e = thrown(IllegalArgumentException)
@@ -960,8 +960,8 @@ class VeoExpressionITSpec extends Specification {
         ])
 
         expect:
-        exp.selfValidate(domain,ElementType.ASSET)
-        exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(T.integer(),T.string()).orNothing())
+        exp.selfValidate(domain, ElementType.ASSET)
+        exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(T.integer(), T.string()).orNothing())
         exp.getValue(asset, domain) == ["ok", 42]
     }
 }

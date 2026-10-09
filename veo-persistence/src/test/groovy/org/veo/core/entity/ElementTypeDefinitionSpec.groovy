@@ -31,7 +31,7 @@ class ElementTypeDefinitionSpec extends VeoSpec {
 
     def "formats custom aspect attributes"() {
         given:
-        def etd = newElementTypeDefinition(ElementType.DOCUMENT,domain, false)
+        def etd = newElementTypeDefinition(ElementType.DOCUMENT, domain, false)
         domain.applyElementTypeDefinition(etd)
 
         and:
@@ -52,9 +52,9 @@ class ElementTypeDefinitionSpec extends VeoSpec {
         etd.translations[Locale.ENGLISH] = [
             paper_back: "Paperback",
             hard_cover: "Hardcover",
-            non_fiction:"Non-fiction",
-            comedy:"Comedy",
-            tragedy:"Tragedy",
+            non_fiction: "Non-fiction",
+            comedy: "Comedy",
+            tragedy: "Tragedy",
             trash: "Trash"
         ]
 

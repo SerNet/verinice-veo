@@ -492,11 +492,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
                     ]
                 ],
             ],
-            translations : [(EN): ["${type.singularTerm}_STA_plural":"${type.singularTerm}_STA_plural",
+            translations : [(EN): ["${type.singularTerm}_STA_plural": "${type.singularTerm}_STA_plural",
                     "${type.singularTerm}_STA_singular": "${type.singularTerm}_STA_singular",
                     "${type.singularTerm}_STA_status_NEW": "${type.singularTerm}_STA_status_NEW",
                     "${type.singularTerm}_STA_status_OLD": "${type.singularTerm}_STA_status_OLD",
-                    "someAttr":"someAttr"
+                    "someAttr": "someAttr"
                 ]
             ]
         ], "", 204)
@@ -518,11 +518,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
                     ]
                 ],
             ],
-            translations : [(EN): ["${type.singularTerm}_STB_plural":"${type.singularTerm}_STB_plural",
+            translations : [(EN): ["${type.singularTerm}_STB_plural": "${type.singularTerm}_STB_plural",
                     "${type.singularTerm}_STB_singular": "${type.singularTerm}_STB_singular",
                     "${type.singularTerm}_STB_status_ON": "${type.singularTerm}_STB_status_ON",
                     "${type.singularTerm}_STB_status_OFF": "${type.singularTerm}_STB_status_OFF",
-                    "someAttr":"someAttr"
+                    "someAttr": "someAttr"
 
                 ]
             ]

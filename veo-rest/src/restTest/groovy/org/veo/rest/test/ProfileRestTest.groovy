@@ -59,7 +59,7 @@ class ProfileRestTest extends VeoRestTest {
         and: "elements part are correct created"
         with(get("/domains/$dsgvoDomainId/persons?unit=$unitId").body) {
             items.size() == 5
-            with (items.find { it.name == "IT-Team" }) {
+            with(items.find { it.name == "IT-Team" }) {
                 links.size() == 0
                 parts.size() == 1
                 parts[0].name == "Hans Meiser"
@@ -92,7 +92,7 @@ class ProfileRestTest extends VeoRestTest {
         and: "scope members are correct created also links"
         with(get("/domains/$dsgvoDomainId/scopes?unit=$unitId").body) {
             items.size() == 1
-            with (items.find { it.name == "Data GmbH" }) {
+            with(items.find { it.name == "Data GmbH" }) {
                 members.size() == 1
                 members[0].name == "Durchführung Befragungen"
                 links.size() == 2
@@ -145,12 +145,14 @@ class ProfileRestTest extends VeoRestTest {
             }
         }
         post("/domains/${domainId}/profiles/$profileId/incarnation?unit=$unitId", null, 204)
-        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find { it.name == "Durchführung Befragungen" }
+        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find {
+            it.name == "Durchführung Befragungen"
+        }
 
         then: "values for category R are removed from process"
         with(process) {
-            riskValues.DSRA.potentialImpacts == [A:2, C:2, I:1]
-            riskValues.DSRA.potentialImpactsEffective == [A:2, C:2, I:1]
+            riskValues.DSRA.potentialImpacts == [A: 2, C: 2, I: 1]
+            riskValues.DSRA.potentialImpactsEffective == [A: 2, C: 2, I: 1]
         }
 
         and: "values for category R are removed from the risk"
@@ -166,9 +168,9 @@ class ProfileRestTest extends VeoRestTest {
 
         then: "The export does not contain values for category R"
         with(vvt) {
-            name== "Durchführung Befragungen"
-            aspects.impactValues.DSRA.potentialImpacts == [A:2, C:2, I:1]
-            aspects.impactValues.DSRA.potentialImpactsEffective == [A:2, C:2, I:1]
+            name == "Durchführung Befragungen"
+            aspects.impactValues.DSRA.potentialImpacts == [A: 2, C: 2, I: 1]
+            aspects.impactValues.DSRA.potentialImpactsEffective == [A: 2, C: 2, I: 1]
         }
     }
 
@@ -182,11 +184,13 @@ class ProfileRestTest extends VeoRestTest {
         when: "removing DSRA"
         delete("/content-creation/domains/${domainId}/risk-definitions/DSRA", 204, CONTENT_CREATOR)
         post("/domains/${domainId}/profiles/$profileId/incarnation?unit=$unitId", null, 204)
-        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find { it.name == "Durchführung Befragungen" }
+        def process = get("/domains/${domainId}/processes?unit=$unitId").body.items.find {
+            it.name == "Durchführung Befragungen"
+        }
 
         then: "values for DSRA are removed from the process"
         with(process) {
-            riskValues.size()==0
+            riskValues.size()== 0
         }
 
         and: "values for DSRA are removed from the risk"
@@ -200,7 +204,7 @@ class ProfileRestTest extends VeoRestTest {
 
         then: "The export does not contain values for DSRA"
         with(item) {
-            name== "Durchführung Befragungen"
+            name == "Durchführung Befragungen"
             aspects.impactValues.isEmpty()
         }
     }
@@ -284,7 +288,9 @@ class ProfileRestTest extends VeoRestTest {
             domainProducts : [(newDomainName): ["TO_SERVE_MAN"]]])
 
         new PollingConditions().within(10) {
-            get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{it.name == newDomainName }
+            get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{
+                it.name == newDomainName
+            }
             getDomains().find{it.name == newDomainName }
         }
 
@@ -441,11 +447,11 @@ class ProfileRestTest extends VeoRestTest {
                             ]
                         ]
                     ],
-                    translations : [(EN): ["asset_server_plural":"asset_server_plural",
+                    translations : [(EN): ["asset_server_plural": "asset_server_plural",
                             "asset_server_singular": "asset_server_singular",
                             "asset_server_status_off": "asset_server_status_NEW",
                             "asset_server_status_on": "asset_server_status_OLD",
-                            "powerConsumptionWatt":"someAttr"
+                            "powerConsumptionWatt": "someAttr"
                         ]
                     ]
                 ], null, 204, CONTENT_CREATOR)
@@ -456,7 +462,7 @@ class ProfileRestTest extends VeoRestTest {
                             statuses: ["on", "off"]
                         ]
                     ],
-                    translations : [(EN): ["control_superControl_plural":"control_superControl_plural",
+                    translations : [(EN): ["control_superControl_plural": "control_superControl_plural",
                             "control_superControl_singular": "control_superControl_singular",
                             "control_superControl_status_off": "control_superControl_status_NEW",
                             "control_superControl_status_on": "asset_server_status_OLD"
@@ -470,7 +476,7 @@ class ProfileRestTest extends VeoRestTest {
                             statuses: ["hypothetical", "real"]
                         ]
                     ],
-                    translations : [(EN): ["scenario_danger_plural":"asset_superControl_plural",
+                    translations : [(EN): ["scenario_danger_plural": "asset_superControl_plural",
                             "scenario_danger_singular": "asset_superControl_singular",
                             "scenario_danger_status_hypothetical": "asset_superControl_status_NEW",
                             "scenario_danger_status_real": "scenario_danger_status_OLD"

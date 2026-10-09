@@ -75,11 +75,15 @@ class EvaluationRestTest extends VeoRestTest {
             with(body.decisionResults.piaMandatory) {
                 value == true
                 decision.rules[decisiveRule].description.en == "Two or more criteria applicable"
-                matchingRules.collect { decision.rules[it].description.en } ==~ [
+                matchingRules.collect {
+                    decision.rules[it].description.en
+                } ==~ [
                     "Two or more criteria applicable",
                     "DPIA-relevant attributes incomplete",
                 ]
-                agreeingRules.collect { decision.rules[it].description.en } ==~ [
+                agreeingRules.collect {
+                    decision.rules[it].description.en
+                } ==~ [
                     "Two or more criteria applicable"
                 ]
             }

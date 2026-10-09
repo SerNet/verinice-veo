@@ -515,7 +515,7 @@ class DomainUpdateMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             })
-            def m = [(Locale.ENGLISH):"remove", (Locale.GERMAN): "entfernen" ]
+            def m = [(Locale.ENGLISH): "remove", (Locale.GERMAN): "entfernen"]
             domainMigrationDefinition = new DomainMigrationDefinition([
                 new DomainMigrationStep("remove-inappropriate-data", new TranslatedText(m), [
                     new CustomAspectAttribute(ElementType.PERSON, "physique", "weight")

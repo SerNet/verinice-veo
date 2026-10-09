@@ -64,14 +64,14 @@ class DecisionCreationRestTest extends VeoRestTest {
                 ]
             ],
             translations : [
-                (EN): ["document_Article_plural":"document_Article_plural",
+                (EN): ["document_Article_plural": "document_Article_plural",
                     "document_Article_singular": "document_Article_singular",
-                    "document_Article_status_Online":"document_Article_status_Online",
-                    "mostCommonWord":"mostCommonWord",
-                    "numberOfWords":"numberOfWords",
-                    "relatedArticle":"related article",
-                    "relevance":"relevance",
-                    "themes":"themes"
+                    "document_Article_status_Online": "document_Article_status_Online",
+                    "mostCommonWord": "mostCommonWord",
+                    "numberOfWords": "numberOfWords",
+                    "relatedArticle": "related article",
+                    "relevance": "relevance",
+                    "themes": "themes"
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
@@ -151,7 +151,7 @@ class DecisionCreationRestTest extends VeoRestTest {
             name: "Doc Docker's Dodgy Docs",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
             customAspects: [
                 content: [
                     themes: [
@@ -196,13 +196,13 @@ class DecisionCreationRestTest extends VeoRestTest {
             name: "Center piece",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
         ]).body.resourceId
         def linkingDoc1Id = post("/domains/$domainId/documents", [
             name: "linking document 1",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
             links: [
                 relatedArticle: [
                     [
@@ -220,7 +220,7 @@ class DecisionCreationRestTest extends VeoRestTest {
             name: "linking document",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
             links: [
                 relatedArticle: [
                     [
@@ -236,7 +236,7 @@ class DecisionCreationRestTest extends VeoRestTest {
             name: "linking document",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
             links: [
                 relatedArticle: [
                     [
@@ -257,7 +257,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         when:
         get("/domains/$domainId/documents/$linkingDoc1Id").with{
             body.links.relatedArticle[0].attributes.relevance = 3
-            put(body._self,body,it.getETag())
+            put(body._self, body, it.getETag())
         }
 
         then:
@@ -299,7 +299,7 @@ class DecisionCreationRestTest extends VeoRestTest {
             name: "I need a document doctor",
             subType: "Article",
             status: "Online",
-            owner: [targetUri:"/units/$unitId"],
+            owner: [targetUri: "/units/$unitId"],
         ], 200).body
 
         then:

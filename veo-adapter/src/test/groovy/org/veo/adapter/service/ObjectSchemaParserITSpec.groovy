@@ -57,14 +57,14 @@ class ObjectSchemaParserITSpec extends Specification {
                 'PRO_DataTransfer',
                 'PRO_DataProcessing'
             ] as Set
-            it.PRO_DataTransfer.statuses==[
+            it.PRO_DataTransfer.statuses ==[
                 'NEW',
                 'IN_PROGRESS',
                 'FOR_REVIEW',
                 'RELEASED',
                 'ARCHIVED'
             ]
-            it.PRO_DataProcessing.statuses==[
+            it.PRO_DataProcessing.statuses ==[
                 'NEW',
                 'IN_PROGRESS',
                 'FOR_REVIEW',
@@ -76,7 +76,7 @@ class ObjectSchemaParserITSpec extends Specification {
         1 * elementDefinition.setCustomAspects({
             it.size() == 12
             with(it.process_dataProcessing.attributeDefinitions) {
-                with (process_dataProcessing_legalBasis) {
+                with(process_dataProcessing_legalBasis) {
                     it instanceof ListAttributeDefinition
                     itemDefinition instanceof EnumAttributeDefinition
                     with(itemDefinition.allowedValues) {
@@ -112,19 +112,19 @@ class ObjectSchemaParserITSpec extends Specification {
         })
         1 * elementDefinition.setLinks({
             it.size() == 12
-            with( it.process_requiredApplications) {
+            with(it.process_requiredApplications) {
                 it.targetType == ElementType.ASSET
                 it.targetSubType == 'AST_Application'
                 it.attributeDefinitions == [:]
             }
-            with( it.process_dataType) {
+            with(it.process_dataType) {
                 it.targetType == ElementType.ASSET
                 it.targetSubType == 'AST_Datatype'
-                with( it.attributeDefinitions) {
-                    with (process_dataType_comment) {
+                with(it.attributeDefinitions) {
+                    with(process_dataType_comment) {
                         it instanceof TextAttributeDefinition
                     }
-                    with (process_dataType_deletionPeriod) {
+                    with(process_dataType_deletionPeriod) {
                         it instanceof EnumAttributeDefinition
                         with(it.allowedValues) {
                             size() == 4
@@ -157,6 +157,6 @@ class ObjectSchemaParserITSpec extends Specification {
         thrown(JsonNodeException)
 
         where:
-        content << ['' , '{}']
+        content << ['', '{}']
     }
 }

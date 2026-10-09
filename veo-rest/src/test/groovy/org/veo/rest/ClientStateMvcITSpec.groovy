@@ -72,7 +72,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         def unitId = parseJson(post("/units", [
             "name": "nova",
             domains: [
-                [ targetUri: "http://localhost/domains/$domain.idAsString" ]
+                [targetUri: "http://localhost/domains/$domain.idAsString"]
             ]
 
         ])).resourceId
@@ -86,7 +86,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
             ]
         ])
 
-        then:"the asset exists"
+        then: "the asset exists"
         parseJson(get("/assets")).totalItemCount == 1
 
         when: "we deactivate the client"
@@ -96,7 +96,7 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         client = clientRepository.findById(UUID.fromString(TESTCLIENT_UUID)).get()
 
         then: "its state has been updated"
-        client.state ==  DEACTIVATED
+        client.state == DEACTIVATED
 
         when: "requesting units"
         get("/units",403)
@@ -104,10 +104,10 @@ class ClientStateMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(ClientNotActiveException)
 
-        when:"requesting assets"
+        when: "requesting assets"
         get("/assets",403)
 
-        then:"an exception is thrown"
+        then: "an exception is thrown"
         thrown(ClientNotActiveException)
     }
 }

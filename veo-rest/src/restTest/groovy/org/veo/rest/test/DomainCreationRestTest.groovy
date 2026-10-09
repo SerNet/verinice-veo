@@ -80,7 +80,7 @@ class DomainCreationRestTest extends DomainRestTest {
         def domainUpdatedAfterDecisionUpdate = get("/domains/$domainId").body.updatedAt
 
         then:
-        domainUpdatedAfterDecisionUpdate > domainUpdatedBeforeDecisionUpdate
+        domainUpdatedAfterDecisionUpdate> domainUpdatedBeforeDecisionUpdate
 
         when:
         put("/content-creation/domains/${domainId}/inspections/alwaysAddPart", [
@@ -98,7 +98,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ], null, 201, CONTENT_CREATOR)
 
         then:
-        get("/domains/$domainId").body.updatedAt > domainUpdatedAfterDecisionUpdate
+        get("/domains/$domainId").body.updatedAt> domainUpdatedAfterDecisionUpdate
 
         when:
         get("/domains/$domainId/incarnation-configuration").with {
@@ -170,10 +170,10 @@ class DomainCreationRestTest extends DomainRestTest {
             authority: "uz",
         ], 201, CONTENT_CREATOR).body.resourceId
 
-        put("/content-creation/domains/$domainId/element-type-definitions/control",  [
-            subTypes:[
-                c1:[
-                    statuses:['c0', 'c1'],
+        put("/content-creation/domains/$domainId/element-type-definitions/control", [
+            subTypes: [
+                c1: [
+                    statuses: ['c0', 'c1'],
                     sortKey : 1
                 ],
                 c10: [
@@ -184,17 +184,17 @@ class DomainCreationRestTest extends DomainRestTest {
                 ]
             ],
             translations : [(EN):
-                ["control_c100_plural":"asset_AST_Application_plural",
-                    "control_c100_singular":"asset_AST_Application_singular",
-                    "control_c100_status_day":"asset_AST_Application_status_NEW",
-                    "control_c100_status_night":"asset_AST_Application_status_ARCHIVED",
+                ["control_c100_plural": "asset_AST_Application_plural",
+                    "control_c100_singular": "asset_AST_Application_singular",
+                    "control_c100_status_day": "asset_AST_Application_status_NEW",
+                    "control_c100_status_night": "asset_AST_Application_status_ARCHIVED",
                     "control_c10_plural": "asset_AST_Application_status_FOR_REVIEW",
                     "control_c10_singular": "asset_AST_Application_status_RELEASED",
                     "control_c10_status_bad": "asset_AST_Application_status_IN_PROGRESS",
-                    "control_c10_status_good":"asset_AST_Application_plural",
-                    "control_c1_plural":"asset_AST_Application_singular",
-                    "control_c1_singular":"asset_AST_Application_status_NEW",
-                    "control_c1_status_c0":"asset_AST_Application_status_ARCHIVED",
+                    "control_c10_status_good": "asset_AST_Application_plural",
+                    "control_c1_plural": "asset_AST_Application_singular",
+                    "control_c1_singular": "asset_AST_Application_status_NEW",
+                    "control_c1_status_c0": "asset_AST_Application_status_ARCHIVED",
                     "control_c1_status_c1": "asset_AST_Application_status_FOR_REVIEW"
                 ]
             ]
@@ -207,9 +207,9 @@ class DomainCreationRestTest extends DomainRestTest {
             "mitigationControlSubType": "c1",
         ], null, 204, CONTENT_CREATOR)
 
-        then:"the domain is updated"
+        then: "the domain is updated"
         with(get("/domains/$domainId").body) {
-            updatedAt > domainUpdatedBefore
+            updatedAt> domainUpdatedBefore
             with(controlImplementationConfiguration) {
                 complianceControlSubTypes ==~ ["c1", "c10"]
                 mitigationControlSubType == "c1"
@@ -227,7 +227,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then:
         with(get("/domains/$domainId").body) {
-            controlImplementationConfiguration ==  [
+            controlImplementationConfiguration == [
                 "complianceControlSubTypes": [],
                 "mitigationControlSubType": "c1"
             ]
@@ -240,7 +240,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then:
         with(get("/domains/$domainId").body) {
-            controlImplementationConfiguration ==  [
+            controlImplementationConfiguration == [
                 "complianceControlSubTypes": ["c1"],
             ]
         }
@@ -252,7 +252,7 @@ class DomainCreationRestTest extends DomainRestTest {
         then:
         with(get("/domains/$domainId")) {
             etag != getETag()
-            body.controlImplementationConfiguration ==  [
+            body.controlImplementationConfiguration == [
                 complianceControlSubTypes: [],
             ]
         }
@@ -345,10 +345,10 @@ class DomainCreationRestTest extends DomainRestTest {
                 ]
             ],
             translations : [(EN):
-                ["requiredScenario":"asset_AST_Application_plural",
-                    "scenario_HypotheticalScenario_plural":"asset_AST_Application_singular",
-                    "scenario_HypotheticalScenario_singular":"asset_AST_Application_status_NEW",
-                    "scenario_HypotheticalScenario_status_NEW":"asset_AST_Application_status_ARCHIVED",
+                ["requiredScenario": "asset_AST_Application_plural",
+                    "scenario_HypotheticalScenario_plural": "asset_AST_Application_singular",
+                    "scenario_HypotheticalScenario_singular": "asset_AST_Application_status_NEW",
+                    "scenario_HypotheticalScenario_status_NEW": "asset_AST_Application_status_ARCHIVED",
                     "scenario_HypotheticalScenario_status_OLD": "asset_AST_Application_status_FOR_REVIEW"
                 ]
             ]
@@ -360,10 +360,10 @@ class DomainCreationRestTest extends DomainRestTest {
                 ]
             ],
             translations : [(EN):
-                ["scope_SimpleScope_plural":"asset_AST_Application_plural",
-                    "scope_SimpleScope_singular":"asset_AST_Application_singular",
-                    "scope_SimpleScope_status_NEW":"asset_AST_Application_status_NEW",
-                    "scope_SimpleScope_status_OLD":"asset_AST_Application_status_ARCHIVED",
+                ["scope_SimpleScope_plural": "asset_AST_Application_plural",
+                    "scope_SimpleScope_singular": "asset_AST_Application_singular",
+                    "scope_SimpleScope_status_NEW": "asset_AST_Application_status_NEW",
+                    "scope_SimpleScope_status_OLD": "asset_AST_Application_status_ARCHIVED",
                 ]
             ]
         ], null, 204, CONTENT_CREATOR)
@@ -380,10 +380,12 @@ class DomainCreationRestTest extends DomainRestTest {
 
         then: "it can be retrieved"
         with(get("/domains/$newDomainId").body) {
-            riskDefinitions.simpleDef.categories.find { it.id == "C" }.potentialImpacts.size() == 3
+            riskDefinitions.simpleDef.categories.find {
+                it.id == "C"
+            }.potentialImpacts.size() == 3
             riskDefinitions.simpleDef.categories.find { it.id == "I" } == null
             createdAt == domainCreationTime
-            updatedAt > domainCreationTime
+            updatedAt> domainCreationTime
         }
 
         when: "using the risk definition on a scenario"
@@ -523,7 +525,9 @@ class DomainCreationRestTest extends DomainRestTest {
 
         and: "redundant risk value IDs to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
-            definition.riskValues.find { it.symbolicRisk == "symbolic_risk_3" }.symbolicRisk = "symbolic_risk_2"
+            definition.riskValues.find {
+                it.symbolicRisk == "symbolic_risk_3"
+            }.symbolicRisk = "symbolic_risk_2"
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "SymbolicRisk not unique."
             }
@@ -569,7 +573,9 @@ class DomainCreationRestTest extends DomainRestTest {
 
         and: "missing probability in matrix to be illegal"
         get("/domains/$testDomainId").body.riskDefinitions.riskyDef.tap { definition ->
-            definition.categories.find { it.id == "D" }.valueMatrix[1].removeLast()
+            definition.categories.find {
+                it.id == "D"
+            }.valueMatrix[1].removeLast()
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
                 body.message == "Value matrix for category D does not conform to probability."
             }
@@ -649,7 +655,7 @@ class DomainCreationRestTest extends DomainRestTest {
         ]).body.resourceId
 
         post("/$type/$elementWithImpactId/risks", [
-            scenario: [ targetUri: "/scenarios/$scenarioId"],
+            scenario: [targetUri: "/scenarios/$scenarioId"],
             domains: [
                 (domainId): [
                     reference: [targetUri: "/domains/$domainId"],
@@ -717,7 +723,7 @@ class DomainCreationRestTest extends DomainRestTest {
             potentialProbabilityExplanation == "When it happens"
         }
 
-        and:"r is missing in the risk"
+        and: "r is missing in the risk"
         with(get("/$type/$elementWithImpactId/risks/$scenarioId").body.domains.(domainId).riskDefinitions.DSRA) {
             riskValues*.category ==~ ["C", "I", "A"]
             impactValues*.category ==~ ["C", "I", "A"]
@@ -744,7 +750,9 @@ class DomainCreationRestTest extends DomainRestTest {
         }
 
         when: "adding a category to the riskdefinition"
-        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find { it.id == "C" }
+        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find {
+            it.id == "C"
+        }
         newCategory.id = "newCat"
         newCategory.translations.de.name = "my new Cat"
 
@@ -806,15 +814,15 @@ class DomainCreationRestTest extends DomainRestTest {
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
-        put("/content-creation/domains/$newDomainId/element-type-definitions/asset",  [
-            subTypes:[
-                server:[
-                    statuses:['on', 'off'],
+        put("/content-creation/domains/$newDomainId/element-type-definitions/asset", [
+            subTypes: [
+                server: [
+                    statuses: ['on', 'off'],
                     sortKey : 1
                 ]
             ],
-            links:[
-                serverLink :[
+            links: [
+                serverLink : [
                     targetType: 'asset',
                     targetSubType: 'server',
                 ]
@@ -832,7 +840,7 @@ class DomainCreationRestTest extends DomainRestTest {
 
         when: "adding a modified copy of DSRA to the new domain"
         get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.with { definition ->
-            definition.impactInheritingLinks = ["asset":  ['serverLink']]
+            definition.impactInheritingLinks = ["asset": ['serverLink']]
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)) {
                 body.message == "Risk definition created"
             }
@@ -860,8 +868,12 @@ class DomainCreationRestTest extends DomainRestTest {
             definition.probability.translations.de.description = "a new description"
 
             definition.implementationStateDefinition.translations.de.name = "a new name"
-            definition.categories.find { it.id == "C" }.translations.de.name = "a new name"
-            definition.categories.find { it.id == "C" }.potentialImpacts[0].translations.de.name = "a new name"
+            definition.categories.find {
+                it.id == "C"
+            }.translations.de.name = "a new name"
+            definition.categories.find {
+                it.id == "C"
+            }.potentialImpacts[0].translations.de.name = "a new name"
             with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 200, CONTENT_CREATOR)) {
                 body.message == "Risk definition updated"
             }
@@ -874,8 +886,12 @@ class DomainCreationRestTest extends DomainRestTest {
             it.probability.translations.de.name == "a new name"
             it.probability.translations.de.description == "a new description"
             it.implementationStateDefinition.translations.de.name == "a new name"
-            it.categories.find { it.id == "C" }.translations.de.name == "a new name"
-            it.categories.find { it.id == "C" }.potentialImpacts[0].translations.de.name == "a new name"
+            it.categories.find {
+                it.id == "C"
+            }.translations.de.name == "a new name"
+            it.categories.find {
+                it.id == "C"
+            }.potentialImpacts[0].translations.de.name == "a new name"
         }
 
         when: "removing a category"
@@ -889,11 +905,13 @@ class DomainCreationRestTest extends DomainRestTest {
         then: "the change is persisted"
         with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
             it.categories.size() == 3
-            it.categories.find { it.id == "R"  } == null
+            it.categories.find { it.id == "R" } == null
         }
 
         when:
-        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find { it.id == "C" }
+        def newCategory = get("/domains/$dsgvoDomainId").body.riskDefinitions.DSRA.categories.find {
+            it.id == "C"
+        }
         newCategory.id = "newCat-1"
         newCategory.translations.de.name = "my new Cat"
 
@@ -908,7 +926,9 @@ class DomainCreationRestTest extends DomainRestTest {
         and: "the change is persisted"
         with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
             it.categories.size() == 4
-            it.categories.find { it.id == newCategory.id }.translations.de.name == newCategory.translations.de.name
+            it.categories.find {
+                it.id == newCategory.id
+            }.translations.de.name == newCategory.translations.de.name
         }
 
         when: "changing a value in a risk matrix"

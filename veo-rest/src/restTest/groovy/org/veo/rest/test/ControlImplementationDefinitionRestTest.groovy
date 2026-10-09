@@ -197,12 +197,16 @@ class ControlImplementationDefinitionRestTest extends VeoRestTest {
         then: "wait for domain creation to complete"
         defaultPolling.within(10) {
             def domains = getDomains()
-            assert domains.any { it.name == domainName && it.templateVersion == templateVersion }
+            assert domains.any {
+                it.name == domainName && it.templateVersion == templateVersion
+            }
         }
 
         and: "CI attributes are preserved in the imported domain"
         def domains = getDomains()
-        def importedDomain = domains.find { it.name == domainName && it.templateVersion == templateVersion }
+        def importedDomain = domains.find {
+            it.name == domainName && it.templateVersion == templateVersion
+        }
         assert importedDomain != null
 
         def fullDomain = get("/domains/${importedDomain.id}").body

@@ -68,9 +68,9 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
                     assetDefinition.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                         it.statuses = ["NEW"]
                     }
-                    translations = [(EN):["asset_AST_Server_plural":"val1",
-                            "asset_AST_Server_singular":"val1",
-                            "asset_AST_Server_status_NEW":"val1"
+                    translations = [(EN): ["asset_AST_Server_plural": "val1",
+                            "asset_AST_Server_singular": "val1",
+                            "asset_AST_Server_status_NEW": "val1"
                         ]]
                 })
             }

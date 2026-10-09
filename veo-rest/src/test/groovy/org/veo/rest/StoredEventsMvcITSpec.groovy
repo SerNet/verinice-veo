@@ -400,7 +400,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         with(getLatestStoredEventContent()) {
             type == "CREATION"
             uri == "/assets/$assetId/risks/$scenarioId"
-            author =="user@domain.example"
+            author == "user@domain.example"
             content.scenario.targetUri == "/scenarios/$scenarioId"
         }
 
@@ -413,7 +413,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         String riskETag = getETag(get("/assets/$assetId/risks/$scenarioId"))
         put("/assets/$assetId/risks/$scenarioId", [
-            mitigation: [targetUri:  "/controls/$controlId"],
+            mitigation: [targetUri: "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
                 (domain.getIdAsString()) : [
@@ -426,7 +426,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         with(getLatestStoredEventContent()) {
             type == "MODIFICATION"
             uri == "/assets/$assetId/risks/$scenarioId"
-            author =="user@domain.example"
+            author == "user@domain.example"
             content.mitigation.targetUri == "/controls/$controlId"
         }
     }
@@ -465,7 +465,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         with(getLatestStoredEventContent()) {
             type == "CREATION"
             uri == "/processes/$processId/risks/$scenarioId"
-            author =="user@domain.example"
+            author == "user@domain.example"
             content.scenario.targetUri == "/scenarios/$scenarioId"
         }
 
@@ -478,7 +478,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         String riskETag = getETag(get("/processes/$processId/risks/$scenarioId"))
         put("/processes/$processId/risks/$scenarioId", [
-            mitigation: [targetUri:  "/controls/$controlId"],
+            mitigation: [targetUri: "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
                 (domain.getIdAsString()) : [
@@ -491,7 +491,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         with(getLatestStoredEventContent()) {
             type == "MODIFICATION"
             uri == "/processes/$processId/risks/$scenarioId"
-            author =="user@domain.example"
+            author == "user@domain.example"
             content.mitigation.targetUri == "/controls/$controlId"
         }
     }

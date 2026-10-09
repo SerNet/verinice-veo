@@ -43,7 +43,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
-                riskDefinitions = ["rid":rd] as Map
+                riskDefinitions = ["rid": rd] as Map
             }
         }
         client = clientRepository.save(client)
@@ -58,8 +58,12 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         rd.probability.translations.(DE).name = "a new prop"
         rd.probability.levels.first().htmlColor = "#000000"
         rd.probability.levels.first().translations.(DE).name = "a new level name"
-        rd.categories.find{ it.id == "C" }.translations.(DE).name = "my new dimension name"
-        rd.categories.find{ it.id == "C" }.potentialImpacts.first().translations.(DE).name = "my new impact name"
+        rd.categories.find{
+            it.id == "C"
+        }.translations.(DE).name = "my new dimension name"
+        rd.categories.find{
+            it.id == "C"
+        }.potentialImpacts.first().translations.(DE).name = "my new impact name"
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd)
 
         then: "the change is persisted"
@@ -69,8 +73,12 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
             probability.translations.(super.DE).name == "a new prop"
             probability.levels.first().htmlColor == "#000000"
             probability.levels.first().translations.(super.DE).name == "a new level name"
-            categories.find{ it.id == "C" }.translations.(super.DE).name == "my new dimension name"
-            categories.find{ it.id == "C" }.potentialImpacts.first().translations.(super.DE).name == "my new impact name"
+            categories.find{
+                it.id == "C"
+            }.translations.(super.DE).name == "my new dimension name"
+            categories.find{
+                it.id == "C"
+            }.potentialImpacts.first().translations.(super.DE).name == "my new impact name"
         }
 
         when: "adding the definition as a new definition"
@@ -93,7 +101,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         HandlerMethodValidationException e = thrown()
-        with(e.parameterValidationResults.first()  ) {
+        with(e.parameterValidationResults.first()) {
             with(it.resolvableErrors.first()) {
                 it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
             }
@@ -107,7 +115,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         e = thrown()
-        with(e.parameterValidationResults.first()  ) {
+        with(e.parameterValidationResults.first()) {
             with(it.resolvableErrors.first()) {
                 it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
             }
@@ -121,7 +129,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         e = thrown()
-        with(e.parameterValidationResults.first()  ) {
+        with(e.parameterValidationResults.first()) {
             with(it.resolvableErrors.first()) {
                 it.defaultMessage == 'must match "#[0-9a-fA-F]{6}"'
             }
@@ -131,7 +139,7 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
     def "normal user can add or remove riskvalues"() {
         when: "adding a riskvalue"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.riskValues.add(["ordinalValue":4,"htmlColor": "#101010", "symbolicRisk": "risky"])
+        rd.riskValues.add(["ordinalValue": 4,"htmlColor": "#101010", "symbolicRisk": "risky"])
 
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
@@ -155,17 +163,21 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         when: "we add a category"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
         rd.categories.add(["id": "NEW",
-            "translations":["DE": ["name": "new kid on the block"]],
-            "potentialImpacts":[
-                ["ordinalValue":0,"htmlColor": "#101010"]
+            "translations": ["DE": ["name": "new kid on the block"]],
+            "potentialImpacts": [
+                ["ordinalValue": 0,"htmlColor": "#101010"]
             ]
         ])
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
-            categories.find{ it.id == "NEW" }.translations.(super.DE).name == "new kid on the block"
-            categories.find{ it.id == "NEW" }.potentialImpacts.first().htmlColor == "#101010"
+            categories.find{
+                it.id == "NEW"
+            }.translations.(super.DE).name == "new kid on the block"
+            categories.find{
+                it.id == "NEW"
+            }.potentialImpacts.first().htmlColor == "#101010"
         }
     }
 
@@ -182,11 +194,15 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
     def "normal user can add or remove impact of category"() {
         when: "we add a category impact"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.categories.find{ it.id == "C" }.potentialImpacts.add(["ordinalValue":0,"htmlColor": "#101010"])
+        rd.categories.find{
+            it.id == "C"
+        }.potentialImpacts.add(["ordinalValue": 0,"htmlColor": "#101010"])
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
         then: "the change is persisted"
-        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{ it.id == "C" }.potentialImpacts.size() == 5
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{
+            it.id == "C"
+        }.potentialImpacts.size() == 5
 
         when: "we remove a category impact"
         rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
@@ -194,13 +210,15 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
         then: "the change is persisted"
-        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{ it.id == "C" }.potentialImpacts.size() == 4
+        parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid.categories.find{
+            it.id == "C"
+        }.potentialImpacts.size() == 4
     }
 
     def "normal user can add or remove probability"() {
         when: "we add a probability"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.probability.levels.add(["ordinalValue":0,"htmlColor": "#101010"])
+        rd.probability.levels.add(["ordinalValue": 0,"htmlColor": "#101010"])
         rd.categories.forEach{ it.valueMatrix = null }
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
@@ -219,13 +237,17 @@ class ContentCustomizingControllerMockMvcITSpec extends VeoMvcSpec {
     def "normal user can change the riskMatrix"() {
         when: "we change the a value in the risk matrix"
         def rd = parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid
-        rd.categories.find{ it.id == "D" }.valueMatrix[0].addFirst(["ordinalValue":3,"htmlColor": "#101010", "symbolicRisk": "symbolic_risk_4"])
+        rd.categories.find{
+            it.id == "D"
+        }.valueMatrix[0].addFirst(["ordinalValue": 3,"htmlColor": "#101010", "symbolicRisk": "symbolic_risk_4"])
         rd.categories.find{ it.id == "D" }.valueMatrix[0].removeLast()
         put("/content-customizing/domains/${testDomain.idAsString}/risk-definitions/rid", rd, [:],200)
 
         then: "the change is persisted"
         with(parseJson(get("/domains/${testDomain.idAsString}")).riskDefinitions.rid) {
-            rd.categories.find{ it.id == "D" }.valueMatrix[0].first().ordinalValue == 3
+            rd.categories.find{
+                it.id == "D"
+            }.valueMatrix[0].first().ordinalValue == 3
         }
     }
 }

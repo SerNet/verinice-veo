@@ -49,7 +49,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
     def item
     def element
 
-    public setup () {
+    public setup() {
         txTemplate.execute {
             client = repository.save(newClient())
             testDomain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
@@ -119,7 +119,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             }
         }
 
-        then:"the element is found"
+        then: "the element is found"
         result.resultPage.size() == 1
         result.resultPage.first().appliedCatalogItems.contains(item)
 
@@ -130,7 +130,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             execute(PagingConfiguration.UNPAGED)
         }
 
-        then:"the result is empty"
+        then: "the result is empty"
         result.resultPage.size() == 0
     }
 }

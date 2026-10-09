@@ -104,7 +104,9 @@ class CreateProfileFromUnitUseCaseITSpec extends VeoSpringSpec{
 
         then:
         trs.size() == 2
-        with(trs.findAll {it instanceof RequirementImplementationTailoringReference}.first() as RequirementImplementationTailoringReference) {
+        with(trs.findAll {
+            it instanceof RequirementImplementationTailoringReference
+        }.first() as RequirementImplementationTailoringReference) {
             cost == 5000
             implementedBy.name == 'Peter'
             implementationDate.toString() == '1999-04-01'

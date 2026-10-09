@@ -113,7 +113,7 @@ class CatalogItemRestTest extends VeoRestTest {
         put("/content-creation/domains/$copyOfTestDomainId/catalog-items?unit=$unitId", [:], "", 204)
 
         then: "the catalog can be updated again with a deleted element"
-        delete(response.find{ it.name=="Control-3" }.targetUri)
+        delete(response.find{ it.name == "Control-3" }.targetUri)
         put("/content-creation/domains/$copyOfTestDomainId/catalog-items?unit=$unitId", [:], "", 204)
     }
 
@@ -146,7 +146,9 @@ class CatalogItemRestTest extends VeoRestTest {
 
         and: "applying the template in another client"
         post("/admin/domain-templates/$newDomainTemplateId/create-domains-in-all-clients", null, 200, ADMIN)
-        def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
+        def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find {
+            it.name == exportedDomainTemplate.name
+        }.id
 
         then: "the catalog item can be found in the new domain under the original symbolic ID"
         with(get("/domains/$newDomainInOtherClientId/catalog-items/$originalCatalogItemId", 200, SECONDARY_CLIENT_USER).body) {

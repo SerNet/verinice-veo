@@ -79,7 +79,9 @@ class ProfileJpaSpec extends AbstractJpaSpec{
 
         then:
         profile.items.size() == 2
-        with(profile.items.find { it.name == "source" }.tailoringReferences[0]) {
+        with(profile.items.find {
+            it.name == "source"
+        }.tailoringReferences[0]) {
             target.name == "target"
             referenceType == type
         }

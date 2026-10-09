@@ -52,7 +52,7 @@ class ElementAccessRestrictionMvcITSpec extends VeoMvcSpec {
                 targetType = ElementType.DOCUMENT
                 targetSubType = "DOC_Document"
             })
-            ed.getTranslations().put((EN),["dok":"dok"])
+            ed.getTranslations().put((EN),["dok": "dok"])
         }
         domain = domainDataRepository.save(domain)
         domainId = domain.idAsString
@@ -156,8 +156,8 @@ class ElementAccessRestrictionMvcITSpec extends VeoMvcSpec {
         [type, rights] << ElementType.values().collectMany {
             [
                 [type: it, rights: new TestUserRights(restrictUnitAccess: false)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits:  true)],
-                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable:  true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits: true)],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable: true)],
             ]
         }
     }
@@ -312,7 +312,7 @@ class ElementAccessRestrictionMvcITSpec extends VeoMvcSpec {
         where:
         [type, rights] << ElementType.values().collectMany {
             [
-                [type: it, rights: new TestUserRights(restrictUnitAccess: false, )],
+                [type: it, rights: new TestUserRights(restrictUnitAccess: false,)],
                 [type: it, rights: new TestUserRights(restrictUnitAccess: true, testUnitReadable: true, testUnitWritable: true)],
                 [type: it, rights: new TestUserRights(restrictUnitAccess: true, accessAllUnits: true)],
             ]

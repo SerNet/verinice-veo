@@ -42,8 +42,8 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
     private String domainId
 
     def setup() {
-        def client= createTestClient()
-        def domain =domainDataRepository.save(newDomain(client) {d->
+        def client = createTestClient()
+        def domain = domainDataRepository.save(newDomain(client) {d->
             ElementType.values().each {
                 applyElementTypeDefinition(newElementTypeDefinition(it, d) {
                     subTypes = [
@@ -122,6 +122,8 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         e.message.contains('pageSize: must be greater than or equal to 1')
 
         where:
-        type << EntityType.values().findAll { Element.isAssignableFrom(it.type) }*.pluralTerm
+        type << EntityType.values().findAll {
+            Element.isAssignableFrom(it.type)
+        }*.pluralTerm
     }
 }

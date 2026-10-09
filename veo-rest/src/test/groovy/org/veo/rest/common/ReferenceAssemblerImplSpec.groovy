@@ -77,7 +77,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "target reference for #type and #id is #reference"() {
         given:
         def entity = Stub(type) {
-            getId () >> UUID.fromString(id)
+            getId() >> UUID.fromString(id)
             getModelInterface() >> type
         }
 
@@ -157,7 +157,7 @@ class ReferenceAssemblerImplSpec extends Specification {
                 id >> UUID.fromString("aff15bfa-7259-4044-a396-59db2e16b0e0")
             }
             control >> Spy(Control) {
-                id >>  UUID.fromString("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
+                id >> UUID.fromString("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
             }
         }
 
@@ -279,7 +279,9 @@ class ReferenceAssemblerImplSpec extends Specification {
         }
 
         where:
-        type << EntityType.TYPES.findAll { SymIdentifiable.isAssignableFrom(it) }
+        type << EntityType.TYPES.findAll {
+            SymIdentifiable.isAssignableFrom(it)
+        }
     }
 
     def "parsed sym ID ref for #url is #type #id in #namespaceType #namespaceId"() {

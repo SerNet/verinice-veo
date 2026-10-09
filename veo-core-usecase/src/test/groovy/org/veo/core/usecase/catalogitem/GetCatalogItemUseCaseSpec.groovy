@@ -36,10 +36,14 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
     def setup() {
         domainRepository.getActiveById(existingDomainId, existingClient.id) >> existingDomain
-        domainRepository.getActiveById(_, _) >> { throw new NotFoundException("domain not found") }
+        domainRepository.getActiveById(_, _) >> {
+            throw new NotFoundException("domain not found")
+        }
 
         catalogItemRepository.getByIdInDomain(catalogItemId, existingDomain) >> catalogItem
-        catalogItemRepository.getByIdInDomain(_, _) >> { throw new NotFoundException("item not found") }
+        catalogItemRepository.getByIdInDomain(_, _) >> {
+            throw new NotFoundException("item not found")
+        }
     }
 
     def "retrieve a catalog item"() {

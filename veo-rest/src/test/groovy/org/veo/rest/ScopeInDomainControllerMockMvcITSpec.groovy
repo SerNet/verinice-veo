@@ -75,7 +75,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             members: [
-                [ targetUri:"/scopes/$memberId" ]
+                [targetUri: "/scopes/$memberId"]
             ],
             links: [
                 dataProtectionOfficer: [

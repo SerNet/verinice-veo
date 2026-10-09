@@ -114,9 +114,9 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         retrievedRisk1.scenario == scenario1
         retrievedRisk1.entity == process1
         createdAt != null
-        createdAt > beforeCreate
+        createdAt> beforeCreate
         updatedAt != null
-        updatedAt > beforeCreate
+        updatedAt> beforeCreate
         updatedBy == "user@domain.example"
 
         when: "a control is added"
@@ -207,7 +207,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
                     null,
                     null,
                     [riskValue] as Set
-                    )
+            )
             processRepository.save(process)
 
             riskService.evaluateChangedRiskComponent(process)
@@ -224,16 +224,16 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         }
 
         then: "risk1's audit data is updated"
-        retrievedRisk1.updatedAt > risk1Updated
-        retrievedRisk1.updatedAt > beforeUpdate
+        retrievedRisk1.updatedAt> risk1Updated
+        retrievedRisk1.updatedAt> beforeUpdate
         retrievedRisk1.createdAt.truncatedTo(MILLIS) == risk1Created
-        retrievedRisk1.createdAt > beforeCreate
-        retrievedRisk1.createdAt < beforeUpdate
+        retrievedRisk1.createdAt> beforeCreate
+        retrievedRisk1.createdAt <beforeUpdate
 
         and: "risk2's audit data is left unchanged"
         retrievedRisk2.updatedAt.truncatedTo(MILLIS) == risk2Updated
         retrievedRisk2.createdAt.truncatedTo(MILLIS) == risk2Created
-        retrievedRisk2.createdAt > beforeCreate
+        retrievedRisk2.createdAt> beforeCreate
         retrievedRisk2.updatedAt == retrievedRisk2.createdAt
     }
 
@@ -256,7 +256,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         when:
         def process = insertProcess(newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            setImpactValues(domain, [(riskDefRef):new ImpactValues([(categoryRef):impactRef])])
+            setImpactValues(domain, [(riskDefRef): new ImpactValues([(categoryRef): impactRef])])
             obtainRisk(scenario).tap {
                 designator = "RSK-1"
                 defineRiskValues([

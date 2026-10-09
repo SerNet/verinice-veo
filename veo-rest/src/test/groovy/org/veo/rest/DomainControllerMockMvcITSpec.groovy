@@ -75,8 +75,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     it.rules.add(newRule(true) {
                         description = newTranslatedText("Team has more than 10 members")
                         conditions.add(new Condition(
-                                new PartCountExpression("Employee"),
-                                new GreaterThanMatcher(BigDecimal.valueOf(10))
+                                        new PartCountExpression("Employee"),
+                                        new GreaterThanMatcher(BigDecimal.valueOf(10))
                                 ))
                     })
                 })
@@ -125,7 +125,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     name = 'scp1'
                     aspects = new TemplateItemAspects(null, null, RiskDefinitionRef.from(rd))
                 })
-                riskDefinitions = ["id1":rd] as Map
+                riskDefinitions = ["id1": rd] as Map
                 newProfile(d,{p->
                     name = "test-profile"
                     description = "my description"
@@ -316,16 +316,16 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result.size() == 8
         with(result.process) {
             size() == 3
-            get('PRO_DPIA') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:1, ARCHIVED:0]
-            get('PRO_DataProcessing') == [IN_PROGRESS:0, NEW:1, RELEASED:0, FOR_REVIEW:0, ARCHIVED:1]
+            get('PRO_DPIA') == [IN_PROGRESS: 0, NEW: 0, RELEASED: 0, FOR_REVIEW: 1, ARCHIVED: 0]
+            get('PRO_DataProcessing') == [IN_PROGRESS: 0, NEW: 1, RELEASED: 0, FOR_REVIEW: 0, ARCHIVED: 1]
         }
         with(result.scope) {
             size() == 5
-            get('SCP_ResponsibleBody') == [IN_PROGRESS:1, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
+            get('SCP_ResponsibleBody') == [IN_PROGRESS: 1, NEW: 0, RELEASED: 0, FOR_REVIEW: 0, ARCHIVED: 0]
         }
         with(result.asset) {
             size() == 3
-            get('AST_Application') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
+            get('AST_Application') == [IN_PROGRESS: 0, NEW: 0, RELEASED: 0, FOR_REVIEW: 0, ARCHIVED: 0]
         }
     }
 
@@ -389,8 +389,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result.size() == 8
         with(result.process) {
             size() == 3
-            get('PRO_DPIA') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:1, ARCHIVED:0]
-            get('PRO_DataProcessing') == [IN_PROGRESS:0, NEW:1, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
+            get('PRO_DPIA') == [IN_PROGRESS: 0, NEW: 0, RELEASED: 0, FOR_REVIEW: 1, ARCHIVED: 0]
+            get('PRO_DataProcessing') == [IN_PROGRESS: 0, NEW: 1, RELEASED: 0, FOR_REVIEW: 0, ARCHIVED: 0]
             !containsKey('PRO_DoesNotExist')
         }
     }
@@ -491,7 +491,9 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         breakingChanges.size() == 4
 
         when:
-        def breakingChangesByAttribute = breakingChanges.collectEntries {[it.attribute, it]}
+        def breakingChangesByAttribute = breakingChanges.collectEntries {
+            [it.attribute, it]
+        }
 
         then:
         breakingChangesByAttribute.keySet() ==~ [

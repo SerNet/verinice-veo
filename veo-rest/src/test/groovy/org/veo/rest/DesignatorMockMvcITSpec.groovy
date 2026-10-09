@@ -146,10 +146,10 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         post("/assets/$assetId/risks", [
             domains: [
                 (domain.getIdAsString()): [
-                    reference: [ targetUri: "http://localhost/domains/${domain.idAsString}"]
+                    reference: [targetUri: "http://localhost/domains/${domain.idAsString}"]
                 ]
             ],
-            scenario: [ targetUri: "/scenarios/$scenarioId"]
+            scenario: [targetUri: "/scenarios/$scenarioId"]
         ])
         def assetRisk = parseJson(get("/assets/$assetId/risks/$scenarioId"))
 
@@ -168,10 +168,10 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         post("/processes/$processId/risks", [
             domains: [
                 (domain.getIdAsString()) : [
-                    reference: [ targetUri: "http://localhost/domains/${domain.idAsString}"]
+                    reference: [targetUri: "http://localhost/domains/${domain.idAsString}"]
                 ]
             ],
-            scenario: [ targetUri: "http://localhost/scenarios/$scenarioId"]
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
         def processRisk = parseJson(get("/processes/$processId/risks/$scenarioId"))
 

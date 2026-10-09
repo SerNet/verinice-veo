@@ -134,7 +134,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.time < 500
     }
 
-    def     "SQL performance for saving 1 process with 10 customAspects"() {
+    def "SQL performance for saving 1 process with 10 customAspects"() {
         given:
         createClient()
 
@@ -280,7 +280,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.time < 500
     }
 
-    def     "SQL performance for saving 1 scope with 100 persons"() {
+    def "SQL performance for saving 1 scope with 100 persons"() {
         given:
         createClient()
 
@@ -353,7 +353,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         when:
         def queryCounts = trackQueryCounts{
-            saveWithAddedCompositePersons(100, "person", scope )
+            saveWithAddedCompositePersons(100, "person", scope)
         }
 
         then:
@@ -520,7 +520,9 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             oldDomain.catalogItems
                     .collect { it.incarnate(unit) }
                     .each{it.setDesignator("AST-333")}
-                    .each { repositoryProvider.getElementRepositoryFor(it.modelInterface).save(it) }
+                    .each {
+                        repositoryProvider.getElementRepositoryFor(it.modelInterface).save(it)
+                    }
             oldDomain.id
         }
 
@@ -529,7 +531,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             updateDomainUseCase.execute(
                     new UpdateDomainUseCase.InputData(oldDomainId, DSGVO_DOMAINTEMPLATE_V2_UUID),
                     new NoRestrictionAccessRight(client.id, 10, 10)
-                    )
+            )
         }
 
         then:
@@ -572,7 +574,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             updateDomainUseCase.execute(
                     new UpdateDomainUseCase.InputData(oldDomainId, DSGVO_DOMAINTEMPLATE_V2_UUID),
                     new NoRestrictionAccessRight(client.id, 10, 10)
-                    )
+            )
         }
 
         then:
@@ -594,7 +596,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             client = clientRepository.save(newClient() {
                 newDomain(it) {
-                    applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS,it) {
+                    applyElementTypeDefinition(newElementTypeDefinition(ElementType.PROCESS, it) {
                         customAspects.aType = newCustomAspectDefinition {}
                     })
                 }
@@ -621,7 +623,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                             ]
                         }
                     })
-                    it.riskDefinitions = [ "r2d2":
+                    it.riskDefinitions = ["r2d2":
                         createRiskDefinition("r2d2")
                     ] as Map
                 }
@@ -689,7 +691,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
     }
 
-    def saveWithAddedCompositePersons(int count, String baseName, Scope scope ) {
+    def saveWithAddedCompositePersons(int count, String baseName, Scope scope) {
         executeInTransaction {
             def compositePersons = (0..<count).collect {
                 def dolly = newPerson(unit)

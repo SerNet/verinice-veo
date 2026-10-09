@@ -54,7 +54,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "creating a domain"
-        useCase.execute(new CreateDomainUseCase.InputData( "do-main", "st. nic", null), NoRestrictionAccessRight.from(client.idAsString))
+        useCase.execute(new CreateDomainUseCase.InputData("do-main", "st. nic", null), NoRestrictionAccessRight.from(client.idAsString))
 
         then: "it has been persisted"
         def domain = domainRepository

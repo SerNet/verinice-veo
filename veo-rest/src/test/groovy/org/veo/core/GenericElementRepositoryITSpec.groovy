@@ -71,7 +71,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
                     associateWithDomain(domain, 'PER_Person', 'NEW')
                 })
             }
-            personRepository.save( newPerson(unit) {
+            personRepository.save(newPerson(unit) {
                 associateWithDomain(domain, 'PER_Person', 'IN_PROGRESS')
             })
             personRepository.save(newPerson(unit) {
@@ -86,7 +86,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
         }
 
         when:
-        def counts = genericElementRepository.getCountsBySubType(unit, domain).toSorted { a,b ->
+        def counts = genericElementRepository.getCountsBySubType(unit, domain).toSorted { a, b ->
             a.type <=> b.type ?: a.subType <=> b.subType ?: a.status <=> b.status
         }
 
@@ -153,11 +153,15 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
     def "finds custom link attribute values filtered by type and key"() {
         given:
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        def target = personRepository.save(newPerson(unit) { associateWithDomain(domain, 'PER_Person', 'NEW') })
+        def target = personRepository.save(newPerson(unit) {
+            associateWithDomain(domain, 'PER_Person', 'NEW')
+        })
         executeInTransaction {
             personRepository.save(newPerson(unit) {
                 associateWithDomain(domain, 'PER_Person', 'NEW')
-                applyLink(newCustomLink(target, 'person_link', domain) { attributes['recoveryTime'] = 'P3D' })
+                applyLink(newCustomLink(target, 'person_link', domain) {
+                    attributes['recoveryTime'] = 'P3D'
+                })
             })
         }
 
@@ -240,7 +244,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
                 [:],
                 DurationAttributeDefinition.TYPE,
                 100
-                )
+        )
 
         and: "values are converted to plain strings for assertion"
         def valueStrings = values.collect { it?.toString() }
@@ -291,7 +295,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
                 [:],
                 DurationAttributeDefinition.TYPE,
                 5
-                )
+        )
 
         and:
         def top5Strings = top5.collect { it?.toString() }
@@ -366,7 +370,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
                 [:],
                 TextAttributeDefinition.TYPE,
                 100
-                )
+        )
 
         and: "values are converted to plain strings for assertion"
         def valueStrings = values.collect { it?.toString() }
@@ -396,7 +400,7 @@ class GenericElementRepositoryITSpec extends VeoSpringSpec {
                 [:],
                 TextAttributeDefinition.TYPE,
                 3
-                )
+        )
 
         and:
         def top3Strings = top3.collect { it?.toString() }

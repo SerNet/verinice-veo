@@ -57,7 +57,7 @@ classes = [TestEventSubscriber.class,
 )
 @ActiveProfiles(["test", PROFILE_BACKGROUND_TASKS])
 @Slf4j
-class ClientChangeEventITSpec  extends VeoSpringSpec {
+class ClientChangeEventITSpec extends VeoSpringSpec {
     @Shared
     @AutoCleanup("stop")
     private GenericContainer rabbit
@@ -125,7 +125,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             unitDataRepository.findByClientId(cId, false, null)
         }.size() == 0
 
-        when:"we send a change -> add a domain"
+        when: "we send a change -> add a domain"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -133,7 +133,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "domainProducts": {
                 "DSGVO-test" : []
             }
-        }""",2,Instant.now()))
+        }""",2, Instant.now()))
 
         then: "the event is sent and the domain is added"
         defaultPolling.eventually {
@@ -146,7 +146,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             }
             with(client.domains.find { it.name == 'DS-GVO' }) {
                 profiles.size() == 1
-                profiles[0].name ==  'Beispielorganisation'
+                profiles[0].name == 'Beispielorganisation'
             }
             client.domains.size() == 3
             client.domains*.name ==~ [
@@ -183,7 +183,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "domainProducts": {
                 "DSGVO-test" : ["NEW_PROFILE"]
             }
-        }""",3,Instant.now()))
+        }""",3, Instant.now()))
 
         then: "the event is sent and the domain is added"
         defaultPolling.eventually {
@@ -195,7 +195,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 }
             }
             with(client.domains.find { it.name == 'DSGVO-test' }) {
-                profiles*.name ==~  [
+                profiles*.name ==~ [
                     'The New Profile',
                     'Das neue Profil'
                 ]
@@ -208,7 +208,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             ]
         }
 
-        when:"we send a change -> add a non existing domain/profiles"
+        when: "we send a change -> add a non existing domain/profiles"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -216,7 +216,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "domainProducts": {
                 "DSGVO-test1" : ["dontExist1","dontExist2"]
             }
-        }""",4,Instant.now()))
+        }""",4, Instant.now()))
 
         then: "the event is sent and no domain is added"
         defaultPolling.eventually {
@@ -229,7 +229,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             }
             with(client.domains.find { it.name == 'DS-GVO' }) {
                 profiles.size() == 1
-                profiles[0].name ==  'Beispielorganisation'
+                profiles[0].name == 'Beispielorganisation'
             }
             client.domains.size() == 3
             client.domains*.name ==~ [
@@ -244,9 +244,9 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "DEACTIVATION"
-        }""",5,Instant.now()))
+        }""",5, Instant.now()))
 
-        then:"the client is deactivated"
+        then: "the client is deactivated"
         defaultPolling.eventually {
             def client = executeInTransaction {
                 repository.findById(cId).get()
@@ -259,7 +259,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "DELETION"
-        }""",6,Instant.now()))
+        }""",6, Instant.now()))
 
         then: "the event is sent and the client and the domains are deleted"
         defaultPolling.within(10) {
@@ -276,13 +276,13 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
 
-        when:"we send the event"
+        when: "we send the event"
         def eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "DELETION"
         }"""
-        def msg = new EventMessage(routingKey,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKey, eContent,1, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -303,7 +303,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         unitRepository.save(newUnit(client))
         unitRepository.save(newUnit(client))
 
-        when:"we send the event"
+        when: "we send the event"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -316,7 +316,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             repository.findById(cId).get().maxUnits == 5
         }
 
-        when:"we send the next change"
+        when: "we send the next change"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -329,13 +329,13 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             repository.findById(cId).get().maxUnits == 15
         }
 
-        when:"we send the next change -> less units than exiting"
+        when: "we send the next change -> less units than exiting"
         eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "MODIFICATION",
             "maxUnits": 1
-        }""",3,Instant.now()))
+        }""",3, Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
         defaultPolling.eventually {
@@ -352,13 +352,13 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
 
-        when:"we send the event"
+        when: "we send the event"
         def eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "$eventType"
         }"""
-        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE, eContent,1, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -400,13 +400,13 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         })
         def cId = client.getIdAsString()
 
-        when:"we send the event"
+        when: "we send the event"
         def eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "$eventType"
         }"""
-        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE, eContent,1, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -440,14 +440,14 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
 
-        when:"we send the event for activation"
+        when: "we send the event for activation"
         def eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "ACTIVATION"
         }"""
 
-        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE, eContent,1, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -456,7 +456,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             repository.getById(client.id).state == ACTIVATED
         }
 
-        when:"we send the event for modification"
+        when: "we send the event for modification"
         eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -471,7 +471,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             repository.getById(client.id).state == ACTIVATED
         }
 
-        when:"we send the event for deactivation"
+        when: "we send the event for deactivation"
         eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -487,7 +487,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             repository.getById(client.id).state == DEACTIVATED
         }
 
-        when:"we send the event for deactivation"
+        when: "we send the event for deactivation"
         eventStoreDataRepository.deleteAll()
         eContent = """{
             "eventType": "$messageType",

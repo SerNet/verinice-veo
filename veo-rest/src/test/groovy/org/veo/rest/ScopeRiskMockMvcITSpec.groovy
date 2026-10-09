@@ -203,10 +203,10 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
         when: "a new risk can be created successfully"
         def json = parseJson(post("/scopes/$scopeId/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario.idAsString ],
+            scenario: [targetUri: '/scenarios/'+ scenario.idAsString],
             domains: [
                 (domain.getIdAsString()) : [
-                    reference: [targetUri: '/domains/'+ domain.idAsString ]
+                    reference: [targetUri: '/domains/'+ domain.idAsString]
                 ]
             ]
         ] as Map))
@@ -267,12 +267,12 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             status: "NEW",
             riskValues: [
                 myFirstRiskDefinition: [
-                    potentialImpacts: [ "C": 1,
+                    potentialImpacts: ["C": 1,
                         "I": 2
                     ]
                 ],
                 myThirdRiskDefinition: [
-                    potentialImpacts: [ "C": 1,
+                    potentialImpacts: ["C": 1,
                         "I": 2
                     ]
                 ]

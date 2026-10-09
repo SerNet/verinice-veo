@@ -47,13 +47,13 @@ class InspectionITSpec extends VeoSpec {
             elementSubType = "computer"
             condition = new AndExpression([
                 new EqualsExpression(
-                new CustomAspectAttributeValueExpression("software", "os"),
-                new ConstantExpression("linux")
-                ),
+                        new CustomAspectAttributeValueExpression("software", "os"),
+                        new ConstantExpression("linux")
+                        ),
                 new EqualsExpression(
-                new PartCountExpression("tuxSticker"),
-                new ConstantExpression(0)
-                )
+                        new PartCountExpression("tuxSticker"),
+                        new ConstantExpression(0)
+                        )
             ])
             suggestAddingPart("tuxSticker")
         }
@@ -110,7 +110,7 @@ class InspectionITSpec extends VeoSpec {
                     new ContainsExpression(
                     new CustomAspectAttributeValueExpression("assets", "haystack"),
                     new ConstantExpression("needle")
-                    )
+            )
             suggestAddingPart("dog")
         }
 

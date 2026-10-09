@@ -148,7 +148,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def riskDef1Impact = domain.riskDefinitions.r1d1.impactValues
         riskDef1Impact.size() == 1
         with(riskDef1Impact.first()) {
-            category=="D"
+            category == "D"
             specificImpact == 1
             effectiveImpact == 1
         }
@@ -182,15 +182,21 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         domain = updatedRisk.domains.get(domainId)
 
         then: "all changes are present"
-        def updatedRiskDef1ImpactA = domain.riskDefinitions.r1d1.impactValues.find { it.category == "D" }
+        def updatedRiskDef1ImpactA = domain.riskDefinitions.r1d1.impactValues.find {
+            it.category == "D"
+        }
         updatedRiskDef1ImpactA.specificImpact == 1
         updatedRiskDef1ImpactA.effectiveImpact == 1
 
-        def updatedRiskDef2ImpactA = domain.riskDefinitions.r2d2.impactValues.find { it.category == "D" }
+        def updatedRiskDef2ImpactA = domain.riskDefinitions.r2d2.impactValues.find {
+            it.category == "D"
+        }
         updatedRiskDef2ImpactA.specificImpact == 3
         updatedRiskDef2ImpactA.effectiveImpact == 3
 
-        domain.riskDefinitions.r2d2.riskValues.find{it.category=="D"}.userDefinedResidualRisk == 2
+        domain.riskDefinitions.r2d2.riskValues.find{
+            it.category == "D"
+        }.userDefinedResidualRisk == 2
     }
 
     def "non-existing risk definition causes error"() {
@@ -247,7 +253,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ]
 
         and: "First risk, first risk definition: all values are correct"
-        with(response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1) {
+        with(response.risks.find {
+            it.designator == "RSK-1"
+        }.domains.(domainId).riskDefinitions.r1d1) {
             // probability is not set:
             probability.size() == 0
 
@@ -264,7 +272,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "First risk, second risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r2d2) {
+        with(response.risks.find {
+            it.designator == "RSK-1"
+        }.domains.(domainId).riskDefinitions.r2d2) {
             // impact is present in second risk definition:
             with(impactValues.find { it.category == "D" }) {
                 specificImpact == 2
@@ -276,7 +286,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "Second risk, first risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1) {
+        with(response.risks.find {
+            it.designator == "RSK-2"
+        }.domains.(domainId).riskDefinitions.r1d1) {
             // probability is set:
             probability.specificProbability == 2
             probability.effectiveProbability == 2
@@ -300,7 +312,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "Second risk, second risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r2d2) {
+        with(response.risks.find {
+            it.designator == "RSK-2"
+        }.domains.(domainId).riskDefinitions.r2d2) {
             // impact is present in second risk definition:
             with(impactValues.find { it.category == "D" }) {
                 specificImpact == 3
@@ -427,12 +441,26 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
         result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
 
-        def process1Risks = result.items.find { it.id == process.idAsString }.risks
-        process1Risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
-        process1Risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1.impactValues.find { it.category == "D" }.effectiveImpact != null
+        def process1Risks = result.items.find {
+            it.id == process.idAsString
+        }.risks
+        process1Risks.find {
+            it.designator == "RSK-2"
+        }.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        process1Risks.find {
+            it.designator == "RSK-1"
+        }.domains.(domainId).riskDefinitions.r1d1.impactValues.find {
+            it.category == "D"
+        }.effectiveImpact != null
 
-        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        with(process2Risks.find { it.designator == "RSK-4" }.domains.(domainId).riskDefinitions.r1d1.riskValues.find { it.category == "D" }) {
+        def process2Risks = result.items.find {
+            it.id == process2.idAsString
+        }.risks
+        with(process2Risks.find {
+            it.designator == "RSK-4"
+        }.domains.(domainId).riskDefinitions.r1d1.riskValues.find {
+            it.category == "D"
+        }) {
             inherentRisk != null
             residualRisk != null
         }
@@ -453,7 +481,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         String eTag1 = getETag(results)
 
         Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
-        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
+        Instant.parse(retrievedProcessRisk1.createdAt) <afterCreation
 
         when: "a safe retry is made"
         postProcessRisk(processId, scenarioId, 204)
@@ -505,15 +533,19 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         then: "the risk resource was created with the values"
         def domain = retrievedProcessRisk2.domains.get(domainId)
         domain.riskDefinitions.size() == 1
-        domain.riskDefinitions.r1d1.impactValues.find{it.category=='D'}.specificImpact == 1
-        domain.riskDefinitions.r1d1.impactValues.find{it.category=='D'}.effectiveImpact == 1
+        domain.riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.specificImpact == 1
+        domain.riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.effectiveImpact == 1
         domain.riskDefinitions.r1d1.probability.specificProbability == 1
         domain.riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
         domain.riskDefinitions.r1d1.riskValues.size() == 1
         with(domain.riskDefinitions.r1d1.riskValues.first()) {
-            category=='D'
+            category == 'D'
             inherentRisk == 0
             residualRisk == 0
         }
@@ -554,15 +586,19 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         then: "the risk resource was created with the values"
         def domain = retrievedProcessRisk2.domains.get(domainId)
         domain.riskDefinitions.size() == 1
-        domain.riskDefinitions.r1d1.impactValues.find{it.category=='D'}.specificImpact == 1
-        domain.riskDefinitions.r1d1.impactValues.find{it.category=='D'}.effectiveImpact == 1
+        domain.riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.specificImpact == 1
+        domain.riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.effectiveImpact == 1
         domain.riskDefinitions.r1d1.probability.specificProbability == 1
         domain.riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
         domain.riskDefinitions.r1d1.riskValues.size() == 1
         with(domain.riskDefinitions.r1d1.riskValues.first()) {
-            category=='D'
+            category == 'D'
             inherentRisk == 0
             residualRisk == 0
         }
@@ -642,9 +678,15 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
 
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.potentialImpact == 2
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.effectiveImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.potentialImpact == 2
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.specificImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.effectiveImpact == 1
 
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.potentialProbability == 2
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
@@ -653,7 +695,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 1
         with(retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.first()) {
-            category=='D'
+            category == 'D'
             inherentRisk == 0
             residualRisk == 0
         }
@@ -723,9 +765,15 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.size() == 1
 
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.potentialImpact == 2
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.effectiveImpact == 1
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.potentialImpact == 2
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.specificImpact == 1
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.effectiveImpact == 1
 
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.potentialProbability == 2
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.specificProbability == 1
@@ -734,7 +782,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 1
         with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.first()) {
-            category=='D'
+            category == 'D'
             inherentRisk == 0
             residualRisk == 0
         }
@@ -742,14 +790,16 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         when: "we change a risk matrix value"
         def rd = parseJson(get("/domains/${r1d1DomainId}")).riskDefinitions.r1d1
         rd.categories.find{ it.id == "D" }.valueMatrix[1][1].ordinalValue = 3
-        rd.categories.find{ it.id == "D" }.valueMatrix[1][1].symbolicRisk = "symbolic_risk_4"
+        rd.categories.find{
+            it.id == "D"
+        }.valueMatrix[1][1].symbolicRisk = "symbolic_risk_4"
         put("/content-customizing/domains/${r1d1DomainId}/risk-definitions/r1d1", rd, [:],200)
         retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
 
         then: "the risk was calculated"
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 1
         with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.first()) {
-            category=='D'
+            category == 'D'
             inherentRisk == 3
             residualRisk == 3
         }
@@ -771,7 +821,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         String eTag1 = getETag(results)
 
         Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
-        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
+        Instant.parse(retrievedProcessRisk1.createdAt) <afterCreation
         retrievedProcessRisk1.domains.(domainId).riskDefinitions.size() == 0
 
         when: "a safe retry is made with new values"
@@ -804,8 +854,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         then: "the existing risk resource was updated with new values"
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='D'}.effectiveImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.specificImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{
+            it.category == 'D'
+        }.effectiveImpact == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 1

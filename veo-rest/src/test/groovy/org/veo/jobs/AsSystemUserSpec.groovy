@@ -41,7 +41,7 @@ class AsSystemUserSpec extends VeoSpringSpec {
 
         expect: "system user runs in correct client during loops"
         [client1, client2, client3].each { currentClient ->
-            AsSystemUser.runInClient( currentClient, {
+            AsSystemUser.runInClient(currentClient, {
                 def currentUser = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getPrincipal())

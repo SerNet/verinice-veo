@@ -139,7 +139,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(otherClientsUnit.idAsString, 0)
         ]
-        put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString , [
+        put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.idAsString, [
             id: '' + otherClientsUnit.idAsString,
             name: 'hijacked-unit'
         ], headers, 404)

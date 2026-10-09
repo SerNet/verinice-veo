@@ -144,8 +144,12 @@ class ActionMockMvcITSpec extends VeoMvcSpec{
 
         then: "two new scenarios and two new risks are reported"
         result.createdEntities.size() == 4
-        result.createdEntities*.designator.findAll { it.startsWith("SCN-") }.size() == 2
-        result.createdEntities*.designator.findAll { it.startsWith("RSK-") }.size() == 2
+        result.createdEntities*.designator.findAll {
+            it.startsWith("SCN-")
+        }.size() == 2
+        result.createdEntities*.designator.findAll {
+            it.startsWith("RSK-")
+        }.size() == 2
 
         and: "the control links from the catalog have been applied"
         parseJson(get("/domains/$domainId/controls/$subControl1Id")).links.control_relevantAppliedThreat*.target*.name == ["bad things happen"]

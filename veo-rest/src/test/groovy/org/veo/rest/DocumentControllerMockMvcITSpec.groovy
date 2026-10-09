@@ -54,7 +54,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            def client= createTestClient()
+            def client = createTestClient()
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
@@ -128,7 +128,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieving all documents for a unit returns composite elements and their parts"() {
         given: "a saved document and a composite document containing it"
         txTemplate.execute {
-            documentRepository.save( newDocument(unit) {
+            documentRepository.save(newDocument(unit) {
                 name = 'Test composite document-1'
                 parts << newDocument(unit) {
                     name = 'Test document-1'

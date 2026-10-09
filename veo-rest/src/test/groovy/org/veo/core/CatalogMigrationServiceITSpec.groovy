@@ -221,13 +221,17 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         then: "only the valid attributes remain"
         with(domain.catalogItems.find{it.name == "manual author"}) {
-            with(it.tailoringReferences.find{it.target.name == "router manual"}) {
+            with(it.tailoringReferences.find{
+                it.target.name == "router manual"
+            }) {
                 attributes.copyrightYear == 2019
                 attributes.placeOfAuthoring == null
             }
         }
         with(domain.catalogItems.find{it.name == "thermometer manual"}) {
-            with(it.tailoringReferences.find{it.target.name == "manual author"}) {
+            with(it.tailoringReferences.find{
+                it.target.name == "manual author"
+            }) {
                 attributes.copyrightYear == null
                 attributes.placeOfAuthoring == "She wrote it in her armchair"
             }

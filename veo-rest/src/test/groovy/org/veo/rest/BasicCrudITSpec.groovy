@@ -77,7 +77,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
             subType: "PRO_DataProcessing",
             status: "NEW",
             links: [
-                'process_dataType':[
+                'process_dataType': [
                     [
                         target:
                         [

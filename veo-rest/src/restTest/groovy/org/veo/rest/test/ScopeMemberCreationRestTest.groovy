@@ -99,7 +99,7 @@ class ScopeMemberCreationRestTest extends VeoRestTest {
 
         then: "the scopes contain all members"
         with(get("/domains/$testDomainId/scopes/$scope1Id").body) {
-            updatedAt > scope1CreationTime
+            updatedAt> scope1CreationTime
             members*.targetUri =~ [
                 "$owner.baseUrl/assets/$assetId",
                 "$owner.baseUrl/controls/$controlId",
@@ -112,7 +112,7 @@ class ScopeMemberCreationRestTest extends VeoRestTest {
             ]
         }
         with(get("/domains/$testDomainId/scopes/$scope2Id").body) {
-            updatedAt > scope2CreationTime
+            updatedAt> scope2CreationTime
             members*.targetUri =~ [
                 "$owner.baseUrl/assets/$assetId",
                 "$owner.baseUrl/controls/$controlId",

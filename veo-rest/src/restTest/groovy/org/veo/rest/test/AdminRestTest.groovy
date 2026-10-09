@@ -50,21 +50,21 @@ class AdminRestTest extends VeoRestTest{
 
         when:
         def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body
-        log.info("===> {}",JsonOutput.toJson(dump))
+        log.info("===> {}", JsonOutput.toJson(dump))
 
         then:
         dump.unit.name == "my catalog unit"
 
         dump.domains.size() >= 2
         dump.elements.size() == catalogItemIds.size()
-        with (dump.elements.find { it.abbreviation == "VVT" }) {
+        with(dump.elements.find { it.abbreviation == "VVT" }) {
             description == "VVT-Prozess"
             links.size() == 1
             links.process_tom.size() == 8
             domains[owner.dsgvoDomainId].subType == "PRO_DataProcessing"
             domains[owner.dsgvoDomainId].status == "NEW"
         }
-        with (dump.elements.find { it.abbreviation == "TOM-I" }) {
+        with(dump.elements.find { it.abbreviation == "TOM-I" }) {
             customAspects.size() == 1
             customAspects.control_dataProtection.domains.size() == 1
             customAspects.control_dataProtection.attributes.size() == 1
@@ -82,7 +82,7 @@ class AdminRestTest extends VeoRestTest{
         def effDate = Instant.now().plusSeconds(20).truncatedTo(ChronoUnit.SECONDS)
         def pastDate = Instant.now().minusSeconds(20).truncatedTo(ChronoUnit.SECONDS)
 
-        def ret = post("/admin/messages",[message:[DE: "test message"],
+        def ret = post("/admin/messages",[message: [DE: "test message"],
             publication: "$pubDate",
             effective: "$effDate",
             level: "INFO"
@@ -95,24 +95,24 @@ class AdminRestTest extends VeoRestTest{
             message == "SystemMessage created successfully."
         }
 
-        and:"the message exists for users"
+        and: "the message exists for users"
         with(get("/messages", 200, UserType.DEFAULT).body) {
             size() == 1
             with(it.first()) {
                 id == 1
                 level == "INFO"
                 message == ["de": "test message"]
-                effective== "$effDate"
+                effective == "$effDate"
                 publication == "$pubDate"
             }
         }
 
-        and:"it can be loaded individually"
+        and: "it can be loaded individually"
         with(get("/messages/"+messageId, 200, UserType.DEFAULT).body) {
             id == 1
             level == "INFO"
             message == ["de": "test message"]
-            effective== "$effDate"
+            effective == "$effDate"
             publication == "$pubDate"
         }
 
@@ -120,24 +120,24 @@ class AdminRestTest extends VeoRestTest{
         get("/messages/0", 404, UserType.DEFAULT)
 
         and: "users cannot post a message"
-        post("/admin/messages",[message:[DE: "test message"],
+        post("/admin/messages",[message: [DE: "test message"],
             publication: "$pubDate",
             effective: "$effDate",
             level: "INFO"
         ],403, UserType.DEFAULT)
 
         and: "users cannot modify a message"
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$pubDate",
             effective: "$effDate",
             level: "INFO"
         ],null,403, UserType.DEFAULT)
 
-        and:"users cannot delete a message"
+        and: "users cannot delete a message"
         delete("/admin/messages/$messageId",403, UserType.DEFAULT)
 
         when: "the admin changes the message"
-        ret = put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        ret = put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$pubDate",
             effective: "$effDate",
             level: "INFO"
@@ -148,7 +148,7 @@ class AdminRestTest extends VeoRestTest{
             message == "SystemMessage updated."
         }
 
-        and:"the message is changed"
+        and: "the message is changed"
         with(get("/messages", 200, UserType.DEFAULT).body) {
             size() == 1
             with(it.first()) {
@@ -159,26 +159,26 @@ class AdminRestTest extends VeoRestTest{
         }
 
         expect: "that the dates are validated"
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$effDate",
             effective: "$pubDate",
             level: "INFO"
         ],null,422, UserType.ADMIN).body.message == "Effective time is before publication time."
 
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$pubDate",
             effective: "$pastDate",
             level: "INFO"
         ],null,422, UserType.ADMIN).body.message == "Effective time is before publication time."
 
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$pastDate",
             effective: "$effDate",
             level: "INFO"
         ],null,422, UserType.ADMIN).body.message == "Publication time is before creation time."
 
         and: "effective can be null"
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$effDate",
             level: "INFO"
         ],null,200, UserType.ADMIN).body.message == "SystemMessage updated."
@@ -186,23 +186,23 @@ class AdminRestTest extends VeoRestTest{
         when: "the admin deletes the message"
         delete("/admin/messages/$messageId",204, UserType.ADMIN)
 
-        then:"the message is deleted"
+        then: "the message is deleted"
         with(get("/messages", 200, UserType.DEFAULT).body) {
             size() == 0
         }
 
-        and:"deleting again returns not found"
+        and: "deleting again returns not found"
         delete("/admin/messages/$messageId",404, UserType.ADMIN)
 
         and: "updating returns not found"
-        put("/admin/messages/$messageId",[message:[DE: "test message1"],
+        put("/admin/messages/$messageId",[message: [DE: "test message1"],
             publication: "$pubDate",
             effective: "$effDate",
             level: "INFO"
         ],null,404, UserType.ADMIN)
 
         when: "publication can also be null"
-        ret = post("/admin/messages",[message:[DE: "test message1"],
+        ret = post("/admin/messages",[message: [DE: "test message1"],
             level: "INFO"
         ],201, UserType.ADMIN)
         messageId = ret.body.resourceId
@@ -213,8 +213,8 @@ class AdminRestTest extends VeoRestTest{
             level == "INFO"
             message == ["de": "test message1"]
             effective == null
-            publication > createdAt
-            put("/admin/messages/$messageId",it,null,200, UserType.ADMIN)
+            publication> createdAt
+            put("/admin/messages/$messageId", it,null,200, UserType.ADMIN)
         }
     }
 }

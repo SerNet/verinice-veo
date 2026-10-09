@@ -75,7 +75,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/controls/$partId" ]
+                [targetUri: "/controls/$partId"]
             ],
             links: [
                 literature: [

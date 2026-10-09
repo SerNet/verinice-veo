@@ -79,7 +79,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
                     newControl(unit) {
                         associateWithDomain(domain, "Control", "hopeful")
                     }
-                    )
+            )
             scopeRepository.save(newScope(unit) {
                 associateWithDomain(domain, "SCP_Scope", "NEW")
                 addMember(control)
@@ -119,7 +119,7 @@ class UpdateScopeInDomainUseCaseITSpec extends VeoSpringSpec{
                     newPerson(unit) {
                         associateWithDomain(domain, "PER_DataProtectionOfficer", "ARCHIVED") // poor guy
                     }
-                    )
+            )
             scopeRepository.save(newScope(unit) {
                 associateWithDomain(domain, "SCP_Scope", "NEW")
                 addMember(person)

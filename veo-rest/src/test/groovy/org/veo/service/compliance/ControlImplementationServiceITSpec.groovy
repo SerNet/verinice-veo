@@ -170,11 +170,15 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
 
         when: "the requirement for a part is edited"
         def modifiedReqImpl1 = elmt1
-                .getRequirementImplementations().find { it.control == control_A_1_2}
+                .getRequirementImplementations().find {
+                    it.control == control_A_1_2
+                }
         modifiedReqImpl1.setStatus(YES)
 
         def modifiedReqImpl2 = elmt2
-                .getRequirementImplementations().find { it.control == control_A_1_2}
+                .getRequirementImplementations().find {
+                    it.control == control_A_1_2
+                }
         modifiedReqImpl2.setStatus(YES)
 
         and: "that part is removed from the main control"
@@ -192,8 +196,12 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
         elmt1.controlImplementations.first().requirementImplementations.size() == 3
         elmt2.controlImplementations.first().requirementImplementations.size() == 3
 
-        !elmt1.controlImplementations.first().requirementImplementations.find{it.references(modifiedReqImpl1)}
-        !elmt2.controlImplementations.first().requirementImplementations.find{it.references(modifiedReqImpl2)}
+        !elmt1.controlImplementations.first().requirementImplementations.find{
+            it.references(modifiedReqImpl1)
+        }
+        !elmt2.controlImplementations.first().requirementImplementations.find{
+            it.references(modifiedReqImpl2)
+        }
 
         and: "the modified requirementImplementations are however still documented for the #type"
         elmt1.requirementImplementations.size() == 4

@@ -87,7 +87,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/processes/$partId" ]
+                [targetUri: "/processes/$partId"]
             ],
             links: [
                 necessaryData: [
@@ -504,7 +504,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ], 422)
 
         then:
-        UnprocessableDataException e =thrown()
+        UnprocessableDataException e = thrown()
         e.message == '''Invalid value 'banana' for attribute 'interval': must be a duration in ISO-8601 format'''
     }
 

@@ -64,7 +64,9 @@ class V85__migrate_inactive_catalog_item_refs extends BaseJavaMigration {
             if (it.active) {
                 activeItemIdByAbbreviation.putIfAbsent(it.abbreviation, it.db_id)
             } else {
-                inactiveItemIdsByAbbreviation.computeIfAbsent(it.abbreviation, { [] }).add(it.db_id)
+                inactiveItemIdsByAbbreviation.computeIfAbsent(it.abbreviation, {
+                    []
+                }).add(it.db_id)
             }
         }
 
@@ -73,7 +75,9 @@ class V85__migrate_inactive_catalog_item_refs extends BaseJavaMigration {
         // Redirect outdated references to new item
         activeItemIdByAbbreviation.forEach { abbreviation, activeItemId ->
             def inactiveItemIds =
-                    inactiveItemIdsByAbbreviation.getOrDefault(abbreviation, []).collect { "'$it'" }.join(',')
+                    inactiveItemIdsByAbbreviation.getOrDefault(abbreviation, []).collect {
+                        "'$it'"
+                    }.join(',')
             if (!inactiveItemIds.empty) {
                 statements += "update element_applied_catalog_items set applied_catalog_items_db_id = '$activeItemId' where applied_catalog_items_db_id in ($inactiveItemIds);"
                 inactiveItemIdsByAbbreviation.remove(abbreviation)
@@ -82,7 +86,11 @@ class V85__migrate_inactive_catalog_item_refs extends BaseJavaMigration {
 
         // Remove outdated references where no matching new item exists
         def obsoleteItemIds =
-                inactiveItemIdsByAbbreviation.collectMany { it.value }.collect { "'$it'" }.join(',')
+                inactiveItemIdsByAbbreviation.collectMany {
+                    it.value
+                }.collect {
+                    "'$it'"
+                }.join(',')
         if (!obsoleteItemIds.empty) {
             statements += "delete from element_applied_catalog_items where applied_catalog_items_db_id in ($obsoleteItemIds);"
         }

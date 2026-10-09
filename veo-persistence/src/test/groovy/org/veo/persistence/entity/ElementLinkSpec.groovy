@@ -170,7 +170,9 @@ class ElementLinkSpec extends Specification {
             links.find { it.type == "someType" }.target == targetElementA
             links.find { it.type == "someType" }.attributes.attr == "newValA"
             links.find { it.type == "someOtherType" }.target == targetElementA
-            links.find { it.type == "someOtherType" }.attributes.attr == "someOtherValA"
+            links.find {
+                it.type == "someOtherType"
+            }.attributes.attr == "someOtherValA"
         }
 
         and: "not in the other domain"

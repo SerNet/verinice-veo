@@ -38,7 +38,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
 
         then: "the client for the unit is retrieved"
         1 * clientRepository.getById(_) >> existingClient
-        1 * unitRepository.getByIdFetchClient(_,_) >> existingUnit
+        1 * unitRepository.getByIdFetchClient(_, _) >> existingUnit
 
         1 * genericElementRepository.deleteByUnit(existingUnit)
 

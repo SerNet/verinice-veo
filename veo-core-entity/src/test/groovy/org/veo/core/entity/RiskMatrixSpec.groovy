@@ -48,13 +48,13 @@ class RiskMatrixSpec extends Specification {
         then: "both are equals"
         cd == cd1
 
-        when:"id is change"
+        when: "id is change"
         cd.id = "2"
 
         then: "not equals"
         cd != cd1
 
-        when:"content is different"
+        when: "content is different"
         cd.id = "1"
         cd.potentialImpacts = [
             new CategoryLevel("color-1")
@@ -63,7 +63,7 @@ class RiskMatrixSpec extends Specification {
         then: "not equals"
         cd != cd1
 
-        when:"content is the same"
+        when: "content is the same"
         cd1.potentialImpacts = [
             new CategoryLevel("color-1")
         ]
@@ -110,7 +110,7 @@ class RiskMatrixSpec extends Specification {
         ]
         cd.valueMatrix = rmatrix
 
-        and:"validate"
+        and: "validate"
         cd.validateRiskCategory(riskValues, probabilities)
 
         then: "illegal Argument exception is thrown"
@@ -133,7 +133,7 @@ class RiskMatrixSpec extends Specification {
             new CategoryLevel("color-1")
         ]
 
-        and:"validate"
+        and: "validate"
         cd.validateRiskCategory(riskValues, probabilities)
 
         then: "illegal Argument exception is thrown"
@@ -164,7 +164,7 @@ class RiskMatrixSpec extends Specification {
         ex.message == "Value matrix for category 1 does not conform to probability."
 
         when: "we create a complete CategoryDefinition"
-        CategoryDefinition cd1 = new CategoryDefinition("2",rmatrix,impacts)
+        CategoryDefinition cd1 = new CategoryDefinition("2", rmatrix, impacts)
 
         then: "it validates ok"
         cd1.validateRiskCategory(riskValues, probabilities)
@@ -307,7 +307,7 @@ class RiskMatrixSpec extends Specification {
         rd1 != rd2
 
         when: "content is the same"
-        rd2.probability = new ProbabilityDefinition( [
+        rd2.probability = new ProbabilityDefinition([
             new ProbabilityLevel("color-1")
         ])
 
@@ -364,7 +364,7 @@ class RiskMatrixSpec extends Specification {
             new CategoryDefinition("5", [], [])
         ]
 
-        expect:"that the right elements are returned"
+        expect: "that the right elements are returned"
         rd.getCategory("1").get() == rd.categories[0]
         rd.getCategory("5").get() == rd.categories[4]
         rd.getCategory("6").isEmpty()
@@ -617,7 +617,7 @@ class RiskMatrixSpec extends Specification {
 
     private RiskDefinition createRiskDefinition() {
         RiskDefinition rd = new RiskDefinition()
-        rd.id= "simple-id"
+        rd.id = "simple-id"
         rd.riskMethod = new RiskMethod()
         rd.probability.levels = [
             new ProbabilityLevel("#123456")

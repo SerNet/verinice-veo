@@ -46,7 +46,7 @@ class LinkingRestTest extends VeoRestTest {
                 ST: [statuses: ["NEW"]]
             ]
             ,
-            translations : [(EN): ["${targetType.singularTerm}_ST_plural":"${targetType.singularTerm}_STA_plural",
+            translations : [(EN): ["${targetType.singularTerm}_ST_plural": "${targetType.singularTerm}_STA_plural",
                     "${targetType.singularTerm}_ST_singular": "${targetType.singularTerm}_STA_singular",
                     "${targetType.singularTerm}_ST_status_NEW": "${targetType.singularTerm}_STA_status_ON"
                 ]
@@ -62,10 +62,10 @@ class LinkingRestTest extends VeoRestTest {
                     targetSubType: "ST",
                 ]
             ],
-            translations : [(EN): ["asset_ST_plural":"asset_STA_plural",
+            translations : [(EN): ["asset_ST_plural": "asset_STA_plural",
                     "asset_ST_singular": "asset_STA_singular",
                     "asset_ST_status_NEW": "asset_STA_status_ON",
-                    "someLink":"someLink"
+                    "someLink": "someLink"
                 ]
             ]
         ], "", 204, CONTENT_CREATOR)
@@ -123,12 +123,12 @@ class LinkingRestTest extends VeoRestTest {
                     ]
                 ],
             ],
-            translations : [(EN): ["${type.singularTerm}_STA_plural":"${type.singularTerm}_STA_plural",
+            translations : [(EN): ["${type.singularTerm}_STA_plural": "${type.singularTerm}_STA_plural",
                     "${type.singularTerm}_STA_singular": "${type.singularTerm}_STA_singular",
                     "${type.singularTerm}_STA_status_NEW": "${type.singularTerm}_STA_status_ON",
-                    "linkTypeA":"linkTypeA",
-                    "linkTypeB":"linkTypeB",
-                    "propOfTruth":"someAttr"
+                    "linkTypeA": "linkTypeA",
+                    "linkTypeB": "linkTypeB",
+                    "propOfTruth": "someAttr"
 
                 ]
             ]
@@ -183,10 +183,16 @@ class LinkingRestTest extends VeoRestTest {
             getETag() == returnedEtag
             with(body.links) {
                 linkTypeA.size() == 2
-                linkTypeA.find { it.target.targetInDomainUri.endsWith(targetAUri) } != null
-                linkTypeA.find { it.target.targetInDomainUri.endsWith(targetBUri) } != null
+                linkTypeA.find {
+                    it.target.targetInDomainUri.endsWith(targetAUri)
+                } != null
+                linkTypeA.find {
+                    it.target.targetInDomainUri.endsWith(targetBUri)
+                } != null
                 linkTypeB.size() == 1
-                linkTypeB.find { it.target.targetInDomainUri.endsWith(targetBUri) }.attributes.propOfTruth
+                linkTypeB.find {
+                    it.target.targetInDomainUri.endsWith(targetBUri)
+                }.attributes.propOfTruth
             }
         }
 

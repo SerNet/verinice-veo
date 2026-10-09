@@ -96,7 +96,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/assets/$partId" ]
+                [targetUri: "/assets/$partId"]
             ],
             links: [
                 admin: [
@@ -489,7 +489,9 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         executeInTransaction {
             domainRepository.getById(UUID.fromString(testDomainId), client.id).tap {
                 getElementTypeDefinition(ElementType.ASSET).controlImplementationDefinition = new ControlImplementationDefinition().tap {
-                    customAspects.testCA = newCustomAspectDefinition {attributeDefinitions.testAttr = new IntegerAttributeDefinition()}
+                    customAspects.testCA = newCustomAspectDefinition {
+                        attributeDefinitions.testAttr = new IntegerAttributeDefinition()
+                    }
                 }
             }
         }
@@ -500,11 +502,11 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         with(schema.properties.customAspects) {
             it.additionalProperties == false
-            with (it.properties) {
+            with(it.properties) {
                 it.keySet() ==~ ['testCA']
                 with(it.testCA) {
                     it.additionalProperties == false
-                    it.properties == [testAttr:[type:'integer']]
+                    it.properties == [testAttr: [type: 'integer']]
                 }
             }
         }

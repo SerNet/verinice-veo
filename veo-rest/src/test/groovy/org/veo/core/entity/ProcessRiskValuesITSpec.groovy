@@ -74,7 +74,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         createClient()
         this.riskDefinition = createRiskDefinition(RISK_DEFINITION_ID)
         this.domain = newDomain(client) {
-            it.riskDefinitions = [ "r2d2":
+            it.riskDefinitions = ["r2d2":
                 createRiskDefinition(RISK_DEFINITION_ID)
             ] as Map
         }
@@ -153,7 +153,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
                 it.setRiskTreatments(extentOfDamage, [
                     RISK_TREATMENT_ACCEPTANCE,
                     RISK_TREATMENT_REDUCTION
-                ] as Set )
+                ] as Set)
             }
         }
 
@@ -179,7 +179,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         }
 
         with(retrievedRisk2.getRiskProvider(riskDefRef, domain)) {
-            it.getUserDefinedResidualRisk(extentOfDamage) ==  new RiskRef(0)
+            it.getUserDefinedResidualRisk(extentOfDamage) == new RiskRef(0)
             it.getResidualRiskExplanation(extentOfDamage) == NO_RISK_NO_FUN
             it.getRiskTreatmentExplanation(extentOfDamage) == RISK_ACCEPTANCE
             it.getRiskTreatments(extentOfDamage) == [

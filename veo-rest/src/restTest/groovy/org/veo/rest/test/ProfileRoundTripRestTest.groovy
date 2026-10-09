@@ -296,7 +296,9 @@ class ProfileRoundTripRestTest extends VeoRestTest {
         when: "we change the risk definition"
         def dd = copyOfTestDomainId
         get("/domains/$copyOfTestDomainId").body.riskDefinitions.riskyDef.with { definition ->
-            definition.categories.find { it.id == "D" }.potentialImpacts.removeLast()
+            definition.categories.find {
+                it.id == "D"
+            }.potentialImpacts.removeLast()
             definition.categories.find { it.id == "D" }.valueMatrix.removeLast()
             put("/content-creation/domains/$dd/risk-definitions/riskyDef", definition, null, 200, CONTENT_CREATOR)
         }
@@ -334,7 +336,9 @@ class ProfileRoundTripRestTest extends VeoRestTest {
 
         // apply the imported profile to the target unit in another client
         post("/admin/domain-templates/$newDomainTemplateId/create-domains-in-all-clients", null, 200, ADMIN)
-        def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find { it.name == exportedDomainTemplate.name }.id
+        def newDomainInOtherClientId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find {
+            it.name == exportedDomainTemplate.name
+        }.id
         def profileInOtherClientId = get("/domains/$newDomainInOtherClientId/profiles", 200, SECONDARY_CLIENT_USER).body.find {
             it.name == "test profile"
         }.id

@@ -93,7 +93,7 @@ class UnitRestTestITSpec extends VeoRestTest {
             updatedBy == user
             domains.size() > 0
             Instant.parse(createdAt) > beforeCreation
-            Instant.parse(createdAt) < beforeUpdate
+            Instant.parse(createdAt) <beforeUpdate
             Instant.parse(updatedAt) > beforeUpdate
             updatedAt != createdAt
         }

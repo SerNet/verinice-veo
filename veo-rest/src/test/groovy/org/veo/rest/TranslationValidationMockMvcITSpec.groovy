@@ -99,8 +99,8 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
             ],
             translations: [
                 de: [
-                    implementationNotes: ' Implementierungsnotizen',  // leading space
-                    priority: 'Priorität '                            // trailing space
+                    implementationNotes: ' Implementierungsnotizen', // leading space
+                    priority: 'Priorität ' // trailing space
                 ]
             ]
         ]
@@ -155,7 +155,7 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
             translations: [
                 de: [
                     implementationNotes: 'Implementierungsnotizen',
-                    invalidExtraKey: 'Extra translation'  // superfluous key
+                    invalidExtraKey: 'Extra translation' // superfluous key
                 ]
             ]
         ]

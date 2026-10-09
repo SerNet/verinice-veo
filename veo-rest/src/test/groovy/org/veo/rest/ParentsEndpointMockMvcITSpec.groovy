@@ -285,7 +285,7 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
         when:
         def result = parseJson(
                 get("/domains/$testDomainId/documents/${document.idAsString}/parents?sortBy=$sortBy&sortOrder=$sortOrder")
-                )
+        )
 
         then:
         result.items*.get(sortField) == expectedSortedValues
@@ -293,9 +293,9 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
         where:
         sortBy        | sortOrder | sortField     | scopesToCreate                                         | expectedSortedValues
         "DESIGNATOR"  | "asc"     | "designator"  | [
-            [designator:'SCP-003'],
-            [designator:'SCP-001'],
-            [designator:'SCP-002']
+            [designator: 'SCP-003'],
+            [designator: 'SCP-001'],
+            [designator: 'SCP-002']
         ] | [
             'DOC-30',
             'SCP-001',
@@ -303,9 +303,9 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
             'SCP-003'
         ]
         "NAME"        | "asc"     | "name"        | [
-            [name:'Zebra Scope'],
-            [name:'Alpha Scope'],
-            [name:'Beta Scope']
+            [name: 'Zebra Scope'],
+            [name: 'Alpha Scope'],
+            [name: 'Beta Scope']
         ]          | [
             'Alpha Scope',
             'Beta Scope',
@@ -314,9 +314,9 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
         ]
         // Lowercase to test case-insensitive sorting
         "name"        | "asc"     | "name"        | [
-            [name:'Zebra Scope'],
-            [name:'Alpha Scope'],
-            [name:'Beta Scope']
+            [name: 'Zebra Scope'],
+            [name: 'Alpha Scope'],
+            [name: 'Beta Scope']
         ]          | [
             'Alpha Scope',
             'Beta Scope',
@@ -324,13 +324,13 @@ class ParentsEndpointMockMvcITSpec extends VeoMvcSpec {
             'Zebra Scope'
         ]
         "ABBREVIATION"| "asc"     | "abbreviation"| [
-            [abbreviation:'ZZZ'],
-            [abbreviation:'AAA'],
-            [abbreviation:'MMM']
+            [abbreviation: 'ZZZ'],
+            [abbreviation: 'AAA'],
+            [abbreviation: 'MMM']
         ]       | ['AAA', 'CD', 'MMM', 'ZZZ']
         "TYPE" | "desc"    | "type"        | [
-            [name:'Doc Parent', abbreviation:'DP', designator:'SCP-001'],
-            [name:'Scope Parent', abbreviation:'SP', designator:'SCP-002']
+            [name: 'Doc Parent', abbreviation: 'DP', designator: 'SCP-001'],
+            [name: 'Scope Parent', abbreviation: 'SP', designator: 'SCP-002']
         ] | [
             'scope',
             'scope',

@@ -107,7 +107,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     status = "NEW"
                     name = 'c3'
                 })
-                riskDefinitions = ["id":rd] as Map
+                riskDefinitions = ["id": rd] as Map
             }
 
             client = clientRepository.save(client)
@@ -127,8 +127,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     def "create and delete a domain"() {
         when: "a domain is created"
         def domainId = parseJson(post("/content-creation/domains", [
-            name:'myd1',
-            authority:"myAuthority",
+            name: 'myd1',
+            authority: "myAuthority",
             translations: [
                 de: [
                     name: "DS-GVO / BDSG / was auch immer",
@@ -151,7 +151,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def translations = parseJson(get("/domains/$domainId")).translations
         translations.de.abbreviation = "newAbbreviation"
 
-        put("/content-creation/domains/$domainId", [name:"name not used",
+        put("/content-creation/domains/$domainId", [name: "name not used",
             translations: (translations)], 204)
 
         then: "the translation is changed"
@@ -205,7 +205,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         def ex = thrown(HandlerMethodValidationException)
-        with(ex.parameterValidationResults.first()  ) {
+        with(ex.parameterValidationResults.first()) {
             resolvableErrors*.field ==~ [
                 "domainMigrationDefinition.migrations[0].id",
                 "domainMigrationDefinition.migrations[0].description",
@@ -232,7 +232,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newTemplate.domainMigrationDefinition.migrations = [
             [
                 id: "test",
-                description: ["en":"things change"],
+                description: ["en": "things change"],
                 oldDefinitions: [],
             ]
         ].repeat(2)
@@ -246,7 +246,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newTemplate.domainMigrationDefinition.migrations = [
             [
                 id: "test",
-                description: ["en":"things change"],
+                description: ["en": "things change"],
                 oldDefinitions: [
                     [
                         type: "customAspectAttribute",
@@ -263,7 +263,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         ex = thrown(HandlerMethodValidationException)
-        with(ex.parameterValidationResults.first()  ) {
+        with(ex.parameterValidationResults.first()) {
             resolvableErrors*.field ==~ [
                 "domainMigrationDefinition.migrations[0].oldDefinitions[0].elementType",
                 "domainMigrationDefinition.migrations[0].oldDefinitions[0].customAspect",
@@ -280,7 +280,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newTemplate.domainMigrationDefinition.migrations = [
             [
                 id: "interacter",
-                description: ["en":"things change"],
+                description: ["en": "things change"],
                 interactive: true,
                 oldDefinitions: [],
                 newDefinitions: [
@@ -423,7 +423,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: 'the entity schemas are updated'
-        updatedDomain.version > lastVersion
+        updatedDomain.version> lastVersion
         with(updatedDomain.getElementTypeDefinition(ElementType.SCOPE)) {
             with(it.subTypes) {
                 it.keySet() == [
@@ -466,36 +466,36 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         testDomain = client.domains.find{it.name == "Domain 1"}
         def schemaJson = [
-            subTypes:[
-                SCP_Container:[
-                    statuses:['Empty', 'Full'],
+            subTypes: [
+                SCP_Container: [
+                    statuses: ['Empty', 'Full'],
                     sortKey : 1
                 ],
-                SCP_Location:[
-                    statuses:['Hidden', 'Revealed'],
+                SCP_Location: [
+                    statuses: ['Hidden', 'Revealed'],
                     sortKey : 2
                 ]
             ],
-            customAspects:[
-                container_lid:[
+            customAspects: [
+                container_lid: [
                     attributeDefinitions: [
                         container_lid_present : [type: 'boolean']
                     ]
                 ],
-                revisit:[
+                revisit: [
                     attributeDefinitions: [
                         revisit_interval : [type: 'duration']
                     ]
                 ]
             ],
-            links:[
-                container_owner:[
+            links: [
+                container_owner: [
                     targetType: 'person',
                     targetSubType: 'MasterOfDisaster',
                 ]
             ],
-            translations:[
-                en:[
+            translations: [
+                en: [
                     scope_SCP_Container_singular: 'Container',
                     scope_SCP_Container_plural: 'Containers',
                     scope_SCP_Container_status_Empty: 'Empty',
@@ -528,7 +528,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: 'the entity schemas are updated'
-        updatedDomain.version > lastVersion
+        updatedDomain.version> lastVersion
         with(updatedDomain.getElementTypeDefinition(ElementType.SCOPE)) {
             with(it.subTypes) {
                 it.keySet() ==~ [
@@ -539,7 +539,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
             with(it.translations) {
                 it.size() == 1
-                with (it[Locale.ENGLISH]) {
+                with(it[Locale.ENGLISH]) {
                     it.scope_SCP_Container_status_Empty == 'Empty'
                 }
             }
@@ -671,7 +671,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def newVersion = domain.version
 
         then:
-        newVersion > firstVersion
+        newVersion> firstVersion
 
         when:
         def catalogItems = domain.catalogItems
@@ -716,7 +716,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we incarnate one linked catalog item"
-        def catalogItemsId = catalogItems.find{it.name == "example scenario Container" }.symbolicIdAsString
+        def catalogItemsId = catalogItems.find{
+            it.name == "example scenario Container"
+        }.symbolicIdAsString
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [
@@ -732,7 +734,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we incarnate all catalog items"
         delete("/units/${unitId}")
-        def catalogItemsIds = catalogItems.collect{it.symbolicIdAsString}.join(',')
+        def catalogItemsIds = catalogItems.collect{
+            it.symbolicIdAsString
+        }.join(',')
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [
@@ -742,14 +746,24 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsIds"))
         elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
-        assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
+        assetId = elementList.find {
+            it.targetUri.contains('assets')
+        }.targetUri.split('/').last()
         def asset = txTemplate.execute {
             assetDataRepository.findById(UUID.fromString(assetId)).get().tap {
                 it.appliedCatalogItems.size()
             }
         }
 
-        def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}.collect {UUID.fromString(it)}
+        def scenarioIds = elementList.collect {
+            it.targetUri
+        }.findAll {
+            it.contains('scenarios')
+        }.collect {
+            it.split('/').last()
+        }.collect {
+            UUID.fromString(it)
+        }
         def scenarios = txTemplate.execute {
             def list = scenarioDataRepository.findAllWithCompositesAndCompositesPartsByIdIn(scenarioIds)
             list.collect { it.appliedCatalogItems.size() }
@@ -789,12 +803,16 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def finalVersion = domain.version
 
         then:
-        finalVersion > newVersion
+        finalVersion> newVersion
 
         when: "we incarnate scenario 1 and link the composite feature to the first scenario"
         catalogItems = catalogItems = domain.catalogItems
 
-        def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.symbolicIdAsString}.join(',')
+        def scenarioItemIds = catalogItems.find{
+            it.name == "example scenario 1"
+        }.collect {
+            it.symbolicIdAsString
+        }.join(',')
         incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$scenarioItemIds&mode=MANUAL"))
         def references = incarnationDescription.parameters.references.first()
 
@@ -821,7 +839,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
         }
         def newScenario1 = txTemplate.execute {
-            def q = scenarioDataRepository.findById(UUID.fromString(elementList[0].targetUri.split('/' ).last())).get()
+            def q = scenarioDataRepository.findById(UUID.fromString(elementList[0].targetUri.split('/').last())).get()
                     .tap {
                         parts.collect { it.parts.size() }
                         composites.collect { it.composites.size() }
@@ -878,8 +896,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def newVersion = domain1.version
 
         then: "the profile is created"
-        newVersion > firstVersion
-        domain1.getProfiles().size()==1
+        newVersion> firstVersion
+        domain1.getProfiles().size()== 1
         with(domain1.getProfiles().first()) {
             name == "test"
             description == "All the good stuff"
@@ -905,8 +923,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def thirdVersion = domain1.version
 
         then: "the profile is updated"
-        thirdVersion > newVersion
-        domain1.getProfiles().size()==1
+        thirdVersion> newVersion
+        domain1.getProfiles().size()== 1
         with(domain1.getProfiles().first()) {
             name == "test1"
             description == "All the good stuff, but better."
@@ -1042,7 +1060,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: "the profile is created"
-        domain1.getProfiles().size()==1
+        domain1.getProfiles().size()== 1
         with(domain1.getProfiles().first()) {
             name == "test"
             description == "All the good stuff"
@@ -1073,7 +1091,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: "the profile meta data is updated"
-        domain1.getProfiles().size()==1
+        domain1.getProfiles().size()== 1
         with(domain1.getProfiles().first()) {
             name == "test1"
             description == "All the good stuff, but better."
@@ -1111,7 +1129,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then: "the profile is updated"
-        domain1.getProfiles().size()==1
+        domain1.getProfiles().size()== 1
         with(domain1.getProfiles().first()) {
             name == "test1"
             description == "All the good stuff, but much better."
@@ -1137,8 +1155,12 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ])).resourceId
 
-        def catalogItem1Id = catalogItems.find{it.name == "Control-1" }.symbolicIdAsString
-        def catalogItem2Id = catalogItems.find{it.name == "Control-2" }.symbolicIdAsString
+        def catalogItem1Id = catalogItems.find{
+            it.name == "Control-1"
+        }.symbolicIdAsString
+        def catalogItem2Id = catalogItems.find{
+            it.name == "Control-2"
+        }.symbolicIdAsString
         def incarnationDescriptions = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItem1Id,$catalogItem2Id"))
         post("/units/${unitId}/incarnations", incarnationDescriptions)
         def profileId = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
@@ -1189,7 +1211,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 it.tailoringReferences.size()
             }
         }
-        def catalogItemsId = catalogItems.find{it.name == "Control-2" }.symbolicIdAsString
+        def catalogItemsId = catalogItems.find{
+            it.name == "Control-2"
+        }.symbolicIdAsString
 
         def incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsId"))
         post("/units/${unitId}/incarnations", incarnationDescription)
@@ -1259,7 +1283,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
         with(exportedProfile.items.find{it.name == "process" }) {
             tailoringReferences.size() == 2
-            tailoringReferences.referenceType ==~  ['LINK', 'RISK']
+            tailoringReferences.referenceType ==~ ['LINK', 'RISK']
         }
 
         when: "we post the exported profile to the domain template"
@@ -1357,7 +1381,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
-            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }.tap{
+            domainTemplateRepository.findAll().find{
+                it.name == "Domain 1"
+            }.tap{
                 profiles.size()
             }
         }
@@ -1395,7 +1421,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "loading the domain templates from the database"
         dt = txTemplate.execute {
-            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }.tap{
+            domainTemplateRepository.findAll().find{
+                it.name == "Domain 1"
+            }.tap{
                 it.profiles.size()
                 it.profiles[0].items.size()
             }
@@ -1487,7 +1515,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 it[1].referenceType == RISK
             }
         }
-        with(domain1.profiles[0].items.find{it.name == "example scenario Container" }) {
+        with(domain1.profiles[0].items.find{
+            it.name == "example scenario Container"
+        }) {
             elementType == ElementType.SCENARIO
             status == "NEW"
             subType == "SCN_Scenario"
@@ -1551,13 +1581,13 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the profiles are exported"
         exportedDomain != null
-        exportedDomain.profiles_v2.size() ==1
+        exportedDomain.profiles_v2.size() == 1
         with(exportedDomain.profiles_v2.first()) {
             name == "test"
             items.size() == 10
-            with(items.find { it.name == 'asset' } ) {
-                elementType=="asset"
-                subType=="AST_Application"
+            with(items.find { it.name == 'asset' }) {
+                elementType == "asset"
+                subType == "AST_Application"
                 tailoringReferences.size() == 2
             }
         }
@@ -1655,7 +1685,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "we incarnate all catatlog items"
-        def catalogItemsIds = catalogItems.collect{it.symbolicIdAsString}.join(',')
+        def catalogItemsIds = catalogItems.collect{
+            it.symbolicIdAsString
+        }.join(',')
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
             domains: [
@@ -1664,10 +1696,18 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ])).resourceId
         def incarnationDescription = parseJson(get("/units/$unitId/domains/$domainId/incarnation-descriptions?itemIds=$catalogItemsIds"))
         def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
-        assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
-        scenarioId = elementList.find {it.targetUri.contains('scenarios')}.targetUri.split('/' ).last()
-        def personId = elementList.find {it.targetUri.contains('persons')}.targetUri.split('/' ).last()
-        def controlId = elementList.find {it.targetUri.contains('controls')}.targetUri.split('/' ).last()
+        assetId = elementList.find {
+            it.targetUri.contains('assets')
+        }.targetUri.split('/').last()
+        scenarioId = elementList.find {
+            it.targetUri.contains('scenarios')
+        }.targetUri.split('/').last()
+        def personId = elementList.find {
+            it.targetUri.contains('persons')
+        }.targetUri.split('/').last()
+        def controlId = elementList.find {
+            it.targetUri.contains('controls')
+        }.targetUri.split('/').last()
 
         post("/assets/$assetId/risks", [
             domains : [
@@ -1788,7 +1828,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "there are 5 TOMs"
         ret.control.CTL_TOM.NEW == 5
 
-        when:"we apply the profile again"
+        when: "we apply the profile again"
         post("/domains/$domainId/profiles/$profileId/incarnation?unit=$targetUnitId", null, 204)
         ret = parseJson(get("/domains/$domainId/element-status-count?unit=$targetUnitId"))
 
@@ -1837,7 +1877,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
-                    .find{ it.name == domain.name && it.templateVersion.toString() == "1.1.0"}
+                    .find{
+                        it.name == domain.name && it.templateVersion.toString() == "1.1.0"
+                    }
                     .tap{
                         it.profiles*.items*.tailoringReferences*.id
                     } // init proxy
@@ -1862,16 +1904,22 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 ElementType.SCENARIO,
                 ElementType.SCOPE
             ]
-            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
+            items.collectMany {
+                it.tailoringReferences
+            }.findAll {
+                it.referenceType == RISK
+            }.size() == 2
         }
 
         when: "creating and exporting the domain"
         def results = get("/domains/${domain.idAsString}/export")
         def exportedDomain = parseJson(results)
 
-        then:" the export file contains the profile data"
+        then: " the export file contains the profile data"
         exportedDomain.name == domain.name
-        with(exportedDomain.profiles_v2.find { it.name == "Example elements" }) {
+        with(exportedDomain.profiles_v2.find {
+            it.name == "Example elements"
+        }) {
             items*.elementType ==~ [
                 "asset",
                 "control",
@@ -1882,7 +1930,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 "scenario",
                 "scope"
             ]
-            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == "RISK" }.size() == 2
+            items.collectMany {
+                it.tailoringReferences
+            }.findAll {
+                it.referenceType == "RISK"
+            }.size() == 2
         }
 
         when: "we create a new domain template from the export"
@@ -1908,7 +1960,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 ElementType.SCENARIO,
                 ElementType.SCOPE
             ]
-            items.collectMany { it.tailoringReferences }.findAll { it.referenceType == RISK }.size() == 2
+            items.collectMany {
+                it.tailoringReferences
+            }.findAll {
+                it.referenceType == RISK
+            }.size() == 2
         }
     }
 
@@ -1924,7 +1980,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "it's gone"
         with(parseJson(get("/domains/$dsgvoId"))) {
             riskDefinitions == [:]
-            updatedAt > dsgvoUpdatedAt
+            updatedAt> dsgvoUpdatedAt
         }
     }
 
@@ -1964,9 +2020,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             it.size() == 1
             with(first()) {
                 it.values.size() == 1
-                with (it.values.entrySet().first()) {
+                with(it.values.entrySet().first()) {
                     it.key.idRef == 'DSRA'
-                    with (it.value.potentialImpacts) {
+                    with(it.value.potentialImpacts) {
                         it.keySet()*.idRef ==~ ['C', 'I']
                     }
                 }
@@ -2008,9 +2064,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             it.size() == 1
             with(first()) {
                 it.values.size() == 1
-                with (it.values.entrySet().first()) {
+                with(it.values.entrySet().first()) {
                     it.key.idRef == 'DSRA'
-                    with (it.value.potentialImpacts) {
+                    with(it.value.potentialImpacts) {
                         it.keySet()*.idRef ==~ ['C', 'I']
                     }
                 }
@@ -2049,7 +2105,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def riskDefinitionJson = parseJson(get("/domains/$domainId")).with {
             it.riskDefinitions.DSRA
         }
-        riskDefinitionJson.categories << riskDefinitionJson.categories.find{it.id == 'C'}.clone().tap {
+        riskDefinitionJson.categories << riskDefinitionJson.categories.find{
+            it.id == 'C'
+        }.clone().tap {
             id = 'C2'
         }
         put("/content-creation/domains/${domain.idAsString}/risk-definitions/DSRA", riskDefinitionJson)
@@ -2090,7 +2148,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             'If-Match': processETag
         ]
 
-        put("/domains/$domainId/processes/$processId",retrievedProcess, headers)
+        put("/domains/$domainId/processes/$processId", retrievedProcess, headers)
         def process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
 
         ImpactValues impactValues = process.getImpactValues(domain, rdRef).get()
@@ -2117,12 +2175,16 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         riskDsraRiskValues = riskDomainRiskValues.riskDefinitions.DSRA
 
         then:
-        riskDsraRiskValues.impactValues*.category ==~  ['C', 'I', 'A', 'R', 'C2']
-        riskDsraRiskValues.riskValues*.category ==~  ['C', 'I', 'A', 'R', 'C2']
+        riskDsraRiskValues.impactValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
+        riskDsraRiskValues.riskValues*.category ==~ ['C', 'I', 'A', 'R', 'C2']
 
         when:
-        def riskDsraRiskValuesImpactC2 = riskDsraRiskValues.impactValues.find{it.category == 'C2'}
-        def riskDsraRiskValuesRiskC2 = riskDsraRiskValues.riskValues.find{it.category == 'C2'}
+        def riskDsraRiskValuesImpactC2 = riskDsraRiskValues.impactValues.find{
+            it.category == 'C2'
+        }
+        def riskDsraRiskValuesRiskC2 = riskDsraRiskValues.riskValues.find{
+            it.category == 'C2'
+        }
 
         then:
         riskDsraRiskValuesImpactC2.specificImpact == null
@@ -2136,12 +2198,14 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             'If-Match': riskETag
         ]
 
-        put("/processes/$processId/risks/$scenarioId",retrievedProcessRisk, headers)
+        put("/processes/$processId/risks/$scenarioId", retrievedProcessRisk, headers)
         process = processDataRepository.findWithRisksAndScenariosByIdIn([UUID.fromString(processId)]).first()
         def risk = process.risks.first() as ProcessRiskData
 
         def impactProvider = risk.getImpactProvider(rdRef, domain)
-        def categorizedImpact = impactProvider.categorizedImpacts.find{it.category == c2Ref}
+        def categorizedImpact = impactProvider.categorizedImpacts.find{
+            it.category == c2Ref
+        }
 
         then:
         categorizedImpact.specificImpact.idRef == 1
@@ -2149,7 +2213,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when:
         def riskProvider = risk.getRiskProvider(rdRef, domain)
-        def determinedRisk = riskProvider.getCategorizedRisks().find{it.category == c2Ref}
+        def determinedRisk = riskProvider.getCategorizedRisks().find{
+            it.category == c2Ref
+        }
 
         then:
         determinedRisk.inherentRisk.idRef == 1
@@ -2230,7 +2296,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         and: "another get returns 304"
         mvc.perform(MockMvcRequestBuilders.get("/content-creation/domains/${domainId}/migrations").accept(MediaType.APPLICATION_JSON).header(
-                HttpHeaders.IF_NONE_MATCH, eTag
+                        HttpHeaders.IF_NONE_MATCH, eTag
                 )).andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
 
         when: "the customAspect does not exist"
@@ -2239,7 +2305,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid oldDefinition 'a1'. No customAspect 'no_existing_aspect' for element type scope."
 
@@ -2249,7 +2315,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid oldDefinition 'a1'. No attribute 'scope_contactInformation.no_existing_attribute' for element type scope."
 
@@ -2259,7 +2325,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: No description provided for step 'a1'."
 
@@ -2269,7 +2335,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. MigrationExpression is invalid: Custom aspect 'no_existing' is not defined."
 
@@ -2279,7 +2345,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(HttpMessageNotReadableException)
         updateEx.message.contains('Cannot deserialize value of type `org.veo.core.entity.ElementType` from String "none_existing_element_type"')
 
@@ -2289,7 +2355,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. No customAspect 'no_existing' for element type scope."
 
@@ -2299,7 +2365,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Invalid newDefinition 'a1'. MigrationExpression is invalid: Attribute 'no_existing_attribute' is not defined."
 
@@ -2309,7 +2375,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             put("/content-creation/domains/${domainId}/migrations", it, [:], 422)
         }
 
-        then:"the data is rejected"
+        then: "the data is rejected"
         updateEx = thrown(UnprocessableDataException)
         updateEx.message == "Migration definition not suited to update from old domain template 2.0.0: Id 'a1' not unique."
 
@@ -2433,7 +2499,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         def ex = thrown(HandlerMethodValidationException)
-        with(ex.parameterValidationResults.first()  ) {
+        with(ex.parameterValidationResults.first()) {
             resolvableErrors*.field ==~ [
                 "name",
                 "expression",
@@ -2603,7 +2669,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         post("/content-creation/domains/$oldMinorDomainId/template", [version: "1.0.1"], 201)
 
         then: "all three templates exist"
-        parseJson(get("/domain-templates")).findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
+        parseJson(get("/domain-templates")).findAll {
+            it.name == domainName
+        }*.templateVersion ==~ ["1.0.0", "1.0.1", "1.1.0"]
 
         when: "creating yet another domain from the original version"
         def anotherOldMinorDomainId = createTestDomain(client, templateId_1_0_0, TemplateItems.NONE).idAsString
@@ -2642,7 +2710,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         post("/content-creation/domains/$oldMajorDomainId/template", [version: "1.0.1"], 201)
 
         then: "all three templates exist"
-        parseJson(get("/domain-templates")).findAll { it.name == domainName }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
+        parseJson(get("/domain-templates")).findAll {
+            it.name == domainName
+        }*.templateVersion ==~ ["1.0.0", "1.0.1", "2.0.0"]
     }
 
     private List<Map> migrationDefinitionChangeKey() {

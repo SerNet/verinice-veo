@@ -87,6 +87,6 @@ abstract class UseCaseSpec extends Specification {
     }
 
     PagedResult singleResult(entity, pagingConfiguration) {
-        new PagedResult(pagingConfiguration,[entity],  1, 1)
+        new PagedResult(pagingConfiguration,[entity], 1, 1)
     }
 }

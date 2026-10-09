@@ -89,7 +89,7 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
 
         def asset = assetRepository.save(newAsset(unit))
         def processes = new HashSet<ProcessData>()
-        for(int i = 0; i < testProcessCount; i++) {
+        for(int i = 0; i <testProcessCount; i++) {
             processes.add(newProcess(unit) {
                 associateWithDomain(domain, "VT", "NEW")
                 applyCustomAspect(newCustomAspect("my_custom_aspect", domain) {
