@@ -25,6 +25,7 @@ import jakarta.validation.Valid;
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -36,11 +37,14 @@ public class SaveInspectionUseCase
         SaveInspectionUseCase.InputData, SaveInspectionUseCase.OutputData> {
 
   private final DomainRepository repository;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
     boolean isNew = domain.applyInspection(input.inspectionId, input.inspection);
+    inspectionFindingRepository.updateInspections(
+        domain, input.inspectionId, input.inspection, !isNew);
     domain.setUpdatedAt(Instant.now());
     return new OutputData(isNew);
   }

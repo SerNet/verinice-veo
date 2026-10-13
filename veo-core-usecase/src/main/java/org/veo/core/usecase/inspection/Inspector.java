@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
@@ -53,16 +52,20 @@ public class Inspector {
   private final DomainTemplateService domainTemplateService;
   private final DomainChangeService domainChangeService;
 
-  public List<Finding> inspect(Element element, Domain domain) {
-    return Stream.of(
-            formatDecisionResults(element, domain),
-            domain.getInspections().values().stream()
-                .map(inspection -> inspection.run(element, domain))
-                .filter(Optional::isPresent)
-                .map(Optional::get),
-            getMigrationFindings(element, domain).stream())
-        .flatMap(Function.identity())
-        .toList();
+  public List<Finding> inspect(Element element, Domain domain, boolean includeDomainInspections) {
+    var result =
+        Stream.concat(
+            formatDecisionResults(element, domain), getMigrationFindings(element, domain).stream());
+    if (includeDomainInspections) {
+      result =
+          Stream.concat(
+              result,
+              domain.getInspections().values().stream()
+                  .map(inspection -> inspection.run(element, domain))
+                  .filter(Optional::isPresent)
+                  .map(Optional::get));
+    }
+    return result.toList();
   }
 
   private Stream<Finding> formatDecisionResults(Element element, Domain domain) {

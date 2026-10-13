@@ -19,6 +19,7 @@ package org.veo.core.usecase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Element;
@@ -26,6 +27,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.inspection.Inspector;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class InspectElementUseCase
   private final DomainRepository domainRepository;
   private final GenericElementRepository elementRepository;
   private final Inspector inspector;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
@@ -55,7 +58,11 @@ public class InspectElementUseCase
         elementRepository
             .findById(input.elementId, input.elementType, userAccessRights)
             .orElseThrow(() -> new NotFoundException(input.elementId, input.elementType));
-    return new OutputData(inspector.inspect(element, domain));
+
+    var inspectionsFindings = inspectionFindingRepository.findInspections(element, domain);
+    var otherFindings = inspector.inspect(element, domain, false);
+    return new OutputData(
+        Stream.concat(inspectionsFindings.stream(), otherFindings.stream()).toList());
   }
 
   public record InputData(Class<? extends Element> elementType, UUID elementId, UUID domainId)

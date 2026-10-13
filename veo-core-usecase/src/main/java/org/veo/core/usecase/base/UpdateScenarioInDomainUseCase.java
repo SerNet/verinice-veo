@@ -21,6 +21,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.decision.Decider;
@@ -35,12 +36,14 @@ public class UpdateScenarioInDomainUseCase extends UpdateElementInDomainUseCase<
       Decider decider,
       EntityStateMapper entityStateMapper,
       EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
+      RefResolverFactory refResolverFactory,
+      InspectionFindingRepository inspectionFindingRepository) {
     super(
         repositoryProvider.getElementRepositoryFor(Scenario.class),
         refResolverFactory,
         decider,
-        entityStateMapper);
+        entityStateMapper,
+        inspectionFindingRepository);
     this.eventPublisher = eventPublisher;
   }
 

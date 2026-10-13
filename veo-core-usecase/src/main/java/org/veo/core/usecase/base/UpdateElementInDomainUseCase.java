@@ -28,6 +28,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
@@ -46,6 +47,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   private final RefResolverFactory refResolverFactory;
   private final Decider decider;
   private final EntityStateMapper entityStateMapper;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public OutputData<T> execute(InputData<T> input, UserAccessRights userAccessRights) {
@@ -66,7 +68,8 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     storedElement.setUpdatedAt(Instant.now());
     decider.decide(storedElement, domain);
     DomainSensitiveElementValidator.validate(storedElement);
-    repo.save(storedElement);
+    storedElement = repo.save(storedElement);
+    inspectionFindingRepository.updateInspections(storedElement, domain, true);
     // re-fetch element to make sure it is returned with updated versioning information
     return new OutputData<>(repo.getById(storedElement.getId(), userAccessRights));
   }

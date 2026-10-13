@@ -21,6 +21,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.RetryableUseCase;
@@ -37,12 +38,14 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
       Decider decider,
       EntityStateMapper entityStateMapper,
       EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
+      RefResolverFactory refResolverFactory,
+      InspectionFindingRepository inspectionFindingRepository) {
     super(
         repositoryProvider.getElementRepositoryFor(Scope.class),
         refResolverFactory,
         decider,
-        entityStateMapper);
+        entityStateMapper,
+        inspectionFindingRepository);
     this.eventPublisher = eventPublisher;
   }
 

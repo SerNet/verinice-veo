@@ -535,7 +535,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.select == 34
+        queryCounts.select == 35
         queryCounts.insert == 17
         queryCounts.update == 12
         queryCounts.delete == 19
@@ -585,7 +585,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 23
+        queryCounts.select == 24
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.delete == 0

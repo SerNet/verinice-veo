@@ -66,7 +66,7 @@ public class EvaluateElementUseCase
             input.domainId, userAccessRights.getClientId());
     var element = fetchOrCreateElement(input.element, userAccessRights, domain.getOwner());
     decider.decide(element, domain);
-    var findings = inspector.inspect(element, domain);
+    var findings = inspector.inspect(element, domain, true);
     return new OutputData(element.getDecisionResults(domain), findings);
   }
 

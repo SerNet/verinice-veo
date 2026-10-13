@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.core.usecase.service.MigrationService;
@@ -39,6 +40,7 @@ public class UpdateDomainUseCase
   private final DomainChangeService domainChangeService;
   private final MigrationService unitMigrationService;
   private final MessageCreator messageCreator;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public boolean isReadOnly() {
@@ -49,6 +51,7 @@ public class UpdateDomainUseCase
   public OutputData execute(InputData input, UserAccessRights userAccessRights) {
     userAccessRights.checkUnitUpdateAllowed();
     var oldDomain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
+    inspectionFindingRepository.removeInspections(oldDomain);
     var newDomain =
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
@@ -63,10 +66,15 @@ public class UpdateDomainUseCase
     // If this was done before the units are migrated and the migration failed, all these inserts
     // and updates would slow down the request, only to be ultimately rolled back anyway due to the
     // exception.
+
     oldDomain.getOwner().addToDomains(newDomain);
+
     // TODO #5017 rethink event creation
     messageCreator.createDomainCreationMessage(newDomain);
     oldDomain.setActive(false);
+
+    inspectionFindingRepository.updateInspections(newDomain, false);
+
     return new OutputData(newDomain);
   }
 

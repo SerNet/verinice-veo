@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -34,11 +35,13 @@ public class DeleteInspectionUseCase
     implements TransactionalUseCase<DeleteInspectionUseCase.InputData, UseCase.EmptyOutput> {
 
   private final DomainRepository repository;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = repository.getActiveById(input.domainId, userAccessRights.getClientId());
     domain.removeInspection(input.inspectionId);
+    inspectionFindingRepository.removeInspections(domain, input.inspectionId);
     domain.setUpdatedAt(Instant.now());
     return EmptyOutput.INSTANCE;
   }

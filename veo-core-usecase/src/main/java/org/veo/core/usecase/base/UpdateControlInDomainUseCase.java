@@ -18,6 +18,7 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.Control;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
@@ -29,11 +30,13 @@ public class UpdateControlInDomainUseCase extends UpdateElementInDomainUseCase<C
       RepositoryProvider repositoryProvider,
       Decider decider,
       EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
+      RefResolverFactory refResolverFactory,
+      InspectionFindingRepository inspectionFindingRepository) {
     super(
         repositoryProvider.getElementRepositoryFor(Control.class),
         refResolverFactory,
         decider,
-        entityStateMapper);
+        entityStateMapper,
+        inspectionFindingRepository);
   }
 }

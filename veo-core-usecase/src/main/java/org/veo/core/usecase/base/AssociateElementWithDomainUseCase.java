@@ -27,6 +27,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.decision.Decider;
@@ -40,6 +41,7 @@ public class AssociateElementWithDomainUseCase
   private final GenericElementRepository elementRepository;
   private final DomainRepository domainRepository;
   private final Decider decider;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public boolean isReadOnly() {
@@ -55,6 +57,7 @@ public class AssociateElementWithDomainUseCase
     element.setUpdatedAt(Instant.now());
     decider.decide(element, domain);
     DomainSensitiveElementValidator.validate(element);
+    inspectionFindingRepository.updateInspections(element, domain, false);
     // re-fetch the element to make sure it is returned with updated versioning information and
     // transaction listeners are called
     return new OutputData(fetchElement(input, userAccessRights), domain);
