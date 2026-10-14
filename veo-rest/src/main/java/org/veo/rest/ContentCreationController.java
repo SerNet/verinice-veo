@@ -340,7 +340,7 @@ public class ContentCreationController extends AbstractVeoController {
   @Operation(summary = "Create or update inspection with given key")
   @ApiResponse(responseCode = "201", description = "Inspection created")
   @ApiResponse(responseCode = "200", description = "Inspection updated")
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDecision(
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveInspection(
       @Parameter(hidden = true) ServletWebRequest request,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
