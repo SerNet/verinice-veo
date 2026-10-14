@@ -17,11 +17,17 @@
  */
 package org.veo.core
 
+import java.util.concurrent.ExecutionException
+import java.util.function.Function
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.test.context.TestSecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionSynchronizationManager
@@ -48,6 +54,7 @@ import org.veo.core.service.EntitySchemaService
 import org.veo.core.service.UserAccessRightsProvider
 import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.UseCase
+import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
@@ -170,6 +177,12 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     UserAccessRightsProvider userAccessRightsProvider
 
+    @Autowired
+    UseCaseInteractor useCaseInteractor
+
+    @Autowired
+    ApplicationContext applicationContext
+
     def setup() {
 
         txTemplate.execute {
@@ -224,6 +237,19 @@ abstract class VeoSpringSpec extends VeoSpec {
     def <T> T executeInTransaction(Closure<T> cl) {
         txTemplate.execute {
             cl.call()
+        }
+    }
+
+    <I extends UseCase.InputData, O extends UseCase.OutputData> O executeUseCase(
+            Class<? extends UseCase<I, O>> useCaseType, I input) {
+        def testContext = TestSecurityContextHolder.context
+        assert testContext.authentication: 'No test user. Annotate the spec or feature with @WithUserDetails.'
+        def previousContext = SecurityContextHolder.context
+        SecurityContextHolder.context = testContext
+        try {
+            useCaseInteractor.execute(applicationContext.getBean(useCaseType), input, Function.identity()).get()
+        } finally {
+            SecurityContextHolder.context = previousContext
         }
     }
 
