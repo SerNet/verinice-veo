@@ -27,7 +27,14 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.condition.ConstantExpression
+import org.veo.core.entity.condition.EqualsExpression
+import org.veo.core.entity.condition.PartCountExpression
+import org.veo.core.entity.inspection.Severity
+import org.veo.core.usecase.domain.DeleteInspectionUseCase
+import org.veo.core.usecase.domain.SaveInspectionUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -203,8 +210,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    // TODO VEO-1355: add a test for a scenario/domain with inspections
-    def "there are no decisions for a scenario"() {
+    def "retrieve inspection findings for a scenario"() {
         given: "an existing scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
@@ -217,5 +223,58 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "there are no results"
         result.empty
+
+        when: 'adding an inspection that targets the scenario'
+        executeUseCase(SaveInspectionUseCase, new SaveInspectionUseCase.InputData(domain.id, 'part-required', newInspection {
+            elementType = ElementType.SCENARIO
+            severity = Severity.ERROR
+            condition = new EqualsExpression(new PartCountExpression('WorstCase'), new ConstantExpression(0))
+            description = new TranslatedText([
+                (Locale.ENGLISH): "Part me!"
+            ])
+        }))
+        result = parseJson(get("/scenarios/${scenario.idAsString}/inspection?domain=${domain.idAsString}"))
+
+        then: 'inspection findings are returned'
+        with(result) {
+            size() == 1
+            first().description == [en: 'Part me!']
+        }
+
+        when: 'changing the element according to the inspection'
+        def partId = parseJson(post("/domains/$domain.id/scenarios", [
+            name   : "Petty part",
+            owner  : [targetUri: "/units/$unit.id"],
+            subType: "WorstCase",
+            status : "NEW",
+        ])).resourceId
+        updateElement("/domains/$domain.id/scenarios/$scenario.id", {
+            it.parts <<
+                    [targetUri: "/domains/$domain.id/scenarios/$partId"]
+        })
+
+        result = parseJson(get("/scenarios/${scenario.idAsString}/inspection?domain=${domain.idAsString}"))
+
+        then:
+        result.empty
+
+        when: 'removing the fix and the inspection'
+        updateElement("/domains/$domain.id/scenarios/$scenario.id", {
+            it.parts = []
+        })
+        executeUseCase(DeleteInspectionUseCase, new DeleteInspectionUseCase.InputData(domain.id, 'part-required'))
+        result = parseJson(get("/scenarios/${scenario.idAsString}/inspection?domain=${domain.idAsString}"))
+
+        then:
+        result.empty
+    }
+
+    void updateElement(String uri, Closure mod) {
+        get(uri).tap { getResults ->
+            parseJson(getResults).tap { json ->
+                mod.call(json)
+                put(uri, json, ["If-Match": getETag(getResults)], 200)
+            }
+        }
     }
 }
