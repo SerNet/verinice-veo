@@ -107,4 +107,32 @@ class EvaluationMvcITSpec extends VeoMvcSpec{
             "doesn't matter: 0",
         ]
     }
+
+    def "decisions are evaluated when an element is associated with a domain"() {
+        given: "a decision in the domain"
+        domain.applyDecision("alwaysTrue", new ExpressiveDecision().tap {
+            name = new TranslatedText([(Locale.ENGLISH): "always true"])
+            elementType = ElementType.INCIDENT
+            elementSubType = "accident"
+            expression = new ConstantExpression(true)
+        })
+        domainDataRepository.save(domain)
+
+        and: "an incident that is not yet associated with the domain"
+        def incidentId = executeInTransaction {
+            def unit = unitDataRepository.findById(UUID.fromString(unitId)).get()
+            incidentDataRepository.save(newIncident(unit) {
+                name = "my incident"
+            }).idAsString
+        }
+
+        when: "associating the incident with the domain"
+        post("/domains/${domain.id}/incidents/$incidentId", [
+            subType: "accident",
+            status : "NEW",
+        ], 200)
+
+        then: "the decision has been evaluated"
+        parseJson(get("/domains/${domain.id}/incidents/$incidentId")).decisionResults.alwaysTrue?.value == true
+    }
 }

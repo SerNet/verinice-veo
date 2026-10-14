@@ -1321,8 +1321,11 @@ public class ModuleConfiguration {
 
   @Bean
   AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
-      GenericElementRepository genericElementRepository, DomainRepository domainRepository) {
-    return new AssociateElementWithDomainUseCase(genericElementRepository, domainRepository);
+      GenericElementRepository genericElementRepository,
+      DomainRepository domainRepository,
+      Decider decider) {
+    return new AssociateElementWithDomainUseCase(
+        genericElementRepository, domainRepository, decider);
   }
 
   @Bean

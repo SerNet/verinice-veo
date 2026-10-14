@@ -29,6 +29,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.decision.Decider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +39,7 @@ public class AssociateElementWithDomainUseCase
         AssociateElementWithDomainUseCase.InputData, AssociateElementWithDomainUseCase.OutputData> {
   private final GenericElementRepository elementRepository;
   private final DomainRepository domainRepository;
+  private final Decider decider;
 
   @Override
   public boolean isReadOnly() {
@@ -51,6 +53,7 @@ public class AssociateElementWithDomainUseCase
     userAccessRights.checkElementWriteAccess(element);
     element.associateWithDomain(domain, input.subType, input.status);
     element.setUpdatedAt(Instant.now());
+    decider.decide(element, domain);
     DomainSensitiveElementValidator.validate(element);
     // re-fetch the element to make sure it is returned with updated versioning information and
     // transaction listeners are called
