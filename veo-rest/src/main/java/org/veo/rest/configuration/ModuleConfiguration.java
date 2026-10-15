@@ -1081,8 +1081,10 @@ public class ModuleConfiguration {
 
   @Bean
   public DefaultDomainCreator defaultDomainTemplateProvider(
-      DomainTemplateService domainService, DomainTemplateRepository domainTemplateRepository) {
-    return new DefaultDomainCreator(domainService, domainTemplateRepository);
+      DomainTemplateService domainService,
+      DomainTemplateRepository domainTemplateRepository,
+      MessageCreator messageCreator) {
+    return new DefaultDomainCreator(domainService, domainTemplateRepository, messageCreator);
   }
 
   @Bean

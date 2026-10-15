@@ -20,6 +20,7 @@ package org.veo.core.service
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.repository.DomainTemplateRepository
+import org.veo.core.usecase.MessageCreator
 import org.veo.core.usecase.TemplateItems
 import org.veo.core.usecase.service.DomainTemplateService
 import org.veo.service.DefaultDomainCreator
@@ -30,7 +31,8 @@ class DefaultDomainCreatorSpec extends Specification {
 
     DomainTemplateService domainTemplateService = Mock()
     DomainTemplateRepository domainTemplateRepo = Mock()
-    DefaultDomainCreator defaultDomainCreator = new DefaultDomainCreator(domainTemplateService, domainTemplateRepo)
+    MessageCreator messageCreator = Mock()
+    DefaultDomainCreator defaultDomainCreator = new DefaultDomainCreator(domainTemplateService, domainTemplateRepo, messageCreator)
 
     def "adds default domains"() {
         given: 'a client, one DS-GVO template and an ISO template'
@@ -54,5 +56,7 @@ class DefaultDomainCreatorSpec extends Specification {
         1 * domainTemplateService.createDomain(client, isoTemplateId, TemplateItems.CATALOG_ONLY) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
         1 * client.addToDomains(isoDomain)
+        1 * messageCreator.createDomainCreationMessage(dsgvoDomain)
+        1 * messageCreator.createDomainCreationMessage(isoDomain)
     }
 }
