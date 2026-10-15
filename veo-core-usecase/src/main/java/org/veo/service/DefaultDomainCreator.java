@@ -21,6 +21,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Profile;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.TemplateItems;
 import org.veo.core.usecase.service.DomainTemplateService;
 
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DefaultDomainCreator {
   private final DomainTemplateService domainService;
   private final DomainTemplateRepository domainTemplateRepository;
+  private final MessageCreator messageCreator;
 
   public void addDomain(Client client, String templateName, TemplateItems templateItems) {
     domainTemplateRepository
@@ -47,7 +49,10 @@ public class DefaultDomainCreator {
                   templateId,
                   templateName,
                   client.getIdAsString());
-              client.addToDomains(domainService.createDomain(client, templateId, templateItems));
+              Domain domain = domainService.createDomain(client, templateId, templateItems);
+              client.addToDomains(domain);
+              // TODO #5017 rethink event creation
+              messageCreator.createDomainCreationMessage(domain);
             },
             () -> {
               log.warn("Default domain template {} not found.", templateName);

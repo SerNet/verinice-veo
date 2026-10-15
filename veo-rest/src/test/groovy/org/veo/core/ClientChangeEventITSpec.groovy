@@ -154,6 +154,10 @@ class ClientChangeEventITSpec extends VeoSpringSpec {
                 'DSGVO-test',
                 'test-domain'
             ]
+            def domainCreationEvents = eventStoreDataRepository.findAll().findAll {
+                it.routingKey.endsWith("domain_creation")
+            }
+            domainCreationEvents.size() == 3
         }
 
         when: "we add a profile to a template and add this profile"
