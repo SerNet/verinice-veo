@@ -112,6 +112,7 @@ public class DomainStateMapper {
     target.setDecisions(source.getDecisions());
     target.setInspections(source.getInspections());
     target.setIncarnationConfiguration(source.getIncarnationConfiguration());
+    target.setTaskConfiguration(source.getTaskConfiguration());
     target.setControlImplementationConfiguration(source.getControlImplementationConfiguration());
     target.setDomainMigrationDefinition(source.getDomainMigrationDefinition());
 

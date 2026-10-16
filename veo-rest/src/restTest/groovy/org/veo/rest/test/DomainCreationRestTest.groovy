@@ -106,6 +106,18 @@ class DomainCreationRestTest extends DomainRestTest {
             put("/content-creation/domains/$domainId/incarnation-configuration", body, getETag(), 204, CONTENT_CREATOR)
         }
 
+        and:
+        get("/domains/$domainId/task-configuration").with {
+            body.inspectionTaskTemplates = [
+                alwaysAddPart: [
+                    summary: [
+                        en: "Add many parts"
+                    ]
+                ]
+            ]
+            put("/content-creation/domains/$domainId/task-configuration", body, getETag(), 204, CONTENT_CREATOR)
+        }
+
         and: "adding the domain to the unit"
         get("/units/$unitId").with{
             body.domains.add([targetUri: "/domains/$domainId"])
@@ -137,7 +149,7 @@ class DomainCreationRestTest extends DomainRestTest {
         secondaryClientDomain.templateVersion == "1.0.0"
         secondaryClientDomain.translations.de.name == "Meine Domäne"
 
-        and: "it contains the risk def, decision, inspection & incarnation config"
+        and: "it contains the risk def, decision, inspection, incarnation config & task config"
         secondaryClientDomain.decisions.truthy.elementSubType == "server"
         secondaryClientDomain.riskDefinitions.SomeRA.categories[0].id == "obli-cat-ory"
         with(get("/domains/${secondaryClientDomain.id}/inspections/alwaysAddPart", 200, SECONDARY_CLIENT_USER).body) {
@@ -145,6 +157,9 @@ class DomainCreationRestTest extends DomainRestTest {
         }
         with(get("/domains/$secondaryClientDomain.id/incarnation-configuration", 200, SECONDARY_CLIENT_USER).body) {
             exclude == ["COMPOSITE"]
+        }
+        with(get("/domains/$secondaryClientDomain.id/task-configuration", 200, SECONDARY_CLIENT_USER).body) {
+            inspectionTaskTemplates.alwaysAddPart.summary.en == "Add many parts"
         }
 
         and: "an element can be created in the domain"

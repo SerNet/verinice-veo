@@ -79,6 +79,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.entity.ref.TypedSymbolicId;
@@ -109,6 +110,7 @@ import org.veo.core.usecase.profile.GetProfileItemUseCase;
 import org.veo.core.usecase.profile.GetProfileItemsUseCase;
 import org.veo.core.usecase.profile.GetProfileUseCase;
 import org.veo.core.usecase.profile.GetProfilesUseCase;
+import org.veo.core.usecase.profile.GetTaskConfigurationUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 
@@ -150,6 +152,7 @@ public class DomainController extends AbstractEntityController {
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
   private final GetIncarnationConfigurationUseCase getIncarnationConfigurationUseCase;
+  private final GetTaskConfigurationUseCase getTaskConfigurationUseCase;
   private final GetProfileItemsUseCase getProfileItemsUseCase;
   private final GetProfileItemUseCase getProfileItemUseCase;
   private final GetProfilesUseCase getProfilesUseCase;
@@ -233,6 +236,18 @@ public class DomainController extends AbstractEntityController {
         getIncarnationConfigurationUseCase,
         new EntityId(domainId),
         GetIncarnationConfigurationUseCase.OutputData::incarnationConfiguration);
+  }
+
+  @GetMapping("/{domainId}/task-configuration")
+  @Operation(summary = "Loads the task configuration for the domain")
+  public @Valid Future<TaskConfiguration> getTaskConfiguration(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId) {
+    return useCaseInteractor.execute(
+        getTaskConfigurationUseCase,
+        new EntityId(domainId),
+        GetTaskConfigurationUseCase.OutputData::taskConfiguration);
   }
 
   @GetMapping("/{domainId}/profiles")

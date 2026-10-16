@@ -1034,6 +1034,81 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "update task config"() {
+        given:
+        testDomain.applyElementTypeDefinition(newElementTypeDefinition(ElementType.INCIDENT, testDomain) {
+            links.discoverer = newLinkDefinition(ElementType.PERSON,"PER_ry")
+            links.affectedSystem = newLinkDefinition(ElementType.ASSET,"AST_ral")
+        })
+        testDomain.applyInspection("unreportedIncident", newInspection {
+            elementType = ElementType.INCIDENT
+        })
+        testDomain.applyInspection("genericInspection", newInspection {})
+        domainDataRepository.save(testDomain)
+
+        when:
+        put("/content-creation/domains/$testDomain.id/task-configuration", [
+            inspectionTaskTemplates: [
+                unreportedIncident: [
+                    summary: [
+                        en: "Report that incident!"
+                    ],
+                    responsibilityLink: "discoverer"
+                ]
+            ]
+        ], 204)
+
+        then:
+        with(parseJson(get("/domains/$testDomain.id/task-configuration"))) {
+            inspectionTaskTemplates.unreportedIncident.summary.en == "Report that incident!"
+            inspectionTaskTemplates.unreportedIncident.responsibilityLink == "discoverer"
+        }
+
+        when: "trying to use an undefined inspection"
+        put("/content-creation/domains/$testDomain.id/task-configuration", [
+            inspectionTaskTemplates: [
+                imaginary: [:]
+            ]
+        ], 422)
+
+        then:
+        def ex = thrown(UnprocessableDataException)
+        ex.message == "Invalid task template for inspection 'imaginary': Domain $testDomain.id does not contain inspection 'imaginary'"
+
+        when: "trying to use a responsibility link targeting assets"
+        put("/content-creation/domains/$testDomain.id/task-configuration", [
+            inspectionTaskTemplates: [
+                unreportedIncident: [
+                    summary: [
+                        en: "Report that incident!"
+                    ],
+                    responsibilityLink: "affectedSystem"
+                ]
+            ]
+        ], 422)
+
+        then:
+        ex = thrown(UnprocessableDataException)
+        ex.message == "Invalid task template for inspection 'unreportedIncident': Link type 'affectedSystem' cannot be used for task responsibilities, because it targets assets instead of persons"
+
+        when: "trying to use a responsibility link where the element type is not clear"
+        put("/content-creation/domains/$testDomain.id/task-configuration", [
+            inspectionTaskTemplates: [
+                genericInspection: [
+                    summary: [
+                        en: "Just do something!"
+                    ],
+                    responsibilityLink: "anybody"
+                ]
+            ]
+        ], 422)
+
+        then:
+        ex = thrown(UnprocessableDataException)
+        ex.message == "Invalid task template for inspection 'genericInspection': A responsibility link can only be defined, if the inspection targets a specific element type."
+    }
+
+    @WithUserDetails("content-creator")
     def "update a profile in a domain"() {
         given: "a domain and a unit"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id

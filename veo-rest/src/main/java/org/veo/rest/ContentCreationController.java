@@ -69,6 +69,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.Profile;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.domainmigration.DomainMigrationStep;
@@ -99,6 +100,7 @@ import org.veo.core.usecase.domaintemplate.CreateProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
+import org.veo.core.usecase.profile.SaveTaskConfigurationUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.service.EtagService;
 
@@ -126,6 +128,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase;
+  private final SaveTaskConfigurationUseCase saveTaskConfigurationUseCase;
   private final SaveControlImplementationConfigurationUseCase
       saveControlImplementationConfigurationUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
@@ -273,6 +276,21 @@ public class ContentCreationController extends AbstractVeoController {
     return useCaseInteractor.execute(
         saveIncarnationConfigurationUseCase,
         new SaveIncarnationConfigurationUseCase.InputData(domainId, incarnationConfiguration),
+        empty -> ResponseEntity.noContent().build());
+  }
+
+  @PutMapping("/domains/{domainId}/task-configuration")
+  @Operation(
+      summary = "Update the task config for this domain. This determines how tasks are managed.")
+  @ApiResponse(responseCode = "204", description = "task config updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveTaskConfiguration(
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          UUID domainId,
+      @RequestBody TaskConfiguration taskConfiguration) {
+    return useCaseInteractor.execute(
+        saveTaskConfigurationUseCase,
+        new SaveTaskConfigurationUseCase.InputData(domainId, taskConfiguration),
         empty -> ResponseEntity.noContent().build());
   }
 

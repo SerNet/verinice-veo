@@ -43,6 +43,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.ProfileState;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.state.DomainBaseState;
@@ -74,6 +75,8 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto
   private Map<String, Inspection> inspections = new HashMap<>();
 
   private IncarnationConfiguration incarnationConfiguration = new IncarnationConfiguration();
+
+  private TaskConfiguration taskConfiguration = new TaskConfiguration();
 
   private ControlImplementationConfiguration controlImplementationConfiguration =
       new ControlImplementationConfiguration();

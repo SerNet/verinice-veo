@@ -33,6 +33,7 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.ProfileState;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.domainmigration.DomainMigrationDefinition;
@@ -60,6 +61,8 @@ public interface DomainBaseState
    * The default behavior when creating incarnation descriptions for catalog items from this domain
    */
   IncarnationConfiguration getIncarnationConfiguration();
+
+  TaskConfiguration getTaskConfiguration();
 
   ControlImplementationConfiguration getControlImplementationConfiguration();
 

@@ -17,6 +17,7 @@
  */
 package org.veo.persistence.entity.jpa;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +50,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.IncarnationConfiguration;
 import org.veo.core.entity.NameAbbreviationAndDescription;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.Translated;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -122,6 +124,10 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @NotNull
   @JdbcTypeCode(SqlTypes.JSON)
+  private TaskConfiguration taskConfiguration = new TaskConfiguration();
+
+  @NotNull
+  @JdbcTypeCode(SqlTypes.JSON)
   private ControlImplementationConfiguration controlImplementationConfiguration =
       new ControlImplementationConfiguration();
 
@@ -167,6 +173,13 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       throw new NotFoundException("Decision '%s' not found".formatted(decisionKey));
     }
     setDecisions(decisions);
+  }
+
+  @Override
+  public void setTaskConfiguration(TaskConfiguration taskConfiguration) {
+    taskConfiguration.selfValidate(this);
+    this.taskConfiguration = taskConfiguration;
+    setUpdatedAt(Instant.now());
   }
 
   @Override

@@ -85,6 +85,8 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void setIncarnationConfiguration(IncarnationConfiguration incarnationConfiguration);
 
+  void setTaskConfiguration(@NotNull TaskConfiguration taskConfiguration);
+
   void setControlImplementationConfiguration(
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration);
 

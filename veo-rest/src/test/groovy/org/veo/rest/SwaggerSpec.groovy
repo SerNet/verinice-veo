@@ -1904,6 +1904,40 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "TaskConfiguration is well-documented"() {
+        expect:
+        with(getSchema('TaskConfiguration')) {
+            it.description == 'Defines how tasks are managed in the domain'
+            it.properties.keySet() ==~ [
+                'inspectionTaskTemplates'
+            ]
+            it.required ==~ [
+                'inspectionTaskTemplates'
+            ]
+            with(it.properties.inspectionTaskTemplates) {
+                description == 'Determines how tasks are generated for specific inspections - keys are inspection IDs.'
+                type == 'object'
+                additionalProperties['$ref'] == '#/components/schemas/InspectionTaskTemplate'
+            }
+        }
+        with(getSchema('InspectionTaskTemplate')) {
+            it.properties.keySet() ==~ [
+                'summary',
+                'responsibilityLink',
+            ]
+            with(it.properties.summary) {
+                description == 'Brief task description'
+                type == 'object'
+                additionalProperties.type == 'string'
+                example == [en: 'Revise potential impact.']
+            }
+            with(it.properties.responsibilityLink) {
+                description == 'A custom link ID - the responsibility link type must target persons and is used to determine the person responsible for an inspection task.'
+                type == 'string'
+            }
+        }
+    }
+
     def "DecisionResult is well-documented"() {
         expect:
         with(getSchema('DecisionResult')) {
@@ -2209,6 +2243,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'catalogItems',
                 'inspections',
                 'incarnationConfiguration',
+                'taskConfiguration',
                 'domainMigrationDefinition',
                 'profiles_v2',
                 'controlImplementationConfiguration',
@@ -2297,6 +2332,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 'catalogItems',
                 'inspections',
                 'incarnationConfiguration',
+                'taskConfiguration',
                 'domainMigrationDefinition',
                 'profiles_v2',
                 'controlImplementationConfiguration',
