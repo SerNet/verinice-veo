@@ -12,7 +12,7 @@ def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 allprojects {
     group = 'org.veo'
-    version = '0.84.1'
+    version = '0.84.2'
 
     apply plugin: "com.diffplug.spotless"
 
@@ -180,8 +180,16 @@ subprojects {
                 details.because('CVE-2026-59901')
             }
             if (requested.group == "com.rabbitmq" && requested.version == "5.31.0") {
-                useVersion("5.34.0")
-                because("CWE-295;CVE-2026-75516")
+                useVersion("5.37.0")
+                because("CWE-295;CVE-2026-75516;CVE-2026-106123;CVE-2026-106122;CVE-2026-106121")
+            }
+            if (requested.group == "com.fasterxml.jackson.core" && requested.version == "2.22.1") {
+                useVersion("2.22.3")
+                because("CVE-2026-89407,CVE-2026-89425,CVE-2026-91776,CVE-2026-91777")
+            }
+            if (requested.group == "tools.jackson.core" && requested.version == "3.1.5") {
+                useVersion("3.2.3")
+                because("CVE-2026-89407,CVE-2026-89425,CVE-2026-91776,CVE-2026-91777")
             }
         }
     }
