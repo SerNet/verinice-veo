@@ -1064,6 +1064,29 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             inspectionTaskTemplates.unreportedIncident.responsibilityLink == "discoverer"
         }
 
+        when: "trying to change the link target type afterwards"
+        parseJson(get("/domains/$testDomain.id")).elementTypeDefinitions.incident.with{
+            links.discoverer.targetType = "control"
+            put("/content-creation/domains/$owner.testDomain.id/element-type-definitions/incident", it, 422)
+        }
+
+        then:
+        def ex = thrown(UnprocessableDataException)
+        ex.message == "Invalid task template for inspection 'unreportedIncident': Link type 'discoverer' cannot be used for task responsibilities, because it targets controls instead of persons"
+
+        // TODO #3042: remove this when we remove support for JSON schema
+
+        when:
+        parseJson(get("/schemas/incident?domains=$testDomain.id")).with{
+            it['properties'].links['properties'].discoverer.items['properties'].target['properties'].type.enum[0] = "control"
+            it['properties'].translations = parseJson(owner.get("/domains/$owner.testDomain.id")).elementTypeDefinitions.incident.translations
+            post("/content-creation/domains/$owner.testDomain.id/element-type-definitions/incident/object-schema", it, 422)
+        }
+
+        then:
+        ex = thrown(UnprocessableDataException)
+        ex.message == "Invalid task template for inspection 'unreportedIncident': Link type 'discoverer' cannot be used for task responsibilities, because it targets controls instead of persons"
+
         when: "trying to use an undefined inspection"
         put("/content-creation/domains/$testDomain.id/task-configuration", [
             inspectionTaskTemplates: [
@@ -1072,7 +1095,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ], 422)
 
         then:
-        def ex = thrown(UnprocessableDataException)
+        ex = thrown(UnprocessableDataException)
         ex.message == "Invalid task template for inspection 'imaginary': Domain $testDomain.id does not contain inspection 'imaginary'"
 
         when: "trying to use a responsibility link targeting assets"

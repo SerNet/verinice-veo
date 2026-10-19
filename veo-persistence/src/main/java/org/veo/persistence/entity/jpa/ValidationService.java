@@ -52,6 +52,7 @@ public class ValidationService {
     if (identifiable instanceof DomainBase domain) {
       domain.getElementTypeDefinitions().forEach(ElementTypeDefinitionValidator::validate);
       domain.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition(domain));
+      domain.getTaskConfiguration().selfValidate(domain);
     }
 
     if (identifiable instanceof ElementTypeDefinition entity) {

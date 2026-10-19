@@ -75,6 +75,7 @@ public class UpdateElementTypeDefinitionUseCase
 
     domain.applyElementTypeDefinition(elementTypeDefinition);
     domain.setUpdatedAt(Instant.now());
+    repository.save(domain);
     return EmptyOutput.INSTANCE;
   }
 
