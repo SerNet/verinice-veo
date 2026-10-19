@@ -249,9 +249,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         ])
 
         when: "updating to the new domain template"
-        def newDomainId = executeInTransaction {
-            parseJson(post("/domains/$oldDomainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null)).resourceId
-        }
+        def newDomainId = parseJson(post("/domains/$oldDomainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null)).resourceId
 
         then:
         with(getNthStoredEventContent(-2,"entity_revision")) {
