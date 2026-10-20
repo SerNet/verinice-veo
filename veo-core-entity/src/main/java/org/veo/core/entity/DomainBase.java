@@ -178,11 +178,15 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   }
 
   default Inspection getInspection(String inspectionId) {
-    return Optional.ofNullable(getInspections().get(inspectionId))
+    return findInspection(inspectionId)
         .orElseThrow(
             () ->
                 new NotFoundException(
                     "Domain %s does not contain inspection '%s'", getIdAsString(), inspectionId));
+  }
+
+  default Optional<Inspection> findInspection(String inspectionId) {
+    return Optional.ofNullable(getInspections().get(inspectionId));
   }
 
   void setInspections(Map<String, Inspection> inspections);
