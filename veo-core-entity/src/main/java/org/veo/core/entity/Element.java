@@ -20,6 +20,7 @@ package org.veo.core.entity;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -80,6 +81,10 @@ public interface Element
   boolean removeLink(CustomLink aCustomLink);
 
   Set<CustomLink> getLinks();
+
+  default List<CustomLink> getLinks(String linkType, Domain domain) {
+    return getLinks(domain).stream().filter(l -> l.getType().equals(linkType)).toList();
+  }
 
   void setLinks(Set<CustomLink> aLinks);
 

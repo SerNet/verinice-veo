@@ -28,7 +28,9 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.inspection.Severity
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.InspectionFindingRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -69,6 +71,7 @@ class InspectionFindingJpaSpec extends AbstractJpaSpec {
     def 'CRUD inspection findings'() {
         when:
         def unit = unitRepository.save(newUnit(client))
+        def person = personDataRepository.save(newPerson(unit))
         def asset = assetDataRepository.save(newAsset(unit))
         def asset2 = assetDataRepository.save(newAsset(unit))
 
@@ -77,6 +80,9 @@ class InspectionFindingJpaSpec extends AbstractJpaSpec {
             it.unit = unit
             element = asset
             inspectionId = 'holmes'
+            severity = Severity.WARNING
+            taskSummary = TranslatedText.of {"check it out"}
+            responsible = person
         })
 
         def inspectionFindings = inspectionFindingDataRepository.findAllByElementIsAndDomainIs(asset, domain)
@@ -89,6 +95,9 @@ class InspectionFindingJpaSpec extends AbstractJpaSpec {
             it.unit == unit
             it.domain == owner.domain
             inspectionId == 'holmes'
+            severity == Severity.WARNING
+            taskSummary.translations[EN] == "check it out"
+            responsible == person
         }
 
         inspectionFindings2.empty

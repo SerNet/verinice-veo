@@ -87,6 +87,11 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   void setTaskConfiguration(@NotNull TaskConfiguration taskConfiguration);
 
+  default Optional<TaskConfiguration.InspectionTaskTemplate> findInspectionTaskTemplate(
+      String inspectionId) {
+    return Optional.ofNullable(getTaskConfiguration().inspectionTaskTemplates().get(inspectionId));
+  }
+
   void setControlImplementationConfiguration(
       @NotNull ControlImplementationConfiguration controlImplementationConfiguration);
 
