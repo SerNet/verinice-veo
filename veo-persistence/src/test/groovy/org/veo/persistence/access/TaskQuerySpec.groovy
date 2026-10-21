@@ -210,6 +210,56 @@ class TaskQuerySpec extends AbstractJpaSpec {
         }
     }
 
+    def "tasks can be filtered by type"() {
+        given:
+        txTemplate.execute {
+            def control1 = controlDataRepository.save(newControl(unit) {
+                name = 'control 1'
+                associateWithDomain(domain, "TOM", "NEW")
+            })
+            def control2 = controlDataRepository.save(newControl(unit) {
+                name = 'control 2'
+                associateWithDomain(domain, "TOM", "NEW")
+            })
+            def asset = assetDataRepository.save(newAsset(unit) {
+                name = "asset"
+                associateWithDomain(domain, "Server", "NEW")
+                implementControl(control1)
+                implementControl(control2)
+                getRequirementImplementation(control2).tap {
+                    status = ImplementationStatus.YES
+                    nextRevisionDate = LocalDate.now()
+                }
+            })
+        }
+
+        expect:
+        with(query(unit, domain)) {
+            totalResults() == TaskType.values().size()
+            resultPage()*.type() ==~ TaskType.values() // enforce test completeness :)
+        }
+        with(query(unit, domain) {
+            it.whereTypeIn([
+                TaskType.REQUIREMENT_IMPLEMENTATION_REVISION
+            ] as Set)
+        }) {
+            totalResults() == 1
+            resultPage()*.type() ==~ [
+                TaskType.REQUIREMENT_IMPLEMENTATION_REVISION
+            ]
+        }
+        with(query(unit, domain) {
+            it.whereTypeIn([
+                TaskType.REQUIREMENT_IMPLEMENTATION,
+            ] as Set)
+        }) {
+            totalResults() == 1
+            resultPage()*.type() ==~ [
+                TaskType.REQUIREMENT_IMPLEMENTATION,
+            ]
+        }
+    }
+
     def "tasks are filtered by unit"() {
         given:
         Unit unit2

@@ -28,9 +28,12 @@ import javax.annotation.Nonnull;
 
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
+import org.veo.core.entity.TaskType;
 import org.veo.core.entity.ref.TypedId;
 
 public interface TaskQuery extends Query<Task, TaskQuery.SortCriterion> {
+  void whereTypeIn(@Nonnull Set<TaskType> types);
+
   void whereAssigneeIn(@Nonnull Set<TypedId<Person>> persons);
 
   enum SortCriterion {

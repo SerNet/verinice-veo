@@ -18,6 +18,7 @@
 package org.veo.persistence.access.query;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,7 @@ public class TaskQueryImpl implements TaskQuery {
   private final UserAccessRights accessRights;
   private final Domain domain;
   private final Unit unit;
+  private List<String> types = null;
   private List<UUID> assignees = null;
 
   @Override
@@ -121,6 +123,11 @@ public class TaskQueryImpl implements TaskQuery {
                             .orElse(null)))
             .toList();
     return new PagedResult<>(pagingConfig, pageItems, totalResultCount, totalPages);
+  }
+
+  @Override
+  public void whereTypeIn(@NonNull Set<TaskType> types) {
+    this.types = types.stream().map(TaskType::name).toList();
   }
 
   @Override
@@ -174,13 +181,21 @@ public class TaskQueryImpl implements TaskQuery {
                 : "select t.type, t.assignee_id, t.deadline, t.ri_id from t\n");
 
     // WHERE / JOIN (optional filters)
+    var conditions = new ArrayList<String>();
+    if (types != null) {
+      params.put("types", types);
+      conditions.add("t.type in :types");
+    }
     if (assignees != null) {
       if (assignees.isEmpty()) {
-        query += "where t.assignee_id is null\n";
+        conditions.add("t.assignee_id is null");
       } else {
         params.put("assignees", assignees);
-        query += "where t.assignee_id in (:assignees)\n";
+        conditions.add("t.assignee_id in (:assignees)");
       }
+    }
+    if (!conditions.isEmpty()) {
+      query += "where " + String.join("\n and ", conditions) + "\n";
     }
 
     // ORDER & LIMIT
