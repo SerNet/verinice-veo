@@ -21,8 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import jakarta.validation.Valid;
-
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.retry.backoff.BackOffPolicyBuilder;
 import org.springframework.retry.policy.SimpleRetryPolicy;
@@ -68,7 +66,7 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
   @Async
   public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
       UseCase<I, O> useCase,
-      @Valid I input, // TODO implement test to make sure all marked
+      I input, // TODO implement test to make sure all marked
       // complex types in fields are validated
       Function<O, R> outputMapper) {
 

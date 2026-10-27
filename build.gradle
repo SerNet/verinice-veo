@@ -157,6 +157,7 @@ subprojects {
 
     dependencies {
         implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+        annotationProcessor platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
         compileOnly 'org.slf4j:slf4j-api'
         runtimeOnly 'ch.qos.logback:logback-classic'
         runtimeOnly 'ch.qos.logback.contrib:logback-json-classic:0.1.5'

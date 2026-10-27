@@ -239,8 +239,7 @@ public class IncidentController
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullIncidentDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullIncidentDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 

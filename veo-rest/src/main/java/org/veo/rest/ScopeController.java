@@ -53,7 +53,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -344,7 +343,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      @Valid @NotNull ScopeRiskDto dto, UUID scopeId) {
+      ScopeRiskDto dto, UUID scopeId) {
 
     var input =
         new CreateScopeRiskUseCase.InputData(
@@ -417,7 +416,7 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullScopeDto dto, @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullScopeDto dto, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(dto, domainId);
   }
 

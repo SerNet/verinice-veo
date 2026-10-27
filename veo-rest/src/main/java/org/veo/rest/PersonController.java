@@ -238,8 +238,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullPersonDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullPersonDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 

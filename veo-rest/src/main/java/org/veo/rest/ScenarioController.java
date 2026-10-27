@@ -239,8 +239,7 @@ public class ScenarioController
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullScenarioDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullScenarioDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 

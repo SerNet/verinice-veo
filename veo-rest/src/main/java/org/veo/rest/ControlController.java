@@ -232,8 +232,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullControlDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullControlDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 

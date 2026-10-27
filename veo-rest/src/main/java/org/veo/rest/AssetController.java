@@ -53,7 +53,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -307,8 +306,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullAssetDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullAssetDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 
@@ -353,7 +351,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      @Valid @NotNull AssetRiskDto dto, UUID assetId) {
+      AssetRiskDto dto, UUID assetId) {
 
     var input =
         new CreateAssetRiskUseCase.InputData(

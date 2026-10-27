@@ -126,7 +126,6 @@ public class ElementInDomainService {
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
-  @Valid
   public <TElement extends Element> boolean ensureElementExists(
       UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
     return runner.runReadOnly(

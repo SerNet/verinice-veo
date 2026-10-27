@@ -53,7 +53,6 @@ import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -311,8 +310,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   @PostMapping(value = "/evaluation")
   @Override
   public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      @Valid @RequestBody FullProcessDto element,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+      @RequestBody FullProcessDto element, @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(element, domainId);
   }
 
@@ -358,7 +356,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-      @Valid @NotNull ProcessRiskDto dto, UUID processId) {
+      ProcessRiskDto dto, UUID processId) {
     var input =
         new CreateProcessRiskUseCase.InputData(
             processId,
