@@ -41,6 +41,12 @@ import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImpactValues
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.entity.riskdefinition.CategoryDefinition
+import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.entity.type.VeoType
 import org.veo.core.entity.type.VeoType as T
@@ -1109,5 +1115,85 @@ class VeoExpressionITSpec extends Specification {
         exp.selfValidate(domain, ElementType.PROCESS)
         exp.getValueType(domain, ElementType.PROCESS) == T.listOf(T.attributeContainer([:]))
         exp.getValue(process, domain) == [inheritingLink]
+    }
+
+    def "potential impacts complete is #expected for #impactValues"() {
+        given:
+        def domain = Mock(Domain) {
+            riskDefinitions >> [
+                r1: Mock(RiskDefinition) {
+                    id >> "r1"
+                    categories >> [
+                        Mock(CategoryDefinition) {
+                            id >> "C"
+                            potentialImpacts >> [Mock(CategoryLevel)]
+                        },
+                        Mock(CategoryDefinition) {
+                            id >> "I"
+                            potentialImpacts >> [Mock(CategoryLevel)]
+                        },
+                        Mock(CategoryDefinition) {
+                            id >> "noImpacts"
+                            potentialImpacts >> []
+                        },
+                    ]
+                },
+                r2: Mock(RiskDefinition) {
+                    id >> "r2"
+                    categories >> [
+                        Mock(CategoryDefinition) {
+                            id >> "A"
+                            potentialImpacts >> [Mock(CategoryLevel)]
+                        },
+                    ]
+                },
+            ]
+        }
+        def asset = Spy(Asset) {
+            getImpactValues(domain, _) >> { Domain d, RiskDefinitionRef rd ->
+                Optional.ofNullable(impactValues[rd.idRef])
+            }
+        }
+        def exp = new PotentialImpactsCompleteExpression()
+
+        expect:
+        exp.selfValidate(domain, ElementType.ASSET)
+        exp.getValueType(domain, ElementType.ASSET) == T.bool()
+        exp.getValue(asset, domain) == expected
+
+        where:
+        impactValues                                                                       | expected
+        [r1: impacts(specific: [C: 1], calculated: [I: 2]), r2: impacts(specific: [A: 0])] | true
+        [r1: impacts(specific: [C: 1]), r2: impacts(specific: [A: 0])]                     | false
+        [r1: impacts(specific: [C: 1, I: 1])]                                              | false
+        [:]                                                                                | false
+    }
+
+    def "potential impacts complete is true without risk definitions"() {
+        given:
+        def domain = Mock(Domain) {
+            riskDefinitions >> [:]
+        }
+
+        expect:
+        new PotentialImpactsCompleteExpression().getValue(Spy(Scope), domain) == true
+    }
+
+    def "potential impacts complete can only be used for risk-affected elements"() {
+        when:
+        new PotentialImpactsCompleteExpression().selfValidate(Mock(Domain), ElementType.DOCUMENT)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "cannot determine potential impacts: expected Asset|Process|Scope, got Document"
+    }
+
+    private static ImpactValues impacts(Map<String, Map<String, Integer>> values) {
+        def toRefs = { Map<String, Integer> m ->
+            (m ?: [:]).collectEntries { k, v ->
+                [(new CategoryRef(k)): new ImpactRef(BigDecimal.valueOf(v))]
+            }
+        }
+        new ImpactValues(toRefs(values.specific), toRefs(values.calculated), null, null)
     }
 }

@@ -55,6 +55,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = MapExpression.class, name = "map"),
   @Type(value = MaxRiskExpression.class, name = "maxRisk"),
   @Type(value = PartCountExpression.class, name = "partCount"),
+  @Type(value = PotentialImpactsCompleteExpression.class, name = "potentialImpactsComplete"),
   @Type(value = RemoveExpression.class, name = "remove"),
   @Type(value = TernaryExpression.class, name = "ternary"),
 })
@@ -87,6 +88,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(value = "maxRisk", schema = MaxRiskExpression.class),
       @DiscriminatorMapping(value = "min", schema = MinExpression.class),
       @DiscriminatorMapping(value = "partCount", schema = PartCountExpression.class),
+      @DiscriminatorMapping(
+          value = "potentialImpactsComplete",
+          schema = PotentialImpactsCompleteExpression.class),
       @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class),
       @DiscriminatorMapping(value = "ternary", schema = TernaryExpression.class)
     },
@@ -108,6 +112,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       MaxRiskExpression.class,
       MinExpression.class,
       PartCountExpression.class,
+      PotentialImpactsCompleteExpression.class,
       RemoveExpression.class,
       TernaryExpression.class
     })
