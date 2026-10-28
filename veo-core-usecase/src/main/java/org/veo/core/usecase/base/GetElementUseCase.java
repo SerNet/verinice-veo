@@ -35,7 +35,7 @@ import org.veo.core.usecase.UseCase;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GetElementUseCase<T extends Element>
+public abstract class GetElementUseCase<T extends Element>
     implements TransactionalUseCase<GetElementUseCase.InputData, GetElementUseCase.OutputData<T>> {
 
   private final DomainRepository domainRepository;

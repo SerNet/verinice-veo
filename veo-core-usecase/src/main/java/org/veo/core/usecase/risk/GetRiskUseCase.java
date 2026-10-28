@@ -33,7 +33,7 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+public abstract class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
     implements TransactionalUseCase<GetRiskUseCase.InputData, GetRiskUseCase.OutputData<R>> {
 
   private final Class<T> entityClass;
