@@ -39,23 +39,13 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 
-import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
-import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
-import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.service.ObjectSchemaParser;
-import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
-import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ClientRepository;
@@ -74,9 +64,7 @@ import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
-import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
-import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.IncomingMessageHandler;
@@ -93,19 +81,6 @@ import org.veo.core.usecase.service.MigrationService;
 import org.veo.core.usecase.service.RefResolverFactory;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
-import org.veo.persistence.CurrentUserProvider;
-import org.veo.persistence.access.ControlImplementationRepositoryImpl;
-import org.veo.persistence.access.RequirementImplementationRepositoryImpl;
-import org.veo.persistence.access.StoredEventRepository;
-import org.veo.persistence.access.StoredEventRepositoryImpl;
-import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
-import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
-import org.veo.persistence.access.jpa.StoredEventDataRepository;
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
-import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
-import org.veo.rest.UserAccessRightsProviderImpl;
-import org.veo.rest.security.AuthAwareImpl;
-import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.ControlImplementationService;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
@@ -120,7 +95,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.EnumFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -159,24 +133,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EntityStateMapper getEntityStateMapper(EventPublisher eventPublisher) {
-    return new EntityStateMapper(getEntityFactory(), eventPublisher);
-  }
-
-  @Bean
-  public SchemaExtender schemaExtender() {
-    return new SchemaExtender();
-  }
-
-  @Bean
-  public EntitySchemaGenerator entitySchemaGenerator(
-      SchemaExtender schemaExtender, ObjectMapper objectMapper) {
-    return new EntitySchemaGenerator(schemaExtender, objectMapper);
-  }
-
-  @Bean
-  public EntitySchemaService getSchemaService(EntitySchemaGenerator generateEntitytSchema) {
-    return new EntitySchemaServiceImpl(generateEntitytSchema);
+  public EntityStateMapper getEntityStateMapper(
+      EntityFactory entityFactory, EventPublisher eventPublisher) {
+    return new EntityStateMapper(entityFactory, eventPublisher);
   }
 
   @Bean
@@ -185,63 +144,12 @@ public class ModuleConfiguration {
     return new RefResolverFactory(repositoryProvider, identifiableFactory);
   }
 
-  @Bean
-  public EntityFactory getEntityFactory() {
-    return new EntityDataFactory();
-  }
-
-  @Bean
-  public IdentifiableFactory identifiableFactory() {
-    return new IdentifiableDataFactory();
-  }
-
-  @Bean
-  public DomainAssociationTransformer domainAssociationTransformer(
-      ReferenceAssembler referenceAssembler) {
-    return new DomainAssociationTransformer(referenceAssembler);
-  }
-
-  @Bean
-  public StoredEventRepository storedEventRepository(
-      StoredEventDataRepository storedEventDataRepository) {
-    return new StoredEventRepositoryImpl(storedEventDataRepository);
-  }
-
-  @Bean
-  public RequirementImplementationRepository requirementImplementationRepository(
-      RequirementImplementationDataRepository dataRepository) {
-    return new RequirementImplementationRepositoryImpl(dataRepository);
-  }
-
-  @Bean
-  public ControlImplementationRepository controlImplementationRepository(
-      ControlImplementationDataRepository dataRepository) {
-    return new ControlImplementationRepositoryImpl(dataRepository);
-  }
-
-  @Bean
-  public AuthAwareImpl authAwareImpl() {
-    return new AuthAwareImpl();
-  }
-
-  @Bean
-  public EntityToDtoTransformer entityToDtoTransformer(
-      ReferenceAssembler referenceAssembler,
-      DomainAssociationTransformer domainAssociationTransformer) {
-    return new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
-  }
-
   @Primary
   @Bean(name = "applicationEventMulticaster")
   public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
     SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
     eventMulticaster.setTaskExecutor(new SyncTaskExecutor());
     return eventMulticaster;
-  }
-
-  @Bean
-  public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
-    return new CurrentUserProviderImpl(auditorAware);
   }
 
   @Bean
@@ -313,22 +221,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  // TODO #3042: remove this when we remove support for JSON schema
-  public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
-    return new ObjectSchemaParser(entityFactory);
-  }
-
-  @Bean
-  public MessageCreator messageCreator(
-      StoredEventRepository storedEventRepository,
-      ObjectMapper objectMapper,
-      ReferenceAssembler referenceAssembler,
-      EntityToDtoTransformer entityToDtoTransformer) {
-    return new MessageCreatorImpl(
-        storedEventRepository, objectMapper, referenceAssembler, entityToDtoTransformer);
-  }
-
-  @Bean
   public IncomingMessageHandler incomingMessageHandler(
       PersonRepository personRepository,
       RepositoryProvider repositoryProvider,
@@ -344,11 +236,6 @@ public class ModuleConfiguration {
   @Bean
   public ElementMigrationService elementMigrationService() {
     return new ElementMigrationService();
-  }
-
-  @Bean
-  public DomainTemplateIdGenerator domainTemplateIdGenerator() {
-    return new DomainTemplateIdGeneratorImpl();
   }
 
   @Bean
@@ -447,11 +334,6 @@ public class ModuleConfiguration {
     try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
       return factory.getValidator();
     }
-  }
-
-  @Bean
-  public UserAccessRightsProvider userAccessRightsProvider() {
-    return new UserAccessRightsProviderImpl();
   }
 
   // by default, the content schema for every response is derived from the

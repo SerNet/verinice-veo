@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -61,6 +63,7 @@ import tools.jackson.databind.node.StringNode;
 import tools.jackson.module.blackbird.BlackbirdModule;
 
 /** Add domain-specific sub schemas to an element schema. */
+@Component
 public class SchemaExtender {
   private final SchemaProvider provider = SchemaProvider.getInstance();
   private final Supplier<ObjectNode> scenarioRiskValuesDto =

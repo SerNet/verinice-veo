@@ -26,6 +26,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.SymIdRef;
 import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
@@ -69,6 +71,7 @@ import lombok.RequiredArgsConstructor;
  * DomainAssociationDto}.
  */
 @RequiredArgsConstructor
+@Component
 public class DomainAssociationTransformer {
   private final ReferenceAssembler referenceAssembler;
 

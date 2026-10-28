@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementType;
@@ -37,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class EntitySchemaServiceImpl implements EntitySchemaService {
 
   private final EntitySchemaGenerator generator;

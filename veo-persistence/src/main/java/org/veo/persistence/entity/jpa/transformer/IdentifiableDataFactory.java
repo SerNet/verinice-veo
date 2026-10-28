@@ -17,6 +17,8 @@
  */
 package org.veo.persistence.entity.jpa.transformer;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -56,6 +58,7 @@ import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
+@Component
 public class IdentifiableDataFactory implements IdentifiableFactory {
   @Override
   public <T extends Entity> T create(Class<T> type) {

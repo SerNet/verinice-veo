@@ -19,6 +19,8 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.NameBasedGenerator;
 import com.github.zafarkhaja.semver.Version;
@@ -28,6 +30,7 @@ import org.veo.core.service.DomainTemplateIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class DomainTemplateIdGeneratorImpl implements DomainTemplateIdGenerator {
 
   private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";

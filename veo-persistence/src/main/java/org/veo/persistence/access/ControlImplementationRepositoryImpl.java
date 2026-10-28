@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Repository;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
@@ -34,6 +36,7 @@ import org.veo.persistence.access.query.ControlImplementationQueryImpl;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Repository
 public class ControlImplementationRepositoryImpl implements ControlImplementationRepository {
 
   private final ControlImplementationDataRepository dataRepo;

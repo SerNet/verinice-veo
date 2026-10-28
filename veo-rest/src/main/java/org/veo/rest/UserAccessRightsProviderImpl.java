@@ -21,11 +21,13 @@ import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.rest.security.ApplicationUser;
 
+@Component
 public class UserAccessRightsProviderImpl implements UserAccessRightsProvider {
   @Override
   public UserAccessRights getAccessRights() {

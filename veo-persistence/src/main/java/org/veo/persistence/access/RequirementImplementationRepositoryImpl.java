@@ -20,6 +20,8 @@ package org.veo.persistence.access;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Repository;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
@@ -33,6 +35,7 @@ import org.veo.persistence.access.query.RequirementImplementationQueryImpl;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Repository
 public class RequirementImplementationRepositoryImpl
     implements RequirementImplementationRepository {
 

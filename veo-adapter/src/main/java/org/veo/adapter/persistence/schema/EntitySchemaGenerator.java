@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.ControlImplementationInDomainDto;
 import org.veo.core.entity.Domain;
@@ -35,6 +37,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.databind.node.ObjectNode;
 
+@Component
 public class EntitySchemaGenerator {
   private final Map<ElementType, Supplier<ObjectNode>> dtoByElementType =
       Arrays.stream(ElementTypeDtoInfo.values())

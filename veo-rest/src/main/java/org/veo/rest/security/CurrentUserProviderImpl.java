@@ -18,12 +18,14 @@
 package org.veo.rest.security;
 
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.stereotype.Component;
 
 import org.veo.persistence.CurrentUserProvider;
 
 /**
  * Strict {@link CurrentUserProvider} implementation that throws an exception when there is no user.
  */
+@Component
 public class CurrentUserProviderImpl implements CurrentUserProvider {
 
   private final AuditorAware<String> auditorAware;

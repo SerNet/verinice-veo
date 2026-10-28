@@ -34,6 +34,8 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.adapter.presenter.api.common.DomainBaseIdRef;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IIdRef;
@@ -137,6 +139,7 @@ import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.ref.TypedId;
 
 /** A collection of transform functions to transform entities to Dto back and forth. */
+@Component
 public final class EntityToDtoTransformer {
 
   private final ReferenceAssembler referenceAssembler;

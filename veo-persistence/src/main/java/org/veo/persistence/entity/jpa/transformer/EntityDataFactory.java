@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.springframework.stereotype.Component;
+
 import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.Asset;
@@ -74,6 +76,7 @@ import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 import org.veo.persistence.entity.jpa.UserConfigurationData;
 
+@Component
 public class EntityDataFactory implements EntityFactory {
 
   @Override

@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.stereotype.Component;
+
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -57,6 +59,7 @@ import tools.jackson.module.blackbird.BlackbirdModule;
  */
 // TODO #3042: remove this when we remove support for JSON schema
 @Deprecated
+@Component
 public class ObjectSchemaParser {
 
   private static final ObjectMapper OBJECTMAPPER =

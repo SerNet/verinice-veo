@@ -21,6 +21,7 @@ import java.time.Instant;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ import tools.jackson.databind.node.ObjectNode;
  */
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class MessageCreatorImpl implements MessageCreator {
   private final StoredEventRepository storedEventRepository;
   private final ObjectMapper objectMapper;
