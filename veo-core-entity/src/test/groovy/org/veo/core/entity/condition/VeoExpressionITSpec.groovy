@@ -1245,6 +1245,38 @@ class VeoExpressionITSpec extends Specification {
         ex.message == "cannot determine control implementations: expected Asset|Process|Scope, got Control"
     }
 
+    def "risk definition of scope can be evaluated"() {
+        given:
+        def domain = Mock(Domain)
+        def scopeWithRiskDefinition = Spy(Scope) {
+            getRiskDefinition(domain) >> Optional.of(new RiskDefinitionRef("r1"))
+        }
+        def scopeWithoutRiskDefinition = Spy(Scope) {
+            getRiskDefinition(domain) >> Optional.empty()
+        }
+        def exp = new RiskDefinitionExpression()
+
+        expect:
+        exp.selfValidate(domain, ElementType.SCOPE)
+        exp.getValueType(domain, ElementType.SCOPE) == T.string().orNothing()
+        exp.getValue(scopeWithRiskDefinition, domain) == "r1"
+        exp.getValue(scopeWithoutRiskDefinition, domain) == null
+    }
+
+    def "risk definition can only be determined for scopes"() {
+        when:
+        new RiskDefinitionExpression().selfValidate(Mock(Domain), elementType)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "cannot determine risk definition: expected Scope, got $typeName"
+
+        where:
+        elementType         | typeName
+        ElementType.ASSET   | "Asset"
+        ElementType.PROCESS | "Process"
+    }
+
     private static ImpactValues impacts(Map<String, Map<String, Integer>> values) {
         def toRefs = { Map<String, Integer> m ->
             (m ?: [:]).collectEntries { k, v ->
