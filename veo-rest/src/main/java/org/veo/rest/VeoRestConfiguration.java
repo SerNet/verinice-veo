@@ -24,13 +24,26 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
+import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 
 import lombok.Getter;
 
 @Configuration
-@ComponentScan("org.veo")
+@ComponentScan(
+    basePackages = "org.veo",
+    // Use cases are found by type, so that the core modules need no Spring annotations.
+    includeFilters =
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = UseCase.class),
+    excludeFilters =
+        @ComponentScan.Filter(
+            type = FilterType.ASSIGNABLE_TYPE,
+            // need configuration values, defined as @Bean methods in ModuleConfiguration
+            classes = {SaveUserConfigurationUseCase.class, GetAttributeValuesUseCase.class}))
 public class VeoRestConfiguration {
   public static final String PROFILE_BACKGROUND_TASKS = "background-tasks";
   public static final String PROFILE_DEVELOPMENT = "development";

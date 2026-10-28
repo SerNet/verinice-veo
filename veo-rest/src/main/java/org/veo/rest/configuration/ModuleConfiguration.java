@@ -52,8 +52,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.core.entity.AccountProvider;
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -70,12 +68,9 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.ProfileItemRepository;
-import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
-import org.veo.core.repository.SystemMessageRepository;
-import org.veo.core.repository.TaskRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.repository.UserConfigurationRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -84,144 +79,25 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.service.UserAccessRightsProvider;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.DomainChangeService;
-import org.veo.core.usecase.GetAvailableActionsUseCase;
-import org.veo.core.usecase.GetLinksByElementUseCase;
-import org.veo.core.usecase.GetTasksUseCase;
 import org.veo.core.usecase.IncomingMessageHandler;
-import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
-import org.veo.core.usecase.PerformActionUseCase;
-import org.veo.core.usecase.UpdateDomainUseCase;
-import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
-import org.veo.core.usecase.asset.GetAssetRiskUseCase;
-import org.veo.core.usecase.asset.GetAssetRisksUseCase;
-import org.veo.core.usecase.asset.GetAssetUseCase;
-import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
-import org.veo.core.usecase.base.AddLinksUseCase;
-import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
-import org.veo.core.usecase.base.CreateElementUseCase;
-import org.veo.core.usecase.base.DeleteElementUseCase;
-import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.GetParentElementsUseCase;
-import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
-import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
-import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
-import org.veo.core.usecase.base.UpdateIncidentInDomainUseCase;
-import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
-import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
-import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
-import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
-import org.veo.core.usecase.catalogitem.AbstractGetIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
-import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
-import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
-import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
-import org.veo.core.usecase.compliance.GetControlImplementationsUseCase;
-import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
-import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
-import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
-import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.document.GetDocumentUseCase;
-import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
-import org.veo.core.usecase.domain.CreateDomainUseCase;
-import org.veo.core.usecase.domain.CreateDomainsInAllClientsUseCase;
-import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
-import org.veo.core.usecase.domain.DeleteDecisionUseCase;
-import org.veo.core.usecase.domain.DeleteDomainUseCase;
-import org.veo.core.usecase.domain.DeleteInspectionUseCase;
-import org.veo.core.usecase.domain.DeleteProfileUseCase;
-import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
-import org.veo.core.usecase.domain.EvaluateRiskDefinitionUseCase;
-import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
-import org.veo.core.usecase.domain.GetBreakingChangesUseCase;
-import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
-import org.veo.core.usecase.domain.GetDomainUpdatesUseCase;
-import org.veo.core.usecase.domain.GetDomainUseCase;
-import org.veo.core.usecase.domain.GetDomainsUseCase;
-import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
-import org.veo.core.usecase.domain.GetInspectionUseCase;
-import org.veo.core.usecase.domain.GetInspectionsUseCase;
-import org.veo.core.usecase.domain.GetUpdateDefinitionUseCase;
-import org.veo.core.usecase.domain.SaveControlImplementationConfigurationUseCase;
-import org.veo.core.usecase.domain.SaveDecisionUseCase;
-import org.veo.core.usecase.domain.SaveDomainMetadataUseCase;
-import org.veo.core.usecase.domain.SaveInspectionUseCase;
-import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
-import org.veo.core.usecase.domain.SaveUpdateDefinitionUseCase;
-import org.veo.core.usecase.domain.UpdateControlImplementationDefinitionUseCase;
-import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
-import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
-import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
-import org.veo.core.usecase.domaintemplate.CreateProfileInDomainTemplateUseCase;
-import org.veo.core.usecase.domaintemplate.DeleteProfileInDomainTemplateUseCase;
-import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
-import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
-import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.inspection.Inspector;
-import org.veo.core.usecase.message.DeleteSystemMessageUseCase;
-import org.veo.core.usecase.message.GetAllSystemMessageUseCase;
-import org.veo.core.usecase.message.GetSystemMessageUseCase;
-import org.veo.core.usecase.message.SaveSystemMessageUseCase;
-import org.veo.core.usecase.person.GetPersonUseCase;
-import org.veo.core.usecase.process.CreateProcessRiskUseCase;
-import org.veo.core.usecase.process.GetProcessRiskUseCase;
-import org.veo.core.usecase.process.GetProcessRisksUseCase;
-import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
-import org.veo.core.usecase.profile.GetIncarnationConfigurationUseCase;
-import org.veo.core.usecase.profile.GetProfileItemUseCase;
-import org.veo.core.usecase.profile.GetProfileItemsUseCase;
-import org.veo.core.usecase.profile.GetProfileUseCase;
-import org.veo.core.usecase.profile.GetProfilesUseCase;
-import org.veo.core.usecase.profile.SaveIncarnationConfigurationUseCase;
-import org.veo.core.usecase.risk.DeleteRiskUseCase;
-import org.veo.core.usecase.scenario.GetScenarioUseCase;
-import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
-import org.veo.core.usecase.scope.GetScopeRiskUseCase;
-import org.veo.core.usecase.scope.GetScopeRisksUseCase;
-import org.veo.core.usecase.scope.GetScopeUseCase;
-import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.service.DomainStateMapper;
 import org.veo.core.usecase.service.DomainTemplateService;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.MigrationService;
 import org.veo.core.usecase.service.RefResolverFactory;
-import org.veo.core.usecase.unit.CreateUnitUseCase;
-import org.veo.core.usecase.unit.DeleteUnitUseCase;
-import org.veo.core.usecase.unit.GetUnitCountUseCase;
-import org.veo.core.usecase.unit.GetUnitDumpUseCase;
-import org.veo.core.usecase.unit.GetUnitUseCase;
-import org.veo.core.usecase.unit.GetUnitsUseCase;
-import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
-import org.veo.core.usecase.unit.UpdateUnitUseCase;
-import org.veo.core.usecase.userconfiguration.DeleteUserConfigurationUseCase;
-import org.veo.core.usecase.userconfiguration.GetAllUserConfigurationKeysUseCase;
-import org.veo.core.usecase.userconfiguration.GetUserConfigurationUseCase;
 import org.veo.core.usecase.userconfiguration.SaveUserConfigurationUseCase;
 import org.veo.persistence.CurrentUserProvider;
-import org.veo.persistence.access.AssetRepositoryImpl;
-import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlImplementationRepositoryImpl;
-import org.veo.persistence.access.ControlRepositoryImpl;
-import org.veo.persistence.access.DocumentRepositoryImpl;
-import org.veo.persistence.access.IncidentRepositoryImpl;
-import org.veo.persistence.access.PersonRepositoryImpl;
-import org.veo.persistence.access.ProcessRepositoryImpl;
 import org.veo.persistence.access.RequirementImplementationRepositoryImpl;
-import org.veo.persistence.access.ScenarioRepositoryImpl;
-import org.veo.persistence.access.ScopeRepositoryImpl;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.access.StoredEventRepositoryImpl;
-import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
@@ -253,42 +129,14 @@ import tools.jackson.module.blackbird.BlackbirdModule;
 /**
  * This configuration takes care of wiring classes from core modules (Entity-Layer, Use-Case-Layer)
  * that have no dependency to the Spring framework. They are therefore not picked up and autowired
- * by Spring.
+ * by Spring on their own.
+ *
+ * <p>Use cases are found by the component scan below, which selects them by type instead of by
+ * annotation, and are instantiated through their constructor. All other core classes, and use cases
+ * that need more than plain constructor injection, are defined as {@code @Bean} methods.
  */
 @Configuration
 public class ModuleConfiguration {
-
-  @Bean
-  public SaveUpdateDefinitionUseCase saveUpdateDefinitionUseCase(
-      DomainRepository repository, DomainChangeService domainChangeService) {
-    return new SaveUpdateDefinitionUseCase(repository, domainChangeService);
-  }
-
-  @Bean
-  public GetUpdateDefinitionUseCase getUpdateDefinitionUseCase(DomainRepository repository) {
-    return new GetUpdateDefinitionUseCase(repository);
-  }
-
-  @Bean
-  public SaveSystemMessageUseCase saveSystemMessageUseCase(
-      SystemMessageRepository repository, EntityFactory factory, EntityStateMapper mapper) {
-    return new SaveSystemMessageUseCase(repository, factory, mapper);
-  }
-
-  @Bean
-  public GetSystemMessageUseCase getSystemMessageUseCase(SystemMessageRepository repository) {
-    return new GetSystemMessageUseCase(repository);
-  }
-
-  @Bean
-  public GetAllSystemMessageUseCase getAllSystemMessageUseCase(SystemMessageRepository repository) {
-    return new GetAllSystemMessageUseCase(repository);
-  }
-
-  @Bean
-  public DeleteSystemMessageUseCase deleteSystemMessageUseCase(SystemMessageRepository repository) {
-    return new DeleteSystemMessageUseCase(repository);
-  }
 
   @Bean
   public SaveUserConfigurationUseCase saveUserConfigurationUseCase(
@@ -306,314 +154,13 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetAllUserConfigurationKeysUseCase getAllUserConfigurationKeysUseCase(
-      UserConfigurationRepository userConfigurationRepository) {
-    return new GetAllUserConfigurationKeysUseCase(userConfigurationRepository);
-  }
-
-  @Bean
-  public DeleteUserConfigurationUseCase deleteUserConfigurationUseCase(
-      UserConfigurationRepository userConfigurationRepository) {
-    return new DeleteUserConfigurationUseCase(userConfigurationRepository);
-  }
-
-  @Bean
-  public GetUserConfigurationUseCase getUserConfigurationUseCase(
-      UserConfigurationRepository userConfigurationRepository) {
-    return new GetUserConfigurationUseCase(userConfigurationRepository);
-  }
-
-  @Bean
-  public GetIncarnationConfigurationUseCase getIncarnationConfigurationUseCase(
-      DomainRepository domainRepository) {
-    return new GetIncarnationConfigurationUseCase(domainRepository);
-  }
-
-  @Bean
-  public SaveIncarnationConfigurationUseCase saveIncarnationConfigurationUseCase(
-      DomainRepository domainRepository) {
-    return new SaveIncarnationConfigurationUseCase(domainRepository);
-  }
-
-  @Bean
-  public SaveDomainMetadataUseCase saveDomainMetadataUseCase(DomainRepository domainRepository) {
-    return new SaveDomainMetadataUseCase(domainRepository);
-  }
-
-  @Bean
-  public SaveControlImplementationConfigurationUseCase
-      saveControlImplementationConfigurationUseCase(DomainRepository domainRepository) {
-    return new SaveControlImplementationConfigurationUseCase(domainRepository);
-  }
-
-  @Bean
-  public GetProfilesUseCase getProfilesUseCase(ProfileRepository profileRepository) {
-    return new GetProfilesUseCase(profileRepository);
-  }
-
-  @Bean
-  public GetProfileUseCase getProfileUseCase(ProfileRepository profileRepository) {
-    return new GetProfileUseCase(profileRepository);
-  }
-
-  @Bean
-  public GetProfileItemUseCase getProfileItemUseCase(ProfileRepository profileRepository) {
-    return new GetProfileItemUseCase(profileRepository);
-  }
-
-  @Bean
-  public GetProfileItemsUseCase getProfileItemsUseCase(ProfileRepository profileRepository) {
-    return new GetProfileItemsUseCase(profileRepository);
-  }
-
-  @Bean
-  public GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase(
-      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
-    return new GetCatalogItemsTypeCountUseCase(domainRepository, catalogItemRepository);
-  }
-
-  @Bean
-  public CreateElementUseCase createElementUseCase(
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EventPublisher eventPublisher,
-      IdentifiableFactory identifiableFactory,
-      EntityStateMapper entityStateMapper,
-      Decider decider,
-      RefResolverFactory refResolverFactory) {
-    return new CreateElementUseCase<>(
-        refResolverFactory,
-        repositoryProvider,
-        designatorService,
-        eventPublisher,
-        identifiableFactory,
-        entityStateMapper,
-        decider);
-  }
-
-  @Bean
-  public CreateAssetRiskUseCase createAssetRiskUseCase(
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EventPublisher eventPublisher) {
-    return new CreateAssetRiskUseCase(repositoryProvider, designatorService, eventPublisher);
-  }
-
-  @Bean
-  public UpdateAssetRiskUseCase updateAssetRiskUseCase(
-      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-    return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
-  public GetElementsUseCase genericGetElementsUseCase(
-      ClientRepository clientRepository,
-      GenericElementRepository elementRepository,
-      RepositoryProvider repositoryProvider,
-      UnitRepository unitrepo) {
-    return new GetElementsUseCase(
-        clientRepository, elementRepository, repositoryProvider, unitrepo);
-  }
-
-  @Bean
-  public GetParentElementsUseCase getParentElementsUseCase(
-      ClientRepository clientRepository,
-      RepositoryProvider repositoryProvider,
-      GenericElementRepository elementRepository,
-      DomainRepository domainRepository) {
-    return new GetParentElementsUseCase(
-        clientRepository, repositoryProvider, elementRepository, domainRepository);
-  }
-
-  @Bean
-  public GetLinksByElementUseCase getLinksByElementUseCase(
-      DomainRepository domainRepository, GenericElementRepository elementRepository) {
-    return new GetLinksByElementUseCase(domainRepository, elementRepository);
-  }
-
-  @Bean
-  public GetTasksUseCase getTasksUseCase(
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      TaskRepository taskRepository) {
-    return new GetTasksUseCase(domainRepository, unitRepository, taskRepository);
-  }
-
-  @Bean
-  public QueryCatalogItemsUseCase queryCatalogItemsUseCase(
-      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
-    return new QueryCatalogItemsUseCase(domainRepository, catalogItemRepository);
-  }
-
-  @Bean
-  public GetAssetUseCase getAssetUseCase(
-      AssetRepositoryImpl assetRepository, DomainRepository domainRepository) {
-    return new GetAssetUseCase(assetRepository, domainRepository);
-  }
-
-  @Bean
-  public GetControlUseCase getControlUseCase(
-      ControlRepositoryImpl controlRepository, DomainRepository domainRepository) {
-    return new GetControlUseCase(controlRepository, domainRepository);
-  }
-
-  @Bean
-  public GetDocumentUseCase getDocumentUseCase(
-      DocumentRepositoryImpl documentRepository, DomainRepository domainRepository) {
-    return new GetDocumentUseCase(documentRepository, domainRepository);
-  }
-
-  @Bean
-  public GetScenarioUseCase getScenarioUseCase(
-      ScenarioRepositoryImpl scenarioRepository, DomainRepository domainRepository) {
-    return new GetScenarioUseCase(scenarioRepository, domainRepository);
-  }
-
-  @Bean
-  public GetIncidentUseCase getIncidentUseCase(
-      IncidentRepositoryImpl incidentRepository, DomainRepository domainRepository) {
-    return new GetIncidentUseCase(incidentRepository, domainRepository);
-  }
-
-  @Bean
-  public CreateProcessRiskUseCase createProcessRiskUseCase(
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EventPublisher eventPublisher) {
-    return new CreateProcessRiskUseCase(repositoryProvider, designatorService, eventPublisher);
-  }
-
-  @Bean
-  public GetProcessUseCase getProcessUseCase(
-      ProcessRepositoryImpl processRepository, DomainRepository domainRepository) {
-    return new GetProcessUseCase(processRepository, domainRepository);
-  }
-
-  @Bean
-  public GetProcessRiskUseCase getProcessRiskUseCase(RepositoryProvider repositoryProvider) {
-    return new GetProcessRiskUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider) {
-    return new GetProcessRisksUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public UpdateProcessRiskUseCase updateProcessRiskUseCase(
-      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-    return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
-  public GetUnitUseCase getUnitUseCase(UnitRepositoryImpl repository) {
-    return new GetUnitUseCase(repository);
-  }
-
-  @Bean
-  public GetUnitsUseCase getUnitsUseCase(UnitRepositoryImpl unitRepository) {
-    return new GetUnitsUseCase(unitRepository);
-  }
-
-  @Bean
   public UnitValidator unitValidator(GenericElementRepository genericElementRepository) {
     return new UnitValidator(genericElementRepository);
   }
 
   @Bean
-  public UpdateUnitUseCase getPutUnitUseCase(
-      UnitRepositoryImpl repository,
-      UnitValidator unitValidator,
-      EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory,
-      ClientRepository clientRepo) {
-    return new UpdateUnitUseCase(
-        repository, unitValidator, entityStateMapper, refResolverFactory, clientRepo);
-  }
-
-  @Bean
   public EntityStateMapper getEntityStateMapper(EventPublisher eventPublisher) {
     return new EntityStateMapper(getEntityFactory(), eventPublisher);
-  }
-
-  @Bean
-  public CreateUnitUseCase getCreateUnitUseCase(
-      ClientRepository clientRepository,
-      UnitRepositoryImpl unitRepository,
-      DomainRepository domainRepository) {
-    return new CreateUnitUseCase(
-        clientRepository, unitRepository, domainRepository, getEntityFactory());
-  }
-
-  @Bean
-  public DeleteUnitUseCase getDeleteUnitUseCase(
-      ClientRepositoryImpl clientRepository,
-      UnitRepositoryImpl unitRepository,
-      GenericElementRepository elementRepository,
-      MessageCreator messageCreator) {
-    return new DeleteUnitUseCase(
-        clientRepository, unitRepository, elementRepository, messageCreator);
-  }
-
-  @Bean
-  public GetPersonUseCase getPersonUseCase(
-      PersonRepositoryImpl personRepository, DomainRepository domainRepository) {
-    return new GetPersonUseCase(personRepository, domainRepository);
-  }
-
-  @Bean
-  public GetScopeUseCase getScopeUseCase(
-      DomainRepository domainRepository, ScopeRepositoryImpl scopeRepository) {
-    return new GetScopeUseCase(domainRepository, scopeRepository);
-  }
-
-  @Bean
-  public DeleteElementUseCase deleteElementUseCase(
-      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-    return new DeleteElementUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
-  public DeleteRiskUseCase deleteRiskUseCase(
-      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-    return new DeleteRiskUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
-  public CreateCatalogFromUnitUseCase createCatalogForDomainUseCase(
-      GenericElementRepository genericElementRepository,
-      UnitRepository unitRepository,
-      DomainRepository domainRepository,
-      EntityFactory factory,
-      CatalogItemRepository catalogItemRepository) {
-    return new CreateCatalogFromUnitUseCase(
-        genericElementRepository, unitRepository, domainRepository, factory, catalogItemRepository);
-  }
-
-  @Bean
-  public CreateProfileFromUnitUseCase createProfileForDomainUseCase(
-      GenericElementRepository genericElementRepository,
-      UnitRepository unitRepository,
-      DomainRepository domainRepository,
-      EntityFactory factory,
-      ProfileRepository profileRepository) {
-    return new CreateProfileFromUnitUseCase(
-        genericElementRepository, unitRepository, domainRepository, factory, profileRepository);
-  }
-
-  @Bean
-  public CreateProfileInDomainTemplateUseCase createProfileInDomainTemplateUseCase(
-      DomainTemplateRepository domainTemplateRepository,
-      ProfileRepository profileRepository,
-      DomainStateMapper domainStateMapper) {
-    return new CreateProfileInDomainTemplateUseCase(
-        domainTemplateRepository, profileRepository, domainStateMapper);
-  }
-
-  @Bean
-  public DeleteProfileInDomainTemplateUseCase deleteProfileInDomainTemplateUseCase(
-      DomainTemplateRepository domainTemplateRepository) {
-    return new DeleteProfileInDomainTemplateUseCase(domainTemplateRepository);
   }
 
   @Bean
@@ -652,117 +199,6 @@ public class ModuleConfiguration {
   public DomainAssociationTransformer domainAssociationTransformer(
       ReferenceAssembler referenceAssembler) {
     return new DomainAssociationTransformer(referenceAssembler);
-  }
-
-  @Bean
-  public GetAssetRiskUseCase getAssetRiskUseCase(RepositoryProvider repositoryProvider) {
-    return new GetAssetRiskUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
-    return new GetAssetRisksUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public GetRequirementImplementationUseCase getRequirementImplementationUseCase(
-      RepositoryProvider repositoryProvider) {
-    return new GetRequirementImplementationUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase(
-      RepositoryProvider repositoryProvider,
-      EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateRequirementImplementationUseCase(
-        repositoryProvider, refResolverFactory, entityStateMapper);
-  }
-
-  @Bean
-  public GetRequirementImplementationsByControlImplementationUseCase
-      retrieveRequirementImplementationsUseCase(
-          RepositoryProvider repositoryProvider,
-          RequirementImplementationRepository requirementImplementationRepository) {
-    return new GetRequirementImplementationsByControlImplementationUseCase(
-        repositoryProvider, requirementImplementationRepository);
-  }
-
-  @Bean
-  public GetControlImplementationsUseCase retrieveGetControlImplementationsByControlUseCase(
-      ControlImplementationRepository controlImplementationRepository,
-      GenericElementRepository genericElementRepository,
-      DomainRepository domainRepository) {
-    return new GetControlImplementationsUseCase(
-        controlImplementationRepository, genericElementRepository, domainRepository);
-  }
-
-  @Bean
-  public CreateDomainUseCase createDomainUseCase(
-      EntityFactory entityFactory,
-      DomainRepository domainRepository,
-      DomainTemplateRepository domainTemplateRepository,
-      ClientRepository clientRepository,
-      MessageCreator messageCreator) {
-    return new CreateDomainUseCase(
-        entityFactory,
-        domainRepository,
-        domainTemplateRepository,
-        clientRepository,
-        messageCreator);
-  }
-
-  @Bean
-  public DeleteDomainUseCase deleteDomainUseCase(
-      UnitRepository unitRepository, DomainRepository domainRepository) {
-    return new DeleteDomainUseCase(domainRepository, unitRepository);
-  }
-
-  @Bean
-  public CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase(
-      DomainTemplateService domainTemplateService,
-      DomainRepository domainRepository,
-      DomainTemplateRepository domainTemplateRepository,
-      DomainChangeService domainChangeService,
-      MessageCreator messageCreator) {
-    return new CreateDomainTemplateFromDomainUseCase(
-        domainTemplateService,
-        domainRepository,
-        domainTemplateRepository,
-        domainChangeService,
-        messageCreator);
-  }
-
-  @Bean
-  public GetDomainUseCase getDomainUseCase(DomainRepository domainRepository) {
-    return new GetDomainUseCase(domainRepository);
-  }
-
-  @Bean
-  public GetDomainsUseCase getDomainsUseCase(DomainRepository domainRepository) {
-    return new GetDomainsUseCase(domainRepository);
-  }
-
-  @Bean
-  public GetDomainUpdatesUseCase getDomainUpdatesUseCase(
-      DomainRepository domainRepository, DomainTemplateRepository domainTemplateRepository) {
-    return new GetDomainUpdatesUseCase(domainRepository, domainTemplateRepository);
-  }
-
-  @Bean
-  public ExportDomainUseCase exportDomainUseCase(DomainRepository domainRepository) {
-    return new ExportDomainUseCase(domainRepository);
-  }
-
-  @Bean
-  public GetCatalogItemUseCase getCatalogItemUseCase(
-      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
-    return new GetCatalogItemUseCase(domainRepository, catalogItemRepository);
-  }
-
-  @Bean
-  public GetCatalogItemsUseCase getCatalogItemsUseCase() {
-    return new GetCatalogItemsUseCase();
   }
 
   @Bean
@@ -858,58 +294,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
-      getIncarnationDescriptionUseCase(
-          UnitRepository unitRepository,
-          CatalogItemRepository catalogItemRepository,
-          DomainRepository domainRepository,
-          GenericElementRepository genericElementRepository) {
-    return new GetCatalogIncarnationDescriptionUseCase(
-        domainRepository, unitRepository, catalogItemRepository, genericElementRepository);
-  }
-
-  @Bean
-  public GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase(
-      UnitRepository unitRepository,
-      ProfileRepository profileRepository,
-      GenericElementRepository genericRepository,
-      ClientRepository clientRepository) {
-    return new GetProfileIncarnationDescriptionUseCase(
-        genericRepository, unitRepository, profileRepository, clientRepository);
-  }
-
-  @Bean
-  public GetUnitDumpUseCase getUnitDumpUseCase(
-      AccountProvider accountProvider,
-      GenericElementRepository genericElementRepository,
-      UnitRepository unitRepository,
-      DomainRepository domainRepository) {
-    return new GetUnitDumpUseCase(
-        accountProvider, genericElementRepository, unitRepository, domainRepository);
-  }
-
-  @Bean
-  public UnitImportUseCase unitImportUseCase(
-      ClientRepository clientRepository,
-      UnitRepository unitRepository,
-      DomainRepository domainRepository,
-      CatalogItemRepository catalogItemRepository,
-      ElementBatchCreator elementBatchCreator,
-      EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory,
-      EventPublisher eventPublisher) {
-    return new UnitImportUseCase(
-        clientRepository,
-        unitRepository,
-        domainRepository,
-        catalogItemRepository,
-        refResolverFactory,
-        entityStateMapper,
-        elementBatchCreator,
-        eventPublisher);
-  }
-
-  @Bean
   public EntityValidator entityValidator(AccountProvider accountProvider) {
     return new EntityValidator(accountProvider);
   }
@@ -924,54 +308,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
-      CatalogItemRepository catalogItemRepository,
-      IncarnationDescriptionApplier incarnationDescriptionApplier,
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      ClientRepository clientRepository) {
-    return new ApplyCatalogIncarnationDescriptionUseCase(
-        catalogItemRepository,
-        incarnationDescriptionApplier,
-        domainRepository,
-        unitRepository,
-        clientRepository);
-  }
-
-  @Bean
-  public ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase(
-      ProfileItemRepository profileItemRepository,
-      IncarnationDescriptionApplier incarnationDescriptionApplier,
-      UnitRepository unitRepository) {
-    return new ApplyProfileIncarnationDescriptionUseCase(
-        profileItemRepository, incarnationDescriptionApplier, unitRepository);
-  }
-
-  @Bean
-  public GetScopeRiskUseCase getScopeRiskUseCase(RepositoryProvider repositoryProvider) {
-    return new GetScopeRiskUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public GetScopeRisksUseCase getScopeRisksUseCase(RepositoryProvider repositoryProvider) {
-    return new GetScopeRisksUseCase(repositoryProvider);
-  }
-
-  @Bean
-  public CreateScopeRiskUseCase createScopeRiskUseCase(
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EventPublisher eventPublisher) {
-    return new CreateScopeRiskUseCase(repositoryProvider, designatorService, eventPublisher);
-  }
-
-  @Bean
-  public UpdateScopeRiskUseCase updateScopeRiskUseCase(
-      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-    return new UpdateScopeRiskUseCase(repositoryProvider, eventPublisher);
-  }
-
-  @Bean
   public EtagService etagService(RepositoryProvider repositoryProvider) {
     return new EtagService(repositoryProvider);
   }
@@ -980,33 +316,6 @@ public class ModuleConfiguration {
   // TODO #3042: remove this when we remove support for JSON schema
   public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
     return new ObjectSchemaParser(entityFactory);
-  }
-
-  @Bean
-  public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
-      DomainStateMapper domainStateMapper, DomainRepository domainRepository) {
-    return new UpdateElementTypeDefinitionUseCase(domainStateMapper, domainRepository);
-  }
-
-  @Bean
-  public UpdateControlImplementationDefinitionUseCase
-      getUpdateControlImplementationDefinitionUseCase(DomainRepository domainRepository) {
-    return new UpdateControlImplementationDefinitionUseCase(domainRepository);
-  }
-
-  @Bean
-  public CreateDomainsInAllClientsUseCase getClientIdsWhereDomainTemplateNotAppliedUseCase(
-      ClientRepository clientRepository,
-      DomainTemplateRepository domainTemplateRepository,
-      DomainTemplateService domainTemplateService,
-      MessageCreator messageCreator) {
-    return new CreateDomainsInAllClientsUseCase(
-        clientRepository, domainTemplateRepository, domainTemplateService, messageCreator);
-  }
-
-  @Bean
-  public DeleteProfileUseCase deleteProfileUseCase(DomainRepository domainRepository) {
-    return new DeleteProfileUseCase(domainRepository);
   }
 
   @Bean
@@ -1038,43 +347,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetInspectionUseCase getInspectionUseCase(DomainRepository domainRepository) {
-    return new GetInspectionUseCase(domainRepository);
-  }
-
-  @Bean
-  public GetInspectionsUseCase getInspectionsUseCase(DomainRepository domainRepository) {
-    return new GetInspectionsUseCase(domainRepository);
-  }
-
-  @Bean
-  public SaveInspectionUseCase saveInspectionUseCase(DomainRepository domainRepository) {
-    return new SaveInspectionUseCase(domainRepository);
-  }
-
-  @Bean
-  public DeleteInspectionUseCase deleteInspectionUseCase(DomainRepository domainRepository) {
-    return new DeleteInspectionUseCase(domainRepository);
-  }
-
-  @Bean
-  public UpdateDomainUseCase updateDomainUseCase(
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      DomainTemplateService domainTemplateService,
-      DomainChangeService domainChangeService,
-      MigrationService migrationService,
-      MessageCreator messageCreator) {
-    return new UpdateDomainUseCase(
-        domainRepository,
-        unitRepository,
-        domainTemplateService,
-        domainChangeService,
-        migrationService,
-        messageCreator);
-  }
-
-  @Bean
   public DomainTemplateIdGenerator domainTemplateIdGenerator() {
     return new DomainTemplateIdGeneratorImpl();
   }
@@ -1093,24 +365,6 @@ public class ModuleConfiguration {
       EntityFactory entityFactory,
       DomainTemplateIdGenerator domainTemplateIdGenerator) {
     return new DomainStateMapper(refResolvingFactory, entityFactory, domainTemplateIdGenerator);
-  }
-
-  @Bean
-  public CreateDomainTemplateUseCase createDomainTemplateUseCase(
-      DomainTemplateRepository domainTemplateRepository, DomainStateMapper domainStateMapper) {
-    return new CreateDomainTemplateUseCase(domainStateMapper, domainTemplateRepository);
-  }
-
-  @Bean
-  public FindDomainTemplatesUseCase findDomainTemplatesUseCase(
-      DomainTemplateRepository domainTemplateRepository) {
-    return new FindDomainTemplatesUseCase(domainTemplateRepository);
-  }
-
-  @Bean
-  public GetDomainTemplateUseCase getDomainTemplateUseCase(
-      DomainTemplateService templateService, ClientRepository clientRepository) {
-    return new GetDomainTemplateUseCase(templateService, clientRepository);
   }
 
   @Bean
@@ -1152,38 +406,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EvaluateElementUseCase evaluateElementUseCase(
-      RefResolverFactory refResolverFactory,
-      DomainRepository domainRepository,
-      GenericElementRepository genericElementRepository,
-      Decider decider,
-      Inspector inspector,
-      IdentifiableFactory identifiableFactory,
-      EntityStateMapper entityStateMapper) {
-    return new EvaluateElementUseCase(
-        refResolverFactory,
-        identifiableFactory,
-        entityStateMapper,
-        domainRepository,
-        genericElementRepository,
-        decider,
-        inspector);
-  }
-
-  @Bean
   public Inspector inspector(
       DomainTemplateRepository domainTemplateRepository,
       DomainTemplateService domainTemplateService,
       DomainChangeService domainChangeService) {
     return new Inspector(domainTemplateRepository, domainTemplateService, domainChangeService);
-  }
-
-  @Bean
-  InspectElementUseCase inspectElementUseCase(
-      DomainRepository domainRepository,
-      GenericElementRepository repositoryProvider,
-      Inspector inspector) {
-    return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
   }
 
   @Bean
@@ -1206,14 +433,6 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  GetElementStatusCountUseCase getElementStatusCountUseCase(
-      DomainRepository domainRepository,
-      UnitRepository unitRepository,
-      GenericElementRepository elementRepository) {
-    return new GetElementStatusCountUseCase(domainRepository, unitRepository, elementRepository);
-  }
-
-  @Bean
   ElementBatchCreator elementBatchCreator(
       GenericElementRepository genericElementRepository,
       EventPublisher eventPublisher,
@@ -1221,186 +440,6 @@ public class ModuleConfiguration {
       DesignatorService designatorService) {
     return new ElementBatchCreator(
         genericElementRepository, eventPublisher, decider, designatorService);
-  }
-
-  @Bean
-  UpdateAssetInDomainUseCase updateAssetDomainAssociationUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateAssetInDomainUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
-  }
-
-  @Bean
-  UpdateControlInDomainUseCase updateControlInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateControlInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
-  UpdateDocumentInDomainUseCase updateDocumentInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateDocumentInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
-  UpdateIncidentInDomainUseCase updateIncidentInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateIncidentInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
-  UpdatePersonInDomainUseCase updatePersonInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdatePersonInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(eventPublisher), refResolverFactory);
-  }
-
-  @Bean
-  UpdateProcessInDomainUseCase updateProcessInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateProcessInDomainUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
-  }
-
-  @Bean
-  UpdateScenarioInDomainUseCase updateScenarioInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateScenarioInDomainUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
-  }
-
-  @Bean
-  UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
-      RepositoryProvider repositoryProvider,
-      Decider decider,
-      EventPublisher eventPublisher,
-      RefResolverFactory refResolverFactory) {
-    return new UpdateScopeInDomainUseCase(
-        repositoryProvider,
-        decider,
-        getEntityStateMapper(eventPublisher),
-        eventPublisher,
-        refResolverFactory);
-  }
-
-  @Bean
-  AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
-      GenericElementRepository genericElementRepository,
-      DomainRepository domainRepository,
-      Decider decider) {
-    return new AssociateElementWithDomainUseCase(
-        genericElementRepository, domainRepository, decider);
-  }
-
-  @Bean
-  AddLinksUseCase addLinksUseCase(
-      DomainRepository domainRepository,
-      GenericElementRepository genericElementRepository,
-      EntityStateMapper entityStateMapper,
-      RefResolverFactory refResolverFactory) {
-    return new AddLinksUseCase(
-        domainRepository, genericElementRepository, refResolverFactory, entityStateMapper);
-  }
-
-  @Bean
-  GetAvailableActionsUseCase getAvailableActionsUseCase(DomainRepository domainRepository) {
-    return new GetAvailableActionsUseCase(domainRepository);
-  }
-
-  @Bean
-  PerformActionUseCase performActionUseCase(
-      ClientRepository clientRepository,
-      DomainRepository domainRepository,
-      GenericElementRepository elementRepository,
-      AbstractGetIncarnationDescriptionUseCase<CatalogItem, DomainBase>
-          getCatalogIncarnationDescriptionUseCase,
-      ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase,
-      DesignatorService designatorService,
-      EntityFactory factory) {
-    return new PerformActionUseCase(
-        clientRepository,
-        domainRepository,
-        elementRepository,
-        getCatalogIncarnationDescriptionUseCase,
-        applyCatalogIncarnationDescriptionUseCase,
-        designatorService,
-        factory);
-  }
-
-  @Bean
-  SaveDecisionUseCase saveDecisionUseCase(DomainRepository domainRepository) {
-    return new SaveDecisionUseCase(domainRepository);
-  }
-
-  @Bean
-  SaveRiskDefinitionUseCase saveRiskDefinitionUseCase(
-      DomainRepository domainRepository, EventPublisher publisher) {
-    return new SaveRiskDefinitionUseCase(domainRepository, publisher);
-  }
-
-  @Bean
-  EvaluateRiskDefinitionUseCase evaluateRiskDefinitionUseCase(DomainRepository domainRepository) {
-    return new EvaluateRiskDefinitionUseCase(domainRepository);
-  }
-
-  @Bean
-  DeleteDecisionUseCase deleteDecisionUseCase(DomainRepository domainRepository) {
-    return new DeleteDecisionUseCase(domainRepository);
-  }
-
-  @Bean
-  DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase(
-      DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
-      TemplateItemMigrationService catalogItemMigrationService) {
-    return new DeleteRiskDefinitionUseCase(
-        domainRepository, repositoryProvider, catalogItemMigrationService);
-  }
-
-  @Bean
-  GetBreakingChangesUseCase getBreakingChangesUseCase(DomainRepository domainRepository) {
-    return new GetBreakingChangesUseCase(domainRepository);
-  }
-
-  @Bean
-  GetUnitCountUseCase getUnitCountUseCase(UnitRepository unitRepository) {
-    return new GetUnitCountUseCase(unitRepository);
   }
 
   @Bean
