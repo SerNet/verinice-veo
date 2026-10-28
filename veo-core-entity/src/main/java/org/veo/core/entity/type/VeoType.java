@@ -29,6 +29,7 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 
 /**
@@ -238,6 +239,10 @@ public sealed interface VeoType
 
   static VeoType riskAffected() {
     return SumType.RISK_AFFECTED;
+  }
+
+  static VeoType controlImplementation() {
+    return new SimpleType(ControlImplementation.class);
   }
 
   static VeoType fromValue(Object value) {

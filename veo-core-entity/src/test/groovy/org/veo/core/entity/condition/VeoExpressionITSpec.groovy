@@ -22,6 +22,8 @@ import java.time.Duration
 import org.codehaus.groovy.ast.expr.ListExpression
 
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Control
+import org.veo.core.entity.ControlImplementationConfiguration
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
@@ -33,6 +35,7 @@ import org.veo.core.entity.LinkDirection
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
+import org.veo.core.entity.compliance.ControlImplementation
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
@@ -1188,6 +1191,60 @@ class VeoExpressionITSpec extends Specification {
         ex.message == "cannot determine potential impacts: expected Asset|Process|Scope, got Document"
     }
 
+    def "control implementations can be evaluated"() {
+        given:
+        def domain = Mock(Domain) {
+            controlImplementationConfiguration >> new ControlImplementationConfiguration(
+                    [
+                        "CTL_Requirement",
+                        "CTL_Module"
+                    ] as Set,
+                    "CTL_Safeguard"
+            )
+        }
+        def requirementCi = controlImplementation(domain, "CTL_Requirement")
+        def moduleCi = controlImplementation(domain, "CTL_Module")
+        def safeguardCi = controlImplementation(domain, "CTL_Safeguard")
+        def noSubTypeCi = controlImplementation(domain, null)
+        def process = Spy(Process) {
+            controlImplementations >> [
+                requirementCi,
+                moduleCi,
+                safeguardCi,
+                noSubTypeCi
+            ]
+        }
+
+        when:
+        def exp = new ControlImplementationsExpression(false)
+        exp.selfValidate(domain, ElementType.PROCESS)
+
+        then:
+        noExceptionThrown()
+        exp.getValueType(domain, ElementType.PROCESS) == T.listOf(T.controlImplementation())
+        exp.getValue(process, domain) ==~ [
+            requirementCi,
+            moduleCi,
+            safeguardCi,
+            noSubTypeCi
+        ]
+
+        when: "filtering by compliance control sub types"
+        exp = new ControlImplementationsExpression(true)
+
+        then:
+        exp.getValue(process, domain) ==~ [requirementCi, moduleCi]
+    }
+
+    def "control implementations can only be determined for risk-affected elements"() {
+        when:
+        new ControlImplementationsExpression().selfValidate(Mock(Domain), ElementType.CONTROL)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "cannot determine control implementations: expected Asset|Process|Scope, got Control"
+    }
+
     private static ImpactValues impacts(Map<String, Map<String, Integer>> values) {
         def toRefs = { Map<String, Integer> m ->
             (m ?: [:]).collectEntries { k, v ->
@@ -1195,5 +1252,13 @@ class VeoExpressionITSpec extends Specification {
             }
         }
         new ImpactValues(toRefs(values.specific), toRefs(values.calculated), null, null)
+    }
+
+    private ControlImplementation controlImplementation(Domain domain, String controlSubType) {
+        Mock(ControlImplementation) {
+            control >> Mock(Control) {
+                findSubType(domain) >> Optional.ofNullable(controlSubType)
+            }
+        }
     }
 }

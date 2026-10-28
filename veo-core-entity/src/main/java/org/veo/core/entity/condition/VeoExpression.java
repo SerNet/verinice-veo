@@ -43,6 +43,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = CurrentElementExpression.class, name = "currentElement"),
   @Type(value = ConstantExpression.class, name = "constant"),
   @Type(value = ContainsExpression.class, name = "contains"),
+  @Type(value = ControlImplementationsExpression.class, name = "controlImplementations"),
   @Type(value = CustomAspectAttributeSizeExpression.class, name = "customAspectAttributeSize"),
   @Type(value = CustomAspectAttributeValueExpression.class, name = "customAspectAttributeValue"),
   @Type(value = EqualsExpression.class, name = "equals"),
@@ -68,6 +69,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(value = "currentElement", schema = CurrentElementExpression.class),
       @DiscriminatorMapping(value = "constant", schema = ConstantExpression.class),
       @DiscriminatorMapping(value = "contains", schema = ContainsExpression.class),
+      @DiscriminatorMapping(
+          value = "controlImplementations",
+          schema = ControlImplementationsExpression.class),
       @DiscriminatorMapping(
           value = "customAspectAttributeSize",
           schema = CustomAspectAttributeSizeExpression.class),
@@ -100,6 +104,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       CurrentElementExpression.class,
       ConstantExpression.class,
       ContainsExpression.class,
+      ControlImplementationsExpression.class,
       CustomAspectAttributeSizeExpression.class,
       CustomAspectAttributeValueExpression.class,
       EqualsExpression.class,
