@@ -41,6 +41,7 @@ import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.entity.type.VeoType
 import org.veo.core.entity.type.VeoType as T
 
@@ -963,5 +964,150 @@ class VeoExpressionITSpec extends Specification {
         exp.selfValidate(domain, ElementType.ASSET)
         exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(T.integer(), T.string()).orNothing())
         exp.getValue(asset, domain) == ["ok", 42]
+    }
+
+    def "outbound links can be filtered by impact inheritance"() {
+        given:
+        def inheritingDefinition = Mock(LinkDefinition) {
+            attributeDefinitions >> [foo: new TextAttributeDefinition()]
+        }
+        def alsoInheritingDefinition = Mock(LinkDefinition) {
+            attributeDefinitions >> [bar: new IntegerAttributeDefinition()]
+        }
+        def notInheritingDefinition = Mock(LinkDefinition) {
+            attributeDefinitions >> [:]
+        }
+        def domain = Mock(Domain) {
+            riskDefinitions >> [
+                r1: Mock(RiskDefinition) {
+                    impactInheritingLinks >> [(ElementType.ASSET): ["inheriting"]]
+                },
+                r2: Mock(RiskDefinition) {
+                    impactInheritingLinks >> [
+                        (ElementType.ASSET): ["alsoInheriting"],
+                        (ElementType.PROCESS): ["notInheriting"],
+                    ]
+                },
+            ]
+            getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
+                links >> [
+                    inheriting: inheritingDefinition,
+                    alsoInheriting: alsoInheritingDefinition,
+                    notInheriting: notInheritingDefinition,
+                ]
+            }
+            getLinkDefinition(ElementType.ASSET, "inheriting") >> inheritingDefinition
+            getLinkDefinition(ElementType.ASSET, "notInheriting") >> notInheritingDefinition
+        }
+
+        and:
+        def asset = Spy(Asset)
+        def inheritingLink = Mock(CustomLink) {
+            type >> "inheriting"
+            source >> asset
+        }
+        def alsoInheritingLink = Mock(CustomLink) {
+            type >> "alsoInheriting"
+            source >> asset
+        }
+        def notInheritingLink = Mock(CustomLink) {
+            type >> "notInheriting"
+            source >> asset
+        }
+        asset.getLinks(domain) >> [
+            inheritingLink,
+            alsoInheritingLink,
+            notInheritingLink
+        ]
+
+        when: "filtering by impact inheritance only"
+        def exp = new LinksExpression(LinkDirection.OUTBOUND, null, null, true)
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        noExceptionThrown()
+        exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.sumOf(
+                        T.attributeContainer([foo: T.string().orNothing()]),
+                        T.attributeContainer([bar: T.integer()]),
+                ))
+        exp.getValue(asset, domain) ==~ [
+            inheritingLink,
+            alsoInheritingLink
+        ]
+
+        when: "not filtering at all"
+        exp = new LinksExpression(LinkDirection.OUTBOUND, null, null, false)
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        noExceptionThrown()
+        exp.getValue(asset, domain) ==~ [
+            inheritingLink,
+            alsoInheritingLink,
+            notInheritingLink
+        ]
+
+        when: "combining impact inheritance with an inheriting link type"
+        exp = new LinksExpression(LinkDirection.OUTBOUND, "inheriting", null, true)
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        noExceptionThrown()
+        exp.getValueType(domain, ElementType.ASSET) == T.listOf(T.attributeContainer([foo: T.string().orNothing()]))
+        exp.getValue(asset, domain) == [inheritingLink]
+
+        when: "combining impact inheritance with a link type that does not inherit impacts"
+        new LinksExpression(LinkDirection.OUTBOUND, "notInheriting", null, true).selfValidate(domain, ElementType.ASSET)
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "Link type 'notInheriting' does not inherit impacts"
+    }
+
+    def "inbound links can be filtered by impact inheritance"() {
+        given:
+        def domain = Mock(Domain) {
+            riskDefinitions >> [
+                r1: Mock(RiskDefinition) {
+                    impactInheritingLinks >> [(ElementType.ASSET): ["inheriting"]]
+                },
+            ]
+            getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
+                links >> [
+                    inheriting: Mock(LinkDefinition) {
+                        targetType >> ElementType.PROCESS
+                        attributeDefinitions >> [:]
+                    },
+                    notInheriting: Mock(LinkDefinition) {
+                        targetType >> ElementType.PROCESS
+                        attributeDefinitions >> [:]
+                    },
+                    inheritingButOtherTarget: Mock(LinkDefinition) {
+                        targetType >> ElementType.SCOPE
+                        attributeDefinitions >> [foo: new TextAttributeDefinition()]
+                    },
+                ]
+            }
+        }
+        def inheritingLink = Mock(CustomLink) {
+            type >> "inheriting"
+            source >> Spy(Asset)
+        }
+        def notInheritingLink = Mock(CustomLink) {
+            type >> "notInheriting"
+            source >> Spy(Asset)
+        }
+        def process = Spy(Process) {
+            getInboundLinks(domain) >> [
+                inheritingLink,
+                notInheritingLink
+            ]
+        }
+        def exp = new LinksExpression(LinkDirection.INBOUND, null, ElementType.ASSET, true)
+
+        expect:
+        exp.selfValidate(domain, ElementType.PROCESS)
+        exp.getValueType(domain, ElementType.PROCESS) == T.listOf(T.attributeContainer([:]))
+        exp.getValue(process, domain) == [inheritingLink]
     }
 }
