@@ -22,12 +22,10 @@ import java.sql.ResultSet
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import groovy.sql.Sql
+import tools.jackson.databind.json.JsonMapper
 
 class V74__add_sub_type_name_translations extends BaseJavaMigration {
-    private om = new ObjectMapper()
 
     @Override
     void migrate(Context context) throws Exception {
@@ -55,7 +53,7 @@ class V74__add_sub_type_name_translations extends BaseJavaMigration {
     }
 
     String addTranslations(String elementType, String subTypeDefinitionsJson, String translationsJson) {
-        om.writeValueAsString(addTranslations(elementType, om.readValue(subTypeDefinitionsJson, Map), om.readValue(translationsJson, Map)))
+        JsonMapper.shared().writeValueAsString(addTranslations(elementType, JsonMapper.shared().readValue(subTypeDefinitionsJson, Map), om.readValue(translationsJson, Map)))
     }
 
     Map addTranslations(String elementType, Map subTypeDefinitions, Map translations) {

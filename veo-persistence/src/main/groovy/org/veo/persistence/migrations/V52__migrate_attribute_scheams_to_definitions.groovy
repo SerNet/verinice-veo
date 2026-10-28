@@ -22,12 +22,10 @@ import java.sql.ResultSet
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import groovy.sql.Sql
+import tools.jackson.databind.json.JsonMapper
 
 class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
-    private om = new ObjectMapper()
 
     @Override
     void migrate(Context context) throws Exception {
@@ -55,7 +53,7 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
 
     String migrateCAsOrLinks(String json) {
         return json
-                .with { om.readValue(it, Map) }
+                .with { JsonMapper.shared().readValue(it, Map) }
                 .each {entry ->
                     def caOrLinkDefinition = entry.value
                     caOrLinkDefinition.attributeDefinitions = caOrLinkDefinition
@@ -68,7 +66,7 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
                             }
                     caOrLinkDefinition.remove("attributeSchemas")
                 }
-                .with{this.om.writeValueAsString(it)}
+                .with{JsonMapper.shared().writeValueAsString(it)}
     }
 
     Map schemaToDefinition(Map schema) {

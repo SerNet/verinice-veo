@@ -22,20 +22,18 @@ import java.sql.ResultSet
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import groovy.sql.Sql
+import tools.jackson.databind.json.JsonMapper
 
 class V34__rename_risk_value_properties extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        def om = new ObjectMapper()
         def con = new Sql(context.connection)
         con.query("select db_id, risk_categories from riskvalues_aspect") { ResultSet aspect ->
             while(aspect.next()) {
                 def id = aspect.getString("db_id")
                 def categories = aspect.getString("risk_categories").with{
-                    om.readValue(it, Collection.class)
+                    JsonMapper.shared().readValue(it, Collection.class)
                 }
                 categories.each{
                     it.userDefinedResidualRisk = it.residualRisk
@@ -43,7 +41,7 @@ class V34__rename_risk_value_properties extends BaseJavaMigration {
                     it.remove("effectiveRisk")
                 }
                 con.execute("update riskvalues_aspect set risk_categories = jsonb(?::text) where db_id = ?", [
-                    om.writeValueAsString(categories),
+                    JsonMapper.shared().writeValueAsString(categories),
                     id
                 ])
             }

@@ -33,9 +33,6 @@ import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.veo.core.UserAccessRights;
 import org.veo.core.VeoConstants;
 import org.veo.core.entity.Asset;
@@ -82,11 +79,12 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
 import lombok.RequiredArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Repository
 @RequiredArgsConstructor
 public class GenericElementRepositoryImpl implements GenericElementRepository {
-  private static final ObjectMapper JSON = new ObjectMapper();
 
   /** Placeholder for the SQL expression that makes an attribute value sortable. */
   private static final String SORTABLE_VALUE_EXPRESSION_PLACEHOLDER = "${sortableValueExpression}";
@@ -419,16 +417,16 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   private static String toJson(Object value) {
     try {
-      return JSON.writeValueAsString(value);
-    } catch (JsonProcessingException e) {
+      return JsonMapper.shared().writeValueAsString(value);
+    } catch (JacksonException e) {
       throw new IllegalStateException("Cannot serialize attribute key filter", e);
     }
   }
 
   private static Object fromJson(String json) {
     try {
-      return JSON.readValue(json, Object.class);
-    } catch (JsonProcessingException e) {
+      return JsonMapper.shared().readValue(json, Object.class);
+    } catch (JacksonException e) {
       throw new IllegalStateException("Cannot deserialize attribute value", e);
     }
   }
