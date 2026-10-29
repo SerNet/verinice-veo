@@ -37,7 +37,8 @@ import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
  * Uses a custom JSON media type, producing a more lightweight JSON output where read-only
  * properties and properties with default values are omitted.
  */
-public class CompactJsonHttpMessageConverter extends AbstractJacksonHttpMessageConverter {
+public class CompactJsonHttpMessageConverter
+    extends AbstractJacksonHttpMessageConverter<ObjectMapper> {
   public static final MediaType MEDIA_TYPE_JSON_COMPACT =
       MediaType.parseMediaType("application/vnd.sernet.verinice.compact+json");
 

@@ -69,7 +69,7 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({TranslationException.class})
   protected ResponseEntity<ApiResponseBody> handle(TranslationException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler({DomainException.class})
@@ -95,12 +95,12 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({ResultSizeExceededException.class})
   protected ResponseEntity<ApiResponseBody> handle(ResultSizeExceededException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler({ContentTooLongException.class})
   protected ResponseEntity<ApiResponseBody> handle(ContentTooLongException exception) {
-    return handle(exception, HttpStatus.PAYLOAD_TOO_LARGE);
+    return handle(exception, HttpStatus.CONTENT_TOO_LARGE);
   }
 
   @ExceptionHandler({EntityAlreadyExistsException.class})
@@ -145,17 +145,17 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({UnprocessableDataException.class})
   protected ResponseEntity<ApiResponseBody> handle(UnprocessableDataException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler({ReferenceTargetNotFoundException.class})
   protected ResponseEntity<ApiResponseBody> handle(ReferenceTargetNotFoundException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler({RiskConsistencyException.class})
   protected ResponseEntity<ApiResponseBody> handle(RiskConsistencyException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler(ClientNotActiveException.class)
@@ -197,7 +197,7 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({InvalidFormatException.class})
   protected ResponseEntity<ApiResponseBody> handle(InvalidFormatException exception) {
-    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+    return handle(exception, HttpStatus.UNPROCESSABLE_CONTENT);
   }
 
   @ExceptionHandler({LicensingException.class})

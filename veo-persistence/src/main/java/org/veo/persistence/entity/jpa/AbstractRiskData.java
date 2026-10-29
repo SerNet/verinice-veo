@@ -46,7 +46,7 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
@@ -92,7 +92,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @UuidGenerator
   @Column(name = "db_id")
   private UUID id;
 

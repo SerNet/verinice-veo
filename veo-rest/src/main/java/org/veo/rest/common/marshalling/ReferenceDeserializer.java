@@ -43,6 +43,6 @@ public class ReferenceDeserializer extends ValueDeserializer<IdRef<?>> {
   public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) {
     TreeNode treeNode = p.readValueAsTree();
     StringNode targetUri = (StringNode) treeNode.get(TARGET_URI);
-    return IdRef.fromUri(targetUri.asText(), urlAssembler);
+    return IdRef.fromUri(targetUri.asString(), urlAssembler);
   }
 }

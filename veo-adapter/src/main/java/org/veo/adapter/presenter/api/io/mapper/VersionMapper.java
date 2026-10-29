@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class VersionMapper {
   public static Version parseVersion(String version) {
     try {
-      return Version.valueOf(version);
+      return Version.parse(version);
     } catch (UnexpectedCharacterException ex) {
       throw new IllegalArgumentException("Invalid semantic version: %s".formatted(version), ex);
     }

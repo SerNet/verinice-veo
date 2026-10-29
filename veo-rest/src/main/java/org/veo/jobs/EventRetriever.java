@@ -63,7 +63,7 @@ public class EventRetriever {
    */
   @Transactional(isolation = Isolation.SERIALIZABLE)
   @Retryable(
-      value = {
+      retryFor = {
         ObjectOptimisticLockingFailureException.class,
         PessimisticLockingFailureException.class,
         TransactionSystemException.class,

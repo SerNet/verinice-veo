@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -67,8 +67,8 @@ class WebMvcContext implements WebMvcConfigurer {
   }
 
   @Override
-  public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-    converters.addFirst(new CompactJsonHttpMessageConverter(defaultMapper));
+  public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+    builder.addCustomConverter(new CompactJsonHttpMessageConverter(defaultMapper));
   }
 
   @Override

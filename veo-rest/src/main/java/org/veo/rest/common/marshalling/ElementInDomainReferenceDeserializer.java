@@ -46,12 +46,12 @@ public class ElementInDomainReferenceDeserializer
     var treeNode = p.readValueAsTree();
     var targetUri = treeNode.get(TARGET_URI);
     if (targetUri != null) {
-      return ElementInDomainIdRef.fromTargetUri(((StringNode) targetUri).asText(), urlAssembler);
+      return ElementInDomainIdRef.fromTargetUri(((StringNode) targetUri).asString(), urlAssembler);
     }
     var targetInDomain = treeNode.get(TARGET_IN_DOMAIN_URI);
     if (targetInDomain != null) {
       return ElementInDomainIdRef.fromTargetUri(
-          ((StringNode) targetInDomain).asText(), urlAssembler);
+          ((StringNode) targetInDomain).asString(), urlAssembler);
     }
     throw new UnprocessableDataException(
         "Element reference must contain %s or %s".formatted(TARGET_URI, TARGET_IN_DOMAIN_URI));

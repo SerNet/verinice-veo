@@ -43,6 +43,6 @@ public class SymIdRefDeserializer extends ValueDeserializer<SymIdRef<?, ?>> {
   public SymIdRef<?, ?> deserialize(JsonParser p, DeserializationContext ctxt) {
     TreeNode treeNode = p.readValueAsTree();
     StringNode targetUri = (StringNode) treeNode.get(TARGET_URI);
-    return SymIdRef.fromUri(targetUri.asText(), urlAssembler);
+    return SymIdRef.fromUri(targetUri.asString(), urlAssembler);
   }
 }
