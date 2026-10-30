@@ -94,7 +94,7 @@ tasks.withType(com.gorylenko.GenerateGitPropertiesTask).all {
 
 jib {
     from {
-        image = 'gcr.io/distroless/java25-debian13:nonroot@sha256:5d3177252775d4b01603470fe21c015393019089904f68724bd37242e4bc6e6d'
+        image = 'gcr.io/distroless/java25-debian13:nonroot@sha256:fc6f4aec634ee433ff16a5d18814181e7928f4be9f434b44b48231e2eb7becee'
     }
     container {
         labels = project.provider {
