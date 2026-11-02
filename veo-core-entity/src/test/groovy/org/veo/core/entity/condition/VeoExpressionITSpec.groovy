@@ -44,6 +44,8 @@ import org.veo.core.entity.definitions.attribute.DurationAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.entity.event.ElementEvent
+import org.veo.core.entity.event.InboundLinkEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImpactValues
@@ -1118,6 +1120,60 @@ class VeoExpressionITSpec extends Specification {
         exp.selfValidate(domain, ElementType.PROCESS)
         exp.getValueType(domain, ElementType.PROCESS) == T.listOf(T.attributeContainer([:]))
         exp.getValue(process, domain) == [inheritingLink]
+    }
+
+    def "invalid links expression is rejected: #expectedMessage"() {
+        given:
+        def domain = Mock(Domain) {
+            riskDefinitions >> [:]
+            getElementTypeDefinition(ElementType.ASSET) >> Mock(ElementTypeDefinition) {
+                links >> [
+                    notInheriting: Mock(LinkDefinition) {
+                        targetType >> ElementType.PROCESS
+                    }
+                ]
+            }
+            getElementTypeDefinition(ElementType.PERSON) >> Mock(ElementTypeDefinition) {
+                links >> [
+                    toScope: Mock(LinkDefinition) {
+                        targetType >> ElementType.SCOPE
+                    }
+                ]
+            }
+        }
+
+        when:
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        def ex = thrown(RuntimeException)
+        ex.message == expectedMessage
+
+        where:
+        exp                                                                     | expectedMessage
+        new LinksExpression(LinkDirection.OUTBOUND, null, ElementType.PERSON)   | "sourceType is not applicable for outbound links and should be null"
+        new LinksExpression(LinkDirection.INBOUND, null, null)                  | "sourceType must be specified for inbound links"
+        new LinksExpression(LinkDirection.OUTBOUND, null, null, true)           | "No matching links defined for assets"
+        new LinksExpression(LinkDirection.INBOUND, null, ElementType.PERSON)    | "No matching links defined for assets"
+    }
+
+    def "inbound link event affects #direction links with type #linkType: #expected"() {
+        given:
+        def domain = Mock(Domain)
+        def exp = new LinksExpression(direction, linkType, direction == LinkDirection.INBOUND ? ElementType.PERSON : null)
+        def event = new InboundLinkEvent(Mock(Element), domain, "workedOn", InboundLinkEvent.Operation.CREATION_OR_UPDATE, this)
+
+        expect:
+        exp.isAffectedByEvent(event, domain) == expected
+        !exp.isAffectedByEvent(Mock(ElementEvent), domain)
+
+        where:
+        direction              | linkType   | expected
+        LinkDirection.INBOUND  | "workedOn" | true
+        LinkDirection.INBOUND  | "other"    | false
+        LinkDirection.INBOUND  | null       | true
+        LinkDirection.OUTBOUND | "workedOn" | false
+        LinkDirection.OUTBOUND | null       | false
     }
 
     def "potential impacts complete is #expected for #impactValues"() {
