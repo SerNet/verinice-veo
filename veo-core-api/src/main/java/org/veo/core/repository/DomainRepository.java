@@ -75,4 +75,6 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   }
 
   void deleteByClient(Client client);
+
+  Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling();
 }

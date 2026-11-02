@@ -86,6 +86,10 @@ public interface Domain extends DomainBase, ClientOwned {
 
   void removeRiskDefinition(RiskDefinitionRef riskDefinition);
 
+  boolean isInspectionBackfillComplete();
+
+  void setInspectionBackfillComplete(boolean flag);
+
   default Map<String, Action> getActions() {
     // TODO #2844 use dynamic descriptive actions, remove hard-coded domain-specific biz
     if (this.getName().equals("IT-Grundschutz")) {

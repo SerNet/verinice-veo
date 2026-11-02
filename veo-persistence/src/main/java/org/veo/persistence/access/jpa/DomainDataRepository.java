@@ -93,4 +93,11 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
         "catalogItems.updateReferences"
       })
   void findWithCatalogItemsAndAllReferencesById(UUID id);
+
+  @Query(
+      """
+        select id from domain
+          where active = true and inspectionBackfillComplete = false
+      """)
+  Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling();
 }

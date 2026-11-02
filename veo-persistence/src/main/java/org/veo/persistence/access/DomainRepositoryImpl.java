@@ -184,4 +184,9 @@ public class DomainRepositoryImpl
     var domains = dataRepository.findAllByClient(clientId);
     dataRepository.deleteAll(domains);
   }
+
+  @Override
+  public Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling() {
+    return dataRepository.findIdsOfDomainsThatNeedInspectionBackfilling();
+  }
 }
