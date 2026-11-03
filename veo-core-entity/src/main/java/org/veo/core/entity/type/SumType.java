@@ -77,10 +77,9 @@ record SumType(@Nonnull Set<VeoType> possibleTypes) implements VeoType {
   public VeoType getAttributeType(String attribute, String errorContext) {
     return VeoType.sumOf(
         possibleTypes.stream()
-            .map(
-                p ->
-                    p.getAttributeType(
-                        attribute, "%s: %s does not match".formatted(errorContext, this)))
+            .map(p ->
+                p.getAttributeType(
+                    attribute, "%s: %s does not match".formatted(errorContext, this)))
             .toList());
   }
 

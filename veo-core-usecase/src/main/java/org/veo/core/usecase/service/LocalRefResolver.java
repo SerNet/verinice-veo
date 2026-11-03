@@ -54,13 +54,10 @@ public class LocalRefResolver implements IdRefResolver {
   public <TEntity extends Entity, TRef extends IEntityRef<TEntity>> Set<TEntity> resolve(
       Set<? extends TRef> objectReferences) {
     return objectReferences.stream()
-        .map(
-            ref ->
-                Optional.ofNullable((TEntity) cache.get(ref))
-                    .orElseThrow(
-                        () ->
-                            new UnprocessableDataException(
-                                "%s not found".formatted(ref.toString()))))
+        .map(ref ->
+            Optional.ofNullable((TEntity) cache.get(ref))
+                .orElseThrow(
+                    () -> new UnprocessableDataException("%s not found".formatted(ref.toString()))))
         .collect(Collectors.toSet());
   }
 

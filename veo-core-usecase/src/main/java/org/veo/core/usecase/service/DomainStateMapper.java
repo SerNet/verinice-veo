@@ -101,12 +101,11 @@ public class DomainStateMapper {
     target.setTranslations(source.getTranslations());
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitionStates().entrySet().stream()
-            .map(
-                stringElementTypeDefinitionStateEntry ->
-                    toElementTypeDefinition(
-                        stringElementTypeDefinitionStateEntry.getKey(),
-                        stringElementTypeDefinitionStateEntry.getValue(),
-                        target))
+            .map(stringElementTypeDefinitionStateEntry ->
+                toElementTypeDefinition(
+                    stringElementTypeDefinitionStateEntry.getKey(),
+                    stringElementTypeDefinitionStateEntry.getValue(),
+                    target))
             .collect(Collectors.toSet()));
     target.setRiskDefinitions(source.getRiskDefinitions());
     target.setDecisions(source.getDecisions());
@@ -121,21 +120,18 @@ public class DomainStateMapper {
       // they may reference each other.
       target.setCatalogItems(
           source.getCatalogItemStates().stream()
-              .map(
-                  ci ->
-                      resolver.injectNewEntity(
-                          TypedSymbolicId.from(ci.getSymbolicId(), CatalogItem.class, domainRef)))
+              .map(ci ->
+                  resolver.injectNewEntity(
+                      TypedSymbolicId.from(ci.getSymbolicId(), CatalogItem.class, domainRef)))
               .collect(toSet()));
       source
           .getCatalogItemStates()
-          .forEach(
-              ciState ->
-                  mapTemplateItem(
-                      ciState,
-                      resolver.resolve(
-                          TypedSymbolicId.from(
-                              ciState.getSymbolicId(), CatalogItem.class, domainRef)),
-                      resolver));
+          .forEach(ciState ->
+              mapTemplateItem(
+                  ciState,
+                  resolver.resolve(
+                      TypedSymbolicId.from(ciState.getSymbolicId(), CatalogItem.class, domainRef)),
+                  resolver));
     }
     if (copyTemplateItems == TemplateItems.CATALOG_AND_PROFILES) {
       target.setProfiles(
@@ -151,14 +147,13 @@ public class DomainStateMapper {
         .map(ProfileItemState::getAppliedCatalogItemRef)
         .filter(Objects::nonNull)
         .distinct()
-        .forEach(
-            ciRef ->
-                resolver.inject(
-                    owner
-                        .findCatalogItem(ciRef.getSymbolicId())
-                        .orElseThrow(
-                            () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
-                    ciRef));
+        .forEach(ciRef ->
+            resolver.inject(
+                owner
+                    .findCatalogItem(ciRef.getSymbolicId())
+                    .orElseThrow(
+                        () -> new UnprocessableDataException("%s not found".formatted(ciRef))),
+                ciRef));
     return toProfile(source, resolver, owner);
   }
 
@@ -174,22 +169,18 @@ public class DomainStateMapper {
     // may reference each other.
     target.setItems(
         source.getItemStates().stream()
-            .map(
-                itemState ->
-                    resolver.injectNewEntity(
-                        TypedSymbolicId.from(
-                            itemState.getSymbolicId(), ProfileItem.class, profileRef)))
+            .map(itemState ->
+                resolver.injectNewEntity(
+                    TypedSymbolicId.from(itemState.getSymbolicId(), ProfileItem.class, profileRef)))
             .collect(toSet()));
     source
         .getItemStates()
-        .forEach(
-            itemState ->
-                mapProfileItem(
-                    itemState,
-                    resolver.resolve(
-                        TypedSymbolicId.from(
-                            itemState.getSymbolicId(), ProfileItem.class, profileRef)),
-                    resolver));
+        .forEach(itemState ->
+            mapProfileItem(
+                itemState,
+                resolver.resolve(
+                    TypedSymbolicId.from(itemState.getSymbolicId(), ProfileItem.class, profileRef)),
+                resolver));
 
     return target;
   }

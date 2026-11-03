@@ -65,14 +65,12 @@ class DomainTemplateValidator {
       throw new UnprocessableDataException("No translations");
     }
     domain.getTranslations().getTranslations().entrySet().stream()
-        .forEach(
-            e -> {
-              if (e.getValue().getName() == null || e.getValue().getName().isEmpty()) {
-                throw new UnprocessableDataException(
-                    "Translated template name missing for '%s'."
-                        .formatted(e.getKey().getLanguage()));
-              }
-            });
+        .forEach(e -> {
+          if (e.getValue().getName() == null || e.getValue().getName().isEmpty()) {
+            throw new UnprocessableDataException(
+                "Translated template name missing for '%s'.".formatted(e.getKey().getLanguage()));
+          }
+        });
     domain.getElementTypeDefinitions().forEach(ElementTypeDefinitionValidator::validate);
   }
 

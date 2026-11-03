@@ -110,12 +110,11 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     }
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
-            .orElseGet(
-                () -> {
-                  var newAspect = new ImpactValuesAspectData(domain, this);
-                  riskValuesAspects.add(newAspect);
-                  return newAspect;
-                });
+            .orElseGet(() -> {
+              var newAspect = new ImpactValuesAspectData(domain, this);
+              riskValuesAspects.add(newAspect);
+              return newAspect;
+            });
     aspect.setValues(riskValues);
   }
 
@@ -150,12 +149,11 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     return risks.stream()
         .filter(r -> r.getScenario().equals(scenario))
         .findAny()
-        .orElseGet(
-            () -> {
-              var riskData = createRisk(scenario);
-              addRisk(riskData);
-              return riskData;
-            });
+        .orElseGet(() -> {
+          var riskData = createRisk(scenario);
+          addRisk(riskData);
+          return riskData;
+        });
   }
 
   @Override
@@ -185,11 +183,10 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   @Override
   public void removeRequirementImplementation(Control control) {
     findRequirementImplementation(control)
-        .ifPresent(
-            ri -> {
-              controlImplementations.forEach(ci -> ci.remove(ri));
-              requirementImplementations.remove(ri);
-            });
+        .ifPresent(ri -> {
+          controlImplementations.forEach(ci -> ci.remove(ri));
+          requirementImplementations.remove(ri);
+        });
   }
 
   private void add(ControlImplementationData ci) {
@@ -202,27 +199,21 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     risks.stream()
         .filter(r -> control.equals(r.getMitigation()))
         .findAny()
-        .ifPresent(
-            mitigatedRisk -> {
-              var scenario = mitigatedRisk.getScenario();
-              throw new UnprocessableDataException(
-                  "Control '%s' (%s) cannot be disassociated, because it mitigates a risk for scenario '%s' (%s)."
-                      .formatted(
-                          control.getName(),
-                          control.getId(),
-                          scenario.getName(),
-                          scenario.getId()));
-            });
+        .ifPresent(mitigatedRisk -> {
+          var scenario = mitigatedRisk.getScenario();
+          throw new UnprocessableDataException(
+              "Control '%s' (%s) cannot be disassociated, because it mitigates a risk for scenario '%s' (%s)."
+                  .formatted(
+                      control.getName(), control.getId(), scenario.getName(), scenario.getId()));
+        });
     this.controlImplementations.remove(ci);
     ((RiskAffectedData<T, R>) ci.getOwner())
         .removeUnedited(
             ci.getRequirementImplementations().stream()
-                .filter(
-                    it ->
-                        controlImplementations.stream()
-                            .noneMatch(
-                                remainingCi ->
-                                    remainingCi.getRequirementImplementations().contains(it)))
+                .filter(it ->
+                    controlImplementations.stream()
+                        .noneMatch(remainingCi ->
+                            remainingCi.getRequirementImplementations().contains(it)))
                 .collect(Collectors.toSet()));
     ci.remove();
   }
@@ -321,10 +312,9 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     return requirementImplementations.stream()
         .filter(ri -> ri.getId().equals(reqImplRef.getUUID()))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Could not find requirement implementation %s", reqImplRef.getUUID()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Could not find requirement implementation %s", reqImplRef.getUUID()));
   }
 
   private void removeUnedited(Set<ReqImplRef> toRemove) {
@@ -339,12 +329,11 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     return getControlImplementations().stream()
         .filter(i -> i.getControl().equals(control))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "%s %s does not implement control %s"
-                        .formatted(
-                            this.getModelType(), this.getIdAsString(), control.getIdAsString())));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "%s %s does not implement control %s"
+                    .formatted(
+                        this.getModelType(), this.getIdAsString(), control.getIdAsString())));
   }
 
   @Override

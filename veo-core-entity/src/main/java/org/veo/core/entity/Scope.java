@@ -63,7 +63,7 @@ public interface Scope extends RiskAffected<Scope, ScopeRisk> {
   default boolean removeMember(Element member) {
     // Members may be proxies - make sure they are hydrated by calling a method on
     // them.
-    if (getMembers().removeIf((m) -> m.getId().equals(member.getId()))) {
+    if (getMembers().removeIf(m -> m.getId().equals(member.getId()))) {
       member.getScopes().remove(this);
       return true;
     }

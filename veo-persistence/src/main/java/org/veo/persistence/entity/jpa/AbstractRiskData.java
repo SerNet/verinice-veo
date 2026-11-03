@@ -161,12 +161,11 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
     getRiskDefinitions(oldDomain).stream()
         .filter(newRiskDefinition::contains)
-        .forEach(
-            rd -> {
-              RiskValuesAspectData oldAspect = getOrCreateRiskAspect(oldDomain, rd);
-              RiskValuesAspectData aspectData = getOrCreateRiskAspect(newDomain, rd);
-              aspectData.copyAspectData(oldAspect);
-            });
+        .forEach(rd -> {
+          RiskValuesAspectData oldAspect = getOrCreateRiskAspect(oldDomain, rd);
+          RiskValuesAspectData aspectData = getOrCreateRiskAspect(newDomain, rd);
+          aspectData.copyAspectData(oldAspect);
+        });
   }
 
   @Override
@@ -197,28 +196,25 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
         .filter(ra -> ra.getDomain().equals(domain))
         .filter(ra -> ra.getRiskDefinition().equals(riskDefinitionRef))
         .findFirst()
-        .orElseGet(
-            () -> {
-              var riskAspect = new RiskValuesAspectData(domain, this, riskDefinitionRef);
-              getScenario()
-                  .getPotentialProbability(domain, riskDefinitionRef)
-                  .map(PotentialProbability::potentialProbability)
-                  .ifPresent(riskAspect::setPotentialProbability);
-              getEntity()
-                  .getImpactValues(domain, riskDefinitionRef)
-                  .ifPresent(
-                      impactValues ->
-                          impactValues
-                              .potentialImpacts()
-                              .forEach(
-                                  (cat, impact) -> {
-                                    if (riskAspect.categoryExists(cat)) {
-                                      riskAspect.setPotentialImpact(cat, impact);
-                                    }
-                                  }));
-              riskAspects.add(riskAspect);
-              return riskAspect;
-            });
+        .orElseGet(() -> {
+          var riskAspect = new RiskValuesAspectData(domain, this, riskDefinitionRef);
+          getScenario()
+              .getPotentialProbability(domain, riskDefinitionRef)
+              .map(PotentialProbability::potentialProbability)
+              .ifPresent(riskAspect::setPotentialProbability);
+          getEntity()
+              .getImpactValues(domain, riskDefinitionRef)
+              .ifPresent(impactValues ->
+                  impactValues
+                      .potentialImpacts()
+                      .forEach((cat, impact) -> {
+                        if (riskAspect.categoryExists(cat)) {
+                          riskAspect.setPotentialImpact(cat, impact);
+                        }
+                      }));
+          riskAspects.add(riskAspect);
+          return riskAspect;
+        });
   }
 
   /**
@@ -239,31 +235,29 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   public ProbabilityValueProvider getProbabilityProvider(
       RiskDefinitionRef riskDefinition, Domain domain) {
     return findRiskAspectForDefinition(riskDefinition, domain)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "No probability values found for process"
-                        + " %s and scenario %s with "
-                        + "risk-definition"
-                        + " %s",
-                    getEntity().getDisplayName(),
-                    getScenario().getDisplayName(),
-                    riskDefinition.getIdRef()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "No probability values found for process"
+                    + " %s and scenario %s with "
+                    + "risk-definition"
+                    + " %s",
+                getEntity().getDisplayName(),
+                getScenario().getDisplayName(),
+                riskDefinition.getIdRef()));
   }
 
   @Override
   public CategorizedImpactValueProvider getImpactProvider(
       RiskDefinitionRef riskDefinition, Domain domain) {
     return findRiskAspectForDefinition(riskDefinition, domain)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "No risk impacts found for process %s "
-                        + "and scenario %s with "
-                        + "risk-definition %s",
-                    getEntity().getDisplayName(),
-                    getScenario().getDisplayName(),
-                    riskDefinition.getIdRef()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "No risk impacts found for process %s "
+                    + "and scenario %s with "
+                    + "risk-definition %s",
+                getEntity().getDisplayName(),
+                getScenario().getDisplayName(),
+                riskDefinition.getIdRef()));
   }
 
   private Optional<RiskValuesAspectData> findRiskAspectForDefinition(
@@ -277,15 +271,14 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   public CategorizedRiskValueProvider getRiskProvider(
       RiskDefinitionRef riskDefinition, Domain domain) {
     return findRiskAspectForDefinition(riskDefinition, domain)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "No risk values found for process %s "
-                        + "and scenario %s with "
-                        + "risk-definition %s",
-                    getEntity().getDisplayName(),
-                    getScenario().getDisplayName(),
-                    riskDefinition.getIdRef()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "No risk values found for process %s "
+                    + "and scenario %s with "
+                    + "risk-definition %s",
+                getEntity().getDisplayName(),
+                getScenario().getDisplayName(),
+                riskDefinition.getIdRef()));
   }
 
   @Override
@@ -298,44 +291,41 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public void defineRiskValues(Set<RiskValues> newValuesSet) {
-    newValuesSet.forEach(
-        newValues -> {
-          var domain =
-              getEntity().getDomains().stream()
-                  .filter(d -> d.getId().equals(newValues.getDomainId()))
-                  .findFirst()
-                  .orElseThrow(
-                      () ->
-                          new UnprocessableDataException(
-                              "Cannot assign risk values for unknown domain '"
-                                  + newValues.getDomainId()
-                                  + "'"));
-          var riskDefinition =
-              domain
-                  .findRiskDefinition(newValues.getRiskDefinitionId())
-                  .orElseThrow(
-                      () ->
-                          new ReferenceTargetNotFoundException(
-                              format(
-                                  "Risk definition '%s' not found in domain %s",
-                                  newValues.getRiskDefinitionId(), domain.getIdAsString())));
+    newValuesSet.forEach(newValues -> {
+      var domain =
+          getEntity().getDomains().stream()
+              .filter(d -> d.getId().equals(newValues.getDomainId()))
+              .findFirst()
+              .orElseThrow(() ->
+                  new UnprocessableDataException(
+                      "Cannot assign risk values for unknown domain '"
+                          + newValues.getDomainId()
+                          + "'"));
+      var riskDefinition =
+          domain
+              .findRiskDefinition(newValues.getRiskDefinitionId())
+              .orElseThrow(() ->
+                  new ReferenceTargetNotFoundException(
+                      format(
+                          "Risk definition '%s' not found in domain %s",
+                          newValues.getRiskDefinitionId(), domain.getIdAsString())));
 
-          var riskDefinitionRef = RiskDefinitionRef.from(riskDefinition);
+      var riskDefinitionRef = RiskDefinitionRef.from(riskDefinition);
 
-          var ra = getOrCreateRiskAspect(domain, riskDefinitionRef);
-          var validator =
-              new DomainRiskReferenceValidator(
-                  DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinitionRef);
+      var ra = getOrCreateRiskAspect(domain, riskDefinitionRef);
+      var validator =
+          new DomainRiskReferenceValidator(
+              DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinitionRef);
 
-          var probability = ra.getProbability();
-          updateProbability(probability, newValues, validator);
+      var probability = ra.getProbability();
+      updateProbability(probability, newValues, validator);
 
-          var impacts = ra.getImpactCategories();
-          updateImpacts(impacts, newValues, validator);
+      var impacts = ra.getImpactCategories();
+      updateImpacts(impacts, newValues, validator);
 
-          var risks = ra.getCategorizedRisks();
-          updateRisks(risks, newValues, validator);
-        });
+      var risks = ra.getCategorizedRisks();
+      updateRisks(risks, newValues, validator);
+    });
 
     // increase optimistic locking version:
     if (!newValuesSet.isEmpty()) {
@@ -347,20 +337,18 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
       List<DeterminedRisk> risks,
       RiskValues newRiskValues,
       DomainRiskReferenceValidator validator) {
-    risks.forEach(
-        risk -> {
-          var category = risk.getCategory();
-          // handle partial inputs correctly - if not all categories are present in the
-          // new value set, leave the existing categories as they are:
-          if (newRiskValues.getCategorizedRisks() != null
-              && newRiskValues.categoryExists(category)) {
-            risk.setUserDefinedResidualRisk(
-                validator.validate(category, newRiskValues.getUserDefinedResidualRisk(category)));
-            risk.setResidualRiskExplanation(newRiskValues.getResidualRiskExplanation(category));
-            risk.setRiskTreatments(newRiskValues.getRiskTreatments(category));
-            risk.setRiskTreatmentExplanation(newRiskValues.getRiskTreatmentExplanation(category));
-          }
-        });
+    risks.forEach(risk -> {
+      var category = risk.getCategory();
+      // handle partial inputs correctly - if not all categories are present in the
+      // new value set, leave the existing categories as they are:
+      if (newRiskValues.getCategorizedRisks() != null && newRiskValues.categoryExists(category)) {
+        risk.setUserDefinedResidualRisk(
+            validator.validate(category, newRiskValues.getUserDefinedResidualRisk(category)));
+        risk.setResidualRiskExplanation(newRiskValues.getResidualRiskExplanation(category));
+        risk.setRiskTreatments(newRiskValues.getRiskTreatments(category));
+        risk.setRiskTreatmentExplanation(newRiskValues.getRiskTreatmentExplanation(category));
+      }
+    });
   }
 
   private void updateProbability(
@@ -373,19 +361,17 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
   private void updateImpacts(
       List<Impact> impacts, RiskValues newImpactValues, DomainRiskReferenceValidator validator) {
-    impacts.forEach(
-        impact -> {
-          var category = impact.getCategory();
-          // handle partial inputs correctly - if not all categories are present in the
-          // new value set, leave the existing categories as they are:
-          if (newImpactValues.getImpactCategories() != null
-              && newImpactValues.categoryExists(category)) {
-            impact.setSpecificImpact(
-                validator.validate(category, newImpactValues.getSpecificImpact(category)));
-            impact.setSpecificImpactExplanation(
-                newImpactValues.getSpecificImpactExplanation(category));
-          }
-        });
+    impacts.forEach(impact -> {
+      var category = impact.getCategory();
+      // handle partial inputs correctly - if not all categories are present in the
+      // new value set, leave the existing categories as they are:
+      if (newImpactValues.getImpactCategories() != null
+          && newImpactValues.categoryExists(category)) {
+        impact.setSpecificImpact(
+            validator.validate(category, newImpactValues.getSpecificImpact(category)));
+        impact.setSpecificImpactExplanation(newImpactValues.getSpecificImpactExplanation(category));
+      }
+    });
   }
 
   @Override
@@ -416,14 +402,13 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   public boolean removeRiskCategory(
       RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain) {
     return findRiskAspectForDefinition(riskDefinition, domain)
-        .map(
-            ra -> {
-              boolean result = ra.removeCategory(category);
-              if (ra.getAvailableCategories().isEmpty()) {
-                riskAspects.remove(ra);
-              }
-              return result;
-            })
+        .map(ra -> {
+          boolean result = ra.removeCategory(category);
+          if (ra.getAvailableCategories().isEmpty()) {
+            riskAspects.remove(ra);
+          }
+          return result;
+        })
         .orElse(false);
   }
 
@@ -431,14 +416,13 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   public boolean addRiskCategory(
       RiskDefinitionRef riskDefinition, CategoryRef category, Domain domain) {
     return findRiskAspectForDefinition(riskDefinition, domain)
-        .map(
-            ra -> {
-              if (!ra.getAvailableCategories().contains(category)) {
-                ra.addCategory(category);
-                return true;
-              }
-              return false;
-            })
+        .map(ra -> {
+          if (!ra.getAvailableCategories().contains(category)) {
+            ra.addCategory(category);
+            return true;
+          }
+          return false;
+        })
         .orElse(false);
   }
 
@@ -462,12 +446,11 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   public void setValues(
       Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions, Domain domain) {
     removeRiskAspects(domain);
-    riskDefinitions.forEach(
-        (rd, values) -> {
-          var aspect = new RiskValuesAspectData(domain, this, rd);
-          riskAspects.add(aspect);
-          aspect.setValues(values);
-        });
+    riskDefinitions.forEach((rd, values) -> {
+      var aspect = new RiskValuesAspectData(domain, this, rd);
+      riskAspects.add(aspect);
+      aspect.setValues(values);
+    });
   }
 
   private Map<CategoryRef, RiskTailoringReferenceValues.CategoryValues> map(

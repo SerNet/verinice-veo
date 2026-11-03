@@ -111,11 +111,10 @@ public class TaskController {
                 TypedId.from(domainId, Domain.class),
                 TypedId.from(unitId, Unit.class),
                 Optional.ofNullable(personIds)
-                    .map(
-                        ids ->
-                            ids.stream()
-                                .map(id -> TypedId.from(id, Person.class))
-                                .collect(Collectors.toSet()))
+                    .map(ids ->
+                        ids.stream()
+                            .map(id -> TypedId.from(id, Person.class))
+                            .collect(Collectors.toSet()))
                     .orElse(null),
                 PagingMapper.toConfig(pageSize, pageNumber, sortCriterion, sortOrder)),
             output ->

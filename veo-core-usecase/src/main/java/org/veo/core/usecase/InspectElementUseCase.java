@@ -46,9 +46,8 @@ public class InspectElementUseCase
     var domain =
         domainRepository
             .findById(input.domainId)
-            .orElseThrow(
-                () ->
-                    new NotFoundException("Domain with ID %s not found".formatted(input.domainId)));
+            .orElseThrow(() ->
+                new NotFoundException("Domain with ID %s not found".formatted(input.domainId)));
     userAccessRights.checkClient(domain);
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");

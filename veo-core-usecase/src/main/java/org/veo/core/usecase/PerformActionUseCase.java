@@ -87,11 +87,10 @@ public class PerformActionUseCase
     var action =
         domain
             .findAction(input.actionId)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Action %s not found in domain %s"
-                            .formatted(input.actionId, domain.getIdAsString())));
+            .orElseThrow(() ->
+                new NotFoundException(
+                    "Action %s not found in domain %s"
+                        .formatted(input.actionId, domain.getIdAsString())));
     return new OutputData(perform(action, element, domain, userAccessRights));
   }
 
@@ -124,60 +123,51 @@ public class PerformActionUseCase
         if (element instanceof RiskAffected<?, ?> ra) {
           createRisksStep
               .getScenarios(element, domain)
-              .forEach(
-                  scenario -> {
-                    var risk = ra.obtainRisk(scenario);
-                    if (risk.getDesignator() == null) {
-                      designatorService.assignDesignator(risk, domain.getOwner());
-                      createdEntities.add(risk);
-                    }
-                  });
+              .forEach(scenario -> {
+                var risk = ra.obtainRisk(scenario);
+                if (risk.getDesignator() == null) {
+                  designatorService.assignDesignator(risk, domain.getOwner());
+                  createdEntities.add(risk);
+                }
+              });
         }
       }
       case ApplyLinkTailoringReferences createLinkedScenarios -> {
         Set<Element> controls = createLinkedScenarios.getControls(element, domain);
-        controls.forEach(
-            control -> {
-              var controlCatalogItem = control.findAppliedCatalogItem(domain);
-              if (controlCatalogItem.isEmpty()) {
-                log.debug(
-                    "Control '{}' has no applied catalogItem ... skipping", control.getName());
-                return;
-              }
+        controls.forEach(control -> {
+          var controlCatalogItem = control.findAppliedCatalogItem(domain);
+          if (controlCatalogItem.isEmpty()) {
+            log.debug("Control '{}' has no applied catalogItem ... skipping", control.getName());
+            return;
+          }
 
-              Set<CatalogItem> scenarios =
-                  getScenarios(controlCatalogItem.get(), createLinkedScenarios.getLinkType());
-              if (scenarios.isEmpty()) {
-                log.info(
-                    "CatalogItem '{}' has no connections to any scenario.", controlCatalogItem);
-                return;
-              }
+          Set<CatalogItem> scenarios =
+              getScenarios(controlCatalogItem.get(), createLinkedScenarios.getLinkType());
+          if (scenarios.isEmpty()) {
+            log.info("CatalogItem '{}' has no connections to any scenario.", controlCatalogItem);
+            return;
+          }
 
-              List<Element> existingScenarios =
-                  loadExistingIncarnations(domain, scenarios, element.getOwner());
-              var newScenarios =
-                  applyIncarnationDescriptionUseCase
-                      .execute(
-                          new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                              element.getOwner().getId(),
-                              scenarios.stream()
-                                  .filter(notIncarnated(existingScenarios, domain))
-                                  .map(
-                                      item ->
-                                          (TemplateItemIncarnationDescriptionState<
-                                                  CatalogItem, DomainBase>)
-                                              new TemplateItemIncarnationDescription<>(
-                                                  item, List.of()))
-                                  .toList()),
-                          userAccessRights)
-                      .newElements();
-              createdEntities.addAll(newScenarios);
-              Stream.concat(existingScenarios.stream(), newScenarios.stream())
-                  .forEach(
-                      scenario ->
-                          createLink(
-                              domain, control, scenario, createLinkedScenarios.getLinkType()));
-            });
+          List<Element> existingScenarios =
+              loadExistingIncarnations(domain, scenarios, element.getOwner());
+          var newScenarios =
+              applyIncarnationDescriptionUseCase
+                  .execute(
+                      new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                          element.getOwner().getId(),
+                          scenarios.stream()
+                              .filter(notIncarnated(existingScenarios, domain))
+                              .map(item ->
+                                  (TemplateItemIncarnationDescriptionState<CatalogItem, DomainBase>)
+                                      new TemplateItemIncarnationDescription<>(item, List.of()))
+                              .toList()),
+                      userAccessRights)
+                  .newElements();
+          createdEntities.addAll(newScenarios);
+          Stream.concat(existingScenarios.stream(), newScenarios.stream())
+              .forEach(scenario ->
+                  createLink(domain, control, scenario, createLinkedScenarios.getLinkType()));
+        });
       }
     }
     return new ActionResult(createdEntities);

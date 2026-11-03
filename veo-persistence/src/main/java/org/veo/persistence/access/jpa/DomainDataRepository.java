@@ -48,11 +48,11 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query(
       """
-        select d from #{#entityName} d
-          join fetch d.decisionSet
-          join fetch d.inspectionSet
-          where d.id = ?1 and d.owner.id = ?2
-    """)
+          select d from #{#entityName} d
+            join fetch d.decisionSet
+            join fetch d.inspectionSet
+            where d.id = ?1 and d.owner.id = ?2
+      """)
   Optional<DomainData> findByIdWithDecisionsAndInspections(UUID domainId, UUID clientId);
 
   @Query(

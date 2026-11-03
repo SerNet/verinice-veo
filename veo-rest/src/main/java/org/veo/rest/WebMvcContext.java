@@ -100,13 +100,12 @@ class WebMvcContext implements WebMvcConfigurer {
                     .map(Authentication::getPrincipal)
                     .map(ApplicationUser::findAuthenticatedUser)
                     .map(UserAccessRights::getClientId)
-                    .ifPresent(
-                        clientId -> {
-                          clientRepository
-                              .findById(clientId)
-                              .filter(ClientRepository.IS_CLIENT_ACTIVE)
-                              .orElseThrow(() -> new ClientNotActiveException(clientId.toString()));
-                        });
+                    .ifPresent(clientId -> {
+                      clientRepository
+                          .findById(clientId)
+                          .filter(ClientRepository.IS_CLIENT_ACTIVE)
+                          .orElseThrow(() -> new ClientNotActiveException(clientId.toString()));
+                    });
                 return true;
               }
             })

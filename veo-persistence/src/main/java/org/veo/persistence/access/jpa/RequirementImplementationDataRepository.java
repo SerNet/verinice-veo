@@ -39,31 +39,31 @@ public interface RequirementImplementationDataRepository
 
   @Query(
       """
-          select distinct ri from requirement_implementation ri
-          where ri.id in (:uuids)
-         """)
+       select distinct ri from requirement_implementation ri
+       where ri.id in (:uuids)
+      """)
   Set<RequirementImplementationData> findAllByUUID(@Param("uuids") Set<UUID> uuids);
 
   @Query(
       """
-                      select ri from requirement_implementation ri
-                      join fetch ri.control
-                      join fetch ri.origin
-                      left join fetch ri.document
-                      left join fetch ri.implementedBy
-                      left join fetch ri.nextRevisionBy
-                      left join fetch ri.lastRevisionBy
-                      where ri.dbId in ?1
-                     """)
+       select ri from requirement_implementation ri
+       join fetch ri.control
+       join fetch ri.origin
+       left join fetch ri.document
+       left join fetch ri.implementedBy
+       left join fetch ri.nextRevisionBy
+       left join fetch ri.lastRevisionBy
+       where ri.dbId in ?1
+      """)
   Set<RequirementImplementationData> findAllByDbIdsWithAllRelations(Iterable<Long> ids);
 
   @Query(
       """
-                      select ri from requirement_implementation ri
-                      join fetch ri.origin
-                      join fetch ri.responsible
-                      where ri.responsible in ?1
-                     """)
+       select ri from requirement_implementation ri
+       join fetch ri.origin
+       join fetch ri.responsible
+       where ri.responsible in ?1
+      """)
   Set<RequirementImplementationData> findByPersons(Set<Person> responsible);
 
   @Nonnull
@@ -73,8 +73,8 @@ public interface RequirementImplementationDataRepository
 
   @Query(
       """
-         select distinct ri from requirement_implementation  ri
-         where ri.control.id in ?1
-         """)
+      select distinct ri from requirement_implementation  ri
+      where ri.control.id in ?1
+      """)
   Set<RequirementImplementationData> findAllByControlIds(Set<UUID> controlIDs);
 }

@@ -60,17 +60,14 @@ public class UpdateElementTypeDefinitionUseCase
     if (input.preserveSortKeys) {
       elementTypeDefinition
           .getSubTypes()
-          .forEach(
-              (subTypeId, subTypeDefinition) ->
-                  domain
-                      .findElementTypeDefinition(input.elementType)
-                      .ifPresent(
-                          existingDefinition ->
-                              Optional.ofNullable(existingDefinition.getSubTypes().get(subTypeId))
-                                  .ifPresent(
-                                      existingSubtypeDefinition ->
-                                          subTypeDefinition.setSortKey(
-                                              existingSubtypeDefinition.getSortKey()))));
+          .forEach((subTypeId, subTypeDefinition) ->
+              domain
+                  .findElementTypeDefinition(input.elementType)
+                  .ifPresent(existingDefinition ->
+                      Optional.ofNullable(existingDefinition.getSubTypes().get(subTypeId))
+                          .ifPresent(existingSubtypeDefinition ->
+                              subTypeDefinition.setSortKey(
+                                  existingSubtypeDefinition.getSortKey()))));
     }
 
     domain.applyElementTypeDefinition(elementTypeDefinition);

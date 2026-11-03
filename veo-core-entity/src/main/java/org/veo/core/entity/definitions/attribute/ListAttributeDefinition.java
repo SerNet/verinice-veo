@@ -50,12 +50,11 @@ public final class ListAttributeDefinition extends AttributeDefinition {
   public List<ValidationError> getErrors(Object value) {
     if (value instanceof List<?> list) {
       return list.stream()
-          .flatMap(
-              item ->
-                  ValidationError.mergeIfAny(
-                      ValidationError.localized("error_invalid_value", value),
-                      itemDefinition.getErrors(item))
-                      .stream())
+          .flatMap(item ->
+              ValidationError.mergeIfAny(
+                  ValidationError.localized("error_invalid_value", value),
+                  itemDefinition.getErrors(item))
+                  .stream())
           .toList();
     }
     return List.of(ValidationError.localized("error_no_list"));

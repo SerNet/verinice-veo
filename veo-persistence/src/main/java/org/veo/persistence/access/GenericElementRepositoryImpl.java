@@ -91,51 +91,51 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   private static final String USED_ATTRIBUTE_VALUES_QUERY_TEMPLATE =
       """
-    select value from (
-      select distinct
-             elem::text as value,
-             ${sortableValueExpression} as sortable_value
-      from (
-        select (select jsonb_agg(entry.value)
-                from jsonb_each(ca.attributes) as entry
-                where entry.key in (
-                    select jsonb_array_elements_text(cast(:caKeys as jsonb) -> ca.type))
-                  and jsonb_typeof(entry.value) <> 'null'
-               ) as vals
-        from custom_aspect ca
-        join element e on e.db_id = ca.owner_db_id
-        where ca.domain_id = cast(:domainId as uuid)
-          and e.owner_id = cast(:unitId as uuid)
-          and ca.type in (select jsonb_object_keys(cast(:caKeys as jsonb)))
-      ) ca_matches
-      cross join lateral jsonb_array_elements(vals) as elem
-      where vals is not null
+      select value from (
+        select distinct
+               elem::text as value,
+               ${sortableValueExpression} as sortable_value
+        from (
+          select (select jsonb_agg(entry.value)
+                  from jsonb_each(ca.attributes) as entry
+                  where entry.key in (
+                      select jsonb_array_elements_text(cast(:caKeys as jsonb) -> ca.type))
+                    and jsonb_typeof(entry.value) <> 'null'
+                 ) as vals
+          from custom_aspect ca
+          join element e on e.db_id = ca.owner_db_id
+          where ca.domain_id = cast(:domainId as uuid)
+            and e.owner_id = cast(:unitId as uuid)
+            and ca.type in (select jsonb_object_keys(cast(:caKeys as jsonb)))
+        ) ca_matches
+        cross join lateral jsonb_array_elements(vals) as elem
+        where vals is not null
 
-      union
+        union
 
-      select distinct
-             elem::text as value,
-             ${sortableValueExpression} as sortable_value
-      from (
-        select (select jsonb_agg(entry.value)
-                from jsonb_each(l.attributes) as entry
-                where entry.key in (
-                    select jsonb_array_elements_text(cast(:linkKeys as jsonb) -> l.type))
-                  and jsonb_typeof(entry.value) <> 'null'
-               ) as vals
-        from customlink l
-        join element e on e.db_id = l.source_id
-        where l.domain_id = cast(:domainId as uuid)
-          and e.owner_id = cast(:unitId as uuid)
-          and l.type in (select jsonb_object_keys(cast(:linkKeys as jsonb)))
-      ) link_matches
-      cross join lateral jsonb_array_elements(vals) as elem
-      where vals is not null
-    ) all_values
-    where sortable_value is not null
-    order by sortable_value asc
-    limit :limit
-    """;
+        select distinct
+               elem::text as value,
+               ${sortableValueExpression} as sortable_value
+        from (
+          select (select jsonb_agg(entry.value)
+                  from jsonb_each(l.attributes) as entry
+                  where entry.key in (
+                      select jsonb_array_elements_text(cast(:linkKeys as jsonb) -> l.type))
+                    and jsonb_typeof(entry.value) <> 'null'
+                 ) as vals
+          from customlink l
+          join element e on e.db_id = l.source_id
+          where l.domain_id = cast(:domainId as uuid)
+            and e.owner_id = cast(:unitId as uuid)
+            and l.type in (select jsonb_object_keys(cast(:linkKeys as jsonb)))
+        ) link_matches
+        cross join lateral jsonb_array_elements(vals) as elem
+        where vals is not null
+      ) all_values
+      where sortable_value is not null
+      order by sortable_value asc
+      limit :limit
+      """;
 
   /**
    * Extracts the distinct attribute values used within a unit for the requested attribute keys
@@ -248,9 +248,8 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     // remove elements from scope members:
     Set<Scope> scopes =
         ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
-            .flatMap(
-                batch ->
-                    scopeDataRepository.findDistinctOthersByMemberIds(Set.copyOf(batch)).stream())
+            .flatMap(batch ->
+                scopeDataRepository.findDistinctOthersByMemberIds(Set.copyOf(batch)).stream())
             .collect(Collectors.toSet());
     scopes.stream()
         .map(ScopeData.class::cast)
@@ -282,16 +281,15 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   }
 
   private void removeCIsAndRIsFrom(Set<? extends RiskAffected<?, ?>> riskAffecteds) {
-    riskAffecteds.forEach(
-        ra -> {
-          removeRIs(ra);
-          removeCIs(ra);
+    riskAffecteds.forEach(ra -> {
+      removeRIs(ra);
+      removeCIs(ra);
 
-          Set.copyOf(ra.getControlImplementations())
-              .forEach(ci -> ci.getOwner().disassociateControl(ci.getControl()));
-          ra.getRequirementImplementations()
-              .forEach(ri -> ri.getOrigin().removeRequirementImplementation(ri.getControl()));
-        });
+      Set.copyOf(ra.getControlImplementations())
+          .forEach(ci -> ci.getOwner().disassociateControl(ci.getControl()));
+      ra.getRequirementImplementations()
+          .forEach(ri -> ri.getOrigin().removeRequirementImplementation(ri.getControl()));
+    });
   }
 
   @Override
@@ -332,12 +330,11 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     query.fetchRequirementImplementations();
     List<Element> elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
 
-    elements.forEach(
-        element -> {
-          if (element instanceof RiskAffected<?, ?> ra) {
-            ra.getRisks().forEach(em::remove);
-          }
-        });
+    elements.forEach(element -> {
+      if (element instanceof RiskAffected<?, ?> ra) {
+        ra.getRisks().forEach(em::remove);
+      }
+    });
     dataRepository.deleteAll(elements.stream().map(ElementData.class::cast).toList());
   }
 
@@ -345,41 +342,34 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     ListUtils.partition(
             List.copyOf(ra.getControlImplementations()), VeoConstants.DB_QUERY_CHUNK_SIZE)
         .stream()
-        .forEach(
-            chunk ->
-                ciRepository.deleteAll(
-                    chunk.stream().map(ControlImplementationData.class::cast).toList()));
+        .forEach(chunk ->
+            ciRepository.deleteAll(
+                chunk.stream().map(ControlImplementationData.class::cast).toList()));
   }
 
   private void removeRIs(RiskAffected<?, ?> ra) {
     ListUtils.partition(
             List.copyOf(ra.getRequirementImplementations()), VeoConstants.DB_QUERY_CHUNK_SIZE)
         .stream()
-        .forEach(
-            chunk ->
-                riRepository.deleteAll(
-                    chunk.stream().map(RequirementImplementationData.class::cast).toList()));
+        .forEach(chunk ->
+            riRepository.deleteAll(
+                chunk.stream().map(RequirementImplementationData.class::cast).toList()));
   }
 
   private void removeRisks(Collection<ScenarioData> scenarios) {
     // remove risks associated with these scenarios:
     var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
-    assets.forEach(
-        assetData ->
-            scenarios.forEach(
-                scenario -> assetData.getRisk(scenario).ifPresent(AssetRisk::remove)));
+    assets.forEach(assetData ->
+        scenarios.forEach(scenario -> assetData.getRisk(scenario).ifPresent(AssetRisk::remove)));
 
     var processes = processDataRepository.findRisksWithValue(scenarios);
-    processes.forEach(
-        processData ->
-            scenarios.forEach(
-                scenario -> processData.getRisk(scenario).ifPresent(ProcessRisk::remove)));
+    processes.forEach(processData ->
+        scenarios.forEach(
+            scenario -> processData.getRisk(scenario).ifPresent(ProcessRisk::remove)));
 
     var scopes = scopeDataRepository.findRisksWithValue(scenarios);
-    scopes.forEach(
-        scopeData ->
-            scenarios.forEach(
-                scenario -> scopeData.getRisk(scenario).ifPresent(ScopeRisk::remove)));
+    scopes.forEach(scopeData ->
+        scenarios.forEach(scenario -> scopeData.getRisk(scenario).ifPresent(ScopeRisk::remove)));
   }
 
   @Override

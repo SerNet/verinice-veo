@@ -59,11 +59,10 @@ public abstract class GetRiskUseCase<T extends RiskAffected<T, R>, R extends Abs
     return new OutputData<>(
         entity
             .getRisk(scenario)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "No risk found for entity %s and scenario %s",
-                        entity.getDisplayName(), scenario.getDisplayName())));
+            .orElseThrow(() ->
+                new NotFoundException(
+                    "No risk found for entity %s and scenario %s",
+                    entity.getDisplayName(), scenario.getDisplayName())));
   }
 
   @Valid

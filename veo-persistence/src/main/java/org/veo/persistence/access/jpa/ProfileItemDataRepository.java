@@ -33,28 +33,28 @@ public interface ProfileItemDataRepository extends CrudRepository<ProfileItemDat
 
   @Query(
       """
-         select pi from #{#entityName} pi
-           where pi.owner.id = ?2 and pi.symbolicDbId in ?1 and pi.owner.domain.owner = ?3
-         """)
+      select pi from #{#entityName} pi
+        where pi.owner.id = ?2 and pi.symbolicDbId in ?1 and pi.owner.domain.owner = ?3
+      """)
   Set<ProfileItemData> findAllByIds(Iterable<UUID> symIds, UUID profileId, Client client);
 
   @Query(
       """
-         from profile_tailoring_reference tr
-           left join fetch tr.target
-           where tr.id in ?1 and tr.owner.owner.domain.owner = ?2
-         """)
+      from profile_tailoring_reference tr
+        left join fetch tr.target
+        where tr.id in ?1 and tr.owner.owner.domain.owner = ?2
+      """)
   Set<ProfileTailoringReferenceData> findTailoringReferencesByIds(
       Iterable<UUID> ids, Client client);
 
   @Query(
       """
-             select pi from #{#entityName} pi
-               left join fetch pi.tailoringReferences
-               join pi.owner as p
-               join p.domainTemplate as dt
-               where dt.id = ?1
-             """)
+      select pi from #{#entityName} pi
+        left join fetch pi.tailoringReferences
+        join pi.owner as p
+        join p.domainTemplate as dt
+        where dt.id = ?1
+      """)
   Set<ProfileItemData> findAllByDomainTemplateFetchTailoringReferences(UUID s);
 
   @Query("select pi from #{#entityName} pi where pi.owner = ?1 and pi.elementType= ?2")

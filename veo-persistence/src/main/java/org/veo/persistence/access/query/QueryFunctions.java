@@ -36,16 +36,14 @@ import lombok.NoArgsConstructor;
 public class QueryFunctions {
   static <T> Specification<T> andInIgnoringCase(
       String propertyName, QueryCondition<String> condition, Specification<T> spec) {
-    return spec.and(
-        (root, query, criteriaBuilder) ->
-            criteriaBuilder.or(
-                condition.values().stream()
-                    .map(
-                        str ->
-                            criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get(propertyName)),
-                                "%" + str.toLowerCase(Locale.GERMAN) + "%"))
-                    .toArray(Predicate[]::new)));
+    return spec.and((root, query, criteriaBuilder) ->
+        criteriaBuilder.or(
+            condition.values().stream()
+                .map(str ->
+                    criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get(propertyName)),
+                        "%" + str.toLowerCase(Locale.GERMAN) + "%"))
+                .toArray(Predicate[]::new)));
   }
 
   static Predicate in(Path<Object> column, Collection<?> values, CriteriaBuilder criteriaBuilder) {
@@ -63,16 +61,14 @@ public class QueryFunctions {
 
   static <T, V> Specification<T> andIn(
       Specification<T> spec, String propertyName, QueryCondition<V> condition) {
-    return spec.and(
-        (root, query, criteriaBuilder) ->
-            QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder));
+    return spec.and((root, query, criteriaBuilder) ->
+        QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder));
   }
 
   static <T, V> Specification<T> andNotIn(
       Specification<T> spec, String propertyName, QueryCondition<V> condition) {
-    return spec.and(
-        (root, query, criteriaBuilder) ->
-            criteriaBuilder.not(
-                QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder)));
+    return spec.and((root, query, criteriaBuilder) ->
+        criteriaBuilder.not(
+            QueryFunctions.in(root.get(propertyName), condition.values(), criteriaBuilder)));
   }
 }

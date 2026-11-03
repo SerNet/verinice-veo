@@ -81,11 +81,10 @@ public class ScenarioRepositoryImpl
     // remove risks associated with these scenarios:
     riskAffectedDataRepository
         .findDistinctByRisks_ScenarioIn(scenarios)
-        .forEach(
-            riskAffected -> {
-              scenarios.forEach(
-                  scenario -> riskAffected.getRisk(scenario).ifPresent(AbstractRisk::remove));
-            });
+        .forEach(riskAffected -> {
+          scenarios.forEach(
+              scenario -> riskAffected.getRisk(scenario).ifPresent(AbstractRisk::remove));
+        });
   }
 
   @Override

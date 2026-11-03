@@ -49,16 +49,15 @@ public abstract class AbstractCompositeElementInDomainDto<T extends CompositeEle
   }
 
   public void setParts(Set<ElementInDomainIdRef<T>> parts) {
-    parts.forEach(
-        p -> {
-          if (!p.getType().equals(getModelInterface())) {
-            throw new UnprocessableDataException(
-                EntityType.getPluralTermByType(p.getType())
-                    + " cannot be parts of "
-                    + EntityType.getPluralTermByType(getModelInterface())
-                    + ".");
-          }
-        });
+    parts.forEach(p -> {
+      if (!p.getType().equals(getModelInterface())) {
+        throw new UnprocessableDataException(
+            EntityType.getPluralTermByType(p.getType())
+                + " cannot be parts of "
+                + EntityType.getPluralTermByType(getModelInterface())
+                + ".");
+      }
+    });
     this.parts = parts;
   }
 }

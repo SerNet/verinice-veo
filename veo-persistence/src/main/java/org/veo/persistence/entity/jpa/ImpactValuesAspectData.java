@@ -58,7 +58,7 @@ class ImpactValuesAspectData extends AspectData {
   @JdbcTypeCode(SqlTypes.JSON)
   Map<RiskDefinitionRef, ImpactValues> values;
 
-  @Deprecated()
+  @Deprecated
   void setValues(Map<RiskDefinitionRef, ImpactValues> values) {
     if (values == null) {
       throw new IllegalArgumentException("The impact values need to be set.");
@@ -72,52 +72,47 @@ class ImpactValuesAspectData extends AspectData {
   private void validateAllImpactsExist(Map<RiskDefinitionRef, ImpactValues> values) {
     values
         .entrySet()
-        .forEach(
-            e -> {
-              RiskDefinition riskDefinition =
-                  this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
-              ImpactValues impactValues = e.getValue();
-              impactValues.potentialImpacts().entrySet().stream()
-                  .forEach(
-                      impacts -> {
-                        CategoryDefinition categoryDefinition =
-                            riskDefinition.getCategory(impacts.getKey().getIdRef()).orElseThrow();
-                        int impactValueId = impacts.getValue().getIdRef().intValue();
-                        if (impactValueId < 0
-                            || impactValueId
-                                > categoryDefinition.getPotentialImpacts().size() - 1) {
-                          throw new IllegalArgumentException(
-                              "Impact value %d for category '%s' is out of range"
-                                  .formatted(impactValueId, categoryDefinition.getId()));
-                        }
-                      });
-            });
+        .forEach(e -> {
+          RiskDefinition riskDefinition =
+              this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
+          ImpactValues impactValues = e.getValue();
+          impactValues.potentialImpacts().entrySet().stream()
+              .forEach(impacts -> {
+                CategoryDefinition categoryDefinition =
+                    riskDefinition.getCategory(impacts.getKey().getIdRef()).orElseThrow();
+                int impactValueId = impacts.getValue().getIdRef().intValue();
+                if (impactValueId < 0
+                    || impactValueId > categoryDefinition.getPotentialImpacts().size() - 1) {
+                  throw new IllegalArgumentException(
+                      "Impact value %d for category '%s' is out of range"
+                          .formatted(impactValueId, categoryDefinition.getId()));
+                }
+              });
+        });
   }
 
   /** Validates that all defined Impact Categories exist in the referenced risk definition. */
   private void validateAllCategoriesExist(Map<RiskDefinitionRef, ImpactValues> values) {
     values
         .entrySet()
-        .forEach(
-            e -> {
-              RiskDefinition riskDefinition =
-                  this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
+        .forEach(e -> {
+          RiskDefinition riskDefinition =
+              this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
 
-              Set<String> categoryIds =
-                  riskDefinition.getCategories().stream()
-                      .map(DimensionDefinition::getId)
-                      .collect(Collectors.toSet());
-              Set<String> usedCatIds =
-                  e.getValue().potentialImpacts().keySet().stream()
-                      .map(CategoryRef::getIdRef)
-                      .collect(Collectors.toSet());
+          Set<String> categoryIds =
+              riskDefinition.getCategories().stream()
+                  .map(DimensionDefinition::getId)
+                  .collect(Collectors.toSet());
+          Set<String> usedCatIds =
+              e.getValue().potentialImpacts().keySet().stream()
+                  .map(CategoryRef::getIdRef)
+                  .collect(Collectors.toSet());
 
-              usedCatIds.removeAll(categoryIds);
-              if (!usedCatIds.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "Undefined categorie definitions: " + usedCatIds);
-              }
-            });
+          usedCatIds.removeAll(categoryIds);
+          if (!usedCatIds.isEmpty()) {
+            throw new IllegalArgumentException("Undefined categorie definitions: " + usedCatIds);
+          }
+        });
   }
 
   /** Validates that the risk definition is part of associated domain. */

@@ -35,10 +35,9 @@ public class UnitValidator {
   /** Validates whether given stored unit may be replaced with given changed unit. */
   public void validateUpdate(UnitState changedunit, Unit storedUnit) {
     storedUnit.getDomains().stream()
-        .filter(
-            d ->
-                changedunit.getDomains().stream()
-                    .noneMatch(idAndType -> idAndType.getId().equals(d.getId())))
+        .filter(d ->
+            changedunit.getDomains().stream()
+                .noneMatch(idAndType -> idAndType.getId().equals(d.getId())))
         .toList()
         .forEach(removedDomain -> validateDomainRemoval(storedUnit, removedDomain));
   }

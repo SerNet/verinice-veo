@@ -51,12 +51,11 @@ public class PartCountExpression implements VeoExpression {
       if (partSubType != null) {
         parts =
             parts.stream()
-                .filter(
-                    c ->
-                        partSubType.equals(
-                            // TODO VEO-1569: this fails if the part's domainAssociations are a
-                            // hibernate proxy
-                            c.findSubType(domain).orElse(null)))
+                .filter(c ->
+                    partSubType.equals(
+                        // TODO VEO-1569: this fails if the part's domainAssociations are a
+                        // hibernate proxy
+                        c.findSubType(domain).orElse(null)))
                 .collect(Collectors.toSet());
       }
       return parts.size();

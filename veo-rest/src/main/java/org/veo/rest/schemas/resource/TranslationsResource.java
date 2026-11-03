@@ -48,7 +48,7 @@ public interface TranslationsResource {
 
   String URL_BASE_PATH = "/translations";
 
-  @GetMapping()
+  @GetMapping
   @Operation(
       summary = "Retrieves a map of UI translation key-value pairs.",
       externalDocs =

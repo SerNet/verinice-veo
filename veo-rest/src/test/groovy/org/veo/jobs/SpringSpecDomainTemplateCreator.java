@@ -94,11 +94,10 @@ public class SpringSpecDomainTemplateCreator {
    */
   public void createTestTemplate(UUID templateId) {
     var dto = getTestTemplateDto(templateId);
-    AsSystemUser.runAsContentCreator(
-        () -> {
-          createDomainTemplateUseCase.execute(
-              new CreateDomainTemplateUseCase.InputData(dto), NoRestrictionAccessRight.from(null));
-        });
+    AsSystemUser.runAsContentCreator(() -> {
+      createDomainTemplateUseCase.execute(
+          new CreateDomainTemplateUseCase.InputData(dto), NoRestrictionAccessRight.from(null));
+    });
   }
 
   private ExportDomainTemplateDto getTestTemplateDto(UUID templateId) {
@@ -106,24 +105,21 @@ public class SpringSpecDomainTemplateCreator {
       try {
         domainTemplateDtos =
             Arrays.stream(resourceResolver.getResources("classpath*:/testdomaintemplates/*.json"))
-                .map(
-                    r -> {
-                      try {
-                        return jsonMapper.readValue(
-                            r.getInputStream(), ExportDomainTemplateDto.class);
-                      } catch (IOException e) {
-                        throw new RuntimeException(e);
-                      }
-                    })
+                .map(r -> {
+                  try {
+                    return jsonMapper.readValue(r.getInputStream(), ExportDomainTemplateDto.class);
+                  } catch (IOException e) {
+                    throw new RuntimeException(e);
+                  }
+                })
                 .collect(Collectors.toMap(ExportDomainTemplateDto::getId, Function.identity()));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
     return Optional.ofNullable(domainTemplateDtos.get(templateId))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    String.format("No test domain template found with ID %s", templateId)));
+        .orElseThrow(() ->
+            new IllegalArgumentException(
+                String.format("No test domain template found with ID %s", templateId)));
   }
 }

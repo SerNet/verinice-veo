@@ -55,10 +55,9 @@ public class ContainsExpression implements VeoExpression {
     haystackType.mustBeListOrNothing("invalid haystack");
     haystackType
         .findListItemType()
-        .ifPresent(
-            haystackItemType ->
-                haystackItemType.mustIntersectWith(
-                    needle.getValueType(domain, elementType), "haystack cannot contain needle"));
+        .ifPresent(haystackItemType ->
+            haystackItemType.mustIntersectWith(
+                needle.getValueType(domain, elementType), "haystack cannot contain needle"));
   }
 
   @Override

@@ -37,10 +37,10 @@ public interface UnitDataRepository extends IdentifiableVersionedDataRepository<
 
   @Query(
       """
-          select e from #{#entityName} as e
-          left join fetch e.client
-          where e.id = ?1 and e.client.id = ?2  and (?3 = false or e.id in ?4)
-          """)
+      select e from #{#entityName} as e
+      left join fetch e.client
+      where e.id = ?1 and e.client.id = ?2  and (?3 = false or e.id in ?4)
+      """)
   Optional<UnitData> findWithClientById(
       UUID uuidValue, UUID clientId, boolean restrictUnitAccess, Set<UUID> access);
 

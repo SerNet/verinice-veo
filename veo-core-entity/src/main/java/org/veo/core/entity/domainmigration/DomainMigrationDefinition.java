@@ -35,34 +35,33 @@ public record DomainMigrationDefinition(@NotNull List<@Valid DomainMigrationStep
   public void validate(@NotNull DomainBase newMajor, @Nullable DomainTemplate oldMajor) {
     Set<String> ids = HashSet.newHashSet(migrations().size());
     migrations()
-        .forEach(
-            step -> {
-              if (step.description().getTranslations().isEmpty()) {
-                throw new UnprocessableDataException(
-                    "No description provided for step '%s'.".formatted(step.id()));
-              }
-              if (ids.contains(step.id())) {
-                throw new UnprocessableDataException("Id '%s' not unique.".formatted(step.id()));
-              }
-              ids.add(step.id());
-              if (step.interactive() && !step.newDefinitions().isEmpty()) {
-                throw new UnprocessableDataException(
-                    "Interactive step %s does not support new definitions.".formatted(step.id()));
-              }
-              if (oldMajor != null) {
-                try {
-                  step.newDefinitions().forEach(nd -> nd.validate(newMajor, oldMajor));
-                } catch (IllegalArgumentException e) {
-                  throw new UnprocessableDataException(
-                      "Invalid newDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
-                }
-                try {
-                  step.oldDefinitions().forEach(od -> od.validate(oldMajor));
-                } catch (IllegalArgumentException e) {
-                  throw new UnprocessableDataException(
-                      "Invalid oldDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
-                }
-              }
-            });
+        .forEach(step -> {
+          if (step.description().getTranslations().isEmpty()) {
+            throw new UnprocessableDataException(
+                "No description provided for step '%s'.".formatted(step.id()));
+          }
+          if (ids.contains(step.id())) {
+            throw new UnprocessableDataException("Id '%s' not unique.".formatted(step.id()));
+          }
+          ids.add(step.id());
+          if (step.interactive() && !step.newDefinitions().isEmpty()) {
+            throw new UnprocessableDataException(
+                "Interactive step %s does not support new definitions.".formatted(step.id()));
+          }
+          if (oldMajor != null) {
+            try {
+              step.newDefinitions().forEach(nd -> nd.validate(newMajor, oldMajor));
+            } catch (IllegalArgumentException e) {
+              throw new UnprocessableDataException(
+                  "Invalid newDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
+            }
+            try {
+              step.oldDefinitions().forEach(od -> od.validate(oldMajor));
+            } catch (IllegalArgumentException e) {
+              throw new UnprocessableDataException(
+                  "Invalid oldDefinition '%s'. %s".formatted(step.id(), e.getMessage()));
+            }
+          }
+        });
   }
 }

@@ -78,50 +78,45 @@ public class GetControlImplementationsUseCase
       ControlImplementationQuery query,
       UserAccessRights userAccessRights) {
     Optional.ofNullable(input.control)
-        .ifPresent(
-            id -> {
-              Control control =
-                  genericElementRepository.getById(id, Control.class, userAccessRights);
-              if (!control.isAssociatedWithDomain(domain)) {
-                throw NotFoundException.elementNotAssociatedWithDomain(
-                    control, input.domainId.toString());
-              }
-              query.whereControlIdIn(id);
-            });
+        .ifPresent(id -> {
+          Control control = genericElementRepository.getById(id, Control.class, userAccessRights);
+          if (!control.isAssociatedWithDomain(domain)) {
+            throw NotFoundException.elementNotAssociatedWithDomain(
+                control, input.domainId.toString());
+          }
+          query.whereControlIdIn(id);
+        });
     Optional.ofNullable(input.riskAffectedId)
-        .ifPresent(
-            id -> {
-              RiskAffected<?, ?> ra =
-                  genericElementRepository.getById(id.getId(), id.getType(), userAccessRights);
-              if (!ra.isAssociatedWithDomain(domain)) {
-                throw NotFoundException.elementNotAssociatedWithDomain(
-                    ra, input.domainId.toString());
-              }
-              query.whereRiskAffectedIs(id.getId());
-            });
+        .ifPresent(id -> {
+          RiskAffected<?, ?> ra =
+              genericElementRepository.getById(id.getId(), id.getType(), userAccessRights);
+          if (!ra.isAssociatedWithDomain(domain)) {
+            throw NotFoundException.elementNotAssociatedWithDomain(ra, input.domainId.toString());
+          }
+          query.whereRiskAffectedIs(id.getId());
+        });
 
     Optional.ofNullable(input.purpose)
-        .ifPresent(
-            cf -> {
-              var subTypes =
-                  switch (cf) {
-                    case ControlImplementationPurpose.COMPLIANCE ->
-                        domain.getControlImplementationConfiguration().complianceControlSubTypes();
-                    case ControlImplementationPurpose.MITIGATION ->
-                        Optional.ofNullable(
-                                domain
-                                    .getControlImplementationConfiguration()
-                                    .mitigationControlSubType())
-                            .map(Set::of)
-                            .orElse(Collections.emptySet());
-                  };
-              if (subTypes.isEmpty()) {
-                throw new UnprocessableDataException(
-                    "No %s control sub type(s) configured in domain."
-                        .formatted(cf.toString().toLowerCase(Locale.ENGLISH)));
-              }
-              query.whereControlSubTypeIn(subTypes, input.domainId);
-            });
+        .ifPresent(cf -> {
+          var subTypes =
+              switch (cf) {
+                case ControlImplementationPurpose.COMPLIANCE ->
+                    domain.getControlImplementationConfiguration().complianceControlSubTypes();
+                case ControlImplementationPurpose.MITIGATION ->
+                    Optional.ofNullable(
+                            domain
+                                .getControlImplementationConfiguration()
+                                .mitigationControlSubType())
+                        .map(Set::of)
+                        .orElse(Collections.emptySet());
+              };
+          if (subTypes.isEmpty()) {
+            throw new UnprocessableDataException(
+                "No %s control sub type(s) configured in domain."
+                    .formatted(cf.toString().toLowerCase(Locale.ENGLISH)));
+          }
+          query.whereControlSubTypeIn(subTypes, input.domainId);
+        });
   }
 
   @Valid

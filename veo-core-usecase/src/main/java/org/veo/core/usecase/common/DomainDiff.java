@@ -54,28 +54,25 @@ public class DomainDiff {
           // CA was removed
           caTemplate
               .getAttributeDefinitions()
-              .forEach(
-                  (id, def) -> {
-                    result.add(BreakingChange.removal(elementType, customAspectId, id, def));
-                  });
+              .forEach((id, def) -> {
+                result.add(BreakingChange.removal(elementType, customAspectId, id, def));
+              });
         } else {
           Map<String, AttributeDefinition> defsDomain = caDomain.getAttributeDefinitions();
           caTemplate
               .getAttributeDefinitions()
-              .forEach(
-                  (id, defTemplate) -> {
-                    AttributeDefinition defDomain = defsDomain.get(id);
-                    if (defDomain == null) {
-                      // attribute was removed
-                      result.add(
-                          BreakingChange.removal(elementType, customAspectId, id, defTemplate));
-                    } else if (!isCompatibleChange(defTemplate, defDomain)) {
-                      // definition was changed in an incompatible way
-                      result.add(
-                          BreakingChange.modification(
-                              elementType, customAspectId, id, defTemplate, defDomain));
-                    }
-                  });
+              .forEach((id, defTemplate) -> {
+                AttributeDefinition defDomain = defsDomain.get(id);
+                if (defDomain == null) {
+                  // attribute was removed
+                  result.add(BreakingChange.removal(elementType, customAspectId, id, defTemplate));
+                } else if (!isCompatibleChange(defTemplate, defDomain)) {
+                  // definition was changed in an incompatible way
+                  result.add(
+                      BreakingChange.modification(
+                          elementType, customAspectId, id, defTemplate, defDomain));
+                }
+              });
         }
       }
       // TODO: #3277 also check link definition compatibility

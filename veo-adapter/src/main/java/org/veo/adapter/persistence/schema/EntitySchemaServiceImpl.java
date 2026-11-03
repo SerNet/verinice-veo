@@ -64,29 +64,26 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
       for (ElementTypeDefinition def : domain.getElementTypeDefinitions()) {
         log.debug("Handling type {}", def.getElementType());
         def.getTranslations()
-            .forEach(
-                (language, entriesForLanguage) -> {
-                  if (isRequested(requestedLanguages, language)) {
-                    log.debug("Adding translations for {}", language);
-                    if (domains.size() > 1) {
-                      entriesForLanguage.forEach(
-                          (key, value) ->
-                              translations
-                                  .get(language, key)
-                                  .filter(Predicate.not(value::equals))
-                                  .ifPresent(
-                                      previousMapping ->
-                                          log.warn(
-                                              "Found conflicting translations for {} in client {}: '{}' vs. '{}' from {}",
-                                              key,
-                                              domain.getOwner().getIdAsString(),
-                                              previousMapping,
-                                              value,
-                                              domain.getName())));
-                    }
-                    translations.add(language, entriesForLanguage);
-                  }
-                });
+            .forEach((language, entriesForLanguage) -> {
+              if (isRequested(requestedLanguages, language)) {
+                log.debug("Adding translations for {}", language);
+                if (domains.size() > 1) {
+                  entriesForLanguage.forEach((key, value) ->
+                      translations
+                          .get(language, key)
+                          .filter(Predicate.not(value::equals))
+                          .ifPresent(previousMapping ->
+                              log.warn(
+                                  "Found conflicting translations for {} in client {}: '{}' vs. '{}' from {}",
+                                  key,
+                                  domain.getOwner().getIdAsString(),
+                                  previousMapping,
+                                  value,
+                                  domain.getName())));
+                }
+                translations.add(language, entriesForLanguage);
+              }
+            });
       }
     }
     return translations;

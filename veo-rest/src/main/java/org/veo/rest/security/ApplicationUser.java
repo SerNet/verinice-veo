@@ -117,10 +117,8 @@ public class ApplicationUser implements UserDetails, UserAccessRights {
 
   public static ApplicationUser authenticatedUser(Object principal) {
     return Optional.ofNullable(findAuthenticatedUser(principal))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Principal does not represent an authenticated user."));
+        .orElseThrow(() ->
+            new IllegalArgumentException("Principal does not represent an authenticated user."));
   }
 
   public static ApplicationUser authenticatedUser(

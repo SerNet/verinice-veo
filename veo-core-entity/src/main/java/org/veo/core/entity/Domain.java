@@ -164,12 +164,11 @@ public interface Domain extends DomainBase, ClientOwned {
                 .collect(Collectors.groupingBy(DomainSpecificValueLocation::elementType))
             : Collections.emptyMap();
 
-    elements.forEach(
-        element ->
-            element.copyDomainData(
-                oldDomain,
-                this,
-                deprecatedDefinitions.getOrDefault(element.getType(), Collections.emptyList())));
+    elements.forEach(element ->
+        element.copyDomainData(
+            oldDomain,
+            this,
+            deprecatedDefinitions.getOrDefault(element.getType(), Collections.emptyList())));
     if (needsMigrationDefinition) {
       applyMigrationDefinition(oldDomain, elements);
     }
@@ -185,12 +184,11 @@ public interface Domain extends DomainBase, ClientOwned {
   }
 
   private void associateNewDomain(Domain oldDomain, List<Element> elements) {
-    elements.forEach(
-        element -> {
-          element.associateWithDomain(
-              this,
-              mapOldSubType(element.getSubType(oldDomain)),
-              mapOldStatus(element.getStatus(oldDomain)));
-        });
+    elements.forEach(element -> {
+      element.associateWithDomain(
+          this,
+          mapOldSubType(element.getSubType(oldDomain)),
+          mapOldStatus(element.getStatus(oldDomain)));
+    });
   }
 }

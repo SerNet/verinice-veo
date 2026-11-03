@@ -37,9 +37,9 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query(
       """
-                   select c from client c
-                   left join fetch c.domains
-                   where c.state = org.veo.core.entity.ClientState.ACTIVATED
-          """)
+               select c from client c
+               left join fetch c.domains
+               where c.state = org.veo.core.entity.ClientState.ACTIVATED
+      """)
   Set<ClientData> findAllActiveWithDomains();
 }

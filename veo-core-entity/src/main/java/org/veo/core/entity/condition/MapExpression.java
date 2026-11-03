@@ -60,10 +60,9 @@ public class MapExpression implements VeoExpression {
     var mapKeyType = mappingType.mustBeMapAndGetKeyType("invalid mapping");
     sourceType
         .findListItemType()
-        .ifPresent(
-            sourceItemType -> {
-              sourceItemType.mustIntersectWith(mapKeyType, "source does not match mapping");
-            });
+        .ifPresent(sourceItemType -> {
+          sourceItemType.mustIntersectWith(mapKeyType, "source does not match mapping");
+        });
   }
 
   @Override
@@ -71,15 +70,14 @@ public class MapExpression implements VeoExpression {
     VeoType sourceType = source.getValueType(domain, elementType);
     return sourceType
         .findListItemType()
-        .map(
-            _ -> {
-              VeoType mappingValueType =
-                  mapping.getValueType(domain, elementType).mustBeMapAndGetValueType();
-              var outputListType = VeoType.listOf(mappingValueType.orNothing());
-              return sourceType.includes(VeoType.nothing())
-                  ? outputListType.orNothing()
-                  : outputListType;
-            })
+        .map(_ -> {
+          VeoType mappingValueType =
+              mapping.getValueType(domain, elementType).mustBeMapAndGetValueType();
+          var outputListType = VeoType.listOf(mappingValueType.orNothing());
+          return sourceType.includes(VeoType.nothing())
+              ? outputListType.orNothing()
+              : outputListType;
+        })
         .orElse(VeoType.nothing());
   }
 }

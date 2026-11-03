@@ -48,12 +48,11 @@ public class AndExpression implements VeoExpression {
 
   @Override
   public void selfValidate(DomainBase domain, ElementType elementType) {
-    operands.forEach(
-        o -> {
-          o.selfValidate(domain, elementType);
-          o.getValueType(domain, elementType)
-              .mustBeIncludedIn(VeoType.bool().orNothing(), "invalid operand for 'and'");
-        });
+    operands.forEach(o -> {
+      o.selfValidate(domain, elementType);
+      o.getValueType(domain, elementType)
+          .mustBeIncludedIn(VeoType.bool().orNothing(), "invalid operand for 'and'");
+    });
   }
 
   @Override

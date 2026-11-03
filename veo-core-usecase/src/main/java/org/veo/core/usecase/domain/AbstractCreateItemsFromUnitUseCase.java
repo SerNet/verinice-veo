@@ -47,104 +47,96 @@ public class AbstractCreateItemsFromUnitUseCase<
 
   protected void createTailorreferences(Map<Element, T> elementsToCatalogItems, Domain domain) {
     elementsToCatalogItems.values().forEach(TemplateItem::clearTailoringReferences);
-    elementsToCatalogItems.forEach(
-        (element, item) ->
-            createTailoringReferences(elementsToCatalogItems, domain, element, item));
+    elementsToCatalogItems.forEach((element, item) ->
+        createTailoringReferences(elementsToCatalogItems, domain, element, item));
   }
 
   protected void createTailoringReferences(
       Map<Element, T> elementsToCatalogItems, Domain domain, Element element, T item) {
     element
         .getLinks(domain)
-        .forEach(
-            link -> {
-              var targetItem = elementsToCatalogItems.get(link.getTarget());
-              item.addLinkTailoringReference(
-                  TailoringReferenceType.LINK, targetItem, link.getType(), link.getAttributes());
-              targetItem.addLinkTailoringReference(
-                  TailoringReferenceType.LINK_EXTERNAL, item, link.getType(), link.getAttributes());
-            });
+        .forEach(link -> {
+          var targetItem = elementsToCatalogItems.get(link.getTarget());
+          item.addLinkTailoringReference(
+              TailoringReferenceType.LINK, targetItem, link.getType(), link.getAttributes());
+          targetItem.addLinkTailoringReference(
+              TailoringReferenceType.LINK_EXTERNAL, item, link.getType(), link.getAttributes());
+        });
 
     if (element instanceof CompositeElement<?> composite) {
       composite.getParts().stream()
           .filter(p -> p.isAssociatedWithDomain(domain))
-          .forEach(
-              target -> {
-                T partCatalogItem = elementsToCatalogItems.get(target);
-                partCatalogItem.addTailoringReference(TailoringReferenceType.COMPOSITE, item);
-              });
+          .forEach(target -> {
+            T partCatalogItem = elementsToCatalogItems.get(target);
+            partCatalogItem.addTailoringReference(TailoringReferenceType.COMPOSITE, item);
+          });
       composite.getComposites().stream()
           .filter(c -> c.isAssociatedWithDomain(domain))
-          .forEach(
-              target -> {
-                T compositeCatalogItem = elementsToCatalogItems.get(target);
-                compositeCatalogItem.addTailoringReference(TailoringReferenceType.PART, item);
-              });
+          .forEach(target -> {
+            T compositeCatalogItem = elementsToCatalogItems.get(target);
+            compositeCatalogItem.addTailoringReference(TailoringReferenceType.PART, item);
+          });
     } else if (element instanceof Scope scope) {
       scope.getMembers().stream()
           .filter(m -> m.isAssociatedWithDomain(domain))
-          .forEach(
-              member -> {
-                T memberAsCatalogItem = elementsToCatalogItems.get(member);
-                memberAsCatalogItem.addTailoringReference(TailoringReferenceType.SCOPE, item);
-                item.addTailoringReference(TailoringReferenceType.MEMBER, memberAsCatalogItem);
-              });
+          .forEach(member -> {
+            T memberAsCatalogItem = elementsToCatalogItems.get(member);
+            memberAsCatalogItem.addTailoringReference(TailoringReferenceType.SCOPE, item);
+            item.addTailoringReference(TailoringReferenceType.MEMBER, memberAsCatalogItem);
+          });
     }
 
     if (element instanceof RiskAffected<?, ?> risky) {
       risky.getControlImplementations().stream()
           .filter(ci -> ci.getControl().isAssociatedWithDomain(domain))
-          .forEach(
-              ci ->
-                  item.addControlImplementationReference(
-                      elementsToCatalogItems.get(ci.getControl()),
-                      Optional.ofNullable(ci.getResponsible())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      ci.getDescription()));
+          .forEach(ci ->
+              item.addControlImplementationReference(
+                  elementsToCatalogItems.get(ci.getControl()),
+                  Optional.ofNullable(ci.getResponsible())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  ci.getDescription()));
       risky.getRequirementImplementations().stream()
           .filter(ri -> ri.getControl().isAssociatedWithDomain(domain))
           .filter(ri -> !ri.isUnedited())
-          .forEach(
-              ri ->
-                  item.addRequirementImplementationReference(
-                      elementsToCatalogItems.get(ri.getControl()),
-                      ri.getStatus(),
-                      ri.getImplementationStatement(),
-                      ri.getImplementationUntil(),
-                      Optional.ofNullable(ri.getResponsible())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      ri.getCost(),
-                      ri.getImplementationDate(),
-                      Optional.ofNullable(ri.getImplementedBy())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      Optional.ofNullable(ri.getDocument())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      ri.getLastRevisionDate(),
-                      Optional.ofNullable(ri.getLastRevisionBy())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      ri.getNextRevisionDate(),
-                      Optional.ofNullable(ri.getNextRevisionBy())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null)));
+          .forEach(ri ->
+              item.addRequirementImplementationReference(
+                  elementsToCatalogItems.get(ri.getControl()),
+                  ri.getStatus(),
+                  ri.getImplementationStatement(),
+                  ri.getImplementationUntil(),
+                  Optional.ofNullable(ri.getResponsible())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  ri.getCost(),
+                  ri.getImplementationDate(),
+                  Optional.ofNullable(ri.getImplementedBy())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  Optional.ofNullable(ri.getDocument())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  ri.getLastRevisionDate(),
+                  Optional.ofNullable(ri.getLastRevisionBy())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  ri.getNextRevisionDate(),
+                  Optional.ofNullable(ri.getNextRevisionBy())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null)));
       risky.getRisks().stream()
           .filter(r -> r.getScenario().isAssociatedWithDomain(domain))
-          .forEach(
-              r ->
-                  item.addRiskTailoringReference(
-                      TailoringReferenceType.RISK,
-                      elementsToCatalogItems.get(r.getScenario()),
-                      Optional.ofNullable(r.getRiskOwner())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      Optional.ofNullable(r.getMitigation())
-                          .map(elementsToCatalogItems::get)
-                          .orElse(null),
-                      r.getTailoringReferenceValues(domain)));
+          .forEach(r ->
+              item.addRiskTailoringReference(
+                  TailoringReferenceType.RISK,
+                  elementsToCatalogItems.get(r.getScenario()),
+                  Optional.ofNullable(r.getRiskOwner())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  Optional.ofNullable(r.getMitigation())
+                      .map(elementsToCatalogItems::get)
+                      .orElse(null),
+                  r.getTailoringReferenceValues(domain)));
     }
   }
 }

@@ -91,13 +91,12 @@ public class DbIdRefResolver extends LocalRefResolver {
                     .collect(Collectors.toSet())),
                 client);
 
-    entities.forEach(
-        entity -> {
-          result.add(entity);
-          var reference = IEntityRef.from(entity);
-          cache.put(reference, entity);
-          copyOfReferences.remove(reference);
-        });
+    entities.forEach(entity -> {
+      result.add(entity);
+      var reference = IEntityRef.from(entity);
+      cache.put(reference, entity);
+      copyOfReferences.remove(reference);
+    });
     if (!copyOfReferences.isEmpty()) {
       throw new ReferenceTargetNotFoundException(
           format(

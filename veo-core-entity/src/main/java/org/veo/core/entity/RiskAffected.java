@@ -111,10 +111,9 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
 
     var riskToUpdate =
         getRisk(existingRisk.getScenario())
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        String.format("The risk is not know to this object: %s", existingRisk)));
+            .orElseThrow(() ->
+                new IllegalArgumentException(
+                    String.format("The risk is not know to this object: %s", existingRisk)));
 
     riskToUpdate.defineRiskValues(riskValuesSet);
 
@@ -158,11 +157,10 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
 
   default RequirementImplementation getRequirementImplementation(Control control) {
     return findRequirementImplementation(control)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "%s %s contains no requirement implementation for control %s"
-                        .formatted(getModelType(), getIdAsString(), control.getIdAsString())));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "%s %s contains no requirement implementation for control %s"
+                    .formatted(getModelType(), getIdAsString(), control.getIdAsString())));
   }
 
   default Optional<RequirementImplementation> findRequirementImplementation(Control control) {

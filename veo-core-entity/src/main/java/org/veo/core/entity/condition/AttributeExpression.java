@@ -75,9 +75,8 @@ public class AttributeExpression implements VeoExpression {
     VeoType sourcetype = source.getValueType(domain, elementType);
     return sourcetype
         .findListItemType()
-        .map(
-            itemType ->
-                VeoType.listOf(itemType.getAttributeType(attribute, "invalid source items")))
+        .map(itemType ->
+            VeoType.listOf(itemType.getAttributeType(attribute, "invalid source items")))
         .orElseGet(() -> sourcetype.getAttributeType(attribute, "invalid source"));
   }
 }

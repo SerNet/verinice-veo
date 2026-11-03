@@ -179,86 +179,82 @@ public class WebSecurity {
     // Make sure that no critical API can be accessed by an anonymous user!
     // .anonymous().disable()
 
-    http.sessionManagement(
-        sessionManagement ->
-            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.sessionManagement(sessionManagement ->
+        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    http.authorizeHttpRequests(
-        auth -> {
-          // public access to root and actuator endpoints:
-          auth.requestMatchers(ROOT_PATH, ACTUATOR_PATHS).permitAll();
+    http.authorizeHttpRequests(auth -> {
+      // public access to root and actuator endpoints:
+      auth.requestMatchers(ROOT_PATH, ACTUATOR_PATHS).permitAll();
 
-          // public access to swagger-ui:
-          auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
+      // public access to swagger-ui:
+      auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
 
-          // public access to unit-count and system messages, API keys are checked in the
-          // controller
-          auth.requestMatchers(HttpMethod.GET, UNIT_COUNT_PATH).permitAll();
-          auth.requestMatchers(HttpMethod.GET, SYSTEM_MESSAGES_PATH).permitAll();
-          auth.requestMatchers(HttpMethod.POST, ADMIN_SYSTEM_MESSAGES_PATH).permitAll();
-          auth.requestMatchers(HttpMethod.PUT, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
-          auth.requestMatchers(HttpMethod.DELETE, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
+      // public access to unit-count and system messages, API keys are checked in the
+      // controller
+      auth.requestMatchers(HttpMethod.GET, UNIT_COUNT_PATH).permitAll();
+      auth.requestMatchers(HttpMethod.GET, SYSTEM_MESSAGES_PATH).permitAll();
+      auth.requestMatchers(HttpMethod.POST, ADMIN_SYSTEM_MESSAGES_PATH).permitAll();
+      auth.requestMatchers(HttpMethod.PUT, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
+      auth.requestMatchers(HttpMethod.DELETE, ADMIN_SYSTEM_MESSAGE_PATH).permitAll();
 
-          auth.requestMatchers(HttpMethod.POST, CC_DOMAIN_TEMPLATE_PATH)
-              .access(
-                  AuthorizationManagers.anyOf(
-                      (_, object) -> {
-                        if (dtUplpoadApiKey.equals(
-                            object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
-                          SecurityContextHolder.getContext()
-                              .setAuthentication(
-                                  new PreAuthenticatedAuthenticationToken("API client", null));
-                          return new AuthorizationDecision(true);
-                        }
-                        return new AuthorizationDecision(false);
-                      },
-                      AuthorityAuthorizationManager.hasRole("veo-content-creator")));
+      auth.requestMatchers(HttpMethod.POST, CC_DOMAIN_TEMPLATE_PATH)
+          .access(
+              AuthorizationManagers.anyOf(
+                  (_, object) -> {
+                    if (dtUplpoadApiKey.equals(
+                        object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
+                      SecurityContextHolder.getContext()
+                          .setAuthentication(
+                              new PreAuthenticatedAuthenticationToken("API client", null));
+                      return new AuthorizationDecision(true);
+                    }
+                    return new AuthorizationDecision(false);
+                  },
+                  AuthorityAuthorizationManager.hasRole("veo-content-creator")));
 
-          auth.requestMatchers(HttpMethod.POST, CREATE_DOMAINS_PATH)
-              .access(
-                  AuthorizationManagers.anyOf(
-                      (_, object) -> {
-                        if (createDomainsApiKey.equals(
-                            object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
-                          SecurityContextHolder.getContext()
-                              .setAuthentication(
-                                  new PreAuthenticatedAuthenticationToken("API client", null));
-                          return new AuthorizationDecision(true);
-                        }
-                        return new AuthorizationDecision(false);
-                      },
-                      AuthorityAuthorizationManager.hasRole("veo-admin")));
+      auth.requestMatchers(HttpMethod.POST, CREATE_DOMAINS_PATH)
+          .access(
+              AuthorizationManagers.anyOf(
+                  (_, object) -> {
+                    if (createDomainsApiKey.equals(
+                        object.getRequest().getHeader(RestApplication.HEADER_NAME_APIKEY))) {
+                      SecurityContextHolder.getContext()
+                          .setAuthentication(
+                              new PreAuthenticatedAuthenticationToken("API client", null));
+                      return new AuthorizationDecision(true);
+                    }
+                    return new AuthorizationDecision(false);
+                  },
+                  AuthorityAuthorizationManager.hasRole("veo-admin")));
 
-          // admin access:
-          auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");
+      // admin access:
+      auth.requestMatchers(ADMIN_PATHS).hasRole("veo-admin");
 
-          // POST is allowed to transient paths for regular users:
-          auth.requestMatchers(HttpMethod.POST, TRANSIENT_PATHS).hasRole("veo-user");
+      // POST is allowed to transient paths for regular users:
+      auth.requestMatchers(HttpMethod.POST, TRANSIENT_PATHS).hasRole("veo-user");
 
-          // content-creator access:
-          auth.requestMatchers(CONTENT_CREATOR_PATHS).hasRole("veo-content-creator");
+      // content-creator access:
+      auth.requestMatchers(CONTENT_CREATOR_PATHS).hasRole("veo-content-creator");
 
-          // read-only access:
+      // read-only access:
 
-          Stream.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
-              .forEach(
-                  method -> auth.requestMatchers(method, USER_VIEWABLE_PATHS).hasRole("veo-user"));
+      Stream.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
+          .forEach(method -> auth.requestMatchers(method, USER_VIEWABLE_PATHS).hasRole("veo-user"));
 
-          // write-only access:
-          Stream.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
-              .forEach(
-                  method -> auth.requestMatchers(method, USER_EDITABLE_PATHS).hasRole("veo-write"));
+      // write-only access:
+      Stream.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
+          .forEach(
+              method -> auth.requestMatchers(method, USER_EDITABLE_PATHS).hasRole("veo-write"));
 
-          // authentication without specific role requirements and fallback in
-          // case of missing
-          // paths:
-          auth.anyRequest().hasRole("veo-user");
-        });
+      // authentication without specific role requirements and fallback in
+      // case of missing
+      // paths:
+      auth.anyRequest().hasRole("veo-user");
+    });
 
-    http.oauth2ResourceServer(
-        oauth2ResourceServer ->
-            oauth2ResourceServer.jwt(
-                jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+    http.oauth2ResourceServer(oauth2ResourceServer ->
+        oauth2ResourceServer.jwt(
+            jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
     return http.build();
   }
 

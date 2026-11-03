@@ -45,11 +45,10 @@ public class IncomingMessageHandler {
   public void handleAccountDeletion(String username, UUID clientId) {
     personRepository
         .findAllByUsername(username, clientId)
-        .forEach(
-            p -> {
-              p.setUsername(null);
-              p.setUpdatedAt(Instant.now());
-            });
+        .forEach(p -> {
+          p.setUsername(null);
+          p.setUpdatedAt(Instant.now());
+        });
   }
 
   public void handleElementTypeDefinitionUpdate(Domain domain, ElementType elementType) {

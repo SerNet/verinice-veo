@@ -79,33 +79,29 @@ public class LinkTargetsExpression implements VeoExpression {
     var sourcesType = sources.getValueType(domain, elementType);
     return sourcesType
         .findListItemType()
-        .map(
-            linkSourceType -> {
-              var possibleLinkTypes =
-                  Arrays.stream(ElementType.values())
-                      .filter(t -> linkSourceType.includes(VeoType.element(t)))
-                      .map(domain::getElementTypeDefinition)
-                      .map(ElementTypeDefinitionState::getLinks)
-                      .map(Map::entrySet)
-                      .flatMap(Collection::stream)
-                      .filter(linkEntry -> linkType == null || linkEntry.getKey().equals(linkType))
-                      .map(Map.Entry::getValue);
-              var possibleLinkTargetTypes =
-                  possibleLinkTypes
-                      .map(LinkDefinition::getTargetType)
-                      .map(VeoType::element)
-                      .toList();
-              if (possibleLinkTargetTypes.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "No links defined for element type %s and %s"
-                        .formatted(
-                            linkSourceType,
-                            Optional.ofNullable(linkType)
-                                .map("link type '%s'"::formatted)
-                                .orElse("any link type")));
-              }
-              return VeoType.listOf(VeoType.sumOf(possibleLinkTargetTypes));
-            })
+        .map(linkSourceType -> {
+          var possibleLinkTypes =
+              Arrays.stream(ElementType.values())
+                  .filter(t -> linkSourceType.includes(VeoType.element(t)))
+                  .map(domain::getElementTypeDefinition)
+                  .map(ElementTypeDefinitionState::getLinks)
+                  .map(Map::entrySet)
+                  .flatMap(Collection::stream)
+                  .filter(linkEntry -> linkType == null || linkEntry.getKey().equals(linkType))
+                  .map(Map.Entry::getValue);
+          var possibleLinkTargetTypes =
+              possibleLinkTypes.map(LinkDefinition::getTargetType).map(VeoType::element).toList();
+          if (possibleLinkTargetTypes.isEmpty()) {
+            throw new IllegalArgumentException(
+                "No links defined for element type %s and %s"
+                    .formatted(
+                        linkSourceType,
+                        Optional.ofNullable(linkType)
+                            .map("link type '%s'"::formatted)
+                            .orElse("any link type")));
+          }
+          return VeoType.listOf(VeoType.sumOf(possibleLinkTargetTypes));
+        })
         .orElse(VeoType.listOf(VeoType.nothing()));
   }
 }

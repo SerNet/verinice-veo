@@ -110,11 +110,10 @@ public class CreateDomainTemplateFromDomainUseCase
             () -> {
               domainTemplateRepository
                   .getLatestDomainTemplateId(domain.getName())
-                  .ifPresent(
-                      (ignored) -> {
-                        throw new UnprocessableDataException(
-                            "Domain is not based on a template, but templates already exist.");
-                      });
+                  .ifPresent(ignored -> {
+                    throw new UnprocessableDataException(
+                        "Domain is not based on a template, but templates already exist.");
+                  });
             });
     domain.setTemplateVersion(version);
   }

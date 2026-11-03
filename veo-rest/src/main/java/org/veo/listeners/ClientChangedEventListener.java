@@ -63,7 +63,7 @@ public class ClientChangedEventListener {
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
 
-  @EventListener()
+  @EventListener
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(ClientChangedEvent event) {
     log.info("ClientChangedEventListener ----> {}", event);
@@ -123,19 +123,17 @@ public class ClientChangedEventListener {
   private void addDomains(Client client, Map<String, List<String>> domainProducts, boolean save) {
     if (domainProducts != null && !domainProducts.isEmpty()) {
       domainProducts.keySet().stream()
-          .filter(
-              domainName ->
-                  client.getDomains().stream()
-                      .filter(hasDomainTemplate())
-                      .noneMatch(referenceDomainTemplate(domainName)))
-          .forEach(
-              dn -> {
-                log.info("create Domain {} for client {}", dn, client.getName());
-                defaultDomainCreator.addDomain(client, dn, TemplateItems.CATALOG_ONLY);
-                if (save) {
-                  repository.save(client);
-                }
-              });
+          .filter(domainName ->
+              client.getDomains().stream()
+                  .filter(hasDomainTemplate())
+                  .noneMatch(referenceDomainTemplate(domainName)))
+          .forEach(dn -> {
+            log.info("create Domain {} for client {}", dn, client.getName());
+            defaultDomainCreator.addDomain(client, dn, TemplateItems.CATALOG_ONLY);
+            if (save) {
+              repository.save(client);
+            }
+          });
     }
   }
 
@@ -143,17 +141,15 @@ public class ClientChangedEventListener {
     if (products != null && !products.isEmpty()) {
       client.getDomains().stream()
           .filter(hasDomainTemplate())
-          .forEach(
-              domain -> {
-                products.getOrDefault(domain.getName(), Collections.emptyList()).stream()
-                    .distinct()
-                    .forEach(
-                        productId -> {
-                          domain.getDomainTemplate().getProfiles().stream()
-                              .filter(isProfile(productId))
-                              .forEach(profile -> copyProfileToDomain(save, profile, domain));
-                        });
-              });
+          .forEach(domain -> {
+            products.getOrDefault(domain.getName(), Collections.emptyList()).stream()
+                .distinct()
+                .forEach(productId -> {
+                  domain.getDomainTemplate().getProfiles().stream()
+                      .filter(isProfile(productId))
+                      .forEach(profile -> copyProfileToDomain(save, profile, domain));
+                });
+          });
     }
   }
 

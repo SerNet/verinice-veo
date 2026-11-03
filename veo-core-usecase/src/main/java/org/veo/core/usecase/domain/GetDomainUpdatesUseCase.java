@@ -50,32 +50,30 @@ public class GetDomainUpdatesUseCase
             domains.stream().map(Nameable::getName).toList());
     var updates =
         domains.stream()
-            .map(
-                domain -> {
-                  var domainVersion = domain.getTemplateVersion();
-                  var allUpdates =
-                      templates.stream()
-                          .filter(t -> t.getName().equals(domain.getName()))
-                          .filter(t -> t.getTemplateVersion().isHigherThan(domainVersion))
-                          .sorted(Comparator.comparing(DomainBaseState::getTemplateVersion))
-                          .toList();
-                  var possibleUpdates =
-                      allUpdates.stream()
-                          .filter(
-                              dt ->
-                                  dt.getTemplateVersion().majorVersion()
-                                      <= domainVersion.majorVersion() + 1)
-                          .toList();
-                  if (!allUpdates.isEmpty()) {
-                    return new UpdatableDomain(
-                        domain,
-                        allUpdates,
-                        possibleUpdates,
-                        allUpdates.getLast(),
-                        !possibleUpdates.isEmpty() ? possibleUpdates.getLast() : null);
-                  }
-                  return null;
-                })
+            .map(domain -> {
+              var domainVersion = domain.getTemplateVersion();
+              var allUpdates =
+                  templates.stream()
+                      .filter(t -> t.getName().equals(domain.getName()))
+                      .filter(t -> t.getTemplateVersion().isHigherThan(domainVersion))
+                      .sorted(Comparator.comparing(DomainBaseState::getTemplateVersion))
+                      .toList();
+              var possibleUpdates =
+                  allUpdates.stream()
+                      .filter(dt ->
+                          dt.getTemplateVersion().majorVersion()
+                              <= domainVersion.majorVersion() + 1)
+                      .toList();
+              if (!allUpdates.isEmpty()) {
+                return new UpdatableDomain(
+                    domain,
+                    allUpdates,
+                    possibleUpdates,
+                    allUpdates.getLast(),
+                    !possibleUpdates.isEmpty() ? possibleUpdates.getLast() : null);
+              }
+              return null;
+            })
             .filter(Objects::nonNull)
             .toList();
     return new OutputData(updates);

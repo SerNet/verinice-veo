@@ -97,19 +97,17 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
   default LinkDefinition getLinkDefinition(ElementType sourceType, String linkType) {
     return getElementTypeDefinition(sourceType)
         .findLink(linkType)
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Link type '%s' not found for %s in domain %s"
-                        .formatted(linkType, sourceType.getPluralTerm(), getId())));
+        .orElseThrow(() ->
+            new IllegalArgumentException(
+                "Link type '%s' not found for %s in domain %s"
+                    .formatted(linkType, sourceType.getPluralTerm(), getId())));
   }
 
   default ElementTypeDefinition getElementTypeDefinition(ElementType type) {
     return findElementTypeDefinition(type)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    String.format("Domain has no definition for entity type %s", type)));
+        .orElseThrow(() ->
+            new NotFoundException(
+                String.format("Domain has no definition for entity type %s", type)));
   }
 
   @Override
@@ -146,11 +144,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   default Decision getDecision(String decisionKey) {
     return Optional.ofNullable(getDecisions().get(decisionKey))
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Decision '%s' not found in domain %s"
-                        .formatted(decisionKey, getIdAsString())));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Decision '%s' not found in domain %s".formatted(decisionKey, getIdAsString())));
   }
 
   /**
@@ -181,10 +177,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
 
   default Inspection getInspection(String inspectionId) {
     return findInspection(inspectionId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Domain %s does not contain inspection '%s'", getIdAsString(), inspectionId));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Domain %s does not contain inspection '%s'", getIdAsString(), inspectionId));
   }
 
   default Optional<Inspection> findInspection(String inspectionId) {

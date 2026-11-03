@@ -58,13 +58,12 @@ public class DeleteRiskUseCase
     var risk =
         riskAffected
             .getRisk(input.scenarioRef)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "No risk found for %s '%s' and scenario '%s'.",
-                        riskAffected.getType().getSingularTerm(),
-                        riskAffected.getName(),
-                        input.scenarioRef));
+            .orElseThrow(() ->
+                new NotFoundException(
+                    "No risk found for %s '%s' and scenario '%s'.",
+                    riskAffected.getType().getSingularTerm(),
+                    riskAffected.getName(),
+                    input.scenarioRef));
     risk.remove();
     publishEvents(riskAffected, risk);
     return EmptyOutput.INSTANCE;

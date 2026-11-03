@@ -115,11 +115,10 @@ public class CategoryDefinition extends DimensionDefinition<CategoryLevel> {
     Set<RiskValue> undefinedRiskValues =
         valueMatrix.stream()
             .flatMap(Collection::stream)
-            .filter(
-                rv ->
-                    !ordinalToSymbolicMap
-                        .getOrDefault(rv.getOrdinalValue(), "")
-                        .equals(rv.getSymbolicRisk()))
+            .filter(rv ->
+                !ordinalToSymbolicMap
+                    .getOrDefault(rv.getOrdinalValue(), "")
+                    .equals(rv.getSymbolicRisk()))
             .collect(Collectors.toSet());
 
     if (!undefinedRiskValues.isEmpty()) {
@@ -133,13 +132,12 @@ public class CategoryDefinition extends DimensionDefinition<CategoryLevel> {
     }
     int size = probability == null ? 0 : probability.getLevels().size();
     valueMatrix.stream()
-        .forEach(
-            l -> {
-              if (l.size() != size) {
-                throw new IllegalArgumentException(
-                    "Value matrix for category " + getId() + " does not conform to probability.");
-              }
-            });
+        .forEach(l -> {
+          if (l.size() != size) {
+            throw new IllegalArgumentException(
+                "Value matrix for category " + getId() + " does not conform to probability.");
+          }
+        });
   }
 
   public void ensureRiskValuesSupported() {

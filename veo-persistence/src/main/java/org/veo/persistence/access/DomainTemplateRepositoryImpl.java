@@ -86,10 +86,9 @@ public class DomainTemplateRepositoryImpl
     return dataRepository
         .findCurrentTemplateVersion(templateName)
         .map(Version::parse)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "No domain template found for name '%s'".formatted(templateName)));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "No domain template found for name '%s'".formatted(templateName)));
   }
 
   @Override

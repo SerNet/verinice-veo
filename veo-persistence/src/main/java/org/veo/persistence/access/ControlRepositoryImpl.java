@@ -90,13 +90,11 @@ public class ControlRepositoryImpl
   private void removeImplementations(Iterable<ControlData> controls) {
     riskAffectedDataRepository
         .findAllByRequirementImplementationControls(controls)
-        .forEach(
-            ra ->
-                controls.forEach(
-                    control -> {
-                      ra.disassociateControl(control);
-                      ra.removeRequirementImplementation(control);
-                    }));
+        .forEach(ra ->
+            controls.forEach(control -> {
+              ra.disassociateControl(control);
+              ra.removeRequirementImplementation(control);
+            }));
   }
 
   @Override

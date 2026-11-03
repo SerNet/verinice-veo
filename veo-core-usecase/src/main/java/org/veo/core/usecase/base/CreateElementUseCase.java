@@ -89,11 +89,10 @@ public class CreateElementUseCase<TEntity extends Element>
     repositoryProvider
         .getElementRepositoryFor(Scope.class)
         .findByIds(scopeIds)
-        .forEach(
-            scope -> {
-              scope.checkSameClient(client);
-              scope.addMember(element);
-            });
+        .forEach(scope -> {
+          scope.checkSameClient(client);
+          scope.addMember(element);
+        });
   }
 
   private void evaluateDecisions(TEntity entity) {

@@ -63,21 +63,19 @@ public class ElementBatchCreator {
     // save links after the elements
     elements.stream()
         .filter(e -> !e.getLinks().isEmpty())
-        .forEach(
-            e -> {
-              links.put(e, Set.copyOf(e.getLinks()));
-              e.getLinks().clear();
-            });
+        .forEach(e -> {
+          links.put(e, Set.copyOf(e.getLinks()));
+          e.getLinks().clear();
+        });
     // save risks after the elements
     elements.stream()
         .filter(RiskAffected.class::isInstance)
         .map(RiskAffected.class::cast)
         .filter(e -> !e.getRisks().isEmpty())
-        .forEach(
-            e -> {
-              risks.put(e, Set.copyOf(e.getRisks()));
-              e.getRisks().clear();
-            });
+        .forEach(e -> {
+          risks.put(e, Set.copyOf(e.getRisks()));
+          e.getRisks().clear();
+        });
 
     // save scope memberships after the elements
     Map<Scope, Set<Element>> scopeMemberships =
@@ -110,28 +108,24 @@ public class ElementBatchCreator {
     prepareElements(elements, unit);
     saveElements(elements);
 
-    links.forEach(
-        (element, elementLinks) -> {
-          elementLinks.forEach(element::applyLink);
-        });
+    links.forEach((element, elementLinks) -> {
+      elementLinks.forEach(element::applyLink);
+    });
 
-    risks.forEach(
-        (element, elementRisks) -> {
-          elementRisks.forEach(
-              r -> {
-                if (r.getDesignator() == null) {
-                  designatorService.assignDesignator(r, unit.getClient());
-                }
-                element.addRisk(r);
-              });
-        });
+    risks.forEach((element, elementRisks) -> {
+      elementRisks.forEach(r -> {
+        if (r.getDesignator() == null) {
+          designatorService.assignDesignator(r, unit.getClient());
+        }
+        element.addRisk(r);
+      });
+    });
 
     scopeMemberships.forEach(Scope::addMembers);
 
-    compositeRelations.forEach(
-        (composite, parts) -> {
-          composite.addParts((Set) parts);
-        });
+    compositeRelations.forEach((composite, parts) -> {
+      composite.addParts((Set) parts);
+    });
 
     elements.forEach(element -> element.getDomains().forEach(d -> decider.decide(element, d)));
 

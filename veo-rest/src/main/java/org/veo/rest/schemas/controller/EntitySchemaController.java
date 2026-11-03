@@ -60,27 +60,26 @@ public class EntitySchemaController implements EntitySchemaResource {
       Authentication auth,
       @PathVariable ElementType type,
       @RequestParam(value = "domains") List<UUID> domainIDs) {
-    return CompletableFuture.supplyAsync(
-        () -> {
-          ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-          // TODO use valid 'domain' class
+    return CompletableFuture.supplyAsync(() -> {
+      ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+      // TODO use valid 'domain' class
 
-          var clientDomainsById =
-              domainRepository
-                  .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
-                      domainIDs.stream().toList(), user.getClientId())
-                  .stream()
-                  .collect(Collectors.toMap(Domain::getId, Function.identity()));
-          Set<Domain> domains = new HashSet<>(domainIDs.size());
-          for (UUID domainId : domainIDs) {
-            Domain domain = clientDomainsById.get(domainId);
-            if (domain == null) {
-              throw new NotFoundException(domainId, Domain.class);
-            }
-            domains.add(domain);
-          }
+      var clientDomainsById =
+          domainRepository
+              .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+                  domainIDs.stream().toList(), user.getClientId())
+              .stream()
+              .collect(Collectors.toMap(Domain::getId, Function.identity()));
+      Set<Domain> domains = new HashSet<>(domainIDs.size());
+      for (UUID domainId : domainIDs) {
+        Domain domain = clientDomainsById.get(domainId);
+        if (domain == null) {
+          throw new NotFoundException(domainId, Domain.class);
+        }
+        domains.add(domain);
+      }
 
-          return ResponseEntity.ok().body(schemaService.getSchema(type, domains));
-        });
+      return ResponseEntity.ok().body(schemaService.getSchema(type, domains));
+    });
   }
 }

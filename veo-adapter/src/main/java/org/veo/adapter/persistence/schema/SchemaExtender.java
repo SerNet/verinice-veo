@@ -100,14 +100,13 @@ public class SchemaExtender {
     var linkProps = putProps(schema, "links");
     var customObjectProperties = putProps(schema, "customAspects");
 
-    domains.forEach(
-        domain -> {
-          var domainAssociationSchema = addDomainAssociation(domainProps, domain, elementType);
-          var typeDef = domain.getElementTypeDefinition(elementType);
-          addSubTypes(domainAssociationSchema, typeDef.getSubTypes());
-          addCustomAspects(customObjectProperties, typeDef.getCustomAspects());
-          addLinks(linkProps, typeDef.getLinks(), customLinkDto);
-        });
+    domains.forEach(domain -> {
+      var domainAssociationSchema = addDomainAssociation(domainProps, domain, elementType);
+      var typeDef = domain.getElementTypeDefinition(elementType);
+      addSubTypes(domainAssociationSchema, typeDef.getSubTypes());
+      addCustomAspects(customObjectProperties, typeDef.getCustomAspects());
+      addLinks(linkProps, typeDef.getLinks(), customLinkDto);
+    });
   }
 
   /**
@@ -181,21 +180,20 @@ public class SchemaExtender {
     var riskValuesProps = ((ObjectNode) target.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
     domain
         .getRiskDefinitions()
-        .forEach(
-            (riskDefId, riskDef) -> {
-              var riskValuesSchema = scenarioRiskValuesDto.get();
-              var potentialProbabilitySchema =
-                  (ObjectNode) riskValuesSchema.get(PROPS).get("potentialProbability");
-              potentialProbabilitySchema
-                  .putArray("enum")
-                  .addAll(
-                      riskDef.getProbability().getLevels().stream()
-                          .map(DiscreteValue::getOrdinalValue)
-                          .map(IntNode::new)
-                          .toList());
-              riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
-              riskValuesProps.set(riskDefId, riskValuesSchema);
-            });
+        .forEach((riskDefId, riskDef) -> {
+          var riskValuesSchema = scenarioRiskValuesDto.get();
+          var potentialProbabilitySchema =
+              (ObjectNode) riskValuesSchema.get(PROPS).get("potentialProbability");
+          potentialProbabilitySchema
+              .putArray("enum")
+              .addAll(
+                  riskDef.getProbability().getLevels().stream()
+                      .map(DiscreteValue::getOrdinalValue)
+                      .map(IntNode::new)
+                      .toList());
+          riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
+          riskValuesProps.set(riskDefId, riskValuesSchema);
+        });
   }
 
   private void extendSchemaForScope(ObjectNode target, Domain domain) {
@@ -229,25 +227,23 @@ public class SchemaExtender {
         .distinct()
         .forEach(commonStatusEnum::add);
 
-    subTypes.forEach(
-        (subTypeKey, definition) -> {
-          subTypesEnum.add(subTypeKey);
-          var condition = conditions.addObject();
-          condition.putObject("if").putObject(PROPS).putObject("subType").put("const", subTypeKey);
-          var statusEnum =
-              condition.putObject("then").putObject(PROPS).putObject("status").putArray("enum");
-          definition.getStatuses().forEach(statusEnum::add);
-        });
+    subTypes.forEach((subTypeKey, definition) -> {
+      subTypesEnum.add(subTypeKey);
+      var condition = conditions.addObject();
+      condition.putObject("if").putObject(PROPS).putObject("subType").put("const", subTypeKey);
+      var statusEnum =
+          condition.putObject("then").putObject(PROPS).putObject("status").putArray("enum");
+      definition.getStatuses().forEach(statusEnum::add);
+    });
   }
 
   /** Fill {@link org.veo.adapter.presenter.api.dto.LinkMapDto} schema (new flat structure) */
   private void addCustomAspectMap(
       ObjectNode customAspectProps, Map<String, CustomAspectDefinition> customAspects) {
-    customAspects.forEach(
-        (type, definition) -> {
-          var attributesNode = customAspectProps.putObject(type);
-          addAttributes(attributesNode, definition.getAttributeDefinitions());
-        });
+    customAspects.forEach((type, definition) -> {
+      var attributesNode = customAspectProps.putObject(type);
+      addAttributes(attributesNode, definition.getAttributeDefinitions());
+    });
   }
 
   /**
@@ -262,12 +258,11 @@ public class SchemaExtender {
 
   private void addLinks(
       ObjectNode linkProps, Map<String, LinkDefinition> links, Supplier<ObjectNode> linkDto) {
-    links.forEach(
-        (type, definition) -> {
-          var linkPropNode = linkProps.putObject(type);
-          linkPropNode.put(TYPE, "array");
-          linkPropNode.set("items", createLinkSchema(definition, linkDto));
-        });
+    links.forEach((type, definition) -> {
+      var linkPropNode = linkProps.putObject(type);
+      linkPropNode.put(TYPE, "array");
+      linkPropNode.set("items", createLinkSchema(definition, linkDto));
+    });
   }
 
   @Deprecated
@@ -296,63 +291,61 @@ public class SchemaExtender {
     var riskValuesProps = putProps(domainAssociationSchema, RISK_VALUES);
     domain
         .getRiskDefinitions()
-        .forEach(
-            (riskDefId, riskDef) -> {
-              var riskDefinitionSchema = impactValuesDto.get();
-              riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
-              var potImpactsProps = putProps(riskDefinitionSchema, "potentialImpacts");
-              var potImpactsCalculatedProps =
-                  putProps(riskDefinitionSchema, "potentialImpactsCalculated");
-              var potImpactsEffectiveProps =
-                  putProps(riskDefinitionSchema, "potentialImpactsEffective");
-              var potImpactReasonsProps = putProps(riskDefinitionSchema, "potentialImpactReasons");
-              var potImpactEffectiveReasonsProps =
-                  putProps(riskDefinitionSchema, "potentialImpactEffectiveReasons");
-              var potImpactExplanationsProps =
-                  putProps(riskDefinitionSchema, "potentialImpactExplanations");
+        .forEach((riskDefId, riskDef) -> {
+          var riskDefinitionSchema = impactValuesDto.get();
+          riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
+          var potImpactsProps = putProps(riskDefinitionSchema, "potentialImpacts");
+          var potImpactsCalculatedProps =
+              putProps(riskDefinitionSchema, "potentialImpactsCalculated");
+          var potImpactsEffectiveProps =
+              putProps(riskDefinitionSchema, "potentialImpactsEffective");
+          var potImpactReasonsProps = putProps(riskDefinitionSchema, "potentialImpactReasons");
+          var potImpactEffectiveReasonsProps =
+              putProps(riskDefinitionSchema, "potentialImpactEffectiveReasons");
+          var potImpactExplanationsProps =
+              putProps(riskDefinitionSchema, "potentialImpactExplanations");
 
-              riskDef
-                  .getCategories()
-                  .forEach(
-                      c -> {
-                        var impactValueSchema = FACTORY.objectNode();
-                        impactValueSchema
-                            .putArray("enum")
-                            .addAll(
-                                c.getPotentialImpacts().stream()
-                                    .map(DiscreteValue::getOrdinalValue)
-                                    .map(IntNode::new)
-                                    .toList());
+          riskDef
+              .getCategories()
+              .forEach(c -> {
+                var impactValueSchema = FACTORY.objectNode();
+                impactValueSchema
+                    .putArray("enum")
+                    .addAll(
+                        c.getPotentialImpacts().stream()
+                            .map(DiscreteValue::getOrdinalValue)
+                            .map(IntNode::new)
+                            .toList());
 
-                        potImpactsProps.set(c.getId(), impactValueSchema);
-                        potImpactsCalculatedProps.set(c.getId(), impactValueSchema);
-                        potImpactsEffectiveProps.set(c.getId(), impactValueSchema);
+                potImpactsProps.set(c.getId(), impactValueSchema);
+                potImpactsCalculatedProps.set(c.getId(), impactValueSchema);
+                potImpactsEffectiveProps.set(c.getId(), impactValueSchema);
 
-                        potImpactReasonsProps
-                            .putObject(c.getId())
-                            .putArray("enum")
-                            .addAll(
-                                Arrays.stream(ImpactReason.values())
-                                    .map(ImpactReason::getTranslationKey)
-                                    .map(StringNode::new)
-                                    .toList());
-                        potImpactEffectiveReasonsProps
-                            .putObject(c.getId())
-                            .putArray("enum")
-                            .addAll(
-                                Arrays.stream(ImpactReason.values())
-                                    .map(ImpactReason::getTranslationKey)
-                                    .map(StringNode::new)
-                                    .toList())
-                            .addAll(
-                                Arrays.stream(ImpactMethod.values())
-                                    .map(ImpactMethod::getTranslationKey)
-                                    .map(StringNode::new)
-                                    .toList());
-                        potImpactExplanationsProps.putObject(c.getId()).put(TYPE, "string");
-                      });
-              riskValuesProps.set(riskDefId, riskDefinitionSchema);
-            });
+                potImpactReasonsProps
+                    .putObject(c.getId())
+                    .putArray("enum")
+                    .addAll(
+                        Arrays.stream(ImpactReason.values())
+                            .map(ImpactReason::getTranslationKey)
+                            .map(StringNode::new)
+                            .toList());
+                potImpactEffectiveReasonsProps
+                    .putObject(c.getId())
+                    .putArray("enum")
+                    .addAll(
+                        Arrays.stream(ImpactReason.values())
+                            .map(ImpactReason::getTranslationKey)
+                            .map(StringNode::new)
+                            .toList())
+                    .addAll(
+                        Arrays.stream(ImpactMethod.values())
+                            .map(ImpactMethod::getTranslationKey)
+                            .map(StringNode::new)
+                            .toList());
+                potImpactExplanationsProps.putObject(c.getId()).put(TYPE, "string");
+              });
+          riskValuesProps.set(riskDefId, riskDefinitionSchema);
+        });
   }
 
   private void addAttributes(
@@ -360,10 +353,9 @@ public class SchemaExtender {
     attributesNode.put(ADDITIONAL_PROPERTIES, false);
 
     var attributePropsNode = attributesNode.putObject(PROPS);
-    attributeDefinitions.forEach(
-        (attributeKey, definition) -> {
-          attributePropsNode.set(attributeKey, buildAttributeJsonSchema(definition));
-        });
+    attributeDefinitions.forEach((attributeKey, definition) -> {
+      attributePropsNode.set(attributeKey, buildAttributeJsonSchema(definition));
+    });
   }
 
   private JsonNode buildAttributeJsonSchema(@NotNull AttributeDefinition attributeDefinition) {

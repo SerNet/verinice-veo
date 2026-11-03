@@ -85,13 +85,12 @@ public class ElementTypeDefinitionValidator {
   }
 
   private static void validate(Set<String> keys) {
-    keys.forEach(
-        k -> {
-          if (!KEY_PATTERN.matcher(k).matches()) {
-            throw new UnprocessableDataException(
-                "Invalid key '%s' - keys may only contain English alphabet letters, digits, underscores & hyphens"
-                    .formatted(k));
-          }
-        });
+    keys.forEach(k -> {
+      if (!KEY_PATTERN.matcher(k).matches()) {
+        throw new UnprocessableDataException(
+            "Invalid key '%s' - keys may only contain English alphabet letters, digits, underscores & hyphens"
+                .formatted(k));
+      }
+    });
   }
 }

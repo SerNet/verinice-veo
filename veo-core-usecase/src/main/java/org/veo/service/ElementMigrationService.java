@@ -54,48 +54,46 @@ public class ElementMigrationService {
     var definition = domain.getElementTypeDefinition(element.getType());
     element
         .getCustomAspects(domain)
-        .forEach(
-            ca -> {
-              var caDefinition = definition.getCustomAspects().get(ca.getType());
-              if (caDefinition == null) {
-                log.debug(
-                    "Removing obsolete custom aspect {} from element {}.",
-                    ca.getType(),
-                    element.getIdAsString());
-                element.getCustomAspects().remove(ca);
-                return;
-              }
-              migrateAttributes(
-                  ca.getAttributes(),
-                  caDefinition.getAttributeDefinitions(),
-                  definition.getTranslations());
-            });
+        .forEach(ca -> {
+          var caDefinition = definition.getCustomAspects().get(ca.getType());
+          if (caDefinition == null) {
+            log.debug(
+                "Removing obsolete custom aspect {} from element {}.",
+                ca.getType(),
+                element.getIdAsString());
+            element.getCustomAspects().remove(ca);
+            return;
+          }
+          migrateAttributes(
+              ca.getAttributes(),
+              caDefinition.getAttributeDefinitions(),
+              definition.getTranslations());
+        });
     element
         .getLinks(domain)
-        .forEach(
-            link -> {
-              var linkDefinition = definition.getLinks().get(link.getType());
-              if (linkDefinition == null) {
-                log.debug(
-                    "Removing obsolete link {} from element {}.",
-                    link.getType(),
-                    element.getIdAsString());
-                element.getLinks().remove(link);
-                return;
-              }
-              if (!isValidTarget(link.getTarget(), domain, linkDefinition)) {
-                log.debug(
-                    "Removing link {} from element {} due to invalid target.",
-                    link.getType(),
-                    element.getIdAsString());
-                element.getLinks().remove(link);
-                return;
-              }
-              migrateAttributes(
-                  link.getAttributes(),
-                  linkDefinition.getAttributeDefinitions(),
-                  definition.getTranslations());
-            });
+        .forEach(link -> {
+          var linkDefinition = definition.getLinks().get(link.getType());
+          if (linkDefinition == null) {
+            log.debug(
+                "Removing obsolete link {} from element {}.",
+                link.getType(),
+                element.getIdAsString());
+            element.getLinks().remove(link);
+            return;
+          }
+          if (!isValidTarget(link.getTarget(), domain, linkDefinition)) {
+            log.debug(
+                "Removing link {} from element {} due to invalid target.",
+                link.getType(),
+                element.getIdAsString());
+            element.getLinks().remove(link);
+            return;
+          }
+          migrateAttributes(
+              link.getAttributes(),
+              linkDefinition.getAttributeDefinitions(),
+              definition.getTranslations());
+        });
     migrateSubType(domain, definition, element);
   }
 
@@ -106,26 +104,25 @@ public class ElementMigrationService {
       Set<RiskDefinitionChange> detectedChanges) {
     riskRelated
         .getRiskDefinitions(domain)
-        .forEach(
-            rdRef ->
-                domain
-                    .findRiskDefinition(rdRef.getIdRef())
-                    .ifPresentOrElse(
-                        rd -> {
-                          if (riskRelated instanceof RiskAffected<?, ?> ra) {
-                            migrateRiskAffected(ra, domain, riskDefinition, detectedChanges);
-                          } else if (riskRelated instanceof Scenario sce) {
-                            Map<RiskDefinitionRef, PotentialProbability> potentialProbability =
-                                sce.getPotentialProbability(domain);
-                            if (potentialProbability != null
-                                && isPropablilityChanged(detectedChanges)) {
-                              potentialProbability.put(
-                                  riskDefinition.toRef(), new PotentialProbability(null));
-                              sce.setPotentialProbability(domain, potentialProbability);
-                            }
-                          }
-                        },
-                        () -> riskRelated.removeRiskDefinition(rdRef, domain)));
+        .forEach(rdRef ->
+            domain
+                .findRiskDefinition(rdRef.getIdRef())
+                .ifPresentOrElse(
+                    rd -> {
+                      if (riskRelated instanceof RiskAffected<?, ?> ra) {
+                        migrateRiskAffected(ra, domain, riskDefinition, detectedChanges);
+                      } else if (riskRelated instanceof Scenario sce) {
+                        Map<RiskDefinitionRef, PotentialProbability> potentialProbability =
+                            sce.getPotentialProbability(domain);
+                        if (potentialProbability != null
+                            && isPropablilityChanged(detectedChanges)) {
+                          potentialProbability.put(
+                              riskDefinition.toRef(), new PotentialProbability(null));
+                          sce.setPotentialProbability(domain, potentialProbability);
+                        }
+                      }
+                    },
+                    () -> riskRelated.removeRiskDefinition(rdRef, domain)));
   }
 
   private void migrateRiskAffected(
@@ -139,42 +136,39 @@ public class ElementMigrationService {
 
     ra.getRisks().stream()
         .filter(r -> r.getRiskDefinitions(domain).contains(rdRef))
-        .forEach(
-            risk -> {
-              removedRiskValueCategories(detectedChanges)
-                  .forEach(badCat -> risk.removeRiskCategory(rdRef, badCat, domain));
-              addedRiskValueCategories(detectedChanges)
-                  .forEach(newCat -> risk.addRiskCategory(rdRef, newCat, domain));
-            });
+        .forEach(risk -> {
+          removedRiskValueCategories(detectedChanges)
+              .forEach(badCat -> risk.removeRiskCategory(rdRef, badCat, domain));
+          addedRiskValueCategories(detectedChanges)
+              .forEach(newCat -> risk.addRiskCategory(rdRef, newCat, domain));
+        });
   }
 
   private boolean migrateSubType(Domain domain, ElementTypeDefinition definition, Element element) {
     return element
         .findSubType(domain)
-        .map(
-            subType -> {
-              var subTypeDefinition = definition.getSubTypes().get(subType);
-              if (subTypeDefinition == null) {
-                log.debug(
-                    "Sub type {} of element {} is obsolete, removing element from domain",
-                    subType,
-                    element.getIdAsString());
-                element.removeFromDomains(domain);
-                return false;
-              }
-              var status = element.getStatus(domain);
-              if (!subTypeDefinition.getStatuses().contains(status)) {
-                var fallbackStatus =
-                    subTypeDefinition.getStatuses().stream().findFirst().orElseThrow();
-                log.debug(
-                    "Replacing obsolete status {} of element {} with fallback status {}",
-                    status,
-                    element.getIdAsString(),
-                    fallbackStatus);
-                element.setStatus(fallbackStatus, domain);
-              }
-              return true;
-            })
+        .map(subType -> {
+          var subTypeDefinition = definition.getSubTypes().get(subType);
+          if (subTypeDefinition == null) {
+            log.debug(
+                "Sub type {} of element {} is obsolete, removing element from domain",
+                subType,
+                element.getIdAsString());
+            element.removeFromDomains(domain);
+            return false;
+          }
+          var status = element.getStatus(domain);
+          if (!subTypeDefinition.getStatuses().contains(status)) {
+            var fallbackStatus = subTypeDefinition.getStatuses().stream().findFirst().orElseThrow();
+            log.debug(
+                "Replacing obsolete status {} of element {} with fallback status {}",
+                status,
+                element.getIdAsString(),
+                fallbackStatus);
+            element.setStatus(fallbackStatus, domain);
+          }
+          return true;
+        })
         .orElse(false);
   }
 
@@ -184,16 +178,14 @@ public class ElementMigrationService {
       Map<String, AttributeDefinition> definitions,
       Map<Locale, Map<String, String>> translations) {
     new HashMap<>(attributes)
-        .forEach(
-            (attrKey, attrValue) -> {
-              var errors =
-                  AttributeValidator.getErrors(attrKey, attrValue, definitions, translations);
-              if (!errors.isEmpty()) {
-                log.debug("Attribute validation failed: {}", errors);
-                log.debug("Removing invalidate attribute {}", attrKey);
-                attributes.remove(attrKey);
-              }
-            });
+        .forEach((attrKey, attrValue) -> {
+          var errors = AttributeValidator.getErrors(attrKey, attrValue, definitions, translations);
+          if (!errors.isEmpty()) {
+            log.debug("Attribute validation failed: {}", errors);
+            log.debug("Removing invalidate attribute {}", attrKey);
+            attributes.remove(attrKey);
+          }
+        });
   }
 
   private boolean isValidTarget(Element target, Domain domain, LinkDefinition linkDef) {

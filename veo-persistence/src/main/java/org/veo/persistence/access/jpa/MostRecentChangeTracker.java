@@ -207,51 +207,48 @@ public class MostRecentChangeTracker<
 
     idsWithPendingChanges.stream()
         .filter(k -> !Objects.equals(k, NO_ID))
-        .forEach(
-            id -> {
-              // add PERSIST events that already have an ID (edge case):
-              var persistsWithId =
-                  allSeenChanges.get(id).stream()
-                      .filter(e -> e.type() == PERSIST && determineId(e.entity()) != null)
-                      .toList();
-              if (!persistsWithId.isEmpty()) {
-                // get only one, order doesn't matter for inserts:
-                consolidatedChanges
-                    .computeIfAbsent(id, k -> new ArrayList<>())
-                    .add(persistsWithId.get(0));
-              }
+        .forEach(id -> {
+          // add PERSIST events that already have an ID (edge case):
+          var persistsWithId =
+              allSeenChanges.get(id).stream()
+                  .filter(e -> e.type() == PERSIST && determineId(e.entity()) != null)
+                  .toList();
+          if (!persistsWithId.isEmpty()) {
+            // get only one, order doesn't matter for inserts:
+            consolidatedChanges
+                .computeIfAbsent(id, k -> new ArrayList<>())
+                .add(persistsWithId.get(0));
+          }
 
-              // add UPDATE event:
-              // (add only the latest UPDATE rewritten to the lowest seen change-no of any update)
-              var updates =
-                  allSeenChanges.get(id).stream().filter(e -> e.type() == UPDATE).toList();
-              var lowestNo = -1L;
-              if (!updates.isEmpty()) {
-                lowestNo = lowestSeenChangeNo(updates);
-                var newestUpdate = newestEvent(updates);
-                newestUpdate.entity().consolidateChangeNumber(lowestNo);
-                consolidatedChanges
-                    .computeIfAbsent(id, k -> new ArrayList<>())
-                    .add((E) newestUpdate.withChangeNumber(lowestNo));
-              }
+          // add UPDATE event:
+          // (add only the latest UPDATE rewritten to the lowest seen change-no of any update)
+          var updates = allSeenChanges.get(id).stream().filter(e -> e.type() == UPDATE).toList();
+          var lowestNo = -1L;
+          if (!updates.isEmpty()) {
+            lowestNo = lowestSeenChangeNo(updates);
+            var newestUpdate = newestEvent(updates);
+            newestUpdate.entity().consolidateChangeNumber(lowestNo);
+            consolidatedChanges
+                .computeIfAbsent(id, k -> new ArrayList<>())
+                .add((E) newestUpdate.withChangeNumber(lowestNo));
+          }
 
-              // add REMOVE event:
-              var removes =
-                  allSeenChanges.get(id).stream().filter(e -> e.type() == REMOVE).toList();
-              if (!removes.isEmpty()) {
-                var newestRemove = newestEvent(removes);
-                if (lowestNo == -1L) {
-                  // no updates tracked, use lowest change no from removes:
-                  lowestNo = lowestSeenChangeNo(removes);
-                } else {
-                  lowestNo += 1;
-                }
-                newestRemove.entity().consolidateChangeNumber(lowestNo);
-                consolidatedChanges
-                    .computeIfAbsent(id, k -> new ArrayList<>())
-                    .add((E) newestRemove.withChangeNumber(lowestNo));
-              }
-            });
+          // add REMOVE event:
+          var removes = allSeenChanges.get(id).stream().filter(e -> e.type() == REMOVE).toList();
+          if (!removes.isEmpty()) {
+            var newestRemove = newestEvent(removes);
+            if (lowestNo == -1L) {
+              // no updates tracked, use lowest change no from removes:
+              lowestNo = lowestSeenChangeNo(removes);
+            } else {
+              lowestNo += 1;
+            }
+            newestRemove.entity().consolidateChangeNumber(lowestNo);
+            consolidatedChanges
+                .computeIfAbsent(id, k -> new ArrayList<>())
+                .add((E) newestRemove.withChangeNumber(lowestNo));
+          }
+        });
     idsWithPendingChanges.clear();
   }
 
@@ -276,13 +273,12 @@ public class MostRecentChangeTracker<
   @Transactional(propagation = Propagation.MANDATORY)
   @Order(HIGHEST_PRECEDENCE)
   public synchronized void publishAll() {
-    log.atDebug().log(
-        () ->
-            "Publishing all events:%n %s"
-                .formatted(
-                    consolidatedChanges.values().stream()
-                        .map(Object::toString)
-                        .collect(joining(";\n"))));
+    log.atDebug().log(() ->
+        "Publishing all events:%n %s"
+            .formatted(
+                consolidatedChanges.values().stream()
+                    .map(Object::toString)
+                    .collect(joining(";\n"))));
     consolidatedChanges.values().stream().flatMap(List::stream).forEach(publisher::publishEvent);
   }
 

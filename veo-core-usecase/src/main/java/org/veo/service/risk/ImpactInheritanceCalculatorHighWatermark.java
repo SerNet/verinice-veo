@@ -207,10 +207,8 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         .filter(notProcessed(processed))
         .sorted(byElementName(idToElement)) // walk roots in predictable manner
         .map(fe -> createParameter(data, fe, allRiskElements))
-        .forEach(
-            parameter ->
-                updateAllRootsInSubgraph(
-                    listOfRootElements, processed, changedElements, parameter));
+        .forEach(parameter ->
+            updateAllRootsInSubgraph(listOfRootElements, processed, changedElements, parameter));
 
     // TODO: #2908 compare the number of nodes in the flyweight graph to the number of riskaffected
     // in the unit and clear those not in the flyweight
@@ -472,16 +470,13 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     DirectedPseudograph<Element, CustomLink> graph = new DirectedPseudograph<>(null, null, true);
     riskAffectedElements.forEach(graph::addVertex);
     riskAffectedElements.stream()
-        .flatMap(
-            ra ->
-                ra.getLinks(domain).stream()
-                    .filter(l -> inheritanceLinkTypes.contains(l.getType())))
-        .forEach(
-            l ->
-                graph.addEdge(
-                    elementById.get(l.getSource().getIdAsString()),
-                    elementById.get(l.getTarget().getIdAsString()),
-                    l));
+        .flatMap(ra ->
+            ra.getLinks(domain).stream().filter(l -> inheritanceLinkTypes.contains(l.getType())))
+        .forEach(l ->
+            graph.addEdge(
+                elementById.get(l.getSource().getIdAsString()),
+                elementById.get(l.getTarget().getIdAsString()),
+                l));
 
     return graph;
   }

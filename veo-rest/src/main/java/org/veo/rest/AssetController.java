@@ -338,15 +338,14 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
             input,
             output -> AssetRiskDto.from(output.getRisk(), referenceAssembler));
 
-    return riskFuture.thenApply(
-        riskDto ->
-            ResponseEntity.ok()
-                .eTag(
-                    ETag.from(
-                        riskDto.getAsset().getId(),
-                        riskDto.getScenario().getId(),
-                        riskDto.getVersion()))
-                .body(riskDto));
+    return riskFuture.thenApply(riskDto ->
+        ResponseEntity.ok()
+            .eTag(
+                ETag.from(
+                    riskDto.getAsset().getId(),
+                    riskDto.getScenario().getId(),
+                    riskDto.getVersion()))
+            .body(riskDto));
   }
 
   @Override

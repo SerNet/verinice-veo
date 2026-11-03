@@ -59,11 +59,10 @@ public class CreateProfileInDomainTemplateUseCase
     domainTemplate.getProfiles().stream()
         .filter(p -> p.matches(input.profile))
         .findFirst()
-        .ifPresent(
-            oldProfile -> {
-              log.info("remove profile: {}({})", oldProfile.getName(), oldProfile.getId());
-              domainTemplate.getProfiles().remove(oldProfile);
-            });
+        .ifPresent(oldProfile -> {
+          log.info("remove profile: {}({})", oldProfile.getName(), oldProfile.getId());
+          domainTemplate.getProfiles().remove(oldProfile);
+        });
 
     Profile profile = domainStateMapper.toProfile(input.profile, domainTemplate);
     log.info(

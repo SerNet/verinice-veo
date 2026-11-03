@@ -56,10 +56,9 @@ public class LinksExpression implements VeoExpression {
   public Object getValue(Element element, Domain domain) {
     return findAllLinks(element, domain)
         .filter(l -> linkType == null || l.getType().equals(linkType))
-        .filter(
-            l ->
-                !impactInheritingOnly
-                    || isImpactInheriting(domain, l.getSource().getType(), l.getType()))
+        .filter(l ->
+            !impactInheritingOnly
+                || isImpactInheriting(domain, l.getSource().getType(), l.getType()))
         .toList();
   }
 
@@ -102,13 +101,10 @@ public class LinksExpression implements VeoExpression {
     }
     var linkTypes =
         domain.getElementTypeDefinition(linkSourceType).getLinks().entrySet().stream()
-            .filter(
-                e ->
-                    direction == LinkDirection.OUTBOUND
-                        || e.getValue().getTargetType() == elementType)
-            .filter(
-                e ->
-                    !impactInheritingOnly || isImpactInheriting(domain, linkSourceType, e.getKey()))
+            .filter(e ->
+                direction == LinkDirection.OUTBOUND || e.getValue().getTargetType() == elementType)
+            .filter(e ->
+                !impactInheritingOnly || isImpactInheriting(domain, linkSourceType, e.getKey()))
             .map(e -> VeoType.attributeContainer(e.getValue()))
             .toList();
     if (linkTypes.isEmpty()) {
@@ -121,10 +117,9 @@ public class LinksExpression implements VeoExpression {
   private static boolean isImpactInheriting(
       DomainBase domain, ElementType linkSourceType, String linkType) {
     return domain.getRiskDefinitions().values().stream()
-        .anyMatch(
-            rd ->
-                rd.getImpactInheritingLinks()
-                    .getOrDefault(linkSourceType, List.of())
-                    .contains(linkType));
+        .anyMatch(rd ->
+            rd.getImpactInheritingLinks()
+                .getOrDefault(linkSourceType, List.of())
+                .contains(linkType));
   }
 }

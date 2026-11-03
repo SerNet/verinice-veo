@@ -43,10 +43,8 @@ public class AttributeValidator {
       Map<String, AttributeDefinition> attributeDefinitions,
       Map<Locale, Map<String, String>> translations) {
     return attributes.entrySet().stream()
-        .flatMap(
-            (attr) ->
-                getErrors(attr.getKey(), attr.getValue(), attributeDefinitions, translations)
-                    .stream())
+        .flatMap(attr ->
+            getErrors(attr.getKey(), attr.getValue(), attributeDefinitions, translations).stream())
         .toList();
   }
 
@@ -64,7 +62,7 @@ public class AttributeValidator {
         ValidationError.localized(
             "error_invalid_attribute_value",
             List.of(
-                (_) -> attrValue,
+                _ -> attrValue,
                 l -> translations.getOrDefault(l, Map.of()).getOrDefault(attrKey, attrKey))),
         attrDefinition.getErrors(attrValue));
   }

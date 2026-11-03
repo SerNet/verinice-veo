@@ -330,15 +330,14 @@ public class ScopeController extends AbstractElementController<Scope, FullScopeD
             input,
             output -> ScopeRiskDto.from(output.getRisk(), referenceAssembler));
 
-    return riskFuture.thenApply(
-        riskDto ->
-            ResponseEntity.ok()
-                .eTag(
-                    ETag.from(
-                        riskDto.getScope().getId(),
-                        riskDto.getScenario().getId(),
-                        riskDto.getVersion()))
-                .body(riskDto));
+    return riskFuture.thenApply(riskDto ->
+        ResponseEntity.ok()
+            .eTag(
+                ETag.from(
+                    riskDto.getScope().getId(),
+                    riskDto.getScenario().getId(),
+                    riskDto.getVersion()))
+            .body(riskDto));
   }
 
   @Override

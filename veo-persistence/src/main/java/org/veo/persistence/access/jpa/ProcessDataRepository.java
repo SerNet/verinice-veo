@@ -47,14 +47,15 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
 
   @Query(
       """
-         select e from #{#entityName} e
-         inner join fetch e.riskValuesAspects
-         inner join fetch e.risks r
-         left join fetch r.riskAspects a
-         left join fetch a.domain
-         inner join fetch r.scenario s
-         left join fetch s.riskValuesAspects
-         where e.id in ?1""")
+      select e from #{#entityName} e
+      inner join fetch e.riskValuesAspects
+      inner join fetch e.risks r
+      left join fetch r.riskAspects a
+      left join fetch a.domain
+      inner join fetch r.scenario s
+      left join fetch s.riskValuesAspects
+      where e.id in ?1\
+      """)
   Set<ProcessData> findWithRisksAndScenariosByIdIn(Iterable<UUID> ids);
 
   @Transactional(readOnly = true)

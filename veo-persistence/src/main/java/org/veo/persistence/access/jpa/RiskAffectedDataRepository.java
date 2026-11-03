@@ -48,32 +48,33 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
   @Nonnull
   @Query(
       """
-         select e from #{#entityName} e
-         left join fetch e.risks r
-         left join fetch r.scenario
-         left join fetch r.mitigation
-         left join fetch r.riskOwner
-         left join fetch r.riskAspects a
-         left join fetch a.domain
-         where e.id in ?1""")
+      select e from #{#entityName} e
+      left join fetch e.risks r
+      left join fetch r.scenario
+      left join fetch r.mitigation
+      left join fetch r.riskOwner
+      left join fetch r.riskAspects a
+      left join fetch a.domain
+      where e.id in ?1\
+      """)
   List<T> findAllWithRisksByIdIn(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
       """
-        select e from #{#entityName} e
-        left join fetch e.controlImplementations
-        where e.id in ?1
-        """)
+      select e from #{#entityName} e
+      left join fetch e.controlImplementations
+      where e.id in ?1
+      """)
   Set<T> findAllWithCIs(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
       """
-        select e from #{#entityName} e
-        left join fetch e.requirementImplementations
-        where e.id in ?1
-        """)
+      select e from #{#entityName} e
+      left join fetch e.requirementImplementations
+      where e.id in ?1
+      """)
   Set<T> findAllWithRIs(Iterable<UUID> ids);
 
   // RIs must be joined twice, because the non-matching RIs would be missing from the returned
@@ -81,11 +82,11 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
   // https://stackoverflow.com/questions/5816417/how-to-properly-express-jpql-join-fetch-with-where-clause-as-jpa-2-criteriaq
   @Query(
       """
-        select distinct e from #{#entityName} e
-        left join fetch e.controlImplementations
-        left join fetch e.requirementImplementations
-        left join e.requirementImplementations ri
-        where ri.control in ?1
-        """)
+      select distinct e from #{#entityName} e
+      left join fetch e.controlImplementations
+      left join fetch e.requirementImplementations
+      left join e.requirementImplementations ri
+      where ri.control in ?1
+      """)
   Set<T> findAllByRequirementImplementationControls(Iterable<ControlData> controls);
 }

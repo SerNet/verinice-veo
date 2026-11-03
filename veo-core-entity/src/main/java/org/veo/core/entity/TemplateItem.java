@@ -163,11 +163,10 @@ public interface TemplateItem<
 
   default boolean isAppliedTo(Element element) {
     return findCatalogItem()
-        .flatMap(
-            item ->
-                element
-                    .findAppliedCatalogItem(requireDomainMembership())
-                    .map(elementItem -> elementItem.equals(item)))
+        .flatMap(item ->
+            element
+                .findAppliedCatalogItem(requireDomainMembership())
+                .map(elementItem -> elementItem.equals(item)))
         .orElse(false);
   }
 

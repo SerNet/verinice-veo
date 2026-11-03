@@ -78,10 +78,9 @@ public class RequirementImplementationQueryImpl implements RequirementImplementa
   @Override
   public void whereControlInDomain(Domain domain) {
     spec =
-        spec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                    root.get("control").get("domainAssociations").get("domain"), domain));
+        spec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                root.get("control").get("domainAssociations").get("domain"), domain));
   }
 
   private Specification<RequirementImplementationData> createSpecification(Client client) {

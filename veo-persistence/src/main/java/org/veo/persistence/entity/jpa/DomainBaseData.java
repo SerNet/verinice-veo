@@ -191,15 +191,14 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     // object, they must be assigned to the domain before they can be validated. If the validation
     // fails, the domain's previous set of decisions must be restored.
     try {
-      decisions.forEach(
-          (key, decision) -> {
-            try {
-              decision.selfValidate(this);
-            } catch (IllegalArgumentException | NotFoundException ex) {
-              throw new UnprocessableDataException(
-                  "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
-            }
-          });
+      decisions.forEach((key, decision) -> {
+        try {
+          decision.selfValidate(this);
+        } catch (IllegalArgumentException | NotFoundException ex) {
+          throw new UnprocessableDataException(
+              "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
+        }
+      });
     } catch (Exception ex) {
       // rollback
       decisionSet.setDecisions(oldDecisions);
@@ -231,21 +230,19 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   private void validateSubTypesUsedByInspections(ElementTypeDefinition definition) {
     getInspections()
-        .forEach(
-            (id, inspection) -> {
-              if (inspection.getElementType() != definition.getElementType()) {
-                return;
-              }
-              inspection.getSuggestedSubTypes().stream()
-                  .filter(subType -> !definition.getSubTypes().containsKey(subType))
-                  .findFirst()
-                  .ifPresent(
-                      subType -> {
-                        throw new UnprocessableDataException(
-                            "Cannot remove sub type '%s', because it is suggested by inspection '%s'"
-                                .formatted(subType, id));
-                      });
-            });
+        .forEach((id, inspection) -> {
+          if (inspection.getElementType() != definition.getElementType()) {
+            return;
+          }
+          inspection.getSuggestedSubTypes().stream()
+              .filter(subType -> !definition.getSubTypes().containsKey(subType))
+              .findFirst()
+              .ifPresent(subType -> {
+                throw new UnprocessableDataException(
+                    "Cannot remove sub type '%s', because it is suggested by inspection '%s'"
+                        .formatted(subType, id));
+              });
+        });
   }
 
   private void validate(String id, Inspection inspection) {

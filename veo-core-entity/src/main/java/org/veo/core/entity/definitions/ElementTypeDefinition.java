@@ -60,19 +60,16 @@ public interface ElementTypeDefinition extends ElementTypeDefinitionState {
 
   default CustomAspectDefinition getCustomAspectDefinition(String caType) {
     return Optional.ofNullable(getCustomAspects().get(caType))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Custom aspect '%s' is not defined".formatted(caType)));
+        .orElseThrow(() ->
+            new IllegalArgumentException("Custom aspect '%s' is not defined".formatted(caType)));
   }
 
   default SubTypeDefinition getSubTypeDefinition(String subType) {
     return Optional.ofNullable(getSubTypes().get(subType))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Sub type %s is not defined, availabe sub types: %s"
-                        .formatted(subType, getSubTypes().keySet())));
+        .orElseThrow(() ->
+            new IllegalArgumentException(
+                "Sub type %s is not defined, availabe sub types: %s"
+                    .formatted(subType, getSubTypes().keySet())));
   }
 
   default String localizeCustomAspectAttributeValue(

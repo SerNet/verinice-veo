@@ -42,7 +42,7 @@ public interface ValidationError {
     return localized(
         messageKey,
         Arrays.stream(messageArgs)
-            .map(s -> (Function<Locale, Object>) (_) -> s == null ? "-" : s.toString())
+            .map(s -> (Function<Locale, Object>) _ -> s == null ? "-" : s.toString())
             .toList());
   }
 
@@ -153,15 +153,14 @@ public interface ValidationError {
         .distinct()
         .filter(
             attrKey -> !Objects.equals(ourAttributes.get(attrKey), otherAttributes.get(attrKey)))
-        .map(
-            attrKey ->
-                "* %s: %s"
-                    .formatted(
-                        otherDomain
-                            .getElementTypeDefinition(element.getType())
-                            .findTranslation(locale, attrKey),
-                        etd.localizeCustomAspectAttributeValue(
-                            caType, attrKey, otherAttributes.get(attrKey), locale)))
+        .map(attrKey ->
+            "* %s: %s"
+                .formatted(
+                    otherDomain
+                        .getElementTypeDefinition(element.getType())
+                        .findTranslation(locale, attrKey),
+                    etd.localizeCustomAspectAttributeValue(
+                        caType, attrKey, otherAttributes.get(attrKey), locale)))
         .collect(Collectors.joining("\n"));
   }
 }

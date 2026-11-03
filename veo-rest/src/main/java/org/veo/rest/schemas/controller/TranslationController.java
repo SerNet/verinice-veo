@@ -71,37 +71,33 @@ public class TranslationController implements TranslationsResource {
     Client client = getClient(user.getClientId());
     var locales = languages.stream().map(Locale::forLanguageTag).collect(Collectors.toSet());
 
-    return CompletableFuture.supplyAsync(
-        () -> {
-          Set<Domain> domains = client.getDomains();
-          if (domainId != null) {
-            domains =
-                domains.stream()
-                    .filter(it -> it.getId().equals(domainId))
-                    .collect(Collectors.toSet());
-            if (domains.isEmpty()) {
-              return ResponseEntity.notFound().build();
-            }
-          }
-          Translations t10n = schemaService.findTranslations(domains, locales);
-          locales.forEach(
-              loc -> {
-                for (VeoMessage veoMessage : VeoMessage.values()) {
-                  t10n.add(
-                      loc,
-                      veoMessage.getMessageKey(),
-                      messageSource.getMessage(veoMessage.getMessageKey(), null, loc));
-                }
-                // Add alternative element type plural keys for convenience
-                for (ElementType type : ElementType.values()) {
-                  t10n.add(
-                      loc,
-                      type.getSingularTerm() + "_plural",
-                      messageSource.getMessage(type.getPluralTerm(), null, loc));
-                }
-              });
-          return ResponseEntity.ok().body((TranslationsDto) t10n);
-        });
+    return CompletableFuture.supplyAsync(() -> {
+      Set<Domain> domains = client.getDomains();
+      if (domainId != null) {
+        domains =
+            domains.stream().filter(it -> it.getId().equals(domainId)).collect(Collectors.toSet());
+        if (domains.isEmpty()) {
+          return ResponseEntity.notFound().build();
+        }
+      }
+      Translations t10n = schemaService.findTranslations(domains, locales);
+      locales.forEach(loc -> {
+        for (VeoMessage veoMessage : VeoMessage.values()) {
+          t10n.add(
+              loc,
+              veoMessage.getMessageKey(),
+              messageSource.getMessage(veoMessage.getMessageKey(), null, loc));
+        }
+        // Add alternative element type plural keys for convenience
+        for (ElementType type : ElementType.values()) {
+          t10n.add(
+              loc,
+              type.getSingularTerm() + "_plural",
+              messageSource.getMessage(type.getPluralTerm(), null, loc));
+        }
+      });
+      return ResponseEntity.ok().body((TranslationsDto) t10n);
+    });
   }
 
   protected Client getClient(UUID clientId) {

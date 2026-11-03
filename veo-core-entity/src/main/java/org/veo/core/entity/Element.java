@@ -89,20 +89,18 @@ public interface Element
 
   default String getSubType(Domain domain) {
     return findSubType(domain)
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "%s %s not associated with domain %s"
-                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
+        .orElseThrow(() ->
+            new IllegalArgumentException(
+                "%s %s not associated with domain %s"
+                    .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
   default String getStatus(Domain domain) {
     return findStatus(domain)
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "%s %s not associated with domain %s"
-                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
+        .orElseThrow(() ->
+            new IllegalArgumentException(
+                "%s %s not associated with domain %s"
+                    .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
   /**

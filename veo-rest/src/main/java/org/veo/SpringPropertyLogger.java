@@ -30,14 +30,12 @@ public final class SpringPropertyLogger {
       Optional.ofNullable(env.getProperty("veo.logging.properties"))
           .map(it -> it.split(","))
           .map(Arrays::stream)
-          .ifPresent(
-              it ->
-                  it.forEach(
-                      propertyToLog ->
-                          logger.debug(
-                              "spring property {}: {}",
-                              propertyToLog,
-                              Optional.ofNullable(env.getProperty(propertyToLog)).orElse(""))));
+          .ifPresent(it ->
+              it.forEach(propertyToLog ->
+                  logger.debug(
+                      "spring property {}: {}",
+                      propertyToLog,
+                      Optional.ofNullable(env.getProperty(propertyToLog)).orElse(""))));
     }
   }
 

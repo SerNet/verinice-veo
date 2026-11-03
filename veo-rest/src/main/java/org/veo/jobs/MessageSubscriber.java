@@ -147,13 +147,11 @@ public class MessageSubscriber {
         domainId);
     domainRepository
         .findById(domainId)
-        .ifPresent(
-            domain ->
-                AsSystemUser.runInClient(
-                    domain.getOwner(),
-                    () ->
-                        incomingMessageHandler.handleElementTypeDefinitionUpdate(
-                            domain, elementType)));
+        .ifPresent(domain ->
+            AsSystemUser.runInClient(
+                domain.getOwner(),
+                () ->
+                    incomingMessageHandler.handleElementTypeDefinitionUpdate(domain, elementType)));
   }
 
   private void handleClientStateEvent(JsonNode content) {
@@ -170,10 +168,8 @@ public class MessageSubscriber {
         EVENT_TYPE_CLIENT_CHANGE,
         clientId,
         clientState.name());
-    AsSystemUser.runAsAdmin(
-        () ->
-            publisher.publishEvent(
-                new ClientChangedEvent(
-                    clientId, clientState, maxUnits, clientName, domainProducts)));
+    AsSystemUser.runAsAdmin(() ->
+        publisher.publishEvent(
+            new ClientChangedEvent(clientId, clientState, maxUnits, clientName, domainProducts)));
   }
 }

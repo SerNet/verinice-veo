@@ -54,9 +54,8 @@ public class ExportProfileItemDto extends FullProfileItemDto implements ProfileI
   @JsonIgnore
   public Set<CustomAspectState> getCustomAspectStates() {
     return getCustomAspects().getValue().entrySet().stream()
-        .map(
-            kv ->
-                new CustomAspectState.CustomAspectStateImpl(kv.getKey(), kv.getValue().getValue()))
+        .map(kv ->
+            new CustomAspectState.CustomAspectStateImpl(kv.getKey(), kv.getValue().getValue()))
         .collect(Collectors.toSet());
   }
 

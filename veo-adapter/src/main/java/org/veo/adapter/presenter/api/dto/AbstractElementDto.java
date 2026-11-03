@@ -140,31 +140,24 @@ public abstract class AbstractElementDto<T extends Element>
 
   private Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
     return customAspects.entrySet().stream()
-        .filter(
-            e ->
-                e.getValue().getDomains().isEmpty()
-                    || e.getValue().getDomains().stream().anyMatch(d -> d.getId().equals(domainId)))
-        .map(
-            e ->
-                new CustomAspectState.CustomAspectStateImpl(
-                    e.getKey(), e.getValue().getAttributes()))
+        .filter(e ->
+            e.getValue().getDomains().isEmpty()
+                || e.getValue().getDomains().stream().anyMatch(d -> d.getId().equals(domainId)))
+        .map(e ->
+            new CustomAspectState.CustomAspectStateImpl(e.getKey(), e.getValue().getAttributes()))
         .collect(Collectors.toSet());
   }
 
   private Set<CustomLinkState> getCustomLinkStates(UUID domainId) {
     return links.entrySet().stream()
-        .flatMap(
-            e ->
-                e.getValue().stream()
-                    .filter(
-                        l ->
-                            l.getDomains().isEmpty()
-                                || l.getDomains().stream()
-                                    .anyMatch(d -> d.getId().equals(domainId)))
-                    .map(
-                        l ->
-                            new CustomLinkState.CustomLinkStateImpl(
-                                e.getKey(), l.getAttributes(), l.getTarget())))
+        .flatMap(e ->
+            e.getValue().stream()
+                .filter(l ->
+                    l.getDomains().isEmpty()
+                        || l.getDomains().stream().anyMatch(d -> d.getId().equals(domainId)))
+                .map(l ->
+                    new CustomLinkState.CustomLinkStateImpl(
+                        e.getKey(), l.getAttributes(), l.getTarget())))
         .collect(Collectors.toSet());
   }
 
@@ -181,14 +174,13 @@ public abstract class AbstractElementDto<T extends Element>
       }
     }
     return getDomains().entrySet().stream()
-        .map(
-            entry ->
-                entry
-                    .getValue()
-                    .getDomainAssociationState(
-                        TypedId.from(entry.getKey(), Domain.class),
-                        getCustomAspectStates(entry.getKey()),
-                        getCustomLinkStates(entry.getKey())))
+        .map(entry ->
+            entry
+                .getValue()
+                .getDomainAssociationState(
+                    TypedId.from(entry.getKey(), Domain.class),
+                    getCustomAspectStates(entry.getKey()),
+                    getCustomLinkStates(entry.getKey())))
         .collect(Collectors.toSet());
   }
 }

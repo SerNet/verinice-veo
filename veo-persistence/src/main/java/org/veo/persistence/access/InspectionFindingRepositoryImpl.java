@@ -51,12 +51,9 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
     var inspections = domain.getInspections();
     return findings.stream()
         .map(it -> inspections.get(it.getInspectionId()))
-        .map(
-            inspection ->
-                new Finding(
-                    inspection.getSeverity(),
-                    inspection.getDescription(),
-                    inspection.getSuggestions()))
+        .map(inspection ->
+            new Finding(
+                inspection.getSeverity(), inspection.getDescription(), inspection.getSuggestions()))
         .toList();
   }
 
@@ -114,19 +111,17 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
   private static @NonNull List<InspectionFindingData> getFindings(
       Element element, Domain domain, Map<String, Inspection> inspections) {
     return inspections.entrySet().stream()
-        .map(
-            (e) ->
-                e.getValue()
-                    .run(element, domain)
-                    .map(
-                        _ -> {
-                          var d = new InspectionFindingData();
-                          d.setInspectionId(e.getKey());
-                          d.setDomain(domain);
-                          d.setElement(element);
-                          d.setUnit(element.getOwner());
-                          return d;
-                        }))
+        .map(e ->
+            e.getValue()
+                .run(element, domain)
+                .map(_ -> {
+                  var d = new InspectionFindingData();
+                  d.setInspectionId(e.getKey());
+                  d.setDomain(domain);
+                  d.setElement(element);
+                  d.setUnit(element.getOwner());
+                  return d;
+                }))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .toList();

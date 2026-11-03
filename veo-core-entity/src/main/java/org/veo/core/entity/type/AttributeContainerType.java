@@ -44,20 +44,18 @@ public record AttributeContainerType(Map<String, VeoType> attributeTypes) implem
   public boolean includes(VeoType other) {
     return other instanceof AttributeContainerType(Map<String, VeoType> otherAttributeTypes)
         && otherAttributeTypes.entrySet().stream()
-            .allMatch(
-                e ->
-                    attributeTypes.containsKey(e.getKey())
-                        && attributeTypes.get(e.getKey()).includes(e.getValue()));
+            .allMatch(e ->
+                attributeTypes.containsKey(e.getKey())
+                    && attributeTypes.get(e.getKey()).includes(e.getValue()));
   }
 
   @Override
   public boolean intersectsWith(VeoType other) {
     return other instanceof AttributeContainerType(Map<String, VeoType> otherAttributes)
         && otherAttributes.entrySet().stream()
-            .anyMatch(
-                e ->
-                    attributeTypes.containsKey(e.getKey())
-                        && attributeTypes.get(e.getKey()).intersectsWith(e.getValue()));
+            .anyMatch(e ->
+                attributeTypes.containsKey(e.getKey())
+                    && attributeTypes.get(e.getKey()).intersectsWith(e.getValue()));
   }
 
   @Override

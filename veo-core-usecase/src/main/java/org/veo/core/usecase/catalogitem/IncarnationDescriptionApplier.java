@@ -148,31 +148,28 @@ public class IncarnationDescriptionApplier {
         .sorted(
             // we need to create the control parts before creating the CIs to make sure that all RIs
             // are properly created
-            Comparator.comparing(
-                description -> {
-                  var item = itemsById.get(description.getItemRef().getSymbolicId());
-                  return item.getElementType() != ElementType.CONTROL;
-                }))
-        .forEach(
-            description -> {
+            Comparator.comparing(description -> {
               var item = itemsById.get(description.getItemRef().getSymbolicId());
-              var element = elementsByItemId.get(item.getSymbolicIdAsString());
-              applyTailoringReferences(
-                  item,
-                  element,
-                  description.getParameterStates(),
-                  referencedElementsById,
-                  elementsByItemId,
-                  tailoringReferencesById);
-            });
+              return item.getElementType() != ElementType.CONTROL;
+            }))
+        .forEach(description -> {
+          var item = itemsById.get(description.getItemRef().getSymbolicId());
+          var element = elementsByItemId.get(item.getSymbolicIdAsString());
+          applyTailoringReferences(
+              item,
+              element,
+              description.getParameterStates(),
+              referencedElementsById,
+              elementsByItemId,
+              tailoringReferencesById);
+        });
 
     var sortedElements =
         descriptions.stream()
-            .map(
-                description -> {
-                  var item = itemsById.get(description.getItemRef().getSymbolicId());
-                  return elementsByItemId.get(item.getSymbolicIdAsString());
-                })
+            .map(description -> {
+              var item = itemsById.get(description.getItemRef().getSymbolicId());
+              return elementsByItemId.get(item.getSymbolicIdAsString());
+            })
             .toList();
     elementBatchCreator.create(sortedElements, unit);
     return sortedElements;
@@ -187,38 +184,35 @@ public class IncarnationDescriptionApplier {
           Map<String, Element> elementsByItemId,
           Map<String, TailoringReference<T, TNamespace>> tailoringReferencesById) {
     parameters.stream()
-        .forEach(
-            parameter -> {
-              var tailoringReference = tailoringReferencesById.get(parameter.getId());
-              if (tailoringReference == null) {
-                throw new NotFoundException(
-                    UUID.fromString(parameter.getId()), TailoringReference.class);
-              }
-              var target =
-                  parameter
-                      .getReferencedElementRef()
-                      .map(ITypedId::getId)
-                      .map(referencedElementsById::get)
-                      .orElseGet(
-                          () ->
-                              elementsByItemId.get(
-                                  tailoringReference.getTarget().getSymbolicIdAsString()));
-              if (target == null) {
-                throw new UnprocessableDataException(
-                    "%s %s not included in request but required by %s."
-                        .formatted(
-                            tailoringReference.getTarget().getModelInterface().getSimpleName(),
-                            tailoringReference.getTarget().getName(),
-                            item.getName()));
-              }
-              // TODO #898 adapt to non-redundant tailoring reference system
-              applyTailoringReference(
-                  tailoringReference,
-                  element,
-                  target,
-                  item.requireDomainMembership(),
-                  elementsByItemId);
-            });
+        .forEach(parameter -> {
+          var tailoringReference = tailoringReferencesById.get(parameter.getId());
+          if (tailoringReference == null) {
+            throw new NotFoundException(
+                UUID.fromString(parameter.getId()), TailoringReference.class);
+          }
+          var target =
+              parameter
+                  .getReferencedElementRef()
+                  .map(ITypedId::getId)
+                  .map(referencedElementsById::get)
+                  .orElseGet(() ->
+                      elementsByItemId.get(tailoringReference.getTarget().getSymbolicIdAsString()));
+          if (target == null) {
+            throw new UnprocessableDataException(
+                "%s %s not included in request but required by %s."
+                    .formatted(
+                        tailoringReference.getTarget().getModelInterface().getSimpleName(),
+                        tailoringReference.getTarget().getName(),
+                        item.getName()));
+          }
+          // TODO #898 adapt to non-redundant tailoring reference system
+          applyTailoringReference(
+              tailoringReference,
+              element,
+              target,
+              item.requireDomainMembership(),
+              elementsByItemId);
+        });
   }
 
   private <T extends TemplateItem<T, TNamespace>, TNamespace extends Identifiable>
@@ -267,15 +261,14 @@ public class IncarnationDescriptionApplier {
       Optional.ofNullable(tr.getResponsible())
           .map(T::getSymbolicIdAsString)
           .map(elementsByItemId::get)
-          .ifPresent(
-              responsible -> {
-                if (responsible instanceof Person person) {
-                  ci.setResponsible(person);
-                } else
-                  throw new ModelConsistencyException(
-                      "Cannot use %s as responsible for control implementation"
-                          .formatted(responsible.getModelType()));
-              });
+          .ifPresent(responsible -> {
+            if (responsible instanceof Person person) {
+              ci.setResponsible(person);
+            } else
+              throw new ModelConsistencyException(
+                  "Cannot use %s as responsible for control implementation"
+                      .formatted(responsible.getModelType()));
+          });
     } else
       throw new ModelConsistencyException(
           "Cannot create control implementation from %s for %s targeting %s"
@@ -331,15 +324,14 @@ public class IncarnationDescriptionApplier {
     return Optional.ofNullable(reference)
         .map(T::getSymbolicIdAsString)
         .map(elementsByItemId::get)
-        .map(
-            e -> {
-              if (!expectedType.isInstance(e)) {
-                throw new ModelConsistencyException(
-                    "Cannot use %s as %s for requirement implementation"
-                        .formatted(e.getModelType(), propertyName));
-              }
-              return (E) e;
-            })
+        .map(e -> {
+          if (!expectedType.isInstance(e)) {
+            throw new ModelConsistencyException(
+                "Cannot use %s as %s for requirement implementation"
+                    .formatted(e.getModelType(), propertyName));
+          }
+          return (E) e;
+        })
         .orElse(null);
   }
 

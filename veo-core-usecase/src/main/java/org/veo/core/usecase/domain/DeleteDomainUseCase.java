@@ -50,9 +50,8 @@ public class DeleteDomainUseCase implements TransactionalUseCase<EntityId, Empty
     List<Unit> units = unitRepository.findByClient(client);
     boolean isUsed =
         units.stream()
-            .anyMatch(
-                u ->
-                    u.getDomains().stream().map(Domain::getId).anyMatch(k -> k.equals(input.id())));
+            .anyMatch(u ->
+                u.getDomains().stream().map(Domain::getId).anyMatch(k -> k.equals(input.id())));
 
     if (isUsed) {
       throw new DomainInUseException("Domain in use: " + input.id());

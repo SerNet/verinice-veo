@@ -87,19 +87,18 @@ public class MigrationService {
       throw new DomainUpdateFailedException(oldDomain, new HashSet<>(invalidElements));
     }
     log.debug("removing elements from old domain: {}", oldDomain);
-    elements.forEach(
-        e -> {
-          e.removeFromDomains(oldDomain);
-          e.setUpdatedAt(Instant.now());
-          e.setUpdatedBy(username);
-          // TODO #5017 rethink event creation
-          messageCreator.createEntityRevisionMessage(
-              new ClientOwnedEntityVersioningEvent<>(
-                  e,
-                  VersioningEvent.ModificationType.UPDATE,
-                  e.getUpdatedBy(),
-                  e.getUpdatedAt(),
-                  e.nextChangeNumberForUpdate()));
-        });
+    elements.forEach(e -> {
+      e.removeFromDomains(oldDomain);
+      e.setUpdatedAt(Instant.now());
+      e.setUpdatedBy(username);
+      // TODO #5017 rethink event creation
+      messageCreator.createEntityRevisionMessage(
+          new ClientOwnedEntityVersioningEvent<>(
+              e,
+              VersioningEvent.ModificationType.UPDATE,
+              e.getUpdatedBy(),
+              e.getUpdatedAt(),
+              e.nextChangeNumberForUpdate()));
+    });
   }
 }

@@ -33,44 +33,44 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
 
   @Query(
       """
-                        select i from profile_item i
-                           left join fetch i.tailoringReferences tr
-                          left join fetch i.appliedCatalogItem
-                          left join fetch i.owner p
-                          left join fetch p.domain d
-                          left join fetch p.domainTemplate
-                          where i.symbolicDbId = ?2 and p.id= ?1 and d.owner.id = ?3
-                      """)
+        select i from profile_item i
+           left join fetch i.tailoringReferences tr
+          left join fetch i.appliedCatalogItem
+          left join fetch i.owner p
+          left join fetch p.domain d
+          left join fetch p.domainTemplate
+          where i.symbolicDbId = ?2 and p.id= ?1 and d.owner.id = ?3
+      """)
   Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
       UUID profileId, UUID itemId, UUID clientId);
 
   @Query(
       """
-                                  select p from profile p
-                                    left join fetch p.items i
-                                    left join fetch i.tailoringReferences tr
-                                    left join fetch i.appliedCatalogItem
-                                    left join fetch p.domain d
-                                    where p.id= ?1 and d.owner.id = ?2
-                                """)
+        select p from profile p
+          left join fetch p.items i
+          left join fetch i.tailoringReferences tr
+          left join fetch i.appliedCatalogItem
+          left join fetch p.domain d
+          where p.id= ?1 and d.owner.id = ?2
+      """)
   Optional<Profile> findProfileByIdFetchTailoringReferences(UUID profileId, UUID clientId);
 
   @Query(
       """
-                        select i from profile_item i
-                           left join fetch i.tailoringReferences tr
-                          left join fetch i.appliedCatalogItem
-                          where i.symbolicDbId in ?1 and i.owner.domain.owner = ?2
-                      """)
+        select i from profile_item i
+           left join fetch i.tailoringReferences tr
+          left join fetch i.appliedCatalogItem
+          where i.symbolicDbId in ?1 and i.owner.domain.owner = ?2
+      """)
   List<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
       Iterable<UUID> ids, Client client);
 
   @Query(
       """
-                  select i from profile_item i
-                    left join fetch i.tailoringReferences tr
-                    where i.owner.id = ?1 and i.owner.domain.owner = ?2
-                """)
+        select i from profile_item i
+          left join fetch i.tailoringReferences tr
+          where i.owner.id = ?1 and i.owner.domain.owner = ?2
+      """)
   List<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
       UUID profileId, Client client);
 

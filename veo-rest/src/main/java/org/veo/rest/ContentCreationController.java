@@ -679,9 +679,8 @@ public class ContentCreationController extends AbstractVeoController {
             getUpdateDefinitionUseCase,
             new EntityId(domainId),
             GetUpdateDefinitionUseCase.OutputData::migrationSteps)
-        .thenApply(
-            updateDefinition ->
-                ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(updateDefinition));
+        .thenApply(updateDefinition ->
+            ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(updateDefinition));
   }
 
   private Optional<String> getEtag(UUID id) {

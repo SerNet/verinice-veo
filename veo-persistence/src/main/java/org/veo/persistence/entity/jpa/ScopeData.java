@@ -73,11 +73,10 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     return super.removeRiskDefinition(riskDefinition, domain)
         | getRiskDefinition(domain)
             .filter(riskDefinition::equals)
-            .map(
-                rd -> {
-                  setRiskDefinition(domain, null);
-                  return true;
-                })
+            .map(rd -> {
+              setRiskDefinition(domain, null);
+              return true;
+            })
             .orElse(false);
   }
 
@@ -124,24 +123,22 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     // TODO: verince-veo#3381
     List<RiskDefinitionRef> newRiskDefinition =
         newDomain.getRiskDefinitions().values().stream().map(RiskDefinitionRef::from).toList();
-    riskDefinition.ifPresent(
-        rd -> {
-          if (newRiskDefinition.contains(rd)) {
-            setRiskDefinition(newDomain, rd);
-          }
-        });
+    riskDefinition.ifPresent(rd -> {
+      if (newRiskDefinition.contains(rd)) {
+        setRiskDefinition(newDomain, rd);
+      }
+    });
   }
 
   @Override
   public void setRiskDefinition(Domain domain, RiskDefinitionRef riskDefinition) {
     var aspect =
         findAspectByDomain(scopeRiskValuesAspects, domain)
-            .orElseGet(
-                () -> {
-                  var newAspect = new ScopeRiskValuesAspectData(domain, this);
-                  scopeRiskValuesAspects.add(newAspect);
-                  return newAspect;
-                });
+            .orElseGet(() -> {
+              var newAspect = new ScopeRiskValuesAspectData(domain, this);
+              scopeRiskValuesAspects.add(newAspect);
+              return newAspect;
+            });
     aspect.setRiskDefinitionRef(riskDefinition);
   }
 

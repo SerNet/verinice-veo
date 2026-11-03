@@ -67,30 +67,26 @@ public class ControlImplementationQueryImpl implements ControlImplementationQuer
   @Override
   public void whereControlIdIn(UUID controlId) {
     spec =
-        spec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("control").get("id"), controlId));
+        spec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get("control").get("id"), controlId));
   }
 
   @Override
   public void whereControlSubTypeIn(Set<String> subtypes, UUID domainId) {
     spec =
-        spec.and(
-            (root, query, criteriaBuilder) -> {
-              var join =
-                  root.join("control", JoinType.INNER).join("domainAssociations", JoinType.LEFT);
-              return criteriaBuilder.and(
-                  criteriaBuilder.equal(join.get("domain").get("id"), domainId),
-                  join.get("subType").in(subtypes));
-            });
+        spec.and((root, query, criteriaBuilder) -> {
+          var join = root.join("control", JoinType.INNER).join("domainAssociations", JoinType.LEFT);
+          return criteriaBuilder.and(
+              criteriaBuilder.equal(join.get("domain").get("id"), domainId),
+              join.get("subType").in(subtypes));
+        });
   }
 
   @Override
   public void whereRiskAffectedIs(UUID riskAffectedId) {
     spec =
-        spec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("owner").get("id"), riskAffectedId));
+        spec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get("owner").get("id"), riskAffectedId));
   }
 
   private Specification<ControlImplementationData> createSpecification(

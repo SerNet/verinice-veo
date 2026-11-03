@@ -69,18 +69,17 @@ public interface MigrationTransformDefinition {
       Map<ElementType, List<Element>> elementsByType, Domain oldDomain, Domain newDomain) {
     elementsByType
         .getOrDefault(target().elementType(), Collections.emptyList())
-        .forEach(
-            element -> {
-              var value = migrationExpression().getValue(element, oldDomain);
-              LOGGER.debug(
-                  "set value '{}' to {} by expression {}",
-                  value,
-                  target().getLocationString(),
-                  migrationExpression());
-              if (value != null) {
-                target().applyValue(element, newDomain, value);
-              }
-            });
+        .forEach(element -> {
+          var value = migrationExpression().getValue(element, oldDomain);
+          LOGGER.debug(
+              "set value '{}' to {} by expression {}",
+              value,
+              target().getLocationString(),
+              migrationExpression());
+          if (value != null) {
+            target().applyValue(element, newDomain, value);
+          }
+        });
   }
 
   default void validate(DomainBase newMajor, DomainBase oldMajor) {

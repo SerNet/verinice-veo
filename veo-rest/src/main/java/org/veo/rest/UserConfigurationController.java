@@ -60,7 +60,7 @@ public class UserConfigurationController extends AbstractVeoController {
   private final SaveUserConfigurationUseCase saveUserConfigurationUseCase;
   private final DeleteUserConfigurationUseCase deleteUserConfigurationUseCase;
 
-  @GetMapping()
+  @GetMapping
   @Operation(summary = "Loads the user configuration keys")
   @ApiResponse(
       responseCode = "200",

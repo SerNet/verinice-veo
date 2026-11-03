@@ -69,11 +69,10 @@ public class CreateDomainUseCase
       domain.setTranslations(input.translations);
       // TODO #4275: remove compatibility code
       Optional.ofNullable(input.translations.getTranslations().get(Locale.GERMAN))
-          .ifPresent(
-              germanTranslations -> {
-                domain.setAbbreviation(germanTranslations.getAbbreviation());
-                domain.setDescription(germanTranslations.getDescription());
-              });
+          .ifPresent(germanTranslations -> {
+            domain.setAbbreviation(germanTranslations.getAbbreviation());
+            domain.setDescription(germanTranslations.getDescription());
+          });
     }
     // TODO VEO-1812: Remove assignment because domains should not have a template version
     domain.setTemplateVersion(Version.of(0, 1, 0));

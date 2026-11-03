@@ -118,17 +118,16 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
         dataSourceBuilder
             .repeatableReadResultSet()
             .proxyResultSet()
-            .afterMethod(
-                executionContext -> {
-                  var method = executionContext.getMethod();
-                  if (ResultSet.class.isAssignableFrom(executionContext.getTarget().getClass())
-                      && Boolean.TRUE.equals(executionContext.getResult())
-                      && method.getName().equals("next")) {
-                    int totalResultSetRowsRead =
-                        DataSourceProxyBeanPostProcessor.TOTAL_RESULT_ROWS_READ.incrementAndGet();
-                    log.debug("Total ResultSet rows processed: {}", totalResultSetRowsRead);
-                  }
-                });
+            .afterMethod(executionContext -> {
+              var method = executionContext.getMethod();
+              if (ResultSet.class.isAssignableFrom(executionContext.getTarget().getClass())
+                  && Boolean.TRUE.equals(executionContext.getResult())
+                  && method.getName().equals("next")) {
+                int totalResultSetRowsRead =
+                    DataSourceProxyBeanPostProcessor.TOTAL_RESULT_ROWS_READ.incrementAndGet();
+                log.debug("Total ResultSet rows processed: {}", totalResultSetRowsRead);
+              }
+            });
       }
       this.dataSource = dataSourceBuilder.build();
     }

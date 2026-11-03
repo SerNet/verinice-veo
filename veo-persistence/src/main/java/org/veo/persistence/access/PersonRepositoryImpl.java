@@ -104,18 +104,16 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
   private void removeFromCIRIs(Set<Person> elements) {
     requirementImplementationDataRepository
         .findByPersons(elements)
-        .forEach(
-            ri -> {
-              ri.setResponsible(null);
-              ri.getOrigin().setUpdatedAt(Instant.now());
-            });
+        .forEach(ri -> {
+          ri.setResponsible(null);
+          ri.getOrigin().setUpdatedAt(Instant.now());
+        });
     controlImplementationDataRepository
         .findByPersons(elements)
-        .forEach(
-            ci -> {
-              ci.setResponsible(null);
-              ci.getOwner().setUpdatedAt(Instant.now());
-            });
+        .forEach(ci -> {
+          ci.setResponsible(null);
+          ci.getOwner().setUpdatedAt(Instant.now());
+        });
   }
 
   @Override

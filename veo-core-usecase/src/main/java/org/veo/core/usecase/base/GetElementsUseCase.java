@@ -94,20 +94,16 @@ public class GetElementsUseCase
           .ifPresent(query::whereUnitIn);
     }
     Optional.ofNullable(input.unitUuid)
-        .map(
-            condition ->
-                condition.values().stream()
-                    .map(unitRepository::getById)
-                    .collect(Collectors.toSet()))
+        .map(condition ->
+            condition.values().stream().map(unitRepository::getById).collect(Collectors.toSet()))
         .ifPresent(query::whereUnitIn);
 
     Optional.ofNullable(input.domainId)
-        .map(
-            condition ->
-                client.getDomains().stream()
-                    .filter(d -> d.getId().equals(condition.value()))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException(input.domainId.value(), Domain.class)))
+        .map(condition ->
+            client.getDomains().stream()
+                .filter(d -> d.getId().equals(condition.value()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(input.domainId.value(), Domain.class)))
         .ifPresentOrElse(
             d ->
                 Optional.ofNullable(input.subType)
@@ -130,28 +126,24 @@ public class GetElementsUseCase
         .map(SingleValueQueryCondition::value)
         .ifPresent(query::whereParentElementPresent);
     Optional.ofNullable(input.compositeId)
-        .ifPresent(
-            condition -> {
-              if (query instanceof CompositeElementQuery<?> c) {
-                c.whereCompositesContain(condition);
-              } else {
-                throw new IllegalArgumentException(
-                    "Composite filter not compatible with query type");
-              }
-            });
+        .ifPresent(condition -> {
+          if (query instanceof CompositeElementQuery<?> c) {
+            c.whereCompositesContain(condition);
+          } else {
+            throw new IllegalArgumentException("Composite filter not compatible with query type");
+          }
+        });
     Optional.ofNullable(input.scopeId).ifPresent(query::whereScopesContain);
     Optional.ofNullable(input.username)
-        .ifPresent(
-            userName -> {
-              var elementTypes = input.elementTypes;
-              if (elementTypes == null
-                  || elementTypes.values().size() != 1
-                  || elementTypes.values().stream().findFirst().get() != ElementType.PERSON) {
-                throw new IllegalArgumentException(
-                    "Username filter can only be used with persons.");
-              }
-              query.whereUsernameMatches(userName);
-            });
+        .ifPresent(userName -> {
+          var elementTypes = input.elementTypes;
+          if (elementTypes == null
+              || elementTypes.values().size() != 1
+              || elementTypes.values().stream().findFirst().get() != ElementType.PERSON) {
+            throw new IllegalArgumentException("Username filter can only be used with persons.");
+          }
+          query.whereUsernameMatches(userName);
+        });
 
     query.fetchChildren();
     if (input.embedRisks) {

@@ -46,17 +46,17 @@ public interface ControlImplementationDataRepository
 
   @Query(
       """
-         select distinct ci from control_implementation ci
-         where ci.id = ?1
-         """)
+      select distinct ci from control_implementation ci
+      where ci.id = ?1
+      """)
   Optional<ControlImplementationData> findByUUID(UUID uuid);
 
   @Query(
       """
-          select ci from control_implementation  ci
-          join fetch ci.owner
-          where ci.control.id in ?1
-         """)
+       select ci from control_implementation  ci
+       join fetch ci.owner
+       where ci.control.id in ?1
+      """)
   Set<ControlImplementation> findByControlIdWithOwner(Set<UUID> controlIds);
 
   @Nonnull
@@ -66,19 +66,19 @@ public interface ControlImplementationDataRepository
 
   @Query(
       """
-                  select ci from control_implementation  ci
-                  join fetch ci.owner
-                  join fetch ci.responsible
-                  where ci.responsible in ?1
-                 """)
+       select ci from control_implementation  ci
+       join fetch ci.owner
+       join fetch ci.responsible
+       where ci.responsible in ?1
+      """)
   Set<ControlImplementation> findByPersons(Set<Person> responsibles);
 
   @Query(
       value =
           """
-         select ci.db_id from control_implementation ci
-         where ci.requirement_implementations @> CONCAT('"', ?1, '"')::jsonb
-         """,
+          select ci.db_id from control_implementation ci
+          where ci.requirement_implementations @> CONCAT('"', ?1, '"')::jsonb
+          """,
       nativeQuery = true)
   // NOTES:
   // - The CONCAT is necessary to make the replacement for ?1 work inside the JSON string.

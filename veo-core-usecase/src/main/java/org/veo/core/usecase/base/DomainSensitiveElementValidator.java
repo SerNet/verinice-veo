@@ -82,10 +82,9 @@ public class DomainSensitiveElementValidator {
     }
     element
         .getDomains()
-        .forEach(
-            domain -> {
-              validate(element, domain);
-            });
+        .forEach(domain -> {
+          validate(element, domain);
+        });
   }
 
   public static boolean isValidForUpdate(Element element, Domain oldDomain, Domain newDomain) {
@@ -107,44 +106,41 @@ public class DomainSensitiveElementValidator {
     var errors = new ArrayList<ValidationError>();
     newDomain.getDomainMigrationDefinition().migrations().stream()
         .filter(DomainMigrationStep::interactive)
-        .forEach(
-            step -> {
-              var newDefinitions = step.newDefinitions();
-              if (!newDefinitions.isEmpty()) {
-                throw new IllegalStateException(
-                    "Invalid migration step "
-                        + step.id()
-                        + ", interactive steps must not have new definitions");
-              }
-              step.oldDefinitions()
-                  .forEach(
-                      oldDefinition -> {
-                        if (oldDefinition instanceof CustomAspectAttribute caa) {
-                          var ex =
-                              new CustomAspectAttributeValueExpression(
-                                  caa.customAspect(), caa.attribute());
+        .forEach(step -> {
+          var newDefinitions = step.newDefinitions();
+          if (!newDefinitions.isEmpty()) {
+            throw new IllegalStateException(
+                "Invalid migration step "
+                    + step.id()
+                    + ", interactive steps must not have new definitions");
+          }
+          step.oldDefinitions()
+              .forEach(oldDefinition -> {
+                if (oldDefinition instanceof CustomAspectAttribute caa) {
+                  var ex =
+                      new CustomAspectAttributeValueExpression(caa.customAspect(), caa.attribute());
 
-                          for (Element element : elements) {
-                            var value = ex.getValue(element, oldDomain);
-                            if (value != null) {
-                              errors.add(
-                                  ValidationError.attributeManualRemove(
-                                      caa.customAspect(),
-                                      caa.attribute(),
-                                      oldDomain,
-                                      element,
-                                      step.description()));
-                            }
-                          }
-                        } else {
-                          throw new IllegalStateException(
-                              "Invalid migration step "
-                                  + step.id()
-                                  + ", unsupported old definition "
-                                  + oldDefinition);
-                        }
-                      });
-            });
+                  for (Element element : elements) {
+                    var value = ex.getValue(element, oldDomain);
+                    if (value != null) {
+                      errors.add(
+                          ValidationError.attributeManualRemove(
+                              caa.customAspect(),
+                              caa.attribute(),
+                              oldDomain,
+                              element,
+                              step.description()));
+                    }
+                  }
+                } else {
+                  throw new IllegalStateException(
+                      "Invalid migration step "
+                          + step.id()
+                          + ", unsupported old definition "
+                          + oldDefinition);
+                }
+              });
+        });
     return errors;
   }
 
@@ -156,15 +152,14 @@ public class DomainSensitiveElementValidator {
             .toList());
     errors.addAll(
         element.getLinks(domain).stream()
-            .flatMap(
-                link ->
-                    getLinkErrors(
-                        link.getType(),
-                        element,
-                        link.getTarget(),
-                        link.getAttributes(),
-                        link.getDomain())
-                        .stream())
+            .flatMap(link ->
+                getLinkErrors(
+                    link.getType(),
+                    element,
+                    link.getTarget(),
+                    link.getAttributes(),
+                    link.getDomain())
+                    .stream())
             .toList());
 
     errors.addAll(
@@ -176,15 +171,13 @@ public class DomainSensitiveElementValidator {
 
     element
         .findAppliedCatalogItem(domain)
-        .ifPresent(
-            catalogItem -> {
-              DomainBase ciDomain = catalogItem.getDomainBase();
-              if (!ciDomain.equals(domain)) {
-                errors.add(
-                    ValidationError.localized(
-                        "error_invalid_catalog_item_domain", ciDomain.getName()));
-              }
-            });
+        .ifPresent(catalogItem -> {
+          DomainBase ciDomain = catalogItem.getDomainBase();
+          if (!ciDomain.equals(domain)) {
+            errors.add(
+                ValidationError.localized("error_invalid_catalog_item_domain", ciDomain.getName()));
+          }
+        });
 
     var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
     if (element instanceof RiskAffected<?, ?> riskAffected) {
@@ -217,18 +210,16 @@ public class DomainSensitiveElementValidator {
     var conflictingDomains =
         element.getDomains().stream()
             .filter(d -> !d.equals(ca.getDomain()))
-            .filter(
-                d ->
-                    d.containsCustomAspectDefinition(element.getType(), ca.getType(), caDefinition))
-            .filter(
-                otherDomain -> {
-                  var attributesInOtherDomain =
-                      element
-                          .findCustomAspect(otherDomain, ca.getType())
-                          .map(CustomAttributeContainer::getAttributes)
-                          .orElse(Collections.emptyMap());
-                  return !ca.getAttributes().equals(attributesInOtherDomain);
-                })
+            .filter(d ->
+                d.containsCustomAspectDefinition(element.getType(), ca.getType(), caDefinition))
+            .filter(otherDomain -> {
+              var attributesInOtherDomain =
+                  element
+                      .findCustomAspect(otherDomain, ca.getType())
+                      .map(CustomAttributeContainer::getAttributes)
+                      .orElse(Collections.emptyMap());
+              return !ca.getAttributes().equals(attributesInOtherDomain);
+            })
             .toList();
     if (!conflictingDomains.isEmpty()) {
       errors.add(
@@ -296,39 +287,34 @@ public class DomainSensitiveElementValidator {
             .getElementTypeDefinition(riskAffected.getType())
             .getControlImplementationDefinition();
     return riskAffected.getControlImplementations().stream()
-        .map(
-            ci -> {
-              var ciCAs = ci.getCustomAspects(domain);
-              if (ciCAs.isEmpty()) {
-                return new ArrayList<ValidationError>();
-              }
-              if (!ci.getControl().getDomains().contains(domain)) {
-                return List.of(
-                    ValidationError.localized(
-                        "error_ci_custom_aspect_domain_not_associated_with_control",
-                        domain.getName()));
-              }
-              return ciCAs.entrySet().stream()
-                  .map(
-                      entry -> {
-                        String caType = entry.getKey();
-                        Map<String, Object> attributes = entry.getValue();
-                        if (ciDef == null || !ciDef.getCustomAspects().containsKey(caType)) {
-                          return List.of(
-                              ValidationError.localized(
-                                  "error_ci_custom_aspect_not_defined",
-                                  caType,
-                                  riskAffected.getType().getSingularTerm()));
-                        }
-                        var caDefinition = ciDef.getCustomAspects().get(caType);
-                        return AttributeValidator.getErrors(
-                            attributes,
-                            caDefinition.getAttributeDefinitions(),
-                            ciDef.getTranslations());
-                      })
-                  .flatMap(Collection::stream)
-                  .toList();
-            })
+        .map(ci -> {
+          var ciCAs = ci.getCustomAspects(domain);
+          if (ciCAs.isEmpty()) {
+            return new ArrayList<ValidationError>();
+          }
+          if (!ci.getControl().getDomains().contains(domain)) {
+            return List.of(
+                ValidationError.localized(
+                    "error_ci_custom_aspect_domain_not_associated_with_control", domain.getName()));
+          }
+          return ciCAs.entrySet().stream()
+              .map(entry -> {
+                String caType = entry.getKey();
+                Map<String, Object> attributes = entry.getValue();
+                if (ciDef == null || !ciDef.getCustomAspects().containsKey(caType)) {
+                  return List.of(
+                      ValidationError.localized(
+                          "error_ci_custom_aspect_not_defined",
+                          caType,
+                          riskAffected.getType().getSingularTerm()));
+                }
+                var caDefinition = ciDef.getCustomAspects().get(caType);
+                return AttributeValidator.getErrors(
+                    attributes, caDefinition.getAttributeDefinitions(), ciDef.getTranslations());
+              })
+              .flatMap(Collection::stream)
+              .toList();
+        })
         .flatMap(Collection::stream)
         .toList();
   }

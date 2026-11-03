@@ -47,8 +47,8 @@ import lombok.With;
  * Defines the {@link CategoryDefinition}'s and possible {@link RiskValue}'s for a matrix based risk
  * determination.
  */
-@EqualsAndHashCode()
-@Data()
+@EqualsAndHashCode
+@Data
 @ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -113,18 +113,15 @@ public class RiskDefinition {
    */
   public void validateRiskDefinition(DomainBase domain) {
     categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
-    impactInheritingLinks.forEach(
-        (elementType, links) -> {
-          var elementTypeDefinition = domain.getElementTypeDefinition(elementType);
-          links.forEach(
-              link -> {
-                if (!elementTypeDefinition.getLinks().containsKey(link)) {
-                  throw new UnprocessableDataException(
-                      "Link type '%s' does not exist for %s"
-                          .formatted(link, elementType.getPluralTerm()));
-                }
-              });
-        });
+    impactInheritingLinks.forEach((elementType, links) -> {
+      var elementTypeDefinition = domain.getElementTypeDefinition(elementType);
+      links.forEach(link -> {
+        if (!elementTypeDefinition.getLinks().containsKey(link)) {
+          throw new UnprocessableDataException(
+              "Link type '%s' does not exist for %s".formatted(link, elementType.getPluralTerm()));
+        }
+      });
+    });
   }
 
   public Optional<RiskValue> getRiskValue(String symbolicRiskId) {

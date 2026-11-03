@@ -40,13 +40,12 @@ public interface UserConfigurationRepository {
   default UserConfiguration getUserConfiguration(
       UUID clientId, String userName, String applicationId) {
     return findUserConfiguration(clientId, userName, applicationId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    String.format(
-                        "no configuration found for user '%s' and application id: '%s'",
-                        userName, applicationId),
-                    UserConfiguration.class));
+        .orElseThrow(() ->
+            new NotFoundException(
+                String.format(
+                    "no configuration found for user '%s' and application id: '%s'",
+                    userName, applicationId),
+                UserConfiguration.class));
   }
 
   int countUserConfigurations(UUID id, String userName);

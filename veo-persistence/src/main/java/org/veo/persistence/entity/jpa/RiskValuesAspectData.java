@@ -74,12 +74,11 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     var domainRiskDefinition =
         domain
             .findRiskDefinition(riskDefinition.getIdRef())
-            .orElseThrow(
-                () ->
-                    new ReferenceTargetNotFoundException(
-                        format(
-                            "Risk definition ID %s not found in domain ID %s.",
-                            riskDefinition.getIdRef(), domain.getId())));
+            .orElseThrow(() ->
+                new ReferenceTargetNotFoundException(
+                    format(
+                        "Risk definition ID %s not found in domain ID %s.",
+                        riskDefinition.getIdRef(), domain.getId())));
 
     var categoryRefs =
         domainRiskDefinition.getCategories().stream()
@@ -170,15 +169,14 @@ public class RiskValuesAspectData implements RiskValuesAspect {
     setSpecificProbabilityExplanation(values.specificProbabilityExplanation());
     values
         .categories()
-        .forEach(
-            (category, categoryValues) -> {
-              setSpecificImpact(category, categoryValues.specificImpact());
-              setSpecificImpactExplanation(category, categoryValues.specificImpactExplanation());
-              setUserDefinedResidualRisk(category, categoryValues.userDefinedResidualRisk());
-              setResidualRiskExplanation(category, categoryValues.residualRiskExplanation());
-              setRiskTreatments(category, categoryValues.riskTreatments());
-              setRiskTreatmentExplanation(category, categoryValues.riskTreatmentExplanation());
-            });
+        .forEach((category, categoryValues) -> {
+          setSpecificImpact(category, categoryValues.specificImpact());
+          setSpecificImpactExplanation(category, categoryValues.specificImpactExplanation());
+          setUserDefinedResidualRisk(category, categoryValues.userDefinedResidualRisk());
+          setResidualRiskExplanation(category, categoryValues.residualRiskExplanation());
+          setRiskTreatments(category, categoryValues.riskTreatments());
+          setRiskTreatmentExplanation(category, categoryValues.riskTreatmentExplanation());
+        });
   }
 
   public boolean removeCategory(CategoryRef category) {
@@ -195,20 +193,18 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   public void copyAspectData(RiskValuesAspectData oldAspect) {
     domain
         .findRiskDefinition(oldAspect.riskDefinition.getIdRef())
-        .ifPresent(
-            rd -> {
-              List<CategoryRef> newCats =
-                  rd.getCategories().stream().map(CategoryRef::from).toList();
-              probability = oldAspect.probability;
-              impactCategories =
-                  oldAspect.impactCategories.stream() // TODO: verince-veo#3274 do not filter
-                      .filter(ic -> newCats.contains(ic.getCategory()))
-                      .toList();
-              riskDefinition = oldAspect.riskDefinition;
-              riskCategories =
-                  oldAspect.riskCategories.stream()
-                      .filter(dr -> newCats.contains(dr.getCategory()))
-                      .toList();
-            });
+        .ifPresent(rd -> {
+          List<CategoryRef> newCats = rd.getCategories().stream().map(CategoryRef::from).toList();
+          probability = oldAspect.probability;
+          impactCategories =
+              oldAspect.impactCategories.stream() // TODO: verince-veo#3274 do not filter
+                  .filter(ic -> newCats.contains(ic.getCategory()))
+                  .toList();
+          riskDefinition = oldAspect.riskDefinition;
+          riskCategories =
+              oldAspect.riskCategories.stream()
+                  .filter(dr -> newCats.contains(dr.getCategory()))
+                  .toList();
+        });
   }
 }

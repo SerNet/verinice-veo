@@ -529,12 +529,11 @@ public class DomainController extends AbstractEntityController {
                 out.references().stream()
                     .map(d -> (TemplateItemIncarnationDescriptionState<ProfileItem, Profile>) d)
                     .toList())
-        .thenCompose(
-            references ->
-                useCaseInteractor.execute(
-                    applyProfileIncarnationDescriptionUseCase,
-                    new ApplyProfileIncarnationDescriptionUseCase.InputData(unitId, references),
-                    out -> ResponseEntity.noContent().build()));
+        .thenCompose(references ->
+            useCaseInteractor.execute(
+                applyProfileIncarnationDescriptionUseCase,
+                new ApplyProfileIncarnationDescriptionUseCase.InputData(unitId, references),
+                out -> ResponseEntity.noContent().build()));
   }
 
   @PostMapping("/{domainId}/update")
@@ -578,9 +577,8 @@ public class DomainController extends AbstractEntityController {
             getBreakingChangesUseCase,
             new EntityId(domainId),
             GetBreakingChangesUseCase.OutputData::breakingChanges)
-        .thenApply(
-            breakingChanges ->
-                ResponseEntity.ok().cacheControl(defaultCacheControl).body(breakingChanges));
+        .thenApply(breakingChanges ->
+            ResponseEntity.ok().cacheControl(defaultCacheControl).body(breakingChanges));
   }
 
   @GetMapping("/{domainId}/risk-definitions/{riskDefinitionId}")

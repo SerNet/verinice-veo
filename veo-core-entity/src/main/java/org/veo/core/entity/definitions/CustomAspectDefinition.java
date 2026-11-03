@@ -31,9 +31,7 @@ public class CustomAspectDefinition {
 
   public AttributeDefinition getAttributeDefinition(String attributeKey) {
     return Optional.ofNullable(attributeDefinitions.get(attributeKey))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Attribute '%s' is not defined".formatted(attributeKey)));
+        .orElseThrow(() ->
+            new IllegalArgumentException("Attribute '%s' is not defined".formatted(attributeKey)));
   }
 }

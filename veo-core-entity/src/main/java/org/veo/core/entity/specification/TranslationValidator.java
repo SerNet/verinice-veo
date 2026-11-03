@@ -193,21 +193,19 @@ public class TranslationValidator {
   private static Stream<String> toStatusKeys(
       String type, String subtype, SubTypeDefinition subType) {
     return subType.getStatuses().stream()
-        .map(
-            s ->
-                SUBTYPE_STATUS_PATTERN.formatted(
-                    type.toLowerCase(Locale.US), // type must be lower case
-                    subtype, // subtype and status must retain mixed case characters
-                    s));
+        .map(s ->
+            SUBTYPE_STATUS_PATTERN.formatted(
+                type.toLowerCase(Locale.US), // type must be lower case
+                subtype, // subtype and status must retain mixed case characters
+                s));
   }
 
   private static List<String> attributeTranslationKeys(
       @NonNull Map<String, ? extends CustomAspectDefinition> customAspects) {
     return customAspects.values().stream()
         .flatMap(ca -> ca.getAttributeDefinitions().entrySet().stream())
-        .flatMap(
-            attrPair ->
-                attributeSchemaTranslationKeys(attrPair.getKey(), attrPair.getValue()).stream())
+        .flatMap(attrPair ->
+            attributeSchemaTranslationKeys(attrPair.getKey(), attrPair.getValue()).stream())
         .toList();
   }
 

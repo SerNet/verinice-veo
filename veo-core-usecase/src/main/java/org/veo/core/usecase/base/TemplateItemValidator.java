@@ -44,13 +44,12 @@ public class TemplateItemValidator {
     var domain = item.getDomainBase();
     SubTypeValidator.validate(domain, item.getSubType(), item.getStatus(), item.getElementType());
     item.getCustomAspects()
-        .forEach(
-            (caType, customAspects) -> {
-              var etd = domain.getElementTypeDefinition(item.getElementType());
-              var caDefinition = etd.getCustomAspectDefinition(caType);
-              AttributeValidator.validate(
-                  customAspects, caDefinition.getAttributeDefinitions(), etd.getTranslations());
-            });
+        .forEach((caType, customAspects) -> {
+          var etd = domain.getElementTypeDefinition(item.getElementType());
+          var caDefinition = etd.getCustomAspectDefinition(caType);
+          AttributeValidator.validate(
+              customAspects, caDefinition.getAttributeDefinitions(), etd.getTranslations());
+        });
 
     item.getTailoringReferences().forEach(tr -> validate(tr, domain));
 
@@ -118,23 +117,20 @@ public class TemplateItemValidator {
       @NotNull DomainBase domain) {
     var refProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
     Optional.ofNullable(aspects.impactValues())
-        .ifPresent(
-            v -> {
-              if (!ElementType.RISK_AFFECTED_TYPES.contains(elementType)) {
-                throw new UnprocessableDataException(
-                    "%s cannot contain impact values".formatted(elementType.getSingularTerm()));
-              }
-              RiskValuesValidator.validateImpactValues(v, refProvider);
-            });
+        .ifPresent(v -> {
+          if (!ElementType.RISK_AFFECTED_TYPES.contains(elementType)) {
+            throw new UnprocessableDataException(
+                "%s cannot contain impact values".formatted(elementType.getSingularTerm()));
+          }
+          RiskValuesValidator.validateImpactValues(v, refProvider);
+        });
     Optional.ofNullable(aspects.scenarioRiskValues())
-        .ifPresent(
-            v -> {
-              if (elementType != ElementType.SCENARIO) {
-                throw new UnprocessableDataException(
-                    "%s cannot contain scenario risk values"
-                        .formatted(elementType.getSingularTerm()));
-              }
-              RiskValuesValidator.validateScenarioRiskValues(v, refProvider);
-            });
+        .ifPresent(v -> {
+          if (elementType != ElementType.SCENARIO) {
+            throw new UnprocessableDataException(
+                "%s cannot contain scenario risk values".formatted(elementType.getSingularTerm()));
+          }
+          RiskValuesValidator.validateScenarioRiskValues(v, refProvider);
+        });
   }
 }

@@ -105,9 +105,8 @@ public enum ElementTypeDtoInfo {
     return Arrays.stream(values())
         .filter(et -> et.getElementType() == elementType)
         .findFirst()
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "element type %s not found".formatted(elementType.getSingularTerm())));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "element type %s not found".formatted(elementType.getSingularTerm())));
   }
 }

@@ -80,20 +80,18 @@ public class RiskComponentChangeListener {
   public void handle(RiskAffectingElementChangeEvent event) {
     elementRepository
         .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
-        .ifPresent(
-            element -> {
-              riskService.evaluateChangedRiskComponent(element);
-              if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
-                if (element instanceof RiskAffected<?, ?> ra) {
+        .ifPresent(element -> {
+          riskService.evaluateChangedRiskComponent(element);
+          if (event.getChanges().contains(ChangedValues.IMPACT_VALUES_CHANGED)) {
+            if (element instanceof RiskAffected<?, ?> ra) {
 
-                  Optional.ofNullable(event.getDomain())
-                      .ifPresentOrElse(
-                          domain ->
-                              impactInheritanceCalculator.calculateImpactInheritance(ra, domain),
-                          () -> impactInheritanceCalculator.calculateImpactInheritance(ra));
-                }
-              }
-            });
+              Optional.ofNullable(event.getDomain())
+                  .ifPresentOrElse(
+                      domain -> impactInheritanceCalculator.calculateImpactInheritance(ra, domain),
+                      () -> impactInheritanceCalculator.calculateImpactInheritance(ra));
+            }
+          }
+        });
   }
 
   @TransactionalEventListener(condition = "#event.source != @riskService")
@@ -141,10 +139,9 @@ public class RiskComponentChangeListener {
       query.whereElementTypeMatches(new QueryCondition<>(ElementType.RISK_RELATED_ELEMENTS));
 
       List<Element> elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
-      elements.forEach(
-          e ->
-              elementMigrationService.migrateRiskRelated(
-                  (RiskRelated) e, domain, rd, event.getChanges()));
+      elements.forEach(e ->
+          elementMigrationService.migrateRiskRelated(
+              (RiskRelated) e, domain, rd, event.getChanges()));
       templateItemMigrationService.migrateRiskDefinitionChange(domain, rd, event.getChanges());
     }
     if (requiresRiskRecalculation(event.getChanges())) {

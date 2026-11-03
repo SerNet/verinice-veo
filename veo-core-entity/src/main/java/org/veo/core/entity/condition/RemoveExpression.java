@@ -57,11 +57,9 @@ public class RemoveExpression implements VeoExpression {
     sourceType.mustBeListOrNothing("invalid source ('from') for removal");
     sourceType
         .findListItemType()
-        .ifPresent(
-            sourceItemType ->
-                sourceItemType.mustIntersectWith(
-                    value.getValueType(domain, elementType),
-                    "source ('from') cannot contain value"));
+        .ifPresent(sourceItemType ->
+            sourceItemType.mustIntersectWith(
+                value.getValueType(domain, elementType), "source ('from') cannot contain value"));
   }
 
   @Override

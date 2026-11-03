@@ -331,22 +331,21 @@ public sealed interface RiskDefinitionChange
             .map(CategoryListAdd::new)
             .collect(Collectors.toSet()));
     oldRiskDef.getCategories().stream()
-        .forEach(
-            oldCat -> {
-              newRiskDef.getCategories().stream()
-                  .filter(c -> c.getId().equals(oldCat.getId()))
-                  .findAny()
-                  .ifPresentOrElse(
-                      newCat -> {
-                        changes.addAll(
-                            detectMatrixChanges(
-                                oldCat.getValueMatrix(), newCat.getValueMatrix(), newCat));
-                        changes.addAll(detectTranslationChanges(oldCat, newCat));
-                        changes.addAll(
-                            detectChanges(() -> new ImpactListResize(newCat), oldCat, newCat));
-                      },
-                      () -> changes.add(new CategoryListRemove(oldCat)));
-            });
+        .forEach(oldCat -> {
+          newRiskDef.getCategories().stream()
+              .filter(c -> c.getId().equals(oldCat.getId()))
+              .findAny()
+              .ifPresentOrElse(
+                  newCat -> {
+                    changes.addAll(
+                        detectMatrixChanges(
+                            oldCat.getValueMatrix(), newCat.getValueMatrix(), newCat));
+                    changes.addAll(detectTranslationChanges(oldCat, newCat));
+                    changes.addAll(
+                        detectChanges(() -> new ImpactListResize(newCat), oldCat, newCat));
+                  },
+                  () -> changes.add(new CategoryListRemove(oldCat)));
+        });
     return changes;
   }
 
@@ -376,12 +375,11 @@ public sealed interface RiskDefinitionChange
       return Set.of(new RiskMatrixResize(dimension));
     } else
       return IntStream.range(0, newValueMatrix.size())
-          .mapToObj(
-              index ->
-                  detectChanges(
-                      () -> new RiskMatrixDiff(dimension),
-                      oldValueMatrix.get(index),
-                      newValueMatrix.get(index)))
+          .mapToObj(index ->
+              detectChanges(
+                  () -> new RiskMatrixDiff(dimension),
+                  oldValueMatrix.get(index),
+                  newValueMatrix.get(index)))
           .flatMap(Collection::stream)
           .collect(Collectors.toSet());
   }
@@ -394,9 +392,8 @@ public sealed interface RiskDefinitionChange
       return Set.of(structureChangeSupplier.get());
     }
     return IntStream.range(0, oldLevels.size())
-        .mapToObj(
-            index ->
-                detectChanges(structureChangeSupplier, oldLevels.get(index), newLevels.get(index)))
+        .mapToObj(index ->
+            detectChanges(structureChangeSupplier, oldLevels.get(index), newLevels.get(index)))
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
   }

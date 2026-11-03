@@ -60,21 +60,19 @@ public class VersioningEventListener {
     if (entity instanceof Element || entity instanceof AbstractRisk<?, ?>) {
       entity
           .getOwningClient()
-          .ifPresent(
-              client -> {
-                if (client.getState() == DELETED) {
-                  log.debug(
-                      "Ignoring entity revision event for deleted client {}",
-                      client.getIdAsString());
-                  return;
-                }
-                log.debug(
-                    "Creating entity revision message for {} event for entity {} modified by user {}",
-                    event.type(),
-                    entity,
-                    event.author());
-                messageCreator.createEntityRevisionMessage(event);
-              });
+          .ifPresent(client -> {
+            if (client.getState() == DELETED) {
+              log.debug(
+                  "Ignoring entity revision event for deleted client {}", client.getIdAsString());
+              return;
+            }
+            log.debug(
+                "Creating entity revision message for {} event for entity {} modified by user {}",
+                event.type(),
+                entity,
+                event.author());
+            messageCreator.createEntityRevisionMessage(event);
+          });
     }
   }
 }

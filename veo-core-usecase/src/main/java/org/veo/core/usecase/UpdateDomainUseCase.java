@@ -57,11 +57,10 @@ public class UpdateDomainUseCase
     domainChangeService.transferCustomization(oldDomain, newDomain);
     var units = unitRepository.findByDomain(oldDomain.getId());
     unitMigrationService.updateElements(oldDomain, newDomain, userAccessRights.getUsername());
-    units.forEach(
-        u -> {
-          u.addToDomains(newDomain);
-          u.removeFromDomains(oldDomain);
-        });
+    units.forEach(u -> {
+      u.addToDomains(newDomain);
+      u.removeFromDomains(oldDomain);
+    });
     // Adding the domain to the client triggers many inserts and updates.
     // If this was done before the units are migrated and the migration failed, all these inserts
     // and updates would slow down the request, only to be ultimately rolled back anyway due to the

@@ -62,13 +62,12 @@ public class IncarnateTemplateItemDescriptionDto<
     this(
         SymIdRef.from(p.getItem(), urlAssembler),
         p.getReferences().stream()
-            .map(
-                r ->
-                    new TailoringReferenceParameterDto(
-                        IdRef.from(r.getReferencedElement(), urlAssembler),
-                        r.getReferenceKey(),
-                        r.getReferenceType(),
-                        r.getId()))
+            .map(r ->
+                new TailoringReferenceParameterDto(
+                    IdRef.from(r.getReferencedElement(), urlAssembler),
+                    r.getReferenceKey(),
+                    r.getReferenceType(),
+                    r.getId()))
             .toList());
   }
 

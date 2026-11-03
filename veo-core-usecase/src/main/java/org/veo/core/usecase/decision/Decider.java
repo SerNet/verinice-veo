@@ -51,16 +51,13 @@ public class Decider {
   public void updateDecisions(ElementEvent event) {
     elementRepository
         .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
-        .ifPresent(
-            element ->
-                element.getDomains().stream()
-                    .filter(
-                        d -> event.getDomainId() == null || d.getId().equals(event.getDomainId()))
-                    .forEach(
-                        domain -> {
-                          if (element.evaluateDecisions(domain, event)) {
-                            element.setUpdatedAt(Instant.now());
-                          }
-                        }));
+        .ifPresent(element ->
+            element.getDomains().stream()
+                .filter(d -> event.getDomainId() == null || d.getId().equals(event.getDomainId()))
+                .forEach(domain -> {
+                  if (element.evaluateDecisions(domain, event)) {
+                    element.setUpdatedAt(Instant.now());
+                  }
+                }));
   }
 }

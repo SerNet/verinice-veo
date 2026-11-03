@@ -128,11 +128,10 @@ public class ElementInDomainService {
 
   public <TElement extends Element> boolean ensureElementExists(
       UUID domainId, UUID uuid, GetElementUseCase<TElement> getElementUseCase) {
-    return runner.runReadOnly(
-            () ->
-                getElementUseCase.execute(
-                    new GetElementUseCase.InputData(uuid, domainId, false),
-                    userAccessRightsProvider.getAccessRights()))
+    return runner.runReadOnly(() ->
+        getElementUseCase.execute(
+            new GetElementUseCase.InputData(uuid, domainId, false),
+            userAccessRightsProvider.getAccessRights()))
         != null;
   }
 
@@ -255,13 +254,12 @@ public class ElementInDomainService {
       return null;
     }
     var clientId = userAccessRightsProvider.getAccessRights().getClientId();
-    return CompletableFuture.supplyAsync(
-        () -> {
-          var domain =
-              domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
-                  domainId, clientId);
-          return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
-        });
+    return CompletableFuture.supplyAsync(() -> {
+      var domain =
+          domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
+              domainId, clientId);
+      return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
+    });
   }
 
   public CompletableFuture<ResponseEntity<Set<ActionDto>>> getActions(
@@ -389,17 +387,16 @@ public class ElementInDomainService {
   public CompletableFuture<ResponseEntity<String>> getCIJsonSchema(
       UUID domainId, ElementType elementType) {
     var clientId = userAccessRightsProvider.getAccessRights().getClientId();
-    return CompletableFuture.supplyAsync(
-        () -> {
-          var domain =
-              domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
-                  domainId, clientId);
-          return ResponseEntity.ok()
-              .body(
-                  entitySchemaService.getSchema(
-                      domain
-                          .getElementTypeDefinition(elementType)
-                          .getControlImplementationDefinition()));
-        });
+    return CompletableFuture.supplyAsync(() -> {
+      var domain =
+          domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
+              domainId, clientId);
+      return ResponseEntity.ok()
+          .body(
+              entitySchemaService.getSchema(
+                  domain
+                      .getElementTypeDefinition(elementType)
+                      .getControlImplementationDefinition()));
+    });
   }
 }

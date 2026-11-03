@@ -55,7 +55,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
  * @see <a href=
  *     "https://spring.io/guides/gs/async-method/">https://spring.io/guides/gs/async-method/</a>
  */
-@SpringBootApplication()
+@SpringBootApplication
 @EnableAsync
 @Import(VeoRestConfiguration.class)
 // @SecurityScheme(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH,

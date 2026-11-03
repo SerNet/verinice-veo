@@ -69,9 +69,8 @@ class CompositeElementQueryImpl<
   @Override
   public void whereCompositesContain(SingleValueQueryCondition<UUID> condition) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                    root.join("composites", JoinType.INNER).get("id"), condition.value()));
+        mySpec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                root.join("composites", JoinType.INNER).get("id"), condition.value()));
   }
 }

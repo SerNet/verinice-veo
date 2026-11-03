@@ -51,17 +51,16 @@ public class DesignatorService {
     }
     Map<String, List<Designated>> itemsByTypeDesignator =
         targets.stream().collect(Collectors.groupingBy(Designated::getTypeDesignator));
-    itemsByTypeDesignator.forEach(
-        (typeDesignator, items) -> {
-          int numItems = items.size();
-          List<Long> numbers =
-              designatorSequenceRepository.getNext(client.getId(), typeDesignator, numItems);
-          StringBuilder sb = new StringBuilder();
-          for (int i = 0; i < numItems; i++) {
-            sb.append(typeDesignator).append('-').append(numbers.get(i));
-            items.get(i).setDesignator(sb.toString());
-            sb.setLength(0);
-          }
-        });
+    itemsByTypeDesignator.forEach((typeDesignator, items) -> {
+      int numItems = items.size();
+      List<Long> numbers =
+          designatorSequenceRepository.getNext(client.getId(), typeDesignator, numItems);
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < numItems; i++) {
+        sb.append(typeDesignator).append('-').append(numbers.get(i));
+        items.get(i).setDesignator(sb.toString());
+        sb.setLength(0);
+      }
+    });
   }
 }

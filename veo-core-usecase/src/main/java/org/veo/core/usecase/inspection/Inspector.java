@@ -75,23 +75,21 @@ public class Inspector {
             Comparator.comparing(
                 a -> domain.getDecision(a.getKey().getKeyRef()).getSortKey(),
                 Comparator.nullsLast(Comparator.naturalOrder())))
-        .map(
-            e ->
-                new Finding(
-                    Severity.HINT,
-                    TranslatedText.of(
-                        locale ->
-                            "%s: %s"
-                                .formatted(
-                                    domain
-                                        .getDecision(e.getKey().getKeyRef())
-                                        .getName()
-                                        .getTranslations()
-                                        .get(locale),
-                                    domain
-                                        .getDecision(e.getKey().getKeyRef())
-                                        .format(e.getValue(), locale, domain))),
-                    Collections.emptyList()));
+        .map(e ->
+            new Finding(
+                Severity.HINT,
+                TranslatedText.of(locale ->
+                    "%s: %s"
+                        .formatted(
+                            domain
+                                .getDecision(e.getKey().getKeyRef())
+                                .getName()
+                                .getTranslations()
+                                .get(locale),
+                            domain
+                                .getDecision(e.getKey().getKeyRef())
+                                .format(e.getValue(), locale, domain))),
+                Collections.emptyList()));
   }
 
   private Collection<Finding> getMigrationFindings(Element element, Domain domain) {
@@ -103,50 +101,44 @@ public class Inspector {
             domain.getName(),
             currentVersion.nextMinorVersion(),
             currentVersion.nextMajorVersion().nextMinorVersion(Long.MAX_VALUE))
-        .map(
-            majorUpdate -> {
-              // perform domain update dry run and report errors as warnings
-              var tempDomain =
-                  domainTemplateService.createDomain(
-                      element.getOwner().getClient(), majorUpdate.getId(), TemplateItems.NONE);
+        .map(majorUpdate -> {
+          // perform domain update dry run and report errors as warnings
+          var tempDomain =
+              domainTemplateService.createDomain(
+                  element.getOwner().getClient(), majorUpdate.getId(), TemplateItems.NONE);
 
-              List<ValidationError> errors =
-                  DomainSensitiveElementValidator.getPreUpdateErrors(
-                      List.of(element), domain, tempDomain);
-              if (errors.isEmpty()) {
-                domainChangeService.transferCustomization(domain, tempDomain);
-                tempDomain.migrate(List.of(element), domain);
-                findRelatedElements(element, tempDomain)
-                    .distinct()
-                    .filter(related -> !related.equals(element))
-                    .filter(related -> related.isAssociatedWithDomain(domain))
-                    .forEach(
-                        related -> {
-                          // Also associate related elements with the new domain to satisfy relation
-                          // validation.
-                          related.associateWithDomain(
-                              tempDomain,
-                              tempDomain.mapOldSubType(related.getSubType(domain)),
-                              tempDomain.mapOldStatus(related.getStatus(domain)));
-                        });
-                errors = DomainSensitiveElementValidator.getErrors(element, tempDomain);
-              }
-              return errors.stream()
-                  .map(
-                      e ->
-                          ValidationError.concat(
-                              List.of(
-                                  ValidationError.localized(
-                                      "warning_element_not_migratable_to_new_domain",
-                                      tempDomain.getTemplateVersion()),
-                                  e),
-                              ": "))
-                  .map(
-                      e ->
-                          new Finding(
-                              Severity.WARNING, TranslatedText.of(e::getMessage), List.of()))
-                  .toList();
-            })
+          List<ValidationError> errors =
+              DomainSensitiveElementValidator.getPreUpdateErrors(
+                  List.of(element), domain, tempDomain);
+          if (errors.isEmpty()) {
+            domainChangeService.transferCustomization(domain, tempDomain);
+            tempDomain.migrate(List.of(element), domain);
+            findRelatedElements(element, tempDomain)
+                .distinct()
+                .filter(related -> !related.equals(element))
+                .filter(related -> related.isAssociatedWithDomain(domain))
+                .forEach(related -> {
+                  // Also associate related elements with the new domain to satisfy relation
+                  // validation.
+                  related.associateWithDomain(
+                      tempDomain,
+                      tempDomain.mapOldSubType(related.getSubType(domain)),
+                      tempDomain.mapOldStatus(related.getStatus(domain)));
+                });
+            errors = DomainSensitiveElementValidator.getErrors(element, tempDomain);
+          }
+          return errors.stream()
+              .map(e ->
+                  ValidationError.concat(
+                      List.of(
+                          ValidationError.localized(
+                              "warning_element_not_migratable_to_new_domain",
+                              tempDomain.getTemplateVersion()),
+                          e),
+                      ": "))
+              .map(e -> new Finding(Severity.WARNING, TranslatedText.of(e::getMessage), List.of()))
+              .toList();
+        })
         .orElse(Collections.emptyList());
   }
 

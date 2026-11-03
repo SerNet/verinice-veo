@@ -44,12 +44,11 @@ public interface Repository<T extends Identifiable> extends RepositoryBase<T, IT
   @Override
   default Set<T> findAllByRefs(Set<ITypedId<T>> refs, Client client) {
     var results = findByIds(refs.stream().map(ITypedId::getId).collect(Collectors.toSet()));
-    results.forEach(
-        r -> {
-          if (r instanceof ClientOwned co) {
-            co.checkSameClient(client);
-          }
-        });
+    results.forEach(r -> {
+      if (r instanceof ClientOwned co) {
+        co.checkSameClient(client);
+      }
+    });
     return results;
   }
 

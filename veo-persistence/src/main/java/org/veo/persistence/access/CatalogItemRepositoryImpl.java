@@ -62,11 +62,10 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
   public CatalogItem getByIdInDomain(UUID catalogItemId, Domain domain) {
     return catalogItemDataRepository
         .findByIdInDomain(catalogItemId, (DomainData) domain)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Catalog item %s not found in domain %s"
-                        .formatted(catalogItemId.toString(), domain.getIdAsString())));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Catalog item %s not found in domain %s"
+                    .formatted(catalogItemId.toString(), domain.getIdAsString())));
   }
 
   @Override
@@ -76,26 +75,25 @@ public class CatalogItemRepositoryImpl implements CatalogItemRepository {
         .collect(Collectors.groupingBy(ITypedSymbolicId::getNamespaceRef))
         .entrySet()
         .stream()
-        .flatMap(
-            entry -> {
-              var namespaceType = entry.getKey().getType();
-              var namespaceId = entry.getKey().getId();
-              var symIds =
-                  entry.getValue().stream()
-                      .map(ITypedSymbolicId::getSymbolicId)
-                      .collect(Collectors.toSet());
-              if (namespaceType.equals(Domain.class)) {
-                return catalogItemDataRepository
-                    .findAllByIdsAndDomain(symIds, namespaceId, client.getId())
-                    .stream();
-              }
-              if (namespaceType.equals(DomainTemplate.class)) {
-                return catalogItemDataRepository
-                    .findAllByIdsAndDomainTemplate(symIds, namespaceId)
-                    .stream();
-              }
-              throw new UnsupportedOperationException();
-            })
+        .flatMap(entry -> {
+          var namespaceType = entry.getKey().getType();
+          var namespaceId = entry.getKey().getId();
+          var symIds =
+              entry.getValue().stream()
+                  .map(ITypedSymbolicId::getSymbolicId)
+                  .collect(Collectors.toSet());
+          if (namespaceType.equals(Domain.class)) {
+            return catalogItemDataRepository
+                .findAllByIdsAndDomain(symIds, namespaceId, client.getId())
+                .stream();
+          }
+          if (namespaceType.equals(DomainTemplate.class)) {
+            return catalogItemDataRepository
+                .findAllByIdsAndDomainTemplate(symIds, namespaceId)
+                .stream();
+          }
+          throw new UnsupportedOperationException();
+        })
         .collect(Collectors.toSet());
   }
 

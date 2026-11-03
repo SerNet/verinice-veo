@@ -49,13 +49,11 @@ public final class ApplyLinkTailoringReferences extends ActionStep {
     var targets = incarnations.getValue(element, domain);
     if (targets instanceof Collection<?> elements) {
       return elements.stream()
-          .map(
-              o -> {
-                if (o instanceof Element e) return e;
-                throw new UnprocessableDataException(
-                    "Cannot reapply catalog item on %s, expected an element"
-                        .formatted(o.getClass()));
-              })
+          .map(o -> {
+            if (o instanceof Element e) return e;
+            throw new UnprocessableDataException(
+                "Cannot reapply catalog item on %s, expected an element".formatted(o.getClass()));
+          })
           .collect(Collectors.toSet());
     }
     throw new UnprocessableDataException(

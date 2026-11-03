@@ -56,13 +56,11 @@ public class LinkMapDto {
   @JsonIgnore
   public Set<CustomLinkState> getCustomLinkStates() {
     return value.entrySet().stream()
-        .flatMap(
-            e ->
-                e.getValue().stream()
-                    .map(
-                        l ->
-                            new CustomLinkState.CustomLinkStateImpl(
-                                e.getKey(), l.getAttributes().getValue(), l.getTarget())))
+        .flatMap(e ->
+            e.getValue().stream()
+                .map(l ->
+                    new CustomLinkState.CustomLinkStateImpl(
+                        e.getKey(), l.getAttributes().getValue(), l.getTarget())))
         .collect(Collectors.toSet());
   }
 

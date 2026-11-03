@@ -51,26 +51,23 @@ public class ControlImplementationService {
             .collect(Collectors.toSet());
     var parentImplementations = controlImplRepo.findByControls(allParents);
 
-    parentImplementations.forEach(
-        ci -> {
-          var reqImpls = reqImplRepo.findAllByRef(ci.getRequirementImplementations());
-          addedControls.forEach(
-              control -> {
-                // Skip if this CI already has an RI for this control
-                if (reqImpls.stream().noneMatch(ri -> ri.getControl().equals(control))) {
-                  log.atDebug()
-                      .setMessage("Adding control {} as requirement to implementations {}.")
-                      .addArgument(control::getIdAsString)
-                      .addArgument(
-                          () ->
-                              parentImplementations.stream()
-                                  .map(pI -> pI.getId().toString())
-                                  .collect(Collectors.joining(", ")))
-                      .log();
-                  ci.addRequirement(control);
-                }
-              });
-        });
+    parentImplementations.forEach(ci -> {
+      var reqImpls = reqImplRepo.findAllByRef(ci.getRequirementImplementations());
+      addedControls.forEach(control -> {
+        // Skip if this CI already has an RI for this control
+        if (reqImpls.stream().noneMatch(ri -> ri.getControl().equals(control))) {
+          log.atDebug()
+              .setMessage("Adding control {} as requirement to implementations {}.")
+              .addArgument(control::getIdAsString)
+              .addArgument(() ->
+                  parentImplementations.stream()
+                      .map(pI -> pI.getId().toString())
+                      .collect(Collectors.joining(", ")))
+              .log();
+          ci.addRequirement(control);
+        }
+      });
+    });
   }
 
   /**
@@ -82,30 +79,25 @@ public class ControlImplementationService {
 
     log.atDebug()
         .setMessage("Removing requirements for controls {} from implementations {}")
-        .addArgument(
-            () ->
-                removedControls.stream()
-                    .map(Identifiable::getIdAsString)
-                    .collect(Collectors.joining(", ")))
-        .addArgument(
-            () ->
-                requirementImplementations.stream()
-                    .map(ri -> ri.getId().toString())
-                    .collect(Collectors.joining(", ")))
+        .addArgument(() ->
+            removedControls.stream()
+                .map(Identifiable::getIdAsString)
+                .collect(Collectors.joining(", ")))
+        .addArgument(() ->
+            requirementImplementations.stream()
+                .map(ri -> ri.getId().toString())
+                .collect(Collectors.joining(", ")))
         .log();
 
-    requirementImplementations.forEach(
-        ri -> {
-          var implementationsUsingRequirement = controlImplRepo.findByRequirement(ri);
-          var riControl = ri.getControl();
-          implementationsUsingRequirement.forEach(
-              ci -> {
-                var ciControl = ci.getControl();
-                if (!riControl.equals(ciControl)
-                    && !ciControl.getPartsRecursively().contains(riControl)) {
-                  ci.remove(ri);
-                }
-              });
-        });
+    requirementImplementations.forEach(ri -> {
+      var implementationsUsingRequirement = controlImplRepo.findByRequirement(ri);
+      var riControl = ri.getControl();
+      implementationsUsingRequirement.forEach(ci -> {
+        var ciControl = ci.getControl();
+        if (!riControl.equals(ciControl) && !ciControl.getPartsRecursively().contains(riControl)) {
+          ci.remove(ri);
+        }
+      });
+    });
   }
 }

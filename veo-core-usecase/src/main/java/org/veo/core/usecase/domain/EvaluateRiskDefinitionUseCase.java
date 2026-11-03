@@ -106,12 +106,9 @@ public class EvaluateRiskDefinitionUseCase
     } else {
       input.riskDefinition.getCategories().stream()
           .filter(CategoryDefinition::isRiskValuesSupported)
-          .forEach(
-              cd ->
-                  syncRiskMatrix(
-                      input.riskDefinition.getProbability(),
-                      cd,
-                      input.riskDefinition.getRiskValues()));
+          .forEach(cd ->
+              syncRiskMatrix(
+                  input.riskDefinition.getProbability(), cd, input.riskDefinition.getRiskValues()));
     }
     Set<RiskDefinitionChange> detectedChanges = new HashSet<>();
     domain
@@ -157,61 +154,59 @@ public class EvaluateRiskDefinitionUseCase
     List<ValidationMessage> messages = new ArrayList<>();
     riskDefinition
         .getCategories()
-        .forEach(
-            cat -> {
-              try {
-                cat.validateRiskCategory(
-                    riskDefinition.getRiskValues(), riskDefinition.getProbability());
-              } catch (IllegalArgumentException e) {
-                addValidationMessage(
-                    Severity.ERROR,
-                    // TODO translate error messages
-                    TranslatedText.builder()
-                        .translation(Locale.ENGLISH, e.getMessage())
-                        .translation(Locale.GERMAN, e.getMessage())
-                        .build(),
-                    List.of(CategoryRef.from(cat)),
-                    messages);
-              }
-            });
+        .forEach(cat -> {
+          try {
+            cat.validateRiskCategory(
+                riskDefinition.getRiskValues(), riskDefinition.getProbability());
+          } catch (IllegalArgumentException e) {
+            addValidationMessage(
+                Severity.ERROR,
+                // TODO translate error messages
+                TranslatedText.builder()
+                    .translation(Locale.ENGLISH, e.getMessage())
+                    .translation(Locale.GERMAN, e.getMessage())
+                    .build(),
+                List.of(CategoryRef.from(cat)),
+                messages);
+          }
+        });
 
     riskDefinition.getCategories().stream()
         .filter(CategoryDefinition::isRiskValuesSupported)
         .filter(cat -> !cat.getValueMatrix().isEmpty())
-        .forEach(
-            cat -> {
-              List<CategoryRef> categories = List.of(CategoryRef.from(cat));
-              var vm = cat.getValueMatrix();
-              int rows = vm.size();
-              int columns = vm.getFirst().size();
-              for (int row = 0; row < rows; row++) {
-                for (int column = 1; column < columns; column++) {
-                  RiskValue current = vm.get(row).get(column);
-                  RiskValue previousColumnValue = vm.get(row).get(column - 1);
-                  if (current.getOrdinalValue() < previousColumnValue.getOrdinalValue()) {
-                    messages.add(
-                        new ValidationMessage(
-                            Severity.WARNING,
-                            toTRanslation(riskMatrixValueInconsistencyText, categories),
-                            categories,
-                            row,
-                            column));
-                  }
-                  if (row != 0) {
-                    RiskValue previousRowValue = vm.get(row - 1).get(column);
-                    if (current.getOrdinalValue() < previousRowValue.getOrdinalValue()) {
-                      messages.add(
-                          new ValidationMessage(
-                              Severity.WARNING,
-                              toTRanslation(riskMatrixValueInconsistencyText, categories),
-                              categories,
-                              row,
-                              column));
-                    }
-                  }
+        .forEach(cat -> {
+          List<CategoryRef> categories = List.of(CategoryRef.from(cat));
+          var vm = cat.getValueMatrix();
+          int rows = vm.size();
+          int columns = vm.getFirst().size();
+          for (int row = 0; row < rows; row++) {
+            for (int column = 1; column < columns; column++) {
+              RiskValue current = vm.get(row).get(column);
+              RiskValue previousColumnValue = vm.get(row).get(column - 1);
+              if (current.getOrdinalValue() < previousColumnValue.getOrdinalValue()) {
+                messages.add(
+                    new ValidationMessage(
+                        Severity.WARNING,
+                        toTRanslation(riskMatrixValueInconsistencyText, categories),
+                        categories,
+                        row,
+                        column));
+              }
+              if (row != 0) {
+                RiskValue previousRowValue = vm.get(row - 1).get(column);
+                if (current.getOrdinalValue() < previousRowValue.getOrdinalValue()) {
+                  messages.add(
+                      new ValidationMessage(
+                          Severity.WARNING,
+                          toTRanslation(riskMatrixValueInconsistencyText, categories),
+                          categories,
+                          row,
+                          column));
                 }
               }
-            });
+            }
+          }
+        });
     addValidationMessage(
         Severity.WARNING,
         riskMatrixResizeText,

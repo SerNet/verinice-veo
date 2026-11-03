@@ -44,12 +44,11 @@ public final class AddRisksStep extends ActionStep {
     var result = scenarios.getValue(element, domain);
     if (result instanceof Collection<?> elements) {
       return elements.stream()
-          .map(
-              o -> {
-                if (o instanceof Scenario s) return s;
-                throw new UnprocessableDataException(
-                    "Cannot add risk for %s, expected a scenario".formatted(o.getClass()));
-              })
+          .map(o -> {
+            if (o instanceof Scenario s) return s;
+            throw new UnprocessableDataException(
+                "Cannot add risk for %s, expected a scenario".formatted(o.getClass()));
+          })
           .collect(Collectors.toSet());
     }
     throw new UnprocessableDataException(

@@ -151,21 +151,18 @@ public interface RiskValuesProvider
     return getImpactCategories().stream()
         .filter(c -> c.getCategory().equals(categoryId))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Impact category %s does not exist for for risk aspect.",
-                    categoryId.getIdRef()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Impact category %s does not exist for for risk aspect.", categoryId.getIdRef()));
   }
 
   default DeterminedRisk riskCategoryById(CategoryRef categoryId) {
     return getCategorizedRisks().stream()
         .filter(c -> c.getCategory().equals(categoryId))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Risk category %s does not exist for risk aspect.", categoryId.getIdRef()));
+        .orElseThrow(() ->
+            new NotFoundException(
+                "Risk category %s does not exist for risk aspect.", categoryId.getIdRef()));
   }
 
   @Override

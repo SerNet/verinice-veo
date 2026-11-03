@@ -64,7 +64,7 @@ public interface CompositeElement<T extends CompositeElement<T>> extends Element
   default boolean removePart(T part) {
     // Parts may be proxies - make sure they are hydrated by calling a method on
     // them.
-    if (getParts().removeIf((p) -> p.getId().equals(part.getId()))) {
+    if (getParts().removeIf(p -> p.getId().equals(part.getId()))) {
       part.getComposites().remove(this);
       return true;
     }

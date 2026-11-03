@@ -44,12 +44,11 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
         .orElseThrow()
         .getRiskValue(ordinalValue.intValue())
         .map(RiskRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Risk definition %s contains no risk value with ordinal value %s",
-                        riskDefinitionId, ordinalValue)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Risk definition %s contains no risk value with ordinal value %s",
+                    riskDefinitionId, ordinalValue)));
   }
 
   @Override
@@ -60,12 +59,11 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
         .getProbability()
         .getLevel(probabilityId.intValue())
         .map(ProbabilityRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Risk definition %s contains no probability with ordinal value %s",
-                        riskDefinitionId, probabilityId)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Risk definition %s contains no probability with ordinal value %s",
+                    riskDefinitionId, probabilityId)));
   }
 
   @Override
@@ -77,12 +75,11 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
         .orElseThrow()
         .getLevel(impactId.intValue())
         .map(ImpactRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Risk definition %s contains no impact with ordinal value %s",
-                        riskDefinitionId, impactId)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Risk definition %s contains no impact with ordinal value %s",
+                    riskDefinitionId, impactId)));
   }
 
   @Override
@@ -92,12 +89,11 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
         .orElseThrow()
         .getCategory(categoryId)
         .map(CategoryRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Risk definition %s contains no category with ID %s",
-                        riskDefinitionId, categoryId)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Risk definition %s contains no category with ID %s",
+                    riskDefinitionId, categoryId)));
   }
 
   @Override
@@ -107,12 +103,11 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
         .findRiskDefinition(riskDefinitionId)
         .flatMap(rd -> rd.getImplementationStateDefinition().getLevel(ordinalValue))
         .map(ImplementationStatusRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Risk definition %s contains no implementation status with ordinal value %d",
-                        riskDefinitionId, ordinalValue)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Risk definition %s contains no implementation status with ordinal value %d",
+                    riskDefinitionId, ordinalValue)));
   }
 
   @Override
@@ -120,11 +115,10 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
     return domain
         .findRiskDefinition(riskDefinitionId)
         .map(RiskDefinitionRef::from)
-        .orElseThrow(
-            () ->
-                new RiskConsistencyException(
-                    format(
-                        "Domain %s %s contains no risk definition with ID %s",
-                        domain.getName(), domain.getTemplateVersion(), riskDefinitionId)));
+        .orElseThrow(() ->
+            new RiskConsistencyException(
+                format(
+                    "Domain %s %s contains no risk definition with ID %s",
+                    domain.getName(), domain.getTemplateVersion(), riskDefinitionId)));
   }
 }

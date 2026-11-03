@@ -52,7 +52,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Entity(name = "element_type_definition")
-@Data()
+@Data
 @EntityListeners({ElementTypeDefintionEntityListener.class})
 public class ElementTypeDefinitionData implements ElementTypeDefinition {
 

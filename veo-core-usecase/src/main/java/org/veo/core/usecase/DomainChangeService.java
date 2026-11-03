@@ -86,32 +86,30 @@ public class DomainChangeService {
     // changes from the new domain template version.
     sourceDomain
         .getRiskDefinitions()
-        .forEach(
-            (id, riskDef) -> {
-              var originalRiskDefinition =
-                  Optional.ofNullable(sourceDomain.getDomainTemplate())
-                      .flatMap(dt -> dt.findRiskDefinition(id))
-                      .orElse(null);
-              if (!riskDef.equals(originalRiskDefinition)) {
-                log.debug(
-                    "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
-                    id,
-                    sourceDomain.getName(),
-                    sourceDomain.getTemplateVersion(),
-                    sourceDomain.getIdAsString(),
-                    targetDomain.getTemplateVersion(),
-                    targetDomain.getIdAsString());
-                var oldRiskDefFromTargetDomain = targetDomain.findRiskDefinition(riskDef.getId());
-                var newRiskDef = migrate(riskDef, targetDomain);
-                targetDomain.applyRiskDefinition(id, newRiskDef);
-                oldRiskDefFromTargetDomain.ifPresent(
-                    ogRiskDef ->
-                        templateItemMigrationService.migrateRiskDefinitionChange(
-                            targetDomain,
-                            newRiskDef,
-                            RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef)));
-              }
-            });
+        .forEach((id, riskDef) -> {
+          var originalRiskDefinition =
+              Optional.ofNullable(sourceDomain.getDomainTemplate())
+                  .flatMap(dt -> dt.findRiskDefinition(id))
+                  .orElse(null);
+          if (!riskDef.equals(originalRiskDefinition)) {
+            log.debug(
+                "Copying customized risk definition {} from {} {} ({}) to new version {} ({})",
+                id,
+                sourceDomain.getName(),
+                sourceDomain.getTemplateVersion(),
+                sourceDomain.getIdAsString(),
+                targetDomain.getTemplateVersion(),
+                targetDomain.getIdAsString());
+            var oldRiskDefFromTargetDomain = targetDomain.findRiskDefinition(riskDef.getId());
+            var newRiskDef = migrate(riskDef, targetDomain);
+            targetDomain.applyRiskDefinition(id, newRiskDef);
+            oldRiskDefFromTargetDomain.ifPresent(ogRiskDef ->
+                templateItemMigrationService.migrateRiskDefinitionChange(
+                    targetDomain,
+                    newRiskDef,
+                    RiskDefinitionChange.detectChanges(ogRiskDef, newRiskDef)));
+          }
+        });
   }
 
   public static void validateMigrationDefinition(
@@ -132,10 +130,9 @@ public class DomainChangeService {
       newMajor.getDomainMigrationDefinition().validate(newMajor, oldMajor);
       var unhandledChanges =
           breakingChanges.stream()
-              .filter(
-                  breakingChange ->
-                      newMajor.getDomainMigrationDefinition().migrations().stream()
-                          .noneMatch(m -> m.handles(breakingChange)))
+              .filter(breakingChange ->
+                  newMajor.getDomainMigrationDefinition().migrations().stream()
+                      .noneMatch(m -> m.handles(breakingChange)))
               .toList();
       if (!unhandledChanges.isEmpty()) {
         throw new UnprocessableDataException(
@@ -167,12 +164,11 @@ public class DomainChangeService {
                 Map.Entry::getKey,
                 e ->
                     e.getValue().stream()
-                        .filter(
-                            link ->
-                                targetDomain
-                                    .getElementTypeDefinition(e.getKey())
-                                    .findLink(link)
-                                    .isPresent())
+                        .filter(link ->
+                            targetDomain
+                                .getElementTypeDefinition(e.getKey())
+                                .findLink(link)
+                                .isPresent())
                         .toList()))
         .entrySet()
         .stream()

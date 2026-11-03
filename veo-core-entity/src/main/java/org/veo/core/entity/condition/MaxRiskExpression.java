@@ -63,10 +63,8 @@ public class MaxRiskExpression implements VeoExpression {
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {
     return element.getRisks().stream()
-        .flatMap(
-            risk ->
-                risk.getRiskDefinitions(domain).stream()
-                    .map(rd -> risk.getRiskProvider(rd, domain)))
+        .flatMap(risk ->
+            risk.getRiskDefinitions(domain).stream().map(rd -> risk.getRiskProvider(rd, domain)))
         .flatMap(provider -> provider.getCategorizedRisks().stream())
         .map(DeterminedRisk::getResidualRisk)
         .filter(Objects::nonNull)

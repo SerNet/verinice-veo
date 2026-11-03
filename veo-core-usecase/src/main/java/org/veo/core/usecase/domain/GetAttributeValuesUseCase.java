@@ -85,15 +85,13 @@ public class GetAttributeValuesUseCase
       Map<String, ? extends CustomAspectDefinition> definitions,
       String wantedType,
       Map<String, Set<String>> typeToKeys) {
-    definitions.forEach(
-        (type, def) ->
-            def.getAttributeDefinitions()
-                .forEach(
-                    (key, attrDef) -> {
-                      if (wantedType.equals(attrDef.getType())) {
-                        typeToKeys.computeIfAbsent(type, k -> new HashSet<>()).add(key);
-                      }
-                    }));
+    definitions.forEach((type, def) ->
+        def.getAttributeDefinitions()
+            .forEach((key, attrDef) -> {
+              if (wantedType.equals(attrDef.getType())) {
+                typeToKeys.computeIfAbsent(type, k -> new HashSet<>()).add(key);
+              }
+            }));
   }
 
   @Valid

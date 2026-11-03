@@ -51,15 +51,14 @@ public class ProfileItemRepositoryImpl implements ProfileItemRepository {
         .collect(Collectors.groupingBy(ITypedSymbolicId::getNamespaceId))
         .entrySet()
         .stream()
-        .flatMap(
-            entry -> {
-              var namespaceId = entry.getKey();
-              var symIds =
-                  entry.getValue().stream()
-                      .map(ITypedSymbolicId::getSymbolicId)
-                      .collect(Collectors.toSet());
-              return profileItemDataRepository.findAllByIds(symIds, namespaceId, client).stream();
-            })
+        .flatMap(entry -> {
+          var namespaceId = entry.getKey();
+          var symIds =
+              entry.getValue().stream()
+                  .map(ITypedSymbolicId::getSymbolicId)
+                  .collect(Collectors.toSet());
+          return profileItemDataRepository.findAllByIds(symIds, namespaceId, client).stream();
+        })
         .collect(Collectors.toSet());
   }
 

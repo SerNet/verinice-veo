@@ -49,71 +49,64 @@ class RiskValuesValidator {
       Map<RiskDefinitionRef, PotentialProbability> riskValues,
       DomainRiskReferenceProvider refProvider) {
     var errors = new ArrayList<ValidationError>();
-    riskValues.forEach(
-        (riskDefRef, probability) -> {
-          var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
-          try {
-            validator.validate(probability.potentialProbability());
-          } catch (RiskConsistencyException ex) {
-            errors.add(ValidationError.localized(ex.getMessage()));
-          }
-        });
+    riskValues.forEach((riskDefRef, probability) -> {
+      var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
+      try {
+        validator.validate(probability.potentialProbability());
+      } catch (RiskConsistencyException ex) {
+        errors.add(ValidationError.localized(ex.getMessage()));
+      }
+    });
     return errors;
   }
 
   static List<ValidationError> getImpactValueErrors(
       Map<RiskDefinitionRef, ImpactValues> impactValues, DomainRiskReferenceProvider refProvider) {
     var errors = new ArrayList<ValidationError>();
-    impactValues.forEach(
-        (riskDefRef, impact) -> {
-          var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
-          impact
-              .potentialImpacts()
-              .forEach(
-                  (category, impactRef) -> {
-                    try {
-                      validator.validate(category, impactRef);
-                    } catch (RiskConsistencyException ex) {
-                      errors.add(ValidationError.localized(ex.getMessage()));
-                    }
-                  });
-          // TODO #2663 Add a test for this. This validation becomes relevant when the automatism
-          // that sets all missing reasons to MANUAL is removed.
-          impact
-              .potentialImpacts()
-              .keySet()
-              .forEach(
-                  cat -> {
-                    if (!impact.potentialImpactReasons().containsKey(cat)) {
-                      errors.add(
-                          ValidationError.localized(
-                              "error_user_defined_impact_without_reason", cat.getIdRef()));
-                    }
-                  });
-          impact
-              .potentialImpactReasons()
-              .keySet()
-              .forEach(
-                  cat -> {
-                    if (!impact.potentialImpacts().containsKey(cat)) {
-                      errors.add(
-                          ValidationError.localized(
-                              "error_impact_reason_without_user_defined_impact", cat.getIdRef()));
-                    }
-                  });
-          impact
-              .potentialImpactExplanations()
-              .keySet()
-              .forEach(
-                  cat -> {
-                    if (!impact.potentialImpacts().containsKey(cat)) {
-                      errors.add(
-                          ValidationError.localized(
-                              "error_impact_explanation_without_user_defined_impact",
-                              cat.getIdRef()));
-                    }
-                  });
-        });
+    impactValues.forEach((riskDefRef, impact) -> {
+      var validator = new DomainRiskReferenceValidator(refProvider, riskDefRef);
+      impact
+          .potentialImpacts()
+          .forEach((category, impactRef) -> {
+            try {
+              validator.validate(category, impactRef);
+            } catch (RiskConsistencyException ex) {
+              errors.add(ValidationError.localized(ex.getMessage()));
+            }
+          });
+      // TODO #2663 Add a test for this. This validation becomes relevant when the automatism
+      // that sets all missing reasons to MANUAL is removed.
+      impact
+          .potentialImpacts()
+          .keySet()
+          .forEach(cat -> {
+            if (!impact.potentialImpactReasons().containsKey(cat)) {
+              errors.add(
+                  ValidationError.localized(
+                      "error_user_defined_impact_without_reason", cat.getIdRef()));
+            }
+          });
+      impact
+          .potentialImpactReasons()
+          .keySet()
+          .forEach(cat -> {
+            if (!impact.potentialImpacts().containsKey(cat)) {
+              errors.add(
+                  ValidationError.localized(
+                      "error_impact_reason_without_user_defined_impact", cat.getIdRef()));
+            }
+          });
+      impact
+          .potentialImpactExplanations()
+          .keySet()
+          .forEach(cat -> {
+            if (!impact.potentialImpacts().containsKey(cat)) {
+              errors.add(
+                  ValidationError.localized(
+                      "error_impact_explanation_without_user_defined_impact", cat.getIdRef()));
+            }
+          });
+    });
     return errors;
   }
 }

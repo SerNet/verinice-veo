@@ -59,7 +59,7 @@ public class MessageController extends AbstractVeoController {
   @Value("${veo.api-keys.system-messages}")
   private final String systemMessagesApiKey;
 
-  @GetMapping()
+  @GetMapping
   @Operation(summary = "Loads system messages")
   @ApiResponse(
       responseCode = "200",

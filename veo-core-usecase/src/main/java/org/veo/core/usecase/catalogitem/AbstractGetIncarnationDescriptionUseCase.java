@@ -101,13 +101,12 @@ public class AbstractGetIncarnationDescriptionUseCase<
       Map<T, Optional<Element>> itemsToElements) {
     return catalogItem.stream()
         .filter(TailoringReference::isParameterRef)
-        .map(
-            tr ->
-                mapParameter(
-                    tr,
-                    Optional.ofNullable(itemsToElements.get(tr.getTarget()))
-                        .flatMap(Function.identity())
-                        .orElse(null)))
+        .map(tr ->
+            mapParameter(
+                tr,
+                Optional.ofNullable(itemsToElements.get(tr.getTarget()))
+                    .flatMap(Function.identity())
+                    .orElse(null)))
         .toList();
   }
 
@@ -213,25 +212,23 @@ public class AbstractGetIncarnationDescriptionUseCase<
         .map(Map.Entry::getKey)
         // Restore the original order from the input.
         .sorted(
-            Comparator.comparingInt(
-                item ->
-                    templateItemIds.contains(item.getSymbolicId())
-                        ? templateItemIds.indexOf(item.getSymbolicId())
-                        : Integer.MAX_VALUE))
-        .map(
-            catalogItem ->
-                new TemplateItemIncarnationDescription<>(
-                    catalogItem,
-                    toParameters(
-                        mergeBidirectionalReferences
-                            ? catalogItem.getTailoringReferences().stream()
-                                .filter(tailoringReferenceFilter)
-                                .filter(tr -> distinctTailoringRefKeys.add(toKey(tr)))
-                                .toList()
-                            : catalogItem.getTailoringReferences().stream()
-                                .filter(tailoringReferenceFilter)
-                                .toList(),
-                        itemsToElements)))
+            Comparator.comparingInt(item ->
+                templateItemIds.contains(item.getSymbolicId())
+                    ? templateItemIds.indexOf(item.getSymbolicId())
+                    : Integer.MAX_VALUE))
+        .map(catalogItem ->
+            new TemplateItemIncarnationDescription<>(
+                catalogItem,
+                toParameters(
+                    mergeBidirectionalReferences
+                        ? catalogItem.getTailoringReferences().stream()
+                            .filter(tailoringReferenceFilter)
+                            .filter(tr -> distinctTailoringRefKeys.add(toKey(tr)))
+                            .toList()
+                        : catalogItem.getTailoringReferences().stream()
+                            .filter(tailoringReferenceFilter)
+                            .toList(),
+                    itemsToElements)))
         .toList();
   }
 
@@ -240,15 +237,14 @@ public class AbstractGetIncarnationDescriptionUseCase<
     var itemsById =
         items.stream().collect(Collectors.toMap(TemplateItem::getSymbolicId, Function.identity()));
     return itemsIds.stream()
-        .map(
-            id -> {
-              var item = itemsById.get(id);
-              if (item == null) {
-                throw new NotFoundException(
-                    TypedSymbolicId.from(id, itemType, TypedId.from(namespace)));
-              }
-              return item;
-            })
+        .map(id -> {
+          var item = itemsById.get(id);
+          if (item == null) {
+            throw new NotFoundException(
+                TypedSymbolicId.from(id, itemType, TypedId.from(namespace)));
+          }
+          return item;
+        })
         .flatMap(i -> i.getAllItemsToIncarnate().stream())
         .distinct()
         .toList();
@@ -320,9 +316,8 @@ public class AbstractGetIncarnationDescriptionUseCase<
       boolean followReferencesOfExistingIncarnations) {
     return current.entrySet().stream()
         // Only follow references of items without an existing incarnation.
-        .filter(
-            itemToElement ->
-                itemToElement.getValue().isEmpty() || followReferencesOfExistingIncarnations)
+        .filter(itemToElement ->
+            itemToElement.getValue().isEmpty() || followReferencesOfExistingIncarnations)
         .map(Map.Entry::getKey)
         .map(TemplateItem::getTailoringReferences)
         .flatMap(Collection::stream)

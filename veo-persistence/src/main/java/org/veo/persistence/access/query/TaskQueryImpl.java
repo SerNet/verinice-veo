@@ -65,31 +65,31 @@ public class TaskQueryImpl implements TaskQuery {
       //   2.1. implementation tasks for unimplemented RIs and
       //   2.2. revision tasks for implemented RIs with a revision scheduled.
       """
-              with ris as (select ri.*
-                           from requirement_implementation as ri
-                                    inner join element as o on o.db_id = ri.origin_db_id and o.owner_id = :unitId
-                                    inner join element_domain_association as oda
-                                               on oda.owner_db_id = ri.origin_db_id and oda.domain_id = :domainId
-                                    inner join element_domain_association as cda
-                                               on cda.owner_db_id = ri.control_id and cda.domain_id = :domainId
-                                    left join control_parts as cp on cp.composite_id = ri.control_id
-                           group by ri.db_id
-                           having count(cp.part_id) = 0),
-                   t as ((select 'REQUIREMENT_IMPLEMENTATION' as type,
-                                 ris.person_id                as assignee_id,
-                                 ris.implementation_until     as deadline,
-                                 ris.id                       as ri_id
-                          from ris
-                          where ris.status in ('UNKNOWN', 'NO', 'PARTIAL'))
-                         union
-                         (select 'REQUIREMENT_IMPLEMENTATION_REVISION' as type,
-                                 ris.next_revision_by_db_id            as assignee_id,
-                                 ris.next_revision_date                as deadline,
-                                 ris.id                                as ri_id
-                          from ris
-                          where ris.status in ('YES', 'N_A')
-                            and next_revision_date is not null))
-              """;
+      with ris as (select ri.*
+                   from requirement_implementation as ri
+                            inner join element as o on o.db_id = ri.origin_db_id and o.owner_id = :unitId
+                            inner join element_domain_association as oda
+                                       on oda.owner_db_id = ri.origin_db_id and oda.domain_id = :domainId
+                            inner join element_domain_association as cda
+                                       on cda.owner_db_id = ri.control_id and cda.domain_id = :domainId
+                            left join control_parts as cp on cp.composite_id = ri.control_id
+                   group by ri.db_id
+                   having count(cp.part_id) = 0),
+           t as ((select 'REQUIREMENT_IMPLEMENTATION' as type,
+                         ris.person_id                as assignee_id,
+                         ris.implementation_until     as deadline,
+                         ris.id                       as ri_id
+                  from ris
+                  where ris.status in ('UNKNOWN', 'NO', 'PARTIAL'))
+                 union
+                 (select 'REQUIREMENT_IMPLEMENTATION_REVISION' as type,
+                         ris.next_revision_by_db_id            as assignee_id,
+                         ris.next_revision_date                as deadline,
+                         ris.id                                as ri_id
+                  from ris
+                  where ris.status in ('YES', 'N_A')
+                    and next_revision_date is not null))
+      """;
   private final EntityManager em;
   private final PersonDataRepository personRepository;
   private final RequirementImplementationDataRepository riRepository;
@@ -110,17 +110,16 @@ public class TaskQueryImpl implements TaskQuery {
     var personsById = getPersonMap(resultList);
     var pageItems =
         resultList.stream()
-            .map(
-                row ->
-                    new Task(
-                        TaskType.valueOf((String) row[COL_TASK_TYPE]),
-                        Optional.ofNullable(row[COL_ASSIGNEE_ID])
-                            .map(pId -> personsById.get((UUID) pId))
-                            .orElse(null),
-                        (LocalDate) row[COL_DEADLINE],
-                        Optional.ofNullable(row[COL_RI_ID])
-                            .map(riId -> risById.get((UUID) riId))
-                            .orElse(null)))
+            .map(row ->
+                new Task(
+                    TaskType.valueOf((String) row[COL_TASK_TYPE]),
+                    Optional.ofNullable(row[COL_ASSIGNEE_ID])
+                        .map(pId -> personsById.get((UUID) pId))
+                        .orElse(null),
+                    (LocalDate) row[COL_DEADLINE],
+                    Optional.ofNullable(row[COL_RI_ID])
+                        .map(riId -> risById.get((UUID) riId))
+                        .orElse(null)))
             .toList();
     return new PagedResult<>(pagingConfig, pageItems, totalResultCount, totalPages);
   }

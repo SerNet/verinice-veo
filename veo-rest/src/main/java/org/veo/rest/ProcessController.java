@@ -343,15 +343,14 @@ public class ProcessController extends AbstractCompositeElementController<Proces
             input,
             output -> ProcessRiskDto.from(output.getRisk(), referenceAssembler));
 
-    return riskFuture.thenApply(
-        riskDto ->
-            ResponseEntity.ok()
-                .eTag(
-                    ETag.from(
-                        riskDto.getProcess().getId(),
-                        riskDto.getScenario().getId(),
-                        riskDto.getVersion()))
-                .body(riskDto));
+    return riskFuture.thenApply(riskDto ->
+        ResponseEntity.ok()
+            .eTag(
+                ETag.from(
+                    riskDto.getProcess().getId(),
+                    riskDto.getScenario().getId(),
+                    riskDto.getVersion()))
+            .body(riskDto));
   }
 
   @Override

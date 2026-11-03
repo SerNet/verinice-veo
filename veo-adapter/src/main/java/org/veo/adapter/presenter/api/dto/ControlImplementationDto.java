@@ -116,14 +116,12 @@ public class ControlImplementationDto implements ControlImplementationState {
   @Override
   public Set<CustomAspectState> getCustomAspectStates(UUID domainId) {
     return Optional.ofNullable(domains.get(domainId))
-        .map(
-            da ->
-                da.getCustomAspects().getValue().entrySet().stream()
-                    .map(
-                        e ->
-                            new CustomAspectState.CustomAspectStateImpl(
-                                e.getKey(), e.getValue().getValue()))
-                    .collect(Collectors.<CustomAspectState>toSet()))
+        .map(da ->
+            da.getCustomAspects().getValue().entrySet().stream()
+                .map(e ->
+                    new CustomAspectState.CustomAspectStateImpl(
+                        e.getKey(), e.getValue().getValue()))
+                .collect(Collectors.<CustomAspectState>toSet()))
         .orElseGet(Collections::emptySet);
   }
 }

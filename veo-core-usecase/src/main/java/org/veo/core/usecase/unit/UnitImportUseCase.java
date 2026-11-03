@@ -75,20 +75,17 @@ public class UnitImportUseCase
 
     var domainIdMapping = buildDomainMapping(input.domainMetadata, client.getId());
     var resolver = refResolverFactory.local();
-    domainIdMapping.forEach(
-        (exportedId, clientDomainId) -> {
-          var domain = domainRepository.getById(clientDomainId, client.getId());
-          var catalogItems = catalogItemRepository.findAllByDomain(domain);
-          injectDomainWithCatalogItems(resolver, domain, catalogItems, exportedId);
-        });
+    domainIdMapping.forEach((exportedId, clientDomainId) -> {
+      var domain = domainRepository.getById(clientDomainId, client.getId());
+      var catalogItems = catalogItemRepository.findAllByDomain(domain);
+      injectDomainWithCatalogItems(resolver, domain, catalogItems, exportedId);
+    });
 
     var unit = resolver.injectNewEntity(TypedId.from(input.unit.getId(), Unit.class));
     var elements =
         input.elements.stream()
-            .map(
-                e ->
-                    (Element)
-                        resolver.injectNewEntity(TypedId.from(e.getId(), e.getModelInterface())))
+            .map(e ->
+                (Element) resolver.injectNewEntity(TypedId.from(e.getId(), e.getModelInterface())))
             .toList();
 
     unit.setClient(client);
@@ -135,10 +132,9 @@ public class UnitImportUseCase
       Set<Domain> clientDomains, DomainMetadata exportedDomain) {
     var candidatesByVersion =
         clientDomains.stream()
-            .filter(
-                d ->
-                    d.getName().equals(exportedDomain.name())
-                        && d.getAuthority().equals(exportedDomain.authority()))
+            .filter(d ->
+                d.getName().equals(exportedDomain.name())
+                    && d.getAuthority().equals(exportedDomain.authority()))
             .collect(Collectors.groupingBy(d -> d.getTemplateVersion().toString()));
     if (candidatesByVersion.isEmpty()) {
       throw new UnprocessableDataException(

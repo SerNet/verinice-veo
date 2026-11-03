@@ -129,13 +129,12 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void whereAppliedItemIn(Collection<CatalogItem> items, Domain domain) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) -> {
-              Join<Object, Object> join = root.join("domainAssociations", JoinType.INNER);
-              return criteriaBuilder.and(
-                  criteriaBuilder.equal(join.get("domain"), domain),
-                  criteriaBuilder.in(join.get("appliedCatalogItem")).value(items));
-            });
+        mySpec.and((root, query, criteriaBuilder) -> {
+          Join<Object, Object> join = root.join("domainAssociations", JoinType.INNER);
+          return criteriaBuilder.and(
+              criteriaBuilder.equal(join.get("domain"), domain),
+              criteriaBuilder.in(join.get("appliedCatalogItem")).value(items));
+        });
   }
 
   @Override
@@ -161,60 +160,55 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void whereElementTypeMatches(QueryCondition<ElementType> elementType) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                in(
-                    root.get("elementType"),
-                    elementType.values().stream()
-                        .map(v -> criteriaBuilder.literal(v.name()))
-                        .collect(Collectors.toSet()),
-                    criteriaBuilder));
+        mySpec.and((root, query, criteriaBuilder) ->
+            in(
+                root.get("elementType"),
+                elementType.values().stream()
+                    .map(v -> criteriaBuilder.literal(v.name()))
+                    .collect(Collectors.toSet()),
+                criteriaBuilder));
   }
 
   @Override
   public void whereSubTypeMatches(QueryCondition<String> condition) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                in(
-                    root.join("domainAssociations", JoinType.LEFT).get("subType"),
-                    condition.values(),
-                    criteriaBuilder));
+        mySpec.and((root, query, criteriaBuilder) ->
+            in(
+                root.join("domainAssociations", JoinType.LEFT).get("subType"),
+                condition.values(),
+                criteriaBuilder));
   }
 
   @Override
   public void whereSubTypeMatches(QueryCondition<String> condition, Domain domain) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) -> {
-              Join<Object, Object> join = root.join("domainAssociations", JoinType.LEFT);
-              return criteriaBuilder.and(
-                  criteriaBuilder.equal(join.get("domain"), domain),
-                  criteriaBuilder.in(join.get("subType")).value(condition.values()));
-            });
+        mySpec.and((root, query, criteriaBuilder) -> {
+          Join<Object, Object> join = root.join("domainAssociations", JoinType.LEFT);
+          return criteriaBuilder.and(
+              criteriaBuilder.equal(join.get("domain"), domain),
+              criteriaBuilder.in(join.get("subType")).value(condition.values()));
+        });
   }
 
   @Override
   public void whereChildElementIn(QueryCondition<UUID> condition) {
     var childIds = condition.values().stream().collect(Collectors.toSet());
     mySpec =
-        mySpec.and(
-            (root, query, criateriaBuilder) ->
-                in(
-                    root.join(getChildAttributeName(), JoinType.INNER).get("id"),
-                    childIds,
-                    criateriaBuilder));
+        mySpec.and((root, query, criateriaBuilder) ->
+            in(
+                root.join(getChildAttributeName(), JoinType.INNER).get("id"),
+                childIds,
+                criateriaBuilder));
   }
 
   @Override
   public void whereChildElementsPresent(boolean present) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                checkNull(
-                    root.join(getChildAttributeName(), JoinType.LEFT).get("id"),
-                    !present,
-                    criteriaBuilder));
+        mySpec.and((root, query, criteriaBuilder) ->
+            checkNull(
+                root.join(getChildAttributeName(), JoinType.LEFT).get("id"),
+                !present,
+                criteriaBuilder));
   }
 
   @Override
@@ -245,12 +239,11 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void whereStatusMatches(QueryCondition<String> condition) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                in(
-                    root.join("domainAssociations", JoinType.LEFT).get("status"),
-                    condition.values(),
-                    criteriaBuilder));
+        mySpec.and((root, query, criteriaBuilder) ->
+            in(
+                root.join("domainAssociations", JoinType.LEFT).get("status"),
+                condition.values(),
+                criteriaBuilder));
   }
 
   @Override
@@ -286,19 +279,16 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void whereDomainsContain(Domain domain) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                    root.join("domainAssociations", JoinType.LEFT).get("domain"), domain));
+        mySpec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                root.join("domainAssociations", JoinType.LEFT).get("domain"), domain));
   }
 
   @Override
   public void whereScopesContain(SingleValueQueryCondition<UUID> condition) {
     mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                    root.join("scopes", JoinType.LEFT).get("id"), condition.value()));
+        mySpec.and((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(root.join("scopes", JoinType.LEFT).get("id"), condition.value()));
   }
 
   @Override
@@ -362,69 +352,67 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private void fullyLoadItems(List<UUID> ids) {
     var items =
         ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
-            .flatMap(
-                batch -> {
-                  var chunk = dataRepository.findAllWithLinksDecisionsByIdIn(batch);
-                  dataRepository.findAllWithCustomAspectsByIdIn(batch);
-                  dataRepository.findAllWithDomainAssociationsByIdIn(batch);
+            .flatMap(batch -> {
+              var chunk = dataRepository.findAllWithLinksDecisionsByIdIn(batch);
+              dataRepository.findAllWithCustomAspectsByIdIn(batch);
+              dataRepository.findAllWithDomainAssociationsByIdIn(batch);
 
-                  if (fetchAppliedCatalogItems) {
-                    dataRepository.findAllWithAppliedCatalogItemsByIdIn(batch);
-                  }
-                  if (fetchScopesAndScopeMembers) {
-                    dataRepository.findAllWithScopesAndScopeMembersByIdIn(batch);
-                  }
-                  return chunk.stream();
-                });
+              if (fetchAppliedCatalogItems) {
+                dataRepository.findAllWithAppliedCatalogItemsByIdIn(batch);
+              }
+              if (fetchScopesAndScopeMembers) {
+                dataRepository.findAllWithScopesAndScopeMembersByIdIn(batch);
+              }
+              return chunk.stream();
+            });
     items.collect(Collectors.groupingBy(Element::getModelInterface)).forEach(this::fullyLoadItems);
   }
 
   private void fullyLoadItems(Class<? extends Entity> type, List<TDataClass> items) {
     var ids = items.stream().map(Element::getId).toList();
     ListUtils.partition(ids, VeoConstants.DB_QUERY_CHUNK_SIZE)
-        .forEach(
-            batch -> {
-              if (type.equals(Asset.class)) {
-                fetchCompositeRiskAffected(batch, assetDataRepository);
-                if (fetchRiskValuesAspects) {
-                  assetDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
-                }
-              } else if (type.equals(Control.class)) {
-                fetchComposites(batch, controlDataRepository);
-              } else if (type.equals(Document.class)) {
-                fetchComposites(batch, documentDataRepository);
-              } else if (type.equals(Incident.class)) {
-                fetchComposites(batch, incidentDataRepository);
-              } else if (type.equals(Process.class)) {
-                fetchCompositeRiskAffected(batch, processDataRepository);
-                if (fetchRiskValuesAspects) {
-                  processDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
-                }
-              } else if (type.equals(Person.class)) {
-                fetchComposites(batch, personDataRepository);
-              } else if (type.equals(Scenario.class)) {
-                fetchComposites(batch, scenarioDataRepository);
-                if (fetchRiskValuesAspects) {
-                  scenarioDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
-                }
-              } else if (type.equals(Scope.class)) {
-                if (fetchMembers) {
-                  scopeDataRepository.findAllWithMembersByIdIn(batch);
-                }
-                if (fetchRiskValuesAspects) {
-                  scopeDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
-                }
-                if (fetchRisks) {
-                  scopeDataRepository.findAllWithRisksByIdIn(batch);
-                }
-                if (fetchControlImplementations) {
-                  scopeDataRepository.findAllWithCIs(batch);
-                }
-                if (fetchRequirementImplementations) {
-                  scopeDataRepository.findAllWithRIs(batch);
-                }
-              }
-            });
+        .forEach(batch -> {
+          if (type.equals(Asset.class)) {
+            fetchCompositeRiskAffected(batch, assetDataRepository);
+            if (fetchRiskValuesAspects) {
+              assetDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
+            }
+          } else if (type.equals(Control.class)) {
+            fetchComposites(batch, controlDataRepository);
+          } else if (type.equals(Document.class)) {
+            fetchComposites(batch, documentDataRepository);
+          } else if (type.equals(Incident.class)) {
+            fetchComposites(batch, incidentDataRepository);
+          } else if (type.equals(Process.class)) {
+            fetchCompositeRiskAffected(batch, processDataRepository);
+            if (fetchRiskValuesAspects) {
+              processDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
+            }
+          } else if (type.equals(Person.class)) {
+            fetchComposites(batch, personDataRepository);
+          } else if (type.equals(Scenario.class)) {
+            fetchComposites(batch, scenarioDataRepository);
+            if (fetchRiskValuesAspects) {
+              scenarioDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
+            }
+          } else if (type.equals(Scope.class)) {
+            if (fetchMembers) {
+              scopeDataRepository.findAllWithMembersByIdIn(batch);
+            }
+            if (fetchRiskValuesAspects) {
+              scopeDataRepository.findAllWithRiskValuesAspectsByIdIn(batch);
+            }
+            if (fetchRisks) {
+              scopeDataRepository.findAllWithRisksByIdIn(batch);
+            }
+            if (fetchControlImplementations) {
+              scopeDataRepository.findAllWithCIs(batch);
+            }
+            if (fetchRequirementImplementations) {
+              scopeDataRepository.findAllWithRIs(batch);
+            }
+          }
+        });
   }
 
   private <

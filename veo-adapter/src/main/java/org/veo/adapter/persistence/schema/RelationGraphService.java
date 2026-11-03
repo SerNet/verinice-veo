@@ -102,41 +102,39 @@ public class RelationGraphService {
 
     List<GraphNodeDto> allEntities =
         allElements.stream()
-            .map(
-                el ->
-                    new GraphNodeDto(
-                        urlBuild(el, domainId),
-                        el.getDisplayName(),
-                        el.getType(),
-                        el.getSubType(domain),
-                        el.getId()))
+            .map(el ->
+                new GraphNodeDto(
+                    urlBuild(el, domainId),
+                    el.getDisplayName(),
+                    el.getType(),
+                    el.getSubType(domain),
+                    el.getId()))
             .toList();
 
     var translations = entitySchemaService.findTranslations(Set.of(domain), Set.of(locale));
 
     List<RelationDto> relationDtos =
         rows.stream()
-            .map(
-                row -> {
-                  String relationType = row.relationType();
-                  UUID sourceId = row.sourceId();
-                  UUID targetId = row.targetId();
-                  String linkType = row.linkType();
+            .map(row -> {
+              String relationType = row.relationType();
+              UUID sourceId = row.sourceId();
+              UUID targetId = row.targetId();
+              String linkType = row.linkType();
 
-                  Element source = elementsById.get(sourceId);
-                  Element target = elementsById.get(targetId);
+              Element source = elementsById.get(sourceId);
+              Element target = elementsById.get(targetId);
 
-                  String label =
-                      RelationDto.RelationType.CUSTOM_LINK.name().equals(relationType)
-                          ? translations.get(locale, linkType).orElse(linkType)
-                          : buildPartsMembersLabel(locale);
+              String label =
+                  RelationDto.RelationType.CUSTOM_LINK.name().equals(relationType)
+                      ? translations.get(locale, linkType).orElse(linkType)
+                      : buildPartsMembersLabel(locale);
 
-                  return new RelationDto(
-                      RelationDto.RelationType.valueOf(relationType),
-                      urlBuild(source, domainId),
-                      urlBuild(target, domainId),
-                      label);
-                })
+              return new RelationDto(
+                  RelationDto.RelationType.valueOf(relationType),
+                  urlBuild(source, domainId),
+                  urlBuild(target, domainId),
+                  label);
+            })
             .toList();
 
     return new GraphResultDto(allEntities, relationDtos, totalCount);

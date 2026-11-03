@@ -76,12 +76,11 @@ public class LinkQueryImpl implements LinkQuery {
             .collect(Collectors.toMap(Element::getId, Function.identity()));
     var pageItems =
         resultList.stream()
-            .map(
-                row ->
-                    new InOrOutboundLink(
-                        LinkDirection.valueOf((String) row[0]),
-                        (String) row[1],
-                        linkedElementsById.get((UUID) row[2])))
+            .map(row ->
+                new InOrOutboundLink(
+                    LinkDirection.valueOf((String) row[0]),
+                    (String) row[1],
+                    linkedElementsById.get((UUID) row[2])))
             .toList();
     return new PagedResult<>(pagingConfig, pageItems, totalResultCount, totalPages);
   }

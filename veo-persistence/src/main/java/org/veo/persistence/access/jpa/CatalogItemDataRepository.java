@@ -46,13 +46,13 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
 
   @Query(
       """
-            select ci from #{#entityName} ci
-              left join fetch ci.domain
-              left join fetch ci.domainTemplate
-              left join fetch ci.tailoringReferences tr
-              left join fetch tr.target
-              where ci.symbolicDbId in ?1 and ci.domain = ?2
-          """)
+        select ci from #{#entityName} ci
+          left join fetch ci.domain
+          left join fetch ci.domainTemplate
+          left join fetch ci.tailoringReferences tr
+          left join fetch tr.target
+          where ci.symbolicDbId in ?1 and ci.domain = ?2
+      """)
   Set<CatalogItemData> findAllByIdsFetchTailoringReferences(Iterable<UUID> symIds, Domain domain);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
@@ -73,35 +73,35 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
 
   @Query(
       """
-         from catalog_tailoring_reference tr
-           left join fetch tr.owner
-           left join fetch tr.target
-           where tr.id in ?1 and tr.owner.domain.owner = ?2
-         """)
+      from catalog_tailoring_reference tr
+        left join fetch tr.owner
+        left join fetch tr.target
+        where tr.id in ?1 and tr.owner.domain.owner = ?2
+      """)
   Set<CatalogTailoringReferenceData> findTailoringReferencesByIds(
       Iterable<UUID> ids, Client client);
 
   @Query(
       """
-                select ci from #{#entityName} ci
-                  left join fetch ci.tailoringReferences
-                  join ci.domainTemplate as dt
-                  where dt.id = ?1
-              """)
+        select ci from #{#entityName} ci
+          left join fetch ci.tailoringReferences
+          join ci.domainTemplate as dt
+          where dt.id = ?1
+      """)
   Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(UUID domainTemplateId);
 
   @Query(
       """
-    select ci from catalogitem ci
-        where ci.symbolicDbId in ?1 and ci.domain.id = ?2 and ci.domain.owner.id = ?3
-  """)
+        select ci from catalogitem ci
+            where ci.symbolicDbId in ?1 and ci.domain.id = ?2 and ci.domain.owner.id = ?3
+      """)
   Set<CatalogItem> findAllByIdsAndDomain(
       Collection<UUID> symbolicDbIds, UUID domainId, UUID clientId);
 
   @Query(
       """
-    select ci from catalogitem ci
-        where ci.symbolicDbId in ?1 and ci.domainTemplate.id = ?2
-  """)
+        select ci from catalogitem ci
+            where ci.symbolicDbId in ?1 and ci.domainTemplate.id = ?2
+      """)
   Set<CatalogItem> findAllByIdsAndDomainTemplate(Set<UUID> symbolicDbIds, UUID domainTemplateId);
 }

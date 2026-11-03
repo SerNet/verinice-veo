@@ -82,28 +82,27 @@ public class GetUnitDumpUseCase
     var elements = query.execute(PagingConfiguration.UNPAGED).resultPage();
     if (domain != null) {
       // remove data from other domains
-      elements.forEach(
-          e -> {
-            new HashSet<>(e.getDomains())
-                .stream().filter(d -> !domain.equals(d)).forEach(e::removeFromDomains);
+      elements.forEach(e -> {
+        new HashSet<>(e.getDomains())
+            .stream().filter(d -> !domain.equals(d)).forEach(e::removeFromDomains);
 
-            // remove risks for scenarios that are not contained in the dump
-            if (e instanceof Process process) {
-              filterRisks(process, domain);
-            } else if (e instanceof Asset asset) {
-              filterRisks(asset, domain);
-            } else if (e instanceof Scope scope) {
-              filterRisks(scope, domain);
-            }
-            // remove parts that are not contained in the dump
-            if (e instanceof CompositeElement<?> composite) {
-              composite.getParts().removeIf(part -> !part.isAssociatedWithDomain(domain));
-            }
-            // remove members that are not contained in the dump
-            if (e instanceof Scope scope) {
-              scope.getMembers().removeIf(member -> !member.isAssociatedWithDomain(domain));
-            }
-          });
+        // remove risks for scenarios that are not contained in the dump
+        if (e instanceof Process process) {
+          filterRisks(process, domain);
+        } else if (e instanceof Asset asset) {
+          filterRisks(asset, domain);
+        } else if (e instanceof Scope scope) {
+          filterRisks(scope, domain);
+        }
+        // remove parts that are not contained in the dump
+        if (e instanceof CompositeElement<?> composite) {
+          composite.getParts().removeIf(part -> !part.isAssociatedWithDomain(domain));
+        }
+        // remove members that are not contained in the dump
+        if (e instanceof Scope scope) {
+          scope.getMembers().removeIf(member -> !member.isAssociatedWithDomain(domain));
+        }
+      });
     }
     return elements;
   }
@@ -114,15 +113,14 @@ public class GetUnitDumpUseCase
       void filterRisks(TElement e, Domain domain) {
     e.getRisks().removeIf(r -> !r.getScenario().isAssociatedWithDomain(domain));
     e.getRisks()
-        .forEach(
-            r -> {
-              if (r.getMitigation() != null && !r.getMitigation().isAssociatedWithDomain(domain)) {
-                r.mitigate(null);
-              }
-              if (r.getRiskOwner() != null && !r.getRiskOwner().isAssociatedWithDomain(domain)) {
-                r.appoint(null);
-              }
-            });
+        .forEach(r -> {
+          if (r.getMitigation() != null && !r.getMitigation().isAssociatedWithDomain(domain)) {
+            r.mitigate(null);
+          }
+          if (r.getRiskOwner() != null && !r.getRiskOwner().isAssociatedWithDomain(domain)) {
+            r.appoint(null);
+          }
+        });
   }
 
   public record InputData(

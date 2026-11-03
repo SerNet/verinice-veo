@@ -52,14 +52,12 @@ public abstract class GetElementUseCase<T extends Element>
       T element, InputData input, UserAccessRights userAccessRights) {
     return Optional.ofNullable(input.domainId)
         .map(id -> domainRepository.getById(id, userAccessRights.getClientId()))
-        .map(
-            domain -> {
-              if (!element.isAssociatedWithDomain(domain)) {
-                throw NotFoundException.elementNotAssociatedWithDomain(
-                    element, domain.getIdAsString());
-              }
-              return domain;
-            });
+        .map(domain -> {
+          if (!element.isAssociatedWithDomain(domain)) {
+            throw NotFoundException.elementNotAssociatedWithDomain(element, domain.getIdAsString());
+          }
+          return domain;
+        });
   }
 
   @Valid

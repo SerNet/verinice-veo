@@ -65,15 +65,14 @@ public class DeleteElementUseCase
     // notify link targets
     entity
         .getLinks()
-        .forEach(
-            l ->
-                eventPublisher.publish(
-                    new InboundLinkEvent(
-                        l.getTarget(),
-                        l.getDomain(),
-                        l.getType(),
-                        InboundLinkEvent.Operation.DELETION,
-                        this)));
+        .forEach(l ->
+            eventPublisher.publish(
+                new InboundLinkEvent(
+                    l.getTarget(),
+                    l.getDomain(),
+                    l.getType(),
+                    InboundLinkEvent.Operation.DELETION,
+                    this)));
     return EmptyOutput.INSTANCE;
   }
 

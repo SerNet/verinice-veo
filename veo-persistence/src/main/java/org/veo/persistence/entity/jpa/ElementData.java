@@ -266,23 +266,21 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       Domain newDomain,
       Collection<DomainSpecificValueLocation> deprecatedDefinitions) {
     getCustomAspects(oldDomain)
-        .forEach(
-            ca -> {
-              String caType = ca.getType();
-              var attributes = findNonDeprecatedAttributes(ca, deprecatedDefinitions);
-              if (!attributes.isEmpty()) {
-                applyCustomAspectInIndividualDomain(caType, attributes, newDomain);
-              }
-            });
+        .forEach(ca -> {
+          String caType = ca.getType();
+          var attributes = findNonDeprecatedAttributes(ca, deprecatedDefinitions);
+          if (!attributes.isEmpty()) {
+            applyCustomAspectInIndividualDomain(caType, attributes, newDomain);
+          }
+        });
   }
 
   private Map<String, Object> findNonDeprecatedAttributes(
       CustomAspect ca, Collection<DomainSpecificValueLocation> deprecatedDefinitions) {
     return ca.getAttributes().entrySet().stream()
-        .filter(
-            attr ->
-                !deprecatedDefinitions.contains(
-                    new CustomAspectAttribute(getType(), ca.getType(), attr.getKey())))
+        .filter(attr ->
+            !deprecatedDefinitions.contains(
+                new CustomAspectAttribute(getType(), ca.getType(), attr.getKey())))
         .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
   }
 
@@ -292,21 +290,20 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       ElementTypeDefinition newElementTypeDefinition,
       ElementTypeDefinition oldElementTypeDefinition) {
     getLinks(oldDomain).stream()
-        .forEach(
-            cl -> {
-              LinkDefinition newLD = newElementTypeDefinition.getLinks().get(cl.getType());
-              LinkDefinition oldLD = oldElementTypeDefinition.getLinks().get(cl.getType());
-              if (newLD != null) { // TODO: vernice-veo#3381
-                if (isCompatible(newLD, oldLD)) {
-                  CustomLink link = new CustomLinkData();
-                  link.setDomain(newDomain);
-                  link.setType(cl.getType());
-                  link.setTarget(cl.getTarget());
-                  link.setAttributes(cl.getAttributes());
-                  addLink(link);
-                }
-              }
-            });
+        .forEach(cl -> {
+          LinkDefinition newLD = newElementTypeDefinition.getLinks().get(cl.getType());
+          LinkDefinition oldLD = oldElementTypeDefinition.getLinks().get(cl.getType());
+          if (newLD != null) { // TODO: vernice-veo#3381
+            if (isCompatible(newLD, oldLD)) {
+              CustomLink link = new CustomLinkData();
+              link.setDomain(newDomain);
+              link.setType(cl.getType());
+              link.setTarget(cl.getTarget());
+              link.setAttributes(cl.getAttributes());
+              addLink(link);
+            }
+          }
+        });
   }
 
   private boolean isCompatible(LinkDefinition newDefinition, LinkDefinition oldDefinition) {
@@ -334,12 +331,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   public void setCustomAspects(Set<CustomAspect> aCustomAspects) {
     this.customAspects.clear();
-    aCustomAspects.forEach(
-        aspect -> {
-          if (aspect instanceof CustomAspectData customAspectData) {
-            customAspectData.setOwner(this);
-          }
-        });
+    aCustomAspects.forEach(aspect -> {
+      if (aspect instanceof CustomAspectData customAspectData) {
+        customAspectData.setOwner(this);
+      }
+    });
     this.customAspects.addAll(aCustomAspects);
   }
 
@@ -396,22 +392,20 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   private boolean setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
     return findAspectByDomain(decisionResultsAspects, domain)
-        .map(
-            a -> {
-              if (a.getResults().equals(results)) {
-                return false;
-              }
-              a.setResults(results);
-              return true;
-            })
-        .orElseGet(
-            () -> {
-              if (results.isEmpty()) {
-                return false;
-              }
-              decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
-              return true;
-            });
+        .map(a -> {
+          if (a.getResults().equals(results)) {
+            return false;
+          }
+          a.setResults(results);
+          return true;
+        })
+        .orElseGet(() -> {
+          if (results.isEmpty()) {
+            return false;
+          }
+          decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
+          return true;
+        });
   }
 
   @Override
@@ -452,10 +446,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   public boolean applyCustomAspect(CustomAspect customAspect, boolean sync) {
     requireAssociationWithDomain(customAspect.getDomain());
     return getTargetDomainsForCustomAspectChange(customAspect, sync).stream()
-        .map(
-            d ->
-                applyCustomAspectInIndividualDomain(
-                    customAspect.getType(), customAspect.getAttributes(), d))
+        .map(d ->
+            applyCustomAspectInIndividualDomain(
+                customAspect.getType(), customAspect.getAttributes(), d))
         .toList()
         .contains(true);
   }
@@ -500,13 +493,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   private CustomAspect findOrAddCustomAspect(Domain domain, String type) {
     return findCustomAspect(domain, type)
-        .orElseGet(
-            () -> {
-              var ca = new CustomAspectData(type, new HashMap<>(), domain);
-              ca.setOwner(this);
-              customAspects.add(ca);
-              return ca;
-            });
+        .orElseGet(() -> {
+          var ca = new CustomAspectData(type, new HashMap<>(), domain);
+          ca.setOwner(this);
+          customAspects.add(ca);
+          return ca;
+        });
   }
 
   private void toItem(Domain domain, TemplateItem<?, ?> item) {
@@ -566,25 +558,23 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   private boolean removeCustomAspectInIndividualDomain(
       @NotNull String type, @NotNull Domain domain) {
     return findCustomAspect(domain, type)
-        .map(
-            customAspect -> {
-              if (customAspect instanceof CustomAspectData propertiesData) {
-                propertiesData.setOwner(null);
-              }
-              this.customAspects.remove(customAspect);
-              return true;
-            })
+        .map(customAspect -> {
+          if (customAspect instanceof CustomAspectData propertiesData) {
+            propertiesData.setOwner(null);
+          }
+          this.customAspects.remove(customAspect);
+          return true;
+        })
         .orElse(false);
   }
 
   private Optional<CustomLink> findLink(String type, Element target, Domain domain) {
     return links.stream()
-        .filter(
-            l ->
-                // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
-                l.getDomain().equals(domain)
-                    && l.getType().equals(type)
-                    && l.getTarget().equals(target))
+        .filter(l ->
+            // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
+            l.getDomain().equals(domain)
+                && l.getType().equals(type)
+                && l.getTarget().equals(target))
         .findFirst();
   }
 
@@ -617,11 +607,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   private ElementDomainAssociation requireAssociationWithDomain(Domain domain) {
     return findAspectByDomain(domainAssociations, domain)
-        .orElseThrow(
-            () ->
-                new UnprocessableDataException(
-                    "%s %s is not associated with domain %s"
-                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
+        .orElseThrow(() ->
+            new UnprocessableDataException(
+                "%s %s is not associated with domain %s"
+                    .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
   /**

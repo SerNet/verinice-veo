@@ -175,16 +175,14 @@ public class EntityStateMapper {
     } else {
       var riskValues =
           source.getRiskValues().stream()
-              .map(
-                  rv ->
-                      RiskValues.builder()
-                          .domainId(
-                              domainIdMapping.getOrDefault(rv.getDomainId(), rv.getDomainId()))
-                          .riskDefinitionId(rv.getRiskDefinitionId())
-                          .probability(rv.getProbability())
-                          .impactCategories(rv.getImpactCategories())
-                          .categorizedRisks(rv.getCategorizedRisks())
-                          .build())
+              .map(rv ->
+                  RiskValues.builder()
+                      .domainId(domainIdMapping.getOrDefault(rv.getDomainId(), rv.getDomainId()))
+                      .riskDefinitionId(rv.getRiskDefinitionId())
+                      .probability(rv.getProbability())
+                      .impactCategories(rv.getImpactCategories())
+                      .categorizedRisks(rv.getCategorizedRisks())
+                      .build())
               .collect(Collectors.toSet());
 
       target.defineRiskValues(riskValues);
@@ -282,9 +280,8 @@ public class EntityStateMapper {
 
     // Apply new CIs
     Set<ControlImplementationState> states = source.getControlImplementationStates();
-    states.forEach(
-        ciState ->
-            transferState(target, idRefResolver, ciState, source.getDomainAssociationStates()));
+    states.forEach(ciState ->
+        transferState(target, idRefResolver, ciState, source.getDomainAssociationStates()));
   }
 
   private <T extends Element> void applyRequirementImplementations(
@@ -302,15 +299,14 @@ public class EntityStateMapper {
 
     source
         .getRequirementImplementationStates()
-        .forEach(
-            ris -> {
-              Control control = idRefResolver.resolve(ris.getControl());
-              RequirementImplementation ri =
-                  target
-                      .findRequirementImplementation(control)
-                      .orElseGet(() -> target.addRequirementImplementation(control));
-              mapState(ris, ri, idRefResolver);
-            });
+        .forEach(ris -> {
+          Control control = idRefResolver.resolve(ris.getControl());
+          RequirementImplementation ri =
+              target
+                  .findRequirementImplementation(control)
+                  .orElseGet(() -> target.addRequirementImplementation(control));
+          mapState(ris, ri, idRefResolver);
+        });
   }
 
   private static void transferState(
@@ -322,14 +318,13 @@ public class EntityStateMapper {
     ci.setDescription(sourceState.getDescription());
     ci.setResponsible(
         Optional.ofNullable(sourceState.getResponsible()).map(idRefResolver::resolve).orElse(null));
-    domainAssociationStates.forEach(
-        da -> {
-          var domain = idRefResolver.resolve(da.getDomain());
-          ci.setCustomAspects(
-              domain,
-              sourceState.getCustomAspectStates(domain.getId()).stream()
-                  .collect(Collectors.toMap(s -> s.getType(), s -> s.getAttributes())));
-        });
+    domainAssociationStates.forEach(da -> {
+      var domain = idRefResolver.resolve(da.getDomain());
+      ci.setCustomAspects(
+          domain,
+          sourceState.getCustomAspectStates(domain.getId()).stream()
+              .collect(Collectors.toMap(s -> s.getType(), s -> s.getAttributes())));
+    });
   }
 
   private static Predicate<Control> isNotPresentIn(RiskAffectedState<?> source) {
@@ -344,26 +339,20 @@ public class EntityStateMapper {
     // Remove old links that are absent in new links
     Set<CustomLink> removedLinks =
         Set.copyOf(target.getLinks(domain)).stream()
-            .filter(
-                oldLink ->
-                    newLinks.stream()
-                        .noneMatch(
-                            newLink ->
-                                newLink.getType().equals(oldLink.getType())
-                                    && oldLink
-                                        .getTarget()
-                                        .getId()
-                                        .equals(newLink.getTarget().getId())))
+            .filter(oldLink ->
+                newLinks.stream()
+                    .noneMatch(newLink ->
+                        newLink.getType().equals(oldLink.getType())
+                            && oldLink.getTarget().getId().equals(newLink.getTarget().getId())))
             .collect(Collectors.toSet());
     removedLinks.forEach(target::removeLink);
     // Apply new links
-    newLinks.forEach(
-        link -> {
-          CustomLink newLink = mapLink(link, target, domain, idRefResolver);
-          if (target.applyLink(newLink)) {
-            publishLinkEvent(newLink, InboundLinkEvent.Operation.CREATION_OR_UPDATE);
-          }
-        });
+    newLinks.forEach(link -> {
+      CustomLink newLink = mapLink(link, target, domain, idRefResolver);
+      if (target.applyLink(newLink)) {
+        publishLinkEvent(newLink, InboundLinkEvent.Operation.CREATION_OR_UPDATE);
+      }
+    });
 
     removedLinks.forEach(rl -> publishLinkEvent(rl, InboundLinkEvent.Operation.DELETION));
   }
@@ -374,18 +363,15 @@ public class EntityStateMapper {
     var customAspectStates = source.getCustomAspectStates();
     // Remove old CAs that are absent in new CAs
     Set.copyOf(target.getCustomAspects(domain)).stream()
-        .filter(
-            oldCa ->
-                customAspectStates.stream()
-                    .noneMatch(newCa -> newCa.getType().equals(oldCa.getType())))
+        .filter(oldCa ->
+            customAspectStates.stream().noneMatch(newCa -> newCa.getType().equals(oldCa.getType())))
         .forEach(customAspect -> target.removeCustomAspect(customAspect, sync));
     // Apply new CAs
-    customAspectStates.forEach(
-        caState -> {
-          var newCa = entityFactory.createCustomAspect(caState.getType(), domain);
-          newCa.setAttributes(caState.getAttributes());
-          target.applyCustomAspect(newCa, sync);
-        });
+    customAspectStates.forEach(caState -> {
+      var newCa = entityFactory.createCustomAspect(caState.getType(), domain);
+      newCa.setAttributes(caState.getAttributes());
+      target.applyCustomAspect(newCa, sync);
+    });
   }
 
   private void mapToEntity(
@@ -480,32 +466,31 @@ public class EntityStateMapper {
           .filter(d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getId())))
           .forEach(target::removeFromDomains);
     }
-    domains.forEach(
-        association -> {
-          Domain domain = idRefResolver.resolve(association.getDomain());
-          String newSubType = association.getSubType();
-          String newStatus = association.getStatus();
-          target
-              .findSubType(domain)
-              .ifPresentOrElse(
-                  oldSubType -> {
-                    if (!newSubType.equals(oldSubType)) {
-                      throw new IllegalArgumentException(
-                          "Cannot change a sub type on an existing element");
-                    }
-                    target.setStatus(newStatus, domain);
-                  },
-                  () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
-          applyLinks(association, target, idRefResolver, domain);
-          applyCustomAspects(association, target, domain, syncCustomAspects);
+    domains.forEach(association -> {
+      Domain domain = idRefResolver.resolve(association.getDomain());
+      String newSubType = association.getSubType();
+      String newStatus = association.getStatus();
+      target
+          .findSubType(domain)
+          .ifPresentOrElse(
+              oldSubType -> {
+                if (!newSubType.equals(oldSubType)) {
+                  throw new IllegalArgumentException(
+                      "Cannot change a sub type on an existing element");
+                }
+                target.setStatus(newStatus, domain);
+              },
+              () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
+      applyLinks(association, target, idRefResolver, domain);
+      applyCustomAspects(association, target, domain, syncCustomAspects);
 
-          target.setAppliedCatalogItem(
-              domain,
-              Optional.ofNullable(association.getAppliedCatalogItem())
-                  .map(idRefResolver::resolve)
-                  .orElse(null));
-          customMapper.accept(domain, association);
-        });
+      target.setAppliedCatalogItem(
+          domain,
+          Optional.ofNullable(association.getAppliedCatalogItem())
+              .map(idRefResolver::resolve)
+              .orElse(null));
+      customMapper.accept(domain, association);
+    });
   }
 
   private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
@@ -542,11 +527,10 @@ public class EntityStateMapper {
     currentValues.potentialImpacts().keySet().stream()
         .map(CategoryRef::getIdRef)
         .filter(cat -> !values.getPotentialImpacts().containsKey(cat))
-        .forEach(
-            removedCat -> {
-              values.getPotentialImpactReasons().remove(removedCat);
-              values.getPotentialImpactExplanations().remove(removedCat);
-            });
+        .forEach(removedCat -> {
+          values.getPotentialImpactReasons().remove(removedCat);
+          values.getPotentialImpactExplanations().remove(removedCat);
+        });
     return new ImpactValues(
         mapToCategories(values.getPotentialImpacts(), riskDefinitionId, referenceProvider),
         mapToCategories(

@@ -53,12 +53,11 @@ public class DeleteRiskDefinitionUseCase
     domain.removeRiskDefinition(riskDefRef);
     repositoryProvider.getRiskRelatedElementRepos().stream()
         .flatMap(r -> r.findByDomain(domain).stream())
-        .forEach(
-            e -> {
-              if (e.removeRiskDefinition(riskDefRef, domain)) {
-                e.setUpdatedAt(Instant.now());
-              }
-            });
+        .forEach(e -> {
+          if (e.removeRiskDefinition(riskDefRef, domain)) {
+            e.setUpdatedAt(Instant.now());
+          }
+        });
 
     templateItemMigrationService.removeRiskDefinition(domain, riskDefRef);
     return EmptyOutput.INSTANCE;

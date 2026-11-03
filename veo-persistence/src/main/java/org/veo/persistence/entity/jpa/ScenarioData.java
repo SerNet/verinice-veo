@@ -106,12 +106,11 @@ public class ScenarioData extends ElementData implements Scenario {
     }
     var aspect =
         findAspectByDomain(this.riskValuesAspects, domain)
-            .orElseGet(
-                () -> {
-                  var newRiskValues = new ScenarioRiskValuesAspectData(domain, this);
-                  this.riskValuesAspects.add(newRiskValues);
-                  return newRiskValues;
-                });
+            .orElseGet(() -> {
+              var newRiskValues = new ScenarioRiskValuesAspectData(domain, this);
+              this.riskValuesAspects.add(newRiskValues);
+              return newRiskValues;
+            });
     aspect.setPotentialProbability(potentialProbability);
   }
 

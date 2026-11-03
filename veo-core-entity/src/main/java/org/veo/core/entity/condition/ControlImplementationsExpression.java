@@ -42,13 +42,12 @@ public class ControlImplementationsExpression implements VeoExpression {
       var complianceSubTypes =
           domain.getControlImplementationConfiguration().complianceControlSubTypes();
       return ra.getControlImplementations().stream()
-          .filter(
-              ci ->
-                  !complianceOnly
-                      || ci.getControl()
-                          .findSubType(domain)
-                          .filter(complianceSubTypes::contains)
-                          .isPresent())
+          .filter(ci ->
+              !complianceOnly
+                  || ci.getControl()
+                      .findSubType(domain)
+                      .filter(complianceSubTypes::contains)
+                      .isPresent())
           .toList();
     }
     return List.of();

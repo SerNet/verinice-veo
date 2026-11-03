@@ -142,9 +142,8 @@ public class DomainRepositoryImpl
     dataRepository.findByIdWithDecisionsAndInspections(id, clientId);
     dataRepository.findWithCatalogItemsAndAllReferencesById(id);
     d.getProfiles()
-        .forEach(
-            p ->
-                profileDataRepository.findProfileByIdFetchTailoringReferences(p.getId(), clientId));
+        .forEach(p ->
+            profileDataRepository.findProfileByIdFetchTailoringReferences(p.getId(), clientId));
     return d;
   }
 

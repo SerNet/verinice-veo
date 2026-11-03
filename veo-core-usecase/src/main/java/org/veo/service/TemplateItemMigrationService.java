@@ -83,13 +83,12 @@ public class TemplateItemMigrationService {
 
   private void removeRiskDefinitionFromProfile(Profile p, List<RiskDefinitionRef> keySet) {
     RISK_RELATED_ELEMENTS.stream()
-        .forEach(
-            type -> {
-              Set<ProfileItem> items = profileItemRepository.findAllByProfile(p, type);
-              items.stream()
-                  .forEach(templateItem -> removeRiskDefinitionFromItem(templateItem, keySet));
-              removeRiskDefinitionFromRiskTailorRef(items, keySet);
-            });
+        .forEach(type -> {
+          Set<ProfileItem> items = profileItemRepository.findAllByProfile(p, type);
+          items.stream()
+              .forEach(templateItem -> removeRiskDefinitionFromItem(templateItem, keySet));
+          removeRiskDefinitionFromRiskTailorRef(items, keySet);
+        });
   }
 
   private void removeRiskDefinitionFromItem(
@@ -173,19 +172,17 @@ public class TemplateItemMigrationService {
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(RiskTailoringReference.class::isInstance)
         .map(RiskTailoringReference.class::cast)
-        .forEach(
-            r -> {
-              Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions =
-                  r.getRiskDefinitions();
-              Optional.ofNullable(riskDefinitions.get(rd.toRef()))
-                  .ifPresent(
-                      riskTailoringReferenceValues -> {
-                        var categories = new HashMap<>(riskTailoringReferenceValues.categories());
-                        removedRiskValueCategories(detectedChanges).forEach(categories::remove);
-                        riskDefinitions.put(
-                            rd.toRef(), riskTailoringReferenceValues.withCategories(categories));
-                      });
-            });
+        .forEach(r -> {
+          Map<RiskDefinitionRef, RiskTailoringReferenceValues> riskDefinitions =
+              r.getRiskDefinitions();
+          Optional.ofNullable(riskDefinitions.get(rd.toRef()))
+              .ifPresent(riskTailoringReferenceValues -> {
+                var categories = new HashMap<>(riskTailoringReferenceValues.categories());
+                removedRiskValueCategories(detectedChanges).forEach(categories::remove);
+                riskDefinitions.put(
+                    rd.toRef(), riskTailoringReferenceValues.withCategories(categories));
+              });
+        });
   }
 
   public void migrate(ElementType type, Domain domain) {
@@ -217,22 +214,21 @@ public class TemplateItemMigrationService {
     var definition = domain.getElementTypeDefinition(item.getElementType());
     new HashMap<>(item.getCustomAspects())
         .entrySet()
-        .forEach(
-            entry -> {
-              var caDefinition = definition.getCustomAspects().get(entry.getKey());
-              if (caDefinition == null) {
-                log.debug(
-                    "Removing obsolete custom aspect {} from element {}.",
-                    entry.getKey(),
-                    item.getSymbolicIdAsString());
-                item.getCustomAspects().remove(entry.getKey());
-                return;
-              }
-              elementMigrationService.migrateAttributes(
-                  entry.getValue(),
-                  caDefinition.getAttributeDefinitions(),
-                  definition.getTranslations());
-            });
+        .forEach(entry -> {
+          var caDefinition = definition.getCustomAspects().get(entry.getKey());
+          if (caDefinition == null) {
+            log.debug(
+                "Removing obsolete custom aspect {} from element {}.",
+                entry.getKey(),
+                item.getSymbolicIdAsString());
+            item.getCustomAspects().remove(entry.getKey());
+            return;
+          }
+          elementMigrationService.migrateAttributes(
+              entry.getValue(),
+              caDefinition.getAttributeDefinitions(),
+              definition.getTranslations());
+        });
   }
 
   private void migrateAllTailoringReferences(
@@ -242,34 +238,33 @@ public class TemplateItemMigrationService {
         .filter(LinkTailoringReference.class::isInstance)
         .map(LinkTailoringReference.class::cast)
         .filter(ltr -> ltr.getLinkSourceItem().getElementType() == type)
-        .forEach(
-            linkTailoringReference -> {
-              var etd = domain.getElementTypeDefinition(type);
-              etd.findLink(linkTailoringReference.getLinkType())
-                  .ifPresentOrElse(
-                      linkDef -> {
-                        elementMigrationService.migrateAttributes(
-                            linkTailoringReference.getAttributes(),
-                            linkDef.getAttributeDefinitions(),
-                            etd.getTranslations());
-                        try {
-                          TemplateItemValidator.validate(linkTailoringReference, domain);
-                        } catch (UnprocessableDataException unDaEx) {
-                          log.info("Tailoring reference validation failed", unDaEx);
-                          log.info(
-                              "Deleting invalid tailoring reference {}",
-                              linkTailoringReference.getIdAsString());
-                          linkTailoringReference.remove();
-                        }
-                      },
-                      () -> {
-                        log.info(
-                            "Link type {} for tailoring reference is invalid, deleting invalid tailoring reference {}",
-                            linkTailoringReference.getLinkType(),
-                            linkTailoringReference.getIdAsString());
-                        linkTailoringReference.remove();
-                      });
-            });
+        .forEach(linkTailoringReference -> {
+          var etd = domain.getElementTypeDefinition(type);
+          etd.findLink(linkTailoringReference.getLinkType())
+              .ifPresentOrElse(
+                  linkDef -> {
+                    elementMigrationService.migrateAttributes(
+                        linkTailoringReference.getAttributes(),
+                        linkDef.getAttributeDefinitions(),
+                        etd.getTranslations());
+                    try {
+                      TemplateItemValidator.validate(linkTailoringReference, domain);
+                    } catch (UnprocessableDataException unDaEx) {
+                      log.info("Tailoring reference validation failed", unDaEx);
+                      log.info(
+                          "Deleting invalid tailoring reference {}",
+                          linkTailoringReference.getIdAsString());
+                      linkTailoringReference.remove();
+                    }
+                  },
+                  () -> {
+                    log.info(
+                        "Link type {} for tailoring reference is invalid, deleting invalid tailoring reference {}",
+                        linkTailoringReference.getLinkType(),
+                        linkTailoringReference.getIdAsString());
+                    linkTailoringReference.remove();
+                  });
+        });
   }
 
   private <TKey, TValue> Map<TKey, TValue> removeInvalidKeys(

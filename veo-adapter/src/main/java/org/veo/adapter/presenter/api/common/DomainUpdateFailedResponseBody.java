@@ -48,10 +48,9 @@ public class DomainUpdateFailedResponseBody extends ApiResponseBody {
             .collect(Collectors.groupingBy(Element::getOwner))
             .entrySet()
             .stream()
-            .map(
-                kv ->
-                    UnitElementsDtoGroup.from(
-                        kv.getKey(), kv.getValue(), referenceAssembler, ex.getOldDomain()))
+            .map(kv ->
+                UnitElementsDtoGroup.from(
+                    kv.getKey(), kv.getValue(), referenceAssembler, ex.getOldDomain()))
             .toList();
   }
 

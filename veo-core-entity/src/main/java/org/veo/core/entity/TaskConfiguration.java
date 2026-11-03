@@ -49,17 +49,16 @@ public record TaskConfiguration(
   }
 
   public void selfValidate(DomainBase domain) {
-    inspectionTaskTemplates.forEach(
-        (inspectionId, taskTemplate) -> {
-          try {
-            var inspection = domain.getInspection(inspectionId);
-            taskTemplate.selfValidate(inspection, domain);
-          } catch (NotFoundException | UnprocessableDataException | IllegalArgumentException ex) {
-            throw new UnprocessableDataException(
-                "Invalid task template for inspection '%s': %s"
-                    .formatted(inspectionId, ex.getMessage()));
-          }
-        });
+    inspectionTaskTemplates.forEach((inspectionId, taskTemplate) -> {
+      try {
+        var inspection = domain.getInspection(inspectionId);
+        taskTemplate.selfValidate(inspection, domain);
+      } catch (NotFoundException | UnprocessableDataException | IllegalArgumentException ex) {
+        throw new UnprocessableDataException(
+            "Invalid task template for inspection '%s': %s"
+                .formatted(inspectionId, ex.getMessage()));
+      }
+    });
   }
 
   public record InspectionTaskTemplate(

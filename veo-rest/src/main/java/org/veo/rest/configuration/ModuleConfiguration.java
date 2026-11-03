@@ -356,43 +356,40 @@ public class ModuleConfiguration {
     return (operation, handlerMethod) -> {
       operation
           .getResponses()
-          .forEach(
-              (status, response) -> {
-                if (!HttpStatus.resolve(Integer.parseInt(status)).is4xxClientError()) {
-                  return;
-                }
-                var annotations =
-                    AnnotatedElementUtils.findMergedRepeatableAnnotations(
-                        handlerMethod.getMethod(), ApiResponse.class);
-                Optional<ApiResponse> annotationForStatusCode =
-                    annotations.stream().filter(a -> status.equals(a.responseCode())).findAny();
-                if (!annotationForStatusCode.isPresent()) {
-                  response.setContent(content);
-                  return;
-                }
-                // check schema and override if not set
-                Optional<io.swagger.v3.oas.annotations.media.Content> contentForStatusCode =
-                    Arrays.stream(annotationForStatusCode.get().content())
-                        .filter(
-                            it ->
-                                it.mediaType()
-                                    .equals(
-                                        org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
-                        .findAny();
-                if (!contentForStatusCode.isPresent()) {
-                  response.setContent(content);
-                  return;
-                }
-                MediaType mediaType =
-                    response
-                        .getContent()
-                        .get(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
-                var contentSchema = contentForStatusCode.get().schema();
-                if (mediaType != null && contentSchema == null
-                    || contentSchema.implementation() == Void.class) {
-                  mediaType.setSchema(schema);
-                }
-              });
+          .forEach((status, response) -> {
+            if (!HttpStatus.resolve(Integer.parseInt(status)).is4xxClientError()) {
+              return;
+            }
+            var annotations =
+                AnnotatedElementUtils.findMergedRepeatableAnnotations(
+                    handlerMethod.getMethod(), ApiResponse.class);
+            Optional<ApiResponse> annotationForStatusCode =
+                annotations.stream().filter(a -> status.equals(a.responseCode())).findAny();
+            if (!annotationForStatusCode.isPresent()) {
+              response.setContent(content);
+              return;
+            }
+            // check schema and override if not set
+            Optional<io.swagger.v3.oas.annotations.media.Content> contentForStatusCode =
+                Arrays.stream(annotationForStatusCode.get().content())
+                    .filter(it ->
+                        it.mediaType()
+                            .equals(org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
+                    .findAny();
+            if (!contentForStatusCode.isPresent()) {
+              response.setContent(content);
+              return;
+            }
+            MediaType mediaType =
+                response
+                    .getContent()
+                    .get(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+            var contentSchema = contentForStatusCode.get().schema();
+            if (mediaType != null && contentSchema == null
+                || contentSchema.implementation() == Void.class) {
+              mediaType.setSchema(schema);
+            }
+          });
       return operation;
     };
   }

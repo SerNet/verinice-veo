@@ -56,12 +56,10 @@ final class DurationStringType extends SimpleType {
   @Override
   public String format(Object value, Locale locale) {
     return split(DurationAttributeDefinition.parse((String) value))
-        .map(
-            e ->
-                "%s %s"
-                    .formatted(
-                        e.amount,
-                        ResourceBundle.getBundle("messages", locale).getString(e.unitKey())))
+        .map(e ->
+            "%s %s"
+                .formatted(
+                    e.amount, ResourceBundle.getBundle("messages", locale).getString(e.unitKey())))
         .collect(Collectors.joining(", "));
   }
 

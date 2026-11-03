@@ -74,10 +74,9 @@ public class SchemaProvider {
                 Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
     configBuilder
         .forMethods()
-        .withIgnoreCheck(
-            method ->
-                method.getAnnotation(JsonProperty.class) == null
-                    && method.getAnnotation(Schema.class) == null);
+        .withIgnoreCheck(method ->
+            method.getAnnotation(JsonProperty.class) == null
+                && method.getAnnotation(Schema.class) == null);
 
     SchemaGeneratorConfig config = configBuilder.build();
     return new SchemaGenerator(config);

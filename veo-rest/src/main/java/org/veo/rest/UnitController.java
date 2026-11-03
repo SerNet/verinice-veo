@@ -140,8 +140,7 @@ public class UnitController extends AbstractEntityController {
               String unitId,
           @Parameter(description = "Domain containing the catalog items") @PathVariable
               String domainId,
-          @Parameter(description = "The list of catalog items to create in the unit.")
-              @RequestParam()
+          @Parameter(description = "The list of catalog items to create in the unit.") @RequestParam
               List<String> itemIds,
           @Parameter(
                   description =
@@ -326,10 +325,9 @@ public class UnitController extends AbstractEntityController {
   private CompletableFuture<ResponseEntity<ApiResponseBody>> doImportUnit(UnitDumpDto dto) {
     var domainMetadatas =
         dto.getDomains().stream()
-            .map(
-                d ->
-                    new UnitImportUseCase.DomainMetadata(
-                        d.getId(), d.getName(), d.getAuthority(), d.getTemplateVersionAsString()))
+            .map(d ->
+                new UnitImportUseCase.DomainMetadata(
+                    d.getId(), d.getName(), d.getAuthority(), d.getTemplateVersionAsString()))
             .collect(Collectors.toSet());
     return useCaseInteractor.execute(
         unitImportUseCase,
@@ -346,7 +344,7 @@ public class UnitController extends AbstractEntityController {
   }
 
   // TODO: veo-279 use the complete dto
-  @PostMapping()
+  @PostMapping
   @Operation(summary = "Creates a unit")
   @ApiResponse(
       responseCode = "201",
