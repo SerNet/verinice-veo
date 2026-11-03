@@ -65,25 +65,27 @@ public record TaskConfiguration(
       @Schema(
               description = "Brief task description",
               example = "{\"en\":\"Revise potential impact.\"}")
+          @NotNull
+          @NonNull
           TranslatedText summary,
       @Size(min = 1, max = Constraints.DEFAULT_STRING_MAX_LENGTH)
           @Schema(
               description =
                   "A custom link ID - the responsibility link type must target persons and is used to determine the person responsible for an inspection task.")
+          @NotNull
+          @NonNull
           String responsibilityLink) {
     void selfValidate(Inspection inspection, DomainBase domain) {
-      if (responsibilityLink != null) {
-        ElementType elementType = inspection.getElementType();
-        if (elementType == null) {
-          throw new UnprocessableDataException(
-              "A responsibility link can only be defined, if the inspection targets a specific element type.");
-        }
-        var link = domain.getLinkDefinition(elementType, responsibilityLink);
-        if (link.getTargetType() != ElementType.PERSON) {
-          throw new UnprocessableDataException(
-              "Link type '%s' cannot be used for task responsibilities, because it targets %s instead of persons"
-                  .formatted(responsibilityLink, link.getTargetType().getPluralTerm()));
-        }
+      ElementType elementType = inspection.getElementType();
+      if (elementType == null) {
+        throw new UnprocessableDataException(
+            "A task configuration can only be defined for an inspection that targets a specific element type.");
+      }
+      var link = domain.getLinkDefinition(elementType, responsibilityLink);
+      if (link.getTargetType() != ElementType.PERSON) {
+        throw new UnprocessableDataException(
+            "Link type '%s' cannot be used for task responsibilities, because it targets %s instead of persons"
+                .formatted(responsibilityLink, link.getTargetType().getPluralTerm()));
       }
     }
   }

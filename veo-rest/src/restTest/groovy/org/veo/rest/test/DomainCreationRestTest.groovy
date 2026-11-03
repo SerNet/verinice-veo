@@ -112,7 +112,8 @@ class DomainCreationRestTest extends DomainRestTest {
                 alwaysAddPart: [
                     summary: [
                         en: "Add many parts"
-                    ]
+                    ],
+                    responsibilityLink: 'administrator'
                 ]
             ]
             put("/content-creation/domains/$domainId/task-configuration", body, getETag(), 204, CONTENT_CREATOR)

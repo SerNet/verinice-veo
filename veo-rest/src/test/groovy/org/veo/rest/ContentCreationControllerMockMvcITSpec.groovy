@@ -1087,10 +1087,30 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ex = thrown(UnprocessableDataException)
         ex.message == "Invalid task template for inspection 'unreportedIncident': Link type 'discoverer' cannot be used for task responsibilities, because it targets controls instead of persons"
 
+        when: "trying to using an incomplete task template"
+        put("/content-creation/domains/$testDomain.id/task-configuration", [
+            inspectionTaskTemplates: [
+                unreportedIncident: [
+                    summary: [
+                        en: "Report that incident!"
+                    ]
+                ]
+            ]
+        ], 400)
+
+        then:
+        ex = thrown(HttpMessageNotReadableException)
+        ex.message == 'JSON parse error: Cannot construct instance of `org.veo.core.entity.TaskConfiguration$InspectionTaskTemplate`, problem: responsibilityLink is marked non-null but is null'
+
         when: "trying to use an undefined inspection"
         put("/content-creation/domains/$testDomain.id/task-configuration", [
             inspectionTaskTemplates: [
-                imaginary: [:]
+                imaginary: [
+                    responsibilityLink: 'favoriteUnicorn',
+                    summary: [
+                        en: "Just believe in it."
+                    ]
+                ]
             ]
         ], 422)
 
@@ -1128,7 +1148,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         ex = thrown(UnprocessableDataException)
-        ex.message == "Invalid task template for inspection 'genericInspection': A responsibility link can only be defined, if the inspection targets a specific element type."
+        ex.message == "Invalid task template for inspection 'genericInspection': A task configuration can only be defined for an inspection that targets a specific element type."
     }
 
     @WithUserDetails("content-creator")
