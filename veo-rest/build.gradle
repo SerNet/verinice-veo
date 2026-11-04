@@ -136,7 +136,7 @@ testing {
         }
         test {
             dependencies {
-                implementation 'com.networknt:json-schema-validator:3.0.8'
+                implementation 'com.networknt:json-schema-validator:3.0.9'
                 implementation "org.testcontainers:testcontainers"
                 implementation 'org.spockframework:spock-spring:2.5-groovy-6.0'
 
