@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.veo.core.entity.CompositeElement;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ElementData;
@@ -41,6 +42,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository,
       Class<S> elementType) {
     super(
         dataRepository,
@@ -48,6 +50,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         elementType);
     this.compositeRepo = dataRepository;
   }

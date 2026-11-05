@@ -17,10 +17,14 @@
  */
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -31,9 +35,23 @@ public interface InspectionFindingDataRepository
 
   List<InspectionFindingData> findAllByElementIsAndDomainIs(Element element, Domain domain);
 
-  void deleteAllByElementIsAndDomainIs(Element element, Domain domain);
+  @Transactional
+  @Modifying
+  @Query("delete from #{#entityName} where element = ?1 and domain = ?2")
+  void deleteAllByElementAndDomain(Element element, Domain domain);
 
-  void deleteAllByDomainIs(Domain domain);
+  @Transactional
+  @Modifying
+  @Query("delete from #{#entityName} where domain = ?1")
+  void deleteAllByDomain(Domain domain);
 
-  void deleteAllByDomainIsAndInspectionIdIs(Domain domain, String inspectionId);
+  @Transactional
+  @Modifying
+  @Query("delete from #{#entityName} where domain = ?1 and inspectionId = ?2")
+  void deleteAllByDomainAndInspectionId(Domain domain, String inspectionId);
+
+  @Transactional
+  @Modifying
+  @Query("delete from #{#entityName} where element.id in ?1")
+  void deleteAllByElementIdIn(Collection<UUID> elementIds);
 }

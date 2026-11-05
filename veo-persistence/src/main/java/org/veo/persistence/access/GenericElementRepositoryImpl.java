@@ -65,6 +65,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -159,6 +160,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   private final ControlImplementationDataRepository ciRepository;
 
   private final RequirementImplementationDataRepository riRepository;
+  private final InspectionFindingDataRepository inspectionFindingDataRepository;
   private final EntityManager em;
 
   @Override
@@ -221,7 +223,10 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   public void deleteAll(Collection<Element> elements) {
     List<UUID> elementUUIDs = elements.stream().map(Element::getId).toList();
     ListUtils.partition(elementUUIDs, VeoConstants.DB_QUERY_CHUNK_SIZE).stream()
-        .forEach(batch -> deleteLinksByTargets(Set.copyOf(batch)));
+        .forEach(batch -> {
+          deleteLinksByTargets(Set.copyOf(batch));
+          inspectionFindingDataRepository.deleteAllByElementIdIn(batch);
+        });
 
     elements.forEach(e -> e.getLinks().clear());
 
@@ -315,7 +320,8 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
             "delete from process_parts where composite_id in (select db_id from element where dtype = 'PROCESS' and owner_id = ?1)",
             "delete from scenario_parts where composite_id in (select db_id from element where dtype = 'SCENARIO' and owner_id = ?1)",
             "delete from scope_members where scope_id in (select db_id from element where dtype = 'SCOPE' and owner_id = ?1)",
-            "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('ASSET', 'PROCESS', 'SCOPE') and owner_id = ?1))")
+            "delete from riskvalues_aspect a where a.owner_db_id in (select r.db_id from abstractriskdata r where r.entity_db_id in (select db_id from element where dtype in ('ASSET', 'PROCESS', 'SCOPE') and owner_id = ?1))",
+            "delete from inspection_finding_data where unit_id = ?1")
         .forEach(
             statement -> em.createNativeQuery(statement).setParameter(1, unitId).executeUpdate());
     em.clear();

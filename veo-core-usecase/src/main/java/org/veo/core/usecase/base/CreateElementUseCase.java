@@ -32,6 +32,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.transform.IdentifiableFactory;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
@@ -56,6 +57,7 @@ public class CreateElementUseCase<TEntity extends Element>
   private final IdentifiableFactory identifiableFactory;
   private final EntityStateMapper entityStateMapper;
   private final Decider decider;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   @Transactional(Transactional.TxType.REQUIRED)
@@ -77,6 +79,7 @@ public class CreateElementUseCase<TEntity extends Element>
     addToScopes(entity, input.scopeIds, client);
     evaluateDecisions(entity);
     entity = repositoryProvider.getElementRepositoryFor(state.getModelInterface()).save(entity);
+    inspectionFindingRepository.updateInspections(entity, false);
     if (Process.class.equals(entityType)
         || Asset.class.equals(entityType)
         || Scope.class.equals(entityType)) {

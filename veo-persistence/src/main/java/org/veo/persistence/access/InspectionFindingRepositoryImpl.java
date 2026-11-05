@@ -63,7 +63,7 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
   @Override
   public void updateInspections(Element element, Domain domain, boolean deleteExistingInspections) {
     if (deleteExistingInspections) {
-      inspectionFindingDataRepository.deleteAllByElementIsAndDomainIs(element, domain);
+      inspectionFindingDataRepository.deleteAllByElementAndDomain(element, domain);
     }
     var inspections = domain.getInspections();
     inspectionFindingDataRepository.saveAll(getFindings(element, domain, inspections));
@@ -150,11 +150,11 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
 
   @Override
   public void removeInspections(Domain domain) {
-    inspectionFindingDataRepository.deleteAllByDomainIs(domain);
+    inspectionFindingDataRepository.deleteAllByDomain(domain);
   }
 
   @Override
   public void removeInspections(Domain domain, String inspectionId) {
-    inspectionFindingDataRepository.deleteAllByDomainIsAndInspectionIdIs(domain, inspectionId);
+    inspectionFindingDataRepository.deleteAllByDomainAndInspectionId(domain, inspectionId);
   }
 }

@@ -127,7 +127,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 12
+        queryCounts.select == 13
         queryCounts.insert == 6
         queryCounts.time < 500
         // 30 is the currently observed count of 27 rows plus an acceptable safety margin

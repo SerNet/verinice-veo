@@ -30,6 +30,10 @@ public interface InspectionFindingRepository {
 
   void updateInspections(Element element, Domain domain, boolean deleteExistingInspections);
 
+  default void updateInspections(Element element, boolean deleteExistingInspections) {
+    element.getDomains().forEach(d -> updateInspections(element, d, deleteExistingInspections));
+  }
+
   void updateInspections(Domain domain, boolean deleteExistingInspections);
 
   void updateInspections(

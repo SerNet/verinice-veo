@@ -20,14 +20,17 @@ package org.veo.persistence.access;
 import static java.util.Collections.singleton;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.UserAccessRights;
+import org.veo.core.VeoConstants;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -38,6 +41,7 @@ import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ElementData;
@@ -53,6 +57,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   final ScopeDataRepository scopeDataRepository;
   protected final ElementQueryFactory elementQueryFactory;
+  private final InspectionFindingDataRepository inspectionFindingDataRepository;
   final Class<T> elementType;
 
   AbstractElementRepository(
@@ -61,12 +66,14 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository,
       Class<T> elementType) {
     super(dataRepository, validation);
     this.dataRepository = dataRepository;
     this.linkDataRepository = linkDataRepository;
     this.scopeDataRepository = scopeDataRepository;
     this.elementQueryFactory = elementQueryFactory;
+    this.inspectionFindingDataRepository = inspectionFindingDataRepository;
     this.elementType = elementType;
   }
 
@@ -92,6 +99,8 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   public void deleteAll(Set<T> elements) {
     Set<UUID> elementIds = elements.stream().map(Element::getId).collect(Collectors.toSet());
+    ListUtils.partition(List.copyOf(elementIds), VeoConstants.DB_QUERY_CHUNK_SIZE)
+        .forEach(inspectionFindingDataRepository::deleteAllByElementIdIn);
     deleteLinksByTargets(elementIds);
 
     elements.forEach(e -> e.getLinks().clear());
@@ -125,6 +134,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   @Transactional
   public void deleteById(UUID id) {
+    inspectionFindingDataRepository.deleteAllByElementIdIn(singleton(id));
     deleteLinksByTargets(Set.of(id));
 
     // remove element from scope members:

@@ -32,6 +32,7 @@ import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
@@ -52,13 +53,15 @@ public class ControlRepositoryImpl
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       ElementQueryFactory elementQueryFactory,
-      RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository) {
+      RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository,
+      InspectionFindingDataRepository inspectionFindingDataRepository) {
     super(
         dataRepository,
         validation,
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         Control.class);
     this.riskAffectedDataRepository = riskAffectedDataRepository;
   }

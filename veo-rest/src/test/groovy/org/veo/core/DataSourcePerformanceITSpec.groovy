@@ -401,7 +401,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.delete == 16
+        queryCounts.delete == 17
         queryCounts.insert == 10
         queryCounts.update == 0
         queryCounts.select == 22
@@ -447,7 +447,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         } == 0
 
         and:
-        queryCounts.delete <= 12
+        queryCounts.delete <= 13
         queryCounts.insert == 1 // This count is off - at least 18 events are being inserted. See issue #2266.
         queryCounts.update in [2l, 3l]
         queryCounts.select == 42
@@ -495,7 +495,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.delete == 21
+        queryCounts.delete == 22
         queryCounts.insert == 0
         queryCounts.update == 1
         queryCounts.select == 3
@@ -535,10 +535,10 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         then:
-        queryCounts.select == 35
+        queryCounts.select == 34
         queryCounts.insert == 17
         queryCounts.update == 12
-        queryCounts.delete == 19
+        queryCounts.delete == 20
         queryCounts.time < 1000
     }
 
@@ -585,10 +585,10 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 24
+        queryCounts.select == 23
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.delete == 0
+        queryCounts.delete == 1
         queryCounts.time < 500
     }
 

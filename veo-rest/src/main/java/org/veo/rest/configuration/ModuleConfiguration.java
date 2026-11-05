@@ -55,6 +55,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.FlyweightLinkRepository;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.ProfileItemRepository;
@@ -324,9 +325,14 @@ public class ModuleConfiguration {
       GenericElementRepository genericElementRepository,
       EventPublisher eventPublisher,
       Decider decider,
-      DesignatorService designatorService) {
+      DesignatorService designatorService,
+      InspectionFindingRepository inspectionFindingRepository) {
     return new ElementBatchCreator(
-        genericElementRepository, eventPublisher, decider, designatorService);
+        genericElementRepository,
+        eventPublisher,
+        decider,
+        designatorService,
+        inspectionFindingRepository);
   }
 
   @Bean
