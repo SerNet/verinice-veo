@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -35,11 +36,13 @@ public class SaveTaskConfigurationUseCase
     implements TransactionalUseCase<SaveTaskConfigurationUseCase.InputData, UseCase.EmptyOutput> {
 
   private final DomainRepository domainRepository;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
   public EmptyOutput execute(InputData input, UserAccessRights userAccessRights) {
     var domain = domainRepository.getActiveById(input.domainId, userAccessRights.getClientId());
     domain.setTaskConfiguration(input.taskConfiguration);
+    inspectionFindingRepository.updateInspections(domain, true);
     return EmptyOutput.INSTANCE;
   }
 

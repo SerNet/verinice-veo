@@ -278,7 +278,7 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    @WithUserDetails("user@domain.example")
+    @WithUserDetails("content-creator")
     def "fetch inspection tasks"() {
         given:
         txTemplate.execute {
@@ -321,6 +321,21 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
                 element.name == "süßtem"
                 severity == "HINT"
                 summary.en == "check that asset"
+            }
+        }
+
+        when: "changing the task template"
+        parseJson(get("/domains/${testDomain.id}/task-configuration")).with{
+            it.inspectionTaskTemplates.check.summary.en = "check that asset ASAP"
+            put("/content-creation/domains/${owner.testDomain.id}/task-configuration", it,204)
+        }
+
+        then: "the task has changed"
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 1
+            with(items[0]) {
+                type == "inspection-finding"
+                summary.en == "check that asset ASAP"
             }
         }
     }
