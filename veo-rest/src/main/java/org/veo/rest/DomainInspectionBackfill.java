@@ -52,7 +52,7 @@ public class DomainInspectionBackfill {
         transactionTemplate.executeWithoutResult(_ -> {
           var domain = domainRepository.getById(domainId);
           inspectionFindingRepository.updateInspections(domain, true);
-          domain.setInspectionBackfillComplete(true);
+          domainRepository.markInspectionBackfillComplete(domainId);
         });
       } catch (RuntimeException e) {
         log.error("Inspection finding backfill failed for domain {}", domainId, e);

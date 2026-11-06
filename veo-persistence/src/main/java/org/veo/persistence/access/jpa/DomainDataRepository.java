@@ -24,7 +24,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -100,4 +102,9 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           where active = true and inspectionBackfillComplete = false
       """)
   Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling();
+
+  @Transactional
+  @Modifying
+  @Query("update #{#entityName} d set d.inspectionBackfillComplete = true where d.id = ?1")
+  void markInspectionBackfillComplete(UUID domainId);
 }

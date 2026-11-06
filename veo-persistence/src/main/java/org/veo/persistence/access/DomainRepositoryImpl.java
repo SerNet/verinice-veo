@@ -189,4 +189,9 @@ public class DomainRepositoryImpl
   public Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling() {
     return dataRepository.findIdsOfDomainsThatNeedInspectionBackfilling();
   }
+
+  @Override
+  public void markInspectionBackfillComplete(UUID domainId) {
+    dataRepository.markInspectionBackfillComplete(domainId);
+  }
 }
