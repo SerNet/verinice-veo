@@ -52,6 +52,7 @@ class DomainInspectionBackfillITSpec extends VeoSpringSpec {
     def "backfills findings and marks the domain as complete"() {
         given: "a domain that needs backfilling, with an asset created directly in the DB (no findings yet)"
         def domain = createDomain("needs backfill", false)
+        def versionBefore = domain.version
         def asset = createAsset(domain)
 
         expect:
@@ -63,6 +64,7 @@ class DomainInspectionBackfillITSpec extends VeoSpringSpec {
         then:
         findingsOf(asset, domain).size() == 1
         backfillComplete(domain)
+        domainRepository.getById(domain.id, domain.owner.id).version == versionBefore
     }
 
     def "skips domains that are already complete"() {
