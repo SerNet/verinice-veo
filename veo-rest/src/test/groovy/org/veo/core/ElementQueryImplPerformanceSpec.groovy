@@ -116,7 +116,7 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
             customAspects.first().attributes["foo"] == "bar"
             domains.first() != null
             getSubType(domain) != null
-            links.first() != null
+            links.first().target.name != null
         }
 
         QueryCountHolder.grandTotal.select == 6
