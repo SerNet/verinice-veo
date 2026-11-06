@@ -95,7 +95,7 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = {"links", "decisionResultsAspects"})
+  @EntityGraph(attributePaths = {"links", "links.target", "decisionResultsAspects"})
   List<T> findAllWithLinksDecisionsByIdIn(Iterable<UUID> ids);
 
   @Nonnull
