@@ -32,6 +32,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -54,13 +55,15 @@ public class ScenarioRepositoryImpl
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       RiskAffectedDataRepository<RiskAffectedData<?, ?>> riskAffectedDataRepository,
-      ElementQueryFactory elementQueryFactory) {
+      ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository) {
     super(
         dataRepository,
         validation,
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         Scenario.class);
     this.scenarioDataRepository = dataRepository;
     this.riskAffectedDataRepository = riskAffectedDataRepository;

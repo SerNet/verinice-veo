@@ -1925,6 +1925,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 'summary',
                 'responsibilityLink',
             ]
+            it.required ==~ [
+                'summary',
+                'responsibilityLink'
+            ]
             with(it.properties.summary) {
                 description == 'Brief task description'
                 type == 'object'

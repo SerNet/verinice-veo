@@ -25,6 +25,7 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.IncidentDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.IncidentData;
@@ -40,13 +41,15 @@ public class IncidentRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
-      ElementQueryFactory elementQueryFactory) {
+      ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository) {
     super(
         dataRepository,
         validation,
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         Incident.class);
   }
 

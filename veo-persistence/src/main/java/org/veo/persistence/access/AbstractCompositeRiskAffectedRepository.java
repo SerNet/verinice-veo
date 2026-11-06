@@ -31,6 +31,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.repository.RiskAffectedRepository;
 import org.veo.persistence.access.jpa.CompositeRiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ControlData;
@@ -53,6 +54,7 @@ abstract class AbstractCompositeRiskAffectedRepository<
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository,
       Class<S> elementType) {
     super(
         riskAffectedRepo,
@@ -60,6 +62,7 @@ abstract class AbstractCompositeRiskAffectedRepository<
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         elementType);
     this.riskAffectedRepo = riskAffectedRepo;
   }

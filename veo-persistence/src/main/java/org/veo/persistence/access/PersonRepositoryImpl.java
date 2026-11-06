@@ -36,6 +36,7 @@ import org.veo.core.repository.PersonRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
@@ -64,13 +65,15 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
       ProcessDataRepository processDataRepository,
       ElementQueryFactory elementQueryFactory,
       ControlImplementationDataRepository controlImplementationDataRepository,
-      RequirementImplementationDataRepository requirementImplementationDataRepository) {
+      RequirementImplementationDataRepository requirementImplementationDataRepository,
+      InspectionFindingDataRepository inspectionFindingDataRepository) {
     super(
         dataRepository,
         validation,
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         Person.class);
     this.personDataRepository = dataRepository;
     this.assetDataRepository = assetDataRepository;

@@ -25,6 +25,7 @@ import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.DocumentData;
@@ -40,13 +41,15 @@ public class DocumentRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
-      ElementQueryFactory elementQueryFactory) {
+      ElementQueryFactory elementQueryFactory,
+      InspectionFindingDataRepository inspectionFindingDataRepository) {
     super(
         dataRepository,
         validation,
         linkDataRepository,
         scopeDataRepository,
         elementQueryFactory,
+        inspectionFindingDataRepository,
         Document.class);
   }
 

@@ -85,6 +85,9 @@ public class DomainData extends DomainBaseData implements Domain {
     return active;
   }
 
+  @Column(name = "inspection_backfill_complete")
+  private boolean inspectionBackfillComplete;
+
   @Override
   public void setCatalogItems(Set<CatalogItem> catalogItems) {
     catalogItems.forEach(ci -> ci.setDomainBase(this));

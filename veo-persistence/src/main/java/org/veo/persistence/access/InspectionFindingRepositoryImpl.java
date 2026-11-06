@@ -25,8 +25,11 @@ import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.GenericElementRepository;
@@ -60,7 +63,7 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
   @Override
   public void updateInspections(Element element, Domain domain, boolean deleteExistingInspections) {
     if (deleteExistingInspections) {
-      inspectionFindingDataRepository.deleteAllByElementIsAndDomainIs(element, domain);
+      inspectionFindingDataRepository.deleteAllByElementAndDomain(element, domain);
     }
     var inspections = domain.getInspections();
     inspectionFindingDataRepository.saveAll(getFindings(element, domain, inspections));
@@ -114,12 +117,30 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
         .map(e ->
             e.getValue()
                 .run(element, domain)
-                .map(_ -> {
+                .map(f -> {
+                  String inspectionId = e.getKey();
                   var d = new InspectionFindingData();
-                  d.setInspectionId(e.getKey());
+                  d.setInspectionId(inspectionId);
                   d.setDomain(domain);
                   d.setElement(element);
                   d.setUnit(element.getOwner());
+                  d.setSeverity(f.getSeverity());
+
+                  var taskTemplate = domain.findInspectionTaskTemplate(inspectionId);
+                  d.setResponsible(
+                      taskTemplate
+                          .map(TaskConfiguration.InspectionTaskTemplate::responsibilityLink)
+                          .map(lt -> element.getLinks(lt, domain))
+                          // A single person can take responsibility, but not multiple ones - see
+                          // #5291.
+                          .map(l -> l.size() == 1 ? l.getFirst() : null)
+                          .map(CustomLink::getTarget)
+                          .map(Person.class::cast)
+                          .orElse(null));
+                  d.setTaskSummary(
+                      taskTemplate
+                          .map(TaskConfiguration.InspectionTaskTemplate::summary)
+                          .orElseGet(f::getDescription));
                   return d;
                 }))
         .filter(Optional::isPresent)
@@ -129,11 +150,11 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
 
   @Override
   public void removeInspections(Domain domain) {
-    inspectionFindingDataRepository.deleteAllByDomainIs(domain);
+    inspectionFindingDataRepository.deleteAllByDomain(domain);
   }
 
   @Override
   public void removeInspections(Domain domain, String inspectionId) {
-    inspectionFindingDataRepository.deleteAllByDomainIsAndInspectionIdIs(domain, inspectionId);
+    inspectionFindingDataRepository.deleteAllByDomainAndInspectionId(domain, inspectionId);
   }
 }

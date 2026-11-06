@@ -166,6 +166,7 @@ public class DomainRepositoryImpl
     var clientId = client.getId();
     em.flush();
     Stream.of(
+            "delete from inspection_finding_data where domain_id in (select db_id from domain where owner_db_id = ?1)",
             "delete from catalog_tailoring_reference where owner_db_id in (select db_id from catalogitem where domain_db_id in (select db_id from domain where owner_db_id = ?1))",
             "delete from profile_tailoring_reference where owner_db_id in (select db_id from profile_item where owner_db_id in (select db_id from profile where domain_db_id in (select db_id from domain where owner_db_id = ?1)))",
             "delete from profile_item where owner_db_id in (select db_id from profile where domain_db_id in (select db_id from domain where owner_db_id = ?1))",
@@ -182,5 +183,10 @@ public class DomainRepositoryImpl
     em.clear();
     var domains = dataRepository.findAllByClient(clientId);
     dataRepository.deleteAll(domains);
+  }
+
+  @Override
+  public Set<UUID> findIdsOfDomainsThatNeedInspectionBackfilling() {
+    return dataRepository.findIdsOfDomainsThatNeedInspectionBackfilling();
   }
 }

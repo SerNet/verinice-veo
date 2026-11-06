@@ -22,17 +22,26 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.inspection.Severity;
 
 import lombok.Data;
 import lombok.ToString;
@@ -61,6 +70,18 @@ public class InspectionFindingData {
   private Unit unit;
 
   private String inspectionId;
+
+  @Enumerated
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private @NotNull Severity severity;
+
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  @JoinColumn(name = "responsible_person_id")
+  private Person responsible;
+
+  @Column(columnDefinition = "jsonb")
+  @JdbcTypeCode(SqlTypes.JSON)
+  private TranslatedText taskSummary;
 
   @Override
   public boolean equals(Object o) {

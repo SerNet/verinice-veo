@@ -37,6 +37,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.decision.Decider;
@@ -51,6 +52,7 @@ public class ElementBatchCreator {
   private final EventPublisher eventPublisher;
   private final Decider decider;
   private final DesignatorService designatorService;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   /**
    * Persists a batch of transient elements (and contained risks) in a way that doesn't make JPA
@@ -128,6 +130,10 @@ public class ElementBatchCreator {
     });
 
     elements.forEach(element -> element.getDomains().forEach(d -> decider.decide(element, d)));
+    elements.forEach(element ->
+        element
+            .getDomains()
+            .forEach(d -> inspectionFindingRepository.updateInspections(element, d, false)));
 
     elements.stream()
         .filter(r -> r instanceof RiskAffected)
