@@ -37,20 +37,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
 import org.veo.core.entity.TaskType;
+import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.TaskQuery;
+import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
+import org.veo.persistence.entity.jpa.ElementData;
 
 import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class TaskQueryImpl implements TaskQuery {
@@ -58,6 +64,9 @@ public class TaskQueryImpl implements TaskQuery {
   public static final int COL_ASSIGNEE_ID = 1;
   public static final int COL_DEADLINE = 2;
   public static final int COL_RI_ID = 3;
+  public static final int COL_ELEMENT_ID = 4;
+  public static final int COL_SEVERITY = 5;
+  public static final int COL_SUMMARY = 6;
   public static final String WITH_TASK_SUBQUERY =
       // 1. Preselect RIs for given unit and domain where the control is a leaf (i.e., the control
       // has no parts).
@@ -78,19 +87,37 @@ public class TaskQueryImpl implements TaskQuery {
            t as ((select 'REQUIREMENT_IMPLEMENTATION' as type,
                          ris.person_id                as assignee_id,
                          ris.implementation_until     as deadline,
-                         ris.id                       as ri_id
+                         ris.id                       as ri_id,
+                         ris.origin_db_id             as element_id,
+                         null::severity               as severity,
+                         null::text                   as summary
                   from ris
                   where ris.status in ('UNKNOWN', 'NO', 'PARTIAL'))
                  union
                  (select 'REQUIREMENT_IMPLEMENTATION_REVISION' as type,
                          ris.next_revision_by_db_id            as assignee_id,
                          ris.next_revision_date                as deadline,
-                         ris.id                                as ri_id
+                         ris.id                                as ri_id,
+                         ris.origin_db_id                      as element_id,
+                         null::severity                        as severity,
+                         null::text                            as summary
                   from ris
                   where ris.status in ('YES', 'N_A')
-                    and next_revision_date is not null))
+                    and next_revision_date is not null)
+                 union
+                 (select 'INSPECTION_FINDING'         as type,
+                         if.responsible_person_id     as assignee_id,
+                         null                         as deadline,
+                         null                         as ri_id,
+                         if.element_id                as element_id,
+                         if.severity                  as severity,
+                         if.task_summary::text        as summary
+                  from inspection_finding_data as if
+                  where if.domain_id = :domainId
+                    and if.unit_id = :unitId))
       """;
   private final EntityManager em;
+  private final ElementDataRepository<ElementData> elementRepository;
   private final PersonDataRepository personRepository;
   private final RequirementImplementationDataRepository riRepository;
   private final UserAccessRights accessRights;
@@ -107,7 +134,8 @@ public class TaskQueryImpl implements TaskQuery {
     List<Object[]> resultList = taskQuery(pagingConfig, false).getResultList();
 
     var risById = getRiMap(resultList);
-    var personsById = getPersonMap(resultList);
+    var elementsById = getElementMap(resultList, COL_ELEMENT_ID, elementRepository);
+    var personsById = getElementMap(resultList, COL_ASSIGNEE_ID, personRepository);
     var pageItems =
         resultList.stream()
             .map(row ->
@@ -119,6 +147,16 @@ public class TaskQueryImpl implements TaskQuery {
                     (LocalDate) row[COL_DEADLINE],
                     Optional.ofNullable(row[COL_RI_ID])
                         .map(riId -> risById.get((UUID) riId))
+                        .orElse(null),
+                    Optional.ofNullable(row[COL_ELEMENT_ID])
+                        .map(pId -> elementsById.get((UUID) pId))
+                        .orElse(null),
+                    Optional.ofNullable(row[COL_SEVERITY])
+                        .map(s -> Severity.valueOf((String) s))
+                        .orElse(null),
+                    Optional.ofNullable(row[COL_SUMMARY])
+                        .map(String.class::cast)
+                        .map(i -> JsonMapper.shared().readValue(i, TranslatedText.class))
                         .orElse(null)))
             .toList();
     return new PagedResult<>(pagingConfig, pageItems, totalResultCount, totalPages);
@@ -148,21 +186,22 @@ public class TaskQueryImpl implements TaskQuery {
         .collect(Collectors.toMap(RequirementImplementation::getId, Function.identity()));
   }
 
-  private @NonNull Map<UUID, Person> getPersonMap(List<Object[]> resultList) {
-    var personIds =
+  private @NonNull <TElement extends ElementData> Map<UUID, TElement> getElementMap(
+      List<Object[]> resultList, int idColumn, ElementDataRepository<TElement> repo) {
+    var elementIds =
         resultList.stream()
-            .map(r -> r[COL_ASSIGNEE_ID])
+            .map(r -> r[idColumn])
             .filter(Objects::nonNull)
             .map(UUID.class::cast)
             .collect(Collectors.toSet());
-    return personRepository
+    return repo
         .findByIds(
-            personIds,
+            elementIds,
             accessRights.getClientId(),
             accessRights.isUnitAccessRestricted(),
             accessRights.getReadableUnitIds())
         .stream()
-        .collect(Collectors.toMap(Person::getId, Function.identity()));
+        .collect(Collectors.toMap(Element::getId, Function.identity()));
   }
 
   @SuppressWarnings("PMD.UseStringBufferForStringAppends") // concatenation count is trivial
@@ -173,11 +212,7 @@ public class TaskQueryImpl implements TaskQuery {
             Map.of(
                 "unitId", unit.getId(),
                 "domainId", domain.getId()));
-    var query =
-        WITH_TASK_SUBQUERY
-            + (countOnly
-                ? "select count(*) from t\n"
-                : "select t.type, t.assignee_id, t.deadline, t.ri_id from t\n");
+    var query = WITH_TASK_SUBQUERY + (countOnly ? "select count(*) from t\n" : "select * from t\n");
 
     // WHERE / JOIN (optional filters)
     var conditions = new ArrayList<String>();
@@ -206,7 +241,7 @@ public class TaskQueryImpl implements TaskQuery {
       params.put("limit", paging.pageSize());
       params.put("offset", paging.pageNumber() * paging.pageSize());
       query +=
-          "order by %s %s limit :limit offset :offset"
+          "order by %s %s, severity desc limit :limit offset :offset"
               .formatted(orderCol, paging.sortOrder().getSqlKeyword());
     }
 

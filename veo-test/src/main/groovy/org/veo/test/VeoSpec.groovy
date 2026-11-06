@@ -89,6 +89,7 @@ import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.DomainTemplateData
 import org.veo.persistence.entity.jpa.IncidentData
+import org.veo.persistence.entity.jpa.InspectionFindingData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ProfileData
@@ -509,6 +510,19 @@ abstract class VeoSpec extends Specification {
             severity = Severity.HINT
             description = TranslatedText.empty()
             condition = new ConstantExpression(false)
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static InspectionFindingData newInspectionFinding(Element element, Domain domain,
+            @DelegatesTo(value = InspectionFindingData.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.persistence.entity.jpa.InspectionFindingData") Closure init = null) {
+        return new InspectionFindingData().tap {
+            it.element = element
+            it.unit = element.owner
+            it.domain = domain
+            it.inspectionId = "some-inspection"
+            it.severity = Severity.HINT
             VeoSpec.execute(it, init)
         }
     }

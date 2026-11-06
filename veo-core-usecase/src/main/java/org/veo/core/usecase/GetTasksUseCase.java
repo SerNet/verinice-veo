@@ -29,6 +29,7 @@ import org.veo.core.UserAccessRights;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
+import org.veo.core.entity.TaskType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.TypedId;
@@ -58,6 +59,7 @@ public class GetTasksUseCase
     }
     var query = taskRepository.queryTasks(domain, unit, userAccessRights);
     Optional.ofNullable(input.assignees).ifPresent(query::whereAssigneeIn);
+    Optional.ofNullable(input.types).ifPresent(query::whereTypeIn);
     return new OutputData(query.execute(input.pagingConfiguration), domain);
   }
 
@@ -66,6 +68,7 @@ public class GetTasksUseCase
       @NotNull TypedId<Domain> domainRef,
       @NotNull TypedId<Unit> unitRef,
       @Nullable Set<TypedId<Person>> assignees,
+      @Nullable Set<TaskType> types,
       @NotNull PagingConfiguration<TaskQuery.SortCriterion> pagingConfiguration)
       implements UseCase.InputData {}
 

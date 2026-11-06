@@ -26,9 +26,11 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.TaskQuery;
 import org.veo.core.repository.TaskRepository;
+import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.query.TaskQueryImpl;
+import org.veo.persistence.entity.jpa.ElementData;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,12 +38,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TaskRepositoryImpl implements TaskRepository {
 
+  private final ElementDataRepository<ElementData> elementDataRepository;
   private final PersonDataRepository personDataRepository;
   private final RequirementImplementationDataRepository riRepository;
   private final EntityManager em;
 
   @Override
   public TaskQuery queryTasks(Domain domain, Unit unit, UserAccessRights accessRights) {
-    return new TaskQueryImpl(em, personDataRepository, riRepository, accessRights, domain, unit);
+    return new TaskQueryImpl(
+        em, elementDataRepository, personDataRepository, riRepository, accessRights, domain, unit);
   }
 }

@@ -17,51 +17,92 @@
  */
 package org.veo.adapter.presenter.api.response;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Task;
 import org.veo.core.entity.TaskType;
+import org.veo.core.entity.compliance.RequirementImplementation;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Schema(
     description =
         "EXPERIMENTAL API, SUBJECT TO CHANGE! A task that has yet to be performed in a unit - tasks are transient, i.e. they are produced by the API on demand and cannot be created, updated or deleted by API clients.",
-    accessMode = Schema.AccessMode.READ_ONLY)
-public class TaskDto {
-  @NotNull TaskType type;
-  @Nullable LocalDate deadline;
-  @Nullable RequirementImplementationDto requirementImplementation;
+    accessMode = Schema.AccessMode.READ_ONLY,
+    discriminatorProperty = "type",
+    discriminatorMapping = {
+      @DiscriminatorMapping(
+          value = RequirementImplementation.SINGULAR_TERM,
+          schema = RequirementImplementationTaskDto.class),
+      @DiscriminatorMapping(
+          value = RequirementImplementation.SINGULAR_TERM + "-revision",
+          schema = RequirementImplementationTaskDto.class),
+      @DiscriminatorMapping(value = "inspection-finding", schema = InspectionFindingTaskDto.class),
+    },
+    oneOf = {
+      RequirementImplementationTaskDto.class,
+      InspectionFindingTaskDto.class,
+    })
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    property = "type",
+    include = JsonTypeInfo.As.EXISTING_PROPERTY)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = RequirementImplementationTaskDto.class),
+  @JsonSubTypes.Type(value = InspectionFindingTaskDto.class)
+})
+public sealed interface TaskDto permits InspectionFindingTaskDto, RequirementImplementationTaskDto {
+  @NotNull
+  @JsonProperty("type")
+  TaskType type();
 
   @Schema(implementation = ElementInDomainIdRef.class)
   @Nullable
-  ElementInDomainIdRef<Person> assignee;
+  @JsonProperty("assignee")
+  ElementInDomainIdRef<Person> assignee();
 
-  public static TaskDto from(Task task, Domain domain, ReferenceAssembler referenceAssembler) {
-    return new TaskDto(
-        task.type(),
-        task.deadline(),
-        Optional.ofNullable(task.requirementImplementation())
-            .map(ri -> RequirementImplementationDto.from(ri, referenceAssembler))
-            .orElse(null),
+  @Schema(implementation = ElementInDomainIdRef.class)
+  @NotNull
+  @JsonProperty("element")
+  ElementInDomainIdRef<?> element();
+
+  static TaskDto from(Task task, Domain domain, ReferenceAssembler referenceAssembler) {
+    ElementInDomainIdRef<Person> assignee =
         Optional.ofNullable(task.assignee())
             .map(p -> ElementInDomainIdRef.from(p, domain, referenceAssembler))
-            .orElse(null));
+            .orElse(null);
+    ElementInDomainIdRef<Element> element =
+        Optional.ofNullable(task.element())
+            .map(p -> ElementInDomainIdRef.from(p, domain, referenceAssembler))
+            .orElse(null);
+    return switch (task.type()) {
+      case REQUIREMENT_IMPLEMENTATION, REQUIREMENT_IMPLEMENTATION_REVISION ->
+          new RequirementImplementationTaskDto(
+              task.type(),
+              element,
+              assignee,
+              Optional.ofNullable(task.requirementImplementation())
+                  .map(ri -> RequirementImplementationDto.from(ri, referenceAssembler))
+                  .orElse(null),
+              task.deadline());
+      case INSPECTION_FINDING ->
+          new InspectionFindingTaskDto(
+              task.type(), element, assignee, task.severity(), task.summary());
+    };
   }
 }

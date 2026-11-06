@@ -25,11 +25,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 
 import org.veo.categories.MapGetProperties
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.TaskType
 import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
@@ -2629,7 +2631,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "discriminator & oneOf are consistent for #entry.key"() {
         expect:
         def oneOfEntries = (entry.value.oneOf ?: [])*.$ref
-        def discriminatorMappings = entry.value.discriminator?.mapping?.values() ?: []
+        def discriminatorMappings = entry.value.discriminator?.mapping?.values().toUnique() ?: []
         discriminatorMappings ==~ oneOfEntries
 
         where:
@@ -2674,6 +2676,81 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "TaskDto schema is complete"() {
+        given:
+        def taskTypes = enumJsonValues(TaskType)
+
+        expect:
+        with(getSchema('TaskDto')) {
+            it.description.startsWith("EXPERIMENTAL")
+            it.readOnly
+            it.discriminator.mapping.keySet() ==~ taskTypes
+            it.discriminator == [
+                propertyName: 'type',
+                mapping: [
+                    'requirement-implementation': '#/components/schemas/RequirementImplementationTaskDto',
+                    'requirement-implementation-revision': '#/components/schemas/RequirementImplementationTaskDto',
+                    'inspection-finding': '#/components/schemas/InspectionFindingTaskDto',
+                ]
+            ]
+            it.properties.keySet() ==~ ['type', 'element', 'assignee']
+            it.properties.type.type == 'string'
+            it.properties.type.enum == taskTypes
+            it.properties.element == [
+                $ref: '#/components/schemas/ElementInDomainIdRef'
+            ]
+            it.properties.assignee == [
+                $ref: '#/components/schemas/ElementInDomainIdRef'
+            ]
+            it.required ==~ ['type', 'element']
+        }
+    }
+
+    def "RequirementImplementationTaskDto schema is complete"() {
+        expect:
+        with(getSchema('RequirementImplementationTaskDto')) {
+            it.allOf.size() == 2
+            it.allOf[0] == [$ref: '#/components/schemas/TaskDto']
+            with(it.allOf[1]) {
+                it.properties.keySet() ==~ [
+                    'requirementImplementation',
+                    'deadline',
+                ]
+                it.properties.deadline == [
+                    type: 'string',
+                    format: 'date',
+                ]
+                it.properties.requirementImplementation == [
+                    $ref: '#/components/schemas/RequirementImplementationDto'
+                ]
+            }
+        }
+    }
+
+    def "InspectionFindingTaskDto schema is complete"() {
+        expect:
+        with(getSchema('InspectionFindingTaskDto')) {
+            it.allOf.size() == 2
+            it.allOf[0] == [$ref: '#/components/schemas/TaskDto']
+            with(it.allOf[1]) {
+                it.properties.keySet() ==~ [
+                    'severity',
+                    'summary',
+                ]
+                it.properties.severity == [
+                    type: 'string',
+                    enum: ['HINT', 'WARNING', 'ERROR'],
+                ]
+                it.properties.summary == [
+                    type: 'object',
+                    additionalProperties: [
+                        type: 'string'
+                    ]
+                ]
+            }
+        }
+    }
+
     def "endpoint documentation is correct for GET /domains/{domainId}/tasks"() {
         given:
         def endPointInfo = parsedApiDocs.paths["/domains/{domainId}/tasks"].get
@@ -2710,5 +2787,11 @@ class SwaggerSpec extends VeoSpringSpec {
 
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString
+    }
+
+    private static List<String> enumJsonValues(Class enumClass) {
+        EnumSet.allOf(enumClass).collect{
+            enumClass.getField(it.name()).getAnnotation(JsonProperty).value()
+        }
     }
 }

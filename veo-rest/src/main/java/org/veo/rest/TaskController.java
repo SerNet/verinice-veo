@@ -28,6 +28,7 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +52,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.TaskDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.TaskType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.TypedId;
 import org.veo.core.repository.TaskQuery;
@@ -70,6 +73,9 @@ public class TaskController {
   private final ReferenceAssembler referenceAssembler;
   private final GetTasksUseCase getTasksUseCase;
   private final UseCaseInteractor useCaseInteractor;
+
+  @Value("${veo.inspection-tasks.enabled:false}")
+  private boolean inspectionTasksEnabled;
 
   @Operation(
       summary = "EXPERIMENTAL API, SUBJECT TO CHANGE! Retrieve open tasks for a domain and unit")
@@ -116,6 +122,9 @@ public class TaskController {
                             .map(id -> TypedId.from(id, Person.class))
                             .collect(Collectors.toSet()))
                     .orElse(null),
+                inspectionTasksEnabled
+                    ? null
+                    : EnumSet.complementOf(EnumSet.of(TaskType.INSPECTION_FINDING)),
                 PagingMapper.toConfig(pageSize, pageNumber, sortCriterion, sortOrder)),
             output ->
                 PagingMapper.toPage(
